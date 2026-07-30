@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **__init__.py** (0 connections) — `server/tests/unit/schemas/__init__.py`
+- **__init__.py** (0 connections) — `server/tests/unit/services/__init__.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `server/tests/unit/schemas/__init__.py`
+- `server/tests/unit/services/__init__.py`
 
 ## Audit Trail
 

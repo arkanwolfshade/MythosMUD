@@ -1,55 +1,52 @@
 # message handlers
 
-> 31 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **message_handlers.py** (14 connections) — `server/realtime/message_handlers.py`
-- **test_message_handlers.py** (12 connections) — `server/tests/unit/realtime/test_message_handlers.py`
-- **handle_command_message()** (11 connections) — `server/realtime/message_handlers.py`
-- **handle_chat_message()** (10 connections) — `server/realtime/message_handlers.py`
-- **handle_ping_message()** (10 connections) — `server/realtime/message_handlers.py`
-- **handle_follow_response_message()** (9 connections) — `server/realtime/message_handlers.py`
-- **handle_party_invite_response_message()** (8 connections) — `server/realtime/message_handlers.py`
-- **handle_client_error_report_message()** (6 connections) — `server/realtime/message_handlers.py`
-- **WebSocket** (6 connections)
-- **Any** (6 connections)
-- **test_handle_command_message()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
-- **test_handle_command_message_no_command()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
-- **test_handle_command_message_no_args()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
-- **test_handle_chat_message()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
-- **test_handle_chat_message_no_message()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
-- **test_handle_ping_message()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
-- **test_handle_ping_message_with_data()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
-- **Test handle_command_message() handles missing command.** (2 connections) — `server/tests/unit/realtime/test_message_handlers.py`
-- **Message handler implementations for WebSocket message routing.  This module cont** (1 connections) — `server/realtime/message_handlers.py`
-- **Handle client_error_report: log client-reported errors to errors.log (via ERROR-** (1 connections) — `server/realtime/message_handlers.py`
-- **Handle command message type.** (1 connections) — `server/realtime/message_handlers.py`
-- **Handle chat message type.** (1 connections) — `server/realtime/message_handlers.py`
-- **Handle ping message type.** (1 connections) — `server/realtime/message_handlers.py`
-- **Handle follow_response message (accept/decline follow request).** (1 connections) — `server/realtime/message_handlers.py`
-- **Handle party_invite_response message (accept/decline party invite).** (1 connections) — `server/realtime/message_handlers.py`
-- *... and 6 more nodes in this community*
+- **definition.py** (16 connections) — `server/commands/npc_admin/definition.py`
+- **handle_npc_create_command()** (12 connections) — `server/commands/npc_admin/definition.py`
+- **NPCDefinitionUpdateParams** (11 connections) — `server/services/npc_service_models.py`
+- **handle_npc_edit_command()** (10 connections) — `server/commands/npc_admin/definition.py`
+- **NPCDefinitionType** (10 connections) — `server/models/npc.py`
+- **handle_npc_delete_command()** (9 connections) — `server/commands/npc_admin/definition.py`
+- **Any** (7 connections)
+- **_parse_npc_edit_args()** (5 connections) — `server/commands/npc_admin/definition.py`
+- **_build_npc_edit_params()** (5 connections) — `server/commands/npc_admin/definition.py`
+- **_execute_npc_edit()** (5 connections) — `server/commands/npc_admin/definition.py`
+- **NPC definition management commands (create, edit, delete, list).** (1 connections) — `server/commands/npc_admin/definition.py`
+- **Parse and validate NPC edit command args.      Returns:         (npc_id, field,** (1 connections) — `server/commands/npc_admin/definition.py`
+- **Map a single NPC field/value into NPCDefinitionUpdateParams, or return an error** (1 connections) — `server/commands/npc_admin/definition.py`
+- **Run NPC definition update in DB session. Returns result or error dict.** (1 connections) — `server/commands/npc_admin/definition.py`
+- **Handle NPC creation command.** (1 connections) — `server/commands/npc_admin/definition.py`
+- **Handle NPC editing command.** (1 connections) — `server/commands/npc_admin/definition.py`
+- **Handle NPC deletion command.** (1 connections) — `server/commands/npc_admin/definition.py`
+- **StrEnum** (1 connections)
+- **Enumeration of valid NPC definition types.** (1 connections) — `server/models/npc.py`
+- **Internal params for NPC definition update data builder.** (1 connections) — `server/services/npc_service_models.py`
 
 ## Relationships
 
-- [UUID](UUID.md) (6 shared connections)
-- [message handler factory](message_handler_factory.md) (6 shared connections)
-- [.handle()](handle%28%29.md) (6 shared connections)
-- [.shutdown()](shutdown%28%29.md) (3 shared connections)
-- [websocket handler app state](websocket_handler_app_state.md) (2 shared connections)
-- [main()](main%28%29.md) (2 shared connections)
-- [websocket handler commands](websocket_handler_commands.md) (1 shared connections)
+- [Any](Any.md) (15 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (9 shared connections)
+- [test magic commands](test_magic_commands.md) (4 shared connections)
+- [NATSMetrics](NATSMetrics.md) (4 shared connections)
+- [metrics](metrics.md) (3 shared connections)
+- [test mp regeneration service](test_mp_regeneration_service.md) (2 shared connections)
+- [AuthSlice](AuthSlice.md) (1 shared connections)
+- [main()](main%28%29.md) (1 shared connections)
+- [. repr ()](_repr_%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/message_handlers.py`
-- `server/tests/unit/realtime/test_message_handlers.py`
+- `server/commands/npc_admin/definition.py`
+- `server/models/npc.py`
+- `server/services/npc_service_models.py`
 
 ## Audit Trail
 
-- EXTRACTED: 127 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 93 (93%)
+- INFERRED: 7 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

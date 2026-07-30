@@ -1,28 +1,24 @@
 # Tests for get stats generator
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **TestGetStatsGenerator** (4 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_stats_generator_returns_instance()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Tests for get_stats_generator dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_stats_generator returns StatsGenerator instance.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **test_process_combined_rows_with_exits()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **Test _process_combined_rows processes rows with exits JSON.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Relationships
 
-- [Connection Manager](Connection_Manager.md) (1 shared connections)
-- [. init ()](_init_%28%29.md) (1 shared connections)
-- [character creation](character_creation.md) (1 shared connections)
+- [test async persistence room cache](test_async_persistence_room_cache.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_dependencies.py`
+- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (89%)
-- INFERRED: 1 (11%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

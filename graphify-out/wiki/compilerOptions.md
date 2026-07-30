@@ -1,13 +1,20 @@
 # compilerOptions
 
-> 18 nodes
+> 33 nodes
 
 ## Key Concepts
 
 - **compilerOptions** (19 connections) — `client/tsconfig.app.json`
+- **exclude** (8 connections) — `client/tsconfig.app.json`
+- **lib** (4 connections) — `client/tsconfig.app.json`
+- **tsconfig.app.json** (3 connections) — `client/tsconfig.app.json`
+- **include** (2 connections) — `client/tsconfig.app.json`
 - **tsBuildInfoFile** (1 connections) — `client/tsconfig.app.json`
 - **target** (1 connections) — `client/tsconfig.app.json`
 - **useDefineForClassFields** (1 connections) — `client/tsconfig.app.json`
+- **ES2022** (1 connections) — `client/tsconfig.app.json`
+- **DOM** (1 connections) — `client/tsconfig.app.json`
+- **DOM.Iterable** (1 connections) — `client/tsconfig.app.json`
 - **module** (1 connections) — `client/tsconfig.app.json`
 - **skipLibCheck** (1 connections) — `client/tsconfig.app.json`
 - **moduleResolution** (1 connections) — `client/tsconfig.app.json`
@@ -22,11 +29,11 @@
 - **erasableSyntaxOnly** (1 connections) — `client/tsconfig.app.json`
 - **noFallthroughCasesInSwitch** (1 connections) — `client/tsconfig.app.json`
 - **noUncheckedSideEffectImports** (1 connections) — `client/tsconfig.app.json`
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [src/**/*.spec](src-__-_.spec.md) (1 shared connections)
-- [lib](lib.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
@@ -34,7 +41,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 36 (100%)
+- EXTRACTED: 64 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

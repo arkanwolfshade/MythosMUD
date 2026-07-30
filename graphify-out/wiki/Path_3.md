@@ -1,14 +1,11 @@
 # Path
 
-> 77 nodes
+> 72 nodes
 
 ## Key Concepts
 
 - **test_logging_utilities.py** (40 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
-- **ensure_log_directory()** (23 connections) — `server/structured_logging/logging_utilities.py`
 - **Path** (23 connections)
-- **rotate_log_files()** (18 connections) — `server/structured_logging/logging_utilities.py`
-- **detect_environment()** (16 connections) — `server/structured_logging/logging_utilities.py`
 - **resolve_log_base()** (13 connections) — `server/structured_logging/logging_utilities.py`
 - **test_ensure_log_directory_creates_directory()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
 - **test_ensure_log_directory_existing_directory()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
@@ -29,16 +26,18 @@
 - **test_rotate_log_files_handles_permission_error()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
 - **test_rotate_log_files_windows_platform()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
 - **test_rotate_log_files_non_windows_platform()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
-- *... and 52 more nodes in this community*
+- **test_rotate_log_files_retries_on_error()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
+- **test_rotate_log_files_handles_jsonl_files()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
+- **test_rotate_log_files_recursive_search()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
+- *... and 47 more nodes in this community*
 
 ## Relationships
 
-- [Formatter](Formatter.md) (9 shared connections)
-- [main()](main%28%29.md) (7 shared connections)
-- [logging utilities](logging_utilities.md) (6 shared connections)
-- [logging handlers](logging_handlers.md) (3 shared connections)
-- [Any](Any.md) (2 shared connections)
-- [Create a temporary directory for](Create_a_temporary_directory_for.md) (2 shared connections)
+- [. init ()](_init_%28%29.md) (14 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (13 shared connections)
+- [logging handlers](logging_handlers.md) (10 shared connections)
+- [PlayerGuidFormatter](PlayerGuidFormatter.md) (2 shared connections)
+- [Path](Path.md) (2 shared connections)
 
 ## Source Files
 
@@ -47,7 +46,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 295 (100%)
+- EXTRACTED: 235 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

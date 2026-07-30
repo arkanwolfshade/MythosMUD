@@ -1,42 +1,38 @@
 # test path validator
 
-> 20 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **TestPathValidator** (11 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **.validator()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **test_path_validator.py** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **.zone_transition_rooms()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **.test_zone_transition_detection()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **.test_broken_zone_transition()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **.test_get_room_zone()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **.test_missing_zone_info()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **.test_one_way_zone_transition()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **.test_mismatched_return_path()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **Tests for path validator functionality.  Validates room connectivity analysis wi** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **Test suite for path validation functionality.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **Create a path validator instance.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **Sample rooms with zone transitions.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **Test detection of zone transitions in room connections.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **Test detection of broken zone transitions.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **Test extraction of zone information from room data.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **Test handling of rooms with missing zone information.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **Test one-way exits across zone boundaries.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **Test detection of mismatched return paths across zones.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **_convert_container_dict_to_container_data()** (12 connections) — `server/api/container_endpoints_basic.py`
+- **_convert_inventory_list_to_inventory_stacks()** (11 connections) — `server/api/container_endpoints_basic.py`
+- **_build_container_data_from_dict()** (7 connections) — `server/api/container_endpoints_basic.py`
+- **Any** (5 connections)
+- **_convert_uuid_to_string()** (4 connections) — `server/api/container_endpoints_basic.py`
+- **_convert_datetime_to_iso()** (4 connections) — `server/api/container_endpoints_basic.py`
+- **InventoryStack** (2 connections)
+- **ContainerData** (2 connections)
+- **Convert UUID-like object to string if it has __str__ method.** (1 connections) — `server/api/container_endpoints_basic.py`
+- **Convert datetime object to ISO format string.** (1 connections) — `server/api/container_endpoints_basic.py`
+- **Build ContainerData model from dictionary and converted values.** (1 connections) — `server/api/container_endpoints_basic.py`
+- **Convert container dictionary from ContainerComponent.model_dump() to ContainerDa** (1 connections) — `server/api/container_endpoints_basic.py`
+- **Convert list of inventory dicts to InventoryStack models.** (1 connections) — `server/api/container_endpoints_basic.py`
 
 ## Relationships
 
-- [PathValidator](PathValidator.md) (2 shared connections)
+- [BaseCommand](BaseCommand.md) (10 shared connections)
+- [APIRouter](APIRouter.md) (4 shared connections)
+- [.initialize()](initialize%28%29.md) (1 shared connections)
+- [Player](Player.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- `server/api/container_endpoints_basic.py`
 
 ## Audit Trail
 
-- EXTRACTED: 38 (95%)
-- INFERRED: 2 (5%)
+- EXTRACTED: 50 (96%)
+- INFERRED: 2 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

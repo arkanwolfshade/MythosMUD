@@ -1,39 +1,33 @@
 # test format player location invalid()
 
-> 15 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **format_player_location()** (13 connections) — `server/commands/who_commands.py`
-- **test_format_player_location_valid()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_format_player_location_invalid()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_format_player_location_none()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_format_player_location_short_format()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_format_player_location_non_string()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_format_player_location_valid()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- **test_format_player_location_invalid()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- **Test formatting valid player location.** (2 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **Format player location as Zone: Sub-zone: Room from room ID.      Args:** (1 connections) — `server/commands/who_commands.py`
-- **Test formatting None location.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **Test format_player_location() with short room ID format.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **Test format_player_location() with non-string input.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **Test format_player_location() formats valid room ID.** (1 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- **Test format_player_location() handles invalid room ID.** (1 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
+- **validate_shutdown_admin_permission()** (9 connections) — `server/commands/admin_shutdown_command.py`
+- **test_validate_shutdown_admin_permission_no_player()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_validate_shutdown_admin_permission_not_admin()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_validate_shutdown_admin_permission_admin()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **Validate that a player has admin permissions for server shutdown.      Args:** (1 connections) — `server/commands/admin_shutdown_command.py`
+- **Test validate_shutdown_admin_permission() returns False when player is None.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **Test validate_shutdown_admin_permission() returns False when player is not admin** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **Test validate_shutdown_admin_permission() returns True when player is admin.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
 
 ## Relationships
 
-- [utility commands](utility_commands.md) (12 shared connections)
+- [Any](Any.md) (4 shared connections)
+- [get skill repository()](get_skill_repository%28%29.md) (3 shared connections)
+- [Player Position Service](Player_Position_Service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/who_commands.py`
-- `server/tests/unit/commands/test_who_commands.py`
-- `server/tests/unit/commands/test_who_commands_helpers.py`
+- `server/commands/admin_shutdown_command.py`
+- `server/tests/unit/commands/test_admin_shutdown_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 42 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 21 (95%)
+- INFERRED: 1 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

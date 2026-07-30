@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_validate_can_attack_target_no_party_service_allows()** (3 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **When party_service is None, validate_can_attack_target allows attack.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_build_occupants_snapshot_data_none()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test build_occupants_snapshot_data() with None.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [test combat validator](test_combat_validator.md) (1 shared connections)
-- [Player Position Service](Player_Position_Service.md) (1 shared connections)
+- [test player event handlers utils](test_player_event_handlers_utils.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,53 +1,54 @@
 # .validate alias name field()
 
-> 40 nodes
+> 31 nodes
 
 ## Key Concepts
 
-- **test_command_alias.py** (18 connections) — `server/tests/unit/models/test_command_alias.py`
-- **AliasCommand** (17 connections) — `server/models/command_alias.py`
-- **command_alias.py** (12 connections) — `server/models/command_alias.py`
-- **UnaliasCommand** (12 connections) — `server/models/command_alias.py`
-- **AliasesCommand** (8 connections) — `server/models/command_alias.py`
-- **test_alias_command_alias_name_min_length()** (4 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_alias_command_alias_name_max_length()** (4 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_alias_command_command_max_length()** (4 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_unalias_command_alias_name_min_length()** (4 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_unalias_command_alias_name_max_length()** (4 connections) — `server/tests/unit/models/test_command_alias.py`
-- **.validate_alias_name_field()** (3 connections) — `server/models/command_alias.py`
-- **.validate_command()** (3 connections) — `server/models/command_alias.py`
-- **.validate_alias_name_field()** (3 connections) — `server/models/command_alias.py`
-- **test_alias_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_alias_command_with_command()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_alias_command_validate_alias_name_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_alias_command_validate_command_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_alias_command_validate_command_none()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_aliases_command_no_fields()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_unalias_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_unalias_command_validate_alias_name_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **Validate alias name format using centralized validation.** (2 connections) — `server/models/command_alias.py`
-- **Test UnaliasCommand validates alias_name min length.** (2 connections) — `server/tests/unit/models/test_command_alias.py`
-- **Alias command models for MythosMUD.  This module provides command models for man** (1 connections) — `server/models/command_alias.py`
-- **Command for creating or viewing command aliases.** (1 connections) — `server/models/command_alias.py`
-- *... and 15 more nodes in this community*
+- **communication_commands_flows.py** (33 connections) — `server/commands/communication_commands_flows.py`
+- **ChatCommandsProtocol** (18 connections) — `server/commands/communication_commands_support.py`
+- **PlayerResolutionProtocol** (16 connections) — `server/commands/communication_commands_support.py`
+- **flow_global_command()** (12 connections) — `server/commands/communication_commands_flows.py`
+- **chat_result_map()** (11 connections) — `server/commands/communication_commands_support.py`
+- **message_id_from_result()** (11 connections) — `server/commands/communication_commands_support.py`
+- **_require_chat_pair()** (10 connections) — `server/commands/communication_commands_flows.py`
+- **flow_reply_command()** (10 connections) — `server/commands/communication_commands_flows.py`
+- **_str_error_from_chat_result()** (9 connections) — `server/commands/communication_commands_flows.py`
+- **_system_send_if_admin()** (9 connections) — `server/commands/communication_commands_flows.py`
+- **flow_whisper_command()** (9 connections) — `server/commands/communication_commands_flows.py`
+- **_deliver_whisper_message()** (8 connections) — `server/commands/communication_commands_flows.py`
+- **_deliver_reply_to_last_whisper()** (8 connections) — `server/commands/communication_commands_flows.py`
+- **_system_services_triple()** (7 connections) — `server/commands/communication_commands_flows.py`
+- **_player_id_bundle()** (6 connections) — `server/commands/communication_commands_flows.py`
+- **UserManagerProtocol** (2 connections)
+- **Room/global/system/whisper/reply flows for communication command handlers.  Ex** (1 connections) — `server/commands/communication_commands_flows.py`
+- **Handle the `global` command: server-wide chat when permitted.** (1 connections) — `server/commands/communication_commands_flows.py`
+- **Handle `whisper`: send a private message to a named online player.** (1 connections) — `server/commands/communication_commands_flows.py`
+- **Handle `reply`: whisper back to the last player who whispered to you.** (1 connections) — `server/commands/communication_commands_flows.py`
+- **.resolve_player_name()** (1 connections) — `server/commands/communication_commands_support.py`
+- **.send_say_message()** (1 connections) — `server/commands/communication_commands_support.py`
+- **.send_local_message()** (1 connections) — `server/commands/communication_commands_support.py`
+- **.send_global_message()** (1 connections) — `server/commands/communication_commands_support.py`
+- **.send_system_message()** (1 connections) — `server/commands/communication_commands_support.py`
+- *... and 6 more nodes in this community*
 
 ## Relationships
 
-- [.validate spell name()](validate_spell_name%28%29.md) (9 shared connections)
-- [.validate topic()](validate_topic%28%29.md) (6 shared connections)
-- [. init ()](_init_%28%29.md) (5 shared connections)
-- [BaseCommand](BaseCommand.md) (4 shared connections)
-- [test command factories utility](test_command_factories_utility.md) (3 shared connections)
+- [chat send with room bundle()](chat_send_with_room_bundle%28%29.md) (40 shared connections)
+- [ConnectionsComponent](ConnectionsComponent.md) (25 shared connections)
+- [.get instance()](get_instance%28%29.md) (4 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
+- [handle global command()](handle_global_command%28%29.md) (2 shared connections)
+- [test quest service collect](test_quest_service_collect.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/command_alias.py`
-- `server/tests/unit/models/test_command_alias.py`
+- `server/commands/communication_commands_flows.py`
+- `server/commands/communication_commands_support.py`
 
 ## Audit Trail
 
-- EXTRACTED: 130 (92%)
-- INFERRED: 11 (8%)
+- EXTRACTED: 192 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

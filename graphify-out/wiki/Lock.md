@@ -1,59 +1,66 @@
 # Lock
 
-> 96 nodes
+> 151 nodes
 
 ## Key Concepts
 
+- **__init__.py** (47 connections) — `server/services/__init__.py`
+- **InventoryService** (43 connections) — `server/services/inventory_service.py`
 - **InventoryMutationGuard** (42 connections) — `server/services/inventory_mutation_guard.py`
+- **InventoryStack** (34 connections) — `server/services/inventory_service.py`
+- **inventory_service.py** (29 connections) — `server/services/inventory_service.py`
+- **InventoryCapacityError** (29 connections) — `server/services/inventory_service.py`
+- **inventory_mutation_guard.py** (20 connections) — `server/services/inventory_mutation_guard.py`
+- **test_inventory_service.py** (20 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **MutationDecision** (18 connections) — `server/services/inventory_mutation_guard.py`
 - **test_inventory_mutation_guard.py** (17 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **InventoryValidationError** (13 connections) — `server/services/inventory_service.py`
+- **InventorySplitError** (13 connections) — `server/services/inventory_service.py`
 - **.acquire_async()** (11 connections) — `server/services/inventory_mutation_guard.py`
 - **.acquire()** (10 connections) — `server/services/inventory_mutation_guard.py`
-- **test_inventory_mutation_guard_error_handling.py** (10 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
-- **test_inventory_mutation_guard_sync.py** (10 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
+- **Lock** (9 connections)
+- **InventoryServiceError** (9 connections) — `server/services/inventory_service.py`
+- **._clone_stack()** (9 connections) — `server/services/inventory_service.py`
 - **test_inventory_mutation_guard_async.py** (9 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
-- **Lock** (8 connections)
+- **.add_stack()** (8 connections) — `server/services/inventory_service.py`
+- **.split_stack()** (8 connections) — `server/services/inventory_service.py`
+- **Any** (7 connections)
+- **._validate_and_clone_optional_fields()** (7 connections) — `server/services/inventory_service.py`
+- **._clone_with_quantity()** (7 connections) — `server/services/inventory_service.py`
 - **_AsyncPlayerGuardState** (6 connections) — `server/services/inventory_mutation_guard.py`
-- **_PlayerGuardState** (5 connections) — `server/services/inventory_mutation_guard.py`
-- **.get_lock()** (5 connections) — `server/services/inventory_mutation_guard.py`
-- **._get_async_global_lock()** (5 connections) — `server/services/inventory_mutation_guard.py`
-- **._get_async_state()** (5 connections) — `server/services/inventory_mutation_guard.py`
-- **._cleanup_async_state()** (5 connections) — `server/services/inventory_mutation_guard.py`
-- **._get_state()** (4 connections) — `server/services/inventory_mutation_guard.py`
-- **._prune_tokens()** (4 connections) — `server/services/inventory_mutation_guard.py`
-- **._prune_tokens_async()** (4 connections) — `server/services/inventory_mutation_guard.py`
-- **._enforce_limit()** (4 connections) — `server/services/inventory_mutation_guard.py`
-- **._enforce_limit_async()** (4 connections) — `server/services/inventory_mutation_guard.py`
-- **._cleanup_state()** (3 connections) — `server/services/inventory_mutation_guard.py`
-- **guard()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
-- **test_mutation_decision_init()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
-- **test_mutation_decision_duplicate()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
-- **test_inventory_mutation_guard_init_custom_params()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
-- **guard()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
-- *... and 71 more nodes in this community*
+- **InventoryStackRequired** (6 connections) — `server/services/inventory_service.py`
+- *... and 126 more nodes in this community*
 
 ## Relationships
 
-- [AbstractContextManager](AbstractContextManager.md) (15 shared connections)
-- [main()](main%28%29.md) (10 shared connections)
-- [APIRouter](APIRouter.md) (7 shared connections)
-- [. init ()](_init_%28%29.md) (3 shared connections)
-- [test inventory mutation guard internal](test_inventory_mutation_guard_internal.md) (2 shared connections)
-- [PerformanceStats](PerformanceStats.md) (2 shared connections)
-- [.shutdown()](shutdown%28%29.md) (1 shared connections)
-- [MetricsCollector](MetricsCollector.md) (1 shared connections)
+- [AbstractContextManager](AbstractContextManager.md) (32 shared connections)
+- [.validate message()](validate_message%28%29.md) (24 shared connections)
+- [test resolve state no app()](test_resolve_state_no_app%28%29.md) (20 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (11 shared connections)
+- [Any](Any.md) (10 shared connections)
+- [DeadLetterMessage](DeadLetterMessage.md) (5 shared connections)
+- [UUID](UUID.md) (4 shared connections)
+- [.shutdown()](shutdown%28%29.md) (4 shared connections)
+- [handle pickup command()](handle_pickup_command%28%29.md) (4 shared connections)
+- [Test prepare command for processing](Test_prepare_command_for_processing.md) (3 shared connections)
+- [test admin commands](test_admin_commands.md) (3 shared connections)
+- [test room subscription manager npcs](test_room_subscription_manager_npcs.md) (3 shared connections)
 
 ## Source Files
 
+- `server/container/main.py`
+- `server/npc/threading.py`
+- `server/services/__init__.py`
 - `server/services/inventory_mutation_guard.py`
+- `server/services/inventory_service.py`
 - `server/tests/unit/services/test_inventory_mutation_guard.py`
 - `server/tests/unit/services/test_inventory_mutation_guard_async.py`
-- `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
-- `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
+- `server/tests/unit/services/test_inventory_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 274 (93%)
-- INFERRED: 21 (7%)
+- EXTRACTED: 562 (84%)
+- INFERRED: 104 (16%)
 - AMBIGUOUS: 0 (0%)
 
 ---

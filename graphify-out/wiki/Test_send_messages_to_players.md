@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_send_messages_to_players_no_original_content()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _send_messages_to_players handles missing original_content.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **.test_is_uuid_string_valid_uuid()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **Test _is_uuid_string with valid UUID.** (1 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
 
 ## Relationships
 
-- [test nats message handler chat](test_nats_message_handler_chat.md) (1 shared connections)
+- [container websocket events](container_websocket_events.md) (1 shared connections)
+- [PlayerNameExtractor](PlayerNameExtractor.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `server/tests/unit/realtime/test_player_name_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

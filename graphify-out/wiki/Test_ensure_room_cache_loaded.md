@@ -4,11 +4,12 @@
 
 ## Key Concepts
 
-- **test_ensure_room_cache_loaded_already_loaded()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _ensure_room_cache_loaded returns early when cache is already loaded.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_ensure_room_cache_loaded_database_error()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _ensure_room_cache_loaded handles DatabaseError gracefully.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Relationships
 
+- [real time](real_time.md) (1 shared connections)
 - [test async persistence room loading](test_async_persistence_room_loading.md) (1 shared connections)
 
 ## Source Files
@@ -17,7 +18,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

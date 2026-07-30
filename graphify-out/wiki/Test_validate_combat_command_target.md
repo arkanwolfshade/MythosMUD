@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_validate_combat_command_target_too_long_with_mock()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test validate_combat_command target too long warning path (line 163).** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_is_player_disconnecting_string_id()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test is_player_disconnecting() handles string player_id.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [test combat validator](test_combat_validator.md) (1 shared connections)
+- [test player event handlers utils](test_player_event_handlers_utils.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 

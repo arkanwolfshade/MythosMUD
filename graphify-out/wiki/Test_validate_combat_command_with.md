@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_validate_combat_command_invalid_command_type()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test validate_combat_command with invalid command type.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **mock_name_extractor()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Create a mock name extractor.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [test combat validator](test_combat_validator.md) (1 shared connections)
+- [test player event handlers utils](test_player_event_handlers_utils.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 

@@ -1,34 +1,47 @@
 # Any
 
-> 13 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **Any** (6 connections)
-- **.merge_room_data()** (4 connections) — `server/services/room_data_cache.py`
-- **._is_newer_data()** (4 connections) — `server/services/room_data_cache.py`
-- **.is_room_data_fresh()** (3 connections) — `server/services/room_data_cache.py`
-- **.get_cache()** (3 connections) — `server/services/room_data_cache.py`
-- **.set_cache()** (3 connections) — `server/services/room_data_cache.py`
-- **.get_cache_stats()** (3 connections) — `server/services/room_data_cache.py`
-- **Check if room data is fresh enough to use.          Args:             room_data:** (1 connections) — `server/services/room_data_cache.py`
-- **Get room data from cache.          Args:             room_id: Room ID to retriev** (1 connections) — `server/services/room_data_cache.py`
-- **Store room data in cache.          Args:             room_id: Room ID to store** (1 connections) — `server/services/room_data_cache.py`
-- **Get statistics about the room data cache.          Args:             is_room_dat** (1 connections) — `server/services/room_data_cache.py`
-- **Merge room data with proper conflict resolution.          Args:             old_** (1 connections) — `server/services/room_data_cache.py`
-- **Check if new data is newer than old data for a specific key.          Args:** (1 connections) — `server/services/room_data_cache.py`
+- **test_look_item_helpers.py** (28 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_equipped_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_equipped_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_room_drops_empty()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_room_drops_no_match()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_room_drops_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_room_drops_instance_number_zero()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_equipped_empty()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_equipped_no_match()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_equipped_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_equipped_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_equipped_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Unit tests for look item helper functions.  Tests the helper functions in look_i** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_equipped() finds item by name.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_equipped() returns None when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_room_drops() with empty list.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_room_drops() with no matching items.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_room_drops() with instance number out of range.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_room_drops() with instance number zero.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_equipped() with empty dict.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_equipped() with no matching items.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_equipped() with multiple matches (ambiguous).** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_equipped() with instance number.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_equipped() with instance number out of range.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
 
 ## Relationships
 
-- [Manages room data caching and](Manages_room_data_caching_and.md) (6 shared connections)
+- [game tick processing](game_tick_processing.md) (10 shared connections)
+- [DeathInterstitial](DeathInterstitial.md) (9 shared connections)
+- [ExitEdge](ExitEdge.md) (8 shared connections)
 
 ## Source Files
 
-- `server/services/room_data_cache.py`
+- `server/tests/unit/commands/test_look_item_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 32 (100%)
+- EXTRACTED: 73 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

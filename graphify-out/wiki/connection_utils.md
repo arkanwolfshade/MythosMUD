@@ -1,22 +1,21 @@
 # connection utils
 
-> 17 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **get_npc_name_from_instance()** (10 connections) — `server/realtime/connection_utils.py`
+- **get_npc_name_from_instance()** (11 connections) — `server/realtime/connection_utils.py`
 - **test_connection_utils.py** (9 connections) — `server/tests/unit/realtime/test_connection_utils.py`
-- **connection_utils.py** (6 connections) — `server/realtime/connection_utils.py`
 - **test_get_npc_name_from_instance_handles_exception()** (4 connections) — `server/tests/unit/realtime/test_connection_utils.py`
 - **test_get_npc_name_from_instance_success()** (3 connections) — `server/tests/unit/realtime/test_connection_utils.py`
 - **test_get_npc_name_from_instance_not_found()** (3 connections) — `server/tests/unit/realtime/test_connection_utils.py`
 - **test_get_npc_name_from_instance_no_name()** (3 connections) — `server/tests/unit/realtime/test_connection_utils.py`
 - **test_get_npc_name_from_instance_no_service()** (3 connections) — `server/tests/unit/realtime/test_connection_utils.py`
 - **test_get_npc_name_from_instance_no_lifecycle_manager()** (3 connections) — `server/tests/unit/realtime/test_connection_utils.py`
-- **Test get_npc_name_from_instance() returns NPC name when found.** (2 connections) — `server/tests/unit/realtime/test_connection_utils.py`
-- **Utility functions for connection management.  This module provides helper functi** (1 connections) — `server/realtime/connection_utils.py`
 - **Get NPC name from the actual NPC instance, preserving original case from databas** (1 connections) — `server/realtime/connection_utils.py`
 - **Unit tests for connection utils.  Tests the connection_utils module functions.** (1 connections) — `server/tests/unit/realtime/test_connection_utils.py`
+- **Test get_npc_name_from_instance() returns NPC name when found.** (1 connections) — `server/tests/unit/realtime/test_connection_utils.py`
+- **Test get_npc_name_from_instance() returns None when NPC not found.** (1 connections) — `server/tests/unit/realtime/test_connection_utils.py`
 - **Test get_npc_name_from_instance() returns None when NPC has no name.** (1 connections) — `server/tests/unit/realtime/test_connection_utils.py`
 - **Test get_npc_name_from_instance() returns None when service not available.** (1 connections) — `server/tests/unit/realtime/test_connection_utils.py`
 - **Test get_npc_name_from_instance() returns None when no lifecycle manager.** (1 connections) — `server/tests/unit/realtime/test_connection_utils.py`
@@ -24,9 +23,9 @@
 
 ## Relationships
 
-- [Any](Any.md) (2 shared connections)
-- [main()](main%28%29.md) (2 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (3 shared connections)
+- [Player](Player.md) (1 shared connections)
+- [UUID](UUID.md) (1 shared connections)
 
 ## Source Files
 
@@ -35,7 +34,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 52 (98%)
+- EXTRACTED: 46 (98%)
 - INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 

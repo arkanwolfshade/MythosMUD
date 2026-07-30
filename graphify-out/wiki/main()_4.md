@@ -1,35 +1,35 @@
 # main()
 
-> 34 nodes
+> 58 nodes
 
 ## Key Concepts
 
-- **verify_linting_parity.py** (13 connections) — `scripts/verify_linting_parity.py`
-- **Suppression** (12 connections) — `scripts/verify_linting_parity.py`
-- **Path** (8 connections)
-- **find_suppressions()** (7 connections) — `scripts/verify_linting_parity.py`
-- **_check_pylint_suppressions()** (7 connections) — `scripts/verify_linting_parity.py`
-- **_check_ruff_suppressions()** (7 connections) — `scripts/verify_linting_parity.py`
-- **check_alignment()** (7 connections) — `scripts/verify_linting_parity.py`
-- **_scan_files_for_suppressions()** (6 connections) — `scripts/verify_linting_parity.py`
-- **main()** (6 connections) — `scripts/verify_linting_parity.py`
-- **add_suppression_to_file()** (5 connections) — `scripts/fix_psscriptanalyzer.py`
-- **parse_pylint_suppression()** (5 connections) — `scripts/verify_linting_parity.py`
-- **parse_ruff_suppression()** (5 connections) — `scripts/verify_linting_parity.py`
-- **Any** (5 connections)
-- **_write_detailed_report()** (5 connections) — `scripts/verify_linting_parity.py`
-- **main()** (4 connections) — `scripts/fix_psscriptanalyzer.py`
-- **_has_ruff_equivalent()** (4 connections) — `scripts/verify_linting_parity.py`
-- **_has_pylint_equivalent()** (4 connections) — `scripts/verify_linting_parity.py`
-- **_print_misaligned_summary()** (4 connections) — `scripts/verify_linting_parity.py`
-- **fix_psscriptanalyzer.py** (2 connections) — `scripts/fix_psscriptanalyzer.py`
-- **Path** (2 connections)
-- **Add suppression comment to a PowerShell file if it uses Write-Host and doesn't a** (1 connections) — `scripts/fix_psscriptanalyzer.py`
-- **Process all PowerShell scripts in the scripts directory.** (1 connections) — `scripts/fix_psscriptanalyzer.py`
-- **Represents an inline suppression.** (1 connections) — `scripts/verify_linting_parity.py`
-- **Parse a pylint disable comment.** (1 connections) — `scripts/verify_linting_parity.py`
-- **Parse a ruff noqa comment.      Pattern examples:     - # noqa: E501,F401     -** (1 connections) — `scripts/verify_linting_parity.py`
-- *... and 9 more nodes in this community*
+- **gen_arena_migration_sql.py** (14 connections) — `scripts/gen_arena_migration_sql.py`
+- **gen_arena_dml.py** (13 connections) — `scripts/gen_arena_dml.py`
+- **strip_arena_from_dml.py** (10 connections) — `scripts/strip_arena_from_dml.py`
+- **generate_migration()** (8 connections) — `scripts/gen_arena_migration_sql.py`
+- **should_skip_line()** (8 connections) — `scripts/strip_arena_from_dml.py`
+- **gen_room_row()** (7 connections) — `scripts/gen_arena_dml.py`
+- **main()** (7 connections) — `scripts/gen_arena_dml.py`
+- **gen_room_links()** (6 connections) — `scripts/gen_arena_dml.py`
+- **sql_escape()** (6 connections) — `scripts/gen_arena_migration_sql.py`
+- **strip_arena_from_file()** (6 connections) — `scripts/strip_arena_from_dml.py`
+- **gen_zone_row()** (5 connections) — `scripts/gen_arena_dml.py`
+- **gen_subzone_row()** (5 connections) — `scripts/gen_arena_dml.py`
+- **gen_room_link_id()** (5 connections) — `scripts/gen_arena_dml.py`
+- **gen_zone_config_row()** (5 connections) — `scripts/gen_arena_dml.py`
+- **emit_zone_insert()** (5 connections) — `scripts/gen_arena_migration_sql.py`
+- **emit_subzone_insert()** (5 connections) — `scripts/gen_arena_migration_sql.py`
+- **emit_rooms_insert()** (5 connections) — `scripts/gen_arena_migration_sql.py`
+- **emit_room_links_insert()** (5 connections) — `scripts/gen_arena_migration_sql.py`
+- **room_stable_id()** (4 connections) — `scripts/gen_arena_dml.py`
+- **emit_zone_config_insert()** (4 connections) — `scripts/gen_arena_migration_sql.py`
+- **all_room_rows()** (3 connections) — `scripts/gen_arena_dml.py`
+- **main()** (3 connections) — `scripts/gen_arena_migration_sql.py`
+- **is_arena_zone_line()** (3 connections) — `scripts/strip_arena_from_dml.py`
+- **is_arena_subzone_line()** (3 connections) — `scripts/strip_arena_from_dml.py`
+- **is_arena_room_line()** (3 connections) — `scripts/strip_arena_from_dml.py`
+- *... and 33 more nodes in this community*
 
 ## Relationships
 
@@ -37,12 +37,13 @@
 
 ## Source Files
 
-- `scripts/fix_psscriptanalyzer.py`
-- `scripts/verify_linting_parity.py`
+- `scripts/gen_arena_dml.py`
+- `scripts/gen_arena_migration_sql.py`
+- `scripts/strip_arena_from_dml.py`
 
 ## Audit Trail
 
-- EXTRACTED: 132 (100%)
+- EXTRACTED: 190 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

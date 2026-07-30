@@ -1,44 +1,35 @@
 # HallucinationFrequencyService
 
-> 17 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **HallucinationFrequencyService** (9 connections) — `server/services/hallucination_frequency_service.py`
-- **resolve_tier()** (8 connections) — `server/services/lucidity_helpers.py`
-- **._apply_delta_to_record()** (8 connections) — `server/services/lucidity_service.py`
-- **.should_trigger_hallucination()** (7 connections) — `server/services/hallucination_frequency_service.py`
-- **.check_room_entry_hallucination()** (6 connections) — `server/services/hallucination_frequency_service.py`
-- **.check_time_based_hallucination()** (6 connections) — `server/services/hallucination_frequency_service.py`
-- **UUID** (4 connections)
-- **AsyncSession** (3 connections)
-- **.__init__()** (2 connections) — `server/services/hallucination_frequency_service.py`
-- **Tier** (2 connections)
-- **Service for managing hallucination frequency checks based on player tier.** (1 connections) — `server/services/hallucination_frequency_service.py`
-- **Initialize the hallucination frequency service.** (1 connections) — `server/services/hallucination_frequency_service.py`
-- **Check if a hallucination should trigger based on tier and frequency rules.** (1 connections) — `server/services/hallucination_frequency_service.py`
-- **Check if hallucination should trigger on room entry (Uneasy tier).          Args** (1 connections) — `server/services/hallucination_frequency_service.py`
-- **Check if hallucination should trigger based on time (Fractured/Deranged tiers).** (1 connections) — `server/services/hallucination_frequency_service.py`
-- **Derive tier label based on LCD thresholds.** (1 connections) — `server/services/lucidity_helpers.py`
-- **Update record LCD/tier from delta; return previous and new LCD/tier values.** (1 connections) — `server/services/lucidity_service.py`
+- **test_combat_service_npc_in_combat.py** (8 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
+- **combat_service()** (3 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
+- **test_is_npc_in_combat_sync_returns_false_when_npc_not_in_combat()** (2 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
+- **test_is_npc_in_combat_sync_returns_true_when_npc_uuid_in_combat()** (2 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
+- **test_is_npc_in_combat_sync_returns_false_for_invalid_uuid_string()** (2 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
+- **test_is_npc_in_combat_sync_returns_true_when_string_id_mapped_to_combat()** (2 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
+- **Unit tests for CombatService.is_npc_in_combat_sync.  Tests the NPC-in-combat che** (1 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
+- **Create CombatService with mocked dependencies so is_npc_in_combat_sync can be te** (1 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
+- **Test is_npc_in_combat_sync returns False when NPC is not in any combat.** (1 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
+- **Test is_npc_in_combat_sync returns True when NPC UUID is in _npc_combats.** (1 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
+- **Test is_npc_in_combat_sync returns False for non-UUID string when no mapping.** (1 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
+- **Test is_npc_in_combat_sync returns True when integration service maps string id** (1 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
 
 ## Relationships
 
-- [datetime](datetime.md) (5 shared connections)
-- [. init ()](_init_%28%29.md) (4 shared connections)
-- [LiabilityStackEntry](LiabilityStackEntry.md) (4 shared connections)
-- [UUID](UUID.md) (3 shared connections)
+- [. initialize handlers()](_initialize_handlers%28%29.md) (2 shared connections)
+- [Any](Any.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/hallucination_frequency_service.py`
-- `server/services/lucidity_helpers.py`
-- `server/services/lucidity_service.py`
+- `server/tests/unit/services/test_combat_service_npc_in_combat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 55 (89%)
-- INFERRED: 7 (11%)
+- EXTRACTED: 25 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

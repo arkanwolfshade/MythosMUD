@@ -1,53 +1,47 @@
 # occupant formatter
 
-> 42 nodes
+> 18 nodes
 
 ## Key Concepts
 
-- **OccupantFormatter** (37 connections) — `server/realtime/occupant_formatter.py`
 - **test_occupant_formatter.py** (29 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **occupant_formatter.py** (6 connections) — `server/realtime/occupant_formatter.py`
-- **Test OccupantFormatter._is_valid_name_for_occupant() returns False for UUID.** (4 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **.__init__()** (3 connections) — `server/realtime/occupant_formatter.py`
-- **test_occupant_formatter_init()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
 - **test_occupant_formatter_is_valid_name_for_occupant_valid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_is_valid_name_for_occupant_uuid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_is_valid_name_for_occupant_empty()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_is_valid_name_for_occupant_none()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_is_valid_name_for_occupant_non_string()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_add_valid_name_to_lists()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_process_player_name_for_update_valid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_process_player_name_for_update_uuid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
 - **test_occupant_formatter_process_npc_name_for_update_valid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_process_npc_name_for_update_uuid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
 - **test_occupant_formatter_process_dict_occupant_for_update_player()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_process_dict_occupant_for_update_npc()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_process_dict_occupant_for_update_fallback_name()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
 - **test_occupant_formatter_process_string_occupant_for_update_valid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_process_string_occupant_for_update_uuid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_separate_occupants_by_type_dict_players()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
 - **test_occupant_formatter_separate_occupants_by_type_dict_npcs()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
 - **test_occupant_formatter_separate_occupants_by_type_strings()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
 - **test_occupant_formatter_separate_occupants_by_type_mixed()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- *... and 17 more nodes in this community*
+- **test_occupant_formatter_separate_occupants_by_type_empty()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **Unit tests for occupant formatter.  Tests the occupant_formatter module classes** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **Test OccupantFormatter._is_valid_name_for_occupant() returns True for valid name** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **Test OccupantFormatter._process_npc_name_for_update() adds valid NPC name.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **Test OccupantFormatter._process_dict_occupant_for_update() processes player dict** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **Test OccupantFormatter._process_string_occupant_for_update() adds valid string.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **Test OccupantFormatter.separate_occupants_by_type() separates dict NPCs.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **Test OccupantFormatter.separate_occupants_by_type() processes string occupants.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **Test OccupantFormatter.separate_occupants_by_type() handles mixed types.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **Test OccupantFormatter.separate_occupants_by_type() handles empty list.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
 
 ## Relationships
 
-- [. add valid name to](_add_valid_name_to.md) (6 shared connections)
-- [. is uuid string()](_is_uuid_string%28%29.md) (6 shared connections)
-- [main()](main%28%29.md) (3 shared connections)
-- [npc occupant processor](npc_occupant_processor.md) (2 shared connections)
-- [Any](Any.md) (2 shared connections)
+- [command parser()](command_parser%28%29.md) (15 shared connections)
+- [metadata](metadata.md) (4 shared connections)
+- [Test load room cache async](Test_load_room_cache_async.md) (4 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
+- [Test process combined rows processes](Test_process_combined_rows_processes.md) (1 shared connections)
+- [Test query rooms with exits](Test_query_rooms_with_exits.md) (1 shared connections)
+- [Test process exits for room](Test_process_exits_for_room.md) (1 shared connections)
+- [Test warmup room cache calls](Test_warmup_room_cache_calls.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/occupant_formatter.py`
 - `server/tests/unit/realtime/test_occupant_formatter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 166 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 62 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

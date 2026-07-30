@@ -1,25 +1,29 @@
 # description
 
-> 4 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **plane** (4 connections) — `schemas/intersection_schema.json`
-- **type** (1 connections) — `schemas/intersection_schema.json`
-- **pattern** (1 connections) — `schemas/intersection_schema.json`
-- **description** (1 connections) — `schemas/intersection_schema.json`
+- **required** (8 connections) — `schemas/room_schema.json`
+- **id** (1 connections) — `schemas/room_schema.json`
+- **name** (1 connections) — `schemas/room_schema.json`
+- **description** (1 connections) — `schemas/room_schema.json`
+- **plane** (1 connections) — `schemas/room_schema.json`
+- **zone** (1 connections) — `schemas/room_schema.json`
+- **sub_zone** (1 connections) — `schemas/room_schema.json`
+- **exits** (1 connections) — `schemas/room_schema.json`
 
 ## Relationships
 
-- [description](description.md) (1 shared connections)
+- [room schema](room_schema.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/intersection_schema.json`
+- `schemas/room_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

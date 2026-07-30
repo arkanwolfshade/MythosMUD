@@ -1,25 +1,24 @@
 # Test process exit rows handles
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Test _process_exit_rows handles missing direction.** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **test_process_exit_rows_missing_direction()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **test_process_exit_rows_missing_zone()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **test_process_exit_rows_missing_stable_id()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_get_applicable_rules_no_matching()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test get_applicable_rules() returns empty list when no rules match.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [test async persistence room cache](test_async_persistence_room_cache.md) (3 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [test behavior engine](test_behavior_engine.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

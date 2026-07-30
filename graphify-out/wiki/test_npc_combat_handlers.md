@@ -1,11 +1,10 @@
 # test npc combat handlers
 
-> 37 nodes
+> 36 nodes
 
 ## Key Concepts
 
 - **test_npc_combat_handlers.py** (21 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
-- **npc_combat_handlers()** (3 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
 - **mock_data_provider()** (2 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
 - **mock_rewards()** (2 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
 - **mock_combat_memory()** (2 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
@@ -23,17 +22,19 @@
 - **test_handle_npc_death_no_npc()** (2 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
 - **test_handle_npc_death_error()** (2 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
 - **test_is_valid_uuid()** (2 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
-- **Test handle_combat_result handles successful attack.** (2 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
 - **Unit tests for NPC combat handlers.  Tests the NPCCombatHandlers class for comba** (1 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
 - **Create mock data provider.** (1 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
 - **Create mock rewards manager.** (1 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
 - **Create mock combat memory manager.** (1 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
 - **Create mock lifecycle manager.** (1 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
-- *... and 12 more nodes in this community*
+- **Create mock messaging integration.** (1 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
+- **Create mock combat result.** (1 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
-- [. init ()](_init_%28%29.md) (3 shared connections)
+- [look container](look_container.md) (2 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
 
 ## Source Files
 
@@ -41,7 +42,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 77 (100%)
+- EXTRACTED: 73 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

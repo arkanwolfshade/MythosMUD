@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **__init__.py** (1 connections) — `server/tests/unit/middleware/__init__.py`
-- **Middleware unit tests.** (1 connections) — `server/tests/unit/middleware/__init__.py`
+- **__init__.py** (1 connections) — `server/tests/unit/monitoring/__init__.py`
+- **Monitoring unit tests.** (1 connections) — `server/tests/unit/monitoring/__init__.py`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `server/tests/unit/middleware/__init__.py`
+- `server/tests/unit/monitoring/__init__.py`
 
 ## Audit Trail
 

@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_run_improvement_rolls_high_skill_gains_one()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
-- **When current >= 90, successful improvement adds 1 (cap 99).** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_handle_item_look_in_room_drops()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test handling item look when item is in room drops.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
 
 ## Relationships
 
-- [test skill service](test_skill_service.md) (1 shared connections)
+- [DeathInterstitial](DeathInterstitial.md) (1 shared connections)
+- [test look item](test_look_item.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_skill_service.py`
+- `server/tests/unit/commands/test_look_item.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

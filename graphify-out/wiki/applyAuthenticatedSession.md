@@ -1,6 +1,6 @@
 # applyAuthenticatedSession
 
-> 17 nodes
+> 19 nodes
 
 ## Key Concepts
 
@@ -8,6 +8,8 @@
 - **applyAuthenticatedSession.ts** (16 connections) — `client/src/mythosApp/applyAuthenticatedSession.ts`
 - **useMythosAuthForm.ts** (11 connections) — `client/src/mythosApp/useMythosAuthForm.ts`
 - **useMythosAuthForm()** (10 connections) — `client/src/mythosApp/useMythosAuthForm.ts`
+- **loginFailureMessage.ts** (7 connections) — `client/src/mythosApp/loginFailureMessage.ts`
+- **loginFailureMessage()** (6 connections) — `client/src/mythosApp/loginFailureMessage.ts`
 - **assertLoginResponse()** (6 connections) — `client/src/utils/apiTypeGuards.ts`
 - **persistTokensAndApplySession()** (5 connections) — `client/src/mythosApp/applyAuthenticatedSession.ts`
 - **submitLoginRequest()** (5 connections) — `client/src/mythosApp/submitAuth.ts`
@@ -24,17 +26,17 @@
 
 ## Relationships
 
-- [AuthSlice](AuthSlice.md) (11 shared connections)
-- [CharacterSelectionScreen](CharacterSelectionScreen.md) (6 shared connections)
+- [CharacterSelectionScreen](CharacterSelectionScreen.md) (14 shared connections)
+- [SERVER UNAVAILABLE PATTERNS](SERVER_UNAVAILABLE_PATTERNS.md) (8 shared connections)
+- [fetchSpy](fetchSpy.md) (4 shared connections)
 - [LoginResponse](LoginResponse.md) (4 shared connections)
-- [SafeHtml](SafeHtml.md) (3 shared connections)
 - [AppCreationFlowViews](AppCreationFlowViews.md) (2 shared connections)
-- [fetchSpy](fetchSpy.md) (1 shared connections)
-- [AppState](AppState.md) (1 shared connections)
+- [test character creation service](test_character_creation_service.md) (1 shared connections)
 
 ## Source Files
 
 - `client/src/mythosApp/applyAuthenticatedSession.ts`
+- `client/src/mythosApp/loginFailureMessage.ts`
 - `client/src/mythosApp/mapServerCharacters.ts`
 - `client/src/mythosApp/submitAuth.ts`
 - `client/src/mythosApp/useMythosAuthForm.ts`
@@ -42,7 +44,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 92 (98%)
+- EXTRACTED: 105 (98%)
 - INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 

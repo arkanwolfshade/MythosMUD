@@ -1,59 +1,54 @@
 # PlayerRespawnEventHandler
 
-> 49 nodes
+> 37 nodes
 
 ## Key Concepts
 
-- **PlayerRespawnEventHandler** (33 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **RespawnPlayerEventPayload** (13 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **UUID** (11 connections)
-- **.get_player_data_for_respawn()** (9 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **.handle_player_respawned()** (9 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **._fetch_delirium_respawn_player_snapshot()** (9 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **._resolve_player_data_for_respawn_event()** (8 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **._build_respawn_player_payload()** (7 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **.send_respawn_event_with_retry()** (7 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **._fetch_fallback_player_data_for_respawn()** (7 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **._prepare_room_data_for_respawn()** (7 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **.handle_player_delirium_respawned()** (7 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **._build_fallback_respawn_player_payload()** (6 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **._build_player_respawned_event()** (6 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **._send_room_occupants_after_respawn()** (6 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **._enrich_room_data_with_occupant_names()** (6 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **.get_current_lucidity()** (6 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **.__init__()** (5 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **.update_connection_manager_position()** (5 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **.get_player_data_for_delirium_respawn()** (5 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **._position_from_stats()** (4 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **._convert_npc_ids_to_names()** (4 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **._get_npc_name_from_lifecycle_manager()** (4 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **._merge_player_lists()** (3 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **BoundLogger** (1 connections)
-- *... and 24 more nodes in this community*
+- **Player** (22 connections)
+- **._ensure_room_cache_loaded()** (13 connections) — `server/async_persistence.py`
+- **.get_player_by_id()** (5 connections) — `server/async_persistence.py`
+- **.get_players_batch()** (5 connections) — `server/async_persistence.py`
+- **.get_player_by_name()** (4 connections) — `server/async_persistence.py`
+- **.get_players_by_user_id()** (4 connections) — `server/async_persistence.py`
+- **.get_active_players_by_user_id()** (4 connections) — `server/async_persistence.py`
+- **.get_player_by_user_id()** (4 connections) — `server/async_persistence.py`
+- **.list_players()** (4 connections) — `server/async_persistence.py`
+- **.get_players_in_room()** (4 connections) — `server/async_persistence.py`
+- **.apply_lucidity_loss()** (4 connections) — `server/async_persistence.py`
+- **.apply_fear()** (4 connections) — `server/async_persistence.py`
+- **.apply_corruption()** (4 connections) — `server/async_persistence.py`
+- **._load_room_cache_async()** (3 connections) — `server/async_persistence.py`
+- **.save_player()** (3 connections) — `server/async_persistence.py`
+- **.warmup_room_cache()** (3 connections) — `server/async_persistence.py`
+- **.save_players()** (3 connections) — `server/async_persistence.py`
+- **.validate_and_fix_player_room()** (3 connections) — `server/async_persistence.py`
+- **.gain_experience()** (3 connections) — `server/async_persistence.py`
+- **Ensure room cache is loaded (lazy loading with lock).          This method uses** (1 connections) — `server/async_persistence.py`
+- **Load rooms from PostgreSQL via RoomCacheLoader.** (1 connections) — `server/async_persistence.py`
+- **Get a player by name. Delegates to PlayerRepository.** (1 connections) — `server/async_persistence.py`
+- **Get a player by ID. Delegates to PlayerRepository.** (1 connections) — `server/async_persistence.py`
+- **Get all players (including deleted) for a user ID. Delegates to PlayerRepository** (1 connections) — `server/async_persistence.py`
+- **Get active (non-deleted) players for a user ID. Delegates to PlayerRepository.** (1 connections) — `server/async_persistence.py`
+- *... and 12 more nodes in this community*
 
 ## Relationships
 
-- [Any](Any.md) (8 shared connections)
-- [. init ()](_init_%28%29.md) (4 shared connections)
-- [. initialize handlers()](_initialize_handlers%28%29.md) (4 shared connections)
-- [append unique valid occupant()](append_unique_valid_occupant%28%29.md) (4 shared connections)
-- [.apply dp change()](apply_dp_change%28%29.md) (4 shared connections)
-- [Player](Player.md) (3 shared connections)
-- [test player event handlers respawn](test_player_event_handlers_respawn.md) (3 shared connections)
-- [UUID](UUID.md) (3 shared connections)
-- [Room](Room.md) (2 shared connections)
-- [TypedDict](TypedDict.md) (1 shared connections)
-- [real time](real_time.md) (1 shared connections)
-- [main()](main%28%29.md) (1 shared connections)
+- [chat nats publisher](chat_nats_publisher.md) (18 shared connections)
+- [init](init.md) (5 shared connections)
+- [real time](real_time.md) (2 shared connections)
+- [get item prototype count()](get_item_prototype_count%28%29.md) (2 shared connections)
+- [get app instance()](get_app_instance%28%29.md) (2 shared connections)
+- [time commands](time_commands.md) (1 shared connections)
+- [Protocol](Protocol.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/player_event_handlers_respawn.py`
+- `server/async_persistence.py`
 
 ## Audit Trail
 
-- EXTRACTED: 206 (97%)
-- INFERRED: 6 (3%)
+- EXTRACTED: 113 (97%)
+- INFERRED: 4 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

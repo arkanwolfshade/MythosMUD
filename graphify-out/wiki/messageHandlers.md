@@ -1,12 +1,13 @@
 # messageHandlers
 
-> 20 nodes
+> 21 nodes
 
 ## Key Concepts
 
 - **messageHandlers.ts** (21 connections) — `client/src/components/ui-v2/eventHandlers/messageHandlers.ts`
+- **messageHandlers.test-utils.ts** (15 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/messageHandlers.test-utils.ts`
 - **handleCommandResponse()** (7 connections) — `client/src/components/ui-v2/eventHandlers/messageHandlers.ts`
-- **determineMessageType()** (6 connections) — `client/src/utils/messageTypeUtils.ts`
+- **determineMessageType()** (7 connections) — `client/src/utils/messageTypeUtils.ts`
 - **statusParser.ts** (6 connections) — `client/src/utils/statusParser.ts`
 - **handleChatMessage.test.ts** (5 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/handleChatMessage.test.ts`
 - **handleCommandResponse.test.ts** (5 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/handleCommandResponse.test.ts`
@@ -27,9 +28,14 @@
 
 ## Relationships
 
-- [HealthMeter](HealthMeter.md) (10 shared connections)
+- [monitoring models](monitoring_models.md) (10 shared connections)
 - [chatPanelChannelFilter](chatPanelChannelFilter.md) (4 shared connections)
-- [useConnectionStateMachine.test](useConnectionStateMachine.test.md) (3 shared connections)
+- [useConnectionStateMachine.test](useConnectionStateMachine.test.md) (2 shared connections)
+- [HealthMeter](HealthMeter.md) (1 shared connections)
+- [look item](look_item.md) (1 shared connections)
+- [MythosTimeHud](MythosTimeHud.md) (1 shared connections)
+- [test combat persistence handler](test_combat_persistence_handler.md) (1 shared connections)
+- [Instance](Instance.md) (1 shared connections)
 
 ## Source Files
 
@@ -45,7 +51,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 98 (99%)
+- EXTRACTED: 114 (99%)
 - INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 

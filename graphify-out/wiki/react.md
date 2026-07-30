@@ -1,12 +1,13 @@
 # react
 
-> 14 nodes
+> 15 nodes
 
 ## Key Concepts
 
 - **PanelContextRuntime.tsx** (10 connections) — `client/src/contexts/PanelContextRuntime.tsx`
 - **react** (5 connections) — `client/package.json`
 - **PanelContextRuntime.test.tsx** (5 connections) — `client/src/contexts/__tests__/PanelContextRuntime.test.tsx`
+- **PanelProvider()** (4 connections) — `client/src/contexts/PanelContext.tsx`
 - **PanelProvider()** (3 connections) — `client/src/contexts/PanelContextRuntime.tsx`
 - **PanelState** (2 connections) — `client/src/contexts/PanelContextRuntime.tsx`
 - **PanelContext** (2 connections) — `client/src/contexts/PanelContextRuntime.tsx`
@@ -21,19 +22,20 @@
 
 ## Relationships
 
+- [PanelContext](PanelContext.md) (3 shared connections)
 - [dompurify](dompurify.md) (1 shared connections)
-- [SafeHtml](SafeHtml.md) (1 shared connections)
-- [PanelContext](PanelContext.md) (1 shared connections)
+- [domPurifyTestWindow](domPurifyTestWindow.md) (1 shared connections)
 
 ## Source Files
 
 - `client/package.json`
+- `client/src/contexts/PanelContext.tsx`
 - `client/src/contexts/PanelContextRuntime.tsx`
 - `client/src/contexts/__tests__/PanelContextRuntime.test.tsx`
 
 ## Audit Trail
 
-- EXTRACTED: 35 (100%)
+- EXTRACTED: 39 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

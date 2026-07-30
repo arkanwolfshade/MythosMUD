@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_run_improvement_rolls_no_skills_used_no_updates()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
-- **run_improvement_rolls when no skills used at previous level does not update.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_check_item_in_location_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test checking item in location successfully.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
 
 ## Relationships
 
-- [test skill service](test_skill_service.md) (1 shared connections)
+- [DeathInterstitial](DeathInterstitial.md) (1 shared connections)
+- [test look item](test_look_item.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_skill_service.py`
+- `server/tests/unit/commands/test_look_item.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

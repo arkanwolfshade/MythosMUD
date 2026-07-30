@@ -1,25 +1,24 @@
 # description
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **plane** (4 connections) — `schemas/unified_room_schema.json`
-- **type** (1 connections) — `schemas/unified_room_schema.json`
-- **pattern** (1 connections) — `schemas/unified_room_schema.json`
-- **description** (1 connections) — `schemas/unified_room_schema.json`
+- **test_evaluate_condition_less_equal()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test evaluate_condition() handles <= operator.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [description](description.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [test behavior engine](test_behavior_engine.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/unified_room_schema.json`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,26 +1,27 @@
 # add used by user id
 
-> 5 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **add_used_by_user_id_column.py** (4 connections) — `server/scripts/add_used_by_user_id_column.py`
-- **apply_migration()** (3 connections) — `server/scripts/add_used_by_user_id_column.py`
-- **main()** (3 connections) — `server/scripts/add_used_by_user_id_column.py`
-- **Apply the migration to add used_by_user_id column.      Args:         database_u** (1 connections) — `server/scripts/add_used_by_user_id_column.py`
-- **Main entry point for the migration script.** (1 connections) — `server/scripts/add_used_by_user_id_column.py`
+- **.__init__()** (5 connections) — `server/services/chat_logger.py`
+- **._start_writer_thread()** (3 connections) — `server/services/chat_logger.py`
+- **Initialize chat logger.          Args:             log_dir: Directory for log fi** (1 connections) — `server/services/chat_logger.py`
+- **Start the background writer thread for thread-safe file writing.** (1 connections) — `server/services/chat_logger.py`
 
 ## Relationships
 
-- [main()](main%28%29.md) (2 shared connections)
+- [ChatLogger](ChatLogger.md) (2 shared connections)
+- [process dead players()](process_dead_players%28%29.md) (1 shared connections)
+- [AsyncSession](AsyncSession.md) (1 shared connections)
 
 ## Source Files
 
-- `server/scripts/add_used_by_user_id_column.py`
+- `server/services/chat_logger.py`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 10 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

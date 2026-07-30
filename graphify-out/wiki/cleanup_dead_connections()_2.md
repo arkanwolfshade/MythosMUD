@@ -1,36 +1,32 @@
 # cleanup dead connections()
 
-> 12 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **_cleanup_dead_connections()** (10 connections) — `server/realtime/connection_establishment.py`
-- **_remove_dead_connection()** (7 connections) — `server/realtime/connection_establishment.py`
-- **test_remove_dead_connection()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_remove_dead_connection_not_present()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_cleanup_dead_connections_empty_list()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_cleanup_dead_connections_with_dead()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Remove a single dead connection from tracking structures.      Args:         con** (1 connections) — `server/realtime/connection_establishment.py`
-- **Clean up dead connections under lock.      Args:         dead_connection_ids: Li** (1 connections) — `server/realtime/connection_establishment.py`
-- **Test _remove_dead_connection() removes connection from tracking.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _remove_dead_connection() handles connection not present.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _cleanup_dead_connections() handles empty list.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _cleanup_dead_connections() cleans up dead connections.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **TestCheckAllCommandBlocks** (6 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_all_command_blocks_catatonia()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_all_command_blocks_grace_period()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_all_command_blocks_casting()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_all_command_blocks_no_blocks()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Test _check_all_command_blocks function.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Test _check_all_command_blocks returns block result for catatonia.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Test _check_all_command_blocks returns block result for grace period.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Test _check_all_command_blocks returns block result for casting.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Test _check_all_command_blocks returns None when no blocks.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
 
 ## Relationships
 
-- [connection establishment](connection_establishment.md) (6 shared connections)
-- [test connection establishment](test_connection_establishment.md) (6 shared connections)
-- [Update player's connection list to](Update_player%27s_connection_list_to.md) (1 shared connections)
+- [check alias safety()](check_alias_safety%28%29.md) (4 shared connections)
+- [CommandExecutionRequest](CommandExecutionRequest.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_establishment.py`
-- `server/tests/unit/realtime/test_connection_establishment.py`
+- `server/tests/unit/commands/test_command_validation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 35 (100%)
+- EXTRACTED: 23 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

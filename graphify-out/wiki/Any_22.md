@@ -1,58 +1,59 @@
 # Any
 
-> 38 nodes
+> 111 nodes
 
 ## Key Concepts
 
-- **player_connection_setup.py** (23 connections) — `server/realtime/player_connection_setup.py`
-- **handle_new_connection_setup()** (15 connections) — `server/realtime/player_connection_setup.py`
-- **extract_player_name()** (13 connections) — `server/realtime/player_presence_utils.py`
-- **_broadcast_player_entered_game()** (9 connections) — `server/realtime/player_connection_setup.py`
-- **_trigger_quests_for_room_on_spawn()** (8 connections) — `server/realtime/player_connection_setup.py`
-- **UUID** (7 connections)
-- **_send_room_occupants_update_after_connection()** (7 connections) — `server/realtime/player_connection_setup.py`
-- **_update_player_last_active()** (6 connections) — `server/realtime/player_connection_setup.py`
-- **Any** (6 connections)
-- **_add_player_to_room_silently()** (5 connections) — `server/realtime/player_connection_setup.py`
-- **_get_name_from_user()** (5 connections) — `server/realtime/player_presence_utils.py`
-- **get_player_position()** (5 connections) — `server/realtime/player_presence_utils.py`
-- **test_player_connection_setup_grace_period.py** (5 connections) — `server/tests/unit/realtime/test_player_connection_setup_grace_period.py`
-- **_is_valid_name()** (4 connections) — `server/realtime/player_presence_utils.py`
-- **_stable_room_id_for_quest()** (3 connections) — `server/realtime/player_connection_setup.py`
-- **_is_uuid_string()** (3 connections) — `server/realtime/player_presence_utils.py`
-- **Player** (3 connections)
-- **UUID** (3 connections)
-- **test_reconnection_cancels_grace_period()** (3 connections) — `server/tests/unit/realtime/test_player_connection_setup_grace_period.py`
-- **test_reconnection_no_grace_period()** (3 connections) — `server/tests/unit/realtime/test_player_connection_setup_grace_period.py`
-- **Player** (2 connections)
-- **Player connection setup functions.  This module handles the setup tasks when a p** (1 connections) — `server/realtime/player_connection_setup.py`
-- **Update last_active timestamp in database when player connects.      Args:** (1 connections) — `server/realtime/player_connection_setup.py`
-- **Return stable room id for quest_offers lookup; strip instance_<uuid>_ prefix if** (1 connections) — `server/realtime/player_connection_setup.py`
-- **On spawn, explicitly start quests offered by this room (e.g. Leave the Tutorial)** (1 connections) — `server/realtime/player_connection_setup.py`
-- *... and 13 more nodes in this community*
+- **RoomSubscriptionManager** (46 connections) — `server/realtime/room_subscription_manager.py`
+- **test_room_subscription_manager_helpers.py** (22 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
+- **Any** (13 connections)
+- **._canonical_room_id()** (13 connections) — `server/realtime/room_subscription_manager.py`
+- **test_room_subscription_manager_npcs.py** (13 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **.get_room_occupants()** (8 connections) — `server/realtime/room_subscription_manager.py`
+- **._get_fallback_npcs_from_room()** (7 connections) — `server/realtime/room_subscription_manager.py`
+- **._query_npcs_from_lifecycle_manager()** (6 connections) — `server/realtime/room_subscription_manager.py`
+- **._add_npc_to_occupants()** (5 connections) — `server/realtime/room_subscription_manager.py`
+- **.list_room_drops()** (4 connections) — `server/realtime/room_subscription_manager.py`
+- **.add_room_drop()** (4 connections) — `server/realtime/room_subscription_manager.py`
+- **.take_room_drop()** (4 connections) — `server/realtime/room_subscription_manager.py`
+- **._get_online_player_occupants()** (4 connections) — `server/realtime/room_subscription_manager.py`
+- **._get_npc_name_from_lifecycle_manager()** (4 connections) — `server/realtime/room_subscription_manager.py`
+- **._filter_fallback_npcs()** (4 connections) — `server/realtime/room_subscription_manager.py`
+- **.reconcile_room_presence()** (4 connections) — `server/realtime/room_subscription_manager.py`
+- **.set_async_persistence()** (3 connections) — `server/realtime/room_subscription_manager.py`
+- **.subscribe_to_room()** (3 connections) — `server/realtime/room_subscription_manager.py`
+- **.unsubscribe_from_room()** (3 connections) — `server/realtime/room_subscription_manager.py`
+- **.get_room_subscribers()** (3 connections) — `server/realtime/room_subscription_manager.py`
+- **.adjust_room_drop()** (3 connections) — `server/realtime/room_subscription_manager.py`
+- **.add_room_occupant()** (3 connections) — `server/realtime/room_subscription_manager.py`
+- **.remove_room_occupant()** (3 connections) — `server/realtime/room_subscription_manager.py`
+- **.get_stats()** (3 connections) — `server/realtime/room_subscription_manager.py`
+- **subscription_manager()** (3 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- *... and 86 more nodes in this community*
 
 ## Relationships
 
-- [main()](main%28%29.md) (16 shared connections)
-- [disconnect grace period](disconnect_grace_period.md) (5 shared connections)
-- [login grace period](login_grace_period.md) (3 shared connections)
-- [UUID](UUID.md) (3 shared connections)
-- [player disconnect handlers](player_disconnect_handlers.md) (2 shared connections)
-- [. init ()](_init_%28%29.md) (1 shared connections)
-- [.state()](state%28%29.md) (1 shared connections)
-- [test quest service](test_quest_service.md) (1 shared connections)
-- [Any](Any.md) (1 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (10 shared connections)
+- [connection disconnection](connection_disconnection.md) (3 shared connections)
+- [test statistics aggregator](test_statistics_aggregator.md) (2 shared connections)
+- [Player](Player.md) (2 shared connections)
+- [test room subscription manager](test_room_subscription_manager.md) (2 shared connections)
+- [game](game.md) (1 shared connections)
+- [nats config()](nats_config%28%29.md) (1 shared connections)
+- [test room subscription manager drops](test_room_subscription_manager_drops.md) (1 shared connections)
+- [test_health_monitor_init_custom_intervals](test_health_monitor_init_custom_intervals.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/player_connection_setup.py`
-- `server/realtime/player_presence_utils.py`
-- `server/tests/unit/realtime/test_player_connection_setup_grace_period.py`
+- `server/realtime/room_subscription_manager.py`
+- `server/tests/unit/realtime/test_room_subscription_manager.py`
+- `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
+- `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
 
 ## Audit Trail
 
-- EXTRACTED: 147 (95%)
-- INFERRED: 8 (5%)
+- EXTRACTED: 304 (99%)
+- INFERRED: 3 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

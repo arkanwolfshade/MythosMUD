@@ -1,17 +1,14 @@
 # .use invite()
 
-> 56 nodes
+> 52 nodes
 
 ## Key Concepts
 
 - **Invite** (35 connections) — `server/models/invite.py`
 - **test_invite.py** (17 connections) — `server/tests/unit/models/test_invite.py`
-- **.validate_invite()** (6 connections) — `server/auth/invites.py`
 - **.create_invite()** (6 connections) — `server/models/invite.py`
 - **._generate_invite_code()** (6 connections) — `server/models/invite.py`
-- **.use_invite()** (5 connections) — `server/auth/invites.py`
-- **.get_user_invites()** (4 connections) — `server/auth/invites.py`
-- **UUID** (3 connections)
+- **.__init__()** (4 connections) — `server/models/invite.py`
 - **.get_unused_invites()** (3 connections) — `server/auth/invites.py`
 - **.cleanup_expired_invites()** (3 connections) — `server/auth/invites.py`
 - **.is_expired()** (3 connections) — `server/models/invite.py`
@@ -29,16 +26,19 @@
 - **test_invite_create_invite_with_custom_expiry()** (3 connections) — `server/tests/unit/models/test_invite.py`
 - **test_invite_generate_invite_code_format()** (3 connections) — `server/tests/unit/models/test_invite.py`
 - **test_invite_generate_invite_code_uniqueness()** (3 connections) — `server/tests/unit/models/test_invite.py`
-- *... and 31 more nodes in this community*
+- **test_invite_repr()** (3 connections) — `server/tests/unit/models/test_invite.py`
+- **.list_invites()** (2 connections) — `server/auth/invites.py`
+- **.use_invite()** (2 connections) — `server/models/invite.py`
+- *... and 27 more nodes in this community*
 
 ## Relationships
 
-- [BaseUserManager](BaseUserManager.md) (10 shared connections)
-- [Base](Base.md) (4 shared connections)
-- [APIRouter](APIRouter.md) (3 shared connections)
-- [generate invites db](generate_invites_db.md) (2 shared connections)
-- [main()](main%28%29.md) (1 shared connections)
-- [.get active status effects()](get_active_status_effects%28%29.md) (1 shared connections)
+- [Connection Manager](Connection_Manager.md) (9 shared connections)
+- [metrics](metrics.md) (4 shared connections)
+- [main()](main%28%29.md) (2 shared connections)
+- [real time](real_time.md) (2 shared connections)
+- [close db()](close_db%28%29.md) (1 shared connections)
+- [Player](Player.md) (1 shared connections)
 
 ## Source Files
 
@@ -48,8 +48,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 165 (98%)
-- INFERRED: 4 (2%)
+- EXTRACTED: 148 (97%)
+- INFERRED: 5 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

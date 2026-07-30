@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_validate_combat_command_exception_handling()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test validate_combat_command handles exceptions gracefully.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **player_event_handler_utils()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Create a PlayerEventHandlerUtils instance.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [test combat validator](test_combat_validator.md) (1 shared connections)
+- [NPCCombatIntegrationBase](NPCCombatIntegrationBase.md) (1 shared connections)
+- [test player event handlers utils](test_player_event_handlers_utils.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

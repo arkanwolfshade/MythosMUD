@@ -1,56 +1,56 @@
 # ContainerDataCore
 
-> 40 nodes
+> 44 nodes
 
 ## Key Concepts
 
-- **container_persistence_async.py** (33 connections) — `server/persistence/container_persistence_async.py`
-- **ContainerDataCore** (24 connections) — `server/persistence/container_data.py`
-- **get_container_async()** (16 connections) — `server/persistence/container_persistence_async.py`
-- **create_container_async()** (13 connections) — `server/persistence/container_persistence_async.py`
-- **Any** (11 connections)
-- **_finalize_container_creation()** (11 connections) — `server/persistence/container_persistence_async.py`
-- **update_container_async()** (11 connections) — `server/persistence/container_persistence_async.py`
-- **fetch_container_items_async()** (10 connections) — `server/persistence/container_persistence_async.py`
-- **_populate_container_items_async()** (9 connections) — `server/persistence/container_persistence_async.py`
-- **validate_lock_state()** (8 connections) — `server/persistence/container_helpers.py`
-- **AsyncSession** (8 connections)
-- **delete_container_async()** (8 connections) — `server/persistence/container_persistence_async.py`
-- **_call_create_container_procedure()** (7 connections) — `server/persistence/container_persistence_async.py`
-- **_parse_jsonb()** (5 connections) — `server/persistence/container_persistence_async.py`
-- **_build_item_dict()** (5 connections) — `server/persistence/container_persistence_async.py`
-- **UUID** (5 connections)
-- **test_update_container_uuid_string_conversion()** (5 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_update_container_items_only_prototype_id()** (5 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **_prepare_container_create_params()** (4 connections) — `server/persistence/container_persistence_async.py`
-- **_row_to_mapping()** (4 connections) — `server/persistence/container_persistence_async.py`
-- **_parse_item_metadata()** (4 connections) — `server/persistence/container_persistence_async.py`
-- **ContainerData** (4 connections)
-- **Identity and placement fields for a container row.** (1 connections) — `server/persistence/container_data.py`
-- **Validate lock_state parameter.      Args:         lock_state: Lock state to v** (1 connections) — `server/persistence/container_helpers.py`
-- **Async container persistence operations.  Provides async implementations using SQ** (1 connections) — `server/persistence/container_persistence_async.py`
-- *... and 15 more nodes in this community*
+- **CommandValidator** (14 connections) — `server/validators/command_validator.py`
+- **.validate_command_content()** (11 connections) — `server/validators/command_validator.py`
+- **.validate_expanded_command()** (8 connections) — `server/validators/command_validator.py`
+- **.validate_alias_definition()** (7 connections) — `server/validators/command_validator.py`
+- **validate_expanded_command()** (6 connections) — `server/command_handler/alias_expansion.py`
+- **.is_valid_command_name()** (4 connections) — `server/validators/command_validator.py`
+- **test_command_validator_validate_command_content_valid()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_validate_command_content_null_byte()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_validate_command_content_dangerous_pattern()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_validate_command_content_too_long()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_validate_command_content_non_printable()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_validate_command_content_allows_newline_tab_space()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_validate_expanded_command_valid()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_validate_expanded_command_inherits_content_validation()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_validate_expanded_command_length_limit()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_validate_expanded_command_within_limit()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_validate_alias_definition_valid()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_validate_alias_definition_inherits_content_validation()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_validate_alias_definition_length_limit()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_validate_alias_definition_within_limit()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_is_valid_command_name()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_is_valid_command_name_invalid()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **Validate an expanded command for length and content.      Args:         expanded** (1 connections) — `server/command_handler/alias_expansion.py`
+- **Test CommandValidator.validate_command_content returns True for valid command.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **Test CommandValidator.validate_command_content detects null bytes.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [ContainerData](ContainerData.md) (27 shared connections)
-- [main()](main%28%29.md) (20 shared connections)
-- [datetime](datetime.md) (12 shared connections)
-- [fetch container items()](fetch_container_items%28%29.md) (6 shared connections)
-- [. init ()](_init_%28%29.md) (5 shared connections)
-- [parse jsonb column()](parse_jsonb_column%28%29.md) (2 shared connections)
+- [Validate an expanded command for](Validate_an_expanded_command_for.md) (19 shared connections)
+- [check alias safety()](check_alias_safety%28%29.md) (4 shared connections)
+- [test alias graph](test_alias_graph.md) (2 shared connections)
+- [test movement service](test_movement_service.md) (2 shared connections)
+- [CommandExecutionRequest](CommandExecutionRequest.md) (1 shared connections)
+- [.get uuid mapping()](get_uuid_mapping%28%29.md) (1 shared connections)
+- [.validate topic()](validate_topic%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/persistence/container_data.py`
-- `server/persistence/container_helpers.py`
-- `server/persistence/container_persistence_async.py`
-- `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- `server/command_handler/alias_expansion.py`
+- `server/tests/unit/validators/test_command_validator.py`
+- `server/validators/command_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 219 (96%)
-- INFERRED: 9 (4%)
+- EXTRACTED: 120 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

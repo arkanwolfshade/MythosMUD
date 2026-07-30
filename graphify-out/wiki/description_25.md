@@ -1,15 +1,12 @@
 # description
 
-> 7 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **environment** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **enum** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **description** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 - **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **indoors** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **outdoors** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **underwater** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **minLength** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 - **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 
 ## Relationships
@@ -22,7 +19,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

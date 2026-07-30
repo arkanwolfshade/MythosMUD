@@ -1,28 +1,24 @@
 # TypedDict
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **RespawnPlayerStatsPayload** (5 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **TypedDict** (2 connections)
-- **Nested stats object in WebSocket respawn player payloads.** (1 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **test_process_combined_rows_no_exits()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **Test _process_combined_rows processes rows without exits.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Relationships
 
-- [. init ()](_init_%28%29.md) (1 shared connections)
-- [Player](Player.md) (1 shared connections)
-- [. initialize handlers()](_initialize_handlers%28%29.md) (1 shared connections)
-- [PlayerRespawnEventHandler](PlayerRespawnEventHandler.md) (1 shared connections)
+- [test async persistence room cache](test_async_persistence_room_cache.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/player_event_handlers_respawn.py`
+- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (75%)
-- INFERRED: 2 (25%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

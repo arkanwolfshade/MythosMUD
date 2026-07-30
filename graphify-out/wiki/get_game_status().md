@@ -1,38 +1,28 @@
 # get game status()
 
-> 12 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **get_game_status()** (7 connections) — `server/api/game.py`
-- **TestGetGameStatus** (5 connections) — `server/tests/unit/api/test_game.py`
-- **.test_get_game_status_success()** (4 connections) — `server/tests/unit/api/test_game.py`
-- **TestGetGameStatusLogger** (4 connections) — `server/tests/unit/api/test_game.py`
-- **.test_get_game_status_empty_connections()** (3 connections) — `server/tests/unit/api/test_game.py`
-- **.test_get_game_status_logs_debug()** (3 connections) — `server/tests/unit/api/test_game.py`
-- **Get current game status and connection information.** (1 connections) — `server/api/game.py`
-- **Test get_game_status endpoint.** (1 connections) — `server/tests/unit/api/test_game.py`
-- **Test get_game_status returns game status data.** (1 connections) — `server/tests/unit/api/test_game.py`
-- **Test get_game_status handles empty connections.** (1 connections) — `server/tests/unit/api/test_game.py`
-- **Test logger calls in get_game_status.** (1 connections) — `server/tests/unit/api/test_game.py`
-- **Test get_game_status logs debug messages.** (1 connections) — `server/tests/unit/api/test_game.py`
+- **test_websocket_handler_json_error.py** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
+- **mock_websocket()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
+- **test_handle_json_decode_error()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
+- **Unit tests for websocket handler JSON error handling.  Tests the JSON decode err** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
+- **Create a mock WebSocket.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
+- **Test _handle_json_decode_error() sends error response.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
 
 ## Relationships
 
-- [test game](test_game.md) (3 shared connections)
-- [game](game.md) (2 shared connections)
-- [APIRouter](APIRouter.md) (2 shared connections)
-- [BaseUserManager](BaseUserManager.md) (1 shared connections)
+- [.is required()](is_required%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/game.py`
-- `server/tests/unit/api/test_game.py`
+- `server/tests/unit/realtime/test_websocket_handler_json_error.py`
 
 ## Audit Trail
 
-- EXTRACTED: 29 (91%)
-- INFERRED: 3 (9%)
+- EXTRACTED: 11 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,76 +1,58 @@
 # BaseUserManager
 
-> 235 nodes
+> 123 nodes
 
 ## Key Concepts
 
-- **Result** (52 connections) — `scripts/run_test_ci.py`
-- **endpoints.py** (52 connections) — `server/auth/endpoints.py`
-- **test_endpoints.py** (51 connections) — `server/tests/unit/auth/test_endpoints.py`
-- **users.py** (47 connections) — `server/auth/users.py`
-- **factory.py** (37 connections) — `server/app/factory.py`
-- **register_user()** (28 connections) — `server/auth/endpoints.py`
-- **login_user()** (28 connections) — `server/auth/endpoints.py`
-- **UserCreate** (27 connections) — `server/auth/endpoints.py`
-- **game.py** (25 connections) — `server/api/game.py`
-- **InviteManager** (24 connections) — `server/auth/invites.py`
-- **LoginRequest** (22 connections) — `server/auth/endpoints.py`
-- **dependencies.py** (18 connections) — `server/auth/dependencies.py`
-- **create_app()** (16 connections) — `server/app/factory.py`
-- **invites.py** (16 connections) — `server/auth/invites.py`
-- **main.py** (15 connections) — `server/main.py`
-- **RestartInvalidatingJWTStrategy** (12 connections) — `server/auth/jwt_strategy.py`
-- **get_auth_backend()** (12 connections) — `server/auth/users.py`
-- **list_invites()** (10 connections) — `server/auth/endpoints.py`
-- **set_auth_epoch()** (10 connections) — `server/auth/token_epoch.py`
-- **InviteRead** (10 connections) — `server/schemas/auth/invite.py`
-- **email_utils.py** (9 connections) — `server/auth/email_utils.py`
-- **create_invite()** (9 connections) — `server/auth/endpoints.py`
-- **get_username_auth_backend()** (9 connections) — `server/auth/users.py`
-- **test_jwt_strategy.py** (9 connections) — `server/tests/unit/auth/test_jwt_strategy.py`
-- **_check_shutdown_status()** (8 connections) — `server/auth/endpoints.py`
-- *... and 210 more nodes in this community*
+- **test_nats_service.py** (76 connections) — `server/tests/unit/services/test_nats_service.py`
+- **NATSMetrics** (31 connections) — `server/services/nats_metrics.py`
+- **nats_service()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_service_init_with_config()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
+- **nats_metrics.py** (4 connections) — `server/services/nats_metrics.py`
+- **test_nats_service_init_with_subject_manager()** (4 connections) — `server/tests/unit/services/test_nats_service.py`
+- **.get_metrics()** (3 connections) — `server/services/nats_metrics.py`
+- **test_nats_metrics_init()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_record_publish_success()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_record_publish_error()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_record_subscribe_success()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_record_subscribe_error()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_record_batch_flush_success()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_record_batch_flush_error()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_update_connection_health()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_update_connection_health_clamped()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_update_pool_utilization()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_update_pool_utilization_clamped()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_get_metrics()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_get_metrics_empty_processing_times()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_message_processing_times_maxlen()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_service_init_connection_pool()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_service_init_message_batch()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **.record_publish()** (2 connections) — `server/services/nats_metrics.py`
+- **.record_subscribe()** (2 connections) — `server/services/nats_metrics.py`
+- *... and 98 more nodes in this community*
 
 ## Relationships
 
-- [APIRouter](APIRouter.md) (82 shared connections)
-- [main()](main%28%29.md) (35 shared connections)
-- [Custom user manager for MythosMUD.](Custom_user_manager_for_MythosMUD.md) (20 shared connections)
-- [test player preferences service](test_player_preferences_service.md) (13 shared connections)
-- [.use invite()](use_invite%28%29.md) (10 shared connections)
-- [character creation](character_creation.md) (8 shared connections)
-- [Request](Request.md) (7 shared connections)
-- [. init ()](_init_%28%29.md) (6 shared connections)
-- [Connection Manager](Connection_Manager.md) (6 shared connections)
-- [lifespan](lifespan.md) (6 shared connections)
-- [AuthenticationBackend](AuthenticationBackend.md) (6 shared connections)
-- [PasswordHasher](PasswordHasher.md) (5 shared connections)
+- [FollowTargetValue](FollowTargetValue.md) (8 shared connections)
+- [test combat persistence handler events](test_combat_persistence_handler_events.md) (7 shared connections)
+- [correct patterns](correct_patterns.md) (7 shared connections)
+- [connection state machine](connection_state_machine.md) (6 shared connections)
+- [MapZoneContext](MapZoneContext.md) (4 shared connections)
+- [get subject manager dependency()](get_subject_manager_dependency%28%29.md) (2 shared connections)
+- [Coord](Coord.md) (1 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
+- [metrics](metrics.md) (1 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/generate_openapi_spec.py`
-- `scripts/run_test_ci.py`
-- `server/api/game.py`
-- `server/app/factory.py`
-- `server/auth/__init__.py`
-- `server/auth/dependencies.py`
-- `server/auth/email_utils.py`
-- `server/auth/endpoints.py`
-- `server/auth/invites.py`
-- `server/auth/jwt_strategy.py`
-- `server/auth/token_epoch.py`
-- `server/auth/users.py`
-- `server/main.py`
-- `server/schemas/auth/invite.py`
-- `server/tests/unit/auth/conftest.py`
-- `server/tests/unit/auth/test_endpoints.py`
-- `server/tests/unit/auth/test_jwt_strategy.py`
-- `server/tests/unit/services/test_player_preferences_service.py`
+- `server/services/nats_metrics.py`
+- `server/tests/unit/services/test_nats_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1028 (89%)
-- INFERRED: 127 (11%)
+- EXTRACTED: 308 (98%)
+- INFERRED: 6 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

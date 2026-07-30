@@ -1,72 +1,58 @@
 # PanelManager
 
-> 94 nodes
+> 31 nodes
 
 ## Key Concepts
 
-- **panelReducerHandlers.ts** (24 connections) — `client/src/components/ui-v2/PanelSystem/panelReducerHandlers.ts`
-- **PanelState** (24 connections) — `client/src/components/ui-v2/types.ts`
-- **panelManagerReducer.ts** (20 connections) — `client/src/components/ui-v2/PanelSystem/panelManagerReducer.ts`
-- **panelReducerHandlers.test.ts** (19 connections) — `client/src/components/ui-v2/PanelSystem/__tests__/panelReducerHandlers.test.ts`
-- **PanelContainer.tsx** (16 connections) — `client/src/components/ui-v2/PanelSystem/PanelContainer.tsx`
-- **GameClientV2Minimap.tsx** (15 connections) — `client/src/components/ui-v2/GameClientV2Minimap.tsx`
-- **savePanelLayout()** (13 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutValidation.ts`
-- **panelMinimizeDock.ts** (13 connections) — `client/src/components/ui-v2/PanelSystem/panelMinimizeDock.ts`
-- **usePanelManagerProviderState.ts** (13 connections) — `client/src/components/ui-v2/PanelSystem/usePanelManagerProviderState.ts`
-- **PanelManagerContext.tsx** (12 connections) — `client/src/components/ui-v2/PanelSystem/PanelManagerContext.tsx`
-- **panelLayoutBootstrap.ts** (12 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutBootstrap.ts`
-- **panelLayoutValidationTypeCheck.ts** (12 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutValidationTypeCheck.ts`
-- **PanelManager.test.tsx** (11 connections) — `client/src/components/ui-v2/PanelSystem/__tests__/PanelManager.test.tsx`
-- **panelLayoutValidation.ts** (11 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutValidation.ts`
-- **PanelManager.tsx** (10 connections) — `client/src/components/ui-v2/PanelSystem/PanelManager.tsx`
-- **PanelManagerContextValue** (10 connections) — `client/src/components/ui-v2/PanelSystem/PanelManagerContext.tsx`
-- **panelLayoutClamp.ts** (10 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutClamp.ts`
-- **PanelPosition** (10 connections) — `client/src/components/ui-v2/types.ts`
-- **PanelSize** (10 connections) — `client/src/components/ui-v2/types.ts`
-- **panelMinimizeDock.test.ts** (9 connections) — `client/src/components/ui-v2/PanelSystem/__tests__/panelMinimizeDock.test.ts`
-- **resolveInitialPanelLayout()** (9 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutBootstrap.ts`
-- **relayoutMinimizedDock()** (8 connections) — `client/src/components/ui-v2/PanelSystem/panelMinimizeDock.ts`
-- **handleToggleMinimize()** (8 connections) — `client/src/components/ui-v2/PanelSystem/panelReducerHandlers.ts`
-- **usePanelManager.ts** (8 connections) — `client/src/components/ui-v2/PanelSystem/usePanelManager.ts`
-- **panelLayoutBootstrap.test.ts** (7 connections) — `client/src/components/ui-v2/PanelSystem/__tests__/panelLayoutBootstrap.test.ts`
-- *... and 69 more nodes in this community*
+- **NPCCombatIntegrationBase** (25 connections) — `server/npc/combat_integration_base.py`
+- **combat_integration_base.py** (20 connections) — `server/npc/combat_integration_base.py`
+- **._perform_direct_npc_attack()** (10 connections) — `server/npc/combat_integration_base.py`
+- **combat_integration_protocols.py** (7 connections) — `server/npc/combat_integration_protocols.py`
+- **CombatEventPublisherProtocol** (7 connections) — `server/npc/combat_integration_protocols.py`
+- **NpcCombatServiceProtocol** (6 connections) — `server/npc/combat_integration_protocols.py`
+- **._get_target_stats()** (4 connections) — `server/npc/combat_integration_base.py`
+- **.calculate_damage()** (3 connections) — `server/npc/combat_integration_base.py`
+- **UUID** (3 connections)
+- **._get_npc_stats()** (3 connections) — `server/npc/combat_integration_base.py`
+- **._publish_player_dp_updated_after_npc_damage()** (3 connections) — `server/npc/combat_integration_base.py`
+- **._publish_attack_event()** (3 connections) — `server/npc/combat_integration_base.py`
+- **._publish_npc_attack_to_nats()** (3 connections) — `server/npc/combat_integration_base.py`
+- **.publish_player_attacked()** (3 connections) — `server/npc/combat_integration_protocols.py`
+- **ABC** (2 connections)
+- **Protocol** (2 connections)
+- **.handle_npc_attack_on_player()** (2 connections) — `server/npc/combat_integration_protocols.py`
+- **Base segment of NPC combat integration (damage, effects, attack orchestration).** (1 connections) — `server/npc/combat_integration_base.py`
+- **Base implementation: damage, combat effects, and NPC attack orchestration.** (1 connections) — `server/npc/combat_integration_base.py`
+- **Calculate damage based on attacker and target stats.          Args:** (1 connections) — `server/npc/combat_integration_base.py`
+- **Execute the direct NPC attack path (no full combat service available).** (1 connections) — `server/npc/combat_integration_base.py`
+- **Get target stats from player or use defaults.** (1 connections) — `server/npc/combat_integration_base.py`
+- **Subclasses provide NPC stat defaults for damage resolution.** (1 connections) — `server/npc/combat_integration_base.py`
+- **Subclasses publish DP updates after direct NPC damage.** (1 connections) — `server/npc/combat_integration_base.py`
+- **Subclasses publish NPCAttacked to the event bus.** (1 connections) — `server/npc/combat_integration_base.py`
+- *... and 6 more nodes in this community*
 
 ## Relationships
 
-- [HealthMeter](HealthMeter.md) (41 shared connections)
-- [ChatPanelTest](ChatPanelTest.md) (5 shared connections)
-- [SafeHtml](SafeHtml.md) (2 shared connections)
-- [DeathInterstitial](DeathInterstitial.md) (1 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
-- [CharacterSelectionPage](CharacterSelectionPage.md) (1 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (10 shared connections)
+- [init](init.md) (10 shared connections)
+- [get asyncpg server settings for](get_asyncpg_server_settings_for.md) (5 shared connections)
+- [Any](Any.md) (3 shared connections)
+- [chat nats publisher](chat_nats_publisher.md) (2 shared connections)
+- [real time](real_time.md) (2 shared connections)
+- [.initialize()](initialize%28%29.md) (2 shared connections)
+- [login grace period](login_grace_period.md) (2 shared connections)
+- [process dead players()](process_dead_players%28%29.md) (1 shared connections)
+- [default cors origins()](default_cors_origins%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/PanelManager.tsx`
-- `client/src/components/__tests__/PanelManager.test.tsx`
-- `client/src/components/ui-v2/GameClientV2Minimap.tsx`
-- `client/src/components/ui-v2/PanelSystem/PanelContainer.tsx`
-- `client/src/components/ui-v2/PanelSystem/PanelManager.tsx`
-- `client/src/components/ui-v2/PanelSystem/PanelManagerContext.tsx`
-- `client/src/components/ui-v2/PanelSystem/__tests__/PanelContainer.test.tsx`
-- `client/src/components/ui-v2/PanelSystem/__tests__/PanelManager.test.tsx`
-- `client/src/components/ui-v2/PanelSystem/__tests__/panelLayoutBootstrap.test.ts`
-- `client/src/components/ui-v2/PanelSystem/__tests__/panelLayoutClamp.test.ts`
-- `client/src/components/ui-v2/PanelSystem/__tests__/panelMinimizeDock.test.ts`
-- `client/src/components/ui-v2/PanelSystem/__tests__/panelReducerHandlers.test.ts`
-- `client/src/components/ui-v2/PanelSystem/__tests__/usePanelManager.test.ts`
-- `client/src/components/ui-v2/PanelSystem/__tests__/usePanelManagerProviderState.test.ts`
-- `client/src/components/ui-v2/PanelSystem/panelLayoutBootstrap.ts`
-- `client/src/components/ui-v2/PanelSystem/panelLayoutClamp.ts`
-- `client/src/components/ui-v2/PanelSystem/panelLayoutValidation.ts`
-- `client/src/components/ui-v2/PanelSystem/panelLayoutValidationTypeCheck.ts`
-- `client/src/components/ui-v2/PanelSystem/panelLayoutValidationTypeCheckImpl.ts`
-- `client/src/components/ui-v2/PanelSystem/panelManagerReducer.ts`
+- `server/npc/combat_integration_base.py`
+- `server/npc/combat_integration_protocols.py`
 
 ## Audit Trail
 
-- EXTRACTED: 526 (99%)
-- INFERRED: 5 (1%)
+- EXTRACTED: 116 (97%)
+- INFERRED: 4 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

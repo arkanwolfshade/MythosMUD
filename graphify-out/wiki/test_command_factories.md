@@ -1,48 +1,38 @@
 # test command factories
 
-> 24 nodes
+> 14 nodes
 
 ## Key Concepts
 
 - **test_command_factories.py** (59 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_go_command delegates to exploration factory.** (21 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **test_create_go_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **test_create_sit_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_command_factory_create_nonexistent_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_create_pose_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_create_reply_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
 - **test_create_stand_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **test_create_lie_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **test_create_time_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **test_create_whoami_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **test_create_who_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **test_create_quit_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **test_create_logout_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **test_create_rest_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **test_create_alias_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **test_create_aliases_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **test_create_unalias_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **test_create_npc_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **test_create_summon_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **test_create_goto_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **test_create_shutdown_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
 - **test_create_cast_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **test_create_spell_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
 - **test_create_spells_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **test_create_learn_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
 - **Unit tests for command factories.  Tests the CommandFactory class.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test CommandFactory.create_*() methods exist for all command types.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_pose_command delegates to communication factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_reply_command delegates to communication factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_stand_command delegates to exploration factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_cast_command delegates to utility factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_spells_command delegates to utility factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- [Test create pickup command delegates](Test_create_pickup_command_delegates.md) (6 shared connections)
-- [Test create say command delegates](Test_create_say_command_delegates.md) (6 shared connections)
-- [Test create punch command delegates](Test_create_punch_command_delegates.md) (3 shared connections)
-- [Test create mute command delegates](Test_create_mute_command_delegates.md) (3 shared connections)
-- [Test create add admin command](Test_create_add_admin_command.md) (2 shared connections)
-- [Test create local command delegates](Test_create_local_command_delegates.md) (2 shared connections)
-- [Test create mute global command](Test_create_mute_global_command.md) (2 shared connections)
-- [BaseCommand](BaseCommand.md) (2 shared connections)
-- [AsyncSessionFactory](AsyncSessionFactory.md) (1 shared connections)
-- [Test CommandFactory.create *() returns command](Test_CommandFactory.create__%28%29_returns_command.md) (1 shared connections)
-- [Test CommandFactory.create *() methods exist](Test_CommandFactory.create__%28%29_methods_exist.md) (1 shared connections)
-- [Test CommandFactory has create *](Test_CommandFactory_has_create__.md) (1 shared connections)
+- [Spell Targeting](Spell_Targeting.md) (2 shared connections)
+- [test command factories communication](test_command_factories_communication.md) (1 shared connections)
+- [test_command_factory_create_existing_command](test_command_factory_create_existing_command.md) (1 shared connections)
+- [test_command_factory_has_create_methods](test_command_factory_has_create_methods.md) (1 shared connections)
+- [test_command_factory_init](test_command_factory_init.md) (1 shared connections)
+- [test_create_add_admin_command](test_create_add_admin_command_2.md) (1 shared connections)
+- [test_create_admin_command](test_create_admin_command.md) (1 shared connections)
+- [test_create_alias_command](test_create_alias_command.md) (1 shared connections)
+- [test_create_aliases_command](test_create_aliases_command.md) (1 shared connections)
+- [test_create_channel_command](test_create_channel_command.md) (1 shared connections)
+- [test_create_drop_command](test_create_drop_command.md) (1 shared connections)
+- [test_create_emote_command](test_create_emote_command.md) (1 shared connections)
 
 ## Source Files
 
@@ -50,7 +40,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 123 (100%)
+- EXTRACTED: 78 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

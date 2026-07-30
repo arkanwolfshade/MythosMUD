@@ -1,15 +1,24 @@
 # Convert legacy string format exits
 
-> 58 nodes
+> 83 nodes
 
 ## Key Concepts
 
 - **SchemaValidator** (51 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
 - **TestSchemaValidator** (28 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- **.validate()** (6 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
+- **.validate_room()** (5 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
+- **Path** (5 connections)
+- **.__init__()** (4 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
+- **.validate_room_file()** (4 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
 - **.get_exit_flags()** (4 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
-- **Test getting exit target from string format.** (4 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- **.validate_subzone_config()** (4 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
+- **.validate_zone_config()** (4 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
+- **._load_schema()** (3 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
+- **.validate_room_database()** (3 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
 - **.is_one_way_exit()** (3 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
 - **.is_self_reference_exit()** (3 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
+- **test_schema_validator.py** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
 - **.test_init_with_default_schema()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
 - **.test_init_with_custom_schema()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
 - **.test_init_schema_file_not_found()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
@@ -20,36 +29,27 @@
 - **.test_validate_room_empty_name()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
 - **.test_validate_room_with_file_path()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
 - **.test_normalize_exits_legacy_format()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
-- **.test_normalize_exits_new_format()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
-- **.test_validate_room_file_valid()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
-- **.test_validate_room_file_invalid_json()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
-- **.test_validate_room_database()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
-- **.test_validate_room_database_with_errors()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
-- **.test_get_exit_target_string_format()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
-- **.test_get_exit_target_object_format()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
-- **.test_get_exit_target_invalid_format()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
-- **.test_get_exit_flags_string_format()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
-- *... and 33 more nodes in this community*
+- *... and 58 more nodes in this community*
 
 ## Relationships
 
-- [. init ()](_init_%28%29.md) (7 shared connections)
+- [AuthSlice](AuthSlice.md) (4 shared connections)
 - [PathValidator](PathValidator.md) (4 shared connections)
-- [fixer](fixer.md) (3 shared connections)
 - [test hierarchical schema](test_hierarchical_schema.md) (3 shared connections)
-- [Any](Any.md) (1 shared connections)
-- [Create a temporary directory for](Create_a_temporary_directory_for.md) (1 shared connections)
-- [Integration tests for the main](Integration_tests_for_the_main.md) (1 shared connections)
+- [Path](Path.md) (2 shared connections)
+- [. init ()](_init_%28%29.md) (2 shared connections)
+- [fixer](fixer.md) (1 shared connections)
 
 ## Source Files
 
 - `tools/room_toolkit/room_validator/core/schema_validator.py`
+- `tools/room_toolkit/room_validator/rules/base_rule.py`
 - `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 138 (69%)
-- INFERRED: 62 (31%)
+- EXTRACTED: 181 (72%)
+- INFERRED: 69 (28%)
 - AMBIGUOUS: 0 (0%)
 
 ---

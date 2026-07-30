@@ -1,22 +1,23 @@
 # getLivePageForUsername
 
-> 1 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **getLivePageForUsername** (0 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **test_normalize_player_id_invalid_type()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test normalize_player_id() with None returns None without warning.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test player event handlers utils](test_player_event_handlers_utils.md) (1 shared connections)
 
 ## Source Files
 
-- `client/tests/e2e/runtime/fixtures/auth.ts`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

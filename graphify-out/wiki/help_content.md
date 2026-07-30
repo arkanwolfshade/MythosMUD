@@ -1,46 +1,57 @@
 # help content
 
-> 19 nodes
+> 108 nodes
 
 ## Key Concepts
 
-- **get_help_content()** (14 connections) — `server/help/help_content.py`
-- **help_content.py** (12 connections) — `server/help/help_content.py`
-- **test_websocket_handler_help.py** (5 connections) — `server/tests/unit/realtime/test_websocket_handler_help.py`
-- **__init__.py** (3 connections) — `server/help/__init__.py`
-- **_get_general_help()** (3 connections) — `server/help/help_content.py`
-- **get_commands_by_category()** (3 connections) — `server/help/help_content.py`
-- **test_get_help_content_general()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_help.py`
-- **test_get_help_content_specific()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_help.py`
-- **get_command_categories()** (2 connections) — `server/help/help_content.py`
-- **Help system for MythosMUD.  This package provides help content and command docum** (1 connections) — `server/help/__init__.py`
-- **Any** (1 connections)
-- **Help content and command documentation for MythosMUD.  This module contains the** (1 connections) — `server/help/help_content.py`
-- **Get help content for commands.      Args:         command_name: Optional specifi** (1 connections) — `server/help/help_content.py`
-- **Get general help content with command categories.** (1 connections) — `server/help/help_content.py`
-- **Get list of all command categories.** (1 connections) — `server/help/help_content.py`
-- **Get all commands in a specific category.** (1 connections) — `server/help/help_content.py`
-- **Unit tests for help content used in the realtime/WebSocket path.  Uses the canon** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_help.py`
-- **Test get_help_content() returns general help when no command specified.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_help.py`
-- **Test get_help_content() returns specific command help for look.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_help.py`
+- **test_websocket_handler_core.py** (42 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **test_websocket_handler_commands.py** (28 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
+- **process_websocket_command()** (19 connections) — `server/realtime/websocket_handler_commands.py`
+- **resolve_websocket_connection_manager()** (11 connections) — `server/realtime/websocket_handler_commands.py`
+- **validate_player_and_persistence()** (9 connections) — `server/realtime/websocket_handler_commands.py`
+- **parse_game_command_tokens()** (8 connections) — `server/realtime/websocket_handler_commands.py`
+- **_attach_room_state_to_result()** (8 connections) — `server/realtime/websocket_handler_commands.py`
+- **_resolve_get_room_state_callable()** (6 connections) — `server/realtime/websocket_handler_commands.py`
+- **test_process_websocket_command_attaches_room_state()** (5 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
+- **test_process_websocket_command_room_state_get_room_fails_softly()** (5 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
+- **_cm_with_player_and_app()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
+- **Path** (4 connections)
+- **test_process_websocket_command_room_changed_no_player_handler_skips_room_state()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
+- **_invoke_get_room_state_event()** (3 connections) — `server/realtime/websocket_handler_commands.py`
+- **test_handle_game_command_broadcasts_when_result_requests()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
+- **test_handle_generic_exception()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **test_handle_generic_exception_should_break()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **test_get_help_content()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **test_get_help_content_with_command()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **test_send_system_message()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **test_handle_chat_message()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **test_handle_game_command()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **test_handle_game_command_empty_command()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **test_handle_game_command_whitespace_only()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **test_handle_game_command_single_word_no_args()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- *... and 83 more nodes in this community*
 
 ## Relationships
 
-- [websocket handler commands](websocket_handler_commands.md) (4 shared connections)
-- [check alias safety()](check_alias_safety%28%29.md) (3 shared connections)
-- [Any](Any.md) (3 shared connections)
-- [main()](main%28%29.md) (2 shared connections)
+- [.is required()](is_required%28%29.md) (35 shared connections)
+- [DropResolved](DropResolved.md) (4 shared connections)
+- [convert pydantic error()](convert_pydantic_error%28%29.md) (3 shared connections)
+- [.state()](state%28%29.md) (2 shared connections)
+- [UUID](UUID.md) (1 shared connections)
+- [. init ()](_init_%28%29.md) (1 shared connections)
+- [websocket handler commands](websocket_handler_commands.md) (1 shared connections)
 
 ## Source Files
 
-- `server/help/__init__.py`
-- `server/help/help_content.py`
-- `server/tests/unit/realtime/test_websocket_handler_help.py`
+- `server/realtime/websocket_handler_commands.py`
+- `server/tests/unit/realtime/test_websocket_handler_commands.py`
+- `server/tests/unit/realtime/test_websocket_handler_core.py`
+- `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
 
 ## Audit Trail
 
-- EXTRACTED: 58 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 296 (92%)
+- INFERRED: 25 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

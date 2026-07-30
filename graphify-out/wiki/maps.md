@@ -1,6 +1,6 @@
 # maps
 
-> 38 nodes
+> 36 nodes
 
 ## Key Concepts
 
@@ -10,7 +10,6 @@
 - **AsciiMapViewerViews.tsx** (10 connections) — `client/src/components/map/AsciiMapViewerViews.tsx`
 - **fetchAsciiMap()** (9 connections) — `client/src/api/maps.ts`
 - **fetchAsciiMinimap()** (8 connections) — `client/src/api/maps.ts`
-- **isAsciiMapApiResponse()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
 - **useAsciiMapViewerBindings()** (5 connections) — `client/src/components/map/AsciiMapViewer.tsx`
 - **AsciiMapViewer()** (5 connections) — `client/src/components/map/AsciiMapViewer.tsx`
 - **runFetchMap()** (5 connections) — `client/src/components/map/useAsciiMap.ts`
@@ -29,15 +28,17 @@
 - **AsciiMapViewerLoading()** (2 connections) — `client/src/components/map/AsciiMapViewerViews.tsx`
 - **AsciiMapViewerError()** (2 connections) — `client/src/components/map/AsciiMapViewerViews.tsx`
 - **AsciiMapViewerContent()** (2 connections) — `client/src/components/map/AsciiMapViewerViews.tsx`
-- *... and 13 more nodes in this community*
+- **asciiMapViewerUtils.test.ts** (2 connections) — `client/src/components/map/__tests__/asciiMapViewerUtils.test.ts`
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
-- [LoginResponse](LoginResponse.md) (6 shared connections)
-- [SafeHtml](SafeHtml.md) (5 shared connections)
+- [LoginResponse](LoginResponse.md) (5 shared connections)
+- [HealthMeter](HealthMeter.md) (3 shared connections)
+- [EdgeCreationModal](EdgeCreationModal.md) (2 shared connections)
+- [test find item in equipped](test_find_item_in_equipped.md) (2 shared connections)
+- [domPurifyTestWindow](domPurifyTestWindow.md) (2 shared connections)
 - [EdgeDetailsPanel](EdgeDetailsPanel.md) (2 shared connections)
-- [DeathInterstitial](DeathInterstitial.md) (2 shared connections)
-- [useRoomMapData.test](useRoomMapData.test.md) (2 shared connections)
 - [AppCreationFlowViews](AppCreationFlowViews.md) (1 shared connections)
 
 ## Source Files
@@ -55,7 +56,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 158 (100%)
+- EXTRACTED: 149 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

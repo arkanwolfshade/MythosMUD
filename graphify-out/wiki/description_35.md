@@ -1,16 +1,24 @@
 # description
 
-> 4 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **npc_spawn_modifier** (4 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **properties** (5 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **lucidity_drain_rate** (4 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **combat_modifier** (3 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **exploration_bonus** (3 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
 - **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
 - **minimum** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
 - **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
 
 ## Relationships
 
+- [special rules](special_rules.md) (1 shared connections)
 - [description](description.md) (1 shared connections)
 
 ## Source Files
@@ -19,7 +27,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 22 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

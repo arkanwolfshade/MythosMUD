@@ -1,50 +1,52 @@
 # item
 
-> 44 nodes
+> 32 nodes
 
 ## Key Concepts
 
-- **test_item.py** (19 connections) — `server/tests/unit/models/test_item.py`
-- **ItemPrototype** (14 connections) — `server/models/item.py`
-- **ItemInstance** (11 connections) — `server/models/item.py`
-- **item.py** (8 connections) — `server/models/item.py`
-- **.unique_key()** (8 connections) — `server/models/item.py`
-- **ItemComponentState** (7 connections) — `server/models/item.py`
-- **Base** (3 connections)
-- **test_item_prototype_primary_slot_with_slots()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_prototype_primary_slot_single_slot()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_prototype_primary_slot_empty()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_prototype_primary_slot_none()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_instance_apply_flag_new_flag()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_instance_apply_flag_existing_flag()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_instance_apply_flag_multiple_flags()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_instance_apply_flag_preserves_order()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_component_state_unique_key()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_component_state_unique_key_different_values()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_component_state_unique_key_same_instance_different_component()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_component_state_unique_key_different_instance_same_component()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_component_state_unique_key_empty_strings()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_component_state_unique_key_static_method()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **.primary_slot()** (2 connections) — `server/models/item.py`
-- **.apply_flag()** (2 connections) — `server/models/item.py`
-- **Test unique_key returns different tuples for same instance, different component.** (2 connections) — `server/tests/unit/models/test_item.py`
-- **SQLAlchemy models for MythosMUD item prototypes, instances, and component state.** (1 connections) — `server/models/item.py`
-- *... and 19 more nodes in this community*
+- **correct_patterns.py** (20 connections) — `docs/examples/logging/correct_patterns.py`
+- **correct_performance_logging()** (5 connections) — `docs/examples/logging/correct_patterns.py`
+- **correct_async_logging()** (5 connections) — `docs/examples/logging/correct_patterns.py`
+- **correct_exception_tracking()** (4 connections) — `docs/examples/logging/correct_patterns.py`
+- **risky_operation()** (4 connections) — `docs/examples/logging/correct_patterns.py`
+- **database** (4 connections) — `docs/examples/logging/correct_patterns.py`
+- **.execute()** (4 connections) — `docs/examples/logging/correct_patterns.py`
+- **correct_error_handling()** (3 connections) — `docs/examples/logging/correct_patterns.py`
+- **correct_database_logging()** (3 connections) — `docs/examples/logging/correct_patterns.py`
+- **process_data()** (3 connections) — `docs/examples/logging/correct_patterns.py`
+- **.query()** (3 connections) — `docs/examples/logging/correct_patterns.py`
+- **correct_basic_logging()** (2 connections) — `docs/examples/logging/correct_patterns.py`
+- **correct_security_logging()** (2 connections) — `docs/examples/logging/correct_patterns.py`
+- **correct_api_logging()** (2 connections) — `docs/examples/logging/correct_patterns.py`
+- **correct_websocket_logging()** (2 connections) — `docs/examples/logging/correct_patterns.py`
+- **correct_batch_logging()** (2 connections) — `docs/examples/logging/correct_patterns.py`
+- **async_work()** (2 connections) — `docs/examples/logging/correct_patterns.py`
+- **Demonstrate correct basic logging patterns.** (1 connections) — `docs/examples/logging/correct_patterns.py`
+- **Demonstrate correct error handling with logging.** (1 connections) — `docs/examples/logging/correct_patterns.py`
+- **Demonstrate correct performance logging patterns.** (1 connections) — `docs/examples/logging/correct_patterns.py`
+- **Demonstrate correct security logging patterns.** (1 connections) — `docs/examples/logging/correct_patterns.py`
+- **Demonstrate correct async logging patterns.** (1 connections) — `docs/examples/logging/correct_patterns.py`
+- **Demonstrate correct exception tracking.** (1 connections) — `docs/examples/logging/correct_patterns.py`
+- **Demonstrate correct database operation logging.** (1 connections) — `docs/examples/logging/correct_patterns.py`
+- **Demonstrate correct API request/response logging.** (1 connections) — `docs/examples/logging/correct_patterns.py`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [Base](Base.md) (9 shared connections)
-- [Any](Any.md) (3 shared connections)
+- [websocket integration](websocket_integration.md) (4 shared connections)
+- [fastapi integration](fastapi_integration.md) (3 shared connections)
+- [.shutdown()](shutdown%28%29.md) (2 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
+- [Connection Manager](Connection_Manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/item.py`
-- `server/tests/unit/models/test_item.py`
+- `docs/examples/logging/correct_patterns.py`
 
 ## Audit Trail
 
-- EXTRACTED: 133 (96%)
-- INFERRED: 5 (4%)
+- EXTRACTED: 82 (96%)
+- INFERRED: 3 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **psscriptanalyzer.ps1** (1 connections) — `scripts/psscriptanalyzer.ps1`
+- **psscriptanalyzer.ps1** (3 connections) — `scripts/psscriptanalyzer.ps1`
 - **Import-PSScriptAnalyzerModule()** (1 connections) — `scripts/psscriptanalyzer.ps1`
 
 ## Relationships
@@ -17,7 +17,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

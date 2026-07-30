@@ -1,40 +1,41 @@
 # NPCCommunicationIntegration
 
-> 16 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **NPCCommunicationIntegration** (10 connections) — `server/npc/communication_integration.py`
-- **.__init__()** (4 connections) — `server/npc/communication_integration.py`
-- **.send_message_to_room()** (4 connections) — `server/npc/communication_integration.py`
-- **.handle_player_message()** (4 connections) — `server/npc/communication_integration.py`
-- **._process_message_for_response()** (4 connections) — `server/npc/communication_integration.py`
-- **.send_whisper_to_player()** (3 connections) — `server/npc/communication_integration.py`
-- **.subscribe_to_room_messages()** (2 connections) — `server/npc/communication_integration.py`
-- **.unsubscribe_from_room_messages()** (2 connections) — `server/npc/communication_integration.py`
-- **Integrates NPCs with the existing chat and whisper systems.      This class prov** (1 connections) — `server/npc/communication_integration.py`
-- **Initialize the NPC communication integration.          Args:             event_b** (1 connections) — `server/npc/communication_integration.py`
-- **Send a message from an NPC to a room.          Args:             npc_id: ID of t** (1 connections) — `server/npc/communication_integration.py`
-- **Send a whisper from an NPC to a specific player.          Args:             npc_** (1 connections) — `server/npc/communication_integration.py`
-- **Handle a message received by an NPC from a player.          Args:             np** (1 connections) — `server/npc/communication_integration.py`
-- **Process a message to determine if the NPC should respond.          Args:** (1 connections) — `server/npc/communication_integration.py`
-- **Subscribe an NPC to messages in a specific room.          Args:             npc_** (1 connections) — `server/npc/communication_integration.py`
-- **Unsubscribe an NPC from messages in a specific room.          Args:** (1 connections) — `server/npc/communication_integration.py`
+- **conftest.py** (14 connections) — `server/tests/unit/api/conftest.py`
+- **mock_container_service()** (3 connections) — `server/tests/unit/api/conftest.py`
+- **mock_container()** (3 connections) — `server/tests/unit/api/conftest.py`
+- **mock_request()** (2 connections) — `server/tests/unit/api/conftest.py`
+- **mock_user()** (2 connections) — `server/tests/unit/api/conftest.py`
+- **mock_persistence()** (2 connections) — `server/tests/unit/api/conftest.py`
+- **mock_connection_manager()** (2 connections) — `server/tests/unit/api/conftest.py`
+- **mock_player()** (2 connections) — `server/tests/unit/api/conftest.py`
+- **Shared fixtures for API unit tests.  Provides mock fixtures for container loot e** (1 connections) — `server/tests/unit/api/conftest.py`
+- **Create a mock request object.** (1 connections) — `server/tests/unit/api/conftest.py`
+- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/api/conftest.py`
+- **Create a mock connection manager.** (1 connections) — `server/tests/unit/api/conftest.py`
+- **Create a mock container service.** (1 connections) — `server/tests/unit/api/conftest.py`
+- **Create a mock container component.** (1 connections) — `server/tests/unit/api/conftest.py`
+- **Create a mock player.** (1 connections) — `server/tests/unit/api/conftest.py`
 
 ## Relationships
 
-- [Any](Any.md) (4 shared connections)
-- [.initialize()](initialize%28%29.md) (2 shared connections)
-- [ChatService](ChatService.md) (1 shared connections)
+- [metrics](metrics.md) (3 shared connections)
+- [APIRouter](APIRouter.md) (2 shared connections)
+- [DeadLetterMessage](DeadLetterMessage.md) (2 shared connections)
+- [.get population stats()](get_population_stats%28%29.md) (1 shared connections)
+- [AbstractContextManager](AbstractContextManager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/communication_integration.py`
+- `server/tests/unit/api/conftest.py`
 
 ## Audit Trail
 
-- EXTRACTED: 41 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 35 (95%)
+- INFERRED: 2 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

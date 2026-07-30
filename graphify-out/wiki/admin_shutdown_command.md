@@ -1,53 +1,65 @@
 # admin shutdown command
 
-> 120 nodes
+> 112 nodes
 
 ## Key Concepts
 
-- **test_admin_shutdown_command.py** (57 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **admin_shutdown_command.py** (35 connections) — `server/commands/admin_shutdown_command.py`
-- **Any** (20 connections)
-- **handle_shutdown_command()** (14 connections) — `server/commands/admin_shutdown_command.py`
-- **_await_shutdown_result()** (14 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **initiate_shutdown_countdown()** (13 connections) — `server/commands/admin_shutdown_command.py`
-- **cancel_shutdown_countdown()** (11 connections) — `server/commands/admin_shutdown_command.py`
-- **parse_shutdown_parameters()** (11 connections) — `server/commands/admin_shutdown_command.py`
-- **validate_shutdown_admin_permission()** (9 connections) — `server/commands/admin_shutdown_command.py`
-- **calculate_notification_times()** (7 connections) — `server/commands/admin_shutdown_command.py`
-- **broadcast_shutdown_notification()** (7 connections) — `server/commands/admin_shutdown_command.py`
-- **countdown_loop()** (7 connections) — `server/commands/admin_shutdown_command.py`
-- **test_is_shutdown_pending_true()** (6 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_is_shutdown_pending_false()** (6 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_cancel_shutdown_countdown_no_active()** (6 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_cancel_shutdown_countdown_success()** (6 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **_create_countdown_task()** (5 connections) — `server/commands/admin_shutdown_command.py`
-- **_store_shutdown_data()** (5 connections) — `server/commands/admin_shutdown_command.py`
-- **_clear_shutdown_state()** (5 connections) — `server/commands/admin_shutdown_command.py`
-- **_validate_shutdown_context()** (5 connections) — `server/commands/admin_shutdown_command.py`
-- **_handle_shutdown_cancel()** (5 connections) — `server/commands/admin_shutdown_command.py`
-- **_handle_shutdown_initiate()** (5 connections) — `server/commands/admin_shutdown_command.py`
-- **_ShutdownContainerStub** (5 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_initiate_shutdown_countdown_success()** (5 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_initiate_shutdown_countdown_supersedes()** (5 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- *... and 95 more nodes in this community*
+- **character_creation.py** (47 connections) — `server/api/character_creation.py`
+- **roll_character_stats()** (23 connections) — `server/api/character_creation.py`
+- **test_character_creation.py** (22 connections) — `server/tests/unit/api/test_character_creation.py`
+- **RollStatsRequest** (20 connections) — `server/schemas/players/player_requests.py`
+- **create_character_with_stats()** (18 connections) — `server/api/character_creation.py`
+- **ProfessionService** (17 connections) — `server/game/profession_service.py`
+- **CreateCharacterRequest** (17 connections) — `server/schemas/players/player_requests.py`
+- **_roll_stats_with_profession_preview()** (14 connections) — `server/api/character_creation.py`
+- **_execute_create_character()** (13 connections) — `server/api/character_creation.py`
+- **validate_character_stats()** (13 connections) — `server/api/character_creation.py`
+- **get_shutdown_blocking_message()** (13 connections) — `server/commands/admin_shutdown_command.py`
+- **TestRollCharacterStats** (13 connections) — `server/tests/unit/api/test_character_creation.py`
+- **character_creation.py** (10 connections) — `server/schemas/players/character_creation.py`
+- **CreateCharacterResponse** (10 connections) — `server/schemas/players/character_creation.py`
+- **RolledStats** (10 connections) — `server/schemas/players/stat_values.py`
+- **TestCreateCharacterWithStats** (10 connections) — `server/tests/unit/api/test_character_creation.py`
+- **_convert_stat_summary_to_stat_summary_model()** (9 connections) — `server/api/character_creation.py`
+- **RollStatsResponse** (9 connections) — `server/schemas/players/character_creation.py`
+- **ValidateStatsResponse** (9 connections) — `server/schemas/players/character_creation.py`
+- **TestValidateCharacterStats** (9 connections) — `server/tests/unit/api/test_character_creation.py`
+- **_check_shutdown_status()** (8 connections) — `server/api/character_creation.py`
+- **_roll_stats_raw()** (8 connections) — `server/api/character_creation.py`
+- **_roll_stats_with_class()** (8 connections) — `server/api/character_creation.py`
+- **StatSummary** (8 connections) — `server/schemas/players/character_creation.py`
+- **_stats_to_rolled_stats()** (7 connections) — `server/api/character_creation.py`
+- *... and 87 more nodes in this community*
 
 ## Relationships
 
-- [Any](Any.md) (13 shared connections)
-- [character creation](character_creation.md) (11 shared connections)
-- [main()](main%28%29.md) (4 shared connections)
-- [Schedule a best effort graceful](Schedule_a_best_effort_graceful.md) (3 shared connections)
-- [AdminActionsLogger](AdminActionsLogger.md) (1 shared connections)
+- [AbstractContextManager](AbstractContextManager.md) (22 shared connections)
+- [metrics](metrics.md) (17 shared connections)
+- [test player event handlers state](test_player_event_handlers_state.md) (13 shared connections)
+- [append unique valid occupant()](append_unique_valid_occupant%28%29.md) (12 shared connections)
+- [. init ()](_init_%28%29.md) (11 shared connections)
+- [Room](Room.md) (11 shared connections)
+- [.initialize()](initialize%28%29.md) (7 shared connections)
+- [Player](Player.md) (6 shared connections)
+- [character creation](character_creation.md) (6 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (5 shared connections)
+- [emit close container event()](emit_close_container_event%28%29.md) (4 shared connections)
+- [Any](Any.md) (4 shared connections)
 
 ## Source Files
 
+- `server/api/character_creation.py`
 - `server/commands/admin_shutdown_command.py`
-- `server/tests/unit/commands/test_admin_shutdown_command.py`
+- `server/game/profession_service.py`
+- `server/schemas/players/character_creation.py`
+- `server/schemas/players/player_requests.py`
+- `server/schemas/players/stat_values.py`
+- `server/tests/unit/api/test_character_creation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 462 (100%)
-- INFERRED: 2 (0%)
+- EXTRACTED: 501 (94%)
+- INFERRED: 33 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

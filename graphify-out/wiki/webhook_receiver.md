@@ -16,7 +16,7 @@
 ## Relationships
 
 - [. init ()](_init_%28%29.md) (1 shared connections)
-- [main()](main%28%29.md) (1 shared connections)
+- [real time](real_time.md) (1 shared connections)
 
 ## Source Files
 

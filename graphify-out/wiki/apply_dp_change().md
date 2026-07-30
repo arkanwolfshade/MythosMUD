@@ -1,58 +1,53 @@
 # .apply dp change()
 
-> 41 nodes
+> 32 nodes
 
 ## Key Concepts
 
-- **coerce_int()** (35 connections) — `server/utils/int_coercion.py`
-- **_stats_int()** (16 connections) — `server/models/player.py`
-- **.get_stats()** (13 connections) — `server/models/player.py`
-- **test_inventory_command_coercion.py** (12 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
-- **int_coercion.py** (12 connections) — `server/utils/int_coercion.py`
-- **.set_stats()** (6 connections) — `server/models/player.py`
-- **.apply_dp_decay()** (5 connections) — `server/models/player.py`
-- **.restore_to_full_health()** (5 connections) — `server/models/player.py`
-- **.apply_dp_change()** (5 connections) — `server/models/player.py`
-- **.is_alive()** (4 connections) — `server/models/player.py`
-- **.is_mortally_wounded()** (4 connections) — `server/models/player.py`
-- **.is_dead()** (4 connections) — `server/models/player.py`
-- **.get_health_state()** (4 connections) — `server/models/player.py`
-- **.get_combat_stats()** (4 connections) — `server/models/player.py`
-- **.get_health_percentage()** (4 connections) — `server/models/player.py`
-- **test_stats_int_delegates_to_coerce_int()** (3 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
-- **test_coerce_int_string_parsing()** (2 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
-- **test_coerce_int_bool_before_int()** (2 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
-- **test_coerce_int_plain_int()** (2 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
-- **test_coerce_int_float()** (2 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
-- **test_coerce_int_float_nan_falls_back_to_default()** (2 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
-- **test_coerce_int_float_inf_falls_back_to_default()** (2 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
-- **test_coerce_int_unknown_type()** (2 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
-- **_int_from_decimal_string()** (2 connections) — `server/utils/int_coercion.py`
-- **_int_from_float_safe()** (2 connections) — `server/utils/int_coercion.py`
-- *... and 16 more nodes in this community*
+- **test_zone_config_loader.py** (35 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **parse_json_field()** (11 connections) — `server/npc/zone_config_loader.py`
+- **extract_zone_name()** (9 connections) — `server/npc/zone_config_loader.py`
+- **load_zone_configurations()** (9 connections) — `server/npc/zone_config_loader.py`
+- **test_parse_json_field_none()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_parse_json_field_string()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_parse_json_field_dict()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_parse_json_field_list()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_parse_json_field_invalid_json()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_extract_zone_name_with_slash()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_extract_zone_name_no_slash()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_extract_zone_name_multiple_slashes()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_extract_zone_name_empty()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_load_zone_configurations_success()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_load_zone_configurations_merges_zone_and_subzone()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_load_zone_configurations_error()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **Parse a JSON field from database, handling both dict/list and string formats.** (1 connections) — `server/npc/zone_config_loader.py`
+- **Extract zone name from stable_id (format: 'plane/zone').      Args:         stab** (1 connections) — `server/npc/zone_config_loader.py`
+- **Load zone and sub-zone configurations from PostgreSQL database.      Returns:** (1 connections) — `server/npc/zone_config_loader.py`
+- **Unit tests for zone configuration loader.  Tests the zone_config_loader module f** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **Test parse_json_field() returns default when None.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **Test parse_json_field() parses JSON string.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **Test parse_json_field() returns dict as-is.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **Test parse_json_field() returns list as-is.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **Test parse_json_field() raises error on invalid JSON string.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [. init ()](_init_%28%29.md) (20 shared connections)
-- [DropResolved](DropResolved.md) (8 shared connections)
-- [LiabilityStackEntry](LiabilityStackEntry.md) (5 shared connections)
-- [PlayerRespawnEventHandler](PlayerRespawnEventHandler.md) (4 shared connections)
-- [main()](main%28%29.md) (3 shared connections)
-- [game tick processing](game_tick_processing.md) (1 shared connections)
-- [process dead players()](process_dead_players%28%29.md) (1 shared connections)
-- [.get room by id()](get_room_by_id%28%29.md) (1 shared connections)
-- [datetime](datetime.md) (1 shared connections)
+- [HealthMonitor](HealthMonitor.md) (14 shared connections)
+- [memory lifespan coordinator](memory_lifespan_coordinator.md) (9 shared connections)
+- [datetime](datetime.md) (3 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
+- [Represents the configuration for a](Represents_the_configuration_for_a.md) (2 shared connections)
 
 ## Source Files
 
-- `server/models/player.py`
-- `server/tests/unit/commands/test_inventory_command_coercion.py`
-- `server/utils/int_coercion.py`
+- `server/npc/zone_config_loader.py`
+- `server/tests/unit/npc/test_zone_config_loader.py`
 
 ## Audit Trail
 
-- EXTRACTED: 163 (96%)
-- INFERRED: 7 (4%)
+- EXTRACTED: 116 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

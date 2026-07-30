@@ -1,41 +1,29 @@
 # .get active status effects()
 
-> 11 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **.is_active()** (5 connections) — `server/models/game.py`
-- **.get_active_status_effects()** (4 connections) — `server/models/game.py`
-- **.__init__()** (4 connections) — `server/models/invite.py`
-- **_npc_alive_and_active()** (4 connections) — `server/npc/idle_movement.py`
-- **.is_alive()** (4 connections) — `server/npc/npc_base.py`
-- **Check if the status effect is still active.** (1 connections) — `server/models/game.py`
-- **Get all currently active status effects.          Args:             current_tick** (1 connections) — `server/models/game.py`
-- **Any** (1 connections)
-- **Initialize Invite with defaults.** (1 connections) — `server/models/invite.py`
-- **Return True if NPC is alive (determination_points > 0).** (1 connections) — `server/npc/npc_base.py`
-- **Allow backward-compatible assignment (npc.is_alive = False).** (1 connections) — `server/npc/npc_base.py`
+- **._calculate_exit_weights()** (5 connections) — `server/npc/idle_movement.py`
+- **._calculate_exit_weight()** (3 connections) — `server/npc/idle_movement.py`
+- **._calculate_distance_to_room()** (3 connections) — `server/npc/idle_movement.py`
+- **Calculate weight for an exit based on distance from spawn.          Args:** (1 connections) — `server/npc/idle_movement.py`
+- **Calculate weights for all exits.          Args:             valid_exits: Dict** (1 connections) — `server/npc/idle_movement.py`
+- **Calculate approximate distance between two rooms.          This is a simplifie** (1 connections) — `server/npc/idle_movement.py`
 
 ## Relationships
 
-- [Spell Targeting](Spell_Targeting.md) (2 shared connections)
-- [Player](Player.md) (1 shared connections)
-- [.use invite()](use_invite%28%29.md) (1 shared connections)
-- [main()](main%28%29.md) (1 shared connections)
-- [cfg float()](cfg_float%28%29.md) (1 shared connections)
-- [.initialize()](initialize%28%29.md) (1 shared connections)
+- [cfg float()](cfg_float%28%29.md) (3 shared connections)
+- [.get explored rooms()](get_explored_rooms%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/game.py`
-- `server/models/invite.py`
 - `server/npc/idle_movement.py`
-- `server/npc/npc_base.py`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (78%)
-- INFERRED: 6 (22%)
+- EXTRACTED: 14 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

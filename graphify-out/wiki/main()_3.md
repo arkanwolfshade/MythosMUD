@@ -1,53 +1,49 @@
 # main()
 
-> 81 nodes
+> 34 nodes
 
 ## Key Concepts
 
-- **DependencyAnalyzer** (21 connections) — `scripts/dependency_analyzer.py`
-- **ManualDependencyAnalyzer** (20 connections) — `scripts/manual_dependency_analysis.py`
-- **DepInfo** (20 connections) — `scripts/utils/dependency_analysis_types.py`
-- **manual_dependency_analysis.py** (16 connections) — `scripts/manual_dependency_analysis.py`
-- **PriorityItem** (13 connections) — `scripts/utils/dependency_analysis_types.py`
-- **.analyze_dependencies()** (11 connections) — `scripts/manual_dependency_analysis.py`
-- **.analyze_all_dependencies()** (10 connections) — `scripts/dependency_analyzer.py`
-- **.generate_report()** (10 connections) — `scripts/manual_dependency_analysis.py`
-- **AnalysisSnapshot** (10 connections) — `scripts/utils/dependency_analysis_types.py`
-- **.generate_report()** (9 connections) — `scripts/dependency_analyzer.py`
-- **dependency_analysis_types.py** (9 connections) — `scripts/utils/dependency_analysis_types.py`
-- **BreakingChange** (9 connections) — `scripts/utils/dependency_analysis_types.py`
-- **NpmManualRow** (8 connections) — `scripts/manual_dependency_analysis.py`
-- **PipManualRow** (8 connections) — `scripts/manual_dependency_analysis.py`
-- **RiskAssessment** (8 connections) — `scripts/utils/dependency_analysis_types.py`
-- **categorize_update()** (8 connections) — `scripts/utils/dependency_risk.py`
-- **dependency_analyzer.py** (7 connections) — `scripts/dependency_analyzer.py`
-- **._analyze_python_dependencies()** (7 connections) — `scripts/dependency_analyzer.py`
-- **UpdateStrategy** (7 connections) — `scripts/utils/dependency_analysis_types.py`
-- **_dep_info_from_npm_row()** (6 connections) — `scripts/dependency_analyzer.py`
-- **._analyze_npm_dependencies()** (6 connections) — `scripts/dependency_analyzer.py`
-- **main()** (6 connections) — `scripts/dependency_analyzer.py`
-- **TypedDict** (6 connections)
-- **dependency_risk.py** (6 connections) — `scripts/utils/dependency_risk.py`
-- **_parse_npm_outdated_json()** (5 connections) — `scripts/dependency_analyzer.py`
-- *... and 56 more nodes in this community*
+- **verify_linting_parity.py** (13 connections) — `scripts/verify_linting_parity.py`
+- **Suppression** (12 connections) — `scripts/verify_linting_parity.py`
+- **Path** (8 connections)
+- **find_suppressions()** (7 connections) — `scripts/verify_linting_parity.py`
+- **_check_pylint_suppressions()** (7 connections) — `scripts/verify_linting_parity.py`
+- **_check_ruff_suppressions()** (7 connections) — `scripts/verify_linting_parity.py`
+- **check_alignment()** (7 connections) — `scripts/verify_linting_parity.py`
+- **_scan_files_for_suppressions()** (6 connections) — `scripts/verify_linting_parity.py`
+- **main()** (6 connections) — `scripts/verify_linting_parity.py`
+- **add_suppression_to_file()** (5 connections) — `scripts/fix_psscriptanalyzer.py`
+- **parse_pylint_suppression()** (5 connections) — `scripts/verify_linting_parity.py`
+- **parse_ruff_suppression()** (5 connections) — `scripts/verify_linting_parity.py`
+- **Any** (5 connections)
+- **_write_detailed_report()** (5 connections) — `scripts/verify_linting_parity.py`
+- **main()** (4 connections) — `scripts/fix_psscriptanalyzer.py`
+- **_has_ruff_equivalent()** (4 connections) — `scripts/verify_linting_parity.py`
+- **_has_pylint_equivalent()** (4 connections) — `scripts/verify_linting_parity.py`
+- **_print_misaligned_summary()** (4 connections) — `scripts/verify_linting_parity.py`
+- **fix_psscriptanalyzer.py** (2 connections) — `scripts/fix_psscriptanalyzer.py`
+- **Path** (2 connections)
+- **Add suppression comment to a PowerShell file if it uses Write-Host and doesn't a** (1 connections) — `scripts/fix_psscriptanalyzer.py`
+- **Process all PowerShell scripts in the scripts directory.** (1 connections) — `scripts/fix_psscriptanalyzer.py`
+- **Represents an inline suppression.** (1 connections) — `scripts/verify_linting_parity.py`
+- **Parse a pylint disable comment.** (1 connections) — `scripts/verify_linting_parity.py`
+- **Parse a ruff noqa comment.      Pattern examples:     - # noqa: E501,F401     -** (1 connections) — `scripts/verify_linting_parity.py`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [sqlint](sqlint.md) (2 shared connections)
-- [. init ()](_init_%28%29.md) (2 shared connections)
-- [main()](main%28%29.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `scripts/dependency_analyzer.py`
-- `scripts/manual_dependency_analysis.py`
-- `scripts/utils/dependency_analysis_types.py`
-- `scripts/utils/dependency_risk.py`
+- `scripts/fix_psscriptanalyzer.py`
+- `scripts/verify_linting_parity.py`
 
 ## Audit Trail
 
-- EXTRACTED: 315 (82%)
-- INFERRED: 68 (18%)
+- EXTRACTED: 132 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

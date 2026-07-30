@@ -1,54 +1,63 @@
 # fetch container items()
 
-> 61 nodes
+> 110 nodes
 
 ## Key Concepts
 
-- **test_container_persistence_extended_crud.py** (41 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **container_query_helpers.py** (21 connections) — `server/persistence/container_query_helpers.py`
-- **get_decayed_containers()** (13 connections) — `server/persistence/container_query_helpers.py`
-- **_build_container_data_from_row()** (12 connections) — `server/persistence/container_query_helpers.py`
-- **get_containers_by_room_id()** (12 connections) — `server/persistence/container_query_helpers.py`
-- **get_containers_by_entity_id()** (12 connections) — `server/persistence/container_query_helpers.py`
-- **fetch_container_items()** (9 connections) — `server/persistence/container_helpers.py`
-- **test_update_container_items_missing_item_instance_id()** (5 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **Any** (4 connections)
-- **ContainerData** (4 connections)
-- **test_create_container_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_container_success()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_container_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_containers_by_room_id_success()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_containers_by_room_id_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_containers_by_entity_id_success()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_containers_by_entity_id_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_update_container_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_decayed_containers_success()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_decayed_containers_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_delete_container_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_container_not_found()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_containers_by_room_id_empty()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_update_container_not_found()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_decayed_containers_none_time()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- *... and 36 more nodes in this community*
+- **monitoring.py** (62 connections) — `server/api/monitoring.py`
+- **test_monitoring_endpoints.py** (57 connections) — `server/tests/unit/api/test_monitoring_endpoints.py`
+- **monitoring_models.py** (22 connections) — `server/api/monitoring_models.py`
+- **Request** (19 connections)
+- **BaseModel** (19 connections)
+- **HealthResponse** (17 connections) — `server/models/health.py`
+- **_resolve_connection_manager_from_request()** (14 connections) — `server/api/monitoring.py`
+- **get_movement_monitor()** (14 connections) — `server/game/movement_monitor.py`
+- **get_health_status()** (12 connections) — `server/api/monitoring.py`
+- **_resolve_event_bus_from_request()** (11 connections) — `server/api/monitoring.py`
+- **_request_with_container()** (11 connections) — `server/tests/unit/api/test_monitoring_endpoints.py`
+- **get_memory_stats()** (10 connections) — `server/api/monitoring.py`
+- **_resolve_memory_leak_collector()** (10 connections) — `server/api/monitoring.py`
+- **get_movement_metrics()** (9 connections) — `server/api/monitoring.py`
+- **validate_room_integrity()** (9 connections) — `server/api/monitoring.py`
+- **get_dual_connection_stats()** (9 connections) — `server/api/monitoring.py`
+- **get_connection_health_stats()** (9 connections) — `server/api/monitoring.py`
+- **_resolve_cache_manager_from_request()** (9 connections) — `server/api/monitoring.py`
+- **get_system_alerts()** (8 connections) — `server/api/monitoring.py`
+- **reset_metrics()** (8 connections) — `server/api/monitoring.py`
+- **get_performance_summary()** (8 connections) — `server/api/monitoring.py`
+- **get_memory_alerts()** (8 connections) — `server/api/monitoring.py`
+- **force_memory_cleanup()** (8 connections) — `server/api/monitoring.py`
+- **get_performance_stats()** (8 connections) — `server/api/monitoring.py`
+- **get_eventbus_metrics()** (8 connections) — `server/api/monitoring.py`
+- *... and 85 more nodes in this community*
 
 ## Relationships
 
-- [main()](main%28%29.md) (30 shared connections)
-- [datetime](datetime.md) (24 shared connections)
-- [ContainerData](ContainerData.md) (13 shared connections)
-- [ContainerDataCore](ContainerDataCore.md) (6 shared connections)
-- [container persistence](container_persistence.md) (1 shared connections)
+- [alias](alias.md) (22 shared connections)
+- [.shutdown()](shutdown%28%29.md) (19 shared connections)
+- [AbstractContextManager](AbstractContextManager.md) (19 shared connections)
+- [CORSConfig](CORSConfig.md) (11 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (7 shared connections)
+- [real time](real_time.md) (4 shared connections)
+- [Player](Player.md) (3 shared connections)
+- [test memory profiler](test_memory_profiler.md) (3 shared connections)
+- [chat nats publisher](chat_nats_publisher.md) (2 shared connections)
+- [. init ()](_init_%28%29.md) (2 shared connections)
+- [Any](Any.md) (2 shared connections)
+- [connection models](connection_models.md) (2 shared connections)
 
 ## Source Files
 
-- `server/persistence/container_helpers.py`
-- `server/persistence/container_query_helpers.py`
-- `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- `server/api/monitoring.py`
+- `server/api/monitoring_models.py`
+- `server/game/movement_monitor.py`
+- `server/models/health.py`
+- `server/tests/unit/api/test_monitoring_endpoints.py`
 
 ## Audit Trail
 
-- EXTRACTED: 223 (94%)
-- INFERRED: 15 (6%)
+- EXTRACTED: 596 (99%)
+- INFERRED: 7 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

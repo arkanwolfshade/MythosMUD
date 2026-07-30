@@ -1,53 +1,59 @@
 # test command factories communication
 
-> 61 nodes
+> 70 nodes
 
 ## Key Concepts
 
-- **test_command_factories_communication.py** (29 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **.create_whisper_command()** (8 connections) — `server/utils/command_factories_communication.py`
-- **.create_channel_command()** (8 connections) — `server/utils/command_factories_communication.py`
-- **Test create_say_command() raises error with no args.** (7 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **.create_local_command()** (7 connections) — `server/utils/command_factories_communication.py`
-- **.create_reply_command()** (7 connections) — `server/utils/command_factories_communication.py`
-- **.create_say_command()** (6 connections) — `server/utils/command_factories_communication.py`
-- **.create_system_command()** (6 connections) — `server/utils/command_factories_communication.py`
-- **.create_emote_command()** (6 connections) — `server/utils/command_factories_communication.py`
-- **.create_me_command()** (6 connections) — `server/utils/command_factories_communication.py`
-- **.create_pose_command()** (5 connections) — `server/utils/command_factories_communication.py`
-- **test_create_say_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **test_create_local_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **test_create_whisper_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **test_create_whisper_command_no_message()** (4 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **test_create_reply_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **test_create_local_command_too_long()** (4 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **test_create_system_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **test_create_emote_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **test_create_me_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **test_create_channel_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **test_create_channel_command_default_no_channel()** (4 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **test_create_reply_command_empty_message()** (4 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **test_create_whisper_command_too_long()** (4 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **test_create_say_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- *... and 36 more nodes in this community*
+- **test_rescue_service.py** (32 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **RescueService** (11 connections) — `server/services/rescue_service.py`
+- **.rescue()** (7 connections) — `server/services/rescue_service.py`
+- **factory()** (7 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **.__init__()** (6 connections) — `server/services/rescue_service.py`
+- **_ensure_uuid()** (5 connections) — `server/services/rescue_service.py`
+- **Any** (4 connections)
+- **_maybe_await()** (4 connections) — `server/services/rescue_service.py`
+- **async_session_factory()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **lucidity_service_factory()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **rescue_service()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **test_rescue_no_persistence()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **UUID** (2 connections)
+- **mock_persistence()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **mock_session()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **mock_lucidity_service()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **mock_event_dispatcher()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **sample_rescuer()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **sample_target()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **test_rescue_rescuer_not_found()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **test_rescue_target_not_found()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **test_rescue_different_rooms()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **test_rescue_lucidity_record_not_found()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **test_rescue_not_catatonic()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **test_rescue_success()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
+- *... and 45 more nodes in this community*
 
 ## Relationships
 
-- [. init ()](_init_%28%29.md) (14 shared connections)
-- [main()](main%28%29.md) (10 shared connections)
-- [BaseCommand](BaseCommand.md) (10 shared connections)
-- [.validate message()](validate_message%28%29.md) (8 shared connections)
-- [.validate spell name()](validate_spell_name%28%29.md) (1 shared connections)
+- [LiabilityStackEntry](LiabilityStackEntry.md) (6 shared connections)
+- [test rate limiter utils](test_rate_limiter_utils.md) (4 shared connections)
+- [UUID](UUID.md) (2 shared connections)
+- [Send a system message to](Send_a_system_message_to.md) (1 shared connections)
+- [. get persistence from app()](_get_persistence_from_app%28%29.md) (1 shared connections)
+- [map helpers](map_helpers.md) (1 shared connections)
+- [init](init.md) (1 shared connections)
+- [bench cache npc](bench_cache_npc.md) (1 shared connections)
+- [test command factories](test_command_factories.md) (1 shared connections)
+- [Spell Targeting](Spell_Targeting.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories_communication.py`
-- `server/utils/command_factories_communication.py`
+- `server/services/rescue_service.py`
+- `server/tests/unit/services/test_rescue_service.py`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 
-- EXTRACTED: 194 (94%)
-- INFERRED: 13 (6%)
+- EXTRACTED: 159 (94%)
+- INFERRED: 10 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

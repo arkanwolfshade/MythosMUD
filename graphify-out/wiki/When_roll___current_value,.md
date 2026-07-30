@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_run_improvement_rolls_improvement_applied_when_roll_exceeds_value()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
-- **When roll > current value, update_value called with new value (gain 1 or 1d10).** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_check_equipped_item_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test checking equipped item when not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
 
 ## Relationships
 
-- [test skill service](test_skill_service.md) (1 shared connections)
+- [DeathInterstitial](DeathInterstitial.md) (1 shared connections)
+- [test look item](test_look_item.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_skill_service.py`
+- `server/tests/unit/commands/test_look_item.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

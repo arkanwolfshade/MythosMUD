@@ -1,32 +1,25 @@
 # logging processors
 
-> 6 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **logging_processors.py** (12 connections) — `server/structured_logging/logging_processors.py`
-- **_EnhancePlayerIdsTls** (4 connections) — `server/structured_logging/logging_processors.py`
-- **_PlayerServiceHolder** (2 connections) — `server/structured_logging/logging_processors.py`
-- **.__init__()** (1 connections) — `server/structured_logging/logging_processors.py`
-- **Logging processors for structlog event processing.  This module provides process** (1 connections) — `server/structured_logging/logging_processors.py`
-- **Thread-local recursion guard for enhance_player_ids (typed .active for static an** (1 connections) — `server/structured_logging/logging_processors.py`
+- **test_evaluate_numeric_comparison_less_equal()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test _evaluate_numeric_comparison() handles <= operator.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [main()](main%28%29.md) (5 shared connections)
-- [enhance player ids()](enhance_player_ids%28%29.md) (2 shared connections)
-- [Remove sensitive data from log](Remove_sensitive_data_from_log.md) (2 shared connections)
-- [EventDict](EventDict.md) (1 shared connections)
-- [add request context()](add_request_context%28%29.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [test behavior engine](test_behavior_engine.md) (1 shared connections)
 
 ## Source Files
 
-- `server/structured_logging/logging_processors.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 19 (90%)
-- INFERRED: 2 (10%)
+- EXTRACTED: 4 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

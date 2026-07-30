@@ -1,36 +1,32 @@
 # ensure database directory()
 
-> 10 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **ensure_database_directory()** (7 connections) — `server/database_helpers.py`
-- **ensure_database_directory()** (4 connections) — `server/database.py`
-- **test_ensure_database_directory_postgresql()** (3 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_ensure_database_directory_no_op_for_postgresql()** (3 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **test_ensure_database_directory_creates_directory()** (3 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **Ensure database directory exists (deprecated for PostgreSQL).      This function** (2 connections) — `server/database.py`
-- **Ensure database directory exists.      DEPRECATED: PostgreSQL does not use file** (1 connections) — `server/database_helpers.py`
-- **Test ensure_database_directory is no-op for PostgreSQL.** (1 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **Test ensure_database_directory is no-op for PostgreSQL (returns None).** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **Test ensure_database_directory creates directory when path exists.** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **.move_npc_to_room()** (7 connections) — `server/npc/movement_integration.py`
+- **._get_room_objects()** (4 connections) — `server/npc/movement_integration.py`
+- **._update_room_occupancy()** (4 connections) — `server/npc/movement_integration.py`
+- **._validate_room_ids()** (3 connections) — `server/npc/movement_integration.py`
+- **._is_npc_in_combat()** (3 connections) — `server/npc/movement_integration.py`
+- **Room** (2 connections)
+- **Validate room IDs for NPC movement.          Args:             npc_id: ID of** (1 connections) — `server/npc/movement_integration.py`
+- **Return True if the NPC is currently in combat (blocks normal movement).** (1 connections) — `server/npc/movement_integration.py`
+- **Get room objects and validate they exist.          Args:             npc_id:** (1 connections) — `server/npc/movement_integration.py`
+- **Update room occupancy by removing NPC from source and adding to destination.** (1 connections) — `server/npc/movement_integration.py`
+- **Move an NPC to a different room with full integration.          This method pr** (1 connections) — `server/npc/movement_integration.py`
 
 ## Relationships
 
-- [close db()](close_db%28%29.md) (5 shared connections)
-- [main()](main%28%29.md) (2 shared connections)
-- [. init ()](_init_%28%29.md) (1 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (6 shared connections)
 
 ## Source Files
 
-- `server/database.py`
-- `server/database_helpers.py`
-- `server/tests/unit/infrastructure/test_database_extended.py`
-- `server/tests/unit/infrastructure/test_database_helpers.py`
+- `server/npc/movement_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 26 (100%)
+- EXTRACTED: 28 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

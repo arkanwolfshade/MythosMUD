@@ -1,51 +1,41 @@
 # Any
 
-> 63 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **test_metrics.py** (27 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **SubjectManagerMetrics** (16 connections) — `server/services/nats_subject_manager/metrics.py`
-- **._calculate_percentile()** (6 connections) — `server/services/nats_subject_manager/metrics.py`
-- **.get_metrics()** (4 connections) — `server/services/nats_subject_manager/metrics.py`
-- **metrics()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_subject_manager_metrics_init()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_calculate_percentile_empty()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_calculate_percentile_single_value()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_calculate_percentile_multiple_values()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **Test record_validation() records successful validation.** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **.record_validation()** (2 connections) — `server/services/nats_subject_manager/metrics.py`
-- **.record_build()** (2 connections) — `server/services/nats_subject_manager/metrics.py`
-- **.record_error()** (2 connections) — `server/services/nats_subject_manager/metrics.py`
-- **.reset()** (2 connections) — `server/services/nats_subject_manager/metrics.py`
-- **test_record_validation_success()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_record_validation_failure()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_record_validation_cache_hit()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_record_validation_multiple()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_record_validation_stores_times()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_record_build_success()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_record_build_failure()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_record_build_multiple()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_record_build_stores_times()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_record_error_pattern_not_found()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_record_error_missing_parameter()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- *... and 38 more nodes in this community*
+- **Any** (7 connections)
+- **.__init__()** (6 connections) — `server/services/room_sync_service.py`
+- **._handle_stale_room_data()** (6 connections) — `server/services/room_sync_service.py`
+- **._process_room_update_with_validation()** (4 connections) — `server/services/room_sync_service.py`
+- **._fetch_fresh_room_data()** (4 connections) — `server/services/room_sync_service.py`
+- **.set_room_service()** (3 connections) — `server/services/room_sync_service.py`
+- **._invalidate_stale_cache()** (3 connections) — `server/services/room_sync_service.py`
+- **._process_room_transition()** (3 connections) — `server/services/room_sync_service.py`
+- **.get_room_data_cache_stats()** (3 connections) — `server/services/room_sync_service.py`
+- **Initialize the room synchronization service.          Args:             room_ser** (1 connections) — `server/services/room_sync_service.py`
+- **Set the room service for fetching fresh room data.          Args:             ro** (1 connections) — `server/services/room_sync_service.py`
+- **Process room update with comprehensive validation.          Args:             ro** (1 connections) — `server/services/room_sync_service.py`
+- **Invalidate stale room cache entry.          Args:             room_id: Room ID t** (1 connections) — `server/services/room_sync_service.py`
+- **Fetch fresh room data from room service.          Args:             room_id: Roo** (1 connections) — `server/services/room_sync_service.py`
+- **Handle stale room data by requesting fresh data.          Args:             room** (1 connections) — `server/services/room_sync_service.py`
+- **Process room transition with proper ordering and validation.          Args:** (1 connections) — `server/services/room_sync_service.py`
+- **Get statistics about the room data cache.          Returns:             Dict[str** (1 connections) — `server/services/room_sync_service.py`
 
 ## Relationships
 
-- [Any](Any.md) (4 shared connections)
-- [. init ()](_init_%28%29.md) (2 shared connections)
-- [get subject manager dependency()](get_subject_manager_dependency%28%29.md) (1 shared connections)
+- [combat taunt](combat_taunt.md) (8 shared connections)
+- [Any](Any.md) (2 shared connections)
+- [Manages room data caching and](Manages_room_data_caching_and.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/nats_subject_manager/metrics.py`
-- `server/tests/unit/services/nats_subject_manager/test_metrics.py`
+- `server/services/room_sync_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 146 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 47 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

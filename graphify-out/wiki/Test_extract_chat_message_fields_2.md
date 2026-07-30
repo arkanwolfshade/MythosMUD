@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_extract_chat_message_fields_whisper_target_id()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _extract_chat_message_fields handles whisper target_id.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_get_room_cache_not_found()** (2 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test get_room() returns None when room not in cache.** (1 connections) — `server/tests/unit/game/test_room_service.py`
 
 ## Relationships
 
-- [test nats message handler chat](test_nats_message_handler_chat.md) (1 shared connections)
+- [test room service](test_room_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `server/tests/unit/game/test_room_service.py`
 
 ## Audit Trail
 

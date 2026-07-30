@@ -1,24 +1,24 @@
 # additionalProperties
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **metadata** (3 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **additionalProperties** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **test_remove_rule_success()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test remove_rule() successfully removes rule.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [type](type.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [test behavior engine](test_behavior_engine.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/items/item_prototype.schema.json`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

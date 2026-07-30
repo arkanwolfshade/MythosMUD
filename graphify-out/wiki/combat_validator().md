@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **combat_validator()** (3 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Create a CombatValidator instance.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **mock_logger()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Create a mock logger.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [test combat validator](test_combat_validator.md) (1 shared connections)
-- [Player Position Service](Player_Position_Service.md) (1 shared connections)
+- [test player event handlers utils](test_player_event_handlers_utils.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

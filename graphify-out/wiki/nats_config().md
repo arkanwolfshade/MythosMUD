@@ -1,65 +1,56 @@
 # nats config()
 
-> 108 nodes
+> 83 nodes
 
 ## Key Concepts
 
-- **test_nats_service.py** (76 connections) — `server/tests/unit/services/test_nats_service.py`
-- **nats_service.py** (23 connections) — `server/services/nats_service.py`
-- **NATSConfig** (22 connections) — `server/config/models/nats.py`
-- **NATSUnsubscribeError** (12 connections) — `server/services/nats_exceptions.py`
-- **NATSRequestError** (11 connections) — `server/services/nats_exceptions.py`
-- **.__init__()** (5 connections) — `server/infrastructure/nats_broker.py`
-- **test_nats_service_init_with_config()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
-- **nats_metrics.py** (4 connections) — `server/services/nats_metrics.py`
-- **test_nats_service_init_with_dict()** (4 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_nats_service_init_with_none()** (4 connections) — `server/tests/unit/services/test_nats_service.py`
-- **.validate_tls_files()** (3 connections) — `server/config/models/nats.py`
-- **.validate_tls_config()** (3 connections) — `server/config/models/nats.py`
-- **nats_config()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **nats_config()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_publish_not_initialized()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_publish_no_available_connections()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_subscribe_not_connected()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_subscribe_not_running()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_unsubscribe_not_found()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_unsubscribe_error()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_request_not_connected()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_request_timeout()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_request_error()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **Test NATSService initialization with NATSConfig.** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **.validate_max_payload()** (2 connections) — `server/config/models/nats.py`
-- *... and 83 more nodes in this community*
+- **MessageQueue** (54 connections) — `server/realtime/message_queue.py`
+- **test_message_queue.py** (32 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **mock_manager()** (5 connections) — `server/tests/unit/realtime/test_connection_disconnection.py`
+- **.add_message()** (4 connections) — `server/realtime/message_queue.py`
+- **Any** (4 connections)
+- **.cleanup_old_messages()** (4 connections) — `server/realtime/message_queue.py`
+- **._is_message_recent()** (4 connections) — `server/realtime/message_queue.py`
+- **test_message_queue_get_messages_error()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_has_messages_empty_list()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_cleanup_old_messages()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_cleanup_old_messages_removes_empty()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_cleanup_old_messages_string_timestamp()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_cleanup_old_messages_invalid_timestamp()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_cleanup_large_structures()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **.get_messages()** (3 connections) — `server/realtime/message_queue.py`
+- **.cleanup_large_structures()** (3 connections) — `server/realtime/message_queue.py`
+- **.get_stats()** (3 connections) — `server/realtime/message_queue.py`
+- **test_message_queue_init_defaults()** (3 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_init_custom()** (3 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_add_message()** (3 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_add_message_with_timestamp()** (3 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_add_message_multiple()** (3 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_add_message_limit_reached()** (3 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_add_message_error()** (3 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_get_messages()** (3 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- *... and 58 more nodes in this community*
 
 ## Relationships
 
-- [NATSMetrics](NATSMetrics.md) (18 shared connections)
-- [. init ()](_init_%28%29.md) (16 shared connections)
-- [NATS](NATS.md) (15 shared connections)
-- [main()](main%28%29.md) (9 shared connections)
-- [message broker](message_broker.md) (5 shared connections)
-- [connection state machine](connection_state_machine.md) (5 shared connections)
-- [get subject manager dependency()](get_subject_manager_dependency%28%29.md) (3 shared connections)
-- [init](init.md) (2 shared connections)
-- [Any](Any.md) (2 shared connections)
-- [initialize nats and combat services()](initialize_nats_and_combat_services%28%29.md) (2 shared connections)
-- [test nats message handler](test_nats_message_handler.md) (1 shared connections)
-- [Test unsubscribe from subject() handles](Test_unsubscribe_from_subject%28%29_handles.md) (1 shared connections)
+- [Coord](Coord.md) (10 shared connections)
+- [connection disconnection](connection_disconnection.md) (8 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (4 shared connections)
+- [test statistics aggregator](test_statistics_aggregator.md) (2 shared connections)
+- [Player](Player.md) (2 shared connections)
+- [Custom user manager for MythosMUD.](Custom_user_manager_for_MythosMUD.md) (1 shared connections)
+- [Any](Any.md) (1 shared connections)
 
 ## Source Files
 
-- `server/config/models/nats.py`
-- `server/infrastructure/nats_broker.py`
-- `server/services/nats_exceptions.py`
-- `server/services/nats_metrics.py`
-- `server/services/nats_service.py`
-- `server/tests/unit/infrastructure/test_nats_broker.py`
-- `server/tests/unit/services/test_nats_service.py`
+- `server/realtime/message_queue.py`
+- `server/tests/unit/realtime/test_connection_disconnection.py`
+- `server/tests/unit/realtime/test_message_queue.py`
 
 ## Audit Trail
 
-- EXTRACTED: 303 (93%)
-- INFERRED: 23 (7%)
+- EXTRACTED: 239 (93%)
+- INFERRED: 17 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

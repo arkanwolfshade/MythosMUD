@@ -1,52 +1,53 @@
 # Return stats[key] as int, or
 
-> 40 nodes
+> 30 nodes
 
 ## Key Concepts
 
-- **npc_config_parsing.py** (14 connections) — `server/npc/npc_config_parsing.py`
-- **.__init__()** (11 connections) — `server/npc/npc_base.py`
-- **to_int_or_default()** (7 connections) — `server/npc/npc_config_parsing.py`
-- **get_combat_stats_dict()** (7 connections) — `server/npc/npc_config_parsing.py`
-- **._register_reactions_and_chat_name()** (5 connections) — `server/npc/npc_base.py`
-- **normalize_determination_points()** (5 connections) — `server/npc/npc_config_parsing.py`
-- **parse_behavior_config()** (5 connections) — `server/npc/npc_config_parsing.py`
-- **_safe_stat_int()** (5 connections) — `server/npc/npc_config_parsing.py`
-- **._safe_get()** (4 connections) — `server/npc/npc_base.py`
-- **._apply_definition_attributes()** (4 connections) — `server/npc/npc_base.py`
-- **.heal()** (4 connections) — `server/npc/npc_base.py`
-- **parse_stats()** (4 connections) — `server/npc/npc_config_parsing.py`
-- **parse_ai_config()** (4 connections) — `server/npc/npc_config_parsing.py`
-- **_compute_max_dp()** (4 connections) — `server/npc/npc_config_parsing.py`
-- **._setup_base_behavior_rules()** (3 connections) — `server/npc/npc_base.py`
-- **._safe_stat_int()** (3 connections) — `server/npc/npc_base.py`
-- **.get_combat_stats()** (3 connections) — `server/npc/npc_base.py`
-- **._sync_dp_stats()** (3 connections) — `server/npc/npc_base.py`
-- **apply_dp_from_source()** (3 connections) — `server/npc/npc_config_parsing.py`
-- **apply_idle_movement_defaults()** (3 connections) — `server/npc/npc_config_parsing.py`
-- **Initialize the NPC base class.** (1 connections) — `server/npc/npc_base.py`
-- **Register default reactions, room context, and chat display name.** (1 connections) — `server/npc/npc_base.py`
-- **Get attribute from obj with default to avoid lazy-loading issues.** (1 connections) — `server/npc/npc_base.py`
-- **Set npc_type, name, current_room, spawn_room_id from definition.** (1 connections) — `server/npc/npc_base.py`
-- **Setup base behavior rules common to all NPCs.** (1 connections) — `server/npc/npc_base.py`
-- *... and 15 more nodes in this community*
+- **_NPCCombatIntegrationValidationDeps** (19 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **.store_npc_xp_mapping_for_mixin()** (10 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **.get_data_provider()** (6 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **.get_uuid_mapping()** (6 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **UUID** (6 connections)
+- **._setup_combat_uuids_and_mappings()** (6 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **._validate_and_get_npc_instance()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **._validate_combat_location()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **._end_combat_if_participant_in_combat()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **._setup_combat_uuids_npc_attacker()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **.get_combat_service()** (4 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **.get_lucidity_service()** (4 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **_coerce_xp_mapping_value()** (3 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **_warn_attacked_dead_npc()** (3 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **.store_npc_xp_mapping_for_mixin()** (3 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **Protocol** (1 connections)
+- **Parse xp_value from NPC base_stats JSON; bool maps to 0 (avoid True -> 1).** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **Log when a player targets an NPC that exists but is not alive.** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **Attributes supplied by NPCCombatIntegrationService (mixin cannot initialize them** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **Return combat service dependency.** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **Return data provider dependency.** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **Return UUID mapping dependency.** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **Return lucidity dependency.** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **Store XP mapping for NPC combat setup from validation mixin.** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **Validate NPC instance (lookup when missing). Return instance or None.** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
-- [.initialize()](initialize%28%29.md) (17 shared connections)
-- [main()](main%28%29.md) (2 shared connections)
-- [BehaviorEngine](BehaviorEngine.md) (1 shared connections)
-- [Any](Any.md) (1 shared connections)
+- [Any](Any.md) (10 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (4 shared connections)
+- [. initialize handlers()](_initialize_handlers%28%29.md) (2 shared connections)
+- [. init ()](_init_%28%29.md) (2 shared connections)
+- [Path](Path.md) (2 shared connections)
+- [. repr ()](_repr_%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/npc_base.py`
-- `server/npc/npc_config_parsing.py`
+- `server/services/npc_combat_integration_validation_mixin.py`
 
 ## Audit Trail
 
-- EXTRACTED: 121 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 99 (94%)
+- INFERRED: 6 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

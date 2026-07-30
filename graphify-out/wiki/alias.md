@@ -1,57 +1,60 @@
 # alias
 
-> 79 nodes
+> 68 nodes
 
 ## Key Concepts
 
-- **Alias** (52 connections) — `server/models/alias.py`
-- **test_alias.py** (29 connections) — `server/tests/unit/models/test_alias.py`
-- **alias.py** (6 connections) — `server/models/alias.py`
-- **test_alias_rejects_extra_fields()** (4 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_repr()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_equality_same_name_and_command()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_equality_different_ids()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_equality_different_name()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_equality_different_command()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_equality_with_non_alias()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_hash_same_name_and_command()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_hash_different_name()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_hash_different_command()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_hash_usable_in_set()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_update_timestamp()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_is_reserved_command_true()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_is_reserved_command_case_insensitive()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_is_reserved_command_false()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_validate_name_valid()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_validate_name_with_whitespace()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_validate_name_empty()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_validate_name_whitespace_only()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_get_expanded_command_no_args()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_get_expanded_command_with_args()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_model_dump()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- *... and 54 more nodes in this community*
+- **test_health.py** (27 connections) — `server/tests/unit/models/test_health.py`
+- **DatabaseComponent** (24 connections) — `server/models/health.py`
+- **ServerComponent** (23 connections) — `server/models/health.py`
+- **ConnectionsComponent** (22 connections) — `server/models/health.py`
+- **HealthComponents** (21 connections) — `server/models/health.py`
+- **health_service.py** (20 connections) — `server/services/health_service.py`
+- **health.py** (14 connections) — `server/models/health.py`
+- **HealthStatus** (11 connections) — `server/models/health.py`
+- **HealthErrorResponse** (10 connections) — `server/models/health.py`
+- **test_health_components_rejects_extra_fields()** (7 connections) — `server/tests/unit/models/test_health.py`
+- **test_health_response_creation()** (7 connections) — `server/tests/unit/models/test_health.py`
+- **test_health_response_with_alerts()** (7 connections) — `server/tests/unit/models/test_health.py`
+- **test_health_response_default_alerts()** (7 connections) — `server/tests/unit/models/test_health.py`
+- **BaseModel** (6 connections)
+- **test_health_components_creation()** (6 connections) — `server/tests/unit/models/test_health.py`
+- **test_generate_alerts_no_alerts()** (6 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_generate_alerts_with_alerts()** (6 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_determine_overall_status_healthy()** (6 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_determine_overall_status_degraded()** (6 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_determine_overall_status_unhealthy()** (6 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_get_health_status_version_fallback()** (5 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_server_component_rejects_extra_fields()** (4 connections) — `server/tests/unit/models/test_health.py`
+- **test_server_component_frozen()** (4 connections) — `server/tests/unit/models/test_health.py`
+- **test_database_component_rejects_extra_fields()** (4 connections) — `server/tests/unit/models/test_health.py`
+- **test_connections_component_rejects_extra_fields()** (4 connections) — `server/tests/unit/models/test_health.py`
+- *... and 43 more nodes in this community*
 
 ## Relationships
 
-- [test alias storage](test_alias_storage.md) (6 shared connections)
-- [.add alias()](add_alias%28%29.md) (5 shared connections)
-- [Base](Base.md) (2 shared connections)
+- [fetch container items()](fetch_container_items%28%29.md) (22 shared connections)
+- [Any](Any.md) (14 shared connections)
+- [SafeHtml](SafeHtml.md) (8 shared connections)
+- [.initialize()](initialize%28%29.md) (7 shared connections)
+- [main()](main%28%29.md) (3 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (3 shared connections)
+- [Player](Player.md) (3 shared connections)
 - [test memory profiler](test_memory_profiler.md) (2 shared connections)
-- [Any](Any.md) (1 shared connections)
-- [.model dump()](model_dump%28%29.md) (1 shared connections)
-- [benchmark model memory usage()](benchmark_model_memory_usage%28%29.md) (1 shared connections)
-- [. init ()](_init_%28%29.md) (1 shared connections)
+- [test command parser](test_command_parser.md) (1 shared connections)
+- [test player preferences service](test_player_preferences_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/alias.py`
-- `server/tests/unit/models/test_alias.py`
-- `server/tests/unit/test_alias_storage.py`
+- `server/models/health.py`
+- `server/services/health_service.py`
+- `server/tests/unit/models/test_health.py`
+- `server/tests/unit/services/test_health_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 228 (98%)
-- INFERRED: 5 (2%)
+- EXTRACTED: 316 (98%)
+- INFERRED: 8 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

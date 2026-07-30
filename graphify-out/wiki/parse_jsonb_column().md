@@ -1,54 +1,55 @@
 # parse jsonb column()
 
-> 62 nodes
+> 42 nodes
 
 ## Key Concepts
 
-- **_parse_jsonb_column()** (28 connections) — `server/container_persistence/container_persistence.py`
-- **test_container_persistence_extended_parse.py** (26 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **test_persistence_container_persistence.py** (8 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **test_container_data_init()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **test_parse_jsonb_column_none()** (3 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
-- **test_parse_jsonb_column_string()** (3 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
-- **test_parse_jsonb_column_dict()** (3 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
-- **test_parse_jsonb_column_empty_string()** (3 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
-- **test_parse_jsonb_column_list()** (3 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
-- **test_parse_jsonb_column_invalid_json()** (3 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
-- **test_parse_jsonb_column_empty_list()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **test_parse_jsonb_column_empty_dict()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **test_parse_jsonb_column_string_list()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **test_parse_jsonb_column_string_dict()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **test_parse_jsonb_column_with_default()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **test_parse_jsonb_column_falsy_value()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **test_parse_jsonb_column_falsy_empty_string()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **test_parse_jsonb_column_falsy_empty_list()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **test_parse_jsonb_column_falsy_empty_dict()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **test_fetch_container_items_success()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **test_fetch_container_items_empty()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **test_fetch_container_items_missing_item_instance_id()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **test_fetch_container_items_non_dict_row()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **test_fetch_container_items_string_metadata()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **test_fetch_container_items_invalid_json_metadata()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- *... and 37 more nodes in this community*
+- **ScheduleService** (28 connections) — `server/services/schedule_service.py`
+- **TestScheduleService** (14 connections) — `server/tests/unit/services/test_schedule_service.py`
+- **._async_load_from_database()** (7 connections) — `server/services/schedule_service.py`
+- **_fetch_schedule_entries()** (6 connections) — `server/services/schedule_service.py`
+- **.test_async_load_from_database_passes_search_path_for_mythos_e2e()** (5 connections) — `server/tests/unit/services/test_schedule_service.py`
+- **._load_from_database()** (4 connections) — `server/services/schedule_service.py`
+- **.get_active_entries()** (4 connections) — `server/services/schedule_service.py`
+- **.test_init_loads_from_database()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
+- **.test_get_active_entries_with_matches()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
+- **.test_get_active_entries_boundary_conditions()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
+- **.test_get_active_entries_wrong_day()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
+- **.test_entries_property()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
+- **.test_normalize_weekday_names_latin_to_standard()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
+- **.test_entry_count_property()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
+- **_resolve_asyncpg_database_url()** (3 connections) — `server/services/schedule_service.py`
+- **.entries()** (3 connections) — `server/services/schedule_service.py`
+- **.test_init_with_collections()** (3 connections) — `server/tests/unit/services/test_schedule_service.py`
+- **.test_init_without_persistence_raises()** (3 connections) — `server/tests/unit/services/test_schedule_service.py`
+- **.test_get_active_entries_no_matches()** (3 connections) — `server/tests/unit/services/test_schedule_service.py`
+- **Connection** (2 connections)
+- **.entry_count()** (2 connections) — `server/services/schedule_service.py`
+- **Return asyncpg-compatible DATABASE_URL from the environment.** (1 connections) — `server/services/schedule_service.py`
+- **Load and normalize schedule rows from PostgreSQL.** (1 connections) — `server/services/schedule_service.py`
+- **Provides schedule lookups for NPCs and environmental consumers.** (1 connections) — `server/services/schedule_service.py`
+- **Load schedules from PostgreSQL database.** (1 connections) — `server/services/schedule_service.py`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [container persistence](container_persistence.md) (20 shared connections)
-- [ContainerData](ContainerData.md) (6 shared connections)
-- [ContainerDataCore](ContainerDataCore.md) (2 shared connections)
-- [datetime](datetime.md) (2 shared connections)
+- [chat nats publisher](chat_nats_publisher.md) (11 shared connections)
+- [hash password()](hash_password%28%29.md) (11 shared connections)
+- [emit close container event()](emit_close_container_event%28%29.md) (3 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (3 shared connections)
+- [Formatter](Formatter.md) (2 shared connections)
+- [Lock](Lock.md) (1 shared connections)
+- [rate overrides](rate_overrides.md) (1 shared connections)
 
 ## Source Files
 
-- `server/container_persistence/container_persistence.py`
-- `server/tests/unit/container_persistence/test_container_persistence.py`
-- `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- `server/services/schedule_service.py`
+- `server/tests/unit/services/test_schedule_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 148 (80%)
-- INFERRED: 38 (20%)
+- EXTRACTED: 126 (93%)
+- INFERRED: 10 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

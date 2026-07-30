@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **__init__.py** (1 connections) — `server/tests/unit/services/nats_subject_manager/__init__.py`
-- **NATS subject manager unit tests.** (1 connections) — `server/tests/unit/services/nats_subject_manager/__init__.py`
+- **__init__.py** (1 connections) — `server/tests/unit/structured_logging/__init__.py`
+- **Structured logging unit tests.** (1 connections) — `server/tests/unit/structured_logging/__init__.py`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `server/tests/unit/services/nats_subject_manager/__init__.py`
+- `server/tests/unit/structured_logging/__init__.py`
 
 ## Audit Trail
 

@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_get_applicable_rules_no_matching()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test get_applicable_rules() returns empty list when no rules match.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **.test_try_player_username_valid()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **Test _try_player_username with valid username.** (1 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
 
 ## Relationships
 
-- [BehaviorEngine](BehaviorEngine.md) (1 shared connections)
-- [test behavior engine](test_behavior_engine.md) (1 shared connections)
+- [container websocket events](container_websocket_events.md) (1 shared connections)
+- [PlayerNameExtractor](PlayerNameExtractor.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_behavior_engine.py`
+- `server/tests/unit/realtime/test_player_name_utils.py`
 
 ## Audit Trail
 

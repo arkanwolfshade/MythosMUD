@@ -1,27 +1,24 @@
 # test websocket handler json error
 
-> 6 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **test_websocket_handler_json_error.py** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
-- **mock_websocket()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
-- **test_handle_json_decode_error()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
-- **Unit tests for websocket handler JSON error handling.  Tests the JSON decode err** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
-- **Create a mock WebSocket.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
-- **Test _handle_json_decode_error() sends error response.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
+- **test_evaluate_condition_equality()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test evaluate_condition() handles equality.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [. init ()](_init_%28%29.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [test behavior engine](test_behavior_engine.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_websocket_handler_json_error.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

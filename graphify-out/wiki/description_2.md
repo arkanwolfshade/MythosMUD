@@ -16,8 +16,9 @@
 
 ## Relationships
 
-- [description](description.md) (4 shared connections)
+- [description](description.md) (3 shared connections)
 - [command](command.md) (1 shared connections)
+- [MutableHeaders](MutableHeaders.md) (1 shared connections)
 
 ## Source Files
 

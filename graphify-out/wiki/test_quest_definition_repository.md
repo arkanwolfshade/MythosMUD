@@ -1,50 +1,57 @@
 # test quest definition repository
 
-> 26 nodes
+> 46 nodes
 
 ## Key Concepts
 
-- **test_quest_definition_repository.py** (20 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **_make_session_context()** (11 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **_row_for_quest_definition()** (4 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **test_get_by_id_success()** (4 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **test_get_by_id_database_error()** (4 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **test_get_by_name_success()** (4 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **test_get_by_name_database_error()** (4 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **test_list_quest_ids_offered_by_database_error()** (4 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **quest_definition_repository()** (3 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **test_get_by_id_not_found()** (3 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **test_get_by_name_not_found()** (3 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **test_list_quest_ids_offered_by_success()** (3 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **test_list_quest_ids_offered_by_empty()** (3 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **Unit tests for QuestDefinitionRepository.  Tests get_by_id, get_by_name, and lis** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **Create a QuestDefinitionRepository instance.** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **Return context manager that yields mock_session for async with.** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **Build a procedure result row (mappings().first() return value) for QuestDefiniti** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **Test get_by_id returns definition when found (procedure returns row, repo maps t** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **Test get_by_id returns None when not found.** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **Test get_by_id raises DatabaseError on DB failure.** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **Test get_by_name returns definition when found by common name.** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **Test get_by_name returns None when not found.** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **Test get_by_name raises DatabaseError on DB failure.** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **Test list_quest_ids_offered_by returns quest IDs for entity (procedure returns r** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **Test list_quest_ids_offered_by returns empty list when no offers.** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- *... and 1 more nodes in this community*
+- **Skill** (27 connections) — `server/models/skill.py`
+- **Any** (10 connections)
+- **.set_player_skills()** (9 connections) — `server/game/skill_service.py`
+- **UUID** (8 connections)
+- **_row_to_skill()** (7 connections) — `server/persistence/repositories/skill_repository.py`
+- **.get_all_skills()** (7 connections) — `server/persistence/repositories/skill_repository.py`
+- **.get_skill_by_id()** (7 connections) — `server/persistence/repositories/skill_repository.py`
+- **.get_skill_by_key()** (7 connections) — `server/persistence/repositories/skill_repository.py`
+- **._validate_occupation_slots()** (6 connections) — `server/game/skill_service.py`
+- **._validate_personal_interest()** (6 connections) — `server/game/skill_service.py`
+- **.validate_skills_payload()** (6 connections) — `server/game/skill_service.py`
+- **._validate_no_overlap()** (5 connections) — `server/game/skill_service.py`
+- **._build_profession_mod_by_key()** (5 connections) — `server/game/skill_service.py`
+- **._compute_final_skill_values()** (5 connections) — `server/game/skill_service.py`
+- **.get_player_skills()** (4 connections) — `server/game/skill_service.py`
+- **.record_successful_skill_use()** (4 connections) — `server/game/skill_service.py`
+- **.get_skills_used_this_level()** (4 connections) — `server/game/skill_service.py`
+- **.run_improvement_rolls()** (4 connections) — `server/game/skill_service.py`
+- **.roll_skill_check()** (4 connections) — `server/game/skill_service.py`
+- **.get_skills_catalog()** (3 connections) — `server/game/skill_service.py`
+- **sample_skills()** (3 connections) — `server/tests/unit/api/test_skills.py`
+- **catalog_with_own_language_and_mythos()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **.__repr__()** (2 connections) — `server/models/skill.py`
+- **Any** (2 connections)
+- **Return list of skill dicts (id, key, name, base_value, allow_at_creation, catego** (1 connections) — `server/game/skill_service.py`
+- *... and 21 more nodes in this community*
 
 ## Relationships
 
-- [main()](main%28%29.md) (6 shared connections)
-- [Base](Base.md) (3 shared connections)
-- [. init ()](_init_%28%29.md) (2 shared connections)
+- [emit close container event()](emit_close_container_event%28%29.md) (21 shared connections)
+- [real time](real_time.md) (14 shared connections)
+- [main()](main%28%29.md) (5 shared connections)
+- [chat nats publisher](chat_nats_publisher.md) (2 shared connections)
+- [test quest instance repository](test_quest_instance_repository.md) (2 shared connections)
+- [test player service](test_player_service.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_quest_definition_repository.py`
+- `server/game/skill_service.py`
+- `server/models/skill.py`
+- `server/persistence/repositories/skill_repository.py`
+- `server/tests/unit/api/test_skills.py`
+- `server/tests/unit/game/test_skill_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 80 (96%)
-- INFERRED: 3 (4%)
+- EXTRACTED: 159 (94%)
+- INFERRED: 11 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [git show file()](git_show_file%28%29.md) (19 shared connections)
-- [ChangedFile](ChangedFile.md) (13 shared connections)
+- [git show file()](git_show_file%28%29.md) (20 shared connections)
+- [ChangedFile](ChangedFile.md) (12 shared connections)
 - [quality fragmentation graph](quality_fragmentation_graph.md) (3 shared connections)
 - [main()](main%28%29.md) (3 shared connections)
 

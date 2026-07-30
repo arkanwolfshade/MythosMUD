@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_parse_exits_json_string_valid()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **Test _parse_exits_json with valid JSON string.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_build_chat_event()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _build_chat_event builds event.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [test async persistence room cache](test_async_persistence_room_cache.md) (1 shared connections)
+- [test nats message handler chat](test_nats_message_handler_chat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 

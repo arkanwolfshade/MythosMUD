@@ -1,51 +1,43 @@
 # test command base
 
-> 33 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **test_command_base.py** (22 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_base_command_rejects_extra_fields()** (4 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_base_command_instantiation()** (3 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_base_command_model_config()** (3 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_base_command_slots()** (3 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_direction_enum_inheritance()** (3 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_command_type_enum_inheritance()** (3 connections) — `server/tests/unit/models/test_command_base.py`
-- **Test CommandType enum contains LOOK.** (3 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_direction_enum_values()** (2 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_direction_enum_all_directions()** (2 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_direction_enum_string_comparison()** (2 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_command_type_enum_contains_look()** (2 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_command_type_enum_contains_communication_commands()** (2 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_command_type_enum_contains_exploration_commands()** (2 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_command_type_enum_contains_admin_commands()** (2 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_command_type_enum_contains_inventory_commands()** (2 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_command_type_enum_contains_combat_commands()** (2 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_command_type_enum_contains_magic_commands()** (2 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_command_type_enum_string_comparison()** (2 connections) — `server/tests/unit/models/test_command_base.py`
-- **Test CommandType enum contains communication commands.** (2 connections) — `server/tests/unit/models/test_command_base.py`
-- **Unit tests for base command models and enums.  Tests the Direction and CommandTy** (1 connections) — `server/tests/unit/models/test_command_base.py`
-- **Test Direction enum contains all expected values.** (1 connections) — `server/tests/unit/models/test_command_base.py`
-- **Test Direction enum contains all 10 expected directions.** (1 connections) — `server/tests/unit/models/test_command_base.py`
-- **Test Direction enum values can be compared to strings.** (1 connections) — `server/tests/unit/models/test_command_base.py`
-- **Test CommandType enum contains inventory commands.** (1 connections) — `server/tests/unit/models/test_command_base.py`
-- *... and 8 more nodes in this community*
+- **.create_instance()** (7 connections) — `server/game/instance_manager.py`
+- **._build_instance_rooms()** (6 connections) — `server/game/instance_manager.py`
+- **Room** (5 connections)
+- **._stable_id_from_room()** (5 connections) — `server/game/instance_manager.py`
+- **Instance** (4 connections) — `server/game/instance_manager.py`
+- **._get_template_rooms()** (4 connections) — `server/game/instance_manager.py`
+- **._remap_exits()** (4 connections) — `server/game/instance_manager.py`
+- **._stable_id_from_target()** (3 connections) — `server/game/instance_manager.py`
+- **.get_instance()** (3 connections) — `server/game/instance_manager.py`
+- **.get_room_by_id()** (3 connections) — `server/game/instance_manager.py`
+- **UUID** (2 connections)
+- **An instanced set of rooms, unique per player or group.** (1 connections) — `server/game/instance_manager.py`
+- **Create an instance from room templates with the given template_id.          Args** (1 connections) — `server/game/instance_manager.py`
+- **Return template rooms matching instance_template_id.** (1 connections) — `server/game/instance_manager.py`
+- **Clone template rooms into instance-scoped rooms with remapped exits.** (1 connections) — `server/game/instance_manager.py`
+- **Extract stable_id from room - use room.id if it looks like a full path.** (1 connections) — `server/game/instance_manager.py`
+- **Remap exit targets: same-instance rooms use instance IDs, outside exits use fixe** (1 connections) — `server/game/instance_manager.py`
+- **Extract stable_id from a room ID (may be full path or short form).** (1 connections) — `server/game/instance_manager.py`
+- **Return the instance if it exists.** (1 connections) — `server/game/instance_manager.py`
+- **Look up a room by ID, checking instances first.          Used by persistence lay** (1 connections) — `server/game/instance_manager.py`
 
 ## Relationships
 
-- [BaseCommand](BaseCommand.md) (5 shared connections)
-- [.validate spell name()](validate_spell_name%28%29.md) (3 shared connections)
-- [command admin](command_admin.md) (2 shared connections)
-- [. init ()](_init_%28%29.md) (1 shared connections)
+- [emit close container event()](emit_close_container_event%28%29.md) (8 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (3 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/models/test_command_base.py`
+- `server/game/instance_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 77 (95%)
-- INFERRED: 4 (5%)
+- EXTRACTED: 55 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

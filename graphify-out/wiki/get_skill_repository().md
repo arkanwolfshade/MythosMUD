@@ -1,63 +1,59 @@
 # get skill repository()
 
-> 52 nodes
+> 40 nodes
 
 ## Key Concepts
 
-- **SkillService** (35 connections) — `server/game/skill_service.py`
-- **Skill** (27 connections) — `server/models/skill.py`
-- **skill_service.py** (20 connections) — `server/game/skill_service.py`
-- **SkillRepository** (19 connections) — `server/persistence/repositories/skill_repository.py`
-- **PlayerSkillRepository** (17 connections) — `server/persistence/repositories/player_skill_repository.py`
-- **SkillUseLogRepository** (13 connections) — `server/persistence/repositories/skill_use_log_repository.py`
-- **Any** (10 connections)
-- **.set_player_skills()** (9 connections) — `server/game/skill_service.py`
-- **UUID** (8 connections)
-- **._validate_occupation_slots()** (6 connections) — `server/game/skill_service.py`
-- **._validate_personal_interest()** (6 connections) — `server/game/skill_service.py`
-- **.validate_skills_payload()** (6 connections) — `server/game/skill_service.py`
-- **.__init__()** (5 connections) — `server/game/skill_service.py`
-- **._validate_no_overlap()** (5 connections) — `server/game/skill_service.py`
-- **._build_profession_mod_by_key()** (5 connections) — `server/game/skill_service.py`
-- **._compute_final_skill_values()** (5 connections) — `server/game/skill_service.py`
-- **.get_player_skills()** (4 connections) — `server/game/skill_service.py`
-- **.record_successful_skill_use()** (4 connections) — `server/game/skill_service.py`
-- **.get_skills_used_this_level()** (4 connections) — `server/game/skill_service.py`
-- **.run_improvement_rolls()** (4 connections) — `server/game/skill_service.py`
-- **.roll_skill_check()** (4 connections) — `server/game/skill_service.py`
-- **get_skill_repository()** (3 connections) — `server/dependencies.py`
-- **.get_skills_catalog()** (3 connections) — `server/game/skill_service.py`
-- **.__init__()** (3 connections) — `server/persistence/repositories/skill_repository.py`
-- **sample_skills()** (3 connections) — `server/tests/unit/api/test_skills.py`
-- *... and 27 more nodes in this community*
+- **admin_shutdown_command.py** (35 connections) — `server/commands/admin_shutdown_command.py`
+- **Any** (20 connections)
+- **handle_shutdown_command()** (14 connections) — `server/commands/admin_shutdown_command.py`
+- **initiate_shutdown_countdown()** (13 connections) — `server/commands/admin_shutdown_command.py`
+- **cancel_shutdown_countdown()** (11 connections) — `server/commands/admin_shutdown_command.py`
+- **parse_shutdown_parameters()** (11 connections) — `server/commands/admin_shutdown_command.py`
+- **broadcast_shutdown_notification()** (7 connections) — `server/commands/admin_shutdown_command.py`
+- **countdown_loop()** (7 connections) — `server/commands/admin_shutdown_command.py`
+- **_create_countdown_task()** (5 connections) — `server/commands/admin_shutdown_command.py`
+- **_store_shutdown_data()** (5 connections) — `server/commands/admin_shutdown_command.py`
+- **_clear_shutdown_state()** (5 connections) — `server/commands/admin_shutdown_command.py`
+- **_validate_shutdown_context()** (5 connections) — `server/commands/admin_shutdown_command.py`
+- **_handle_shutdown_cancel()** (5 connections) — `server/commands/admin_shutdown_command.py`
+- **_handle_shutdown_initiate()** (5 connections) — `server/commands/admin_shutdown_command.py`
+- **_cancel_existing_shutdown_task()** (4 connections) — `server/commands/admin_shutdown_command.py`
+- **_set_shutdown_pending_flag()** (4 connections) — `server/commands/admin_shutdown_command.py`
+- **_get_shutdown_state()** (4 connections) — `server/commands/admin_shutdown_command.py`
+- **_cancel_countdown_task()** (4 connections) — `server/commands/admin_shutdown_command.py`
+- **_broadcast_shutdown_cancellation()** (4 connections) — `server/commands/admin_shutdown_command.py`
+- **_get_shutdown_services()** (4 connections) — `server/commands/admin_shutdown_command.py`
+- **Task** (2 connections)
+- **Admin shutdown command for MythosMUD.  This module provides the /shutdown comman** (1 connections) — `server/commands/admin_shutdown_command.py`
+- **Broadcast shutdown notification to all players.      Args:         connection_ma** (1 connections) — `server/commands/admin_shutdown_command.py`
+- **Cancel existing shutdown task if present.      Args:         app: FastAPI applic** (1 connections) — `server/commands/admin_shutdown_command.py`
+- **Set shutdown pending flag in container and app.state.      Args:         app: Fa** (1 connections) — `server/commands/admin_shutdown_command.py`
+- *... and 15 more nodes in this community*
 
 ## Relationships
 
-- [main()](main%28%29.md) (35 shared connections)
-- [Any](Any.md) (12 shared connections)
-- [. init ()](_init_%28%29.md) (7 shared connections)
-- [Connection Manager](Connection_Manager.md) (7 shared connections)
-- [Base](Base.md) (5 shared connections)
-- [character creation](character_creation.md) (4 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (4 shared connections)
-- [test skill service](test_skill_service.md) (4 shared connections)
-- [skills commands](skills_commands.md) (3 shared connections)
-- [SkillService with mocks.](SkillService_with_mocks.md) (1 shared connections)
+- [Any](Any.md) (17 shared connections)
+- [test npc combat integration service](test_npc_combat_integration_service.md) (4 shared connections)
+- [test format player location invalid()](test_format_player_location_invalid%28%29.md) (3 shared connections)
+- [Schedule a best effort graceful](Schedule_a_best_effort_graceful.md) (3 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (3 shared connections)
+- [test magic commands](test_magic_commands.md) (2 shared connections)
+- [websocket handler app state](websocket_handler_app_state.md) (2 shared connections)
+- [get item description from prototype()](get_item_description_from_prototype%28%29.md) (2 shared connections)
+- [DropResolved](DropResolved.md) (2 shared connections)
+- [AuthSlice](AuthSlice.md) (1 shared connections)
+- [admin shutdown command](admin_shutdown_command.md) (1 shared connections)
+- [test command factories inventory](test_command_factories_inventory.md) (1 shared connections)
 
 ## Source Files
 
-- `server/dependencies.py`
-- `server/game/skill_service.py`
-- `server/models/skill.py`
-- `server/persistence/repositories/player_skill_repository.py`
-- `server/persistence/repositories/skill_repository.py`
-- `server/persistence/repositories/skill_use_log_repository.py`
-- `server/tests/unit/api/test_skills.py`
+- `server/commands/admin_shutdown_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 233 (90%)
-- INFERRED: 25 (10%)
+- EXTRACTED: 192 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

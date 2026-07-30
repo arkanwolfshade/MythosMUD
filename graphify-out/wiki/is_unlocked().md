@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **.is_unlocked()** (2 connections) — `server/models/container.py`
-- **Check if container is unlocked.** (1 connections) — `server/models/container.py`
+- **test_broadcast_by_channel_type_exception()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _broadcast_by_channel_type handles exceptions.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [test nats message handler chat](test_nats_message_handler_chat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/container.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 

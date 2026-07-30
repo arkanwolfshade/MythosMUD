@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_validate_combat_state_edge_case_return_true()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test validate_combat_state fallback return (edge case coverage).** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_build_occupants_snapshot_data_mixed()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test build_occupants_snapshot_data() with mixed occupants.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [test combat validator](test_combat_validator.md) (1 shared connections)
+- [test player event handlers utils](test_player_event_handlers_utils.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 

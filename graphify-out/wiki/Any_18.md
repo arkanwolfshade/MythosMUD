@@ -1,27 +1,38 @@
 # Any
 
-> 5 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **.__init__()** (4 connections) — `server/models/game.py`
-- **._compute_max_dp_if_missing()** (3 connections) — `server/models/game.py`
-- **Any** (2 connections)
-- **Initialize Stats with provided data.          For random stat generation, use ge** (1 connections) — `server/models/game.py`
-- **Populate max_dp from (CON+SIZ)/5 when not provided (stored value takes precedenc** (1 connections) — `server/models/game.py`
+- **._create_event_message()** (7 connections) — `server/realtime/event_publisher.py`
+- **Any** (6 connections)
+- **._get_async_persistence()** (6 connections) — `server/realtime/event_publisher.py`
+- **.publish_player_entered_event()** (5 connections) — `server/realtime/event_publisher.py`
+- **.publish_player_left_event()** (5 connections) — `server/realtime/event_publisher.py`
+- **.__init__()** (4 connections) — `server/realtime/event_publisher.py`
+- **.publish_game_tick_event()** (4 connections) — `server/realtime/event_publisher.py`
+- **.get_next_sequence_number()** (3 connections) — `server/realtime/event_publisher.py`
+- **Initialize EventPublisher service.          Args:             nats_service: NATS** (1 connections) — `server/realtime/event_publisher.py`
+- **Publish a player_entered event to NATS.          Args:             player_id: ID** (1 connections) — `server/realtime/event_publisher.py`
+- **Publish a player_left event to NATS.          Args:             player_id: ID of** (1 connections) — `server/realtime/event_publisher.py`
+- **Publish a game_tick event to NATS.          Args:             timestamp: Optiona** (1 connections) — `server/realtime/event_publisher.py`
+- **Create a standardized event message structure.          Args:             event_** (1 connections) — `server/realtime/event_publisher.py`
+- **Get the next sequence number for event ordering.          Returns:             N** (1 connections) — `server/realtime/event_publisher.py`
+- **Get async_persistence from ApplicationContainer (lazy-loaded).** (1 connections) — `server/realtime/event_publisher.py`
 
 ## Relationships
 
-- [Core character statistics with Lovecraftian](Core_character_statistics_with_Lovecraftian.md) (2 shared connections)
-- [character creation](character_creation.md) (1 shared connections)
+- [test command parser](test_command_parser.md) (7 shared connections)
+- [get subject manager dependency()](get_subject_manager_dependency%28%29.md) (1 shared connections)
+- [Any](Any.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/game.py`
+- `server/realtime/event_publisher.py`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 47 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

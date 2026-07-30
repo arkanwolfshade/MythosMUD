@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_load_room_cache_with_rooms_logs_sample_ids()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _load_room_cache logs sample room IDs when rooms are loaded.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_subscribe_player_to_room_invalid_id()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **Test subscribe_player_to_room() handles invalid player_id.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Relationships
 
-- [test async persistence room loading](test_async_persistence_room_loading.md) (1 shared connections)
+- [. call ()](_call_%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Audit Trail
 

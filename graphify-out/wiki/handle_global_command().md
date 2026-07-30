@@ -1,56 +1,54 @@
 # handle global command()
 
-> 67 nodes
+> 49 nodes
 
 ## Key Concepts
 
-- **request_with_app_container()** (28 connections) — `server/tests/unit/commands/communication_commands_mocks.py`
-- **test_communication_commands_say_me_pose.py** (22 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_communication_commands_channels.py** (20 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
-- **handle_say_command()** (17 connections) — `server/commands/communication_commands.py`
-- **handle_pose_command()** (14 connections) — `server/commands/communication_commands.py`
-- **handle_global_command()** (12 connections) — `server/commands/communication_commands.py`
-- **handle_local_command()** (11 connections) — `server/commands/communication_commands.py`
-- **communication_commands_mocks.py** (5 connections) — `server/tests/unit/commands/communication_commands_mocks.py`
-- **test_handle_local_command_success()** (4 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
-- **test_handle_global_command_level_too_low()** (4 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
-- **test_handle_global_command_success()** (4 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
-- **test_handle_system_command_not_admin()** (4 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
-- **test_handle_system_command_success()** (4 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
-- **test_handle_local_command_no_room()** (4 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
-- **test_handle_global_command_player_not_found()** (4 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
-- **test_handle_say_command_player_not_found()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_say_command_success()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_say_command_delegates_broadcast_to_chat_service_with_ids()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_pose_command_player_not_found()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_pose_command_clear_pose()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_pose_command_set_pose()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_say_command_no_room()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_say_command_no_player_id()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_say_command_chat_service_failure()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_say_command_exception()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- *... and 42 more nodes in this community*
+- **handle_whisper_command()** (21 connections) — `server/commands/communication_commands.py`
+- **test_communication_commands_whisper_reply.py** (17 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
+- **test_whisper_command.py** (13 connections) — `server/tests/unit/commands/test_whisper_command.py`
+- **handle_reply_command()** (11 connections) — `server/commands/communication_commands.py`
+- **test_handle_whisper_command_target_not_found()** (4 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
+- **test_handle_whisper_command_whisper_to_self()** (4 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
+- **test_handle_whisper_command_success()** (4 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
+- **test_handle_reply_command_no_last_whisper_sender()** (4 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
+- **test_handle_reply_command_success()** (4 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
+- **test_handle_whisper_command_chat_service_failure()** (4 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
+- **test_handle_whisper_command_no_target()** (3 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
+- **test_handle_whisper_command_no_message()** (3 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
+- **test_handle_whisper_command_no_services()** (3 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
+- **test_handle_reply_command_no_message()** (3 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
+- **test_handle_reply_command_no_services()** (3 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
+- **test_whisper_command_missing_target()** (3 connections) — `server/tests/unit/commands/test_whisper_command.py`
+- **test_whisper_command_missing_message()** (3 connections) — `server/tests/unit/commands/test_whisper_command.py`
+- **test_whisper_command_no_player_service()** (3 connections) — `server/tests/unit/commands/test_whisper_command.py`
+- **test_whisper_command_sender_not_found()** (3 connections) — `server/tests/unit/commands/test_whisper_command.py`
+- **test_whisper_command_target_not_found()** (3 connections) — `server/tests/unit/commands/test_whisper_command.py`
+- **test_whisper_command_whisper_to_self()** (3 connections) — `server/tests/unit/commands/test_whisper_command.py`
+- **test_whisper_command_success()** (3 connections) — `server/tests/unit/commands/test_whisper_command.py`
+- **mock_request()** (2 connections) — `server/tests/unit/commands/test_whisper_command.py`
+- **mock_sender()** (2 connections) — `server/tests/unit/commands/test_whisper_command.py`
+- **mock_target()** (2 connections) — `server/tests/unit/commands/test_whisper_command.py`
+- *... and 24 more nodes in this community*
 
 ## Relationships
 
-- [Any](Any.md) (22 shared connections)
-- [handle reply command()](handle_reply_command%28%29.md) (8 shared connections)
-- [communication commands](communication_commands.md) (6 shared connections)
-- [chat send with room bundle()](chat_send_with_room_bundle%28%29.md) (3 shared connections)
-- [communication commands support](communication_commands_support.md) (2 shared connections)
-- [. get persistence from app()](_get_persistence_from_app%28%29.md) (1 shared connections)
+- [.get instance()](get_instance%28%29.md) (12 shared connections)
+- [test magic commands](test_magic_commands.md) (2 shared connections)
+- [DropResolved](DropResolved.md) (2 shared connections)
+- [Player Position Service](Player_Position_Service.md) (2 shared connections)
+- [.validate alias name field()](validate_alias_name_field%28%29.md) (2 shared connections)
 
 ## Source Files
 
 - `server/commands/communication_commands.py`
-- `server/tests/unit/commands/communication_commands_mocks.py`
-- `server/tests/unit/commands/test_communication_commands_channels.py`
-- `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
+- `server/tests/unit/commands/test_whisper_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 261 (98%)
-- INFERRED: 5 (2%)
+- EXTRACTED: 150 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

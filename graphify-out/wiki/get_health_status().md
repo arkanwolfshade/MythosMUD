@@ -1,57 +1,62 @@
 # get health status()
 
-> 71 nodes
+> 75 nodes
 
 ## Key Concepts
 
-- **test_health.py** (27 connections) — `server/tests/unit/models/test_health.py`
-- **ServerComponent** (21 connections) — `server/models/health.py`
-- **DatabaseComponent** (21 connections) — `server/models/health.py`
-- **ConnectionsComponent** (20 connections) — `server/models/health.py`
-- **HealthComponents** (17 connections) — `server/models/health.py`
-- **HealthResponse** (15 connections) — `server/models/health.py`
-- **health.py** (13 connections) — `server/models/health.py`
-- **get_health_status()** (12 connections) — `server/api/monitoring.py`
-- **HealthStatus** (10 connections) — `server/models/health.py`
-- **HealthErrorResponse** (10 connections) — `server/models/health.py`
-- **test_get_health_status_healthy_returns_model()** (7 connections) — `server/tests/unit/api/test_monitoring_endpoints.py`
-- **test_health_components_rejects_extra_fields()** (7 connections) — `server/tests/unit/models/test_health.py`
-- **test_health_response_creation()** (7 connections) — `server/tests/unit/models/test_health.py`
-- **test_health_response_with_alerts()** (7 connections) — `server/tests/unit/models/test_health.py`
-- **test_health_response_default_alerts()** (7 connections) — `server/tests/unit/models/test_health.py`
-- **BaseModel** (6 connections)
-- **test_health_components_creation()** (6 connections) — `server/tests/unit/models/test_health.py`
-- **test_generate_alerts_no_alerts()** (6 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_generate_alerts_with_alerts()** (6 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_determine_overall_status_healthy()** (6 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_determine_overall_status_degraded()** (6 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_determine_overall_status_unhealthy()** (6 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_get_health_status_version_fallback()** (5 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_server_component_rejects_extra_fields()** (4 connections) — `server/tests/unit/models/test_health.py`
-- **test_server_component_frozen()** (4 connections) — `server/tests/unit/models/test_health.py`
-- *... and 46 more nodes in this community*
+- **MythosChronicle** (27 connections) — `server/time/time_service.py`
+- **time_service.py** (25 connections) — `server/time/time_service.py`
+- **get_mythos_chronicle()** (24 connections) — `server/time/time_service.py`
+- **datetime** (15 connections)
+- **handle_time_command()** (14 connections) — `server/commands/time_commands.py`
+- **_ensure_utc()** (11 connections) — `server/time/time_service.py`
+- **time_commands.py** (10 connections) — `server/commands/time_commands.py`
+- **.get_calendar_components()** (10 connections) — `server/time/time_service.py`
+- **ChronicleState** (9 connections) — `server/time/time_service.py`
+- **.get_current_mythos_datetime()** (9 connections) — `server/time/time_service.py`
+- **test_time_commands.py** (8 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **.error()** (8 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- **__init__.py** (8 connections) — `server/time/__init__.py`
+- **.get_daypart()** (8 connections) — `server/time/time_service.py`
+- **._load_state()** (8 connections) — `server/time/time_service.py`
+- **._persist_state()** (8 connections) — `server/time/time_service.py`
+- **.to_mythos_datetime()** (7 connections) — `server/time/time_service.py`
+- **.is_witching_hour()** (7 connections) — `server/time/time_service.py`
+- **.is_daytime()** (7 connections) — `server/time/time_service.py`
+- **._migrate_old_state_file()** (6 connections) — `server/time/time_service.py`
+- **.__init__()** (5 connections) — `server/time/time_service.py`
+- **.to_real_datetime()** (5 connections) — `server/time/time_service.py`
+- **.freeze()** (5 connections) — `server/time/time_service.py`
+- **._hours_between()** (5 connections) — `server/time/time_service.py`
+- **MythosCalendarComponents** (4 connections) — `server/time/time_service.py`
+- *... and 50 more nodes in this community*
 
 ## Relationships
 
-- [monitoring](monitoring.md) (17 shared connections)
-- [get health service()](get_health_service%28%29.md) (13 shared connections)
-- [. init ()](_init_%28%29.md) (8 shared connections)
-- [Base](Base.md) (4 shared connections)
-- [test memory profiler](test_memory_profiler.md) (4 shared connections)
-- [APIRouter](APIRouter.md) (1 shared connections)
-- [benchmark model memory usage()](benchmark_model_memory_usage%28%29.md) (1 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (11 shared connections)
+- [HolidayCollection](HolidayCollection.md) (5 shared connections)
+- [.shutdown()](shutdown%28%29.md) (4 shared connections)
+- [emit close container event()](emit_close_container_event%28%29.md) (4 shared connections)
+- [process all status effects()](process_all_status_effects%28%29.md) (4 shared connections)
+- [test find item in room](test_find_item_in_room.md) (3 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (3 shared connections)
+- [test magic commands](test_magic_commands.md) (2 shared connections)
+- [Any](Any.md) (2 shared connections)
+- [Player Position Service](Player_Position_Service.md) (2 shared connections)
+- [metrics](metrics.md) (2 shared connections)
+- [test command factories inventory](test_command_factories_inventory.md) (2 shared connections)
 
 ## Source Files
 
-- `server/api/monitoring.py`
-- `server/models/health.py`
-- `server/tests/unit/api/test_monitoring_endpoints.py`
-- `server/tests/unit/models/test_health.py`
-- `server/tests/unit/services/test_health_service.py`
+- `server/commands/time_commands.py`
+- `server/tests/unit/commands/test_time_commands.py`
+- `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- `server/time/__init__.py`
+- `server/time/time_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 314 (96%)
+- EXTRACTED: 317 (96%)
 - INFERRED: 12 (4%)
 - AMBIGUOUS: 0 (0%)
 

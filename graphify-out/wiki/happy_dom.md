@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **happy-dom** (2 connections) — `client/package.json`
-- **happy-dom** (1 connections) — `client/package.json`
+- **test_validate_chat_message_fields_type_errors()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _validate_chat_message_fields raises TypeError for invalid types.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [autoprefixer](autoprefixer.md) (1 shared connections)
+- [test nats message handler chat](test_nats_message_handler_chat.md) (1 shared connections)
 
 ## Source Files
 
-- `client/package.json`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 

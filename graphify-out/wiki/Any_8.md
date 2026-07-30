@@ -1,52 +1,47 @@
 # Any
 
-> 32 nodes
+> 21 nodes
 
 ## Key Concepts
 
-- **lifecycle_periodic.py** (18 connections) — `server/npc/lifecycle_periodic.py`
-- **NPCMaintenanceConfig** (8 connections) — `server/config/npc_config.py`
-- **Any** (8 connections)
-- **check_optional_npc_spawns_impl()** (8 connections) — `server/npc/lifecycle_periodic.py`
-- **run_periodic_maintenance_impl()** (7 connections) — `server/npc/lifecycle_periodic.py`
-- **cleanup_old_records_impl()** (6 connections) — `server/npc/lifecycle_periodic.py`
-- **_attempt_optional_npc_spawn()** (5 connections) — `server/npc/lifecycle_periodic.py`
-- **get_zone_key_for_definition()** (5 connections) — `server/npc/lifecycle_periodic.py`
-- **get_spawn_room_for_definition()** (5 connections) — `server/npc/lifecycle_periodic.py`
-- **npc_config.py** (4 connections) — `server/config/npc_config.py`
-- **_should_skip_optional_npc()** (4 connections) — `server/npc/lifecycle_periodic.py`
-- **_check_spawn_conditions_for_optional_npc()** (4 connections) — `server/npc/lifecycle_periodic.py`
-- **.get_config_summary()** (3 connections) — `server/config/npc_config.py`
-- **.cleanup_old_records()** (3 connections) — `server/npc/lifecycle_manager.py`
-- **.periodic_maintenance()** (3 connections) — `server/npc/lifecycle_manager.py`
-- **.get_respawn_delay()** (2 connections) — `server/config/npc_config.py`
-- **Any** (1 connections)
-- **NPC Configuration for MythosMUD.  This module defines configuration settings for** (1 connections) — `server/config/npc_config.py`
-- **Configuration for NPC lifecycle maintenance.      This class centralizes all tim** (1 connections) — `server/config/npc_config.py`
-- **Get the respawn delay for a specific NPC type.          Args:             npc_ty** (1 connections) — `server/config/npc_config.py`
-- **Get a summary of all NPC configuration values.          Returns:             Dic** (1 connections) — `server/config/npc_config.py`
-- **Clean up old lifecycle records (delegates to lifecycle_periodic).** (1 connections) — `server/npc/lifecycle_manager.py`
-- **Perform periodic maintenance (delegates to lifecycle_periodic).** (1 connections) — `server/npc/lifecycle_manager.py`
-- **Periodic maintenance and optional NPC spawn checks for lifecycle.  Extracted fro** (1 connections) — `server/npc/lifecycle_periodic.py`
-- **Clean up old lifecycle records. Returns number of records removed.** (1 connections) — `server/npc/lifecycle_periodic.py`
-- *... and 7 more nodes in this community*
+- **handle_npc_command()** (17 connections) — `server/commands/npc_admin/router.py`
+- **_resolve_npc_command_player()** (5 connections) — `server/commands/npc_admin/router.py`
+- **Any** (5 connections)
+- **_extract_npc_subcommand()** (5 connections) — `server/commands/npc_admin/router.py`
+- **_invoke_npc_handler()** (5 connections) — `server/commands/npc_admin/router.py`
+- **test_handle_npc_command_no_player_service()** (3 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
+- **test_handle_npc_command_player_not_found()** (3 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
+- **test_handle_npc_command_no_permission()** (3 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
+- **test_handle_npc_command_no_args()** (3 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
+- **test_spawn_command_regression_routing_via_npc_command()** (3 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
+- **test_handle_npc_command_unknown_subcommand()** (3 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
+- **Resolve player for NPC command. Returns (player_obj, error).     If error is set** (1 connections) — `server/commands/npc_admin/router.py`
+- **Extract subcommand and normalize args. Returns (subcommand, args, help_result).** (1 connections) — `server/commands/npc_admin/router.py`
+- **Invoke the handler for the given subcommand.** (1 connections) — `server/commands/npc_admin/router.py`
+- **Handle the main NPC admin command with subcommand routing.      Args:         co** (1 connections) — `server/commands/npc_admin/router.py`
+- **Test handle_npc_command() when player service is not available.** (1 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
+- **Test handle_npc_command() when player is not found.** (1 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
+- **Test handle_npc_command() when player lacks admin permission.** (1 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
+- **Test handle_npc_command() with no arguments.** (1 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
+- **Regression: Ensure /spawn (npc spawn) command is reachable and not removed.** (1 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
+- **Test handle_npc_command() with unknown subcommand.** (1 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
 
 ## Relationships
 
-- [. repr ()](_repr_%28%29.md) (11 shared connections)
-- [game tick processing](game_tick_processing.md) (3 shared connections)
-- [main()](main%28%29.md) (3 shared connections)
+- [Any](Any.md) (9 shared connections)
+- [NATSMetrics](NATSMetrics.md) (7 shared connections)
+- [test magic commands](test_magic_commands.md) (2 shared connections)
+- [Player Position Service](Player_Position_Service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/config/npc_config.py`
-- `server/npc/lifecycle_manager.py`
-- `server/npc/lifecycle_periodic.py`
+- `server/commands/npc_admin/router.py`
+- `server/tests/unit/commands/test_npc_admin_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 109 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 52 (80%)
+- INFERRED: 13 (20%)
 - AMBIGUOUS: 0 (0%)
 
 ---

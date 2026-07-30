@@ -1,53 +1,61 @@
 # CommandHandler
 
-> 28 nodes
+> 80 nodes
 
 ## Key Concepts
 
-- **CommandService** (20 connections) — `server/commands/command_service.py`
-- **Any** (10 connections)
-- **._extract_parsed_fields()** (7 connections) — `server/commands/command_service.py`
-- **.process_command()** (7 connections) — `server/commands/command_service.py`
-- **._execute_command_handler()** (6 connections) — `server/commands/command_service.py`
-- **.process_validated_command()** (5 connections) — `server/commands/command_service.py`
-- **._parse_command_string()** (5 connections) — `server/commands/command_service.py`
-- **._prepare_command_data()** (5 connections) — `server/commands/command_service.py`
-- **._fallback_parsed_fields()** (4 connections) — `server/commands/command_service.py`
-- **._log_parsed_command_inspection()** (4 connections) — `server/commands/command_service.py`
-- **._log_model_dump_result()** (4 connections) — `server/commands/command_service.py`
-- **.register_command_handler()** (3 connections) — `server/commands/command_service.py`
-- **.get_available_commands()** (2 connections) — `server/commands/command_service.py`
-- **.unregister_command_handler()** (2 connections) — `server/commands/command_service.py`
-- **CommandHandler** (1 connections)
-- **Main command processing service for MythosMUD.      This service handles command** (1 connections) — `server/commands/command_service.py`
-- **Process a validated command with routing.          Args:             command_dat** (1 connections) — `server/commands/command_service.py`
-- **Parse and validate command string.          Returns:             tuple of (parse** (1 connections) — `server/commands/command_service.py`
-- **Prepare command_data dictionary by merging parsed command fields.          Retur** (1 connections) — `server/commands/command_service.py`
-- **Extract non-private, non-callable attributes from parsed_command, excluding keys** (1 connections) — `server/commands/command_service.py`
-- **Extract fields from parsed_command using model_dump or fallback method.** (1 connections) — `server/commands/command_service.py`
-- **Log parsed command object inspection details.** (1 connections) — `server/commands/command_service.py`
-- **Log model_dump result details.** (1 connections) — `server/commands/command_service.py`
-- **Execute command handler with error handling.          Returns:             dict:** (1 connections) — `server/commands/command_service.py`
-- **Process a command with full validation and routing.          Args:             c** (1 connections) — `server/commands/command_service.py`
-- *... and 3 more nodes in this community*
+- **test_lucidity_recovery_commands.py** (34 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **lucidity_recovery_commands.py** (25 connections) — `server/commands/lucidity_recovery_commands.py`
+- **handle_pray_command()** (22 connections) — `server/commands/lucidity_recovery_commands.py`
+- **LucidityActionOnCooldownError** (16 connections) — `server/services/active_lucidity_service.py`
+- **_perform_recovery_action()** (15 connections) — `server/commands/lucidity_recovery_commands.py`
+- **UnknownLucidityActionError** (12 connections) — `server/services/active_lucidity_service.py`
+- **handle_meditate_command()** (11 connections) — `server/commands/lucidity_recovery_commands.py`
+- **handle_group_solace_command()** (10 connections) — `server/commands/lucidity_recovery_commands.py`
+- **handle_therapy_command()** (9 connections) — `server/commands/lucidity_recovery_commands.py`
+- **handle_folk_tonic_command()** (9 connections) — `server/commands/lucidity_recovery_commands.py`
+- **Any** (8 connections)
+- **.perform_recovery_action()** (6 connections) — `server/services/active_lucidity_service.py`
+- **_validate_recovery_context()** (5 connections) — `server/commands/lucidity_recovery_commands.py`
+- **_restore_mp_for_action()** (5 connections) — `server/commands/lucidity_recovery_commands.py`
+- **_format_cooldown_message()** (4 connections) — `server/commands/lucidity_recovery_commands.py`
+- **test_handle_pray_command_cooldown()** (4 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **test_handle_pray_command_unknown_action()** (4 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **test_handle_pray_command_cooldown_no_expiry()** (4 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **test_handle_pray_command_cooldown_no_cooldown_object()** (4 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **test_handle_pray_command_cooldown_naive_datetime()** (4 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **test_handle_meditate_command_cooldown()** (4 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **test_handle_group_solace_command_unknown_action()** (4 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **_format_recovery_success_message()** (3 connections) — `server/commands/lucidity_recovery_commands.py`
+- **test_handle_pray_command_no_persistence()** (3 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **test_handle_pray_command_player_not_found()** (3 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- *... and 55 more nodes in this community*
 
 ## Relationships
 
-- [Any](Any.md) (6 shared connections)
-- [test command service](test_command_service.md) (2 shared connections)
-- [processing](processing.md) (1 shared connections)
-- [check alias safety()](check_alias_safety%28%29.md) (1 shared connections)
-- [.validate topic()](validate_topic%28%29.md) (1 shared connections)
-- [test command parser](test_command_parser.md) (1 shared connections)
+- [UUID](UUID.md) (14 shared connections)
+- [test magic commands](test_magic_commands.md) (7 shared connections)
+- [DropResolved](DropResolved.md) (6 shared connections)
+- [Player Position Service](Player_Position_Service.md) (5 shared connections)
+- [monitoring](monitoring.md) (4 shared connections)
+- [test player preferences service](test_player_preferences_service.md) (2 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
+- [Lock](Lock.md) (2 shared connections)
+- [AuthSlice](AuthSlice.md) (1 shared connections)
+- [real time](real_time.md) (1 shared connections)
+- [Spell Targeting](Spell_Targeting.md) (1 shared connections)
+- [. get persistence from app()](_get_persistence_from_app%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/command_service.py`
+- `server/commands/lucidity_recovery_commands.py`
+- `server/services/active_lucidity_service.py`
+- `server/tests/unit/commands/test_lucidity_recovery_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 98 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 300 (96%)
+- INFERRED: 11 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

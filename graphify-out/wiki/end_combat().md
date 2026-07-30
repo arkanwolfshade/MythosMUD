@@ -1,53 +1,67 @@
 # .end combat()
 
-> 56 nodes
+> 214 nodes
 
 ## Key Concepts
 
-- **combat_service_npc.py** (30 connections) — `server/services/combat_service_npc.py`
-- **get_combat_id_for_npc()** (13 connections) — `server/services/combat_service_npc.py`
-- **UUID** (11 connections)
-- **get_npc_participant_current_room()** (11 connections) — `server/services/combat_service_npc.py`
-- **_get_uuid_mapping()** (10 connections) — `server/services/combat_service_npc.py`
-- **find_participant_uuid_by_string_id()** (10 connections) — `server/services/combat_service_npc.py`
-- **resolve_npc_participant_id_in_combat()** (9 connections) — `server/services/combat_service_npc.py`
-- **UUIDMappingProtocol** (8 connections) — `server/services/combat_service_npc.py`
-- **DataProviderProtocol** (8 connections) — `server/services/combat_service_npc.py`
-- **get_combat_id_for_npc_via_mapping()** (8 connections) — `server/services/combat_service_npc.py`
-- **_fallback_find_combat_id_for_npc()** (8 connections) — `server/services/combat_service_npc.py`
-- **get_participant_current_room()** (8 connections) — `server/services/combat_service_npc.py`
-- **.get_uuid_for_string_id()** (7 connections) — `server/services/combat_service_npc.py`
-- **.get_original_string_id()** (6 connections) — `server/services/combat_service_npc.py`
-- **_get_data_provider()** (6 connections) — `server/services/combat_service_npc.py`
-- **_iter_active_combats()** (6 connections) — `server/services/combat_service_npc.py`
-- **sync_npc_participant_dp_after_spell_damage()** (6 connections) — `server/services/combat_service_npc.py`
-- **get_combat_by_participant()** (6 connections) — `server/services/combat_service_npc.py`
-- **_participant_matches_npc_id()** (6 connections) — `server/services/combat_service_npc.py`
-- **npc_in_combat_by_string_id_mapping()** (6 connections) — `server/services/combat_service_npc.py`
-- **is_npc_in_combat_sync()** (6 connections) — `server/services/combat_service_npc.py`
-- **.end_combat_if_npc_died()** (5 connections) — `server/services/combat_service.py`
-- **NPCInstanceWithRoomProtocol** (5 connections) — `server/services/combat_service_npc.py`
-- **npc_in_combat_by_uuid_lookup()** (5 connections) — `server/services/combat_service_npc.py`
-- **._get_combat_id_for_npc()** (4 connections) — `server/services/combat_service.py`
-- *... and 31 more nodes in this community*
+- **TargetMatch** (122 connections) — `server/schemas/shared/target_resolution.py`
+- **spell_effects.py** (47 connections) — `server/game/magic/spell_effects.py`
+- **spell_effects_heal.py** (40 connections) — `server/game/magic/spell_effects_heal.py`
+- **test_spell_effects.py** (37 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
+- **run_flee_effect()** (18 connections) — `server/game/magic/spell_effect_flee.py`
+- **spell_effect_flee.py** (17 connections) — `server/game/magic/spell_effect_flee.py`
+- **NpcSpellDamageTarget** (17 connections) — `server/game/magic/spell_effect_types.py`
+- **._dispatch_effect()** (15 connections) — `server/game/magic/spell_effects.py`
+- **run_heal_effect()** (15 connections) — `server/game/magic/spell_effects_heal.py`
+- **SpellEffectPlayer** (14 connections) — `server/game/magic/spell_effect_types.py`
+- **SpellEffectsEngineHealPort** (13 connections) — `server/game/magic/spell_effect_types.py`
+- **UUID** (13 connections)
+- **UUID** (12 connections)
+- **spell_effect_types.py** (11 connections) — `server/game/magic/spell_effect_types.py`
+- **_steal_life_resolve_target_dp()** (11 connections) — `server/game/magic/spell_effects_heal.py`
+- **_steal_life_apply_target_damage()** (11 connections) — `server/game/magic/spell_effects_heal.py`
+- **_run_steal_life()** (11 connections) — `server/game/magic/spell_effects_heal.py`
+- **Any** (10 connections)
+- **PlayerPersistenceSpellPort** (10 connections) — `server/game/magic/spell_effect_types.py`
+- **_run_standard_heal_after_validation()** (10 connections) — `server/game/magic/spell_effects_heal.py`
+- **._process_damage()** (9 connections) — `server/game/magic/spell_effects.py`
+- **._process_lucidity_adjust()** (9 connections) — `server/game/magic/spell_effects.py`
+- **._process_corruption_adjust()** (9 connections) — `server/game/magic/spell_effects.py`
+- **get_npc_instance_for_steal_life()** (9 connections) — `server/game/magic/spell_effects_heal.py`
+- **.resolve_spell_target()** (9 connections) — `server/game/magic/spell_targeting.py`
+- *... and 189 more nodes in this community*
 
 ## Relationships
 
-- [initialize nats and combat services()](initialize_nats_and_combat_services%28%29.md) (27 shared connections)
-- [combat](combat.md) (11 shared connections)
-- [Spell Targeting](Spell_Targeting.md) (8 shared connections)
-- [get current tick()](get_current_tick%28%29.md) (3 shared connections)
-- [combat taunt](combat_taunt.md) (3 shared connections)
+- [. init ()](_init_%28%29.md) (57 shared connections)
+- [message handler factory](message_handler_factory.md) (41 shared connections)
+- [. initialize handlers()](_initialize_handlers%28%29.md) (25 shared connections)
+- [CombatService](CombatService.md) (25 shared connections)
+- [test player event handlers room](test_player_event_handlers_room.md) (12 shared connections)
+- [test command service](test_command_service.md) (9 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (7 shared connections)
+- [Any](Any.md) (6 shared connections)
+- [close db()](close_db%28%29.md) (4 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (3 shared connections)
+- [real time](real_time.md) (2 shared connections)
+- [test combat attack handler](test_combat_attack_handler.md) (2 shared connections)
 
 ## Source Files
 
-- `server/services/combat_service.py`
-- `server/services/combat_service_npc.py`
+- `server/game/magic/spell_effect_flee.py`
+- `server/game/magic/spell_effect_types.py`
+- `server/game/magic/spell_effects.py`
+- `server/game/magic/spell_effects_heal.py`
+- `server/game/magic/spell_effects_internal.py`
+- `server/game/magic/spell_targeting.py`
+- `server/schemas/shared/target_resolution.py`
+- `server/tests/unit/game/magic/test_spell_effects.py`
+- `server/tests/unit/schemas/test_target_resolution.py`
 
 ## Audit Trail
 
-- EXTRACTED: 237 (95%)
-- INFERRED: 13 (5%)
+- EXTRACTED: 940 (97%)
+- INFERRED: 27 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

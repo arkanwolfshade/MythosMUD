@@ -1,62 +1,54 @@
 # . init ()
 
-> 64 nodes
+> 28 nodes
 
 ## Key Concepts
 
-- **dependencies.py** (104 connections) — `server/dependencies.py`
-- **test_dependencies.py** (60 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **get_container()** (41 connections) — `server/dependencies.py`
-- **RuntimeError** (37 connections)
-- **Request** (29 connections)
-- **get_player_service()** (12 connections) — `server/dependencies.py`
-- **get_combat_service()** (10 connections) — `server/dependencies.py`
-- **get_connection_manager()** (9 connections) — `server/dependencies.py`
-- **get_async_persistence()** (9 connections) — `server/dependencies.py`
-- **get_player_respawn_service()** (9 connections) — `server/dependencies.py`
-- **get_player_combat_service()** (9 connections) — `server/dependencies.py`
-- **get_player_death_service()** (9 connections) — `server/dependencies.py`
-- **get_magic_service()** (9 connections) — `server/dependencies.py`
-- **get_spell_registry()** (9 connections) — `server/dependencies.py`
-- **get_spell_targeting_service()** (9 connections) — `server/dependencies.py`
-- **get_spell_effects()** (9 connections) — `server/dependencies.py`
-- **get_spell_learning_service()** (9 connections) — `server/dependencies.py`
-- **get_mp_regeneration_service()** (9 connections) — `server/dependencies.py`
-- **get_npc_lifecycle_manager()** (9 connections) — `server/dependencies.py`
-- **get_npc_spawning_service()** (9 connections) — `server/dependencies.py`
-- **get_npc_population_controller()** (9 connections) — `server/dependencies.py`
-- **get_catatonia_registry()** (9 connections) — `server/dependencies.py`
-- **get_passive_lucidity_flux_service()** (9 connections) — `server/dependencies.py`
-- **get_mythos_time_consumer()** (9 connections) — `server/dependencies.py`
-- **get_chat_service()** (9 connections) — `server/dependencies.py`
-- *... and 39 more nodes in this community*
+- **ChatPoseManager** (11 connections) — `server/game/chat_pose_manager.py`
+- **ChatWhisperTracker** (10 connections) — `server/game/chat_whisper_tracker.py`
+- **.__init__()** (7 connections) — `server/game/chat_service.py`
+- **.normalize_player_id()** (5 connections) — `server/game/chat_pose_manager.py`
+- **.set_pose()** (3 connections) — `server/game/chat_pose_manager.py`
+- **.get_pose()** (3 connections) — `server/game/chat_pose_manager.py`
+- **.clear_pose()** (3 connections) — `server/game/chat_pose_manager.py`
+- **.__init__()** (2 connections) — `server/game/chat_pose_manager.py`
+- **.get_all_poses()** (2 connections) — `server/game/chat_pose_manager.py`
+- **.__init__()** (2 connections) — `server/game/chat_whisper_tracker.py`
+- **.store_sender()** (2 connections) — `server/game/chat_whisper_tracker.py`
+- **.get_sender()** (2 connections) — `server/game/chat_whisper_tracker.py`
+- **.clear_sender()** (2 connections) — `server/game/chat_whisper_tracker.py`
+- **.get_all_trackings()** (2 connections) — `server/game/chat_whisper_tracker.py`
+- **Manages in-memory storage of player poses.** (1 connections) — `server/game/chat_pose_manager.py`
+- **Initialize the pose manager.** (1 connections) — `server/game/chat_pose_manager.py`
+- **Normalize player identifiers to string form.** (1 connections) — `server/game/chat_pose_manager.py`
+- **Set a player's pose in memory.          Args:             player_id: ID of the p** (1 connections) — `server/game/chat_pose_manager.py`
+- **Get a player's current pose.          Args:             player_id: ID of the pla** (1 connections) — `server/game/chat_pose_manager.py`
+- **Clear a player's pose.          Args:             player_id: ID of the player** (1 connections) — `server/game/chat_pose_manager.py`
+- **Get all poses (for testing/debugging).          Returns:             Dictionary** (1 connections) — `server/game/chat_pose_manager.py`
+- **Initialize chat service.          Args:             persistence: Database persis** (1 connections) — `server/game/chat_service.py`
+- **Tracks last whisper senders for reply functionality.** (1 connections) — `server/game/chat_whisper_tracker.py`
+- **Initialize the whisper tracker.** (1 connections) — `server/game/chat_whisper_tracker.py`
+- **Store the last whisper sender for a player.          Args:             receiver_** (1 connections) — `server/game/chat_whisper_tracker.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [get room service()](get_room_service%28%29.md) (26 shared connections)
-- [character creation](character_creation.md) (18 shared connections)
-- [. init ()](_init_%28%29.md) (18 shared connections)
-- [main()](main%28%29.md) (15 shared connections)
-- [Connection Manager](Connection_Manager.md) (8 shared connections)
-- [.initialize()](initialize%28%29.md) (7 shared connections)
-- [Tests for get spell targeting](Tests_for_get_spell_targeting.md) (6 shared connections)
-- [get nats message handler()](get_nats_message_handler%28%29.md) (5 shared connections)
-- [get skill repository()](get_skill_repository%28%29.md) (5 shared connections)
-- [BaseUserManager](BaseUserManager.md) (4 shared connections)
-- [.shutdown()](shutdown%28%29.md) (4 shared connections)
-- [. repr ()](_repr_%28%29.md) (4 shared connections)
+- [ChatService](ChatService.md) (4 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
+- [ChatMessage](ChatMessage.md) (2 shared connections)
+- [player preferences service](player_preferences_service.md) (1 shared connections)
+- [CorpseNotFoundError](CorpseNotFoundError.md) (1 shared connections)
 
 ## Source Files
 
-- `server/database.py`
-- `server/dependencies.py`
-- `server/tests/unit/infrastructure/test_dependencies.py`
-- `server/tests/unit/test_dependency_injection.py`
+- `server/game/chat_pose_manager.py`
+- `server/game/chat_service.py`
+- `server/game/chat_whisper_tracker.py`
 
 ## Audit Trail
 
-- EXTRACTED: 453 (85%)
-- INFERRED: 82 (15%)
+- EXTRACTED: 67 (96%)
+- INFERRED: 3 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

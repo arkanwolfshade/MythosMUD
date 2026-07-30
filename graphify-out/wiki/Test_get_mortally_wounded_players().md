@@ -4,20 +4,20 @@
 
 ## Key Concepts
 
-- **test_get_mortally_wounded_players_finds_mortally_wounded()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **Test get_mortally_wounded_players() finds mortally wounded players.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **test_is_npc_in_combat_false()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **Test _is_npc_in_combat() returns False when NPC is not in combat.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
 
 ## Relationships
 
-- [test player death service](test_player_death_service.md) (1 shared connections)
+- [cfg float()](cfg_float%28%29.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_player_death_service.py`
+- `server/tests/unit/npc/test_idle_movement.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,58 +1,53 @@
 # test connection establishment
 
-> 26 nodes
+> 97 nodes
 
 ## Key Concepts
 
-- **test_connection_establishment.py** (46 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_setup_connection_metadata_no_session_token()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_setup_session_tracking_no_session_id()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_setup_session_tracking_new_session()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_setup_player_and_room_success()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_setup_player_and_room_no_persistence()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_track_player_presence_new_player()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_track_player_presence_existing_player()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_cleanup_failed_connection_none()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_cleanup_failed_connection_success()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_cleanup_failed_connection_error()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_establish_websocket_connection_error()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_establish_websocket_connection_cleans_dead_connections()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Unit tests for connection establishment.  Tests the connection_establishment mod** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _setup_connection_metadata() handles None session and token.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _setup_session_tracking() handles None session_id.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _setup_session_tracking() creates new session entry.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _setup_player_and_room() successfully sets up player and room.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _setup_player_and_room() handles no persistence.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _track_player_presence() tracks new player.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _track_player_presence() broadcasts for existing player.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _cleanup_failed_connection() handles None connection_id.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _cleanup_failed_connection() cleans up connection.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _cleanup_failed_connection() handles errors during cleanup.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test establish_websocket_connection() handles errors.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- *... and 1 more nodes in this community*
+- **test_connection_establishment.py** (47 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **connection_establishment.py** (24 connections) — `server/realtime/connection_establishment.py`
+- **establish_websocket_connection()** (23 connections) — `server/realtime/connection_establishment.py`
+- **UUID** (12 connections)
+- **Any** (12 connections)
+- **_find_dead_connections()** (11 connections) — `server/realtime/connection_establishment.py`
+- **_cleanup_dead_connections()** (10 connections) — `server/realtime/connection_establishment.py`
+- **_setup_player_and_room()** (10 connections) — `server/realtime/connection_establishment.py`
+- **_cleanup_failed_connection()** (10 connections) — `server/realtime/connection_establishment.py`
+- **_update_player_connection_list()** (9 connections) — `server/realtime/connection_establishment.py`
+- **_register_new_connection()** (9 connections) — `server/realtime/connection_establishment.py`
+- **_setup_connection_metadata()** (9 connections) — `server/realtime/connection_establishment.py`
+- **_setup_session_tracking()** (9 connections) — `server/realtime/connection_establishment.py`
+- **_track_player_presence()** (8 connections) — `server/realtime/connection_establishment.py`
+- **_remove_dead_connection()** (7 connections) — `server/realtime/connection_establishment.py`
+- **_cancel_rest_countdown_if_active()** (6 connections) — `server/realtime/connection_establishment.py`
+- **test_establish_websocket_connection_error()** (4 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_find_dead_connections_no_player()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_find_dead_connections_all_active()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_find_dead_connections_not_in_active()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_find_dead_connections_none_websocket()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_find_dead_connections_not_connected()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_remove_dead_connection()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_remove_dead_connection_not_present()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_update_player_connection_list_no_player()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- *... and 72 more nodes in this community*
 
 ## Relationships
 
-- [connection establishment](connection_establishment.md) (19 shared connections)
-- [find dead connections()](find_dead_connections%28%29.md) (6 shared connections)
-- [cleanup dead connections()](cleanup_dead_connections%28%29_2.md) (6 shared connections)
-- [Update player's connection list to](Update_player%27s_connection_list_to.md) (4 shared connections)
-- [WebSocket](WebSocket.md) (3 shared connections)
-- [Test setup player and room()](Test_setup_player_and_room%28%29.md) (2 shared connections)
-- [Reconnect cancels an in progress](Reconnect_cancels_an_in_progress.md) (1 shared connections)
-- [Test establish websocket connection() returns](Test_establish_websocket_connection%28%29_returns.md) (1 shared connections)
-- [Test establish websocket connection() successfully](Test_establish_websocket_connection%28%29_successfully.md) (1 shared connections)
-- [Test setup connection metadata() creates](Test_setup_connection_metadata%28%29_creates.md) (1 shared connections)
-- [Test setup session tracking() adds](Test_setup_session_tracking%28%29_adds.md) (1 shared connections)
+- [real time](real_time.md) (6 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (3 shared connections)
+- [AttributeError](AttributeError.md) (3 shared connections)
+- [Player](Player.md) (3 shared connections)
+- [.check and interrupt rest()](check_and_interrupt_rest%28%29.md) (2 shared connections)
 
 ## Source Files
 
+- `server/realtime/connection_establishment.py`
 - `server/tests/unit/realtime/test_connection_establishment.py`
 
 ## Audit Trail
 
-- EXTRACTED: 95 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 363 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

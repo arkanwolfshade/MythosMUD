@@ -1,49 +1,66 @@
 # convert pydantic error()
 
-> 38 nodes
+> 172 nodes
 
 ## Key Concepts
 
+- **error_types.py** (37 connections) — `server/error_types.py`
+- **StandardizedErrorResponse** (35 connections) — `server/error_handlers/standardized_responses.py`
+- **standardized_responses.py** (32 connections) — `server/error_handlers/standardized_responses.py`
+- **create_websocket_error_response()** (32 connections) — `server/error_types.py`
+- **create_standard_error_response()** (27 connections) — `server/error_types.py`
+- **pydantic_error_handler.py** (25 connections) — `server/error_handlers/pydantic_error_handler.py`
 - **PydanticErrorHandler** (23 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **websocket_handler_validation.py** (21 connections) — `server/realtime/websocket_handler_validation.py`
+- **test_error_types.py** (21 connections) — `server/tests/unit/test_error_types.py`
+- **create_sse_error_response()** (17 connections) — `server/error_types.py`
 - **.handle_validation_error()** (14 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **.handle_exception()** (14 connections) — `server/error_handlers/standardized_responses.py`
+- **._handle_mythos_error()** (11 connections) — `server/error_handlers/standardized_responses.py`
+- **._handle_logged_http_exception()** (11 connections) — `server/error_handlers/standardized_responses.py`
+- **._handle_generic_exception()** (10 connections) — `server/error_handlers/standardized_responses.py`
+- **test_standardized_responses_security.py** (10 connections) — `server/tests/unit/error_handlers/test_standardized_responses_security.py`
+- **TestStandardizedResponsesSecurity** (10 connections) — `server/tests/unit/error_handlers/test_standardized_responses_security.py`
+- **__init__.py** (9 connections) — `server/error_handlers/__init__.py`
 - **handle_pydantic_error()** (9 connections) — `server/error_handlers/pydantic_error_handler.py`
 - **convert_pydantic_error()** (9 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **ErrorResponseDetails** (9 connections) — `server/error_types.py`
 - **_ExtractedErrorInfo** (8 connections) — `server/error_handlers/pydantic_error_handler.py`
 - **._create_fallback_error_response()** (8 connections) — `server/error_handlers/pydantic_error_handler.py`
 - **.convert_to_mythos_error()** (8 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **ValidationError** (7 connections)
-- **._extract_error_info()** (7 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **._generate_user_friendly_message()** (7 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **._create_error_details()** (7 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **.create_handler()** (7 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **._determine_error_type()** (5 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **._determine_severity()** (5 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **._format_single_field_error_message()** (5 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **_ExtractedFieldErrorInfo** (4 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **._get_display_field_name()** (4 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **StandardizedErrorResponseDict** (3 connections)
-- **._get_field_path()** (3 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **Unpack** (3 connections)
-- **TypedDict** (2 connections)
-- **Intermediate field error extracted from a Pydantic ValidationError.** (1 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **Structured information extracted from a Pydantic ValidationError.** (1 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **Handler for processing Pydantic validation errors into user-friendly messages.** (1 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **Handle a Pydantic ValidationError and convert it to a standardized response.** (1 connections) — `server/error_handlers/pydantic_error_handler.py`
-- *... and 13 more nodes in this community*
+- **._extract_context_from_request()** (8 connections) — `server/error_handlers/standardized_responses.py`
+- *... and 147 more nodes in this community*
 
 ## Relationships
 
-- [. init ()](_init_%28%29.md) (29 shared connections)
-- [MythosValidationError](MythosValidationError.md) (2 shared connections)
+- [. init ()](_init_%28%29.md) (63 shared connections)
+- [.is required()](is_required%28%29.md) (14 shared connections)
+- [fetch schedule entries()](fetch_schedule_entries%28%29.md) (10 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (7 shared connections)
+- [.initialize()](initialize%28%29.md) (5 shared connections)
+- [Response](Response.md) (5 shared connections)
+- [real time](real_time.md) (4 shared connections)
+- [AbstractContextManager](AbstractContextManager.md) (4 shared connections)
+- [help content](help_content.md) (3 shared connections)
+- [test websocket handler helpers extended](test_websocket_handler_helpers_extended.md) (3 shared connections)
+- [NATS](NATS.md) (2 shared connections)
+- [BaseCommand](BaseCommand.md) (2 shared connections)
 
 ## Source Files
 
+- `server/error_handlers/__init__.py`
 - `server/error_handlers/pydantic_error_handler.py`
+- `server/error_handlers/standardized_responses.py`
+- `server/error_types.py`
+- `server/exceptions.py`
+- `server/realtime/websocket_handler_validation.py`
+- `server/tests/unit/error_handlers/test_standardized_responses_security.py`
+- `server/tests/unit/test_error_types.py`
 
 ## Audit Trail
 
-- EXTRACTED: 162 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 776 (97%)
+- INFERRED: 21 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

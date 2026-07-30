@@ -1,35 +1,52 @@
 # datetime
 
-> 13 nodes
+> 30 nodes
 
 ## Key Concepts
 
-- **_utc_now()** (8 connections) — `server/models/lucidity.py`
-- **test_lucidity_utils.py** (7 connections) — `server/tests/unit/models/test_lucidity_utils.py`
-- **test_utc_now_returns_datetime()** (3 connections) — `server/tests/unit/models/test_lucidity_utils.py`
-- **test_utc_now_returns_naive_datetime()** (3 connections) — `server/tests/unit/models/test_lucidity_utils.py`
-- **test_utc_now_returns_utc_time()** (3 connections) — `server/tests/unit/models/test_lucidity_utils.py`
-- **test_utc_now_returns_different_times()** (3 connections) — `server/tests/unit/models/test_lucidity_utils.py`
-- **datetime** (2 connections)
-- **Return naive UTC timestamps for PostgreSQL TIMESTAMP WITHOUT TIME ZONE compatibi** (1 connections) — `server/models/lucidity.py`
-- **Unit tests for lucidity model utility functions.  Tests the _utc_now utility fun** (1 connections) — `server/tests/unit/models/test_lucidity_utils.py`
-- **Test _utc_now returns a datetime object.** (1 connections) — `server/tests/unit/models/test_lucidity_utils.py`
-- **Test _utc_now returns naive datetime (tzinfo=None).** (1 connections) — `server/tests/unit/models/test_lucidity_utils.py`
-- **Test _utc_now returns time close to current UTC time.** (1 connections) — `server/tests/unit/models/test_lucidity_utils.py`
-- **Test _utc_now returns different times on subsequent calls.** (1 connections) — `server/tests/unit/models/test_lucidity_utils.py`
+- **ContainerLockState** (14 connections) — `server/models/container.py`
+- **Any** (8 connections)
+- **.create_corpse()** (7 connections) — `server/models/container.py`
+- **.create_environment()** (6 connections) — `server/models/container.py`
+- **.create_equipment()** (6 connections) — `server/models/container.py`
+- **UUID** (5 connections)
+- **.validate_lock_state()** (4 connections) — `server/models/container.py`
+- **.validate_entity_id()** (4 connections) — `server/models/container.py`
+- **.would_exceed_capacity()** (4 connections) — `server/models/container.py`
+- **.validate_metadata_no_personal_data()** (3 connections) — `server/models/container.py`
+- **.validate_room_id()** (3 connections) — `server/models/container.py`
+- **.has_room_for()** (3 connections) — `server/models/container.py`
+- **.is_decayed()** (3 connections) — `server/models/container.py`
+- **datetime** (3 connections)
+- **InventoryStack** (3 connections)
+- **.to_dict()** (3 connections) — `server/models/container.py`
+- **StrEnum** (2 connections)
+- **ValidationInfo** (2 connections)
+- **Lock state for container instances.** (1 connections) — `server/models/container.py`
+- **Validate that metadata does not contain personal information (COPPA compliance).** (1 connections) — `server/models/container.py`
+- **Validate and convert lock_state to enum.** (1 connections) — `server/models/container.py`
+- **Validate that room_id is provided for environment and corpse containers.** (1 connections) — `server/models/container.py`
+- **Validate that entity_id is provided for equipment containers.** (1 connections) — `server/models/container.py`
+- **Check if container has room for additional items.** (1 connections) — `server/models/container.py`
+- **Check if adding the given items would exceed container capacity.** (1 connections) — `server/models/container.py`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
-- [. init ()](_init_%28%29.md) (3 shared connections)
+- [APIRouter](APIRouter.md) (14 shared connections)
+- [.get population stats()](get_population_stats%28%29.md) (3 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [real time](real_time.md) (2 shared connections)
+- [main()](main%28%29.md) (1 shared connections)
+- [AbstractContextManager](AbstractContextManager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/lucidity.py`
-- `server/tests/unit/models/test_lucidity_utils.py`
+- `server/models/container.py`
 
 ## Audit Trail
 
-- EXTRACTED: 35 (100%)
+- EXTRACTED: 95 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

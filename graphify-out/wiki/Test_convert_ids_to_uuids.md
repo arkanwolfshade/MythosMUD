@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_convert_ids_to_uuids()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _convert_ids_to_uuids converts IDs.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **.test_get_name_from_user_object_getattr_fallback()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **Test _get_name_from_user_object with getattr fallback.** (1 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
 
 ## Relationships
 
-- [test nats message handler chat](test_nats_message_handler_chat.md) (1 shared connections)
+- [container websocket events](container_websocket_events.md) (1 shared connections)
+- [PlayerNameExtractor](PlayerNameExtractor.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `server/tests/unit/realtime/test_player_name_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

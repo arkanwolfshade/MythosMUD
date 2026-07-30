@@ -1,12 +1,13 @@
 # ENVIRONMENT CONTAMINATION TASKS
 
-> 8 nodes
+> 9 nodes
 
 ## Key Concepts
 
 - **Implementation Notes** (5 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
-- **Spec Tasks** (3 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
+- **Spec Tasks** (4 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
 - **ENVIRONMENT_CONTAMINATION_TASKS.md** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
+- **Environment Contamination Remediation Tasks** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
 - **Tasks** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
 - **Critical Priority** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
 - **Dependencies** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
@@ -23,7 +24,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
+- EXTRACTED: 16 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,52 +1,44 @@
 # NPCInstanceService
 
-> 23 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **NPCInstanceService** (20 connections) — `server/services/npc_instance_service.py`
-- **Any** (8 connections)
-- **.get_population_stats()** (4 connections) — `server/services/npc_instance_service.py`
-- **.get_zone_stats()** (4 connections) — `server/services/npc_instance_service.py`
-- **._extract_zone_from_room_id()** (4 connections) — `server/services/npc_instance_service.py`
-- **.spawn_npc_instance()** (3 connections) — `server/services/npc_instance_service.py`
-- **.despawn_npc_instance()** (3 connections) — `server/services/npc_instance_service.py`
-- **.move_npc_instance()** (3 connections) — `server/services/npc_instance_service.py`
-- **.get_npc_instances()** (3 connections) — `server/services/npc_instance_service.py`
-- **.get_npc_stats()** (3 connections) — `server/services/npc_instance_service.py`
-- **.get_system_stats()** (3 connections) — `server/services/npc_instance_service.py`
-- **test_npc_instance_service_init()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **High-level API wrapper for NPC instance management.      This service provides a** (1 connections) — `server/services/npc_instance_service.py`
-- **Spawn a new NPC instance.          Args:             definition_id: ID of the NP** (1 connections) — `server/services/npc_instance_service.py`
-- **Despawn an NPC instance.          Args:             npc_id: ID of the NPC to des** (1 connections) — `server/services/npc_instance_service.py`
-- **Move an NPC instance to a different room.          Args:             npc_id: ID** (1 connections) — `server/services/npc_instance_service.py`
-- **Get all active NPC instances.          Returns:             List of NPC instance** (1 connections) — `server/services/npc_instance_service.py`
-- **Get detailed stats for a specific NPC instance.          Args:             npc_i** (1 connections) — `server/services/npc_instance_service.py`
-- **Get NPC population statistics.          Returns:             Dictionary with pop** (1 connections) — `server/services/npc_instance_service.py`
-- **Get NPC zone statistics.          Returns:             Dictionary with zone stat** (1 connections) — `server/services/npc_instance_service.py`
-- **Get system-wide NPC statistics.          Returns:             Dictionary with sy** (1 connections) — `server/services/npc_instance_service.py`
-- **Extract zone key from room ID.          Args:             room_id: Room ID like** (1 connections) — `server/services/npc_instance_service.py`
-- **Test NPCInstanceService initialization.** (1 connections) — `server/tests/unit/services/test_npc_instance_service.py`
+- **__init__.py** (12 connections) — `server/schemas/auth/__init__.py`
+- **SecureBaseModel** (10 connections) — `server/schemas/shared/base.py`
+- **user.py** (9 connections) — `server/schemas/auth/user.py`
+- **invite.py** (8 connections) — `server/schemas/auth/invite.py`
+- **UserRead** (7 connections) — `server/schemas/auth/user.py`
+- **base.py** (6 connections) — `server/schemas/shared/base.py`
+- **ResponseBaseModel** (6 connections) — `server/schemas/shared/base.py`
+- **BaseModel** (2 connections)
+- **Auth domain schemas: user and invite.** (1 connections) — `server/schemas/auth/__init__.py`
+- **Pydantic schemas for Invite model.  This module defines Pydantic schemas for inv** (1 connections) — `server/schemas/auth/invite.py`
+- **Pydantic schemas for User model.  This module defines Pydantic schemas for user** (1 connections) — `server/schemas/auth/user.py`
+- **Schema for reading user data.** (1 connections) — `server/schemas/auth/user.py`
+- **Base Pydantic model classes for MythosMUD schemas.  This module provides base cl** (1 connections) — `server/schemas/shared/base.py`
+- **Base model with standard security configuration.      All models that handle use** (1 connections) — `server/schemas/shared/base.py`
+- **Base model for API response schemas.      Response models may need additional co** (1 connections) — `server/schemas/shared/base.py`
 
 ## Relationships
 
-- [.initialize()](initialize%28%29.md) (2 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (2 shared connections)
-- [test npc instance service](test_npc_instance_service.md) (2 shared connections)
-- [AbstractContextManager](AbstractContextManager.md) (1 shared connections)
-- [.get instance()](get_instance%28%29.md) (1 shared connections)
-- [Any](Any.md) (1 shared connections)
-- [npc instance service()](npc_instance_service%28%29.md) (1 shared connections)
+- [. call ()](_call_%28%29.md) (10 shared connections)
+- [init](init.md) (8 shared connections)
+- [lifespan](lifespan.md) (3 shared connections)
+- [test player event handlers state](test_player_event_handlers_state.md) (2 shared connections)
+- [Connection Manager](Connection_Manager.md) (2 shared connections)
 
 ## Source Files
 
-- `server/services/npc_instance_service.py`
-- `server/tests/unit/services/test_npc_instance_service.py`
+- `server/schemas/auth/__init__.py`
+- `server/schemas/auth/invite.py`
+- `server/schemas/auth/user.py`
+- `server/schemas/shared/base.py`
 
 ## Audit Trail
 
-- EXTRACTED: 71 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 67 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,6 +1,6 @@
 # look player
 
-> 84 nodes
+> 96 nodes
 
 ## Key Concepts
 
@@ -9,6 +9,7 @@
 - **_format_player_look_display()** (23 connections) — `server/commands/look_player.py`
 - **_select_target_player()** (17 connections) — `server/commands/look_player.py`
 - **_handle_player_look()** (13 connections) — `server/commands/look_player.py`
+- **test_visual_indicator.py** (13 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
 - **_try_lookup_player_implicit()** (12 connections) — `server/commands/look_player.py`
 - **test_look_player_helpers.py** (12 connections) — `server/tests/unit/commands/test_look_player_helpers.py`
 - **_get_players_in_room()** (11 connections) — `server/commands/look_player.py`
@@ -28,17 +29,15 @@
 - **test_format_player_look_display_basic()** (3 connections) — `server/tests/unit/commands/test_look_player.py`
 - **test_format_player_look_display_with_equipment()** (3 connections) — `server/tests/unit/commands/test_look_player.py`
 - **test_format_player_look_display_no_equipment()** (3 connections) — `server/tests/unit/commands/test_look_player.py`
-- **test_handle_player_look_success()** (3 connections) — `server/tests/unit/commands/test_look_player.py`
-- *... and 59 more nodes in this community*
+- *... and 71 more nodes in this community*
 
 ## Relationships
 
-- [look helpers](look_helpers.md) (7 shared connections)
+- [look helpers](look_helpers.md) (12 shared connections)
+- [login grace period](login_grace_period.md) (10 shared connections)
 - [look room](look_room.md) (7 shared connections)
-- [disconnect grace period](disconnect_grace_period.md) (6 shared connections)
-- [look command](look_command.md) (5 shared connections)
-- [login grace period](login_grace_period.md) (3 shared connections)
-- [main()](main%28%29.md) (2 shared connections)
+- [player disconnect handlers](player_disconnect_handlers.md) (3 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
 
 ## Source Files
 
@@ -49,7 +48,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 298 (100%)
+- EXTRACTED: 328 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

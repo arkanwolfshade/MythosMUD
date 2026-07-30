@@ -1,54 +1,62 @@
 # follow commands
 
-> 42 nodes
+> 63 nodes
 
 ## Key Concepts
 
-- **test_follow_commands.py** (23 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **handle_follow_command()** (19 connections) — `server/commands/follow_commands.py`
-- **follow_commands.py** (15 connections) — `server/commands/follow_commands.py`
-- **_make_container()** (12 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **_make_request()** (12 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **handle_unfollow_command()** (11 connections) — `server/commands/follow_commands.py`
-- **handle_following_command()** (11 connections) — `server/commands/follow_commands.py`
-- **test_handle_follow_self_rejected()** (7 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_follow_same_room_player_sends_request()** (7 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_follow_same_room_npc_immediate()** (7 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **_get_container()** (6 connections) — `server/commands/follow_commands.py`
-- **test_handle_follow_no_such_player_or_npc()** (6 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_follow_no_persistence()** (5 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_follow_no_target()** (5 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_follow_player_not_in_game()** (5 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_unfollow_success()** (5 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_unfollow_was_not_following()** (5 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_following_display()** (5 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **Any** (4 connections)
-- **test_handle_follow_no_container()** (3 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_unfollow_no_container()** (3 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_following_no_container()** (3 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **Follow commands for MythosMUD.  Handlers for /follow, /unfollow, and /following.** (1 connections) — `server/commands/follow_commands.py`
-- **Get application container from request.** (1 connections) — `server/commands/follow_commands.py`
-- **Handle /follow <target>. Target must be a player or NPC in the same room.** (1 connections) — `server/commands/follow_commands.py`
-- *... and 17 more nodes in this community*
+- **real_time.py** (35 connections) — `server/api/real_time.py`
+- **realtime.py** (13 connections) — `server/schemas/realtime/realtime.py`
+- **_resolve_player_id()** (10 connections) — `server/api/real_time.py`
+- **websocket_endpoint()** (10 connections) — `server/api/real_time.py`
+- **PresenceStatistics** (10 connections) — `server/schemas/realtime/presence_data.py`
+- **SessionStatistics** (10 connections) — `server/schemas/realtime/presence_data.py`
+- **ErrorStatistics** (10 connections) — `server/schemas/realtime/presence_data.py`
+- **PlayerConnectionsResponse** (10 connections) — `server/schemas/realtime/realtime.py`
+- **NewGameSessionResponse** (10 connections) — `server/schemas/realtime/realtime.py`
+- **ConnectionStatisticsResponse** (10 connections) — `server/schemas/realtime/realtime.py`
+- **Any** (9 connections)
+- **_ensure_connection_manager()** (9 connections) — `server/api/real_time.py`
+- **__init__.py** (9 connections) — `server/schemas/realtime/__init__.py`
+- **SessionInfo** (9 connections) — `server/schemas/realtime/realtime.py`
+- **WebSocket** (8 connections)
+- **_resolve_player_id_from_test()** (8 connections) — `server/api/real_time.py`
+- **_resolve_player_id_from_token()** (8 connections) — `server/api/real_time.py`
+- **get_player_connections()** (8 connections) — `server/api/real_time.py`
+- **handle_new_game_session()** (8 connections) — `server/api/real_time.py`
+- **websocket_endpoint_route()** (8 connections) — `server/api/real_time.py`
+- **UUID** (7 connections)
+- **_validate_websocket_connection_manager()** (7 connections) — `server/api/real_time.py`
+- **_resolve_connection_manager_from_state()** (6 connections) — `server/api/real_time.py`
+- **_parse_websocket_token()** (6 connections) — `server/api/real_time.py`
+- **get_connection_statistics()** (6 connections) — `server/api/real_time.py`
+- *... and 38 more nodes in this community*
 
 ## Relationships
 
-- [Any](Any.md) (14 shared connections)
-- [Player Position Service](Player_Position_Service.md) (8 shared connections)
-- [Spell Targeting](Spell_Targeting.md) (4 shared connections)
-- [. get persistence from app()](_get_persistence_from_app%28%29.md) (3 shared connections)
-- [combat taunt](combat_taunt.md) (2 shared connections)
-- [main()](main%28%29.md) (2 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (8 shared connections)
+- [AbstractContextManager](AbstractContextManager.md) (7 shared connections)
+- [create access token()](create_access_token%28%29.md) (4 shared connections)
+- [.is required()](is_required%28%29.md) (4 shared connections)
+- [test player event handlers state](test_player_event_handlers_state.md) (4 shared connections)
+- [UUID](UUID.md) (3 shared connections)
+- [Player](Player.md) (3 shared connections)
+- [.state()](state%28%29.md) (2 shared connections)
+- [BaseModel](BaseModel.md) (2 shared connections)
+- [metrics](metrics.md) (1 shared connections)
+- [real time](real_time.md) (1 shared connections)
+- [test security headers](test_security_headers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/follow_commands.py`
-- `server/tests/unit/commands/test_follow_commands.py`
+- `server/api/real_time.py`
+- `server/schemas/realtime/__init__.py`
+- `server/schemas/realtime/presence_data.py`
+- `server/schemas/realtime/realtime.py`
 
 ## Audit Trail
 
-- EXTRACTED: 192 (96%)
-- INFERRED: 7 (4%)
+- EXTRACTED: 282 (88%)
+- INFERRED: 38 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

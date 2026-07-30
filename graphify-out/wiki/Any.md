@@ -1,63 +1,70 @@
 # Any
 
-> 39 nodes
+> 57 nodes
 
 ## Key Concepts
 
-- **player_service()** (23 connections) — `docs/examples/logging/fastapi_integration.py`
-- **party_commands.py** (19 connections) — `server/commands/party_commands.py`
-- **teach_command.py** (14 connections) — `server/commands/teach_command.py`
-- **handle_teach_command()** (13 connections) — `server/commands/teach_command.py`
-- **handle_party_command()** (12 connections) — `server/commands/party_commands.py`
-- **Any** (9 connections)
-- **_get_party_command_context()** (6 connections) — `server/commands/party_commands.py`
-- **_handle_party_invite()** (6 connections) — `server/commands/party_commands.py`
-- **_handle_party_kick()** (6 connections) — `server/commands/party_commands.py`
-- **test_teach_command.py** (6 connections) — `server/tests/unit/commands/test_teach_command.py`
-- **_get_player_service_from_app()** (5 connections) — `server/commands/admin_setlucidity_command.py`
-- **_handle_party_chat()** (5 connections) — `server/commands/party_commands.py`
-- **_handle_party_list()** (5 connections) — `server/commands/party_commands.py`
-- **_get_container()** (4 connections) — `server/commands/party_commands.py`
-- **_get_member_display()** (4 connections) — `server/commands/party_commands.py`
-- **_handle_party_leave()** (3 connections) — `server/commands/party_commands.py`
-- **test_handle_teach_command()** (3 connections) — `server/tests/unit/commands/test_teach_command.py`
-- **test_handle_teach_command_no_target()** (3 connections) — `server/tests/unit/commands/test_teach_command.py`
-- **test_handle_teach_command_no_persistence()** (3 connections) — `server/tests/unit/commands/test_teach_command.py`
-- **Any** (2 connections)
-- **Simulate player service.** (1 connections) — `docs/examples/logging/fastapi_integration.py`
-- **Get player service from container, fallback to app.state for backward compatibil** (1 connections) — `server/commands/admin_setlucidity_command.py`
-- **Party commands for MythosMUD.  Handlers for party, party invite <name>, party le** (1 connections) — `server/commands/party_commands.py`
-- **Get application container from request.** (1 connections) — `server/commands/party_commands.py`
-- **Resolve container, party service, persistence, and current player for party comm** (1 connections) — `server/commands/party_commands.py`
-- *... and 14 more nodes in this community*
+- **GameTerminal.tsx** (46 connections) — `client/src/components/GameTerminal.tsx`
+- **lucidityEventUtils.ts** (19 connections) — `client/src/utils/lucidityEventUtils.ts`
+- **RoomInfoPanel.tsx** (10 connections) — `client/src/components/RoomInfoPanel.tsx`
+- **HallucinationMessage** (10 connections) — `client/src/types/lucidity.ts`
+- **buildLucidityStatus()** (10 connections) — `client/src/utils/lucidityEventUtils.ts`
+- **HallucinationTicker.tsx** (9 connections) — `client/src/components/lucidity/HallucinationTicker.tsx`
+- **GameTerminal()** (8 connections) — `client/src/components/GameTerminal.tsx`
+- **game-terminal-integration.spec.tsx** (7 connections) — `client/src/components/__tests__/game-terminal-integration.spec.tsx`
+- **game-terminal-integration.test.tsx** (7 connections) — `client/src/components/__tests__/game-terminal-integration.test.tsx`
+- **RoomInfoPanel()** (6 connections) — `client/src/components/RoomInfoPanel.tsx`
+- **IncapacitatedBanner.tsx** (5 connections) — `client/src/components/health/IncapacitatedBanner.tsx`
+- **HallucinationTicker.test.tsx** (5 connections) — `client/src/components/lucidity/__tests__/HallucinationTicker.test.tsx`
+- **DismissButton.tsx** (5 connections) — `client/src/components/ui/DismissButton.tsx`
+- **lucidityEventUtils.test.ts** (5 connections) — `client/src/utils/__tests__/lucidityEventUtils.test.ts`
+- **parseNumber()** (5 connections) — `client/src/utils/lucidityEventUtils.ts`
+- **RoomInfoPanel.test.tsx** (4 connections) — `client/src/components/__tests__/RoomInfoPanel.test.tsx`
+- **DismissButton()** (4 connections) — `client/src/components/ui/DismissButton.tsx`
+- **resolveCurrentLucidity()** (4 connections) — `client/src/utils/lucidityEventUtils.ts`
+- **buildHealthStatus()** (3 connections) — `client/src/components/GameTerminal.tsx`
+- **RoomInfoPanel.test.tsx** (3 connections) — `client/src/components/RoomInfoPanel.test.tsx`
+- **HallucinationTicker** (3 connections) — `client/src/components/lucidity/HallucinationTicker.tsx`
+- **resolveMaxLucidity()** (3 connections) — `client/src/utils/lucidityEventUtils.ts`
+- **createHallucinationEntry()** (3 connections) — `client/src/utils/lucidityEventUtils.ts`
+- **createRescueState()** (3 connections) — `client/src/utils/lucidityEventUtils.ts`
+- **GameTerminal.test.tsx** (2 connections) — `client/src/components/GameTerminal.test.tsx`
+- *... and 32 more nodes in this community*
 
 ## Relationships
 
-- [Any](Any.md) (19 shared connections)
-- [Player Position Service](Player_Position_Service.md) (7 shared connections)
-- [fastapi integration](fastapi_integration.md) (6 shared connections)
-- [main()](main%28%29.md) (4 shared connections)
-- [check alias safety()](check_alias_safety%28%29.md) (2 shared connections)
-- [websocket handler app state](websocket_handler_app_state.md) (2 shared connections)
-- [admin setlucidity command](admin_setlucidity_command.md) (2 shared connections)
-- [combat taunt](combat_taunt.md) (2 shared connections)
-- [. get persistence from app()](_get_persistence_from_app%28%29.md) (2 shared connections)
-- [admin setstat command](admin_setstat_command.md) (1 shared connections)
-- [communication commands support](communication_commands_support.md) (1 shared connections)
-- [follow commands](follow_commands.md) (1 shared connections)
+- [monitoring models](monitoring_models.md) (21 shared connections)
+- [MythosTimeHud](MythosTimeHud.md) (8 shared connections)
+- [async sessionmaker](async_sessionmaker.md) (6 shared connections)
+- [look item](look_item.md) (5 shared connections)
+- [ChatPanelTest](ChatPanelTest.md) (3 shared connections)
+- [.create corpse()](create_corpse%28%29.md) (3 shared connections)
+- [player repository save](player_repository_save.md) (2 shared connections)
+- [GameLogMessagesList](GameLogMessagesList.md) (2 shared connections)
+- [useConnectionStateMachine.test](useConnectionStateMachine.test.md) (2 shared connections)
+- [.append()](append%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/examples/logging/fastapi_integration.py`
-- `server/commands/admin_setlucidity_command.py`
-- `server/commands/party_commands.py`
-- `server/commands/teach_command.py`
-- `server/tests/unit/commands/test_teach_command.py`
+- `client/src/components/GameTerminal.test.tsx`
+- `client/src/components/GameTerminal.tsx`
+- `client/src/components/RoomInfoPanel.test.tsx`
+- `client/src/components/RoomInfoPanel.tsx`
+- `client/src/components/__tests__/RoomInfoPanel.test.tsx`
+- `client/src/components/__tests__/game-terminal-integration.spec.tsx`
+- `client/src/components/__tests__/game-terminal-integration.test.tsx`
+- `client/src/components/health/IncapacitatedBanner.tsx`
+- `client/src/components/lucidity/HallucinationTicker.tsx`
+- `client/src/components/lucidity/__tests__/HallucinationTicker.test.tsx`
+- `client/src/components/ui/DismissButton.tsx`
+- `client/src/types/lucidity.ts`
+- `client/src/utils/__tests__/lucidityEventUtils.test.ts`
+- `client/src/utils/lucidityEventUtils.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 144 (85%)
-- INFERRED: 26 (15%)
+- EXTRACTED: 231 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

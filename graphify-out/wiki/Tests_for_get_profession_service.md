@@ -1,27 +1,27 @@
 # Tests for get profession service
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **TestGetProfessionService** (4 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_profession_service_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Tests for get_profession_service dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_profession_service creates service with persistence.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **add_hashed_password_column.py** (4 connections) — `server/scripts/add_hashed_password_column.py`
+- **apply_migration()** (3 connections) — `server/scripts/add_hashed_password_column.py`
+- **main()** (3 connections) — `server/scripts/add_hashed_password_column.py`
+- **Apply the migration to add hashed_password column.      Args:         database_u** (1 connections) — `server/scripts/add_hashed_password_column.py`
+- **Main entry point for the migration script.** (1 connections) — `server/scripts/add_hashed_password_column.py`
 
 ## Relationships
 
-- [. init ()](_init_%28%29.md) (2 shared connections)
-- [Connection Manager](Connection_Manager.md) (1 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_dependencies.py`
+- `server/scripts/add_hashed_password_column.py`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (89%)
-- INFERRED: 1 (11%)
+- EXTRACTED: 12 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

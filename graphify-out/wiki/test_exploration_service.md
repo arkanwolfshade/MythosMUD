@@ -1,49 +1,59 @@
 # test exploration service
 
-> 78 nodes
+> 67 nodes
 
 ## Key Concepts
 
-- **test_exploration_service.py** (45 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **_row_scalar_one_or_none()** (10 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **_async_session_maker_mock()** (5 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_get_room_uuid_by_stable_id_no_session()** (5 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **_row_scalar_one()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **_row_fetchall()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_mark_room_as_explored_no_session()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_mark_room_as_explored_database_error()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_get_room_uuid_by_stable_id_with_session()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_get_room_uuid_by_stable_id_not_found()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_get_room_uuid_by_stable_id_string_uuid()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_get_room_uuid_by_stable_id_asyncpg_like_uuid_object()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_mark_explored_in_session_new_record()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_mark_explored_in_session_existing_record()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_get_explored_rooms()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_get_explored_rooms_empty()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_get_explored_rooms_database_error()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_is_room_explored_true()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_is_room_explored_false()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_is_room_explored_database_error()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_mark_room_as_explored_sync_with_error_handler()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_get_room_uuid_by_stable_id_asyncpg_uuid()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_get_room_uuid_by_stable_id_database_error()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_is_room_explored_database_error_in_query()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_mark_room_as_explored_commits_session()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- *... and 53 more nodes in this community*
+- **CombatParticipantData** (38 connections) — `server/services/combat_types.py`
+- **.create_combat_instance()** (17 connections) — `server/services/combat_initialization.py`
+- **combat_initialization.py** (15 connections) — `server/services/combat_initialization.py`
+- **TestCombatInitializer** (15 connections) — `server/tests/unit/services/test_combat_initialization.py`
+- **TestCombatParticipantData** (12 connections) — `server/tests/unit/services/test_combat_types.py`
+- **CombatInitializer** (8 connections) — `server/services/combat_initialization.py`
+- **test_combat_initialization.py** (8 connections) — `server/tests/unit/services/test_combat_initialization.py`
+- **_build_participant()** (5 connections) — `server/services/combat_initialization.py`
+- **_compute_turn_order()** (5 connections) — `server/services/combat_initialization.py`
+- **.start_combat()** (5 connections) — `server/services/combat_service.py`
+- **_build_combat_instance()** (4 connections) — `server/services/combat_initialization.py`
+- **test_get_player_combat_data_uses_get_combat_stats()** (4 connections) — `server/tests/unit/services/test_npc_combat_data_provider.py`
+- **test_get_npc_combat_data_uses_get_combat_stats()** (4 connections) — `server/tests/unit/services/test_npc_combat_data_provider.py`
+- **.attacker_data()** (3 connections) — `server/tests/unit/services/test_combat_initialization.py`
+- **.target_data()** (3 connections) — `server/tests/unit/services/test_combat_initialization.py`
+- **.test_create_combat_instance_basic()** (3 connections) — `server/tests/unit/services/test_combat_initialization.py`
+- **.test_create_combat_instance_participants()** (3 connections) — `server/tests/unit/services/test_combat_initialization.py`
+- **.test_create_combat_instance_turn_order_higher_dexterity_first()** (3 connections) — `server/tests/unit/services/test_combat_initialization.py`
+- **.test_create_combat_instance_turn_order_lower_dexterity_first()** (3 connections) — `server/tests/unit/services/test_combat_initialization.py`
+- **.test_create_combat_instance_turn_order_equal_dexterity()** (3 connections) — `server/tests/unit/services/test_combat_initialization.py`
+- **.test_create_combat_instance_auto_progression_disabled()** (3 connections) — `server/tests/unit/services/test_combat_initialization.py`
+- **.test_create_combat_instance_different_turn_interval()** (3 connections) — `server/tests/unit/services/test_combat_initialization.py`
+- **.test_create_combat_instance_damaged_participants()** (3 connections) — `server/tests/unit/services/test_combat_initialization.py`
+- **.test_create_combat_instance_zero_tick()** (3 connections) — `server/tests/unit/services/test_combat_initialization.py`
+- **.test_combat_participant_data_creation()** (3 connections) — `server/tests/unit/services/test_combat_types.py`
+- *... and 42 more nodes in this community*
 
 ## Relationships
 
-- [AsyncSession](AsyncSession.md) (36 shared connections)
-- [main()](main%28%29.md) (9 shared connections)
+- [Any](Any.md) (24 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (4 shared connections)
+- [. initialize handlers()](_initialize_handlers%28%29.md) (3 shared connections)
+- [test combat attack handler](test_combat_attack_handler.md) (2 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
+- [. init ()](_init_%28%29.md) (1 shared connections)
+- [get current tick()](get_current_tick%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_exploration_service.py`
+- `server/services/combat_initialization.py`
+- `server/services/combat_service.py`
+- `server/services/combat_types.py`
+- `server/tests/unit/services/test_combat_initialization.py`
+- `server/tests/unit/services/test_combat_types.py`
+- `server/tests/unit/services/test_npc_combat_data_provider.py`
 
 ## Audit Trail
 
-- EXTRACTED: 232 (98%)
-- INFERRED: 5 (2%)
+- EXTRACTED: 220 (94%)
+- INFERRED: 15 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

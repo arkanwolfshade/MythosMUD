@@ -1,65 +1,65 @@
 # disconnect grace period
 
-> 95 nodes
+> 85 nodes
 
 ## Key Concepts
 
-- **test_login_grace_period_visual_indicator.py** (28 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
-- **disconnect_grace_period.py** (24 connections) — `server/realtime/disconnect_grace_period.py`
-- **is_player_in_grace_period()** (24 connections) — `server/realtime/disconnect_grace_period.py`
-- **test_rest_and_grace_period.py** (24 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **start_grace_period()** (18 connections) — `server/realtime/disconnect_grace_period.py`
-- **test_disconnect_grace_period.py** (17 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
-- **player_event_handlers_utils.py** (16 connections) — `server/realtime/player_event_handlers_utils.py`
-- **player_occupant_processor.py** (15 connections) — `server/realtime/player_occupant_processor.py`
-- **MockPersistenceFull** (14 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **player_name_utils.py** (13 connections) — `server/realtime/player_name_utils.py`
-- **cancel_grace_period()** (12 connections) — `server/realtime/disconnect_grace_period.py`
-- **test_both_linkdead_and_warded_indicators()** (6 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
-- **UUID** (4 connections)
-- **test_unintentional_disconnect_starts_grace_period()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_intentional_disconnect_no_grace_period()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_rest_command_blocks_during_combat()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_rest_command_starts_countdown_not_in_combat()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_rest_location_instant_disconnect()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_rest_location_blocked_during_combat()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_rest_countdown_completes_disconnect()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_start_grace_period_reconnection_cancels()** (4 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
-- **test_warded_indicator_in_look_room()** (4 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
-- **test_warded_indicator_in_look_player()** (4 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
-- **test_warded_indicator_in_websocket_room_updates()** (4 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
-- **Any** (3 connections)
-- *... and 70 more nodes in this community*
+- **container_persistence.py** (54 connections) — `server/persistence/container_persistence.py`
+- **test_container_persistence_extended_row_helpers.py** (53 connections) — `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
+- **ContainerData** (34 connections) — `server/persistence/container_data.py`
+- **__init__.py** (32 connections) — `server/persistence/__init__.py`
+- **test_container_persistence_extended_parse.py** (26 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **ContainerDataCore** (24 connections) — `server/persistence/container_data.py`
+- **ContainerCreateParams** (20 connections) — `server/persistence/container_create_params.py`
+- **_container_data_from_row()** (20 connections) — `server/persistence/container_persistence.py`
+- **create_container()** (19 connections) — `server/persistence/container_persistence.py`
+- **get_container()** (19 connections) — `server/persistence/container_persistence.py`
+- **ContainerDataExtras** (18 connections) — `server/persistence/container_data.py`
+- **container_data.py** (12 connections) — `server/persistence/container_data.py`
+- **_InsertBindSource** (11 connections) — `server/persistence/container_persistence.py`
+- **_insert_container_row()** (11 connections) — `server/persistence/container_persistence.py`
+- **PsycopgConnection** (11 connections)
+- **_log_and_resolve_created_container()** (11 connections) — `server/persistence/container_persistence.py`
+- **_seed_new_container_items()** (11 connections) — `server/persistence/container_persistence.py`
+- **UUID** (10 connections)
+- **_CreateOutcome** (10 connections) — `server/persistence/container_persistence.py`
+- **_after_container_insert()** (10 connections) — `server/persistence/container_persistence.py`
+- **_run_container_update_execute()** (9 connections) — `server/persistence/container_persistence.py`
+- **container_create_params.py** (6 connections) — `server/persistence/container_create_params.py`
+- **_as_uuid()** (6 connections) — `server/persistence/container_persistence.py`
+- **_as_opt_datetime()** (6 connections) — `server/persistence/container_persistence.py`
+- **_metadata_from_row()** (6 connections) — `server/persistence/container_persistence.py`
+- *... and 60 more nodes in this community*
 
 ## Relationships
 
-- [Any](Any.md) (13 shared connections)
-- [login grace period](login_grace_period.md) (12 shared connections)
-- [main()](main%28%29.md) (10 shared connections)
-- [player disconnect handlers](player_disconnect_handlers.md) (9 shared connections)
-- [.check and interrupt rest()](check_and_interrupt_rest%28%29.md) (9 shared connections)
-- [look room](look_room.md) (7 shared connections)
-- [PlayerOccupantProcessor](PlayerOccupantProcessor.md) (7 shared connections)
-- [PlayerNameExtractor](PlayerNameExtractor.md) (7 shared connections)
-- [look player](look_player.md) (6 shared connections)
-- [. initialize handlers()](_initialize_handlers%28%29.md) (4 shared connections)
-- [check alias safety()](check_alias_safety%28%29.md) (3 shared connections)
-- [.state()](state%28%29.md) (3 shared connections)
+- [spell registry](spell_registry.md) (36 shared connections)
+- [datetime](datetime.md) (34 shared connections)
+- [real time](real_time.md) (30 shared connections)
+- [PlayerOccupantProcessor](PlayerOccupantProcessor.md) (17 shared connections)
+- [rescue commands](rescue_commands.md) (10 shared connections)
+- [chat nats publisher](chat_nats_publisher.md) (5 shared connections)
+- [.initialize()](initialize%28%29.md) (5 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (4 shared connections)
+- [. init ()](_init_%28%29.md) (3 shared connections)
+- [test player death service](test_player_death_service.md) (2 shared connections)
+- [HealthRepository](HealthRepository.md) (1 shared connections)
+- [PlayerChannelPreferences](PlayerChannelPreferences.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/disconnect_grace_period.py`
-- `server/realtime/player_event_handlers_utils.py`
-- `server/realtime/player_name_utils.py`
-- `server/realtime/player_occupant_processor.py`
-- `server/tests/integration/test_rest_and_grace_period.py`
-- `server/tests/unit/realtime/test_disconnect_grace_period.py`
-- `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
+- `server/persistence/__init__.py`
+- `server/persistence/container_create_params.py`
+- `server/persistence/container_data.py`
+- `server/persistence/container_persistence.py`
+- `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 371 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 570 (94%)
+- INFERRED: 36 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

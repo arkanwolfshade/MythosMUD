@@ -1,37 +1,30 @@
 # EnvironmentalContainerLoader
 
-> 13 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **.load_container_from_room_json()** (8 connections) — `server/services/environmental_container_loader.py`
-- **.migrate_room_container_to_postgresql()** (7 connections) — `server/services/environmental_container_loader.py`
-- **EnvironmentalContainerLoader** (6 connections) — `server/services/environmental_container_loader.py`
-- **.__init__()** (3 connections) — `server/services/environmental_container_loader.py`
-- **Any** (3 connections)
-- **.load_containers_for_room()** (3 connections) — `server/services/environmental_container_loader.py`
-- **ContainerComponent** (2 connections)
-- **UUID** (2 connections)
-- **Service for loading environmental containers from JSON and PostgreSQL.      Hand** (1 connections) — `server/services/environmental_container_loader.py`
-- **Initialize the environmental container loader.          Args:             persis** (1 connections) — `server/services/environmental_container_loader.py`
-- **Load a container definition from room JSON.          Args:             room_json** (1 connections) — `server/services/environmental_container_loader.py`
-- **Migrate a container from room JSON to PostgreSQL.          Checks if container a** (1 connections) — `server/services/environmental_container_loader.py`
-- **Load all environmental containers for a room from PostgreSQL.          Args:** (1 connections) — `server/services/environmental_container_loader.py`
+- **.handle_player_movement()** (6 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **.subscribe_to_subzone()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **.track_player_subzone_subscription()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **Subscribe to local channel messages for a specific sub-zone.          Args:** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **Track a player's sub-zone subscription for local channels.          Args:** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **Handle player movement between rooms and update sub-zone subscriptions.** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
 
 ## Relationships
 
-- [main()](main%28%29.md) (4 shared connections)
-- [. init ()](_init_%28%29.md) (2 shared connections)
-- [APIRouter](APIRouter.md) (1 shared connections)
+- [NATSMessageSubscriptionMixin](NATSMessageSubscriptionMixin.md) (3 shared connections)
+- [verify npc occupants](verify_npc_occupants.md) (1 shared connections)
+- [PartyUpdated](PartyUpdated.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/environmental_container_loader.py`
+- `server/realtime/nats_message_handler_subscriptions.py`
 
 ## Audit Trail
 
-- EXTRACTED: 37 (95%)
-- INFERRED: 2 (5%)
+- EXTRACTED: 15 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

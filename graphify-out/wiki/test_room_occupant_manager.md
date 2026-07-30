@@ -33,9 +33,9 @@
 
 ## Relationships
 
-- [Any](Any.md) (3 shared connections)
-- [npc occupant processor](npc_occupant_processor.md) (1 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
+- [NPCCombatIntegrationBase](NPCCombatIntegrationBase.md) (3 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
+- [UUID](UUID.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,63 +1,49 @@
 # AsyncSession
 
-> 44 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **ExplorationService** (75 connections) — `server/services/exploration_service.py`
-- **RoomService** (70 connections) — `server/game/room_service.py`
-- **test_maps.py** (32 connections) — `server/tests/unit/api/test_maps.py`
-- **_prepare_ascii_map_context()** (17 connections) — `server/api/maps.py`
-- **_ensure_coordinates_generated()** (14 connections) — `server/api/maps.py`
-- **_apply_exploration_filter_if_needed()** (13 connections) — `server/api/maps.py`
-- **get_ascii_map()** (12 connections) — `server/api/maps.py`
-- **_filter_explored_rooms()** (11 connections) — `server/api/maps.py`
-- **_get_player_and_exploration_service()** (9 connections) — `server/api/maps.py`
-- **_ensure_coords_stub()** (9 connections) — `server/tests/unit/api/test_maps.py`
-- **AsyncSession** (8 connections)
-- **test_prepare_ascii_map_context_applies_exploration_filter()** (8 connections) — `server/tests/unit/api/test_maps.py`
-- **Any** (7 connections)
-- **_needs_coordinate_generation()** (7 connections) — `server/api/maps.py`
-- **UUID** (6 connections)
-- **_two_rooms()** (6 connections) — `server/tests/unit/api/test_maps.py`
-- **test_apply_exploration_filter_if_needed_skips_for_superuser()** (6 connections) — `server/tests/unit/api/test_maps.py`
-- **test_apply_exploration_filter_if_needed_calls_for_normal_user()** (6 connections) — `server/tests/unit/api/test_maps.py`
-- **UUID** (5 connections)
-- **test_filter_explored_rooms_calls_room_service()** (5 connections) — `server/tests/unit/api/test_maps.py`
-- **test_get_player_and_exploration_returns_none_when_no_player()** (4 connections) — `server/tests/unit/api/test_maps.py`
-- **.test_get_room_service_success()** (4 connections) — `server/tests/unit/test_dependency_injection.py`
-- **mock_user_and_player()** (3 connections) — `server/tests/unit/api/test_maps.py`
-- **_MapRooms** (3 connections)
-- **.__init__()** (2 connections) — `server/game/room_service.py`
-- *... and 19 more nodes in this community*
+- **Path** (12 connections)
+- **._queue_log_entry()** (8 connections) — `server/services/chat_logger.py`
+- **.log_local_channel_message()** (6 connections) — `server/services/chat_logger.py`
+- **.log_global_channel_message()** (5 connections) — `server/services/chat_logger.py`
+- **.log_system_channel_message()** (5 connections) — `server/services/chat_logger.py`
+- **.log_whisper_channel_message()** (5 connections) — `server/services/chat_logger.py`
+- **.get_global_channel_log_stats()** (5 connections) — `server/services/chat_logger.py`
+- **._get_local_channel_log_file()** (4 connections) — `server/services/chat_logger.py`
+- **._get_global_channel_log_file()** (4 connections) — `server/services/chat_logger.py`
+- **._get_whisper_channel_log_file()** (4 connections) — `server/services/chat_logger.py`
+- **._get_system_channel_log_file()** (4 connections) — `server/services/chat_logger.py`
+- **.get_global_channel_log_files()** (4 connections) — `server/services/chat_logger.py`
+- **.cleanup_old_global_channel_logs()** (4 connections) — `server/services/chat_logger.py`
+- **Queue a log entry for writing by the background thread.          Args:** (1 connections) — `server/services/chat_logger.py`
+- **Get the local channel log file path for a specific sub-zone.          Args:** (1 connections) — `server/services/chat_logger.py`
+- **Log a local channel message to sub-zone specific file.          Args:** (1 connections) — `server/services/chat_logger.py`
+- **Log a global channel message to global.log file.          Args:             mess** (1 connections) — `server/services/chat_logger.py`
+- **Get the global channel log file path.          Returns:             Path to the** (1 connections) — `server/services/chat_logger.py`
+- **Log a system channel message to system.log file.          Args:             mess** (1 connections) — `server/services/chat_logger.py`
+- **Log a whisper channel message to whisper.log file.          Args:             me** (1 connections) — `server/services/chat_logger.py`
+- **Get the whisper channel log file path.          Returns:             Path to the** (1 connections) — `server/services/chat_logger.py`
+- **Get the system channel log file path.          Returns:             Path to the** (1 connections) — `server/services/chat_logger.py`
+- **Get all global channel log files.          Returns:             List of string p** (1 connections) — `server/services/chat_logger.py`
+- **Get statistics for global channel log files.          Returns:             Dicti** (1 connections) — `server/services/chat_logger.py`
+- **Clean up old global channel log files.          Args:             days_to_keep:** (1 connections) — `server/services/chat_logger.py`
 
 ## Relationships
 
-- [test exploration service](test_exploration_service.md) (36 shared connections)
-- [maps](maps.md) (25 shared connections)
-- [Any](Any.md) (22 shared connections)
-- [player respawn](player_respawn.md) (19 shared connections)
-- [MapZoneContext](MapZoneContext.md) (15 shared connections)
-- [APIRouter](APIRouter.md) (12 shared connections)
-- [main()](main%28%29.md) (11 shared connections)
-- [character creation](character_creation.md) (7 shared connections)
-- [.get explored rooms()](get_explored_rooms%28%29.md) (7 shared connections)
-- [map helpers](map_helpers.md) (3 shared connections)
-- [test room service](test_room_service.md) (3 shared connections)
-- [. init ()](_init_%28%29.md) (2 shared connections)
+- [ChatLogger](ChatLogger.md) (22 shared connections)
+- [add used by user id](add_used_by_user_id.md) (1 shared connections)
+- [PartyUpdated](PartyUpdated.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/maps.py`
-- `server/game/room_service.py`
-- `server/services/exploration_service.py`
-- `server/tests/unit/api/test_maps.py`
-- `server/tests/unit/test_dependency_injection.py`
+- `server/services/chat_logger.py`
 
 ## Audit Trail
 
-- EXTRACTED: 317 (87%)
-- INFERRED: 49 (13%)
+- EXTRACTED: 82 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

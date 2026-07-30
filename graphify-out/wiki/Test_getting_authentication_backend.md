@@ -1,26 +1,23 @@
 # Test getting authentication backend.
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **test_get_auth_backend()** (3 connections) — `server/tests/unit/auth/test_users.py`
-- **test_get_auth_backend_returns_authentication_backend()** (3 connections) — `server/tests/unit/auth/test_users.py`
-- **Test getting authentication backend.** (1 connections) — `server/tests/unit/auth/test_users.py`
-- **Test that get_auth_backend returns an AuthenticationBackend instance.** (1 connections) — `server/tests/unit/auth/test_users.py`
+- **typescript** (2 connections) — `client/package.json`
+- **typescript** (1 connections) — `client/package.json`
 
 ## Relationships
 
-- [BaseUserManager](BaseUserManager.md) (2 shared connections)
-- [Custom user manager for MythosMUD.](Custom_user_manager_for_MythosMUD.md) (2 shared connections)
+- [autoprefixer](autoprefixer.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/auth/test_users.py`
+- `client/package.json`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

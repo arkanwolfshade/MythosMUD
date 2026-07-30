@@ -1,31 +1,24 @@
 # Tests for get container dependency
 
-> 8 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **TestGetContainer** (6 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_container_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_container_missing_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_container_no_state_attribute()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Tests for get_container dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_container returns container when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_container raises RuntimeError when container not in app.state.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_container raises RuntimeError when app.state doesn't exist.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **test_get_players_batch_empty_list()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **Test get_players_batch with empty list.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Relationships
 
-- [. init ()](_init_%28%29.md) (4 shared connections)
-- [Connection Manager](Connection_Manager.md) (1 shared connections)
+- [test async persistence room cache](test_async_persistence_room_cache.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_dependencies.py`
+- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (95%)
-- INFERRED: 1 (5%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

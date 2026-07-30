@@ -4,22 +4,21 @@
 
 ## Key Concepts
 
-- **mock_container()** (3 connections) — `server/tests/unit/api/conftest.py`
-- **Create a mock container component.** (1 connections) — `server/tests/unit/api/conftest.py`
+- **test_should_echo_to_sender_no_message_id()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _should_echo_to_sender returns False when message_id is None.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
-- [APIRouter](APIRouter.md) (1 shared connections)
+- [test nats message handler chat](test_nats_message_handler_chat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/api/conftest.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,35 +1,23 @@
 # description
 
-> 11 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **properties** (12 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **id** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **field1** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **field2** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **field3** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **pattern** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **test_add_room_occupant_multiple()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **Test add_room_occupant() with multiple occupants.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
 
 ## Relationships
 
-- [description](description.md) (5 shared connections)
-- [additionalProperties](additionalProperties.md) (1 shared connections)
-- [sub zone](sub_zone.md) (1 shared connections)
-- [zone](zone.md) (1 shared connections)
+- [test room subscription manager](test_room_subscription_manager.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- `server/tests/unit/realtime/test_room_subscription_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 28 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

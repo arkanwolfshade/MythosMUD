@@ -4,20 +4,20 @@
 
 ## Key Concepts
 
-- **multiplayer-browser-window.d.ts** (1 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-window.d.ts`
-- **Window** (1 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-window.d.ts`
+- **test_extract_chat_message_fields_whisper_target_id()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _extract_chat_message_fields handles whisper target_id.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test nats message handler chat](test_nats_message_handler_chat.md) (1 shared connections)
 
 ## Source Files
 
-- `client/tests/e2e/runtime/fixtures/multiplayer-browser-window.d.ts`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

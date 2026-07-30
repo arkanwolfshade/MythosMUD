@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **.get_used_slots()** (2 connections) — `server/models/container.py`
-- **Get number of used inventory slots.** (1 connections) — `server/models/container.py`
+- **test_convert_ids_to_uuids_uuid_objects()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _convert_ids_to_uuids handles UUID objects.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [test nats message handler chat](test_nats_message_handler_chat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/container.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 

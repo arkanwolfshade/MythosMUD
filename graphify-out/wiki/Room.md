@@ -1,73 +1,62 @@
 # Room
 
-> 80 nodes
+> 90 nodes
 
 ## Key Concepts
 
-- **GameTerminal.tsx** (46 connections) — `client/src/components/GameTerminal.tsx`
-- **debugLogger** (25 connections) — `client/src/utils/debugLogger.ts`
-- **GameTerminalPresentation.tsx** (16 connections) — `client/src/components/GameTerminalPresentation.tsx`
-- **RoomInfoPanel.tsx** (10 connections) — `client/src/components/RoomInfoPanel.tsx`
-- **HallucinationMessage** (10 connections) — `client/src/types/lucidity.ts`
-- **HallucinationTicker.tsx** (9 connections) — `client/src/components/lucidity/HallucinationTicker.tsx`
-- **RescueStatusBanner.tsx** (9 connections) — `client/src/components/lucidity/RescueStatusBanner.tsx`
-- **.log()** (9 connections) — `client/src/utils/debugLogger.ts`
-- **GameTerminal()** (8 connections) — `client/src/components/GameTerminal.tsx`
-- **game-terminal-integration.spec.tsx** (7 connections) — `client/src/components/__tests__/game-terminal-integration.spec.tsx`
-- **game-terminal-integration.test.tsx** (7 connections) — `client/src/components/__tests__/game-terminal-integration.test.tsx`
-- **debugLogger.ts** (7 connections) — `client/src/utils/debugLogger.ts`
-- **RoomInfoPanel()** (6 connections) — `client/src/components/RoomInfoPanel.tsx`
-- **.logToConsole()** (6 connections) — `client/src/utils/debugLogger.ts`
-- **GameTerminalPresentation.test.tsx** (5 connections) — `client/src/components/__tests__/GameTerminalPresentation.test.tsx`
-- **IncapacitatedBanner.tsx** (5 connections) — `client/src/components/health/IncapacitatedBanner.tsx`
-- **HallucinationTicker.test.tsx** (5 connections) — `client/src/components/lucidity/__tests__/HallucinationTicker.test.tsx`
-- **RescueStatusBanner.test.tsx** (5 connections) — `client/src/components/lucidity/__tests__/RescueStatusBanner.test.tsx`
-- **DismissButton.tsx** (5 connections) — `client/src/components/ui/DismissButton.tsx`
-- **.downloadLogs()** (5 connections) — `client/src/utils/debugLogger.ts`
-- **GameTerminalPresentation()** (4 connections) — `client/src/components/GameTerminalPresentation.tsx`
-- **RoomInfoPanel.test.tsx** (4 connections) — `client/src/components/__tests__/RoomInfoPanel.test.tsx`
-- **DismissButton()** (4 connections) — `client/src/components/ui/DismissButton.tsx`
-- **debugLogger.test.ts** (4 connections) — `client/src/utils/__tests__/debugLogger.test.ts`
-- **.warn()** (4 connections) — `client/src/utils/debugLogger.ts`
-- *... and 55 more nodes in this community*
+- **player_effects.py** (30 connections) — `server/api/player_effects.py`
+- **test_player_requests.py** (29 connections) — `server/tests/unit/schemas/test_player_requests.py`
+- **test_player_effects_endpoints.py** (28 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
+- **player_requests.py** (14 connections) — `server/schemas/players/player_requests.py`
+- **apply_lucidity_loss()** (12 connections) — `server/api/player_effects.py`
+- **EffectResponse** (12 connections) — `server/schemas/players/player_effects.py`
+- **LucidityLossRequest** (12 connections) — `server/schemas/players/player_requests.py`
+- **DamageRequest** (12 connections) — `server/schemas/players/player_requests.py`
+- **apply_fear()** (11 connections) — `server/api/player_effects.py`
+- **apply_corruption()** (11 connections) — `server/api/player_effects.py`
+- **gain_occult_knowledge()** (11 connections) — `server/api/player_effects.py`
+- **heal_player()** (11 connections) — `server/api/player_effects.py`
+- **damage_player()** (11 connections) — `server/api/player_effects.py`
+- **BaseModel** (11 connections)
+- **FearRequest** (11 connections) — `server/schemas/players/player_requests.py`
+- **CorruptionRequest** (11 connections) — `server/schemas/players/player_requests.py`
+- **OccultKnowledgeRequest** (11 connections) — `server/schemas/players/player_requests.py`
+- **HealRequest** (11 connections) — `server/schemas/players/player_requests.py`
+- **SelectCharacterRequest** (8 connections) — `server/schemas/players/player_requests.py`
+- **_user()** (8 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
+- **UUID** (7 connections)
+- **FastAPIRequest** (6 connections)
+- **test_apply_lucidity_loss_validation_maps_to_404()** (6 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
+- **test_apply_lucidity_loss_success()** (4 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
+- **test_apply_fear_success()** (4 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
+- *... and 65 more nodes in this community*
 
 ## Relationships
 
-- [HealthMeter](HealthMeter.md) (23 shared connections)
-- [ChatPanelTest](ChatPanelTest.md) (9 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (6 shared connections)
-- [MythosTimeHud](MythosTimeHud.md) (5 shared connections)
-- [Channel](Channel.md) (4 shared connections)
-- [GameLogMessagesList](GameLogMessagesList.md) (2 shared connections)
-- [createInitialState()](createInitialState%28%29.md) (2 shared connections)
-- [useConnectionStateMachine.test](useConnectionStateMachine.test.md) (2 shared connections)
-- [.append()](append%28%29.md) (2 shared connections)
+- [test player event handlers state](test_player_event_handlers_state.md) (11 shared connections)
+- [admin shutdown command](admin_shutdown_command.md) (11 shared connections)
+- [append unique valid occupant()](append_unique_valid_occupant%28%29.md) (10 shared connections)
+- [.initialize()](initialize%28%29.md) (10 shared connections)
+- [metrics](metrics.md) (9 shared connections)
+- [AbstractContextManager](AbstractContextManager.md) (9 shared connections)
+- [. init ()](_init_%28%29.md) (3 shared connections)
+- [convert pydantic error()](convert_pydantic_error%28%29.md) (2 shared connections)
+- [real time](real_time.md) (2 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
+- [Player](Player.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/GameTerminal.test.tsx`
-- `client/src/components/GameTerminal.tsx`
-- `client/src/components/GameTerminalPresentation.tsx`
-- `client/src/components/RoomInfoPanel.test.tsx`
-- `client/src/components/RoomInfoPanel.tsx`
-- `client/src/components/__tests__/GameTerminalPresentation.test.tsx`
-- `client/src/components/__tests__/RoomInfoPanel.test.tsx`
-- `client/src/components/__tests__/game-terminal-integration.spec.tsx`
-- `client/src/components/__tests__/game-terminal-integration.test.tsx`
-- `client/src/components/health/IncapacitatedBanner.tsx`
-- `client/src/components/lucidity/HallucinationTicker.tsx`
-- `client/src/components/lucidity/RescueStatusBanner.tsx`
-- `client/src/components/lucidity/__tests__/HallucinationTicker.test.tsx`
-- `client/src/components/lucidity/__tests__/RescueStatusBanner.test.tsx`
-- `client/src/components/ui/DismissButton.tsx`
-- `client/src/types/lucidity.ts`
-- `client/src/utils/__tests__/debugLogger.test.ts`
-- `client/src/utils/debugLogger.ts`
+- `server/api/player_effects.py`
+- `server/schemas/players/player_effects.py`
+- `server/schemas/players/player_requests.py`
+- `server/tests/unit/api/test_player_effects_endpoints.py`
+- `server/tests/unit/schemas/test_player_requests.py`
 
 ## Audit Trail
 
-- EXTRACTED: 311 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 420 (98%)
+- INFERRED: 8 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

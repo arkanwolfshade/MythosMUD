@@ -1,26 +1,23 @@
 # . error callback()
 
-> 5 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **._error_callback()** (4 connections) — `server/infrastructure/nats_broker.py`
-- **._handle_error_async()** (4 connections) — `server/infrastructure/nats_broker.py`
-- **Exception** (2 connections)
-- **Handle NATS errors.          AI: Runs as fire-and-forget async task to prevent b** (1 connections) — `server/infrastructure/nats_broker.py`
-- **Async handler for NATS connection errors.** (1 connections) — `server/infrastructure/nats_broker.py`
+- **test_parse_exits_json_string_invalid()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **Test _parse_exits_json with invalid JSON string.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Relationships
 
-- [message broker](message_broker.md) (2 shared connections)
+- [test async persistence room cache](test_async_persistence_room_cache.md) (1 shared connections)
 
 ## Source Files
 
-- `server/infrastructure/nats_broker.py`
+- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

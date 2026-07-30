@@ -30,7 +30,7 @@
 - [item prototype.schema](item_prototype.schema.md) (1 shared connections)
 - [artifact](artifact.md) (1 shared connections)
 - [maxLength](maxLength.md) (1 shared connections)
-- [additionalProperties](additionalProperties.md) (1 shared connections)
+- [.calculate backoff()](calculate_backoff%28%29.md) (1 shared connections)
 - [prototype id](prototype_id.md) (1 shared connections)
 - [short description](short_description.md) (1 shared connections)
 - [weight](weight.md) (1 shared connections)

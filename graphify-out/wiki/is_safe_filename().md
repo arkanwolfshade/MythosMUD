@@ -1,6 +1,6 @@
 # is safe filename()
 
-> 15 nodes
+> 16 nodes
 
 ## Key Concepts
 
@@ -12,18 +12,19 @@
 - **test_is_safe_filename_with_backslash()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
 - **test_is_safe_filename_with_special_chars()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
 - **test_is_safe_filename_unicode()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Test is_safe_filename rejects filenames with backslash.** (2 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
 - **Check if a filename is safe (no path traversal, no special characters).      Arg** (1 connections) — `server/security_utils.py`
 - **Test is_safe_filename with valid filename.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
 - **Test is_safe_filename with empty string (considered safe).** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
 - **Test is_safe_filename rejects filenames with ..** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
 - **Test is_safe_filename rejects filenames with forward slash.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test is_safe_filename rejects filenames with backslash.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test is_safe_filename rejects filenames with special characters.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
 - **Test is_safe_filename with Unicode characters.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
 
 ## Relationships
 
 - [get secure file path()](get_secure_file_path%28%29.md) (8 shared connections)
-- [security utils](security_utils.md) (1 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
 
 ## Source Files
 

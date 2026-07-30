@@ -1,29 +1,26 @@
 # Tests for get connection manager
 
-> 6 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **TestGetConnectionManager** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_connection_manager_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_connection_manager_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Tests for get_connection_manager dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_connection_manager returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_connection_manager raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **7. Common Test Failure Solutions** (4 connections) — `.cursor/commands/server-test-remediation.md`
+- **Database Connection Issues** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **Authentication Test Issues** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **WebSocket Test Issues** (1 connections) — `.cursor/commands/server-test-remediation.md`
 
 ## Relationships
 
-- [. init ()](_init_%28%29.md) (3 shared connections)
-- [Connection Manager](Connection_Manager.md) (1 shared connections)
+- [10. Final Verification](10._Final_Verification.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_dependencies.py`
+- `.cursor/commands/server-test-remediation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (93%)
-- INFERRED: 1 (7%)
+- EXTRACTED: 7 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

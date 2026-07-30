@@ -1,17 +1,15 @@
 # combat audit
 
-> 13 nodes
+> 11 nodes
 
 ## Key Concepts
 
 - **datetime** (9 connections)
-- **combat_audit.py** (6 connections) — `server/structured_logging/combat_audit.py`
 - **.log_combat_start()** (3 connections) — `server/structured_logging/combat_audit.py`
 - **.log_combat_attack()** (3 connections) — `server/structured_logging/combat_audit.py`
 - **.log_combat_death()** (3 connections) — `server/structured_logging/combat_audit.py`
 - **.log_combat_end()** (3 connections) — `server/structured_logging/combat_audit.py`
 - **.log_combat_rate_limit()** (3 connections) — `server/structured_logging/combat_audit.py`
-- **Combat-specific audit logging and monitoring.  This module provides specialized** (1 connections) — `server/structured_logging/combat_audit.py`
 - **Log the start of a combat encounter.          Args:             player_id: ID of** (1 connections) — `server/structured_logging/combat_audit.py`
 - **Log a combat attack.          Args:             player_id: ID of the attacking p** (1 connections) — `server/structured_logging/combat_audit.py`
 - **Log the death of a combat target.          Args:             player_id: ID of th** (1 connections) — `server/structured_logging/combat_audit.py`
@@ -20,10 +18,9 @@
 
 ## Relationships
 
-- [CombatAuditLogger](CombatAuditLogger.md) (6 shared connections)
+- [CombatAuditLogger](CombatAuditLogger.md) (5 shared connections)
 - [.get combat audit summary()](get_combat_audit_summary%28%29.md) (3 shared connections)
-- [main()](main%28%29.md) (2 shared connections)
-- [test combat audit](test_combat_audit.md) (1 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
 
 ## Source Files
 
@@ -31,7 +28,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 36 (100%)
+- EXTRACTED: 29 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

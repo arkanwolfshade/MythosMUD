@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **name** (5 connections) — `schemas/intersection_schema.json`
+- **description** (5 connections) — `schemas/intersection_schema.json`
 - **type** (1 connections) — `schemas/intersection_schema.json`
 - **minLength** (1 connections) — `schemas/intersection_schema.json`
 - **maxLength** (1 connections) — `schemas/intersection_schema.json`

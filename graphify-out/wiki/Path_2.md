@@ -1,38 +1,54 @@
 # Path
 
-> 12 nodes
+> 63 nodes
 
 ## Key Concepts
 
-- **normalize_path_from_url_or_path()** (5 connections) — `server/container/utils.py`
-- **._get_project_root()** (4 connections) — `server/container/main.py`
-- **._decode_json_column()** (4 connections) — `server/container/main.py`
-- **._normalize_path_from_url_or_path()** (4 connections) — `server/container/main.py`
-- **Any** (3 connections)
-- **.get_service()** (3 connections) — `server/container/main.py`
-- **Path** (2 connections)
-- **Delegate to shared util. Kept for backward compatibility.** (2 connections) — `server/container/main.py`
-- **Return and cache the repository root directory.** (1 connections) — `server/container/main.py`
-- **Get a service by name.** (1 connections) — `server/container/main.py`
-- **Path** (1 connections)
-- **Normalize an item database override into a filesystem path.      DEPRECATED: Ite** (1 connections) — `server/container/utils.py`
+- **NPCCombatUUIDMapping** (39 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **TestNPCCombatUUIDMapping** (22 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- **UUID** (8 connections)
+- **.is_valid_uuid()** (4 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **.convert_to_uuid()** (4 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **test_npc_combat_uuid_mapping.py** (4 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- **.get_uuid_mapping()** (3 connections) — `server/services/npc_combat_integration_service.py`
+- **.store_string_id_mapping()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **.store_xp_mapping()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **.get_uuid_for_string_id()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **.get_original_string_id()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **.get_xp_value()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **.test_init()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- **.test_is_valid_uuid_valid()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- **.test_is_valid_uuid_invalid()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- **.test_convert_to_uuid_from_uuid_string()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- **.test_convert_to_uuid_from_string_id()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- **.test_store_string_id_mapping()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- **.test_store_string_id_mapping_overwrites()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- **.test_store_xp_mapping()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- **.test_store_xp_mapping_overwrites()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- **.test_get_original_string_id_found()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- **.test_get_original_string_id_not_found()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- **.test_get_uuid_for_string_id_found()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- **.test_get_uuid_for_string_id_not_found()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- *... and 38 more nodes in this community*
 
 ## Relationships
 
-- [.shutdown()](shutdown%28%29.md) (4 shared connections)
-- [.initialize()](initialize%28%29.md) (2 shared connections)
-- [Any](Any.md) (2 shared connections)
-- [main()](main%28%29.md) (1 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (5 shared connections)
+- [combat](combat.md) (2 shared connections)
+- [Return stats\[key\] as int, or](Return_stats%5Bkey%5D_as_int%2C_or.md) (2 shared connections)
+- [Test despawn npc handles NPC](Test_despawn_npc_handles_NPC.md) (1 shared connections)
+- [Any](Any.md) (1 shared connections)
 
 ## Source Files
 
-- `server/container/main.py`
-- `server/container/utils.py`
+- `server/services/npc_combat_integration_service.py`
+- `server/services/npc_combat_uuid_mapping.py`
+- `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
 
 ## Audit Trail
 
-- EXTRACTED: 31 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 184 (97%)
+- INFERRED: 5 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,37 +1,30 @@
 # chat pose helpers
 
-> 14 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **chat_pose_helpers.py** (14 connections) — `server/game/chat_pose_helpers.py`
-- **set_player_pose()** (8 connections) — `server/game/chat_pose_helpers.py`
-- **Any** (5 connections)
-- **get_player_pose()** (5 connections) — `server/game/chat_pose_helpers.py`
-- **clear_player_pose()** (5 connections) — `server/game/chat_pose_helpers.py`
-- **normalize_player_id()** (4 connections) — `server/game/chat_pose_helpers.py`
-- **UUID** (4 connections)
-- **get_room_poses()** (4 connections) — `server/game/chat_pose_helpers.py`
-- **Pose management helpers for chat service.** (1 connections) — `server/game/chat_pose_helpers.py`
-- **Normalize player identifiers to string form.** (1 connections) — `server/game/chat_pose_helpers.py`
-- **Set a player's pose (temporary, in-memory only).      Args:         player_id: I** (1 connections) — `server/game/chat_pose_helpers.py`
-- **Get a player's current pose.      Args:         player_id: ID of the player** (1 connections) — `server/game/chat_pose_helpers.py`
-- **Clear a player's pose.      Args:         player_id: ID of the player         po** (1 connections) — `server/game/chat_pose_helpers.py`
-- **Get all poses for players in a room.      Args:         room_id: ID of the room** (1 connections) — `server/game/chat_pose_helpers.py`
+- **AppRouter.tsx** (8 connections) — `client/src/AppRouter.tsx`
+- **AppRouter()** (3 connections) — `client/src/AppRouter.tsx`
+- **AppRouter.test.tsx** (2 connections) — `client/src/__tests__/AppRouter.test.tsx`
+- **main.tsx** (2 connections) — `client/src/main.tsx`
+- **MapPage** (1 connections) — `client/src/AppRouter.tsx`
+- **SkillsPage** (1 connections) — `client/src/AppRouter.tsx`
+- **LoadingFallback()** (1 connections) — `client/src/AppRouter.tsx`
 
 ## Relationships
 
-- [ChatMessage](ChatMessage.md) (8 shared connections)
-- [chat nats publisher](chat_nats_publisher.md) (3 shared connections)
-- [main()](main%28%29.md) (2 shared connections)
+- [fetchSpy](fetchSpy.md) (2 shared connections)
 
 ## Source Files
 
-- `server/game/chat_pose_helpers.py`
+- `client/src/AppRouter.tsx`
+- `client/src/__tests__/AppRouter.test.tsx`
+- `client/src/main.tsx`
 
 ## Audit Trail
 
-- EXTRACTED: 55 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

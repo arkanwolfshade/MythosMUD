@@ -1,63 +1,78 @@
 # real time
 
-> 65 nodes
+> 439 nodes
 
 ## Key Concepts
 
-- **real_time.py** (35 connections) — `server/api/real_time.py`
-- **get_async_persistence()** (16 connections) — `server/async_persistence.py`
-- **realtime.py** (13 connections) — `server/schemas/realtime/realtime.py`
-- **_resolve_player_id()** (10 connections) — `server/api/real_time.py`
-- **websocket_endpoint()** (10 connections) — `server/api/real_time.py`
-- **PresenceStatistics** (10 connections) — `server/schemas/realtime/presence_data.py`
-- **SessionStatistics** (10 connections) — `server/schemas/realtime/presence_data.py`
-- **ErrorStatistics** (10 connections) — `server/schemas/realtime/presence_data.py`
-- **PlayerConnectionsResponse** (10 connections) — `server/schemas/realtime/realtime.py`
-- **NewGameSessionResponse** (10 connections) — `server/schemas/realtime/realtime.py`
-- **ConnectionStatisticsResponse** (10 connections) — `server/schemas/realtime/realtime.py`
-- **Any** (9 connections)
-- **_ensure_connection_manager()** (9 connections) — `server/api/real_time.py`
-- **__init__.py** (9 connections) — `server/schemas/realtime/__init__.py`
-- **SessionInfo** (9 connections) — `server/schemas/realtime/realtime.py`
-- **WebSocket** (8 connections)
-- **_resolve_player_id_from_test()** (8 connections) — `server/api/real_time.py`
-- **_resolve_player_id_from_token()** (8 connections) — `server/api/real_time.py`
-- **get_player_connections()** (8 connections) — `server/api/real_time.py`
-- **handle_new_game_session()** (8 connections) — `server/api/real_time.py`
-- **websocket_endpoint_route()** (8 connections) — `server/api/real_time.py`
-- **UUID** (7 connections)
-- **_validate_websocket_connection_manager()** (7 connections) — `server/api/real_time.py`
-- **_resolve_connection_manager_from_state()** (6 connections) — `server/api/real_time.py`
-- **_parse_websocket_token()** (6 connections) — `server/api/real_time.py`
-- *... and 40 more nodes in this community*
+- **DatabaseError** (432 connections) — `server/exceptions.py`
+- **exceptions.py** (196 connections) — `server/exceptions.py`
+- **log_and_raise()** (164 connections) — `server/utils/error_logging.py`
+- **get_session_maker()** (91 connections) — `server/database.py`
+- **database.py** (75 connections) — `server/database.py`
+- **error_logging.py** (55 connections) — `server/utils/error_logging.py`
+- **MovementService** (43 connections) — `server/game/movement_service.py`
+- **test_database_extended.py** (43 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **PlayerRepository** (31 connections) — `server/persistence/repositories/player_repository.py`
+- **go_command.py** (28 connections) — `server/commands/go_command.py`
+- **__init__.py** (28 connections) — `server/persistence/repositories/__init__.py`
+- **player_repository.py** (28 connections) — `server/persistence/repositories/player_repository.py`
+- **database_config_helpers.py** (24 connections) — `server/database_config_helpers.py`
+- **player_effect_repository.py** (21 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **player_spell_repository.py** (20 connections) — `server/persistence/repositories/player_spell_repository.py`
+- **PlayerEffectRepository** (18 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **row_to_player()** (18 connections) — `server/persistence/repositories/player_repository_mappers.py`
+- **player_skill_repository.py** (18 connections) — `server/persistence/repositories/player_skill_repository.py`
+- **._initialize_database()** (17 connections) — `server/database.py`
+- **profession_repository.py** (17 connections) — `server/persistence/repositories/profession_repository.py`
+- **QuestDefinitionRepository** (17 connections) — `server/persistence/repositories/quest_definition_repository.py`
+- **skill_repository.py** (17 connections) — `server/persistence/repositories/skill_repository.py`
+- **UUID** (16 connections)
+- **ExperienceRepository** (16 connections) — `server/persistence/repositories/experience_repository.py`
+- **health_repository.py** (16 connections) — `server/persistence/repositories/health_repository.py`
+- *... and 414 more nodes in this community*
 
 ## Relationships
 
-- [main()](main%28%29.md) (10 shared connections)
-- [APIRouter](APIRouter.md) (7 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (5 shared connections)
-- [Request](Request.md) (4 shared connections)
-- [create access token()](create_access_token%28%29.md) (3 shared connections)
-- [websocket handler app state](websocket_handler_app_state.md) (3 shared connections)
-- [memory leak metrics](memory_leak_metrics.md) (2 shared connections)
-- [. init ()](_init_%28%29.md) (2 shared connections)
-- [.state()](state%28%29.md) (2 shared connections)
-- [.get room by id()](get_room_by_id%28%29.md) (2 shared connections)
-- [BaseModel](BaseModel.md) (2 shared connections)
-- [init](init.md) (1 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (98 shared connections)
+- [. init ()](_init_%28%29.md) (68 shared connections)
+- [close db()](close_db%28%29.md) (65 shared connections)
+- [.initialize()](initialize%28%29.md) (50 shared connections)
+- [bench cache npc](bench_cache_npc.md) (49 shared connections)
+- [datetime](datetime.md) (47 shared connections)
+- [Any](Any.md) (32 shared connections)
+- [Player](Player.md) (32 shared connections)
+- [disconnect grace period](disconnect_grace_period.md) (30 shared connections)
+- [metrics](metrics.md) (25 shared connections)
+- [container persistence](container_persistence.md) (25 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (24 shared connections)
 
 ## Source Files
 
-- `server/api/real_time.py`
-- `server/async_persistence.py`
-- `server/schemas/realtime/__init__.py`
-- `server/schemas/realtime/presence_data.py`
-- `server/schemas/realtime/realtime.py`
+- `e2e-tests/load-tests/get_invite_codes.py`
+- `scripts/populate_test_npc_databases.py`
+- `scripts/verify_and_load_seed.py`
+- `server/async_persistence_room_loader.py`
+- `server/commands/go_command.py`
+- `server/database.py`
+- `server/database_config_helpers.py`
+- `server/exceptions.py`
+- `server/game/character_creation_service.py`
+- `server/game/mechanics.py`
+- `server/game/movement_service.py`
+- `server/models/quest.py`
+- `server/persistence/item_instance_persistence.py`
+- `server/persistence/item_instance_persistence_async.py`
+- `server/persistence/repositories/__init__.py`
+- `server/persistence/repositories/experience_repository.py`
+- `server/persistence/repositories/health_repository.py`
+- `server/persistence/repositories/item_repository.py`
+- `server/persistence/repositories/player_effect_repository.py`
+- `server/persistence/repositories/player_repository.py`
 
 ## Audit Trail
 
-- EXTRACTED: 299 (89%)
-- INFERRED: 38 (11%)
+- EXTRACTED: 2482 (85%)
+- INFERRED: 424 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,61 +1,52 @@
 # maps
 
-> 29 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **maps.py** (53 connections) — `server/api/maps.py`
-- **get_ascii_minimap()** (13 connections) — `server/api/maps.py`
-- **set_map_origin()** (11 connections) — `server/api/maps.py`
-- **_get_current_room_id()** (10 connections) — `server/api/maps.py`
-- **recalculate_coordinates()** (10 connections) — `server/api/maps.py`
-- **Request** (7 connections)
-- **_get_minimap_player_and_room_id()** (7 connections) — `server/api/maps.py`
-- **CoordinateValidator** (7 connections) — `server/services/coordinate_validator.py`
-- **SetOriginRequest** (5 connections) — `server/api/maps.py`
-- **coordinate_validator.py** (5 connections) — `server/services/coordinate_validator.py`
-- **test_get_current_room_id_none_when_persistence_errors()** (4 connections) — `server/tests/unit/api/test_maps.py`
-- **.__init__()** (3 connections) — `server/services/coordinate_validator.py`
-- **.validate_coordinates()** (3 connections) — `server/services/coordinate_validator.py`
-- **test_get_current_room_id_from_query_param()** (3 connections) — `server/tests/unit/api/test_maps.py`
-- **test_get_current_room_id_from_player()** (3 connections) — `server/tests/unit/api/test_maps.py`
-- **BaseModel** (1 connections)
-- **Map API endpoints for MythosMUD server.  This module handles ASCII map rendering** (1 connections) — `server/api/maps.py`
-- **Get current room ID from query params or database. Returns room ID or None.** (1 connections) — `server/api/maps.py`
-- **Resolve player and current_room_id for minimap. Raises LoggedHTTPException if no** (1 connections) — `server/api/maps.py`
-- **Get ASCII minimap centered on player.      Returns a small ASCII map showing are** (1 connections) — `server/api/maps.py`
-- **Trigger coordinate recalculation for a zone/subzone (admin only).      Returns l** (1 connections) — `server/api/maps.py`
-- **Request model for setting map origin.** (1 connections) — `server/api/maps.py`
-- **Set a room as the map origin for its zone/subzone (admin only).      Triggers co** (1 connections) — `server/api/maps.py`
-- **AsyncSession** (1 connections)
-- **Any** (1 connections)
-- *... and 4 more nodes in this community*
+- **inventory_put_command.py** (21 connections) — `server/commands/inventory_put_command.py`
+- **handle_put_command()** (13 connections) — `server/commands/inventory_put_command.py`
+- **_put_resolve_container_id()** (9 connections) — `server/commands/inventory_put_command.py`
+- **_put_transfer_finish()** (8 connections) — `server/commands/inventory_put_command.py`
+- **_put_run_validated()** (7 connections) — `server/commands/inventory_put_command.py`
+- **remove_item_from_inventory()** (5 connections) — `server/commands/inventory_command_helpers.py`
+- **PutCommandRuntime** (4 connections) — `server/commands/inventory_put_command.py`
+- **PutValidatedWork** (4 connections) — `server/commands/inventory_put_command.py`
+- **CommandResponse** (4 connections)
+- **UUID** (3 connections)
+- **test_handle_put_command()** (3 connections) — `server/tests/unit/commands/test_inventory_commands.py`
+- **Player** (2 connections)
+- **Remove or update item quantity in player inventory after transfer.** (1 connections) — `server/commands/inventory_command_helpers.py`
+- **Put command: move inventory items into a container.** (1 connections) — `server/commands/inventory_put_command.py`
+- **Services and request scope for put-after-validation.** (1 connections) — `server/commands/inventory_put_command.py`
+- **Validated inventory item and command fields for put.** (1 connections) — `server/commands/inventory_put_command.py`
+- **Locate a room or wearable container id, or return an error response.** (1 connections) — `server/commands/inventory_put_command.py`
+- **Put an item from inventory into a container.** (1 connections) — `server/commands/inventory_put_command.py`
+- **Test handle_put_command() puts item in container.** (1 connections) — `server/tests/unit/commands/test_inventory_commands.py`
 
 ## Relationships
 
-- [AsyncSession](AsyncSession.md) (25 shared connections)
-- [APIRouter](APIRouter.md) (15 shared connections)
-- [main()](main%28%29.md) (14 shared connections)
-- [init](init.md) (7 shared connections)
-- [MapZoneContext](MapZoneContext.md) (6 shared connections)
-- [Request](Request.md) (5 shared connections)
-- [CoordinateGenerator](CoordinateGenerator.md) (3 shared connections)
-- [map helpers](map_helpers.md) (2 shared connections)
-- [BaseUserManager](BaseUserManager.md) (2 shared connections)
-- [ascii map renderer](ascii_map_renderer.md) (2 shared connections)
-- [handle ascii map error()](handle_ascii_map_error%28%29.md) (1 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
+- [Any](Any.md) (5 shared connections)
+- [test resolve state no app()](test_resolve_state_no_app%28%29.md) (5 shared connections)
+- [container helpers inventory](container_helpers_inventory.md) (4 shared connections)
+- [test magic commands](test_magic_commands.md) (2 shared connections)
+- [. init ()](_init_%28%29.md) (2 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
+- [container helpers inventory find](container_helpers_inventory_find.md) (2 shared connections)
+- [handle pickup command()](handle_pickup_command%28%29.md) (2 shared connections)
+- [AuthSlice](AuthSlice.md) (1 shared connections)
+- [Player Position Service](Player_Position_Service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/maps.py`
-- `server/services/coordinate_validator.py`
-- `server/tests/unit/api/test_maps.py`
+- `server/commands/inventory_command_helpers.py`
+- `server/commands/inventory_put_command.py`
+- `server/tests/unit/commands/test_inventory_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 153 (97%)
-- INFERRED: 5 (3%)
+- EXTRACTED: 81 (90%)
+- INFERRED: 9 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

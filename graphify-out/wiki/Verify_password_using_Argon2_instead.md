@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **._verify_password()** (3 connections) — `server/auth/users.py`
-- **Verify password using Argon2 instead of bcrypt.** (1 connections) — `server/auth/users.py`
+- **test_extract_chat_message_fields_system_target_id()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Personal system chat maps target_id to target_player_id and keeps speaker_kind.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [PasswordHasher](PasswordHasher.md) (1 shared connections)
-- [Custom user manager for MythosMUD.](Custom_user_manager_for_MythosMUD.md) (1 shared connections)
+- [test nats message handler chat](test_nats_message_handler_chat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/auth/users.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

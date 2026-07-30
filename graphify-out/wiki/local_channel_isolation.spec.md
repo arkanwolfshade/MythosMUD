@@ -1,33 +1,24 @@
 # local channel isolation.spec
 
-> 10 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **local-channel-isolation.spec.ts** (23 connections) — `client/tests/e2e/runtime/communication/local-channel-isolation.spec.ts`
-- **ensureIthaquaInFoyer()** (4 connections) — `client/tests/e2e/runtime/communication/local-channel-isolation.spec.ts`
-- **softCommand()** (3 connections) — `client/tests/e2e/runtime/communication/local-channel-isolation.spec.ts`
-- **leaveEasternHallwayWest()** (3 connections) — `client/tests/e2e/runtime/communication/local-channel-isolation.spec.ts`
-- **waitForLookReflected()** (2 connections) — `client/tests/e2e/runtime/communication/local-channel-isolation.spec.ts`
-- **primeBothForCoLocate()** (2 connections) — `client/tests/e2e/runtime/communication/local-channel-isolation.spec.ts`
-- **pageShowsEasternHallway()** (2 connections) — `client/tests/e2e/runtime/communication/local-channel-isolation.spec.ts`
-- **reopenPlayerPageIfClosed** (1 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-contexts.ts`
-- **returnAwToFoyerIfInHallway()** (1 connections) — `client/tests/e2e/runtime/communication/local-channel-isolation.spec.ts`
-- **prepareLocalIsolationPair()** (1 connections) — `client/tests/e2e/runtime/communication/local-channel-isolation.spec.ts`
+- **.__init__()** (3 connections) — `server/realtime/message_validator.py`
+- **.__init__()** (2 connections) — `server/realtime/message_validator.py`
+- **Initialize the message validator.          Args:             max_message_size** (1 connections) — `server/realtime/message_validator.py`
 
 ## Relationships
 
-- [assertLookVisibleInPanels()](assertLookVisibleInPanels%28%29.md) (9 shared connections)
-- [nudgeStandBothPlayers()](nudgeStandBothPlayers%28%29.md) (5 shared connections)
+- [. init ()](_init_%28%29.md) (2 shared connections)
 
 ## Source Files
 
-- `client/tests/e2e/runtime/communication/local-channel-isolation.spec.ts`
-- `client/tests/e2e/runtime/fixtures/multiplayer-contexts.ts`
+- `server/realtime/message_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 42 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

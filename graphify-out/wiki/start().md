@@ -12,7 +12,7 @@
 ## Relationships
 
 - [GameTickService](GameTickService.md) (2 shared connections)
-- [memory lifespan coordinator](memory_lifespan_coordinator.md) (1 shared connections)
+- [test command parser](test_command_parser.md) (1 shared connections)
 
 ## Source Files
 

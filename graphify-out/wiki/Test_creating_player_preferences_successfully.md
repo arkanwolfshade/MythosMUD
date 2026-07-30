@@ -1,26 +1,25 @@
 # Test creating player preferences successfully.
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **test_create_player_preferences_success()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_delete_player_preferences_success()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test creating player preferences successfully.** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_fetch_container_items_missing_item_instance_id()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **Test _fetch_container_items skips rows with missing item_instance_id.** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
 
 ## Relationships
 
-- [BaseUserManager](BaseUserManager.md) (2 shared connections)
-- [test player preferences service](test_player_preferences_service.md) (2 shared connections)
+- [container persistence](container_persistence.md) (1 shared connections)
+- [disconnect grace period](disconnect_grace_period.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_player_preferences_service.py`
+- `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (75%)
-- INFERRED: 2 (25%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

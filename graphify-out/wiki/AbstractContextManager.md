@@ -1,68 +1,66 @@
 # AbstractContextManager
 
-> 145 nodes
+> 190 nodes
 
 ## Key Concepts
 
-- **__init__.py** (47 connections) — `server/services/__init__.py`
-- **InventoryService** (43 connections) — `server/services/inventory_service.py`
-- **InventoryStack** (34 connections) — `server/services/inventory_service.py`
-- **inventory_unequip_command.py** (32 connections) — `server/commands/inventory_unequip_command.py`
-- **inventory_service.py** (29 connections) — `server/services/inventory_service.py`
-- **InventoryCapacityError** (29 connections) — `server/services/inventory_service.py`
-- **WearableContainerService** (23 connections) — `server/services/wearable_container_service.py`
-- **SlotValidationError** (22 connections) — `server/services/equipment_service.py`
-- **test_equipment_service.py** (22 connections) — `server/tests/unit/services/test_equipment_service.py`
-- **equipment_service.py** (21 connections) — `server/services/equipment_service.py`
-- **test_inventory_service.py** (20 connections) — `server/tests/unit/services/test_inventory_service.py`
-- **get_shared_services()** (19 connections) — `server/commands/inventory_service_helpers.py`
-- **MutationDecision** (18 connections) — `server/services/inventory_mutation_guard.py`
-- **EquipmentCapacityError** (17 connections) — `server/services/equipment_service.py`
-- **EquipmentService** (17 connections) — `server/services/equipment_service.py`
-- **inventory_service_helpers.py** (16 connections) — `server/commands/inventory_service_helpers.py`
-- **handle_unequip_command()** (14 connections) — `server/commands/inventory_unequip_command.py`
-- **InventoryValidationError** (13 connections) — `server/services/inventory_service.py`
-- **InventorySplitError** (13 connections) — `server/services/inventory_service.py`
-- **_unequip_run_mutation()** (12 connections) — `server/commands/inventory_unequip_command.py`
-- **EquipmentServiceError** (10 connections) — `server/services/equipment_service.py`
-- **.equip_from_inventory()** (9 connections) — `server/services/equipment_service.py`
-- **InventoryServiceError** (9 connections) — `server/services/inventory_service.py`
-- **._clone_stack()** (9 connections) — `server/services/inventory_service.py`
-- **.unequip_to_inventory()** (8 connections) — `server/services/equipment_service.py`
-- *... and 120 more nodes in this community*
+- **LoggedHTTPException** (401 connections) — `server/exceptions.py`
+- **ContainerServiceError** (91 connections) — `server/services/container_service.py`
+- **ContainerNotFoundError** (49 connections) — `server/services/container_service.py`
+- **ContainerCapacityError** (45 connections) — `server/services/container_service.py`
+- **ContainerAccessDeniedError** (41 connections) — `server/services/container_service.py`
+- **ContainerLockedError** (38 connections) — `server/services/container_service.py`
+- **container_service.py** (37 connections) — `server/services/container_service.py`
+- **handle_transfer_items_exceptions()** (32 connections) — `server/api/container_exception_handlers.py`
+- **test_container_exception_handlers.py** (31 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
+- **test_containers.py** (31 connections) — `server/tests/unit/api/test_containers.py`
+- **handle_open_container_exceptions()** (26 connections) — `server/api/container_exception_handlers.py`
+- **handle_loot_all_exceptions()** (25 connections) — `server/api/container_exception_handlers.py`
+- **container_exception_handlers.py** (24 connections) — `server/api/container_exception_handlers.py`
+- **handle_close_container_exceptions()** (22 connections) — `server/api/container_exception_handlers.py`
+- **TestHelperFunctions** (20 connections) — `server/tests/unit/api/test_containers.py`
+- **TestOpenContainer** (20 connections) — `server/tests/unit/api/test_containers.py`
+- **TestHandleTransferItemsExceptions** (18 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
+- **create_error_context()** (17 connections) — `server/api/container_helpers.py`
+- **OpenContainerRequest** (17 connections) — `server/api/container_models.py`
+- **TestCloseContainer** (17 connections) — `server/tests/unit/api/test_containers.py`
+- **TestHandleOpenContainerExceptions** (16 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
+- **TestHandleLootAllExceptions** (16 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
+- **TestRequestModels** (16 connections) — `server/tests/unit/api/test_containers.py`
+- **TestHandleCloseContainerExceptions** (14 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
+- **TestHandleTransferItemsExceptionsEdgeCases** (14 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
+- *... and 165 more nodes in this community*
 
 ## Relationships
 
-- [APIRouter](APIRouter.md) (34 shared connections)
-- [equipment helpers](equipment_helpers.md) (28 shared connections)
-- [DropResolved](DropResolved.md) (23 shared connections)
-- [main()](main%28%29.md) (15 shared connections)
-- [Lock](Lock.md) (15 shared connections)
-- [Any](Any.md) (12 shared connections)
-- [filter container data()](filter_container_data%28%29.md) (11 shared connections)
-- [container helpers inventory display](container_helpers_inventory_display.md) (6 shared connections)
-- [handle pickup command()](handle_pickup_command%28%29.md) (6 shared connections)
-- [container helpers inventory find](container_helpers_inventory_find.md) (5 shared connections)
-- [Request](Request.md) (3 shared connections)
-- [. init ()](_init_%28%29.md) (2 shared connections)
+- [BaseCommand](BaseCommand.md) (128 shared connections)
+- [metrics](metrics.md) (83 shared connections)
+- [APIRouter](APIRouter.md) (51 shared connections)
+- [. init ()](_init_%28%29.md) (35 shared connections)
+- [DeadLetterMessage](DeadLetterMessage.md) (35 shared connections)
+- [Lock](Lock.md) (32 shared connections)
+- [.initialize()](initialize%28%29.md) (28 shared connections)
+- [Connection Manager](Connection_Manager.md) (24 shared connections)
+- [admin shutdown command](admin_shutdown_command.md) (22 shared connections)
+- [append unique valid occupant()](append_unique_valid_occupant%28%29.md) (22 shared connections)
+- [fetch container items()](fetch_container_items%28%29.md) (19 shared connections)
+- [fetch schedule entries()](fetch_schedule_entries%28%29.md) (9 shared connections)
 
 ## Source Files
 
-- `server/commands/equipment_helpers.py`
-- `server/commands/inventory_service_helpers.py`
-- `server/commands/inventory_unequip_command.py`
-- `server/services/__init__.py`
-- `server/services/equipment_service.py`
-- `server/services/inventory_mutation_guard.py`
-- `server/services/inventory_service.py`
-- `server/services/wearable_container_service.py`
-- `server/tests/unit/services/test_equipment_service.py`
-- `server/tests/unit/services/test_inventory_service.py`
+- `server/api/container_exception_handlers.py`
+- `server/api/container_helpers.py`
+- `server/api/container_models.py`
+- `server/exceptions.py`
+- `server/services/container_service.py`
+- `server/tests/unit/api/test_container_exception_handlers.py`
+- `server/tests/unit/api/test_container_helpers_loot.py`
+- `server/tests/unit/api/test_containers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 648 (83%)
-- INFERRED: 129 (17%)
+- EXTRACTED: 970 (62%)
+- INFERRED: 583 (38%)
 - AMBIGUOUS: 0 (0%)
 
 ---

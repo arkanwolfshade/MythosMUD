@@ -1,49 +1,47 @@
 # test admin commands
 
-> 54 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **test_admin_commands.py** (37 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **Test handle_mute_command() when user manager is not available.** (5 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_mute_command_exception()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_admin_command_status()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_admin_command_time()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_admin_command_unknown()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_mute_command_no_user_manager()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_mute_command_no_target()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_mute_command_success()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_unmute_command_no_user_manager()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_unmute_command_no_target()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_unmute_command_success()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_unmute_command_idempotent_when_not_muted()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_mute_global_command_no_user_manager()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_mute_global_command_success()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_unmute_global_command_no_user_manager()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_unmute_global_command_success()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_add_admin_command_no_user_manager()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_add_admin_command_no_target()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_add_admin_command_success()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_mutes_command_no_user_manager()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_mutes_command_success()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_teleport_command_no_app()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_teleport_command_no_target()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **test_handle_goto_command_no_app()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- *... and 29 more nodes in this community*
+- **test_inventory_mutation_guard_internal.py** (15 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **guard()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **test_prune_tokens()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **test_prune_tokens_ttl_zero()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **test_enforce_limit()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **test_get_async_global_lock()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **test_get_async_state_creates_lazily()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **test_cleanup_async_state_locked()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **test_cleanup_async_state_empty()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **test_prune_tokens_async()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **test_prune_tokens_async_ttl_zero()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **test_enforce_limit_async()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **Unit tests for inventory mutation guard - internal helper methods.  Tests intern** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **Create an InventoryMutationGuard instance.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **Test _prune_tokens removes expired tokens.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **Test _prune_tokens with token_ttl=0 doesn't prune.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **Test _enforce_limit removes oldest tokens when limit exceeded.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **Test _get_async_global_lock creates lock lazily.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **Test _get_async_state creates state lazily.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **Test _cleanup_async_state handles locked state.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **Test _cleanup_async_state removes empty state.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **Test _prune_tokens_async removes expired tokens.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **Test _prune_tokens_async with token_ttl=0 doesn't prune.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **Test _enforce_limit_async removes oldest tokens when limit exceeded.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
 
 ## Relationships
 
-- [Any](Any.md) (35 shared connections)
-- [main()](main%28%29.md) (2 shared connections)
+- [Lock](Lock.md) (3 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_admin_commands.py`
+- `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
 
 ## Audit Trail
 
-- EXTRACTED: 136 (86%)
-- INFERRED: 23 (14%)
+- EXTRACTED: 50 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

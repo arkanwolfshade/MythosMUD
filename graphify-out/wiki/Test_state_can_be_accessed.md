@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_state_direct_access()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test state can be accessed directly.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_get_room_by_name()** (2 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test get_room_by_name() returns None (not implemented).** (1 connections) — `server/tests/unit/game/test_room_service.py`
 
 ## Relationships
 
-- [BehaviorEngine](BehaviorEngine.md) (1 shared connections)
-- [test behavior engine](test_behavior_engine.md) (1 shared connections)
+- [test room service](test_room_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_behavior_engine.py`
+- `server/tests/unit/game/test_room_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

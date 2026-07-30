@@ -1,40 +1,35 @@
 # .build subject()
 
-> 17 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **.build_subject()** (7 connections) — `server/services/nats_subject_manager/manager.py`
-- **Any** (7 connections)
-- **._ensure_pattern_exists()** (5 connections) — `server/services/nats_subject_manager/manager.py`
-- **._ensure_required_params()** (5 connections) — `server/services/nats_subject_manager/manager.py`
-- **._format_subject()** (5 connections) — `server/services/nats_subject_manager/manager.py`
-- **.get_pattern_info()** (5 connections) — `server/services/nats_subject_manager/manager.py`
-- **._ensure_subject_length()** (4 connections) — `server/services/nats_subject_manager/manager.py`
-- **.get_all_patterns()** (4 connections) — `server/services/nats_subject_manager/manager.py`
-- **.get_performance_metrics()** (3 connections) — `server/services/nats_subject_manager/manager.py`
-- **Build a NATS subject from a pattern and parameters.          Args:             p** (1 connections) — `server/services/nats_subject_manager/manager.py`
-- **Ensure pattern exists in registry.          Args:             pattern_name: Name** (1 connections) — `server/services/nats_subject_manager/manager.py`
-- **Ensure all required parameters are provided.          Args:             pattern_** (1 connections) — `server/services/nats_subject_manager/manager.py`
-- **Format subject string from pattern and parameters.          Args:             pa** (1 connections) — `server/services/nats_subject_manager/manager.py`
-- **Ensure subject length is within limits.          Args:             subject: Subj** (1 connections) — `server/services/nats_subject_manager/manager.py`
-- **Get information about a registered pattern.          Args:             pattern_n** (1 connections) — `server/services/nats_subject_manager/manager.py`
-- **Get all registered patterns.          Returns:             Dictionary of all reg** (1 connections) — `server/services/nats_subject_manager/manager.py`
-- **Get current performance metrics.          Returns:             Dictionary contai** (1 connections) — `server/services/nats_subject_manager/manager.py`
+- **load_motd()** (8 connections) — `server/utils/motd_loader.py`
+- **test_motd_loader.py** (7 connections) — `server/tests/unit/utils/test_motd_loader.py`
+- **test_load_motd_file_exists()** (3 connections) — `server/tests/unit/utils/test_motd_loader.py`
+- **test_load_motd_file_not_exists()** (3 connections) — `server/tests/unit/utils/test_motd_loader.py`
+- **test_load_motd_file_read_error()** (3 connections) — `server/tests/unit/utils/test_motd_loader.py`
+- **test_load_motd_empty_file()** (3 connections) — `server/tests/unit/utils/test_motd_loader.py`
+- **Unit tests for motd_loader utilities.  Tests the MOTD loading functions.** (1 connections) — `server/tests/unit/utils/test_motd_loader.py`
+- **Test load_motd() loads MOTD from file.** (1 connections) — `server/tests/unit/utils/test_motd_loader.py`
+- **Test load_motd() returns default when file doesn't exist.** (1 connections) — `server/tests/unit/utils/test_motd_loader.py`
+- **Test load_motd() handles file read errors.** (1 connections) — `server/tests/unit/utils/test_motd_loader.py`
+- **Test load_motd() handles empty file.** (1 connections) — `server/tests/unit/utils/test_motd_loader.py`
+- **Load the Message of the Day from the configured file.      Returns:         str:** (1 connections) — `server/utils/motd_loader.py`
 
 ## Relationships
 
-- [get subject manager dependency()](get_subject_manager_dependency%28%29.md) (8 shared connections)
-- [. init ()](_init_%28%29.md) (4 shared connections)
-- [Any](Any.md) (1 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
+- [process dead players()](process_dead_players%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/nats_subject_manager/manager.py`
+- `server/tests/unit/utils/test_motd_loader.py`
+- `server/utils/motd_loader.py`
 
 ## Audit Trail
 
-- EXTRACTED: 53 (100%)
+- EXTRACTED: 33 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

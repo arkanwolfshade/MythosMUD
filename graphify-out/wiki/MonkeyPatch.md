@@ -1,26 +1,24 @@
 # MonkeyPatch
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **setup_jwt_secret()** (3 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **MonkeyPatch** (2 connections)
-- **Set JWT secret for tests.** (1 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_process_room_rows_with_none_zone_stable_id()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **Test _process_room_rows handles None zone_stable_id.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Relationships
 
-- [create access token()](create_access_token%28%29.md) (1 shared connections)
-- [. init ()](_init_%28%29.md) (1 shared connections)
+- [test async persistence room cache](test_async_persistence_room_cache.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/auth/test_auth_utils.py`
+- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (83%)
-- INFERRED: 1 (17%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

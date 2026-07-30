@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_combat_help_message()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test get_combat_help_message returns help message.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_add_valid_name_to_lists_player()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test add_valid_name_to_lists() adds player name.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [test combat validator](test_combat_validator.md) (1 shared connections)
+- [test player event handlers utils](test_player_event_handlers_utils.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 

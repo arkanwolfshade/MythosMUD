@@ -18,7 +18,7 @@
 ## Relationships
 
 - [test optimized security validator](test_optimized_security_validator.md) (5 shared connections)
-- [Test sanitizing empty string.](Test_sanitizing_empty_string.md) (1 shared connections)
+- [Test stripping ANSI codes from](Test_stripping_ANSI_codes_from.md) (1 shared connections)
 
 ## Source Files
 

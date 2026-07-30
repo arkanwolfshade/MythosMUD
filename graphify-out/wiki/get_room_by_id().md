@@ -1,61 +1,60 @@
 # .get room by id()
 
-> 53 nodes
+> 42 nodes
 
 ## Key Concepts
 
-- **websocket_helpers.py** (35 connections) — `server/realtime/websocket_helpers.py`
-- **test_websocket_helpers_player.py** (23 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **get_player_and_room()** (12 connections) — `server/realtime/websocket_helpers.py`
-- **prepare_player_data()** (10 connections) — `server/realtime/websocket_helpers.py`
-- **get_player_service_from_connection_manager()** (9 connections) — `server/realtime/websocket_helpers.py`
-- **get_player_stats_data()** (9 connections) — `server/realtime/websocket_helpers.py`
-- **build_basic_player_data()** (7 connections) — `server/realtime/websocket_helpers.py`
+- **quest_commands.py** (38 connections) — `server/commands/quest_commands.py`
+- **Any** (18 connections)
+- **handle_journal_command()** (15 connections) — `server/commands/quest_commands.py`
+- **_handle_quest_npc_sub()** (11 connections) — `server/commands/quest_commands.py`
+- **_resolve_quest_command_context()** (10 connections) — `server/commands/quest_commands.py`
+- **_get_quest_service()** (7 connections) — `server/commands/quest_commands.py`
+- **_resolve_npc_in_player_room()** (7 connections) — `server/commands/quest_commands.py`
+- **_resolve_player_id()** (6 connections) — `server/commands/quest_commands.py`
 - **UUID** (6 connections)
-- **_get_tracked_player_from_connection_manager()** (5 connections) — `server/realtime/websocket_helpers.py`
-- **_fetch_room_for_tracked_player()** (4 connections) — `server/realtime/websocket_helpers.py`
-- **.get_room_by_id()** (3 connections) — `server/realtime/websocket_handler_connection.py`
-- **_AppStateForPlayerService** (3 connections) — `server/realtime/websocket_helpers.py`
-- **test_get_player_service_from_connection_manager_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_get_player_service_from_connection_manager_no_app()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_get_player_service_from_connection_manager_no_state()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_get_player_stats_data_with_get_stats()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_get_player_stats_data_string_stats()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_get_player_stats_data_adds_health()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_get_player_stats_data_no_get_stats()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_build_basic_player_data()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_build_basic_player_data_defaults()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_prepare_player_data_with_service()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_prepare_player_data_no_service()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_prepare_player_data_service_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_get_player_and_room_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- *... and 28 more nodes in this community*
+- **_active_npc_ids_in_room()** (6 connections) — `server/commands/quest_commands.py`
+- **_emit_npc_lines_for_results()** (6 connections) — `server/commands/quest_commands.py`
+- **_quest_command_ready()** (6 connections) — `server/commands/quest_commands.py`
+- **quest_ask_npc_line()** (6 connections) — `server/game/quest/quest_chat_notify.py`
+- **quest_turnin_npc_line()** (6 connections) — `server/game/quest/quest_chat_notify.py`
+- **_get_container_and_persistence()** (5 connections) — `server/commands/quest_commands.py`
+- **_format_one_quest_entry()** (5 connections) — `server/commands/quest_commands.py`
+- **_format_quest_log()** (5 connections) — `server/commands/quest_commands.py`
+- **_handle_quest_abandon()** (5 connections) — `server/commands/quest_commands.py`
+- **_parse_quest_subcommand()** (4 connections) — `server/commands/quest_commands.py`
+- **_format_goal_line()** (4 connections) — `server/commands/quest_commands.py`
+- **_npc_definition_id()** (4 connections) — `server/commands/quest_commands.py`
+- **_format_quest_action_results()** (4 connections) — `server/commands/quest_commands.py`
+- **Quest commands: journal / quests (quest log), quest abandon/ask/turnin.  Returns** (1 connections) — `server/commands/quest_commands.py`
+- **Get QuestService from request app container, or None if unavailable.** (1 connections) — `server/commands/quest_commands.py`
+- **Get container and async_persistence from request, or None.** (1 connections) — `server/commands/quest_commands.py`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [.model dump()](model_dump%28%29.md) (10 shared connections)
-- [. init ()](_init_%28%29.md) (5 shared connections)
-- [UUID](UUID.md) (3 shared connections)
-- [websocket handler connection](websocket_handler_connection.md) (2 shared connections)
-- [real time](real_time.md) (2 shared connections)
-- [character creation](character_creation.md) (2 shared connections)
-- [websocket handler commands](websocket_handler_commands.md) (2 shared connections)
-- [main()](main%28%29.md) (2 shared connections)
-- [.state()](state%28%29.md) (2 shared connections)
-- [websocket handler app state](websocket_handler_app_state.md) (1 shared connections)
-- [Any](Any.md) (1 shared connections)
-- [.apply dp change()](apply_dp_change%28%29.md) (1 shared connections)
+- [ExitStack](ExitStack.md) (11 shared connections)
+- [.initialize()](initialize%28%29.md) (11 shared connections)
+- [look npc](look_npc.md) (9 shared connections)
+- [QuestCompleted](QuestCompleted.md) (3 shared connections)
+- [test magic commands](test_magic_commands.md) (2 shared connections)
+- [DropResolved](DropResolved.md) (2 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
+- [. get persistence from app()](_get_persistence_from_app%28%29.md) (2 shared connections)
+- [AuthSlice](AuthSlice.md) (1 shared connections)
+- [Spell Targeting](Spell_Targeting.md) (1 shared connections)
+- [notify quest abandoned()](notify_quest_abandoned%28%29.md) (1 shared connections)
+- [Player Position Service](Player_Position_Service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/websocket_handler_connection.py`
-- `server/realtime/websocket_helpers.py`
-- `server/tests/unit/realtime/test_websocket_helpers_player.py`
+- `server/commands/quest_commands.py`
+- `server/game/quest/quest_chat_notify.py`
 
 ## Audit Trail
 
-- EXTRACTED: 196 (97%)
-- INFERRED: 7 (3%)
+- EXTRACTED: 196 (96%)
+- INFERRED: 8 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,42 +1,27 @@
 # get app instance()
 
-> 11 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **npc_combat_grace.py** (13 connections) — `server/services/npc_combat_grace.py`
-- **_connection_manager_from_config_app()** (8 connections) — `server/services/npc_combat_grace.py`
-- **is_player_attack_blocked_by_login_grace_period()** (7 connections) — `server/services/npc_combat_grace.py`
-- **is_npc_attack_on_player_blocked_by_login_grace_period()** (7 connections) — `server/services/npc_combat_grace.py`
-- **get_app_instance()** (5 connections) — `server/config/__init__.py`
-- **UUID** (3 connections)
-- **Return the runtime app instance attached during lifespan startup.      This prov** (1 connections) — `server/config/__init__.py`
-- **Login grace-period checks for NPC combat integration (extracted to keep service** (1 connections) — `server/services/npc_combat_grace.py`
-- **Resolve connection_manager from the public config app accessor.      Uses geta** (1 connections) — `server/services/npc_combat_grace.py`
-- **True if the player should not attack (in login grace period). Fail-open on confi** (1 connections) — `server/services/npc_combat_grace.py`
-- **True if NPC attack on this player should be blocked (player in login grace perio** (1 connections) — `server/services/npc_combat_grace.py`
+- **.heal_player()** (4 connections) — `server/async_persistence.py`
+- **.async_heal_player()** (4 connections) — `server/async_persistence.py`
+- **Heal a player. Delegates to HealthRepository.** (1 connections) — `server/async_persistence.py`
+- **Async alias for heal_player. Delegates to HealthRepository.** (1 connections) — `server/async_persistence.py`
 
 ## Relationships
 
-- [initialize nats and combat services()](initialize_nats_and_combat_services%28%29.md) (5 shared connections)
-- [login grace period](login_grace_period.md) (4 shared connections)
-- [Player](Player.md) (2 shared connections)
-- [main()](main%28%29.md) (2 shared connections)
-- [init](init.md) (1 shared connections)
-- [Any](Any.md) (1 shared connections)
-- [.state()](state%28%29.md) (1 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (1 shared connections)
-- [.get original string id()](get_original_string_id%28%29.md) (1 shared connections)
+- [chat nats publisher](chat_nats_publisher.md) (2 shared connections)
+- [PlayerRespawnEventHandler](PlayerRespawnEventHandler.md) (2 shared connections)
 
 ## Source Files
 
-- `server/config/__init__.py`
-- `server/services/npc_combat_grace.py`
+- `server/async_persistence.py`
 
 ## Audit Trail
 
-- EXTRACTED: 46 (96%)
-- INFERRED: 2 (4%)
+- EXTRACTED: 10 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

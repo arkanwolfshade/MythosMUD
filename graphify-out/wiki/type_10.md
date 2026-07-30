@@ -5,7 +5,7 @@
 ## Key Concepts
 
 - **properties** (10 connections) — `schemas/calendar/schedule.schema.json`
-- **start_hour** (4 connections) — `schemas/calendar/schedule.schema.json`
+- **end_hour** (4 connections) — `schemas/calendar/schedule.schema.json`
 - **name** (3 connections) — `schemas/calendar/schedule.schema.json`
 - **category** (3 connections) — `schemas/calendar/schedule.schema.json`
 - **notes** (2 connections) — `schemas/calendar/schedule.schema.json`
@@ -22,8 +22,8 @@
 
 - [type](type.md) (3 shared connections)
 - [$defs](%24defs.md) (1 shared connections)
-- [maximum](maximum.md) (1 shared connections)
-- [minLength](minLength.md) (1 shared connections)
+- [Initialize system/admin channel strategy. Args:](Initialize_system-admin_channel_strategy._Args-.md) (1 shared connections)
+- [Any](Any.md) (1 shared connections)
 
 ## Source Files
 

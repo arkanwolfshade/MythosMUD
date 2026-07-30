@@ -1,24 +1,24 @@
 # Test is valid target name
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **test_is_valid_target_name_valid()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_is_valid_target_name_invalid()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test _is_valid_target_name with valid target name.** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_coerce_row_quantity()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
+- **Row quantity/position coercion matches item quantity rules (PR #461 / int_coerci** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
 
 ## Relationships
 
-- [test combat validator](test_combat_validator.md) (2 shared connections)
+- [datetime](datetime.md) (1 shared connections)
+- [disconnect grace period](disconnect_grace_period.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

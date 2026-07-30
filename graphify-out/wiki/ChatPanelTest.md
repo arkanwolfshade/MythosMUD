@@ -1,6 +1,6 @@
 # ChatPanelTest
 
-> 146 nodes
+> 128 nodes
 
 ## Key Concepts
 
@@ -14,7 +14,6 @@
 - **TerminalButton.tsx** (23 connections) — `client/src/components/ui/TerminalButton.tsx`
 - **TerminalButton** (22 connections) — `client/src/components/ui/TerminalButton.tsx`
 - **ChatPanelTest.tsx** (15 connections) — `client/src/components/ChatPanelTest.tsx`
-- **DraggablePanelCore.tsx** (15 connections) — `client/src/components/DraggablePanelCore.tsx`
 - **CommandInputPanel.tsx** (14 connections) — `client/src/components/ui-v2/panels/CommandInputPanel.tsx`
 - **DraggablePanelTest.tsx** (13 connections) — `client/src/components/DraggablePanelTest.tsx`
 - **TailwindTest.tsx** (13 connections) — `client/src/components/TailwindTest.tsx`
@@ -24,27 +23,28 @@
 - **CommandPanelTest.tsx** (11 connections) — `client/src/components/CommandPanelTest.tsx`
 - **CommandPanel()** (11 connections) — `client/src/components/panels/CommandPanel.tsx`
 - **TerminalInput.tsx** (11 connections) — `client/src/components/ui/TerminalInput.tsx`
-- **useDraggablePanelInteractions.ts** (11 connections) — `client/src/components/useDraggablePanelInteractions.ts`
-- **DraggablePanel()** (10 connections) — `client/src/components/DraggablePanelCore.tsx`
 - **MythosPanel.tsx** (10 connections) — `client/src/components/ui/MythosPanel.tsx`
 - **TerminalInput** (10 connections) — `client/src/components/ui/TerminalInput.tsx`
 - **ChatPanelRefactoredToolbar.tsx** (9 connections) — `client/src/components/panels/ChatPanelRefactoredToolbar.tsx`
-- *... and 121 more nodes in this community*
+- **ChatHeader.tsx** (9 connections) — `client/src/components/panels/chat/ChatHeader.tsx`
+- **CommandHistoryPanel.tsx** (9 connections) — `client/src/components/ui-v2/panels/CommandHistoryPanel.tsx`
+- **MythosPanel()** (9 connections) — `client/src/components/ui/MythosPanel.tsx`
+- *... and 103 more nodes in this community*
 
 ## Relationships
 
-- [chatPanelChannelFilter](chatPanelChannelFilter.md) (18 shared connections)
-- [ChatHistoryToggle()](ChatHistoryToggle%28%29.md) (15 shared connections)
-- [HealthMeter](HealthMeter.md) (15 shared connections)
+- [chatPanelChannelFilter](chatPanelChannelFilter.md) (16 shared connections)
 - [StatusPanel](StatusPanel.md) (13 shared connections)
 - [mockOpenContainers](mockOpenContainers.md) (12 shared connections)
-- [Room](Room.md) (9 shared connections)
+- [ChatHistoryToggle()](ChatHistoryToggle%28%29.md) (10 shared connections)
+- [HealthMeter](HealthMeter.md) (10 shared connections)
+- [GameClientV2Dock.test](GameClientV2Dock.test.md) (8 shared connections)
+- [test player cache](test_player_cache.md) (8 shared connections)
 - [GameLogMessagesList](GameLogMessagesList.md) (8 shared connections)
-- [Channel](Channel.md) (5 shared connections)
+- [player repository save](player_repository_save.md) (7 shared connections)
+- [async sessionmaker](async_sessionmaker.md) (5 shared connections)
 - [MythosTimeHud](MythosTimeHud.md) (5 shared connections)
-- [PanelManager](PanelManager.md) (5 shared connections)
-- [SafeHtml](SafeHtml.md) (2 shared connections)
-- [MonitoringPanel](MonitoringPanel.md) (2 shared connections)
+- [Any](Any.md) (3 shared connections)
 
 ## Source Files
 
@@ -52,9 +52,6 @@
 - `client/src/components/ChatPanelTest.tsx`
 - `client/src/components/CommandPanelTest.test.tsx`
 - `client/src/components/CommandPanelTest.tsx`
-- `client/src/components/DraggablePanel.tsx`
-- `client/src/components/DraggablePanelCore.tsx`
-- `client/src/components/DraggablePanelResizeHandles.tsx`
 - `client/src/components/DraggablePanelTest.test.tsx`
 - `client/src/components/DraggablePanelTest.tsx`
 - `client/src/components/EldritchEffectsDemo.test.tsx`
@@ -62,16 +59,19 @@
 - `client/src/components/TailwindTest.test.tsx`
 - `client/src/components/TailwindTest.tsx`
 - `client/src/components/__tests__/CommandPanel.test.tsx`
-- `client/src/components/__tests__/DraggablePanel.grid-positioning.test.tsx`
-- `client/src/components/__tests__/DraggablePanel.test.tsx`
 - `client/src/components/__tests__/command-panel.test.tsx`
-- `client/src/components/draggablePanelUtils.ts`
 - `client/src/components/panels/ChatPanelRefactoredToolbar.tsx`
 - `client/src/components/panels/ChatPanelRuntimeViewParts.tsx`
+- `client/src/components/panels/CommandPanel.tsx`
+- `client/src/components/panels/__tests__/CommandPanel-LogoutButton.integration.test.tsx`
+- `client/src/components/panels/__tests__/command-panel.spec.tsx`
+- `client/src/components/panels/__tests__/command-panel.test.tsx`
+- `client/src/components/panels/chat/ChannelActivityIndicators.tsx`
+- `client/src/components/panels/chat/ChannelSelectorSection.tsx`
 
 ## Audit Trail
 
-- EXTRACTED: 757 (100%)
+- EXTRACTED: 681 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

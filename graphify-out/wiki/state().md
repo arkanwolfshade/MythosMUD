@@ -4,19 +4,19 @@
 
 ## Key Concepts
 
-- **.state()** (35 connections) — `server/realtime/connection_state_machine.py`
-- **GameStateProvider** (24 connections) — `server/realtime/integration/game_state_provider.py`
+- **.state()** (36 connections) — `server/realtime/connection_state_machine.py`
+- **GameStateProvider** (26 connections) — `server/realtime/integration/game_state_provider.py`
 - **UUID** (15 connections)
 - **Any** (13 connections)
 - **.send_initial_game_state()** (12 connections) — `server/realtime/integration/game_state_provider.py`
 - **._get_player_data_for_client()** (9 connections) — `server/realtime/integration/game_state_provider.py`
 - **._get_player_name_with_grace_periods()** (8 connections) — `server/realtime/integration/game_state_provider.py`
 - **._process_occupants_with_grace_periods()** (8 connections) — `server/realtime/integration/game_state_provider.py`
+- **.connection_manager()** (8 connections) — `server/realtime/nats_message_handler.py`
 - **._convert_player_uuids_to_names()** (7 connections) — `server/realtime/integration/game_state_provider.py`
 - **._add_grace_period_indicators()** (7 connections) — `server/realtime/integration/game_state_provider.py`
 - **._get_login_grace_period_status()** (7 connections) — `server/realtime/integration/game_state_provider.py`
 - **._get_quest_log_for_client()** (7 connections) — `server/realtime/integration/game_state_provider.py`
-- **.connection_manager()** (7 connections) — `server/realtime/nats_message_handler.py`
 - **.get_player()** (6 connections) — `server/realtime/integration/game_state_provider.py`
 - **.convert_room_uuids_to_names()** (6 connections) — `server/realtime/integration/game_state_provider.py`
 - **._get_fallback_player_data()** (6 connections) — `server/realtime/integration/game_state_provider.py`
@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [Any](Any.md) (6 shared connections)
-- [login grace period](login_grace_period.md) (5 shared connections)
-- [NPCCombatIntegrationBase](NPCCombatIntegrationBase.md) (3 shared connections)
-- [websocket handler commands](websocket_handler_commands.md) (3 shared connections)
-- [main()](main%28%29.md) (3 shared connections)
-- [disconnect grace period](disconnect_grace_period.md) (3 shared connections)
-- [real time](real_time.md) (2 shared connections)
-- [communication commands support](communication_commands_support.md) (2 shared connections)
-- [rescue commands](rescue_commands.md) (2 shared connections)
-- [.initialize()](initialize%28%29.md) (2 shared connections)
-- [.get room by id()](get_room_by_id%28%29.md) (2 shared connections)
-- [test game state provider](test_game_state_provider.md) (2 shared connections)
+- [login grace period](login_grace_period.md) (6 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (5 shared connections)
+- [Any](Any.md) (4 shared connections)
+- [follow commands](follow_commands.md) (2 shared connections)
+- [DropResolved](DropResolved.md) (2 shared connections)
+- [ConnectionsComponent](ConnectionsComponent.md) (2 shared connections)
+- [test resolve state no app()](test_resolve_state_no_app%28%29.md) (2 shared connections)
+- [Send a system message to](Send_a_system_message_to.md) (2 shared connections)
+- [default cors origins()](default_cors_origins%28%29.md) (2 shared connections)
+- [init](init.md) (2 shared connections)
+- [connection state machine](connection_state_machine.md) (2 shared connections)
+- [help content](help_content.md) (2 shared connections)
 
 ## Source Files
 
@@ -54,8 +54,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 191 (81%)
-- INFERRED: 45 (19%)
+- EXTRACTED: 193 (80%)
+- INFERRED: 47 (20%)
 - AMBIGUOUS: 0 (0%)
 
 ---

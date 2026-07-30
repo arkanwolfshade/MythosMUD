@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_establish_websocket_connection_success()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test establish_websocket_connection() successfully establishes connection.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_search_rooms_by_name_not_implemented()** (2 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test search_rooms_by_name() returns empty list (not implemented).** (1 connections) — `server/tests/unit/game/test_room_service.py`
 
 ## Relationships
 
-- [connection establishment](connection_establishment.md) (1 shared connections)
-- [test connection establishment](test_connection_establishment.md) (1 shared connections)
+- [test room service](test_room_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_connection_establishment.py`
+- `server/tests/unit/game/test_room_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

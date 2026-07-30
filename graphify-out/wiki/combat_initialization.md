@@ -1,57 +1,54 @@
 # combat initialization
 
-> 67 nodes
+> 34 nodes
 
 ## Key Concepts
 
-- **CombatParticipantData** (38 connections) — `server/services/combat_types.py`
-- **.create_combat_instance()** (17 connections) — `server/services/combat_initialization.py`
-- **combat_initialization.py** (15 connections) — `server/services/combat_initialization.py`
-- **TestCombatInitializer** (15 connections) — `server/tests/unit/services/test_combat_initialization.py`
-- **TestCombatParticipantData** (12 connections) — `server/tests/unit/services/test_combat_types.py`
-- **CombatInitializer** (8 connections) — `server/services/combat_initialization.py`
-- **test_combat_initialization.py** (8 connections) — `server/tests/unit/services/test_combat_initialization.py`
-- **test_combat_types.py** (6 connections) — `server/tests/unit/services/test_combat_types.py`
-- **_build_participant()** (5 connections) — `server/services/combat_initialization.py`
-- **_compute_turn_order()** (5 connections) — `server/services/combat_initialization.py`
-- **.start_combat()** (5 connections) — `server/services/combat_service.py`
-- **_build_combat_instance()** (4 connections) — `server/services/combat_initialization.py`
-- **test_get_player_combat_data_uses_get_combat_stats()** (4 connections) — `server/tests/unit/services/test_npc_combat_data_provider.py`
-- **test_get_npc_combat_data_uses_get_combat_stats()** (4 connections) — `server/tests/unit/services/test_npc_combat_data_provider.py`
-- **.attacker_data()** (3 connections) — `server/tests/unit/services/test_combat_initialization.py`
-- **.target_data()** (3 connections) — `server/tests/unit/services/test_combat_initialization.py`
-- **.test_create_combat_instance_basic()** (3 connections) — `server/tests/unit/services/test_combat_initialization.py`
-- **.test_create_combat_instance_participants()** (3 connections) — `server/tests/unit/services/test_combat_initialization.py`
-- **.test_create_combat_instance_turn_order_higher_dexterity_first()** (3 connections) — `server/tests/unit/services/test_combat_initialization.py`
-- **.test_create_combat_instance_turn_order_lower_dexterity_first()** (3 connections) — `server/tests/unit/services/test_combat_initialization.py`
-- **.test_create_combat_instance_turn_order_equal_dexterity()** (3 connections) — `server/tests/unit/services/test_combat_initialization.py`
-- **.test_create_combat_instance_auto_progression_disabled()** (3 connections) — `server/tests/unit/services/test_combat_initialization.py`
-- **.test_create_combat_instance_different_turn_interval()** (3 connections) — `server/tests/unit/services/test_combat_initialization.py`
-- **.test_create_combat_instance_damaged_participants()** (3 connections) — `server/tests/unit/services/test_combat_initialization.py`
-- **.test_create_combat_instance_zero_tick()** (3 connections) — `server/tests/unit/services/test_combat_initialization.py`
-- *... and 42 more nodes in this community*
+- **test_event_serialization.py** (15 connections) — `server/tests/unit/events/test_event_serialization.py`
+- **deserialize_event()** (14 connections) — `server/events/event_serialization.py`
+- **serialize_event()** (13 connections) — `server/events/event_serialization.py`
+- **event_serialization.py** (12 connections) — `server/events/event_serialization.py`
+- **_register_event_types()** (6 connections) — `server/events/event_serialization.py`
+- **._handle_nats_message_impl()** (5 connections) — `server/events/nats_event_bridge.py`
+- **test_serialize_deserialize_player_entered_room()** (5 connections) — `server/tests/unit/events/test_event_serialization.py`
+- **test_serialize_deserialize_player_died_event()** (5 connections) — `server/tests/unit/events/test_event_serialization.py`
+- **test_serialize_deserialize_player_xp_award_event()** (5 connections) — `server/tests/unit/events/test_event_serialization.py`
+- **_convert_value_for_json()** (4 connections) — `server/events/event_serialization.py`
+- **Any** (4 connections)
+- **_convert_value_from_json()** (4 connections) — `server/events/event_serialization.py`
+- **.__init__()** (4 connections) — `server/events/nats_event_bridge.py`
+- **.handle_nats_message()** (4 connections) — `server/events/nats_event_bridge.py`
+- **Any** (3 connections)
+- **test_deserialize_unknown_event_type_raises()** (3 connections) — `server/tests/unit/events/test_event_serialization.py`
+- **test_deserialize_missing_event_type_raises()** (3 connections) — `server/tests/unit/events/test_event_serialization.py`
+- **test_serialize_non_base_event_raises()** (3 connections) — `server/tests/unit/events/test_event_serialization.py`
+- **Event serialization for distributed EventBus over NATS.  Serializes and deserial** (1 connections) — `server/events/event_serialization.py`
+- **Populate the event class registry. Lazy import to avoid circular deps.** (1 connections) — `server/events/event_serialization.py`
+- **Convert a value to JSON-serializable form.** (1 connections) — `server/events/event_serialization.py`
+- **Convert a JSON value back to the expected Python type.** (1 connections) — `server/events/event_serialization.py`
+- **Serialize a BaseEvent to a JSON-compatible dict.      Args:         event: Domai** (1 connections) — `server/events/event_serialization.py`
+- **Deserialize a dict back to a BaseEvent instance.      Args:         data: Dict f** (1 connections) — `server/events/event_serialization.py`
+- **Initialize the NATS EventBus bridge.          Args:             event_bus: Local** (1 connections) — `server/events/nats_event_bridge.py`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [initialize nats and combat services()](initialize_nats_and_combat_services%28%29.md) (23 shared connections)
-- [combat](combat.md) (11 shared connections)
-- [main()](main%28%29.md) (2 shared connections)
-- [. init ()](_init_%28%29.md) (1 shared connections)
-- [.initialize()](initialize%28%29.md) (1 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (16 shared connections)
+- [NPCCombatIntegrationBase](NPCCombatIntegrationBase.md) (4 shared connections)
+- [. init ()](_init_%28%29.md) (2 shared connections)
+- [Any](Any.md) (1 shared connections)
+- [FollowTargetValue](FollowTargetValue.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/combat_initialization.py`
-- `server/services/combat_service.py`
-- `server/services/combat_types.py`
-- `server/tests/unit/services/test_combat_initialization.py`
-- `server/tests/unit/services/test_combat_types.py`
-- `server/tests/unit/services/test_npc_combat_data_provider.py`
+- `server/events/event_serialization.py`
+- `server/events/nats_event_bridge.py`
+- `server/tests/unit/events/test_event_serialization.py`
 
 ## Audit Trail
 
-- EXTRACTED: 227 (94%)
-- INFERRED: 15 (6%)
+- EXTRACTED: 126 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

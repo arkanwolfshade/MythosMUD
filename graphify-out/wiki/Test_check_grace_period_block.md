@@ -1,35 +1,32 @@
 # Test check grace period block
 
-> 12 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **TestCheckGracePeriodBlock** (7 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_grace_period_block_no_connection_manager()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_grace_period_block_no_player_service()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_grace_period_block_player_not_found()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_grace_period_block_player_in_grace_period()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_grace_period_block_handles_error()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _check_grace_period_block function.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _check_grace_period_block returns None when no connection manager.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _check_grace_period_block returns None when no player service.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _check_grace_period_block returns None when player not found.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _check_grace_period_block returns block result when player in grace period.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _check_grace_period_block returns None on error.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.check_and_cleanup()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **.force_cleanup()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **_stale_prune_max_age_seconds()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Stale-prune threshold (seconds). Higher in e2e/local to avoid mid-run drops.** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Force immediate cleanup of all orphaned data.          Args:             cleanup** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Periodically check for cleanup conditions and perform cleanup if needed.** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
 
 ## Relationships
 
-- [check alias safety()](check_alias_safety%28%29.md) (5 shared connections)
-- [CommandExecutionRequest](CommandExecutionRequest.md) (1 shared connections)
+- [NPCDefinitionCRUDMixin](NPCDefinitionCRUDMixin.md) (4 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
+- [real time](real_time.md) (1 shared connections)
+- [Player](Player.md) (1 shared connections)
+- [occupation slots 9()](occupation_slots_9%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_validation.py`
+- `server/realtime/maintenance/connection_cleaner.py`
 
 ## Audit Trail
 
-- EXTRACTED: 28 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 17 (94%)
+- INFERRED: 1 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

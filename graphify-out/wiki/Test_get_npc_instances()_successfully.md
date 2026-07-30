@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_npc_instances_success()** (2 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **Test get_npc_instances() successfully retrieves instances.** (1 connections) — `server/tests/unit/services/test_npc_instance_service.py`
+- **test_broadcast_combat_death()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **Test broadcast_combat_death broadcasts death event.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
 
 ## Relationships
 
-- [test npc instance service](test_npc_instance_service.md) (1 shared connections)
+- [test combat messaging integration](test_combat_messaging_integration.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_npc_instance_service.py`
+- `server/tests/unit/services/test_combat_messaging_integration.py`
 
 ## Audit Trail
 

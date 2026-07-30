@@ -1,28 +1,24 @@
 # Test create pickup command delegates
 
-> 7 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Test create_pickup_command delegates to inventory factory.** (6 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **test_create_pickup_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **test_create_drop_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **test_create_put_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **test_create_get_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **test_create_equip_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **test_create_unequip_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_evaluate_equality_string()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test _evaluate_equality() handles string values.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [test command factories](test_command_factories.md) (6 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [test behavior engine](test_behavior_engine.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

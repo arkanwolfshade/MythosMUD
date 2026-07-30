@@ -60,12 +60,6 @@ async function prepNonAdminForSetAttempt(ctx: PlayerContext): Promise<void> {
   await lookAndStand(ctx.page);
 }
 
-function assertAdminSetDenied(messages: string[]): void {
-  expect(
-    messages.some(msg => /permission|not allowed|not found|error setting|no such|usage: admin set/i.test(msg))
-  ).toBe(true);
-}
-
 async function runAdminSetWithRecovery(awContext: PlayerContext, targetName: string): Promise<void> {
   const runAdminSet = async (): Promise<void> => {
     await executeCommand(awContext.page, `admin set STR ${targetName} 75`);
@@ -87,20 +81,6 @@ async function runAdminSetWithRecovery(awContext: PlayerContext, targetName: str
     );
     await runAdminSet();
   }
-}
-
-function assertAdminSetStatSucceeded(messages: string[]): void {
-  const seesSuccess = messages.some(
-    msg => /Set .+['\u2019]s STR from/i.test(msg) || /\bSTR from\b.*\bto 75\b/i.test(msg)
-  );
-  const seesPermissionDenied = messages.some(
-    msg => msg.includes('do not have permission') || msg.includes('You do not have permission')
-  );
-  expect(
-    seesPermissionDenied,
-    "Admin set stat returned 'You do not have permission'. Ensure ArkanWolfshade's character has is_admin set in the test database."
-  ).toBe(false);
-  expect(seesSuccess).toBe(true);
 }
 
 test.describe('Administrative Set Stat Command', () => {
@@ -133,7 +113,18 @@ test.describe('Administrative Set Stat Command', () => {
 
     await prepAwForAdminSet(awContext);
     await runAdminSetWithRecovery(awContext, ithaquaCharName);
-    assertAdminSetStatSucceeded(await getMessages(awContext.page));
+    const messages = await getMessages(awContext.page);
+    const seesSuccess = messages.some(
+      msg => /Set .+['\u2019]s STR from/i.test(msg) || /\bSTR from\b.*\bto 75\b/i.test(msg)
+    );
+    const seesPermissionDenied = messages.some(
+      msg => msg.includes('do not have permission') || msg.includes('You do not have permission')
+    );
+    expect(
+      seesPermissionDenied,
+      "Admin set stat returned 'You do not have permission'. Ensure ArkanWolfshade's character has is_admin set in the test database."
+    ).toBe(false);
+    expect(seesSuccess).toBe(true);
   });
 
   test('Ithaqua should not be able to set stats', async () => {
@@ -152,11 +143,10 @@ test.describe('Administrative Set Stat Command', () => {
     await prepNonAdminForSetAttempt(ithaquaContext);
     await executeCommand(ithaquaContext.page, `admin set STR ${awCharName} 50`);
     // Server: "You do not have permission to use this command." or target / usage errors.
-    await waitForMessage(
-      ithaquaContext.page,
-      /do not have permission|You do not have permission|not allowed|not found|Error setting|No such|Usage: admin set/i,
-      45000
-    );
-    assertAdminSetDenied(await getMessages(ithaquaContext.page));
+    const denyPattern =
+      /do not have permission|You do not have permission|not allowed|not found|Error setting|No such|Usage: admin set/i;
+    await waitForMessage(ithaquaContext.page, denyPattern, 45000);
+    const messages = await getMessages(ithaquaContext.page);
+    expect(messages.some(msg => denyPattern.test(msg))).toBe(true);
   });
 });

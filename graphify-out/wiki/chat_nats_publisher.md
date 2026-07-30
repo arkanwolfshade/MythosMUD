@@ -1,55 +1,66 @@
 # chat nats publisher
 
-> 38 nodes
+> 116 nodes
 
 ## Key Concepts
 
-- **chat_nats_publisher.py** (29 connections) — `server/game/chat_nats_publisher.py`
-- **publish_chat_message_to_nats()** (24 connections) — `server/game/chat_nats_publisher.py`
-- **_build_standardized_subject()** (9 connections) — `server/game/chat_nats_publisher.py`
-- **chat_validator.py** (9 connections) — `server/game/chat_validator.py`
-- **Any** (8 connections)
-- **build_nats_subject()** (6 connections) — `server/game/chat_nats_publisher.py`
-- **_extract_subzone_from_room()** (5 connections) — `server/game/chat_nats_publisher.py`
-- **_subject_whisper_standardized()** (5 connections) — `server/game/chat_nats_publisher.py`
-- **_subject_system_standardized()** (5 connections) — `server/game/chat_nats_publisher.py`
-- **_chat_passes_nats_validation()** (5 connections) — `server/game/chat_nats_publisher.py`
-- **validate_chat_message()** (5 connections) — `server/game/chat_validator.py`
-- **_subject_party_standardized()** (4 connections) — `server/game/chat_nats_publisher.py`
-- **_build_legacy_subject()** (4 connections) — `server/game/chat_nats_publisher.py`
-- **_nats_service_ready()** (4 connections) — `server/game/chat_nats_publisher.py`
-- **_build_nats_message_data()** (4 connections) — `server/game/chat_nats_publisher.py`
-- **_log_nats_publish_error()** (4 connections) — `server/game/chat_nats_publisher.py`
-- **_log_nats_unexpected_error()** (4 connections) — `server/game/chat_nats_publisher.py`
-- **validate_room_access()** (4 connections) — `server/game/chat_validator.py`
-- **contains_malicious_content()** (3 connections) — `server/game/chat_validator.py`
-- **Exception** (1 connections)
-- **Chat NATS publishing utilities.  This module provides NATS subject building and** (1 connections) — `server/game/chat_nats_publisher.py`
-- **Extract subzone from room_id, returning 'unknown' if extraction fails.** (1 connections) — `server/game/chat_nats_publisher.py`
-- **Build whisper subject; returns fallback 'chat.whisper' if no target_id.** (1 connections) — `server/game/chat_nats_publisher.py`
-- **Build party subject; returns None if no party_id.** (1 connections) — `server/game/chat_nats_publisher.py`
-- **System subject; personal system (quest lifecycle) routes like whisper when targe** (1 connections) — `server/game/chat_nats_publisher.py`
-- *... and 13 more nodes in this community*
+- **AsyncPersistenceLayer** (183 connections) — `server/async_persistence.py`
+- **test_async_persistence_delegates.py** (35 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **schedule_service.py** (25 connections) — `server/services/schedule_service.py`
+- **.__init__()** (13 connections) — `server/async_persistence.py`
+- **RoomRepository** (12 connections) — `server/persistence/repositories/room_repository.py`
+- **ProfessionRepository** (11 connections) — `server/persistence/repositories/profession_repository.py`
+- **_schedule_entry_from_row()** (8 connections) — `server/services/schedule_service.py`
+- **test_schedule_service.py** (8 connections) — `server/tests/unit/services/test_schedule_service.py`
+- **reset_async_persistence()** (6 connections) — `server/async_persistence.py`
+- **.__init__()** (5 connections) — `server/npc/combat_integration_base.py`
+- **normalize_weekday_names()** (5 connections) — `server/services/schedule_service.py`
+- **_DatabaseLoadResult** (5 connections) — `server/services/schedule_service.py`
+- **conftest.py** (5 connections) — `server/tests/unit/infrastructure/conftest.py`
+- **_string_list_from_row()** (4 connections) — `server/services/schedule_service.py`
+- **_lower_string_list_from_row()** (4 connections) — `server/services/schedule_service.py`
+- **test_validate_and_fix_player_room_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_apply_lucidity_loss_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_apply_fear_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_apply_corruption_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_heal_player_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_async_heal_player_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_damage_player_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_async_damage_player_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_create_container_with_params()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_create_container_with_kwargs()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- *... and 91 more nodes in this community*
 
 ## Relationships
 
-- [ChatMessage](ChatMessage.md) (16 shared connections)
-- [main()](main%28%29.md) (4 shared connections)
-- [.initialize()](initialize%28%29.md) (4 shared connections)
-- [. init ()](_init_%28%29.md) (3 shared connections)
-- [chat pose helpers](chat_pose_helpers.md) (3 shared connections)
-- [Any](Any.md) (2 shared connections)
-- [. get destination subzone()](_get_destination_subzone%28%29.md) (2 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (35 shared connections)
+- [PlayerRespawnEventHandler](PlayerRespawnEventHandler.md) (18 shared connections)
+- [. init ()](_init_%28%29.md) (14 shared connections)
+- [PlayerChannelPreferences](PlayerChannelPreferences.md) (12 shared connections)
+- [real time](real_time.md) (12 shared connections)
+- [parse jsonb column()](parse_jsonb_column%28%29.md) (11 shared connections)
+- [init](init.md) (10 shared connections)
+- [UUID](UUID.md) (7 shared connections)
+- [Formatter](Formatter.md) (7 shared connections)
+- [CombatService](CombatService.md) (6 shared connections)
+- [Any](Any.md) (6 shared connections)
+- [.model dump()](model_dump%28%29.md) (6 shared connections)
 
 ## Source Files
 
-- `server/game/chat_nats_publisher.py`
-- `server/game/chat_validator.py`
+- `server/async_persistence.py`
+- `server/npc/combat_integration_base.py`
+- `server/persistence/repositories/profession_repository.py`
+- `server/persistence/repositories/room_repository.py`
+- `server/services/schedule_service.py`
+- `server/tests/unit/infrastructure/conftest.py`
+- `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- `server/tests/unit/services/test_schedule_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 159 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 464 (89%)
+- INFERRED: 55 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

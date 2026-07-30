@@ -1,6 +1,6 @@
 # windows safe rotation
 
-> 54 nodes
+> 55 nodes
 
 ## Key Concepts
 
@@ -29,13 +29,13 @@
 - **test_windows_safe_rotating_file_handler_do_rollover_no_stream()** (3 connections) — `server/tests/unit/structured_logging/test_windows_safe_rotation.py`
 - **test_windows_safe_timed_rotating_file_handler_init()** (3 connections) — `server/tests/unit/structured_logging/test_windows_safe_rotation.py`
 - **test_windows_safe_timed_rotating_file_handler_rotation_filename()** (3 connections) — `server/tests/unit/structured_logging/test_windows_safe_rotation.py`
-- *... and 29 more nodes in this community*
+- *... and 30 more nodes in this community*
 
 ## Relationships
 
-- [Formatter](Formatter.md) (5 shared connections)
-- [logging handlers](logging_handlers.md) (3 shared connections)
-- [main()](main%28%29.md) (1 shared connections)
+- [logging handlers](logging_handlers.md) (4 shared connections)
+- [. init ()](_init_%28%29.md) (4 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
 
 ## Source Files
 

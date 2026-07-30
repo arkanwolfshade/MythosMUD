@@ -23,10 +23,9 @@
 
 ## Relationships
 
-- [EdgeDetailsPanel](EdgeDetailsPanel.md) (4 shared connections)
-- [useRoomMapData.test](useRoomMapData.test.md) (3 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
-- [ExitEdge](ExitEdge.md) (1 shared connections)
+- [EdgeCreationModal](EdgeCreationModal.md) (5 shared connections)
+- [EdgeDetailsPanel](EdgeDetailsPanel.md) (3 shared connections)
+- [createInitialState()](createInitialState%28%29.md) (2 shared connections)
 
 ## Source Files
 

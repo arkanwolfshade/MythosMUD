@@ -1,11 +1,10 @@
 # autoprefixer
 
-> 61 nodes
+> 63 nodes
 
 ## Key Concepts
 
 - **devDependencies** (36 connections) — `client/package.json`
-- **@testing-library/dom** (3 connections) — `client/package.json`
 - **@eslint/js** (2 connections) — `client/package.json`
 - **@playwright/test** (2 connections) — `client/package.json`
 - **@stoplight/spectral-cli** (2 connections) — `client/package.json`
@@ -15,7 +14,6 @@
 - **@testing-library/react** (2 connections) — `client/package.json`
 - **@testing-library/user-event** (2 connections) — `client/package.json`
 - **@types/node** (2 connections) — `client/package.json`
-- **@types/react** (2 connections) — `client/package.json`
 - **@types/react-dom** (2 connections) — `client/package.json`
 - **@vitejs/plugin-react** (2 connections) — `client/package.json`
 - **@vitest/coverage-v8** (2 connections) — `client/package.json`
@@ -28,16 +26,18 @@
 - **eslint-plugin-react-hooks** (2 connections) — `client/package.json`
 - **eslint-plugin-react-refresh** (2 connections) — `client/package.json`
 - **globals** (2 connections) — `client/package.json`
+- **happy-dom** (2 connections) — `client/package.json`
 - **jsdom** (2 connections) — `client/package.json`
-- *... and 36 more nodes in this community*
+- **markdownlint-cli** (2 connections) — `client/package.json`
+- *... and 38 more nodes in this community*
 
 ## Relationships
 
 - [argon2](argon2.md) (1 shared connections)
-- [happy dom](happy_dom.md) (1 shared connections)
-- [postcss](postcss.md) (1 shared connections)
-- [typescript eslint](typescript_eslint.md) (1 shared connections)
-- [vite](vite.md) (1 shared connections)
+- [maximum](maximum.md) (1 shared connections)
+- [zone](zone.md) (1 shared connections)
+- [handle ascii map error()](handle_ascii_map_error%28%29.md) (1 shared connections)
+- [Test getting authentication backend.](Test_getting_authentication_backend.md) (1 shared connections)
 
 ## Source Files
 

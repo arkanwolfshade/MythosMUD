@@ -1,18 +1,17 @@
 # chat send with room bundle()
 
-> 51 nodes
+> 50 nodes
 
 ## Key Concepts
 
 - **test_communication_commands_flows.py** (41 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
 - **SimpleNamespace** (38 connections)
 - **_chat_send_with_room_bundle()** (14 connections) — `server/commands/communication_commands_flows.py`
-- **flow_global_command()** (12 connections) — `server/commands/communication_commands_flows.py`
 - **_message_from_command()** (11 connections) — `server/commands/communication_commands_flows.py`
 - **_RoomChannelOutcomeConfig** (11 connections) — `server/commands/communication_commands_flows.py`
 - **flow_say_command()** (10 connections) — `server/commands/communication_commands_flows.py`
-- **_str_error_from_chat_result()** (9 connections) — `server/commands/communication_commands_flows.py`
 - **_room_player_bundle()** (9 connections) — `server/commands/communication_commands_flows.py`
+- **flow_system_command()** (9 connections) — `server/commands/communication_commands_flows.py`
 - **_global_player_bundle()** (8 connections) — `server/commands/communication_commands_flows.py`
 - **flow_local_command()** (8 connections) — `server/commands/communication_commands_flows.py`
 - **_whisper_id_pair_or_error()** (8 connections) — `server/commands/communication_commands_flows.py`
@@ -29,19 +28,19 @@
 - **test_whisper_id_pair_self_whisper()** (3 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
 - **test_whisper_id_pair_missing_id()** (3 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
 - **test_whisper_id_pair_ok()** (3 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
-- *... and 26 more nodes in this community*
+- **test_room_player_bundle_no_primary_id()** (3 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
+- *... and 25 more nodes in this community*
 
 ## Relationships
 
-- [communication commands](communication_commands.md) (39 shared connections)
-- [communication commands support](communication_commands_support.md) (13 shared connections)
+- [.validate alias name field()](validate_alias_name_field%28%29.md) (40 shared connections)
+- [ConnectionsComponent](ConnectionsComponent.md) (9 shared connections)
+- [. init ()](_init_%28%29.md) (6 shared connections)
 - [container helpers inventory find](container_helpers_inventory_find.md) (5 shared connections)
-- [handle global command()](handle_global_command%28%29.md) (3 shared connections)
-- [bench cache npc](bench_cache_npc.md) (3 shared connections)
-- [command execution request](command_execution_request.md) (2 shared connections)
+- [.get instance()](get_instance%28%29.md) (4 shared connections)
+- [test quest service collect](test_quest_service_collect.md) (2 shared connections)
 - [container helpers inventory](container_helpers_inventory.md) (2 shared connections)
-- [. init ()](_init_%28%29.md) (1 shared connections)
-- [Any](Any.md) (1 shared connections)
+- [test command parser](test_command_parser.md) (1 shared connections)
 
 ## Source Files
 
@@ -50,8 +49,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 216 (79%)
-- INFERRED: 59 (21%)
+- EXTRACTED: 204 (78%)
+- INFERRED: 59 (22%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,26 +1,29 @@
 # description
 
-> 5 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **command** (5 connections) — `schemas/alias_schema.json`
-- **type** (1 connections) — `schemas/alias_schema.json`
-- **description** (1 connections) — `schemas/alias_schema.json`
-- **minLength** (1 connections) — `schemas/alias_schema.json`
-- **maxLength** (1 connections) — `schemas/alias_schema.json`
+- **required** (8 connections) — `schemas/intersection_schema.json`
+- **id** (1 connections) — `schemas/intersection_schema.json`
+- **name** (1 connections) — `schemas/intersection_schema.json`
+- **description** (1 connections) — `schemas/intersection_schema.json`
+- **plane** (1 connections) — `schemas/intersection_schema.json`
+- **zone** (1 connections) — `schemas/intersection_schema.json`
+- **sub_zone** (1 connections) — `schemas/intersection_schema.json`
+- **exits** (1 connections) — `schemas/intersection_schema.json`
 
 ## Relationships
 
-- [description](description.md) (1 shared connections)
+- [intersection schema](intersection_schema.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/alias_schema.json`
+- `schemas/intersection_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

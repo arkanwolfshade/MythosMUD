@@ -1,65 +1,74 @@
 # player respawn
 
-> 79 nodes
+> 38 nodes
 
 ## Key Concepts
 
-- **rooms.py** (35 connections) — `server/api/rooms.py`
-- **player_respawn.py** (24 connections) — `server/api/player_respawn.py`
-- **update_room_position()** (14 connections) — `server/api/rooms.py`
-- **test_player_respawn_handlers.py** (14 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **_apply_exploration_filter_if_needed()** (13 connections) — `server/api/rooms.py`
-- **_handle_delirium_respawn_validation_error()** (12 connections) — `server/api/player_respawn.py`
-- **test_rooms_exploration_filter.py** (12 connections) — `server/tests/unit/api/test_rooms_exploration_filter.py`
-- **_handle_respawn_validation_error()** (11 connections) — `server/api/player_respawn.py`
-- **list_rooms()** (10 connections) — `server/api/rooms.py`
-- **respawn_player_from_delirium()** (9 connections) — `server/api/player_respawn.py`
-- **respawn_player()** (9 connections) — `server/api/player_respawn.py`
-- **RespawnResponse** (8 connections) — `server/schemas/players/player_respawn.py`
-- **RoomListResponse** (8 connections) — `server/schemas/rooms/room.py`
-- **RoomPositionUpdateResponse** (8 connections) — `server/schemas/rooms/room.py`
-- **RoomResponse** (8 connections) — `server/schemas/rooms/room.py`
-- **RoomData** (8 connections) — `server/schemas/rooms/room_data.py`
-- **_user()** (8 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **_validate_room_position_update()** (7 connections) — `server/api/rooms.py`
-- **_update_room_position_in_db()** (7 connections) — `server/api/rooms.py`
-- **get_room()** (7 connections) — `server/api/rooms.py`
-- **room.py** (7 connections) — `server/schemas/rooms/room.py`
-- **player_respawn.py** (6 connections) — `server/schemas/players/player_respawn.py`
-- **__init__.py** (6 connections) — `server/schemas/rooms/__init__.py`
-- **test_apply_exploration_filter_superuser_bypasses_filter()** (6 connections) — `server/tests/unit/api/test_rooms_exploration_filter.py`
-- **test_apply_exploration_filter_admin_sees_all_rooms_when_filter_requested()** (6 connections) — `server/tests/unit/api/test_rooms_exploration_filter.py`
-- *... and 54 more nodes in this community*
+- **GameState** (26 connections) — `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
+- **GameEvent** (21 connections) — `client/src/components/ui-v2/eventHandlers/types.ts`
+- **projector.ts** (21 connections) — `client/src/components/ui-v2/eventLog/projector.ts`
+- **useRespawnHandlers.ts** (21 connections) — `client/src/components/ui-v2/hooks/useRespawnHandlers.ts`
+- **useEventProcessing.ts** (13 connections) — `client/src/components/ui-v2/hooks/useEventProcessing.ts`
+- **projector.projectEvent.test.ts** (12 connections) — `client/src/components/ui-v2/eventLog/__tests__/projector.projectEvent.test.ts`
+- **projector.test.ts** (12 connections) — `client/src/components/ui-v2/eventLog/__tests__/projector.test.ts`
+- **index.ts** (11 connections) — `client/src/components/ui-v2/eventLog/index.ts`
+- **types.ts** (11 connections) — `client/src/components/ui-v2/eventLog/types.ts`
+- **projector.projectState.test.ts** (10 connections) — `client/src/components/ui-v2/eventLog/__tests__/projector.projectState.test.ts`
+- **projectState()** (10 connections) — `client/src/components/ui-v2/eventLog/projector.ts`
+- **EventLog** (10 connections) — `client/src/components/ui-v2/eventLog/types.ts`
+- **eventStore.ts** (9 connections) — `client/src/components/ui-v2/eventLog/eventStore.ts`
+- **EventStore** (9 connections) — `client/src/components/ui-v2/eventLog/eventStore.ts`
+- **projectEvent()** (8 connections) — `client/src/components/ui-v2/eventLog/projector.ts`
+- **useRespawnHandlers()** (8 connections) — `client/src/components/ui-v2/hooks/useRespawnHandlers.ts`
+- **IEventStore** (6 connections) — `client/src/components/ui-v2/eventLog/eventStore.ts`
+- **getInitialGameState()** (6 connections) — `client/src/components/ui-v2/eventLog/projectorConstants.ts`
+- **eventStore.test.ts** (5 connections) — `client/src/components/ui-v2/eventLog/__tests__/eventStore.test.ts`
+- **projectorConstants.ts** (5 connections) — `client/src/components/ui-v2/eventLog/projectorConstants.ts`
+- **EventLogEntry** (4 connections) — `client/src/components/ui-v2/eventLog/types.ts`
+- **PROJECTED_EVENT_TYPES** (3 connections) — `client/src/components/ui-v2/eventLog/projectorConstants.ts`
+- **useRespawnHandlers.test.ts** (3 connections) — `client/src/components/ui-v2/hooks/__tests__/useRespawnHandlers.test.ts`
+- **UseGameConnectionManagementParams** (3 connections) — `client/src/components/ui-v2/hooks/useGameConnectionManagement.ts`
+- **UseRespawnHandlersParams** (3 connections) — `client/src/components/ui-v2/hooks/useRespawnHandlers.ts`
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [APIRouter](APIRouter.md) (31 shared connections)
-- [AsyncSession](AsyncSession.md) (19 shared connections)
-- [main()](main%28%29.md) (18 shared connections)
-- [. init ()](_init_%28%29.md) (13 shared connections)
-- [Request](Request.md) (10 shared connections)
-- [Connection Manager](Connection_Manager.md) (5 shared connections)
-- [BaseUserManager](BaseUserManager.md) (3 shared connections)
-- [character creation](character_creation.md) (3 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (2 shared connections)
-- [init](init.md) (1 shared connections)
-- [.mock cursor()](mock_cursor%28%29.md) (1 shared connections)
+- [monitoring models](monitoring_models.md) (25 shared connections)
+- [.append()](append%28%29.md) (12 shared connections)
+- [Instance](Instance.md) (8 shared connections)
+- [Cancel lifecycle/critical tasks first (Phase](Cancel_lifecycle-critical_tasks_first_%28Phase.md) (8 shared connections)
+- [useConnectionStateMachine.test](useConnectionStateMachine.test.md) (7 shared connections)
+- [HealthMeter](HealthMeter.md) (4 shared connections)
+- [ConnectionCleaner](ConnectionCleaner.md) (3 shared connections)
+- [LoginResponse](LoginResponse.md) (2 shared connections)
+- [EdgeDetailsPanel](EdgeDetailsPanel.md) (2 shared connections)
+- [AppCreationFlowViews](AppCreationFlowViews.md) (2 shared connections)
+- [test combat persistence handler](test_combat_persistence_handler.md) (1 shared connections)
+- [GameClientV2Dock.test](GameClientV2Dock.test.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/player_respawn.py`
-- `server/api/rooms.py`
-- `server/schemas/players/player_respawn.py`
-- `server/schemas/rooms/__init__.py`
-- `server/schemas/rooms/room.py`
-- `server/schemas/rooms/room_data.py`
-- `server/tests/unit/api/test_player_respawn_handlers.py`
-- `server/tests/unit/api/test_rooms_exploration_filter.py`
+- `client/src/components/ui-v2/eventHandlers/types.ts`
+- `client/src/components/ui-v2/eventLog/__tests__/eventStore.test.ts`
+- `client/src/components/ui-v2/eventLog/__tests__/projector.projectEvent.test.ts`
+- `client/src/components/ui-v2/eventLog/__tests__/projector.projectState.test.ts`
+- `client/src/components/ui-v2/eventLog/__tests__/projector.test.ts`
+- `client/src/components/ui-v2/eventLog/eventStore.ts`
+- `client/src/components/ui-v2/eventLog/index.ts`
+- `client/src/components/ui-v2/eventLog/projector.ts`
+- `client/src/components/ui-v2/eventLog/projectorConstants.ts`
+- `client/src/components/ui-v2/eventLog/types.ts`
+- `client/src/components/ui-v2/hooks/__tests__/useRespawnHandlers.test.ts`
+- `client/src/components/ui-v2/hooks/useEventProcessing.ts`
+- `client/src/components/ui-v2/hooks/useGameConnectionManagement.ts`
+- `client/src/components/ui-v2/hooks/useRespawnHandlers.ts`
+- `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
+- `client/src/utils/apiTypeGuards.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 366 (94%)
-- INFERRED: 22 (6%)
+- EXTRACTED: 271 (100%)
+- INFERRED: 1 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

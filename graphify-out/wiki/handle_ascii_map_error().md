@@ -1,27 +1,23 @@
 # handle ascii map error()
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **_handle_ascii_map_error()** (6 connections) — `server/api/maps.py`
-- **Exception** (1 connections)
-- **NoReturn** (1 connections)
-- **Log and wrap ASCII map errors in LoggedHTTPException. Always raises.** (1 connections) — `server/api/maps.py`
+- **@types/react** (2 connections) — `client/package.json`
+- **@types/react** (1 connections) — `client/package.json`
 
 ## Relationships
 
-- [maps](maps.md) (1 shared connections)
-- [AsyncSession](AsyncSession.md) (1 shared connections)
-- [APIRouter](APIRouter.md) (1 shared connections)
+- [autoprefixer](autoprefixer.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/maps.py`
+- `client/package.json`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

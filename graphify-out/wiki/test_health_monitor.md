@@ -31,8 +31,8 @@
 
 ## Relationships
 
-- [HealthMonitor](HealthMonitor.md) (3 shared connections)
-- [health monitor](health_monitor.md) (1 shared connections)
+- [GameConfig](GameConfig.md) (3 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
 
 ## Source Files
 

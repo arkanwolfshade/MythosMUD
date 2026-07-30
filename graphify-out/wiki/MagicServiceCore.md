@@ -1,54 +1,50 @@
 # MagicServiceCore
 
-> 54 nodes
+> 44 nodes
 
 ## Key Concepts
 
-- **_MagicServiceCore** (42 connections) — `server/game/magic/magic_service.py`
-- **UUID** (20 connections)
-- **Any** (18 connections)
-- **.can_cast_spell()** (10 connections) — `server/game/magic/magic_service.py`
-- **.cast_spell()** (10 connections) — `server/game/magic/magic_service.py`
-- **._execute_instant_or_delayed_cast()** (8 connections) — `server/game/magic/magic_service.py`
-- **._get_spell_and_validate_target()** (7 connections) — `server/game/magic/magic_service.py`
-- **._validate_spell_casting()** (6 connections) — `server/game/magic/magic_service.py`
-- **._start_delayed_cast()** (6 connections) — `server/game/magic/magic_service.py`
-- **._casting_roll_or_fail_result()** (6 connections) — `server/game/magic/magic_service.py`
-- **._send_spell_completion_message()** (6 connections) — `server/game/magic/magic_service.py`
-- **._get_player_and_normalized_stats()** (5 connections) — `server/game/magic/magic_service.py`
-- **._check_mp_sufficient()** (5 connections) — `server/game/magic/magic_service.py`
-- **._check_lucidity_sufficient()** (5 connections) — `server/game/magic/magic_service.py`
-- **._check_player_knows_spell()** (5 connections) — `server/game/magic/magic_service.py`
-- **._check_materials_available()** (5 connections) — `server/game/magic/magic_service.py`
-- **._check_already_casting()** (5 connections) — `server/game/magic/magic_service.py`
-- **._handle_instant_cast()** (5 connections) — `server/game/magic/magic_service.py`
-- **._consume_materials_if_required()** (5 connections) — `server/game/magic/magic_service.py`
-- **._casting_roll()** (5 connections) — `server/game/magic/magic_service.py`
-- **.send_spell_execution_notifications()** (5 connections) — `server/game/magic/magic_service.py`
-- **.interrupt_casting()** (5 connections) — `server/game/magic/magic_service.py`
-- **._get_spell_from_registry()** (4 connections) — `server/game/magic/magic_service.py`
-- **._calculate_initiative_tick()** (4 connections) — `server/game/magic/magic_service.py`
-- **.restore_mp()** (4 connections) — `server/game/magic/magic_service.py`
-- *... and 29 more nodes in this community*
+- **test_movement_service.py** (25 connections) — `server/tests/unit/game/test_movement_service.py`
+- **movement_service()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_movement_service_init_no_persistence()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_movement_service_init()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_move_player_empty_player_id()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_move_player_invalid_from_room()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_move_player_invalid_to_room()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
+- **mock_persistence()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
+- **mock_event_bus()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_move_player_same_room()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_add_player_to_room_success()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_add_player_to_room_room_not_found()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_add_player_to_room_player_not_found()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_remove_player_from_room_success()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_remove_player_from_room_room_not_found()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_get_player_room_success()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_get_player_room_player_not_found()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_get_room_players()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_get_room_players_room_not_found()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_validate_player_location_true()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_validate_player_location_false()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_validate_player_location_room_not_found()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
+- **Unit tests for movement service.  Tests the MovementService class.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- **Create a mock event bus.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [. init ()](_init_%28%29.md) (11 shared connections)
-- [Spell Targeting](Spell_Targeting.md) (8 shared connections)
-- [UUID](UUID.md) (2 shared connections)
-- [Any](Any.md) (1 shared connections)
-- [Connection Manager](Connection_Manager.md) (1 shared connections)
-- [initialize nats and combat services()](initialize_nats_and_combat_services%28%29.md) (1 shared connections)
-- [get current tick()](get_current_tick%28%29.md) (1 shared connections)
+- [.initialize()](initialize%28%29.md) (4 shared connections)
+- [real time](real_time.md) (4 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/magic/magic_service.py`
+- `server/tests/unit/game/test_movement_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 228 (95%)
-- INFERRED: 13 (5%)
+- EXTRACTED: 92 (97%)
+- INFERRED: 3 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

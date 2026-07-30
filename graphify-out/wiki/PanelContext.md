@@ -1,6 +1,6 @@
 # PanelContext
 
-> 17 nodes
+> 16 nodes
 
 ## Key Concepts
 
@@ -9,7 +9,6 @@
 - **PanelContext.test.tsx** (6 connections) — `client/src/contexts/__tests__/PanelContext.test.tsx`
 - **usePanelContext.test.tsx** (6 connections) — `client/src/contexts/hooks/__tests__/usePanelContext.test.tsx`
 - **usePanelContext()** (5 connections) — `client/src/contexts/hooks/usePanelContext.ts`
-- **PanelProvider()** (4 connections) — `client/src/contexts/PanelContext.tsx`
 - **PanelPosition** (3 connections) — `client/src/contexts/PanelContext.tsx`
 - **PanelSize** (3 connections) — `client/src/contexts/PanelContext.tsx`
 - **usePanel()** (3 connections) — `client/src/contexts/hooks/usePanelContext.ts`
@@ -24,7 +23,7 @@
 
 ## Relationships
 
-- [react](react.md) (1 shared connections)
+- [react](react.md) (3 shared connections)
 
 ## Source Files
 
@@ -35,7 +34,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 69 (100%)
+- EXTRACTED: 65 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

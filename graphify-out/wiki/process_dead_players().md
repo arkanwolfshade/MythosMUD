@@ -1,41 +1,63 @@
 # process dead players()
 
-> 17 nodes
+> 47 nodes
 
 ## Key Concepts
 
-- **_process_session_dp_decay_and_death()** (8 connections) — `server/app/game_tick_processing.py`
-- **_process_mortally_wounded_player()** (7 connections) — `server/app/game_tick_processing.py`
-- **AsyncSession** (6 connections)
-- **_process_mp_regeneration()** (6 connections) — `server/app/game_tick_processing.py`
-- **_process_mortally_wounded_players()** (5 connections) — `server/app/game_tick_processing.py`
-- **_process_single_player_mp_regeneration()** (5 connections) — `server/app/game_tick_processing.py`
-- **_process_passive_lucidity_flux()** (4 connections) — `server/app/game_tick_processing.py`
-- **_process_dead_players()** (4 connections) — `server/app/game_tick_processing.py`
-- **_validate_mp_regeneration_services()** (3 connections) — `server/app/game_tick_processing.py`
-- **Process a single mortally wounded player's DP decay and death check.      CRITIC** (1 connections) — `server/app/game_tick_processing.py`
-- **Process all mortally wounded players.** (1 connections) — `server/app/game_tick_processing.py`
-- **Process passive lucidity flux service if available.** (1 connections) — `server/app/game_tick_processing.py`
-- **Validate that required services exist for MP regeneration.      Args:         co** (1 connections) — `server/app/game_tick_processing.py`
-- **Process MP regeneration for a single player.      Args:         mp_service: MP r** (1 connections) — `server/app/game_tick_processing.py`
-- **Process MP regeneration for online players.** (1 connections) — `server/app/game_tick_processing.py`
-- **Process dead players and move them to limbo if needed.** (1 connections) — `server/app/game_tick_processing.py`
-- **Process DP decay and death for a single database session.** (1 connections) — `server/app/game_tick_processing.py`
+- **get_config()** (105 connections) — `server/config/__init__.py`
+- **reset_config()** (9 connections) — `server/config/__init__.py`
+- **test_config.py** (9 connections) — `server/tests/unit/config/test_config.py`
+- **test_config_init.py** (9 connections) — `server/tests/unit/config/test_config_init.py`
+- **generate_unique_codes()** (5 connections) — `tools/invite_tools/generate_invites.py`
+- **_is_test_mode()** (4 connections) — `server/config/__init__.py`
+- **test_reset_config_clears_state()** (4 connections) — `server/tests/unit/config/test_config.py`
+- **test_reset_config_in_test_mode()** (4 connections) — `server/tests/unit/config/test_config_init.py`
+- **generate_invites.py** (4 connections) — `tools/invite_tools/generate_invites.py`
+- **reset_config_singleton()** (3 connections) — `server/tests/conftest.py`
+- **test_get_config_returns_app_config()** (3 connections) — `server/tests/unit/config/test_config.py`
+- **test_get_config_test_mode_returns_fresh_instances()** (3 connections) — `server/tests/unit/config/test_config.py`
+- **test_get_config_has_server_config()** (3 connections) — `server/tests/unit/config/test_config.py`
+- **test_get_config_has_database_config()** (3 connections) — `server/tests/unit/config/test_config.py`
+- **test_get_config_has_game_config()** (3 connections) — `server/tests/unit/config/test_config.py`
+- **test_get_config_returns_app_config()** (3 connections) — `server/tests/unit/config/test_config_init.py`
+- **test_get_config_fresh_instances_in_test_mode()** (3 connections) — `server/tests/unit/config/test_config_init.py`
+- **test_get_config_has_server_config()** (3 connections) — `server/tests/unit/config/test_config_init.py`
+- **test_get_config_has_database_config()** (3 connections) — `server/tests/unit/config/test_config_init.py`
+- **test_get_config_has_game_config()** (3 connections) — `server/tests/unit/config/test_config_init.py`
+- **test_config_smoke.py** (3 connections) — `server/tests/unit/test_config_smoke.py`
+- **test_get_config_returns_app_config()** (3 connections) — `server/tests/unit/test_config_smoke.py`
+- **generate_invite_code()** (3 connections) — `tools/invite_tools/generate_invites.py`
+- **main()** (3 connections) — `tools/invite_tools/generate_invites.py`
+- **Detect if running in test environment.      Uses multiple detection methods to r** (1 connections) — `server/config/__init__.py`
+- *... and 22 more nodes in this community*
 
 ## Relationships
 
-- [game tick processing](game_tick_processing.md) (11 shared connections)
-- [Any](Any.md) (1 shared connections)
-- [.apply dp change()](apply_dp_change%28%29.md) (1 shared connections)
-- [process all status effects()](process_all_status_effects%28%29.md) (1 shared connections)
+- [Any](Any.md) (11 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (7 shared connections)
+- [real time](real_time.md) (5 shared connections)
+- [Player](Player.md) (5 shared connections)
+- [world](world.md) (4 shared connections)
+- [test security headers](test_security_headers.md) (3 shared connections)
+- [. init ()](_init_%28%29.md) (3 shared connections)
+- [.model dump()](model_dump%28%29.md) (3 shared connections)
+- [process all status effects()](process_all_status_effects%28%29.md) (2 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (2 shared connections)
+- [check alias safety()](check_alias_safety%28%29.md) (2 shared connections)
+- [combat attack](combat_attack.md) (2 shared connections)
 
 ## Source Files
 
-- `server/app/game_tick_processing.py`
+- `server/config/__init__.py`
+- `server/tests/conftest.py`
+- `server/tests/unit/config/test_config.py`
+- `server/tests/unit/config/test_config_init.py`
+- `server/tests/unit/test_config_smoke.py`
+- `tools/invite_tools/generate_invites.py`
 
 ## Audit Trail
 
-- EXTRACTED: 56 (100%)
+- EXTRACTED: 221 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

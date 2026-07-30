@@ -1,51 +1,54 @@
 # test player cache
 
-> 25 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **get_cached_player()** (15 connections) — `server/utils/player_cache.py`
-- **cache_player()** (13 connections) — `server/utils/player_cache.py`
-- **test_player_cache.py** (11 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **player_cache.py** (7 connections) — `server/utils/player_cache.py`
-- **_get_request_state()** (6 connections) — `server/utils/player_cache.py`
-- **test_cache_and_get_player()** (4 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **test_cache_player_multiple()** (4 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **test_cache_player_overwrite()** (4 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **test_get_cached_player_none()** (3 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **test_get_cached_player_nonexistent()** (3 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **test_get_cached_player_no_state()** (3 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **test_cache_player_no_state()** (3 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **Any** (3 connections)
-- **Unit tests for player_cache utilities.  Tests the player caching functions for r** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **Test get_cached_player() returns None when no cache exists.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **Test cache_player() and get_cached_player() operations.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **Test get_cached_player() returns None for nonexistent key.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **Test cache_player() can cache multiple players.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **Test cache_player() overwrites existing entries.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **Test get_cached_player() handles missing state.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **Test cache_player() handles missing state gracefully.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **Helpers for caching player objects during a single command request.  This avoids** (1 connections) — `server/utils/player_cache.py`
-- **Safely extract the state object from a FastAPI/Starlette request.** (1 connections) — `server/utils/player_cache.py`
-- **Return a cached player object for this request if one exists.** (1 connections) — `server/utils/player_cache.py`
-- **Cache a player object on the request for reuse within the command.** (1 connections) — `server/utils/player_cache.py`
+- **ansiToHtml.ts** (16 connections) — `client/src/utils/ansiToHtml.ts`
+- **ansiToHtmlWithBreaks()** (15 connections) — `client/src/utils/ansiToHtml.ts`
+- **ChatMessage.tsx** (14 connections) — `client/src/components/panels/chat/ChatMessage.tsx`
+- **ChatMessagesList.tsx** (9 connections) — `client/src/components/panels/chat/ChatMessagesList.tsx`
+- **ChatMessage()** (7 connections) — `client/src/components/panels/chat/ChatMessage.tsx`
+- **ansiToHtml()** (6 connections) — `client/src/utils/ansiToHtml.ts`
+- **ChatMessagesList()** (3 connections) — `client/src/components/panels/chat/ChatMessagesList.tsx`
+- **ansiToHtml.test.ts** (3 connections) — `client/src/utils/ansiToHtml.test.ts`
+- **testAnsi.ts** (3 connections) — `client/src/utils/testAnsi.ts`
+- **formatTimestamp()** (2 connections) — `client/src/components/panels/chat/ChatMessage.tsx`
+- **getMessageClass()** (2 connections) — `client/src/components/panels/chat/ChatMessage.tsx`
+- **getFontSizeClass()** (2 connections) — `client/src/components/panels/chat/ChatMessage.tsx`
+- **ChatMessage.test.tsx** (2 connections) — `client/src/components/panels/chat/__tests__/ChatMessage.test.tsx`
+- **ChatMessagesList.test.tsx** (2 connections) — `client/src/components/panels/chat/__tests__/ChatMessagesList.test.tsx`
+- **updateState()** (2 connections) — `client/src/utils/ansiToHtml.ts`
+- **wrapText()** (2 connections) — `client/src/utils/ansiToHtml.ts`
+- **ChatMessageProps** (1 connections) — `client/src/components/panels/chat/ChatMessage.tsx`
+- **ChatMessagesListProps** (1 connections) — `client/src/components/panels/chat/ChatMessagesList.tsx`
+- **AnsiState** (1 connections) — `client/src/utils/ansiToHtml.ts`
+- **ANSI_COLORS** (1 connections) — `client/src/utils/ansiToHtml.ts`
 
 ## Relationships
 
-- [CommandExecutionRequest](CommandExecutionRequest.md) (5 shared connections)
-- [test clear corrupted cache entry](test_clear_corrupted_cache_entry.md) (3 shared connections)
-- [disconnect player connections()](disconnect_player_connections%28%29.md) (2 shared connections)
-- [.state()](state%28%29.md) (1 shared connections)
+- [ChatPanelTest](ChatPanelTest.md) (8 shared connections)
+- [chatPanelChannelFilter](chatPanelChannelFilter.md) (5 shared connections)
+- [GameClientV2Dock.test](GameClientV2Dock.test.md) (4 shared connections)
+- [GameLogMessagesList](GameLogMessagesList.md) (3 shared connections)
+- [domPurifyTestWindow](domPurifyTestWindow.md) (2 shared connections)
+- [ChatHistoryToggle()](ChatHistoryToggle%28%29.md) (2 shared connections)
+- [fetchSpy](fetchSpy.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_player_cache.py`
-- `server/utils/player_cache.py`
+- `client/src/components/panels/chat/ChatMessage.tsx`
+- `client/src/components/panels/chat/ChatMessagesList.tsx`
+- `client/src/components/panels/chat/__tests__/ChatMessage.test.tsx`
+- `client/src/components/panels/chat/__tests__/ChatMessagesList.test.tsx`
+- `client/src/utils/ansiToHtml.test.ts`
+- `client/src/utils/ansiToHtml.ts`
+- `client/src/utils/testAnsi.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 90 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 94 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

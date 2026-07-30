@@ -1,52 +1,46 @@
 # go command
 
-> 31 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **handle_go_command()** (19 connections) — `server/commands/go_command.py`
-- **go_command.py** (15 connections) — `server/commands/go_command.py`
-- **Any** (12 connections)
-- **_setup_go_command()** (12 connections) — `server/commands/go_command.py`
-- **_execute_movement()** (10 connections) — `server/commands/go_command.py`
-- **_validate_exit()** (9 connections) — `server/commands/go_command.py`
-- **_movement_combat_and_event_bus_from_go_app()** (5 connections) — `server/commands/go_command.py`
-- **_movement_service_for_go_command()** (5 connections) — `server/commands/go_command.py`
-- **_cancel_rest_if_moving()** (5 connections) — `server/commands/go_command.py`
-- **_resolve_async_persistence_from_go_app()** (4 connections) — `server/commands/go_command.py`
-- **_canonical_room_id_for_go()** (4 connections) — `server/commands/go_command.py`
-- **_resolved_direction_for_go_command()** (4 connections) — `server/commands/go_command.py`
-- **_connection_manager_from_go_app()** (4 connections) — `server/commands/go_command.py`
-- **test_validate_exit_direction_not_found()** (3 connections) — `server/tests/unit/commands/test_go_command.py`
-- **test_validate_exit_success()** (3 connections) — `server/tests/unit/commands/test_go_command.py`
-- **test_handle_go_command_invalid_posture()** (3 connections) — `server/tests/unit/commands/test_go_command.py`
-- **Go command for MythosMUD.  This module handles the go command for player movemen** (1 connections) — `server/commands/go_command.py`
-- **Prefer container.async_persistence; fall back to app.state.persistence (legacy).** (1 connections) — `server/commands/go_command.py`
-- **Return the room id to use for movement; log if player record disagrees with room** (1 connections) — `server/commands/go_command.py`
-- **Setup and validate go command prerequisites.** (1 connections) — `server/commands/go_command.py`
-- **Validate that exit exists and target room is valid.** (1 connections) — `server/commands/go_command.py`
-- **Resolve player_combat_service and event_bus from DI container or legacy app.stat** (1 connections) — `server/commands/go_command.py`
-- **Use container.movement_service when wired; else build MovementService (tests / p** (1 connections) — `server/commands/go_command.py`
-- **Execute player movement using movement service.** (1 connections) — `server/commands/go_command.py`
-- **Return normalized direction string, or None if missing (after logging).** (1 connections) — `server/commands/go_command.py`
-- *... and 6 more nodes in this community*
+- **CombatDPSync** (11 connections) — `server/services/combat_hp_sync.py`
+- **UUID** (9 connections)
+- **._persist_player_dp_sync()** (8 connections) — `server/services/combat_hp_sync.py`
+- **._publish_player_dp_update_event()** (6 connections) — `server/services/combat_hp_sync.py`
+- **._publish_player_dp_correction_event()** (6 connections) — `server/services/combat_hp_sync.py`
+- **._get_persistence()** (5 connections) — `server/services/combat_hp_sync.py`
+- **._update_and_save_player_dp()** (5 connections) — `server/services/combat_hp_sync.py`
+- **._verify_player_save()** (4 connections) — `server/services/combat_hp_sync.py`
+- **._log_death_threshold_events()** (4 connections) — `server/services/combat_hp_sync.py`
+- **.__init__()** (3 connections) — `server/services/combat_hp_sync.py`
+- **._persist_player_dp_background()** (3 connections) — `server/services/combat_hp_sync.py`
+- **Any** (2 connections)
+- **Handles DP synchronization for combat operations.** (1 connections) — `server/services/combat_hp_sync.py`
+- **Initialize DP sync with reference to parent combat service.** (1 connections) — `server/services/combat_hp_sync.py`
+- **Persist player DP to database in background (fire-and-forget).          This met** (1 connections) — `server/services/combat_hp_sync.py`
+- **Get persistence layer from application container.          Args:             pla** (1 connections) — `server/services/combat_hp_sync.py`
+- **Verify that player DP was successfully saved to database.          Args:** (1 connections) — `server/services/combat_hp_sync.py`
+- **Log death threshold events based on DP changes.          Args:             curre** (1 connections) — `server/services/combat_hp_sync.py`
+- **Update player DP and save to database.          Args:             persistence: P** (1 connections) — `server/services/combat_hp_sync.py`
+- **Synchronously persist player DP to database.          This is the actual persist** (1 connections) — `server/services/combat_hp_sync.py`
+- **Publish a PlayerDPUpdated event for real-time UI updates.** (1 connections) — `server/services/combat_hp_sync.py`
+- **Publish a correction event when database persistence fails.** (1 connections) — `server/services/combat_hp_sync.py`
 
 ## Relationships
 
-- [Validate that player is in](Validate_that_player_is_in.md) (27 shared connections)
-- [Any](Any.md) (3 shared connections)
-- [Player](Player.md) (1 shared connections)
-- [AliasStorage](AliasStorage.md) (1 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (6 shared connections)
+- [real time](real_time.md) (3 shared connections)
+- [Any](Any.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/go_command.py`
-- `server/tests/unit/commands/test_go_command.py`
+- `server/services/combat_hp_sync.py`
 
 ## Audit Trail
 
-- EXTRACTED: 130 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 73 (96%)
+- INFERRED: 3 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

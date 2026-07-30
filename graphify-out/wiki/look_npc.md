@@ -1,6 +1,6 @@
 # look npc
 
-> 167 nodes
+> 170 nodes
 
 ## Key Concepts
 
@@ -29,16 +29,15 @@
 - **test_parse_npc_stats_dict_non_dict_non_string()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
 - **test_format_core_attributes_success()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
 - **test_format_core_attributes_empty()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- *... and 142 more nodes in this community*
+- *... and 145 more nodes in this community*
 
 ## Relationships
 
-- [ExitStack](ExitStack.md) (9 shared connections)
-- [Any](Any.md) (5 shared connections)
-- [look command](look_command.md) (3 shared connections)
+- [.get room by id()](get_room_by_id%28%29.md) (9 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (7 shared connections)
+- [look helpers](look_helpers.md) (3 shared connections)
 - [look room](look_room.md) (3 shared connections)
-- [main()](main%28%29.md) (2 shared connections)
-- [.initialize()](initialize%28%29.md) (1 shared connections)
+- [Player Position Service](Player_Position_Service.md) (1 shared connections)
 
 ## Source Files
 

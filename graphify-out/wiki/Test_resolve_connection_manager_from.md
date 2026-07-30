@@ -1,24 +1,23 @@
 # Test resolve connection manager from
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **test_resolve_connection_manager_from_container()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_resolve_connection_manager_from_container_error()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test _resolve_connection_manager_from_container resolves manager.** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **test_query_rooms_with_exits_async_other_error_raises()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **Test _query_rooms_with_exits_async raises other errors.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Relationships
 
-- [test combat messaging integration](test_combat_messaging_integration.md) (2 shared connections)
+- [test async persistence room cache](test_async_persistence_room_cache.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_messaging_integration.py`
+- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,24 +1,24 @@
 # minLength
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **plane** (3 connections) — `db/static/schemas/room.schema.json`
-- **type** (1 connections) — `db/static/schemas/room.schema.json`
-- **minLength** (1 connections) — `db/static/schemas/room.schema.json`
+- **test_evaluate_boolean_condition_variable_false()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test _evaluate_boolean_condition() returns False for missing variable.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [type](type.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [test behavior engine](test_behavior_engine.md) (1 shared connections)
 
 ## Source Files
 
-- `db/static/schemas/room.schema.json`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

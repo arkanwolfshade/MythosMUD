@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **day** (4 connections) — `db/static/schemas/holidays.schema.json`
+- **month** (4 connections) — `db/static/schemas/holidays.schema.json`
 - **type** (1 connections) — `db/static/schemas/holidays.schema.json`
 - **minimum** (1 connections) — `db/static/schemas/holidays.schema.json`
 - **maximum** (1 connections) — `db/static/schemas/holidays.schema.json`

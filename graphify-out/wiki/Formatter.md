@@ -1,58 +1,55 @@
 # Formatter
 
-> 55 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **logging_file_setup.py** (35 connections) — `server/structured_logging/logging_file_setup.py`
-- **setup_enhanced_file_logging()** (20 connections) — `server/structured_logging/logging_file_setup.py`
-- **SafeRotatingFileHandler** (20 connections) — `server/structured_logging/logging_handlers.py`
-- **load_player_guid_formatter_class()** (11 connections) — `server/structured_logging/logging_utilities.py`
-- **_setup_aggregator_handlers()** (9 connections) — `server/structured_logging/logging_file_setup.py`
-- **_setup_console_handler()** (9 connections) — `server/structured_logging/logging_file_setup.py`
-- **_prepare_log_environment()** (9 connections) — `server/structured_logging/logging_file_setup.py`
-- **_setup_category_handlers()** (8 connections) — `server/structured_logging/logging_file_setup.py`
-- **LoggerNameFilter** (8 connections) — `server/structured_logging/logging_file_setup.py`
-- **_create_handler_for_category()** (8 connections) — `server/structured_logging/logging_file_setup.py`
-- **Queue** (7 connections)
-- **_CategoryHandlerConfig** (6 connections) — `server/structured_logging/logging_file_setup.py`
-- **Handler** (6 connections)
-- **_ConsoleHandlerConfig** (6 connections) — `server/structured_logging/logging_file_setup.py`
-- **_setup_async_logging_queue()** (6 connections) — `server/structured_logging/logging_file_setup.py`
-- **_create_formatter()** (6 connections) — `server/structured_logging/logging_file_setup.py`
-- **_get_or_create_log_queue()** (5 connections) — `server/structured_logging/logging_file_setup.py`
-- **_get_handler_class()** (5 connections) — `server/structured_logging/logging_file_setup.py`
-- **_add_handler_to_loggers()** (5 connections) — `server/structured_logging/logging_file_setup.py`
-- **_get_handler_classes()** (5 connections) — `server/structured_logging/logging_file_setup.py`
-- **LogRecord** (3 connections)
+- **normalize_environment()** (15 connections) — `server/utils/project_paths.py`
+- **get_calendar_paths_for_environment()** (14 connections) — `server/utils/project_paths.py`
+- **project_paths.py** (12 connections) — `server/utils/project_paths.py`
+- **test_project_paths.py** (10 connections) — `server/tests/unit/utils/test_project_paths.py`
+- **get_project_root()** (10 connections) — `server/utils/project_paths.py`
+- **get_environment_data_dir()** (10 connections) — `server/utils/project_paths.py`
+- **.__init__()** (8 connections) — `server/services/holiday_service.py`
+- **.__init__()** (7 connections) — `server/services/schedule_service.py`
+- **test_get_project_root()** (3 connections) — `server/tests/unit/utils/test_project_paths.py`
+- **test_normalize_environment()** (3 connections) — `server/tests/unit/utils/test_project_paths.py`
+- **test_get_environment_data_dir()** (3 connections) — `server/tests/unit/utils/test_project_paths.py`
+- **test_get_calendar_paths_for_environment()** (3 connections) — `server/tests/unit/utils/test_project_paths.py`
 - **Path** (3 connections)
-- **RotatingFileHandler** (3 connections)
-- **_convert_max_size_to_bytes()** (3 connections) — `server/structured_logging/logging_file_setup.py`
-- **.filter()** (3 connections) — `server/structured_logging/logging_file_setup.py`
-- *... and 30 more nodes in this community*
+- **Path** (2 connections)
+- **Path** (2 connections)
+- **Unit tests for project_paths utilities.  Tests path resolution functions.** (1 connections) — `server/tests/unit/utils/test_project_paths.py`
+- **Test get_project_root() returns project root path.** (1 connections) — `server/tests/unit/utils/test_project_paths.py`
+- **Test normalize_environment() normalizes environment names.** (1 connections) — `server/tests/unit/utils/test_project_paths.py`
+- **Test get_environment_data_dir() returns data directory.** (1 connections) — `server/tests/unit/utils/test_project_paths.py`
+- **Test get_calendar_paths_for_environment() returns calendar paths.** (1 connections) — `server/tests/unit/utils/test_project_paths.py`
+- **Project path resolution helpers used across runtime code and tooling.** (1 connections) — `server/utils/project_paths.py`
+- **Return the repository root (directory containing pyproject.toml).** (1 connections) — `server/utils/project_paths.py`
+- **Normalize logging environment names to their canonical directory names.** (1 connections) — `server/utils/project_paths.py`
+- **Compute the base data directory for the provided environment.** (1 connections) — `server/utils/project_paths.py`
+- **Return (holidays_file, schedules_dir) for the requested environment.** (1 connections) — `server/utils/project_paths.py`
 
 ## Relationships
 
-- [logging handlers](logging_handlers.md) (16 shared connections)
-- [QueueListener](QueueListener.md) (9 shared connections)
-- [Path](Path.md) (9 shared connections)
-- [main()](main%28%29.md) (8 shared connections)
-- [windows safe rotation](windows_safe_rotation.md) (5 shared connections)
-- [PlayerGuidFormatter](PlayerGuidFormatter.md) (3 shared connections)
-- [logging utilities](logging_utilities.md) (2 shared connections)
-- [Any](Any.md) (2 shared connections)
-- [lifespan](lifespan.md) (1 shared connections)
+- [hash password()](hash_password%28%29.md) (8 shared connections)
+- [chat nats publisher](chat_nats_publisher.md) (7 shared connections)
+- [HolidayCollection](HolidayCollection.md) (7 shared connections)
+- [emit close container event()](emit_close_container_event%28%29.md) (7 shared connections)
+- [test command parser](test_command_parser.md) (6 shared connections)
+- [parse jsonb column()](parse_jsonb_column%28%29.md) (2 shared connections)
 
 ## Source Files
 
-- `server/structured_logging/logging_file_setup.py`
-- `server/structured_logging/logging_handlers.py`
-- `server/structured_logging/logging_utilities.py`
+- `server/services/holiday_service.py`
+- `server/services/schedule_service.py`
+- `server/tests/unit/utils/test_project_paths.py`
+- `server/utils/project_paths.py`
 
 ## Audit Trail
 
-- EXTRACTED: 229 (93%)
-- INFERRED: 16 (7%)
+- EXTRACTED: 113 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

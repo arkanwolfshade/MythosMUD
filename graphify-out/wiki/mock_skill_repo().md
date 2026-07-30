@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **mock_skill_repo()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
-- **Mock SkillRepository returning catalog.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_should_echo_to_sender_no_targets_not_notified()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _should_echo_to_sender returns True when no targets but not notified.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [test skill service](test_skill_service.md) (1 shared connections)
+- [test nats message handler chat](test_nats_message_handler_chat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_skill_service.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 

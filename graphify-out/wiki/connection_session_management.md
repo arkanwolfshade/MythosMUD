@@ -1,13 +1,13 @@
 # connection session management
 
-> 58 nodes
+> 61 nodes
 
 ## Key Concepts
 
 - **test_connection_session_management.py** (30 connections) — `server/tests/unit/realtime/test_connection_session_management.py`
+- **connection_session_management.py** (14 connections) — `server/realtime/connection_session_management.py`
 - **_disconnect_connection_for_session()** (14 connections) — `server/realtime/connection_session_management.py`
-- **connection_session_management.py** (13 connections) — `server/realtime/connection_session_management.py`
-- **handle_new_game_session_impl()** (12 connections) — `server/realtime/connection_session_management.py`
+- **handle_new_game_session_impl()** (14 connections) — `server/realtime/connection_session_management.py`
 - **_disconnect_all_connections_for_session()** (10 connections) — `server/realtime/connection_session_management.py`
 - **_is_websocket_connected()** (9 connections) — `server/realtime/connection_session_management.py`
 - **_cleanup_old_session_tracking()** (9 connections) — `server/realtime/connection_session_management.py`
@@ -29,11 +29,13 @@
 - **test_disconnect_all_connections_for_session_partial_success()** (3 connections) — `server/tests/unit/realtime/test_connection_session_management.py`
 - **test_cleanup_old_session_tracking_no_player()** (3 connections) — `server/tests/unit/realtime/test_connection_session_management.py`
 - **test_cleanup_old_session_tracking_success()** (3 connections) — `server/tests/unit/realtime/test_connection_session_management.py`
-- *... and 33 more nodes in this community*
+- *... and 36 more nodes in this community*
 
 ## Relationships
 
-- [main()](main%28%29.md) (8 shared connections)
+- [real time](real_time.md) (6 shared connections)
+- [Player](Player.md) (3 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
 
 ## Source Files
 
@@ -42,7 +44,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 208 (99%)
+- EXTRACTED: 211 (99%)
 - INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 

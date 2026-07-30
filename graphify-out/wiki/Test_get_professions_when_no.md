@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_get_professions_no_session()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **Test get_professions when no session is yielded.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_try_lookup_item_implicit_player_no_get_inventory()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test _try_lookup_item_implicit() when player has no get_inventory method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
 
 ## Relationships
 
-- [test async persistence room cache](test_async_persistence_room_cache.md) (1 shared connections)
+- [DeathInterstitial](DeathInterstitial.md) (1 shared connections)
+- [test look item](test_look_item.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- `server/tests/unit/commands/test_look_item.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

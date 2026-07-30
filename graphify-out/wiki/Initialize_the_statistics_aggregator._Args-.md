@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **.__init__()** (2 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **Initialize the statistics aggregator.          Args:             memory_monitor:** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **test_should_echo_to_sender_not_echo_channel()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _should_echo_to_sender returns False for non-echo channels.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [Any](Any.md) (1 shared connections)
+- [test nats message handler chat](test_nats_message_handler_chat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/monitoring/statistics_aggregator.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 

@@ -4,22 +4,21 @@
 
 ## Key Concepts
 
-- **test_get_player_by_user_id_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test get_player_by_user_id returns first active player.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_get_room_exits_room_not_found()** (2 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test get_room_exits() returns empty dict when room not found.** (1 connections) — `server/tests/unit/game/test_room_service.py`
 
 ## Relationships
 
-- [. init ()](_init_%28%29.md) (1 shared connections)
-- [test player repository](test_player_repository.md) (1 shared connections)
+- [test room service](test_room_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_player_repository.py`
+- `server/tests/unit/game/test_room_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

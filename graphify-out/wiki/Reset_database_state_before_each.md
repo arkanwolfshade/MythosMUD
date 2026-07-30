@@ -1,44 +1,36 @@
 # Reset database state before each
 
-> 16 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **reset_database()** (16 connections) — `server/database.py`
-- **test_reset_database_resets_singleton()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_reset_database()** (5 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **reset_db_state()** (3 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_reset_database_resets_module_url()** (3 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **reset_db_state()** (3 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **reset_db()** (3 connections) — `server/tests/unit/infrastructure/test_database_init.py`
-- **test_reset_database_resets_module_url()** (3 connections) — `server/tests/unit/infrastructure/test_database_init.py`
-- **Reset the database connection state (for testing).      This resets the Database** (1 connections) — `server/database.py`
-- **Reset database state before each test.** (1 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **Test reset_database resets singleton.** (1 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **Test reset_database resets module-level _database_url.** (1 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **Reset database state before each test.** (1 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **Test reset_database resets both singleton and module-level URL.** (1 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **Reset database state before each test.** (1 connections) — `server/tests/unit/infrastructure/test_database_init.py`
-- **Test reset_database resets module-level _database_url.** (1 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **UUID** (12 connections)
+- **.cleanup_dead_connections()** (7 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._cleanup_dead_connections_for_player()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **.__init__()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._get_players_to_check()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._is_websocket_dead()** (3 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Initialize the connection cleaner.          Args:             memory_monitor: Me** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Return True if websocket appears dead (should be cleaned up).** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Return list of player IDs to check (single player or all).** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Clean up dead connections for a single player.** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Clean up dead connections for a specific player or all players.          Args:** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
 
 ## Relationships
 
-- [.reset instance()](reset_instance%28%29.md) (7 shared connections)
-- [.get instance()](get_instance%28%29.md) (6 shared connections)
-- [main()](main%28%29.md) (3 shared connections)
-- [close db()](close_db%28%29.md) (3 shared connections)
+- [NPCDefinitionCRUDMixin](NPCDefinitionCRUDMixin.md) (11 shared connections)
+- [occupation slots 9()](occupation_slots_9%28%29.md) (3 shared connections)
+- [real time](real_time.md) (2 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
 
 ## Source Files
 
-- `server/database.py`
-- `server/tests/unit/infrastructure/test_database_error_handling.py`
-- `server/tests/unit/infrastructure/test_database_extended.py`
-- `server/tests/unit/infrastructure/test_database_init.py`
+- `server/realtime/maintenance/connection_cleaner.py`
 
 ## Audit Trail
 
-- EXTRACTED: 49 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 39 (95%)
+- INFERRED: 2 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

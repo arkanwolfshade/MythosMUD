@@ -1,8 +1,8 @@
 # CombatService
 
-> God node · 178 connections · `server/services/combat_service.py`
+> God node · 181 connections · `server/services/combat_service.py`
 
-**Community:** [initialize nats and combat services()](initialize_nats_and_combat_services%28%29.md)
+**Community:** [. initialize handlers()](_initialize_handlers%28%29.md)
 
 ## Connections by Relation
 
@@ -29,12 +29,12 @@
 - combat_service_attack.py `EXTRACTED`
 - combat_loader.py `EXTRACTED`
 - magic_service_completion.py `EXTRACTED`
+- spell_targeting.py `EXTRACTED`
 - combat_flee.py `EXTRACTED`
 - combat_turn_processor.py `EXTRACTED`
 - npc_combat_integration_validation_mixin.py `EXTRACTED`
 - test_combat_service.py `EXTRACTED`
 - npc_combat_integration_combat_mixin.py `EXTRACTED`
-- combat_service_events.py `EXTRACTED`
 
 ### indirect_call
 - get_combat_service() `INFERRED`
@@ -97,6 +97,7 @@
 - _MagicServiceCore `INFERRED`
 - PlayerRespawnService `INFERRED`
 - CombatParticipantData `INFERRED`
+- SpellTargetingService `INFERRED`
 - TauntCommandHandler `INFERRED`
 - MagicService `INFERRED`
 - NPCCombatDataProvider `INFERRED`
@@ -106,7 +107,6 @@
 - CombatPersistenceHandler `INFERRED`
 - MagicServiceCompletionMixin `INFERRED`
 - CombatBundle `INFERRED`
-- _NPCCombatIntegrationValidationDeps `INFERRED`
 
 ---
 

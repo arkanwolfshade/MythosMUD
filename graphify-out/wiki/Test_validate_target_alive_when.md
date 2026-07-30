@@ -1,25 +1,25 @@
 # Test validate target alive when
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **test_validate_target_alive_alive()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_validate_target_alive_dead()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test validate_target_alive when target is alive.** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_fetch_container_items_success()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **Test _fetch_container_items successfully fetches items.** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
 
 ## Relationships
 
-- [test combat validator](test_combat_validator.md) (2 shared connections)
+- [container persistence](container_persistence.md) (1 shared connections)
+- [disconnect grace period](disconnect_grace_period.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

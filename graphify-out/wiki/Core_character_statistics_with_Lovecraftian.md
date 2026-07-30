@@ -1,61 +1,54 @@
 # Core character statistics with Lovecraftian
 
-> 62 nodes
+> 51 nodes
 
 ## Key Concepts
 
-- **Stats** (80 connections) — `server/models/game.py`
-- **test_game_stats_methods.py** (31 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_validate_current_vs_max_stats_caps_dp()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_validate_current_vs_max_stats_caps_magic_points()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_validate_current_vs_max_stats_caps_lucidity()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_validate_current_vs_max_stats_allows_valid_values()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_get_attribute_modifier_negative()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_get_attribute_modifier_zero()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_get_attribute_modifier_different_attribute()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_max_dp_calculation()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_max_dp_calculation_alternative()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_max_dp_with_none()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_max_magic_points_calculation()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_max_magic_points_calculation_alternative()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_max_lucidity_calculation()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_max_lucidity_calculation_alternative()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_is_lucid_true()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_is_lucid_false()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_is_corrupted_true()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_is_corrupted_false()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_is_delirious_true()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_is_delirious_false()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_get_attribute_modifier_positive()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_get_attribute_modifier_none()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_validate_current_vs_max_stats_valid()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- *... and 37 more nodes in this community*
+- **test_rate_limiter_utils.py** (22 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **RateLimiter** (10 connections) — `server/utils/rate_limiter.py`
+- **rate_limiter.py** (9 connections) — `server/utils/rate_limiter.py`
+- **.enforce_rate_limit()** (5 connections) — `server/utils/rate_limiter.py`
+- **.get_rate_limit_info()** (4 connections) — `server/utils/rate_limiter.py`
+- **rate_limiter()** (3 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_enforce_rate_limit_raises_when_exceeded()** (3 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_enforce_rate_limit_includes_retry_after()** (3 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **__init__.py** (3 connections) — `server/utils/__init__.py`
+- **.check_rate_limit()** (3 connections) — `server/utils/rate_limiter.py`
+- **test_rate_limiter_initialization()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_check_rate_limit_first_request()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_check_rate_limit_multiple_requests()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_check_rate_limit_exceeds_limit()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_check_rate_limit_different_users()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_check_rate_limit_removes_old_requests()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_get_rate_limit_info_no_requests()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_get_rate_limit_info_with_requests()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_get_rate_limit_info_calculates_reset_time()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_get_rate_limit_info_calculates_retry_after()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_get_rate_limit_info_filters_old_requests()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_enforce_rate_limit_allows_request()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_stats_roll_limiter_initialized()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_character_creation_limiter_initialized()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **.__init__()** (2 connections) — `server/utils/rate_limiter.py`
+- *... and 26 more nodes in this community*
 
 ## Relationships
 
-- [Connection Manager](Connection_Manager.md) (12 shared connections)
-- [character creation](character_creation.md) (9 shared connections)
-- [Calculate max magic points (MP)](Calculate_max_magic_points_%28MP%29.md) (6 shared connections)
-- [test character creation service](test_character_creation_service.md) (6 shared connections)
-- [test player service](test_player_service.md) (4 shared connections)
-- [Player](Player.md) (3 shared connections)
-- [. init ()](_init_%28%29.md) (2 shared connections)
-- [Any](Any.md) (2 shared connections)
-- [AttributeType](AttributeType.md) (2 shared connections)
-- [main()](main%28%29.md) (1 shared connections)
-- [Base](Base.md) (1 shared connections)
-- [test memory profiler](test_memory_profiler.md) (1 shared connections)
+- [. init ()](_init_%28%29.md) (5 shared connections)
+- [real time](real_time.md) (2 shared connections)
+- [BaseCommand](BaseCommand.md) (2 shared connections)
+- [admin shutdown command](admin_shutdown_command.md) (1 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/game.py`
-- `server/tests/unit/api/test_character_creation.py`
-- `server/tests/unit/models/test_game_stats_methods.py`
+- `server/tests/unit/utils/test_rate_limiter_utils.py`
+- `server/utils/__init__.py`
+- `server/utils/rate_limiter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 225 (97%)
-- INFERRED: 7 (3%)
+- EXTRACTED: 119 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

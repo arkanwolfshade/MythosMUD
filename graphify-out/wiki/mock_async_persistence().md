@@ -1,50 +1,41 @@
 # mock async persistence()
 
-> 29 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **test_npc_combat_integration_service_npc_aggro.py** (19 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
-- **mock_combat_service()** (4 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **mock_connection_manager()** (4 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **mock_async_persistence()** (4 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **test_handle_npc_attack_on_player_happy_path()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
-- **test_handle_npc_attack_on_player_grace_period_blocked()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
-- **test_handle_npc_attack_on_player_npc_not_found()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
-- **test_handle_npc_attack_on_player_npc_dead()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
-- **test_handle_npc_attack_on_player_invalid_location()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
-- **test_handle_npc_attack_on_player_no_combat_service()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
-- **test_handle_npc_attack_on_player_existing_combat_with_same_npc()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
-- **test_handle_npc_attack_on_player_existing_combat_with_other_npc()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
-- **test_handle_npc_attack_on_player_skips_already_dead_target()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
-- **test_setup_combat_uuids_npc_attacker_valid()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
-- **test_setup_combat_uuids_npc_attacker_value_error()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
-- **Test handle_npc_attack_on_player returns False when NPC is dead.** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
-- **Create mock combat service.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **Create mock connection manager.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **Create mock async persistence layer.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **Unit tests for NPC combat integration service - NPC-initiated aggro combat paths** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
-- **Test handle_npc_attack_on_player starts combat and processes attack on happy pat** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
-- **Test handle_npc_attack_on_player blocks attack when player is in login grace per** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
-- **Test handle_npc_attack_on_player returns False when NPC instance cannot be found** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
-- **Test handle_npc_attack_on_player returns False when combat service is missing.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
-- **Test handle_npc_attack_on_player returns True when combat already exists with sa** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
-- *... and 4 more nodes in this community*
+- **MemoryMonitor** (13 connections) — `server/realtime/memory_monitor.py`
+- **.get_memory_usage()** (4 connections) — `server/realtime/memory_monitor.py`
+- **.get_memory_alerts()** (4 connections) — `server/realtime/memory_monitor.py`
+- **_max_connection_age_seconds()** (3 connections) — `server/realtime/memory_monitor.py`
+- **.__init__()** (3 connections) — `server/realtime/memory_monitor.py`
+- **.should_cleanup()** (3 connections) — `server/realtime/memory_monitor.py`
+- **.get_memory_stats()** (3 connections) — `server/realtime/memory_monitor.py`
+- **Any** (2 connections)
+- **.update_cleanup_time()** (2 connections) — `server/realtime/memory_monitor.py`
+- **.force_garbage_collection()** (2 connections) — `server/realtime/memory_monitor.py`
+- **Connection age threshold (seconds). Higher in e2e/local to avoid mid-run drops.** (1 connections) — `server/realtime/memory_monitor.py`
+- **Monitor memory usage and trigger cleanup when needed.      This class provides m** (1 connections) — `server/realtime/memory_monitor.py`
+- **Initialize the memory monitor with default settings.** (1 connections) — `server/realtime/memory_monitor.py`
+- **Check if cleanup should be triggered.          Returns:             bool: True i** (1 connections) — `server/realtime/memory_monitor.py`
+- **Get current memory usage as percentage.          Returns:             float: Mem** (1 connections) — `server/realtime/memory_monitor.py`
+- **Get detailed memory statistics.          Returns:             dict: Memory stati** (1 connections) — `server/realtime/memory_monitor.py`
+- **Get memory-related alerts based on current usage and connection statistics.** (1 connections) — `server/realtime/memory_monitor.py`
+- **Update the last cleanup time to the current time.** (1 connections) — `server/realtime/memory_monitor.py`
+- **Force garbage collection to free memory.** (1 connections) — `server/realtime/memory_monitor.py`
 
 ## Relationships
 
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (6 shared connections)
-- [test npc combat integration service](test_npc_combat_integration_service.md) (3 shared connections)
-- [initialize nats and combat services()](initialize_nats_and_combat_services%28%29.md) (1 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (4 shared connections)
+- [test statistics aggregator](test_statistics_aggregator.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_npc_combat_integration_service.py`
-- `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- `server/realtime/memory_monitor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 68 (100%)
+- EXTRACTED: 48 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

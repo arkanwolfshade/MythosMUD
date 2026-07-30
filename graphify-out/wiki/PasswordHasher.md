@@ -1,59 +1,50 @@
 # PasswordHasher
 
-> 80 nodes
+> 54 nodes
 
 ## Key Concepts
 
-- **test_argon2_utils.py** (42 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **hash_password()** (27 connections) — `server/auth/argon2_utils.py`
-- **argon2_utils.py** (18 connections) — `server/auth/argon2_utils.py`
-- **verify_password()** (16 connections) — `server/auth/argon2_utils.py`
-- **auth_utils.py** (16 connections) — `server/auth_utils.py`
-- **create_hasher_with_params()** (11 connections) — `server/auth/argon2_utils.py`
-- **is_argon2_hash()** (9 connections) — `server/auth/argon2_utils.py`
-- **needs_rehash()** (7 connections) — `server/auth/argon2_utils.py`
-- **get_hash_info()** (6 connections) — `server/auth/argon2_utils.py`
-- **test_verify_password_success()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_verify_password_failure()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_hash_password_empty_string()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_verify_password_empty_string()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_hash_password_invalid_type()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_hash_password_non_string_type()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_verify_password_non_string_password()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_is_argon2_hash_valid()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_needs_rehash_valid_hash()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_get_hash_info_valid()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_hash_password_hashing_error()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_hash_password_type_error()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_needs_rehash_error_handling()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_hash_password_success()** (3 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_create_hasher_with_params_valid()** (3 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_create_hasher_with_params_invalid_time_cost()** (3 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- *... and 55 more nodes in this community*
+- **AggressiveMobNPC** (32 connections) — `server/npc/aggressive_mob_npc.py`
+- **test_aggressive_mob_npc.py** (10 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
+- **._compute_player_context()** (7 connections) — `server/npc/aggressive_mob_npc.py`
+- **._attack_target_impl()** (6 connections) — `server/npc/aggressive_mob_npc.py`
+- **._enrich_behavior_context()** (4 connections) — `server/npc/aggressive_mob_npc.py`
+- **._attack_via_combat_integration()** (4 connections) — `server/npc/aggressive_mob_npc.py`
+- **.attack_target()** (4 connections) — `server/npc/aggressive_mob_npc.py`
+- **.get_room_by_id()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **.__init__()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **._setup_aggressive_mob_behavior_rules()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **._log_context_enriched()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **.hunt_target()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **._get_attack_damage()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **.flee()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **.patrol_territory()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **._handle_hunt_target()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **._handle_attack_target()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **._handle_flee()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **._handle_patrol_territory()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **test_enrich_behavior_context_sets_player_in_range_when_players_in_room()** (3 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
+- **test_enrich_behavior_context_sets_false_when_no_players_in_room()** (3 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
+- **test_enrich_behavior_context_handles_no_current_room()** (3 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
+- **test_get_attack_damage_from_behavior_config()** (3 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
+- **test_get_attack_damage_invalid_string_falls_back_to_one()** (3 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
+- **test_hunt_target_avoids_duplicate_ids()** (3 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
+- *... and 29 more nodes in this community*
 
 ## Relationships
 
-- [main()](main%28%29.md) (12 shared connections)
-- [. init ()](_init_%28%29.md) (10 shared connections)
-- [BaseUserManager](BaseUserManager.md) (5 shared connections)
-- [hash password()](hash_password%28%29.md) (4 shared connections)
-- [seed e2e users](seed_e2e_users.md) (3 shared connections)
-- [create access token()](create_access_token%28%29.md) (3 shared connections)
-- [argon2](argon2.md) (1 shared connections)
-- [Hash password using Argon2 instead](Hash_password_using_Argon2_instead.md) (1 shared connections)
-- [Verify password using Argon2 instead](Verify_password_using_Argon2_instead.md) (1 shared connections)
-- [real time](real_time.md) (1 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (12 shared connections)
+- [spawn defaults](spawn_defaults.md) (1 shared connections)
 
 ## Source Files
 
-- `server/auth/argon2_utils.py`
-- `server/auth_utils.py`
-- `server/tests/unit/auth/test_argon2_utils.py`
+- `server/npc/aggressive_mob_npc.py`
+- `server/tests/unit/npc/test_aggressive_mob_npc.py`
 
 ## Audit Trail
 
-- EXTRACTED: 297 (98%)
-- INFERRED: 6 (2%)
+- EXTRACTED: 147 (96%)
+- INFERRED: 6 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

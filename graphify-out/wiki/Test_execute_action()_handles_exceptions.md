@@ -1,24 +1,25 @@
 # Test execute action() handles exceptions.
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_execute_action_handles_exception()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test execute_action() handles exceptions.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **sub_zone** (4 connections) — `schemas/intersection_schema.json`
+- **type** (1 connections) — `schemas/intersection_schema.json`
+- **pattern** (1 connections) — `schemas/intersection_schema.json`
+- **description** (1 connections) — `schemas/intersection_schema.json`
 
 ## Relationships
 
-- [BehaviorEngine](BehaviorEngine.md) (1 shared connections)
-- [test behavior engine](test_behavior_engine.md) (1 shared connections)
+- [description](description.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_behavior_engine.py`
+- `schemas/intersection_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

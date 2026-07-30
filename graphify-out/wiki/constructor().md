@@ -1,6 +1,6 @@
 # .constructor()
 
-> 52 nodes
+> 55 nodes
 
 ## Key Concepts
 
@@ -8,12 +8,15 @@
 - **MemoryLeakDetector** (16 connections) — `client/src/utils/memoryLeakDetector.ts`
 - **memoryMonitor.ts** (11 connections) — `client/src/utils/memoryMonitor.ts`
 - **memoryLeakDetector.ts** (8 connections) — `client/src/utils/memoryLeakDetector.ts`
+- **useMemoryMonitor()** (8 connections) — `client/src/utils/memoryMonitor.ts`
 - **memoryLeakDetector.test.ts** (7 connections) — `client/src/utils/__tests__/memoryLeakDetector.test.ts`
 - **memoryMonitor.test.ts** (7 connections) — `client/src/utils/__tests__/memoryMonitor.test.ts`
 - **MemorySnapshot** (7 connections) — `client/src/utils/memoryLeakDetector.ts`
 - **useMemoryLeakDetector()** (7 connections) — `client/src/utils/memoryLeakDetector.ts`
 - **.generateReport()** (7 connections) — `client/src/utils/memoryMonitor.ts`
+- **useGameClientV2MemoryMonitorEffect.ts** (6 connections) — `client/src/components/ui-v2/hooks/useGameClientV2MemoryMonitorEffect.ts`
 - **.registerComponent()** (6 connections) — `client/src/utils/memoryMonitor.ts`
+- **useGameClientV2MemoryMonitorEffect()** (5 connections) — `client/src/components/ui-v2/hooks/useGameClientV2MemoryMonitorEffect.ts`
 - **.constructor()** (4 connections) — `client/src/utils/memoryMonitor.ts`
 - **.start()** (3 connections) — `client/src/utils/memoryLeakDetector.ts`
 - **.setCallbacks()** (3 connections) — `client/src/utils/memoryLeakDetector.ts`
@@ -26,18 +29,17 @@
 - **.getOverallStats()** (3 connections) — `client/src/utils/memoryMonitor.ts`
 - **.startReporting()** (3 connections) — `client/src/utils/memoryMonitor.ts`
 - **.handleMemoryWarning()** (3 connections) — `client/src/utils/memoryMonitor.ts`
-- **.handleMemoryCritical()** (3 connections) — `client/src/utils/memoryMonitor.ts`
-- **.handleComponentMemoryWarning()** (3 connections) — `client/src/utils/memoryMonitor.ts`
-- **.handleComponentMemoryCritical()** (3 connections) — `client/src/utils/memoryMonitor.ts`
-- *... and 27 more nodes in this community*
+- *... and 30 more nodes in this community*
 
 ## Relationships
 
-- [mockOpenContainers](mockOpenContainers.md) (7 shared connections)
-- [AuthSlice](AuthSlice.md) (4 shared connections)
+- [SERVER UNAVAILABLE PATTERNS](SERVER_UNAVAILABLE_PATTERNS.md) (4 shared connections)
+- [.append()](append%28%29.md) (3 shared connections)
+- [mockOpenContainers](mockOpenContainers.md) (3 shared connections)
 
 ## Source Files
 
+- `client/src/components/ui-v2/hooks/useGameClientV2MemoryMonitorEffect.ts`
 - `client/src/utils/__tests__/memoryLeakDetector.test.ts`
 - `client/src/utils/__tests__/memoryMonitor.test.ts`
 - `client/src/utils/memoryLeakDetector.ts`
@@ -45,7 +47,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 181 (100%)
+- EXTRACTED: 200 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

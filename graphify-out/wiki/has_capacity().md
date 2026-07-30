@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **.has_capacity()** (2 connections) — `server/models/container.py`
-- **Check if container has available capacity.** (1 connections) — `server/models/container.py`
+- **test_process_message_with_retry_failure()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _process_message_with_retry adds to DLQ on failure.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [test nats message handler chat](test_nats_message_handler_chat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/container.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 

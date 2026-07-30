@@ -1,6 +1,6 @@
 # ascii map renderer
 
-> 97 nodes
+> 95 nodes
 
 ## Key Concepts
 
@@ -9,7 +9,6 @@
 - **.render_map()** (10 connections) — `server/services/ascii_map_renderer.py`
 - **test_ascii_map_renderer_exits.py** (9 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
 - **TestVerticalExitCharBetween** (9 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **ascii_map_renderer.py** (8 connections) — `server/services/ascii_map_renderer.py`
 - **TestHorizontalExitCharBetween** (7 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
 - **TestResolveExitTarget** (7 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
 - **._build_grid()** (6 connections) — `server/services/ascii_map_renderer.py`
@@ -29,14 +28,12 @@
 - **._get_room_symbol()** (4 connections) — `server/services/ascii_map_renderer.py`
 - **TestGetHorizontalExitCharViewportBounds** (4 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
 - **TestBuildGridPlayerMarker** (4 connections) — `server/tests/unit/services/test_ascii_map_renderer_grid.py`
-- *... and 72 more nodes in this community*
+- **._auto_center_viewport()** (3 connections) — `server/services/ascii_map_renderer.py`
+- *... and 70 more nodes in this community*
 
 ## Relationships
 
-- [MapZoneContext](MapZoneContext.md) (3 shared connections)
-- [maps](maps.md) (2 shared connections)
-- [main()](main%28%29.md) (2 shared connections)
-- [AsyncSession](AsyncSession.md) (1 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (7 shared connections)
 
 ## Source Files
 
@@ -46,7 +43,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 304 (96%)
+- EXTRACTED: 295 (96%)
 - INFERRED: 12 (4%)
 - AMBIGUOUS: 0 (0%)
 

@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **._hash_password()** (3 connections) — `server/auth/users.py`
-- **Hash password using Argon2 instead of bcrypt.** (1 connections) — `server/auth/users.py`
+- **test_extract_chat_message_fields()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _extract_chat_message_fields extracts fields.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [PasswordHasher](PasswordHasher.md) (1 shared connections)
-- [Custom user manager for MythosMUD.](Custom_user_manager_for_MythosMUD.md) (1 shared connections)
+- [test nats message handler chat](test_nats_message_handler_chat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/auth/users.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

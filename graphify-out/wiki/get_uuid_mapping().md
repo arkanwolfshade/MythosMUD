@@ -1,53 +1,56 @@
 # .get uuid mapping()
 
-> 62 nodes
+> 48 nodes
 
 ## Key Concepts
 
-- **NPCCombatUUIDMapping** (39 connections) — `server/services/npc_combat_uuid_mapping.py`
-- **TestNPCCombatUUIDMapping** (22 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
-- **UUID** (8 connections)
-- **.is_valid_uuid()** (4 connections) — `server/services/npc_combat_uuid_mapping.py`
-- **.convert_to_uuid()** (4 connections) — `server/services/npc_combat_uuid_mapping.py`
-- **test_npc_combat_uuid_mapping.py** (4 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
-- **.get_uuid_mapping()** (3 connections) — `server/services/npc_combat_integration_service.py`
-- **.store_string_id_mapping()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
-- **.store_xp_mapping()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
-- **.get_uuid_for_string_id()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
-- **.get_original_string_id()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
-- **.get_xp_value()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
-- **.test_init()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
-- **.test_is_valid_uuid_valid()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
-- **.test_is_valid_uuid_invalid()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
-- **.test_convert_to_uuid_from_uuid_string()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
-- **.test_convert_to_uuid_from_string_id()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
-- **.test_store_string_id_mapping()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
-- **.test_store_string_id_mapping_overwrites()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
-- **.test_store_xp_mapping()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
-- **.test_store_xp_mapping_overwrites()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
-- **.test_get_original_string_id_found()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
-- **.test_get_original_string_id_not_found()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
-- **.test_get_uuid_for_string_id_found()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
-- **.test_get_uuid_for_string_id_not_found()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
-- *... and 37 more nodes in this community*
+- **command_input.py** (14 connections) — `server/command_handler/command_input.py`
+- **normalize_command()** (12 connections) — `server/command_handler/command_input.py`
+- **TestCommandNormalization** (12 connections) — `server/tests/unit/commands/test_command_input.py`
+- **clean_command_input()** (10 connections) — `server/command_handler/command_input.py`
+- **should_treat_as_emote()** (10 connections) — `server/command_handler/command_input.py`
+- **_is_predefined_emote()** (8 connections) — `server/command_handler/command_input.py`
+- **test_command_input.py** (8 connections) — `server/tests/unit/commands/test_command_input.py`
+- **TestEmoteDetection** (8 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_clean_command_input_basic()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_clean_command_input_multiple_spaces()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_clean_command_input_leading_trailing_whitespace()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_clean_command_input_tabs()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_normalize_command_no_slash()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_normalize_command_with_slash()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_normalize_command_empty()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_normalize_command_whitespace_only()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_normalize_command_slash_only()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_normalize_command_slash_with_spaces()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_is_predefined_emote_true()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_is_predefined_emote_false()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_is_predefined_emote_handles_error()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_should_treat_as_emote_system_command()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_should_treat_as_emote_unknown_word()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_should_treat_as_emote_predefined_emote()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
+- **Command Input Utilities for MythosMUD.  This module provides utilities for clean** (1 connections) — `server/command_handler/command_input.py`
+- *... and 23 more nodes in this community*
 
 ## Relationships
 
-- [initialize nats and combat services()](initialize_nats_and_combat_services%28%29.md) (6 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (2 shared connections)
-- [.store npc xp mapping for](store_npc_xp_mapping_for.md) (2 shared connections)
-- [. init ()](_init_%28%29.md) (1 shared connections)
+- [check alias safety()](check_alias_safety%28%29.md) (6 shared connections)
+- [CommandExecutionRequest](CommandExecutionRequest.md) (4 shared connections)
+- [PlayerIdCarrier](PlayerIdCarrier.md) (2 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
+- [process dead players()](process_dead_players%28%29.md) (1 shared connections)
+- [AuthSlice](AuthSlice.md) (1 shared connections)
+- [Validate an expanded command for](Validate_an_expanded_command_for.md) (1 shared connections)
+- [ContainerDataCore](ContainerDataCore.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/npc_combat_integration_service.py`
-- `server/services/npc_combat_uuid_mapping.py`
-- `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- `server/command_handler/command_input.py`
+- `server/tests/unit/commands/test_command_input.py`
 
 ## Audit Trail
 
-- EXTRACTED: 184 (97%)
-- INFERRED: 5 (3%)
+- EXTRACTED: 154 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

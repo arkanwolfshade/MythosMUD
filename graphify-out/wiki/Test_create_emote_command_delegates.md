@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_create_emote_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_emote_command delegates to communication factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Create a mock connection manager.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [test command factories](test_command_factories.md) (1 shared connections)
+- [test player event handlers utils](test_player_event_handlers_utils.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 

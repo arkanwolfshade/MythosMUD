@@ -1,49 +1,57 @@
 # ConnectionsComponent
 
-> 39 nodes
+> 34 nodes
 
 ## Key Concepts
 
-- **HealthService** (21 connections) — `server/services/health_service.py`
-- **.get_health_status()** (10 connections) — `server/services/health_service.py`
-- **.get_server_component_health()** (7 connections) — `server/services/health_service.py`
-- **Any** (5 connections)
-- **._create_health_response()** (5 connections) — `server/services/health_service.py`
-- **.check_database_health_async()** (5 connections) — `server/services/health_service.py`
-- **.check_connections_health()** (5 connections) — `server/services/health_service.py`
-- **.get_database_component_health()** (5 connections) — `server/services/health_service.py`
-- **.get_connections_component_health()** (5 connections) — `server/services/health_service.py`
-- **.determine_overall_status()** (5 connections) — `server/services/health_service.py`
-- **.get_server_uptime()** (4 connections) — `server/services/health_service.py`
-- **.check_database_health()** (4 connections) — `server/services/health_service.py`
-- **.get_database_component_health_async()** (4 connections) — `server/services/health_service.py`
-- **.generate_alerts()** (4 connections) — `server/services/health_service.py`
-- **.__init__()** (3 connections) — `server/services/health_service.py`
-- **.get_memory_usage()** (3 connections) — `server/services/health_service.py`
-- **.get_cpu_usage()** (3 connections) — `server/services/health_service.py`
-- **HealthComponents** (3 connections)
-- **HealthStatus** (2 connections)
-- **DatabaseComponent** (2 connections)
-- **ServerComponent** (1 connections)
-- **ConnectionsComponent** (1 connections)
-- **HealthResponse** (1 connections)
-- **Health monitoring service for MythosMUD server.      Provides comprehensive heal** (1 connections) — `server/services/health_service.py`
-- **Initialize the health service.          Args:             connection_manager: Co** (1 connections) — `server/services/health_service.py`
-- *... and 14 more nodes in this community*
+- **test_communication_commands_support.py** (21 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **communication_commands_support.py** (15 connections) — `server/commands/communication_commands_support.py`
+- **get_services_from_container()** (15 connections) — `server/commands/communication_commands_support.py`
+- **primary_id()** (11 connections) — `server/commands/communication_commands_support.py`
+- **app_from_request()** (10 connections) — `server/commands/communication_commands_support.py`
+- **get_pose_persistence()** (9 connections) — `server/commands/communication_commands_support.py`
+- **UserManagerProtocol** (7 connections) — `server/commands/communication_commands_support.py`
+- **AsyncPersistenceForPose** (6 connections) — `server/commands/communication_commands_support.py`
+- **Protocol** (5 connections)
+- **PlayerWithPose** (4 connections) — `server/commands/communication_commands_support.py`
+- **test_app_from_request_with_app()** (3 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_get_services_from_container_via_container()** (3 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_get_services_from_container_state_fallback()** (3 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_get_pose_persistence_from_container()** (3 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_get_pose_persistence_state_fallback()** (3 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **.get_player_by_name()** (2 connections) — `server/commands/communication_commands_support.py`
+- **.save_player()** (2 connections) — `server/commands/communication_commands_support.py`
+- **test_app_from_request_none()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_primary_id_prefers_id()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_primary_id_falls_back_to_player_id()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_get_services_from_container_no_app()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_chat_result_map_dict()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_chat_result_map_non_dict()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_message_id_from_result_nested()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_message_id_from_result_no_id()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [get health service()](get_health_service%28%29.md) (4 shared connections)
-- [memory leak metrics](memory_leak_metrics.md) (2 shared connections)
+- [.validate alias name field()](validate_alias_name_field%28%29.md) (25 shared connections)
+- [chat send with room bundle()](chat_send_with_room_bundle%28%29.md) (9 shared connections)
+- [.get instance()](get_instance%28%29.md) (6 shared connections)
+- [.state()](state%28%29.md) (2 shared connections)
+- [Player Position Service](Player_Position_Service.md) (1 shared connections)
+- [DropResolved](DropResolved.md) (1 shared connections)
+- [Any](Any.md) (1 shared connections)
+- [ContainerData](ContainerData.md) (1 shared connections)
+- [websocket integration](websocket_integration.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/health_service.py`
+- `server/commands/communication_commands_support.py`
+- `server/tests/unit/commands/test_communication_commands_support.py`
 
 ## Audit Trail
 
-- EXTRACTED: 123 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 135 (92%)
+- INFERRED: 12 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

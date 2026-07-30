@@ -1,39 +1,44 @@
 # CombatConfiguration
 
-> 65 nodes
+> 115 nodes
 
 ## Key Concepts
 
 - **CombatConfiguration** (31 connections) — `server/services/combat_configuration_service.py`
 - **TestCombatConfigurationService** (26 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **CombatConfigurationService** (19 connections) — `server/services/combat_configuration_service.py`
 - **TestCombatConfiguration** (19 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **combat_configuration_service.py** (17 connections) — `server/services/combat_configuration_service.py`
 - **CombatConfigurationError** (11 connections) — `server/services/combat_configuration_service.py`
+- **.update_combat_configuration()** (10 connections) — `server/services/combat_configuration_service.py`
+- **CombatConfigurationScope** (9 connections) — `server/services/combat_configuration_service.py`
 - **test_combat_configuration_service.py** (8 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **Test get_combat_configuration_for_scope with global scope.** (4 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.to_dict()** (7 connections) — `server/services/combat_configuration_service.py`
+- **.get_combat_configuration_for_scope()** (7 connections) — `server/services/combat_configuration_service.py`
+- **.validate_configuration()** (7 connections) — `server/services/combat_configuration_service.py`
+- **.get_combat_settings_summary()** (7 connections) — `server/services/combat_configuration_service.py`
+- **get_combat_configuration()** (7 connections) — `server/services/combat_configuration_service.py`
+- **Any** (5 connections)
+- **.from_dict()** (5 connections) — `server/services/combat_configuration_service.py`
+- **.get_active_overrides()** (5 connections) — `server/services/combat_configuration_service.py`
+- **.is_combat_available()** (5 connections) — `server/services/combat_configuration_service.py`
+- **.validate()** (4 connections) — `server/services/combat_configuration_service.py`
+- **.__init__()** (4 connections) — `server/services/combat_configuration_service.py`
+- **.get_combat_configuration()** (4 connections) — `server/services/combat_configuration_service.py`
+- **.clear_scope_override()** (4 connections) — `server/services/combat_configuration_service.py`
 - **.test_init_defaults()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
 - **.test_init_custom_values()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
 - **.test_to_dict()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_validate_valid()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_validate_invalid_tick_interval_too_low()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_validate_invalid_tick_interval_too_high()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_validate_invalid_timeout_too_low()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_validate_invalid_timeout_too_high()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_validate_invalid_xp_multiplier_too_low()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_validate_invalid_xp_multiplier_too_high()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_validate_invalid_alert_threshold()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_validate_invalid_max_participants()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_get_combat_configuration()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_get_combat_configuration_for_scope_global()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_get_combat_configuration_for_scope_room()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_get_combat_configuration_for_scope_player()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_get_combat_configuration_for_scope_temporary()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_update_combat_configuration_global_raises()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_update_combat_configuration_invalid_raises()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- *... and 40 more nodes in this community*
+- *... and 90 more nodes in this community*
 
 ## Relationships
 
-- [combat configuration service](combat_configuration_service.md) (21 shared connections)
+- [combat configuration service](combat_configuration_service.md) (3 shared connections)
+- [FeatureFlagService](FeatureFlagService.md) (3 shared connections)
+- [process dead players()](process_dead_players%28%29.md) (2 shared connections)
+- [CombatMetrics](CombatMetrics.md) (2 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
+- [.to dict()](to_dict%28%29.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,8 +47,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 187 (87%)
-- INFERRED: 28 (13%)
+- EXTRACTED: 341 (91%)
+- INFERRED: 32 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_get_active_players_by_user_id_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test get_active_players_by_user_id successfully retrieves active players.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_get_room_exits_success()** (2 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test get_room_exits() returns exits dictionary.** (1 connections) — `server/tests/unit/game/test_room_service.py`
 
 ## Relationships
 
-- [test player repository](test_player_repository.md) (1 shared connections)
-- [make mock row()](make_mock_row%28%29.md) (1 shared connections)
+- [test room service](test_room_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_player_repository.py`
+- `server/tests/unit/game/test_room_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

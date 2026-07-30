@@ -1,8 +1,8 @@
 # AliasStorage
 
-> God node · 225 connections · `server/alias_storage.py`
+> God node · 229 connections · `server/alias_storage.py`
 
-**Community:** [Any](Any.md)
+**Community:** [test magic commands](test_magic_commands.md)
 
 ## Connections by Relation
 
@@ -81,11 +81,11 @@
 - _process_alias_expansion() `EXTRACTED`
 - process_command_unified() `EXTRACTED`
 - handle_follow_command() `EXTRACTED`
+- handle_go_command() `EXTRACTED`
 - _handle_special_command_routing() `EXTRACTED`
 - handle_pickup_command() `EXTRACTED`
 - handle_status_command() `EXTRACTED`
 - handle_say_command() `EXTRACTED`
-- handle_npc_command() `EXTRACTED`
 
 ### uses
 - CombatCommandHandler `INFERRED`

@@ -1,43 +1,39 @@
 # NATSMessageSubscriptionMixin
 
-> 55 nodes
+> 16 nodes
 
 ## Key Concepts
 
 - **NATSMessageSubscriptionMixin** (31 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **Any** (12 connections)
-- **.handle_player_movement()** (6 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **.unsubscribe_from_subzone()** (4 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **.cleanup_empty_subzone_subscriptions()** (4 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **.subscribe_to_subzone()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **.track_player_subzone_subscription()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **.get_players_in_subzone()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **._get_event_handler_map()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **._validate_event_message()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **._handle_event_message()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **._handle_player_entered_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **._handle_player_left_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **._handle_game_tick_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **._handle_combat_started_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **._handle_combat_ended_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **._handle_player_attacked_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **._handle_npc_attacked_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **._handle_npc_took_damage_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **._handle_npc_died_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
 - **.subscribe_to_room()** (2 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **.unsubscribe_from_room()** (2 connections) — `server/realtime/nats_message_handler_subscriptions.py`
 - **.get_subscription_count()** (2 connections) — `server/realtime/nats_message_handler_subscriptions.py`
 - **.get_active_subjects()** (2 connections) — `server/realtime/nats_message_handler_subscriptions.py`
 - **.subscribe_to_event_subjects()** (2 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- *... and 30 more nodes in this community*
+- **.unsubscribe_from_event_subjects()** (2 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **.get_event_subscription_count()** (2 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **.is_event_subscription_active()** (2 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **Mixin: room, subzone, and event NATS subscription lifecycle.** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **Subscribe to chat messages for a specific room.          Args:             room_** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **Get the number of active subscriptions.** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **Get list of active subscription subjects.** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **Subscribe to all event-related NATS subjects using standardized patterns.** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **Unsubscribe from all event-related NATS subjects using standardized patterns.** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **Get the number of active event subscriptions.          Returns:             Numb** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **Check if a specific event subscription is active.          Args:             sub** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
 
 ## Relationships
 
-- [UUID](UUID.md) (1 shared connections)
+- [PerformanceTracker](PerformanceTracker.md) (6 shared connections)
+- [Player](Player.md) (4 shared connections)
+- [verify npc occupants](verify_npc_occupants.md) (3 shared connections)
+- [EnvironmentalContainerLoader](EnvironmentalContainerLoader.md) (3 shared connections)
+- [AliasStorage](AliasStorage.md) (1 shared connections)
+- [handle explore command()](handle_explore_command%28%29.md) (1 shared connections)
+- [.get original string id()](get_original_string_id%28%29.md) (1 shared connections)
 - [Any](Any.md) (1 shared connections)
-- [. init ()](_init_%28%29.md) (1 shared connections)
-- [message formatters](message_formatters.md) (1 shared connections)
-- [. get destination subzone()](_get_destination_subzone%28%29.md) (1 shared connections)
+- [logging utilities](logging_utilities.md) (1 shared connections)
+- [Tests for get spell targeting](Tests_for_get_spell_targeting.md) (1 shared connections)
+- [get alias validator()](get_alias_validator%28%29.md) (1 shared connections)
 
 ## Source Files
 
@@ -45,8 +41,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 143 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 51 (96%)
+- INFERRED: 2 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

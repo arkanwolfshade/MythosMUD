@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [main()](main%28%29.md) (3 shared connections)
-- [initialize nats and combat services()](initialize_nats_and_combat_services%28%29.md) (2 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (3 shared connections)
+- [process dead players()](process_dead_players%28%29.md) (2 shared connections)
 
 ## Source Files
 

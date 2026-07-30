@@ -1,61 +1,64 @@
 # . initialize handlers()
 
-> 116 nodes
+> 137 nodes
 
 ## Key Concepts
 
-- **PlayerEventHandlerUtils** (42 connections) — `server/realtime/player_event_handlers_utils.py`
-- **PlayerRoomEventHandler** (30 connections) — `server/realtime/player_event_handlers_room.py`
-- **conftest.py** (22 connections) — `server/tests/unit/realtime/conftest.py`
-- **UUID** (12 connections)
-- **Any** (10 connections)
-- **.handle_player_entered()** (9 connections) — `server/realtime/player_event_handlers_room.py`
-- **test_player_event_handlers_utils_grace_period.py** (9 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils_grace_period.py`
-- **._initialize_handlers()** (7 connections) — `server/realtime/player_event_handlers.py`
-- **.__init__()** (7 connections) — `server/realtime/player_event_handlers_room.py`
-- **.send_occupants_snapshot_to_player()** (7 connections) — `server/realtime/player_event_handlers_room.py`
-- **.send_room_updates_to_entering_player()** (7 connections) — `server/realtime/player_event_handlers_room.py`
-- **.handle_player_left()** (7 connections) — `server/realtime/player_event_handlers_room.py`
-- **Any** (7 connections)
-- **._prepare_room_data()** (6 connections) — `server/realtime/player_event_handlers_room.py`
-- **.send_room_update_to_player()** (6 connections) — `server/realtime/player_event_handlers_room.py`
-- **UUID** (6 connections)
-- **.log_player_movement()** (5 connections) — `server/realtime/player_event_handlers_room.py`
-- **._send_room_name_message()** (5 connections) — `server/realtime/player_event_handlers_room.py`
-- **._log_occupants_info()** (5 connections) — `server/realtime/player_event_handlers_room.py`
-- **.query_room_occupants_snapshot()** (5 connections) — `server/realtime/player_event_handlers_room.py`
-- **.send_room_state_to_player()** (5 connections) — `server/realtime/player_event_handlers_room.py`
-- **.get_room_state_event()** (5 connections) — `server/realtime/player_event_handlers_room.py`
-- **.get_player_info()** (5 connections) — `server/realtime/player_event_handlers_utils.py`
-- **.process_dict_occupant()** (5 connections) — `server/realtime/player_event_handlers_utils.py`
-- **.broadcast_player_entered_message()** (4 connections) — `server/realtime/player_event_handlers_room.py`
-- *... and 91 more nodes in this community*
+- **CombatService** (181 connections) — `server/services/combat_service.py`
+- **combat_service_npc.py** (30 connections) — `server/services/combat_service_npc.py`
+- **UUID** (20 connections)
+- **get_combat_id_for_npc()** (13 connections) — `server/services/combat_service_npc.py`
+- **UUID** (11 connections)
+- **get_npc_participant_current_room()** (11 connections) — `server/services/combat_service_npc.py`
+- **spell_effects_internal.py** (10 connections) — `server/game/magic/spell_effects_internal.py`
+- **_get_uuid_mapping()** (10 connections) — `server/services/combat_service_npc.py`
+- **find_participant_uuid_by_string_id()** (10 connections) — `server/services/combat_service_npc.py`
+- **resolve_npc_participant_id_in_combat()** (9 connections) — `server/services/combat_service_npc.py`
+- **UUIDMappingProtocol** (8 connections) — `server/services/combat_service_npc.py`
+- **DataProviderProtocol** (8 connections) — `server/services/combat_service_npc.py`
+- **get_combat_id_for_npc_via_mapping()** (8 connections) — `server/services/combat_service_npc.py`
+- **_fallback_find_combat_id_for_npc()** (8 connections) — `server/services/combat_service_npc.py`
+- **get_participant_current_room()** (8 connections) — `server/services/combat_service_npc.py`
+- **get_combat_service()** (8 connections) — `server/services/combat_service_state.py`
+- **PlayerLifecycleServices** (8 connections) — `server/services/combat_service_types.py`
+- **._create_combat_service_with_nats()** (7 connections) — `server/container/bundles/combat.py`
+- **.get_uuid_for_string_id()** (7 connections) — `server/services/combat_service_npc.py`
+- **combat_room_id_for_npc_spell()** (6 connections) — `server/game/magic/spell_effects_internal.py`
+- **.validate_melee_or_end_combat()** (6 connections) — `server/services/combat_service.py`
+- **.finalize_attack_result()** (6 connections) — `server/services/combat_service.py`
+- **.get_original_string_id()** (6 connections) — `server/services/combat_service_npc.py`
+- **_get_data_provider()** (6 connections) — `server/services/combat_service_npc.py`
+- **_iter_active_combats()** (6 connections) — `server/services/combat_service_npc.py`
+- *... and 112 more nodes in this community*
 
 ## Relationships
 
-- [Any](Any.md) (19 shared connections)
-- [UUID](UUID.md) (6 shared connections)
-- [PlayerRespawnEventHandler](PlayerRespawnEventHandler.md) (4 shared connections)
-- [PlayerNameExtractor](PlayerNameExtractor.md) (4 shared connections)
-- [disconnect grace period](disconnect_grace_period.md) (4 shared connections)
-- [test player event handlers respawn](test_player_event_handlers_respawn.md) (2 shared connections)
-- [test player event handlers state](test_player_event_handlers_state.md) (2 shared connections)
-- [test player event handlers utils](test_player_event_handlers_utils.md) (2 shared connections)
-- [. init ()](_init_%28%29.md) (1 shared connections)
-- [TypedDict](TypedDict.md) (1 shared connections)
+- [Any](Any.md) (46 shared connections)
+- [.end combat()](end_combat%28%29.md) (25 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (20 shared connections)
+- [test combat attack handler](test_combat_attack_handler.md) (19 shared connections)
+- [message handler factory](message_handler_factory.md) (9 shared connections)
+- [. init ()](_init_%28%29.md) (8 shared connections)
+- [get health service()](get_health_service%28%29.md) (8 shared connections)
+- [.model dump()](model_dump%28%29.md) (8 shared connections)
+- [combat](combat.md) (7 shared connections)
+- [CombatService](CombatService.md) (6 shared connections)
+- [test player event handlers room](test_player_event_handlers_room.md) (6 shared connections)
+- [test command parser](test_command_parser.md) (5 shared connections)
 
 ## Source Files
 
-- `server/realtime/player_event_handlers.py`
-- `server/realtime/player_event_handlers_room.py`
-- `server/realtime/player_event_handlers_utils.py`
-- `server/tests/unit/realtime/conftest.py`
-- `server/tests/unit/realtime/test_player_event_handlers_utils_grace_period.py`
+- `server/container/bundles/combat.py`
+- `server/game/magic/spell_effects_internal.py`
+- `server/services/combat_service.py`
+- `server/services/combat_service_npc.py`
+- `server/services/combat_service_state.py`
+- `server/services/combat_service_types.py`
 
 ## Audit Trail
 
-- EXTRACTED: 383 (97%)
-- INFERRED: 12 (3%)
+- EXTRACTED: 579 (90%)
+- INFERRED: 64 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

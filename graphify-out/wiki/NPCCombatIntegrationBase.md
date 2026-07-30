@@ -1,57 +1,74 @@
 # NPCCombatIntegrationBase
 
-> 53 nodes
+> 401 nodes
 
 ## Key Concepts
 
-- **NPCCombatIntegrationBase** (25 connections) — `server/npc/combat_integration_base.py`
-- **._perform_direct_npc_attack()** (10 connections) — `server/npc/combat_integration_base.py`
-- **.apply_combat_effects()** (8 connections) — `server/npc/combat_integration_base.py`
-- **._apply_player_combat_effects()** (8 connections) — `server/npc/combat_integration_base.py`
-- **._is_target_in_login_grace_period()** (7 connections) — `server/npc/combat_integration_base.py`
-- **CombatEventPublisherProtocol** (7 connections) — `server/npc/combat_integration_protocols.py`
-- **._convert_target_id_to_uuid()** (6 connections) — `server/npc/combat_integration_base.py`
-- **._handle_npc_attack_core()** (6 connections) — `server/npc/combat_integration_base.py`
-- **NpcCombatServiceProtocol** (6 connections) — `server/npc/combat_integration_protocols.py`
-- **_resolve_npc_combat_service_raw()** (5 connections) — `server/npc/combat_integration_base.py`
-- **._try_delegate_npc_attack_to_combat_service()** (5 connections) — `server/npc/combat_integration_base.py`
-- **._handle_attribute_error()** (4 connections) — `server/npc/combat_integration_base.py`
-- **._handle_validation_error()** (4 connections) — `server/npc/combat_integration_base.py`
-- **._handle_unexpected_error()** (4 connections) — `server/npc/combat_integration_base.py`
-- **.handle_npc_attack()** (4 connections) — `server/npc/combat_integration_base.py`
-- **._get_target_stats()** (4 connections) — `server/npc/combat_integration_base.py`
-- **.calculate_damage()** (3 connections) — `server/npc/combat_integration_base.py`
-- **UUID** (3 connections)
-- **._apply_mental_effects()** (3 connections) — `server/npc/combat_integration_base.py`
-- **._get_npc_stats()** (3 connections) — `server/npc/combat_integration_base.py`
-- **._publish_player_dp_updated_after_npc_damage()** (3 connections) — `server/npc/combat_integration_base.py`
-- **._publish_attack_event()** (3 connections) — `server/npc/combat_integration_base.py`
-- **._publish_npc_attack_to_nats()** (3 connections) — `server/npc/combat_integration_base.py`
-- **.publish_player_attacked()** (3 connections) — `server/npc/combat_integration_protocols.py`
-- **ABC** (2 connections)
-- *... and 28 more nodes in this community*
+- **PlayerEventHandlerUtils** (42 connections) — `server/realtime/player_event_handlers_utils.py`
+- **PlayerXPAwardEvent** (35 connections) — `server/services/player_combat_service.py`
+- **test_player_event_handlers_respawn.py** (34 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **player_event_handlers_respawn.py** (33 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **PlayerRespawnEventHandler** (33 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **test_player_event_handlers.py** (33 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_player_event_handlers_state.py** (33 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **PlayerRoomEventHandler** (30 connections) — `server/realtime/player_event_handlers_room.py`
+- **player_event_handlers.py** (26 connections) — `server/realtime/player_event_handlers.py`
+- **PlayerEventHandler** (26 connections) — `server/realtime/player_event_handlers.py`
+- **MessageBuilder** (22 connections) — `server/realtime/message_builders.py`
+- **RoomOccupantManager** (22 connections) — `server/realtime/room_occupant_manager.py`
+- **conftest.py** (22 connections) — `server/tests/unit/realtime/conftest.py`
+- **PlayerRespawnedEvent** (19 connections) — `server/events/event_types.py`
+- **player_event_handlers_room.py** (17 connections) — `server/realtime/player_event_handlers_room.py`
+- **player_event_handlers_utils.py** (16 connections) — `server/realtime/player_event_handlers_utils.py`
+- **PlayerStateEventHandler** (14 connections) — `server/realtime/player_event_handlers_state.py`
+- **RespawnPlayerEventPayload** (13 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **UUID** (12 connections)
+- **UUID** (11 connections)
+- **Any** (10 connections)
+- **Any** (9 connections)
+- **.get_player_data_for_respawn()** (9 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **.handle_player_respawned()** (9 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **._extract_occupant_names()** (9 connections) — `server/realtime/player_event_handlers_respawn.py`
+- *... and 376 more nodes in this community*
 
 ## Relationships
 
-- [initialize nats and combat services()](initialize_nats_and_combat_services%28%29.md) (6 shared connections)
-- [main()](main%28%29.md) (5 shared connections)
-- [.initialize()](initialize%28%29.md) (5 shared connections)
-- [.state()](state%28%29.md) (3 shared connections)
-- [login grace period](login_grace_period.md) (2 shared connections)
-- [.handle()](handle%28%29.md) (1 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
-- [. init ()](_init_%28%29.md) (1 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (76 shared connections)
+- [Player](Player.md) (19 shared connections)
+- [UUID](UUID.md) (14 shared connections)
+- [container websocket events](container_websocket_events.md) (10 shared connections)
+- [Any](Any.md) (8 shared connections)
+- [connection manager api](connection_manager_api.md) (8 shared connections)
+- [clean command input()](clean_command_input%28%29.md) (6 shared connections)
+- [. init ()](_init_%28%29.md) (5 shared connections)
+- [NPCOccupantProcessor](NPCOccupantProcessor.md) (5 shared connections)
+- [combat initialization](combat_initialization.md) (4 shared connections)
+- [test npc event handlers](test_npc_event_handlers.md) (3 shared connections)
+- [test room occupant manager](test_room_occupant_manager.md) (3 shared connections)
 
 ## Source Files
 
-- `server/npc/combat_integration_base.py`
-- `server/npc/combat_integration_protocols.py`
+- `server/events/event_types.py`
+- `server/realtime/event_handler.py`
+- `server/realtime/message_builders.py`
+- `server/realtime/player_event_handlers.py`
+- `server/realtime/player_event_handlers_respawn.py`
+- `server/realtime/player_event_handlers_room.py`
+- `server/realtime/player_event_handlers_state.py`
+- `server/realtime/player_event_handlers_utils.py`
+- `server/realtime/room_occupant_manager.py`
+- `server/services/player_combat_service.py`
+- `server/tests/unit/realtime/conftest.py`
+- `server/tests/unit/realtime/test_event_handler.py`
+- `server/tests/unit/realtime/test_player_event_handlers.py`
+- `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils_grace_period.py`
 
 ## Audit Trail
 
-- EXTRACTED: 160 (95%)
-- INFERRED: 9 (5%)
+- EXTRACTED: 1296 (96%)
+- INFERRED: 56 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

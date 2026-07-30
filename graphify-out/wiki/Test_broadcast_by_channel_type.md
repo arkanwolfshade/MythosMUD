@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_broadcast_by_channel_type_exception()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _broadcast_by_channel_type handles exceptions.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **.test_try_fallback_name_sources_valid_current()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **Test _try_fallback_name_sources with valid current name.** (1 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
 
 ## Relationships
 
-- [test nats message handler chat](test_nats_message_handler_chat.md) (1 shared connections)
+- [container websocket events](container_websocket_events.md) (1 shared connections)
+- [PlayerNameExtractor](PlayerNameExtractor.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `server/tests/unit/realtime/test_player_name_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

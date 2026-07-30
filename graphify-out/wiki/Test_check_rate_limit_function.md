@@ -1,28 +1,24 @@
 # Test check rate limit function.
 
-> 6 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **TestCheckRateLimit** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_rate_limit_allowed()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_rate_limit_blocked()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _check_rate_limit function.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _check_rate_limit returns None when allowed.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _check_rate_limit returns result when blocked.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **test_add_rule_success()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test add_rule() successfully adds rule.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [check alias safety()](check_alias_safety%28%29.md) (2 shared connections)
-- [CommandExecutionRequest](CommandExecutionRequest.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [test behavior engine](test_behavior_engine.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_validation.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

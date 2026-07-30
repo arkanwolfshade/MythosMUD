@@ -1,22 +1,12 @@
 # test command factories exploration
 
-> 96 nodes
+> 92 nodes
 
 ## Key Concepts
 
 - **test_command_factories_exploration.py** (48 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
 - **.create_look_command()** (18 connections) — `server/utils/command_factories_exploration.py`
-- **ExplorationCommandFactory** (17 connections) — `server/utils/command_factories_exploration.py`
 - **.create_party_command()** (12 connections) — `server/utils/command_factories_exploration.py`
-- **.create_lie_command()** (8 connections) — `server/utils/command_factories_exploration.py`
-- **.create_go_command()** (7 connections) — `server/utils/command_factories_exploration.py`
-- **.create_ground_command()** (7 connections) — `server/utils/command_factories_exploration.py`
-- **.create_follow_command()** (7 connections) — `server/utils/command_factories_exploration.py`
-- **Test create_go_command() raises error with no args.** (6 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
-- **.create_sit_command()** (6 connections) — `server/utils/command_factories_exploration.py`
-- **.create_stand_command()** (6 connections) — `server/utils/command_factories_exploration.py`
-- **.create_unfollow_command()** (6 connections) — `server/utils/command_factories_exploration.py`
-- **.create_following_command()** (6 connections) — `server/utils/command_factories_exploration.py`
 - **test_create_go_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
 - **test_create_sit_command_with_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
 - **test_create_stand_command_with_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
@@ -29,16 +19,23 @@
 - **test_create_unfollow_command_with_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
 - **test_create_following_command_with_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
 - **test_create_party_command_invite_no_target()** (4 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
-- *... and 71 more nodes in this community*
+- **test_create_party_command_kick_no_target()** (4 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- **test_create_go_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- **test_create_go_command_invalid_direction()** (3 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- **test_create_look_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- **test_create_look_command_with_target()** (3 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- **test_create_look_command_with_explicit_player_type()** (3 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- **test_create_look_command_with_explicit_npc_type()** (3 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- **test_create_look_command_with_explicit_item_type()** (3 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- **test_create_look_command_with_explicit_container_type()** (3 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- **test_create_look_command_with_explicit_type_no_target()** (3 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- *... and 67 more nodes in this community*
 
 ## Relationships
 
-- [. init ()](_init_%28%29.md) (14 shared connections)
-- [main()](main%28%29.md) (12 shared connections)
-- [.validate spell name()](validate_spell_name%28%29.md) (9 shared connections)
-- [BaseCommand](BaseCommand.md) (3 shared connections)
-- [.validate direction()](validate_direction%28%29.md) (2 shared connections)
-- [command admin](command_admin.md) (1 shared connections)
+- [Spell Targeting](Spell_Targeting.md) (31 shared connections)
+- [.initialize()](initialize%28%29.md) (14 shared connections)
+- [real time](real_time.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,8 +44,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 330 (96%)
-- INFERRED: 15 (4%)
+- EXTRACTED: 252 (95%)
+- INFERRED: 14 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

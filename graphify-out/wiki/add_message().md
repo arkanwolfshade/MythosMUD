@@ -1,33 +1,25 @@
 # .add message()
 
-> 11 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **.add_message()** (4 connections) — `server/realtime/message_queue.py`
-- **Any** (4 connections)
-- **.cleanup_old_messages()** (4 connections) — `server/realtime/message_queue.py`
-- **._is_message_recent()** (4 connections) — `server/realtime/message_queue.py`
-- **.get_messages()** (3 connections) — `server/realtime/message_queue.py`
-- **.get_stats()** (3 connections) — `server/realtime/message_queue.py`
-- **Add a message to a player's pending message queue.          Args:             pl** (1 connections) — `server/realtime/message_queue.py`
-- **Get all pending messages for a player and clear the queue.          Args:** (1 connections) — `server/realtime/message_queue.py`
-- **Clean up old messages to prevent memory bloat.          Args:             max_ag** (1 connections) — `server/realtime/message_queue.py`
-- **Check if a message is recent (within the specified age limit).          Args:** (1 connections) — `server/realtime/message_queue.py`
-- **Get message queue statistics.          Returns:             Dict[str, Any]: Stat** (1 connections) — `server/realtime/message_queue.py`
+- **description** (3 connections) — `db/static/schemas/room.schema.json`
+- **type** (1 connections) — `db/static/schemas/room.schema.json`
+- **minLength** (1 connections) — `db/static/schemas/room.schema.json`
 
 ## Relationships
 
-- [. init ()](_init_%28%29.md) (7 shared connections)
+- [type](type.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/message_queue.py`
+- `db/static/schemas/room.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (93%)
-- INFERRED: 2 (7%)
+- EXTRACTED: 5 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

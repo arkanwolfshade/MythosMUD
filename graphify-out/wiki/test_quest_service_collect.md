@@ -1,49 +1,54 @@
 # test quest service collect
 
-> 26 nodes
+> 34 nodes
 
 ## Key Concepts
 
-- **test_quest_service_collect.py** (15 connections) — `server/tests/unit/game/test_quest_service_collect.py`
-- **_make_collect_quest_row()** (9 connections) — `server/tests/unit/game/test_quest_service_collect.py`
-- **_quest_service_with_persistence()** (8 connections) — `server/tests/unit/game/test_quest_service_collect.py`
-- **_make_inventory_player()** (7 connections) — `server/tests/unit/game/test_quest_service_collect.py`
-- **test_start_quest_collect_n_seeds_progress_from_holdings()** (5 connections) — `server/tests/unit/game/test_quest_service_collect.py`
-- **test_sync_collect_progress_updates_on_inventory_change()** (5 connections) — `server/tests/unit/game/test_quest_service_collect.py`
-- **test_sync_collect_progress_nested_container()** (5 connections) — `server/tests/unit/game/test_quest_service_collect.py`
-- **test_collect_n_auto_complete_keeps_items()** (5 connections) — `server/tests/unit/game/test_quest_service_collect.py`
-- **test_turn_in_collect_n_consumes_items()** (5 connections) — `server/tests/unit/game/test_quest_service_collect.py`
-- **test_start_quest_rejects_auto_complete_with_turn_in()** (4 connections) — `server/tests/unit/game/test_quest_service_collect.py`
-- **test_start_quest_rejects_turn_in_without_entities()** (4 connections) — `server/tests/unit/game/test_quest_service_collect.py`
-- **mock_def_repo()** (2 connections) — `server/tests/unit/game/test_quest_service_collect.py`
-- **mock_instance_repo()** (2 connections) — `server/tests/unit/game/test_quest_service_collect.py`
-- **Unit tests for QuestService collect_n sync, auto-complete, and turn-in consumpti** (1 connections) — `server/tests/unit/game/test_quest_service_collect.py`
-- **Mock QuestDefinitionRepository.** (1 connections) — `server/tests/unit/game/test_quest_service_collect.py`
-- **Mock QuestInstanceRepository.** (1 connections) — `server/tests/unit/game/test_quest_service_collect.py`
-- **Definition with collect_n goal.** (1 connections) — `server/tests/unit/game/test_quest_service_collect.py`
-- **Mock player with inventory getters/setters.** (1 connections) — `server/tests/unit/game/test_quest_service_collect.py`
-- **QuestService wired with async_persistence returning player.** (1 connections) — `server/tests/unit/game/test_quest_service_collect.py`
-- **start_quest syncs collect_n progress from current inventory.** (1 connections) — `server/tests/unit/game/test_quest_service_collect.py`
-- **sync_collect_progress reflects increased and decreased holdings.** (1 connections) — `server/tests/unit/game/test_quest_service_collect.py`
-- **Nested inner_container items count toward collect_n progress.** (1 connections) — `server/tests/unit/game/test_quest_service_collect.py`
-- **Auto-complete collect_n quest does not consume inventory.** (1 connections) — `server/tests/unit/game/test_quest_service_collect.py`
-- **Turn-in consumes required collect_n items before completion.** (1 connections) — `server/tests/unit/game/test_quest_service_collect.py`
-- **Validation rejects auto_complete true combined with turn_in_entities.** (1 connections) — `server/tests/unit/game/test_quest_service_collect.py`
-- *... and 1 more nodes in this community*
+- **test_communication_commands_channels.py** (20 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **handle_global_command()** (12 connections) — `server/commands/communication_commands.py`
+- **handle_local_command()** (11 connections) — `server/commands/communication_commands.py`
+- **handle_system_command()** (11 connections) — `server/commands/communication_commands.py`
+- **test_handle_local_command_success()** (4 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_global_command_level_too_low()** (4 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_global_command_success()** (4 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_system_command_not_admin()** (4 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_system_command_success()** (4 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_local_command_no_room()** (4 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_global_command_player_not_found()** (4 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_local_command_no_message()** (3 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_local_command_no_services()** (3 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_global_command_no_message()** (3 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_global_command_no_services()** (3 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_system_command_no_message()** (3 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_system_command_no_services()** (3 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **Local channel message.** (1 connections) — `server/commands/communication_commands.py`
+- **Global channel message (level-gated in flow).** (1 connections) — `server/commands/communication_commands.py`
+- **Admin-only system broadcast.** (1 connections) — `server/commands/communication_commands.py`
+- **Unit tests for local, global, and system chat command handlers.** (1 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **Test handle_local_command with no message.** (1 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **Test handle_local_command when services are not available.** (1 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **Test handle_local_command successful execution.** (1 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **Test handle_global_command with no message.** (1 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [QuestCompleted](QuestCompleted.md) (4 shared connections)
-- [collect inventory](collect_inventory.md) (1 shared connections)
+- [.get instance()](get_instance%28%29.md) (13 shared connections)
+- [test magic commands](test_magic_commands.md) (3 shared connections)
+- [DropResolved](DropResolved.md) (3 shared connections)
+- [Player Position Service](Player_Position_Service.md) (3 shared connections)
+- [chat send with room bundle()](chat_send_with_room_bundle%28%29.md) (2 shared connections)
+- [.validate alias name field()](validate_alias_name_field%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_quest_service_collect.py`
+- `server/commands/communication_commands.py`
+- `server/tests/unit/commands/test_communication_commands_channels.py`
 
 ## Audit Trail
 
-- EXTRACTED: 89 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 114 (97%)
+- INFERRED: 3 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

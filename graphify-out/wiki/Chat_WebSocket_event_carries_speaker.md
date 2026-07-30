@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_build_chat_event_includes_speaker_kind()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Chat WebSocket event carries speaker_kind for client pass-through.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **.test_get_name_from_user_object_display_name()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **Test _get_name_from_user_object with display_name.** (1 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
 
 ## Relationships
 
-- [test nats message handler chat](test_nats_message_handler_chat.md) (1 shared connections)
+- [container websocket events](container_websocket_events.md) (1 shared connections)
+- [PlayerNameExtractor](PlayerNameExtractor.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `server/tests/unit/realtime/test_player_name_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

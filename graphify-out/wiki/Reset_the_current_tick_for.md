@@ -1,45 +1,34 @@
 # Reset the current tick for
 
-> 21 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **test_game_tick_processing.py** (15 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **_validate_app_state_for_status_effects()** (12 connections) — `server/app/game_tick_processing.py`
-- **reset_current_tick()** (6 connections) — `server/app/game_tick_processing.py`
-- **test_get_current_tick()** (4 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **test_reset_current_tick()** (4 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **Test _validate_app_state_for_status_effects returns False when no container.** (4 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **test_get_tick_interval()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **test_validate_app_state_for_status_effects_no_container()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **test_validate_app_state_for_status_effects_no_async_persistence()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **test_validate_app_state_for_status_effects_no_connection_manager()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **test_validate_app_state_for_status_effects_valid()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **test_validate_app_state_for_status_effects_container_is_none()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **test_validate_app_state_for_status_effects_connection_manager_is_none()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **Reset the current tick for testing.** (1 connections) — `server/app/game_tick_processing.py`
-- **Validate app state has required components for status effect processing.      Re** (1 connections) — `server/app/game_tick_processing.py`
-- **Unit tests for game tick processing functions.  Tests the game tick processing l** (1 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **Test get_current_tick returns the current tick value.** (1 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **Test reset_current_tick resets the tick counter.** (1 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **Test get_tick_interval returns tick interval from config.** (1 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **Test _validate_app_state_for_status_effects returns False when no async_persiste** (1 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **Test _validate_app_state_for_status_effects returns True when all required compo** (1 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_websocket_handler_error_handling.py** (9 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **mock_websocket()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **test_send_error_response_success()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **test_send_error_response_disconnected()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **test_handle_runtime_error_disconnected()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **test_handle_runtime_error_other()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **Unit tests for websocket handler error handling.  Tests the error handling funct** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **Create a mock WebSocket.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **Test _send_error_response() successfully sends error.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **Test _send_error_response() handles WebSocket disconnection.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **Test _handle_runtime_error() detects WebSocket disconnection.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **Test _handle_runtime_error() handles other runtime errors.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
 
 ## Relationships
 
-- [game tick processing](game_tick_processing.md) (8 shared connections)
-- [get current tick()](get_current_tick%28%29.md) (3 shared connections)
-- [lifespan](lifespan.md) (1 shared connections)
+- [. init ()](_init_%28%29.md) (2 shared connections)
+- [.is required()](is_required%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/app/game_tick_processing.py`
-- `server/tests/unit/app/test_game_tick_processing.py`
+- `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
 
 ## Audit Trail
 
-- EXTRACTED: 74 (100%)
+- EXTRACTED: 25 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

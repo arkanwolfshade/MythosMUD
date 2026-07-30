@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **multiplayer-browser-helpers.js** (30 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
+- **multiplayer-browser-helpers.js** (31 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
 - **isElementVisible()** (11 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
 - **evaluateGameUiLoaded()** (9 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
 - **getBodyInnerText()** (8 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [character deletion.spec](character_deletion.spec.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,7 +42,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 148 (100%)
+- EXTRACTED: 149 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

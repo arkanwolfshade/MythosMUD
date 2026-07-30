@@ -1,50 +1,43 @@
 # Remove sensitive data from log
 
-> 22 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **test_logging_processors.py** (36 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **sanitize_sensitive_data()** (14 connections) — `server/structured_logging/logging_processors.py`
-- **test_sanitize_sensitive_data_password()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_sanitize_sensitive_data_token()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_sanitize_sensitive_data_api_key()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_sanitize_sensitive_data_safe_fields()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_sanitize_sensitive_data_nested_dict()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_sanitize_sensitive_data_multiple_sensitive_fields()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_sanitize_sensitive_data_no_sensitive_fields()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_sanitize_sensitive_data_case_insensitive()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **sample_event_dict()** (2 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Remove sensitive data from log entries.      This processor automatically redact** (1 connections) — `server/structured_logging/logging_processors.py`
-- **Unit tests for logging processors.  Tests the logging processors for sanitizing** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Create a sample event dictionary.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Test sanitize_sensitive_data() redacts password fields.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Test sanitize_sensitive_data() redacts token fields.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Test sanitize_sensitive_data() redacts fields ending with _key.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Test sanitize_sensitive_data() preserves safe fields.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Test sanitize_sensitive_data() sanitizes nested dictionaries.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Test sanitize_sensitive_data() redacts multiple sensitive fields.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Test sanitize_sensitive_data() leaves non-sensitive fields unchanged.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Test sanitize_sensitive_data() is case insensitive.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **MessageBroadcaster** (19 connections) — `server/realtime/messaging/message_broadcaster.py`
+- **._deliver_room_broadcast()** (6 connections) — `server/realtime/messaging/message_broadcaster.py`
+- **.broadcast_to_room()** (6 connections) — `server/realtime/messaging/message_broadcaster.py`
+- **._build_target_mapping()** (5 connections) — `server/realtime/messaging/message_broadcaster.py`
+- **.broadcast_room_event()** (4 connections) — `server/realtime/messaging/message_broadcaster.py`
+- **._prepare_room_targets()** (3 connections) — `server/realtime/messaging/message_broadcaster.py`
+- **message_broadcaster()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **Broadcasts messages to rooms and globally.      This class provides:     - Room-** (1 connections) — `server/realtime/messaging/message_broadcaster.py`
+- **Convert string player IDs to UUIDs for message sending.          Args:** (1 connections) — `server/realtime/messaging/message_broadcaster.py`
+- **Dedupe subscribers and count exclusions.** (1 connections) — `server/realtime/messaging/message_broadcaster.py`
+- **Run batch gather (or fallback) for a room broadcast.** (1 connections) — `server/realtime/messaging/message_broadcaster.py`
+- **Broadcast a message to all players in a room.          Args:             room_id** (1 connections) — `server/realtime/messaging/message_broadcaster.py`
+- **Broadcast a room-specific event.** (1 connections) — `server/realtime/messaging/message_broadcaster.py`
+- **Create a MessageBroadcaster instance.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
 
 ## Relationships
 
-- [enhance player ids()](enhance_player_ids%28%29.md) (14 shared connections)
-- [add request context()](add_request_context%28%29.md) (6 shared connections)
-- [EventDict](EventDict.md) (4 shared connections)
-- [main()](main%28%29.md) (2 shared connections)
-- [logging processors](logging_processors.md) (2 shared connections)
-- [mock player service()](mock_player_service%28%29.md) (1 shared connections)
+- [canonical room id impl()](canonical_room_id_impl%28%29.md) (10 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (3 shared connections)
+- [SendPersonalMessage](SendPersonalMessage.md) (2 shared connections)
+- [test connection cleaner](test_connection_cleaner.md) (1 shared connections)
+- [test database](test_database.md) (1 shared connections)
+- [game](game.md) (1 shared connections)
+- [Any](Any.md) (1 shared connections)
 
 ## Source Files
 
-- `server/structured_logging/logging_processors.py`
-- `server/tests/unit/structured_logging/test_logging_processors.py`
+- `server/realtime/messaging/message_broadcaster.py`
+- `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
 
 ## Audit Trail
 
-- EXTRACTED: 86 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 53 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

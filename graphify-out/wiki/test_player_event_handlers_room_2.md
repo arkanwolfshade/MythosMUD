@@ -1,46 +1,44 @@
 # test player event handlers room
 
-> 25 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **test_player_event_handlers_room_left.py** (15 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **test_handle_player_left_success()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **test_handle_player_left_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **test_handle_player_left_no_player_info()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **test_handle_player_left_disconnecting()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **test_handle_player_left_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **test_unsubscribe_player_from_room_success()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **test_unsubscribe_player_from_room_string_id()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **test_unsubscribe_player_from_room_invalid_id()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **test_broadcast_player_left_message_not_disconnecting()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **test_broadcast_player_left_message_disconnecting()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **test_broadcast_player_left_message_no_room_id()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **test_log_occupants_info()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **Test unsubscribe_player_from_room() handles string player_id.** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **Unit tests for player room event handlers (player left / unsubscribe / broadcast** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **Test unsubscribe_player_from_room() successfully unsubscribes player.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **Test broadcast_player_left_message() broadcasts when not disconnecting.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **Test broadcast_player_left_message() skips when player is disconnecting.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **Test broadcast_player_left_message() skips when room_id is None.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **Test handle_player_left() successfully handles event.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **Test handle_player_left() skips when connection manager not available.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **Test handle_player_left() handles player not found.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **Test handle_player_left() skips broadcast when player is disconnecting.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **Test handle_player_left() handles errors.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **Test _log_occupants_info() logs occupant information.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **delegate_error_handler()** (12 connections) — `server/realtime/connection_delegates.py`
+- **connection_error_methods.py** (10 connections) — `server/realtime/connection_error_methods.py`
+- **detect_and_handle_error_state_impl()** (7 connections) — `server/realtime/connection_error_methods.py`
+- **handle_websocket_error_impl()** (7 connections) — `server/realtime/connection_error_methods.py`
+- **handle_authentication_error_impl()** (7 connections) — `server/realtime/connection_error_methods.py`
+- **handle_security_violation_impl()** (7 connections) — `server/realtime/connection_error_methods.py`
+- **recover_from_error_impl()** (7 connections) — `server/realtime/connection_error_methods.py`
+- **UUID** (6 connections)
+- **Any** (5 connections)
+- **test_delegate_error_handler_success()** (3 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
+- **test_delegate_error_handler_none()** (3 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
+- **Generic delegate for error handler methods.      Args:         error_handler: Er** (1 connections) — `server/realtime/connection_delegates.py`
+- **Error-handling method implementations for ConnectionManager.  Thin wrappers th** (1 connections) — `server/realtime/connection_error_methods.py`
+- **Detect when a client is in an error state and handle it appropriately.** (1 connections) — `server/realtime/connection_error_methods.py`
+- **Handle WebSocket-specific errors.** (1 connections) — `server/realtime/connection_error_methods.py`
+- **Handle authentication-related errors.** (1 connections) — `server/realtime/connection_error_methods.py`
+- **Handle security violations.** (1 connections) — `server/realtime/connection_error_methods.py`
+- **Attempt to recover from an error state for a player.** (1 connections) — `server/realtime/connection_error_methods.py`
+- **Test delegate_error_handler() successfully delegates to handler.** (1 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
+- **Test delegate_error_handler() returns default when handler is None.** (1 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
 
 ## Relationships
 
-- [Any](Any.md) (7 shared connections)
+- [Player](Player.md) (11 shared connections)
+- [connection delegates](connection_delegates.md) (6 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- `server/realtime/connection_delegates.py`
+- `server/realtime/connection_error_methods.py`
+- `server/tests/unit/realtime/test_connection_delegates.py`
 
 ## Audit Trail
 
-- EXTRACTED: 57 (100%)
+- EXTRACTED: 83 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

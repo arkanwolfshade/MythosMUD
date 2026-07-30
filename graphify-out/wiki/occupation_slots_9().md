@@ -1,35 +1,31 @@
 # occupation slots 9()
 
-> 12 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **_occupation_slots_9()** (11 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_cthulhu_mythos_in_occupation_rejected()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_cthulhu_mythos_in_personal_rejected()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_personal_interest_not_four_raises()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_duplicate_personal_skill_ids_raises()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_overlap_occupation_and_personal_raises()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **Valid 9 slots: one 70, two 60, three 50, three 40; 9 distinct skill_ids (no over** (1 connections) — `server/tests/unit/game/test_skill_service.py`
-- **Occupation slot with Cthulhu Mythos (allow_at_creation=False) raises ValueError.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
-- **Personal interest with Cthulhu Mythos raises ValueError.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
-- **personal_interest must have exactly 4 entries.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
-- **personal_interest with duplicate skill_id raises ValueError.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
-- **Occupation and personal interest sharing a skill_id raises ValueError.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **.prune_stale_players()** (8 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._remove_stale_player_data()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._identify_stale_players()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Identify players whose last_seen timestamp exceeds the max age.          Args:** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Remove all data for a stale player.          Args:             pid: Player ID to** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Remove players whose presence is stale beyond the threshold.          Args:** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
 
 ## Relationships
 
-- [test skill service](test_skill_service.md) (6 shared connections)
-- [personal interest 4()](personal_interest_4%28%29.md) (5 shared connections)
+- [NPCDefinitionCRUDMixin](NPCDefinitionCRUDMixin.md) (5 shared connections)
+- [Reset database state before each](Reset_database_state_before_each.md) (3 shared connections)
+- [real time](real_time.md) (1 shared connections)
+- [Test check grace period block](Test_check_grace_period_block.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_skill_service.py`
+- `server/realtime/maintenance/connection_cleaner.py`
 
 ## Audit Trail
 
-- EXTRACTED: 33 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 19 (95%)
+- INFERRED: 1 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

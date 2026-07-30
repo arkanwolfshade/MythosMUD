@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_setup_connection_metadata()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _setup_connection_metadata() creates metadata.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_describe_lighting_day()** (2 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test describe_lighting() returns description for day.** (1 connections) — `server/tests/unit/game/test_room_service.py`
 
 ## Relationships
 
-- [connection establishment](connection_establishment.md) (1 shared connections)
-- [test connection establishment](test_connection_establishment.md) (1 shared connections)
+- [test room service](test_room_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_connection_establishment.py`
+- `server/tests/unit/game/test_room_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

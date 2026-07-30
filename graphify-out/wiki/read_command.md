@@ -1,6 +1,6 @@
 # read command
 
-> 48 nodes
+> 49 nodes
 
 ## Key Concepts
 
@@ -29,12 +29,16 @@
 - **test_handle_read_command_spell_registry_not_available()** (3 connections) — `server/tests/unit/commands/test_read_command.py`
 - **test_handle_read_command_learn_failure()** (3 connections) — `server/tests/unit/commands/test_read_command.py`
 - **test_handle_read_command_inventory_json_error()** (3 connections) — `server/tests/unit/commands/test_read_command.py`
-- *... and 23 more nodes in this community*
+- *... and 24 more nodes in this community*
 
 ## Relationships
 
-- [Any](Any.md) (8 shared connections)
-- [main()](main%28%29.md) (2 shared connections)
+- [test magic commands](test_magic_commands.md) (3 shared connections)
+- [DropResolved](DropResolved.md) (2 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
+- [AuthSlice](AuthSlice.md) (1 shared connections)
+- [Spell Targeting](Spell_Targeting.md) (1 shared connections)
+- [Player Position Service](Player_Position_Service.md) (1 shared connections)
 - [. get persistence from app()](_get_persistence_from_app%28%29.md) (1 shared connections)
 
 ## Source Files

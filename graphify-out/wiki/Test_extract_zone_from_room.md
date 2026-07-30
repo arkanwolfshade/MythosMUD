@@ -1,25 +1,24 @@
 # Test extract zone from room
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Test _extract_zone_from_room_id() handles short format.** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_extract_zone_from_room_id_short_format()** (2 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_extract_zone_from_room_id_invalid_format()** (2 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_extract_zone_from_room_id_handles_exception()** (2 connections) — `server/tests/unit/services/test_npc_instance_service.py`
+- **test_add_rule_missing_fields()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test add_rule() returns False when fields missing.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [test npc instance service](test_npc_instance_service.md) (3 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [test behavior engine](test_behavior_engine.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_npc_instance_service.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,23 +1,25 @@
 # Initialize system/admin channel strategy. Args:
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **.__init__()** (2 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Initialize system/admin channel strategy.          Args:             channel_typ** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **id** (4 connections) — `schemas/calendar/schedule.schema.json`
+- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **pattern** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **minLength** (1 connections) — `schemas/calendar/schedule.schema.json`
 
 ## Relationships
 
-- [channel broadcasting strategies](channel_broadcasting_strategies.md) (1 shared connections)
+- [type](type.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/channel_broadcasting_strategies.py`
+- `schemas/calendar/schedule.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_delete_player_not_found()** (2 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test delete_player returns False when player not found.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **sample_room_dict()** (2 connections) — `server/tests/unit/game/test_room_service.py`
+- **Create a sample room dictionary.** (1 connections) — `server/tests/unit/game/test_room_service.py`
 
 ## Relationships
 
-- [test player repository](test_player_repository.md) (1 shared connections)
+- [test room service](test_room_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_player_repository.py`
+- `server/tests/unit/game/test_room_service.py`
 
 ## Audit Trail
 

@@ -1,52 +1,47 @@
 # test command factories moderation
 
-> 56 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **test_command_factories_moderation.py** (29 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
-- **.create_mute_command()** (9 connections) — `server/utils/command_factories_moderation.py`
-- **.create_mute_global_command()** (9 connections) — `server/utils/command_factories_moderation.py`
-- **Test create_mute_command() raises error with no args.** (7 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
-- **.create_unmute_command()** (7 connections) — `server/utils/command_factories_moderation.py`
-- **.create_unmute_global_command()** (7 connections) — `server/utils/command_factories_moderation.py`
-- **.create_add_admin_command()** (7 connections) — `server/utils/command_factories_moderation.py`
-- **.create_admin_command()** (7 connections) — `server/utils/command_factories_moderation.py`
-- **.create_mutes_command()** (6 connections) — `server/utils/command_factories_moderation.py`
-- **test_create_mute_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
-- **test_create_unmute_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
-- **test_create_add_admin_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
-- **test_create_unmute_command_with_multiple_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
-- **test_create_mute_global_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
-- **test_create_unmute_global_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
-- **test_create_unmute_global_command_with_multiple_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
-- **test_create_admin_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
-- **test_create_admin_command_status_with_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
-- **test_create_mutes_command_with_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
-- **test_create_add_admin_command_with_multiple_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
-- **test_create_mute_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
-- **test_create_unmute_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
-- **test_create_add_admin_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
-- **test_create_mute_command_with_duration()** (3 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
-- **test_create_mute_command_with_duration_and_reason()** (3 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
-- *... and 31 more nodes in this community*
+- **Any** (12 connections)
+- **._try_evaluators()** (7 connections) — `server/npc/behavior_engine.py`
+- **.evaluate_condition()** (6 connections) — `server/npc/behavior_engine.py`
+- **.get_applicable_rules()** (5 connections) — `server/npc/behavior_engine.py`
+- **.execute_applicable_rules()** (5 connections) — `server/npc/behavior_engine.py`
+- **._evaluate_equality()** (4 connections) — `server/npc/behavior_engine.py`
+- **._evaluate_inequality()** (4 connections) — `server/npc/behavior_engine.py`
+- **._evaluate_numeric_comparison()** (4 connections) — `server/npc/behavior_engine.py`
+- **._evaluate_boolean_condition()** (4 connections) — `server/npc/behavior_engine.py`
+- **.execute_action()** (4 connections) — `server/npc/behavior_engine.py`
+- **.add_rule()** (3 connections) — `server/npc/behavior_engine.py`
+- **.get_rules()** (3 connections) — `server/npc/behavior_engine.py`
+- **.register_action_handler()** (3 connections) — `server/npc/behavior_engine.py`
+- **Add a behavior rule to the engine.          Args:             rule: Rule diction** (1 connections) — `server/npc/behavior_engine.py`
+- **Get all behavior rules.** (1 connections) — `server/npc/behavior_engine.py`
+- **Evaluate equality condition (==).          Returns:             bool if conditio** (1 connections) — `server/npc/behavior_engine.py`
+- **Evaluate inequality condition (!=).          Returns:             bool if condit** (1 connections) — `server/npc/behavior_engine.py`
+- **Evaluate numeric comparison conditions (>=, <=, >, <).          Args:** (1 connections) — `server/npc/behavior_engine.py`
+- **Try multiple evaluator methods in sequence.          Args:             condition** (1 connections) — `server/npc/behavior_engine.py`
+- **Evaluate boolean conditions and variable lookups.          Args:             con** (1 connections) — `server/npc/behavior_engine.py`
+- **Evaluate a condition string against context.          Args:             conditio** (1 connections) — `server/npc/behavior_engine.py`
+- **Get rules that are applicable given the current context.          Args:** (1 connections) — `server/npc/behavior_engine.py`
+- **Register an action handler for a specific action.          Args:             act** (1 connections) — `server/npc/behavior_engine.py`
+- **Execute a specific action.          Args:             action_name: Name of the a** (1 connections) — `server/npc/behavior_engine.py`
+- **Execute all applicable rules based on context.          Args:             contex** (1 connections) — `server/npc/behavior_engine.py`
 
 ## Relationships
 
-- [. init ()](_init_%28%29.md) (12 shared connections)
-- [main()](main%28%29.md) (9 shared connections)
-- [BaseCommand](BaseCommand.md) (8 shared connections)
-- [.validate player name field()](validate_player_name_field%28%29.md) (7 shared connections)
+- [ContainerComponent](ContainerComponent.md) (12 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories_moderation.py`
-- `server/utils/command_factories_moderation.py`
+- `server/npc/behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 185 (94%)
-- INFERRED: 11 (6%)
+- EXTRACTED: 76 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

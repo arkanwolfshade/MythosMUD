@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_behavior_engine_init()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test BehaviorEngine initialization.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_handle_player_entered_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **Test handle_player_entered() skips when connection manager not available.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Relationships
 
-- [BehaviorEngine](BehaviorEngine.md) (1 shared connections)
-- [test behavior engine](test_behavior_engine.md) (1 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
+- [. call ()](_call_%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_behavior_engine.py`
+- `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Audit Trail
 

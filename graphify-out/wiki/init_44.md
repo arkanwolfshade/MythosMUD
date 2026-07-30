@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **__init__.py** (1 connections) — `server/tests/unit/persistence/__init__.py`
-- **Persistence unit tests.** (1 connections) — `server/tests/unit/persistence/__init__.py`
+- **__init__.py** (1 connections) — `server/tests/unit/realtime/integration/__init__.py`
+- **Realtime integration unit tests.** (1 connections) — `server/tests/unit/realtime/integration/__init__.py`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `server/tests/unit/persistence/__init__.py`
+- `server/tests/unit/realtime/integration/__init__.py`
 
 ## Audit Trail
 

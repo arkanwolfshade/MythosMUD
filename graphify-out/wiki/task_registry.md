@@ -1,51 +1,45 @@
 # task registry
 
-> 29 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **task_registry.py** (10 connections) — `server/app/task_registry.py`
-- **Any** (10 connections)
-- **._setup_task_tracking()** (9 connections) — `server/app/task_registry.py`
-- **Task** (8 connections)
-- **TaskMetadata** (7 connections) — `server/app/task_registry.py`
-- **.register_task()** (7 connections) — `server/app/task_registry.py`
-- **._create_task_completion_callback()** (5 connections) — `server/app/task_registry.py`
-- **unregister_task()** (5 connections) — `server/app/task_registry.py`
-- **get_registry()** (5 connections) — `server/app/task_registry.py`
-- **.__init__()** (4 connections) — `server/app/task_registry.py`
-- **.unregister_task()** (4 connections) — `server/app/task_registry.py`
-- **.cancel_task()** (4 connections) — `server/app/task_registry.py`
-- **._cleanup_registry_collections()** (4 connections) — `server/app/task_registry.py`
-- **register_task()** (4 connections) — `server/app/task_registry.py`
-- **.get_registry_info()** (3 connections) — `server/app/task_registry.py`
-- **.__repr__()** (2 connections) — `server/app/task_registry.py`
-- **Convenience function for registering tasks with global registry.** (2 connections) — `server/app/task_registry.py`
-- **Centralized TaskRegistry for MythosMUD server task lifecycle management.  This m** (1 connections) — `server/app/task_registry.py`
-- **Metadata for tracked asyncio.Tasks.** (1 connections) — `server/app/task_registry.py`
-- **Initialize task metadata.          Args:             task: The asyncio.Task inst** (1 connections) — `server/app/task_registry.py`
-- **String representation of task metadata for logging.** (1 connections) — `server/app/task_registry.py`
-- **Create callback function for task completion cleanup.** (1 connections) — `server/app/task_registry.py`
-- **Set up tracking for a newly created task.** (1 connections) — `server/app/task_registry.py`
-- **Register and create a tracked asyncio.Task.          Args:             coro: The** (1 connections) — `server/app/task_registry.py`
-- **Unregister task from tracking, optionally force-cancelling.          Args:** (1 connections) — `server/app/task_registry.py`
-- *... and 4 more nodes in this community*
+- **test_occupants.py** (14 connections) — `server/commands/npc_admin/test_occupants.py`
+- **handle_npc_test_occupants_command()** (11 connections) — `server/commands/npc_admin/test_occupants.py`
+- **Any** (7 connections)
+- **_resolve_room_and_handler_for_test_occupants()** (6 connections) — `server/commands/npc_admin/test_occupants.py`
+- **_resolve_test_occupants_context()** (6 connections) — `server/commands/npc_admin/test_occupants.py`
+- **_get_event_handler_for_test_occupants()** (5 connections) — `server/commands/npc_admin/test_occupants.py`
+- **_get_room_id_for_test_occupants()** (4 connections) — `server/commands/npc_admin/test_occupants.py`
+- **_separate_occupants()** (4 connections) — `server/commands/npc_admin/test_occupants.py`
+- **_resolve_app_and_player_for_test_occupants()** (4 connections) — `server/commands/npc_admin/test_occupants.py`
+- **_format_occupants_result()** (3 connections) — `server/commands/npc_admin/test_occupants.py`
+- **NPC test-occupants command for debugging occupant queries.** (1 connections) — `server/commands/npc_admin/test_occupants.py`
+- **Get room_id from args or current room. Returns (room_id, error_result).** (1 connections) — `server/commands/npc_admin/test_occupants.py`
+- **Get event handler from app.state. Returns (event_handler, error_result).** (1 connections) — `server/commands/npc_admin/test_occupants.py`
+- **Separate occupants into players and NPCs.** (1 connections) — `server/commands/npc_admin/test_occupants.py`
+- **Format occupants result as a string.** (1 connections) — `server/commands/npc_admin/test_occupants.py`
+- **Resolve application and player object for NPC test occupants command.** (1 connections) — `server/commands/npc_admin/test_occupants.py`
+- **Resolve room_id and event handler for NPC test occupants command.** (1 connections) — `server/commands/npc_admin/test_occupants.py`
+- **Resolve application, player, room_id, and event handler for NPC test occupants c** (1 connections) — `server/commands/npc_admin/test_occupants.py`
+- **Handle NPC test occupants command - manually trigger occupant query for debuggin** (1 connections) — `server/commands/npc_admin/test_occupants.py`
 
 ## Relationships
 
-- [Cancel lifecycle/critical tasks first (Phase](Cancel_lifecycle-critical_tasks_first_%28Phase.md) (15 shared connections)
-- [main()](main%28%29.md) (3 shared connections)
-- [monitoring](monitoring.md) (2 shared connections)
-- [memory lifespan coordinator](memory_lifespan_coordinator.md) (1 shared connections)
+- [Any](Any.md) (5 shared connections)
+- [test magic commands](test_magic_commands.md) (2 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
+- [AuthSlice](AuthSlice.md) (1 shared connections)
+- [UUID](UUID.md) (1 shared connections)
 
 ## Source Files
 
-- `server/app/task_registry.py`
+- `server/commands/npc_admin/test_occupants.py`
 
 ## Audit Trail
 
-- EXTRACTED: 105 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 71 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

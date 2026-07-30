@@ -1,56 +1,50 @@
 # .get lucidity service()
 
-> 39 nodes
+> 28 nodes
 
 ## Key Concepts
 
-- **NPCCombatLucidity** (30 connections) — `server/services/npc_combat_lucidity.py`
-- **TestNPCCombatLucidity** (17 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **.apply_encounter_lucidity_effect()** (6 connections) — `server/services/npc_combat_lucidity.py`
-- **._resolve_lucidity_category()** (4 connections) — `server/services/npc_combat_lucidity.py`
-- **test_npc_combat_lucidity.py** (4 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **.test_resolve_lucidity_category_get_behavior_config_exception()** (4 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **.get_lucidity_service()** (3 connections) — `server/services/npc_combat_integration_service.py`
-- **.test_init()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **.test_resolve_lucidity_category_none_npc()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **.test_resolve_lucidity_category_from_base_stats()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **.test_resolve_lucidity_category_from_mythos_tier()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **.test_resolve_lucidity_category_from_behavior_config()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **.test_resolve_lucidity_category_aggressive_mob()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **.test_resolve_lucidity_category_passive_mob()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **.test_resolve_lucidity_category_default()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **.test_resolve_lucidity_category_get_base_stats_exception()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **.test_resolve_lucidity_category_non_dict_stats()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **.test_apply_encounter_lucidity_effect_success()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **.test_apply_encounter_lucidity_effect_with_npc_name()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **.test_apply_encounter_lucidity_effect_without_npc_name()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **Test _resolve_lucidity_category gets category from base_stats.** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **Any** (2 connections)
-- **Return lucidity dependency for integration collaborators.** (1 connections) — `server/services/npc_combat_integration_service.py`
-- **Manages lucidity effects for NPC encounters.** (1 connections) — `server/services/npc_combat_lucidity.py`
-- **Apply lucidity loss when a player engages an eldritch entity.          Args:** (1 connections) — `server/services/npc_combat_lucidity.py`
-- *... and 14 more nodes in this community*
+- **CORSConfig** (19 connections) — `server/config/models/cors.py`
+- **._parse_csv()** (10 connections) — `server/config/models/cors.py`
+- **._validate_non_empty()** (5 connections) — `server/config/models/cors.py`
+- **._clean_list_items()** (5 connections) — `server/config/models/cors.py`
+- **._parse_json_array()** (5 connections) — `server/config/models/cors.py`
+- **._parse_comma_separated()** (4 connections) — `server/config/models/cors.py`
+- **.parse_allow_origins()** (3 connections) — `server/config/models/cors.py`
+- **.parse_allow_methods()** (3 connections) — `server/config/models/cors.py`
+- **.parse_allow_headers()** (3 connections) — `server/config/models/cors.py`
+- **.parse_expose_headers()** (3 connections) — `server/config/models/cors.py`
+- **._validate_and_warn_wildcards()** (2 connections) — `server/config/models/cors.py`
+- **.parse_max_age()** (2 connections) — `server/config/models/cors.py`
+- **.validate_max_age()** (2 connections) — `server/config/models/cors.py`
+- **BaseSettings** (1 connections)
+- **Any** (1 connections)
+- **Cross-origin resource sharing configuration.      Configuration precedence (high** (1 connections) — `server/config/models/cors.py`
+- **Validate CORS configuration and warn about wildcard origins.** (1 connections) — `server/config/models/cors.py`
+- **Validate that cleaned list is not empty if allow_empty is False.** (1 connections) — `server/config/models/cors.py`
+- **Clean and filter list items, removing empty strings.** (1 connections) — `server/config/models/cors.py`
+- **Parse JSON array string if it looks like one, otherwise return None.** (1 connections) — `server/config/models/cors.py`
+- **Parse comma-separated string into cleaned list.** (1 connections) — `server/config/models/cors.py`
+- **Parse comma separated strings or lists into a cleaned list of strings.** (1 connections) — `server/config/models/cors.py`
+- **Parse allowed origins from various input formats.** (1 connections) — `server/config/models/cors.py`
+- **Parse and validate CORS allowed methods. Converts all methods to uppercase.** (1 connections) — `server/config/models/cors.py`
+- **Parse and validate CORS allowed headers.** (1 connections) — `server/config/models/cors.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [Any](Any.md) (3 shared connections)
-- [initialize nats and combat services()](initialize_nats_and_combat_services%28%29.md) (3 shared connections)
-- [main()](main%28%29.md) (3 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (2 shared connections)
-- [.store npc xp mapping for](store_npc_xp_mapping_for.md) (2 shared connections)
-- [. init ()](_init_%28%29.md) (1 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
+- [world](world.md) (2 shared connections)
+- [. init ()](_init_%28%29.md) (2 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/npc_combat_integration_service.py`
-- `server/services/npc_combat_lucidity.py`
-- `server/tests/unit/services/test_npc_combat_lucidity.py`
+- `server/config/models/cors.py`
 
 ## Audit Trail
 
-- EXTRACTED: 121 (94%)
-- INFERRED: 8 (6%)
+- EXTRACTED: 80 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

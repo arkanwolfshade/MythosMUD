@@ -21,7 +21,7 @@
 - [autoprefixer](autoprefixer.md) (1 shared connections)
 - [overrides](overrides.md) (1 shared connections)
 - [scripts](scripts.md) (1 shared connections)
-- [PasswordHasher](PasswordHasher.md) (1 shared connections)
+- [create access token()](create_access_token%28%29.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,62 +1,51 @@
 # .set player combat service()
 
-> 151 nodes
+> 58 nodes
 
 ## Key Concepts
 
-- **PlayerCombatService** (73 connections) — `server/services/player_combat_service.py`
-- **test_player_combat_service.py** (37 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **player_combat_service.py** (34 connections) — `server/services/player_combat_service.py`
-- **player_combat_service_support.py** (19 connections) — `server/services/player_combat_service_support.py`
-- **UUID** (15 connections)
-- **PlayerCombatState** (14 connections) — `server/services/player_combat_service.py`
-- **NPCCombatIntegrationReadApi** (10 connections) — `server/services/player_combat_service_support.py`
-- **EventBusPublish** (9 connections) — `server/services/player_combat_service_support.py`
-- **PlayerXpLike** (9 connections) — `server/services/player_combat_service_support.py`
-- **._award_xp_via_persistence_fallback()** (7 connections) — `server/services/player_combat_service.py`
-- **.award_xp_on_npc_death()** (6 connections) — `server/services/player_combat_service.py`
-- **Protocol** (6 connections)
-- **NPCCombatRewardsLike** (6 connections) — `server/services/player_combat_service_support.py`
-- **UUIDMappingXP** (6 connections) — `server/services/player_combat_service_support.py`
-- **PersistenceWithNpcLifecycleManager** (6 connections) — `server/services/player_combat_service_support.py`
-- **.track_player_combat_state()** (5 connections) — `server/services/player_combat_service.py`
-- **.clear_player_combat_state()** (5 connections) — `server/services/player_combat_service.py`
-- **._get_xp_from_lifecycle_manager()** (5 connections) — `server/services/player_combat_service.py`
-- **original_string_id_for_npc()** (5 connections) — `server/services/player_combat_service_support.py`
-- **lifecycle_lookup_id()** (5 connections) — `server/services/player_combat_service_support.py`
-- **async_load_lifecycle_manager()** (5 connections) — `server/services/player_combat_service_support.py`
-- **log_missing_lifecycle_npc()** (5 connections) — `server/services/player_combat_service_support.py`
-- **player_combat_service()** (5 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **.get_player_combat_state()** (4 connections) — `server/services/player_combat_service.py`
-- **.handle_combat_start()** (4 connections) — `server/services/player_combat_service.py`
-- *... and 126 more nodes in this community*
+- **test_player_service_mutations.py** (34 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_delete_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_update_player_location_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_soft_delete_character_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_soft_delete_character_wrong_user()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_delete_player_persistence_fails()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_soft_delete_character_persistence_fails()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_apply_lucidity_loss_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_apply_fear_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_apply_corruption_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_gain_occult_knowledge_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_heal_player_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_damage_player_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **mock_persistence()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_delete_player_success()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_update_player_location_success()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_apply_lucidity_loss()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_apply_fear()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_apply_corruption()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_gain_occult_knowledge()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_heal_player()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_damage_player()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_get_user_characters()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_soft_delete_character_success()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_validate_player_name_empty()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- *... and 33 more nodes in this community*
 
 ## Relationships
 
-- [Any](Any.md) (16 shared connections)
-- [. repr ()](_repr_%28%29.md) (11 shared connections)
-- [Player Position Service](Player_Position_Service.md) (10 shared connections)
-- [initialize nats and combat services()](initialize_nats_and_combat_services%28%29.md) (7 shared connections)
-- [. init ()](_init_%28%29.md) (7 shared connections)
-- [main()](main%28%29.md) (6 shared connections)
-- [.initialize()](initialize%28%29.md) (4 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (3 shared connections)
-- [UUID](UUID.md) (1 shared connections)
-- [test player event handlers state](test_player_event_handlers_state.md) (1 shared connections)
-- [. apply player info()](_apply_player_info%28%29.md) (1 shared connections)
-- [.store npc xp mapping for](store_npc_xp_mapping_for.md) (1 shared connections)
+- [.initialize()](initialize%28%29.md) (11 shared connections)
+- [real time](real_time.md) (3 shared connections)
+- [append unique valid occupant()](append_unique_valid_occupant%28%29.md) (2 shared connections)
+- [Player](Player.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/combat_service.py`
-- `server/services/player_combat_service.py`
-- `server/services/player_combat_service_support.py`
-- `server/tests/unit/services/test_player_combat_service.py`
+- `server/tests/unit/game/test_player_service_mutations.py`
 
 ## Audit Trail
 
-- EXTRACTED: 498 (93%)
-- INFERRED: 37 (7%)
+- EXTRACTED: 119 (91%)
+- INFERRED: 12 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

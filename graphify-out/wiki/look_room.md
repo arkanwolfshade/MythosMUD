@@ -1,6 +1,6 @@
 # look room
 
-> 97 nodes
+> 96 nodes
 
 ## Key Concepts
 
@@ -9,7 +9,6 @@
 - **test_look_room_helpers.py** (20 connections) — `server/tests/unit/commands/test_look_room_helpers.py`
 - **_filter_other_players()** (17 connections) — `server/commands/look_room.py`
 - **_handle_room_look()** (17 connections) — `server/commands/look_room.py`
-- **test_visual_indicator.py** (13 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
 - **_format_items_section()** (11 connections) — `server/commands/look_room.py`
 - **_get_room_description()** (10 connections) — `server/commands/look_room.py`
 - **_format_exits_list()** (10 connections) — `server/commands/look_room.py`
@@ -29,29 +28,28 @@
 - **test_format_npcs_section_with_npcs()** (3 connections) — `server/tests/unit/commands/test_look_room.py`
 - **test_format_npcs_section_empty()** (3 connections) — `server/tests/unit/commands/test_look_room.py`
 - **test_filter_other_players_excludes_current()** (3 connections) — `server/tests/unit/commands/test_look_room.py`
-- *... and 72 more nodes in this community*
+- **test_filter_other_players_no_name_attribute()** (3 connections) — `server/tests/unit/commands/test_look_room.py`
+- *... and 71 more nodes in this community*
 
 ## Relationships
 
 - [look player](look_player.md) (7 shared connections)
-- [disconnect grace period](disconnect_grace_period.md) (7 shared connections)
-- [look command](look_command.md) (5 shared connections)
+- [login grace period](login_grace_period.md) (6 shared connections)
+- [look helpers](look_helpers.md) (5 shared connections)
 - [test build room drop summary](test_build_room_drop_summary.md) (4 shared connections)
 - [look npc](look_npc.md) (3 shared connections)
-- [login grace period](login_grace_period.md) (3 shared connections)
-- [PlayerOccupantProcessor](PlayerOccupantProcessor.md) (3 shared connections)
-- [main()](main%28%29.md) (2 shared connections)
+- [player disconnect handlers](player_disconnect_handlers.md) (3 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
 
 ## Source Files
 
 - `server/commands/look_room.py`
 - `server/tests/unit/commands/test_look_room.py`
 - `server/tests/unit/commands/test_look_room_helpers.py`
-- `server/tests/unit/realtime/test_visual_indicator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 382 (100%)
+- EXTRACTED: 352 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

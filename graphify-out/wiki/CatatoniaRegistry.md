@@ -1,11 +1,12 @@
 # CatatoniaRegistry
 
-> 61 nodes
+> 66 nodes
 
 ## Key Concepts
 
 - **CatatoniaRegistry** (43 connections) — `server/services/catatonia_registry.py`
 - **TestCatatoniaRegistry** (26 connections) — `server/tests/unit/services/test_catatonia_registry.py`
+- **catatonia_registry.py** (12 connections) — `server/services/catatonia_registry.py`
 - **UUID** (6 connections)
 - **datetime** (4 connections)
 - **.is_catatonic()** (4 connections) — `server/services/catatonia_registry.py`
@@ -28,16 +29,16 @@
 - **.test_on_sanitarium_failover_with_string()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
 - **.test_on_sanitarium_failover_with_sync_callback()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
 - **.test_on_sanitarium_failover_with_async_callback()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
-- **.test_on_sanitarium_failover_without_callback()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
-- *... and 36 more nodes in this community*
+- *... and 41 more nodes in this community*
 
 ## Relationships
 
-- [. init ()](_init_%28%29.md) (4 shared connections)
-- [main()](main%28%29.md) (4 shared connections)
-- [.initialize()](initialize%28%29.md) (3 shared connections)
-- [AbstractContextManager](AbstractContextManager.md) (1 shared connections)
-- [UUID](UUID.md) (1 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (3 shared connections)
+- [. init ()](_init_%28%29.md) (3 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (3 shared connections)
+- [test command parser](test_command_parser.md) (3 shared connections)
+- [Lock](Lock.md) (2 shared connections)
+- [LiabilityStackEntry](LiabilityStackEntry.md) (2 shared connections)
 - [CommandExecutionRequest](CommandExecutionRequest.md) (1 shared connections)
 
 ## Source Files
@@ -47,7 +48,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 195 (98%)
+- EXTRACTED: 208 (98%)
 - INFERRED: 5 (2%)
 - AMBIGUOUS: 0 (0%)
 

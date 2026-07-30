@@ -23,7 +23,11 @@
 
 ## Relationships
 
-- [channel broadcasting strategies](channel_broadcasting_strategies.md) (8 shared connections)
+- [add fastapi users columns](add_fastapi_users_columns.md) (4 shared connections)
+- [admin summon command](admin_summon_command.md) (1 shared connections)
+- [channel broadcasting strategies](channel_broadcasting_strategies.md) (1 shared connections)
+- [test inventory mutation guard internal](test_inventory_mutation_guard_internal.md) (1 shared connections)
+- [BehaviorEngine](BehaviorEngine.md) (1 shared connections)
 
 ## Source Files
 

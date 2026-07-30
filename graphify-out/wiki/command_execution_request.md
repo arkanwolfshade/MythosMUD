@@ -1,60 +1,54 @@
 # command execution request
 
-> 53 nodes
+> 54 nodes
 
 ## Key Concepts
 
-- **WebSocketRequestContext** (26 connections) — `server/realtime/request_context.py`
-- **test_request_context.py** (16 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **command_execution_request.py** (9 connections) — `server/command_handler/command_execution_request.py`
-- **request_context.py** (9 connections) — `server/realtime/request_context.py`
-- **create_websocket_request_context()** (9 connections) — `server/realtime/request_context.py`
-- **test_command_execution_request.py** (8 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
-- **Any** (7 connections)
-- **.set_app_state_services()** (4 connections) — `server/realtime/request_context.py`
-- **.get_event_bus()** (4 connections) — `server/realtime/request_context.py`
-- **.get_alias_storage()** (4 connections) — `server/realtime/request_context.py`
-- **test_command_request_app_state_from_http_request_like_object()** (4 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
-- **test_command_request_app_state_from_websocket_request_context()** (4 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
-- **test_command_request_app_state_missing_app_or_state_returns_none()** (4 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
-- **test_create_websocket_request_context()** (4 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **test_create_websocket_request_context_no_user()** (4 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **.__init__()** (3 connections) — `server/realtime/request_context.py`
-- **.set_alias_storage()** (3 connections) — `server/realtime/request_context.py`
-- **.get_persistence()** (3 connections) — `server/realtime/request_context.py`
-- **test_websocket_request_context_init()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **test_websocket_request_context_init_no_user()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **test_websocket_request_context_set_alias_storage()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **test_websocket_request_context_set_app_state_services()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **test_websocket_request_context_set_app_state_services_none()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **test_websocket_request_context_get_persistence()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **test_websocket_request_context_get_event_bus()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
-- *... and 28 more nodes in this community*
+- **_MagicServiceCore** (42 connections) — `server/game/magic/magic_service.py`
+- **UUID** (20 connections)
+- **Any** (18 connections)
+- **.can_cast_spell()** (10 connections) — `server/game/magic/magic_service.py`
+- **.cast_spell()** (10 connections) — `server/game/magic/magic_service.py`
+- **._execute_instant_or_delayed_cast()** (8 connections) — `server/game/magic/magic_service.py`
+- **._get_spell_and_validate_target()** (7 connections) — `server/game/magic/magic_service.py`
+- **._validate_spell_casting()** (6 connections) — `server/game/magic/magic_service.py`
+- **._start_delayed_cast()** (6 connections) — `server/game/magic/magic_service.py`
+- **._casting_roll_or_fail_result()** (6 connections) — `server/game/magic/magic_service.py`
+- **._send_spell_completion_message()** (6 connections) — `server/game/magic/magic_service.py`
+- **._get_player_and_normalized_stats()** (5 connections) — `server/game/magic/magic_service.py`
+- **._check_mp_sufficient()** (5 connections) — `server/game/magic/magic_service.py`
+- **._check_lucidity_sufficient()** (5 connections) — `server/game/magic/magic_service.py`
+- **._check_player_knows_spell()** (5 connections) — `server/game/magic/magic_service.py`
+- **._check_materials_available()** (5 connections) — `server/game/magic/magic_service.py`
+- **._check_already_casting()** (5 connections) — `server/game/magic/magic_service.py`
+- **._handle_instant_cast()** (5 connections) — `server/game/magic/magic_service.py`
+- **._consume_materials_if_required()** (5 connections) — `server/game/magic/magic_service.py`
+- **._casting_roll()** (5 connections) — `server/game/magic/magic_service.py`
+- **.send_spell_execution_notifications()** (5 connections) — `server/game/magic/magic_service.py`
+- **.interrupt_casting()** (5 connections) — `server/game/magic/magic_service.py`
+- **._get_spell_from_registry()** (4 connections) — `server/game/magic/magic_service.py`
+- **._calculate_initiative_tick()** (4 connections) — `server/game/magic/magic_service.py`
+- **.restore_mp()** (4 connections) — `server/game/magic/magic_service.py`
+- *... and 29 more nodes in this community*
 
 ## Relationships
 
-- [check alias safety()](check_alias_safety%28%29.md) (6 shared connections)
-- [Any](Any.md) (2 shared connections)
-- [main()](main%28%29.md) (2 shared connections)
-- [websocket handler app state](websocket_handler_app_state.md) (2 shared connections)
-- [websocket handler commands](websocket_handler_commands.md) (2 shared connections)
-- [chat send with room bundle()](chat_send_with_room_bundle%28%29.md) (2 shared connections)
-- [CommandExecutionRequest](CommandExecutionRequest.md) (1 shared connections)
-- [processing](processing.md) (1 shared connections)
-- [Player](Player.md) (1 shared connections)
-- [alias storage()](alias_storage%28%29.md) (1 shared connections)
+- [message handler factory](message_handler_factory.md) (12 shared connections)
+- [. init ()](_init_%28%29.md) (8 shared connections)
+- [UUID](UUID.md) (1 shared connections)
+- [append unique valid occupant()](append_unique_valid_occupant%28%29.md) (1 shared connections)
+- [. initialize handlers()](_initialize_handlers%28%29.md) (1 shared connections)
+- [process all status effects()](process_all_status_effects%28%29.md) (1 shared connections)
+- [Any](Any.md) (1 shared connections)
 
 ## Source Files
 
-- `server/command_handler/command_execution_request.py`
-- `server/realtime/request_context.py`
-- `server/tests/unit/command_handler/test_command_execution_request.py`
-- `server/tests/unit/realtime/test_request_context.py`
+- `server/game/magic/magic_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 173 (95%)
-- INFERRED: 9 (5%)
+- EXTRACTED: 228 (95%)
+- INFERRED: 13 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

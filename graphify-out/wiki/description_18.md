@@ -1,26 +1,23 @@
 # description
 
-> 5 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **description** (5 connections) — `schemas/unified_room_schema.json`
-- **type** (1 connections) — `schemas/unified_room_schema.json`
-- **minLength** (1 connections) — `schemas/unified_room_schema.json`
-- **maxLength** (1 connections) — `schemas/unified_room_schema.json`
-- **description** (1 connections) — `schemas/unified_room_schema.json`
+- **test_process_exits_for_room_multiple_exits()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **Test _process_exits_for_room handles multiple exits.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Relationships
 
-- [description](description.md) (1 shared connections)
+- [test async persistence room cache](test_async_persistence_room_cache.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/unified_room_schema.json`
+- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

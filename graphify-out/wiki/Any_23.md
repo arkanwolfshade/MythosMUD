@@ -1,51 +1,52 @@
 # Any
 
-> 81 nodes
+> 54 nodes
 
 ## Key Concepts
 
-- **RateLimiter** (46 connections) — `server/realtime/rate_limiter.py`
-- **test_connection_rate_limiter.py** (33 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **Test RateLimiter.cleanup_old_attempts() removes old attempts.** (4 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **.get_rate_limit_info()** (3 connections) — `server/realtime/rate_limiter.py`
-- **Any** (3 connections)
-- **.get_stats()** (3 connections) — `server/realtime/rate_limiter.py`
-- **.get_message_rate_limit_info()** (3 connections) — `server/realtime/rate_limiter.py`
-- **mock_manager()** (3 connections) — `server/tests/unit/realtime/test_connection_disconnection_websockets.py`
-- **test_rate_limiter_init_defaults()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_init_custom()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_check_rate_limit_first_attempt()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_check_rate_limit_within_limit()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_check_rate_limit_exceeded()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_check_rate_limit_old_attempts_removed()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_get_rate_limit_info()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_get_rate_limit_info_no_attempts()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_cleanup_old_attempts()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_cleanup_old_attempts_removes_empty()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_cleanup_old_attempts_error()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_cleanup_large_structures()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_cleanup_large_structures_error()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_remove_player_data()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_remove_player_data_not_present()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_remove_player_data_error()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_get_stats()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- *... and 56 more nodes in this community*
+- **test_health_service.py** (43 connections) — `server/tests/unit/services/test_health_service.py`
+- **get_health_service()** (9 connections) — `server/services/health_service.py`
+- **test_get_health_service_creates_instance()** (4 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_get_health_service_returns_singleton()** (3 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_get_health_service_updates_connection_manager()** (3 connections) — `server/tests/unit/services/test_health_service.py`
+- **mock_connection_manager()** (2 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_health_service_initialization()** (2 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_get_server_uptime()** (2 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_get_memory_usage_success()** (2 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_get_memory_usage_error()** (2 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_get_cpu_usage_success()** (2 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_get_cpu_usage_error()** (2 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_check_database_health_healthy()** (2 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_check_database_health_degraded()** (2 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_check_database_health_unhealthy()** (2 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_check_database_health_error()** (2 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_check_connections_health_healthy()** (2 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_check_connections_health_degraded()** (2 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_check_connections_health_unhealthy()** (2 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_check_connections_health_no_manager()** (2 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_check_connections_health_error()** (2 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_get_server_component_health_healthy()** (2 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_get_server_component_health_degraded()** (2 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_get_server_component_health_unhealthy()** (2 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_get_database_component_health()** (2 connections) — `server/tests/unit/services/test_health_service.py`
+- *... and 29 more nodes in this community*
 
 ## Relationships
 
-- [main()](main%28%29.md) (4 shared connections)
-- [connection disconnection](connection_disconnection.md) (2 shared connections)
+- [alias](alias.md) (14 shared connections)
+- [SafeHtml](SafeHtml.md) (4 shared connections)
+- [fetch container items()](fetch_container_items%28%29.md) (2 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/rate_limiter.py`
-- `server/tests/unit/realtime/test_connection_disconnection_websockets.py`
-- `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- `server/services/health_service.py`
+- `server/tests/unit/services/test_health_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 238 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 132 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

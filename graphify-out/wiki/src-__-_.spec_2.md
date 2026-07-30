@@ -1,41 +1,25 @@
 # src/**/*.spec
 
-> 20 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **include** (8 connections) — `client/tsconfig.test.json`
-- **tsconfig.test.json** (5 connections) — `client/tsconfig.test.json`
-- **compilerOptions** (5 connections) — `client/tsconfig.test.json`
-- **types** (5 connections) — `client/tsconfig.test.json`
-- **extends** (1 connections) — `client/tsconfig.test.json`
-- **./tsconfig.json** (1 connections) — `client/tsconfig.test.json`
-- **composite** (1 connections) — `client/tsconfig.test.json`
-- **vitest/globals** (1 connections) — `client/tsconfig.test.json`
-- **node** (1 connections) — `client/tsconfig.test.json`
-- **vite/client** (1 connections) — `client/tsconfig.test.json`
-- **noEmit** (1 connections) — `client/tsconfig.test.json`
-- **allowImportingTsExtensions** (1 connections) — `client/tsconfig.test.json`
-- **src/vite-env.d.ts** (1 connections) — `client/tsconfig.test.json`
-- **src/**/*.test.ts** (1 connections) — `client/tsconfig.test.json`
-- **src/**/*.test.tsx** (1 connections) — `client/tsconfig.test.json`
-- **src/**/*.spec.ts** (1 connections) — `client/tsconfig.test.json`
-- **src/**/*.spec.tsx** (1 connections) — `client/tsconfig.test.json`
-- **src/**/*TestFixtures.ts** (1 connections) — `client/tsconfig.test.json`
-- **src/test/**/*** (1 connections) — `client/tsconfig.test.json`
-- **exclude** (1 connections) — `client/tsconfig.test.json`
+- **1. Component Refactoring** (4 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **ChatPanel.tsx Enhancements (New Chat Input Panel)** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **GameLogPanel.tsx (Renamed from ChatPanel.tsx)** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **CommandPanel.tsx Simplifications** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
 
 ## Relationships
 
-- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
+- [1. Component Refactoring](1._Component_Refactoring.md) (1 shared connections)
 
 ## Source Files
 
-- `client/tsconfig.test.json`
+- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
 
 ## Audit Trail
 
-- EXTRACTED: 39 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

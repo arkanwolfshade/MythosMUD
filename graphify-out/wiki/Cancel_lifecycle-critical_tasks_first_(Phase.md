@@ -1,52 +1,50 @@
 # Cancel lifecycle/critical tasks first (Phase
 
-> 28 nodes
+> 18 nodes
 
 ## Key Concepts
 
-- **TaskRegistry** (33 connections) — `server/app/task_registry.py`
-- **.shutdown_all()** (7 connections) — `server/app/task_registry.py`
-- **.get_task_lifecycle_metrics()** (5 connections) — `server/app/task_registry.py`
-- **._ensure_unique_task_name()** (3 connections) — `server/app/task_registry.py`
-- **._track_task_creation_metrics()** (3 connections) — `server/app/task_registry.py`
-- **._extract_service_name()** (3 connections) — `server/app/task_registry.py`
-- **._cancel_lifecycle_tasks()** (3 connections) — `server/app/task_registry.py`
-- **._cancel_remaining_tasks()** (3 connections) — `server/app/task_registry.py`
-- **._wait_for_task_completion()** (3 connections) — `server/app/task_registry.py`
-- **._forcible_cleanup_on_timeout()** (3 connections) — `server/app/task_registry.py`
-- **.list_active_tasks()** (3 connections) — `server/app/task_registry.py`
-- **.get_active_task_count()** (3 connections) — `server/app/task_registry.py`
-- **.get_task_stats_by_type()** (3 connections) — `server/app/task_registry.py`
-- **.__init__()** (2 connections) — `server/app/task_registry.py`
-- **Centralized asyncio task registry for lifecycle-tracking with timeout management** (1 connections) — `server/app/task_registry.py`
-- **Initialize TaskRegistry with empty task collections.** (1 connections) — `server/app/task_registry.py`
-- **Ensure task name is unique by appending timestamp if needed.** (1 connections) — `server/app/task_registry.py`
-- **Track task creation for metrics.** (1 connections) — `server/app/task_registry.py`
-- **Extract service name from task name or use task type.** (1 connections) — `server/app/task_registry.py`
-- **Cancel lifecycle/critical tasks first (Phase 1).** (1 connections) — `server/app/task_registry.py`
-- **Cancel remaining active tasks (Phase 2).** (1 connections) — `server/app/task_registry.py`
-- **Wait for task completion with timeout.** (1 connections) — `server/app/task_registry.py`
-- **Forcibly cancel any lingering tasks that didn't respond to graceful cancellation** (1 connections) — `server/app/task_registry.py`
-- **Gracefully shutdown all tracked tasks with timeout coordination.          Implem** (1 connections) — `server/app/task_registry.py`
-- **Return list of currently registered TaskMetadata.** (1 connections) — `server/app/task_registry.py`
-- *... and 3 more nodes in this community*
+- **stateUpdateUtils.ts** (41 connections) — `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
+- **stateUpdateUtils.test.ts** (14 connections) — `client/src/components/ui-v2/utils/__tests__/stateUpdateUtils.test.ts`
+- **roomMergeUtils.ts** (10 connections) — `client/src/components/ui-v2/utils/roomMergeUtils.ts`
+- **mergeRoomState()** (7 connections) — `client/src/components/ui-v2/utils/roomMergeUtils.ts`
+- **applyEventUpdates()** (7 connections) — `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
+- **roomMergeUtils.test.ts** (4 connections) — `client/src/components/ui-v2/utils/__tests__/roomMergeUtils.test.ts`
+- **mergeOccupantData()** (4 connections) — `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
+- **mergeRoomUpdate()** (4 connections) — `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
+- **sanitizeAndApplyUpdates()** (4 connections) — `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
+- **selectPlayersArray()** (3 connections) — `client/src/components/ui-v2/utils/roomMergeUtils.ts`
+- **selectNpcsArray()** (3 connections) — `client/src/components/ui-v2/utils/roomMergeUtils.ts`
+- **applyPlayerUpdate()** (3 connections) — `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
+- **applyRoomUpdate()** (3 connections) — `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
+- **getPlayersArray()** (2 connections) — `client/src/components/ui-v2/utils/roomMergeUtils.ts`
+- **getNpcsArray()** (2 connections) — `client/src/components/ui-v2/utils/roomMergeUtils.ts`
+- **hasOccupantData()** (2 connections) — `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
+- **applyMessageUpdates()** (2 connections) — `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
+- **applyGracePeriodUpdate()** (2 connections) — `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
 
 ## Relationships
 
-- [task registry](task_registry.md) (15 shared connections)
-- [Any](Any.md) (4 shared connections)
-- [.initialize()](initialize%28%29.md) (3 shared connections)
-- [memory lifespan coordinator](memory_lifespan_coordinator.md) (1 shared connections)
-- [main()](main%28%29.md) (1 shared connections)
-- [. init ()](_init_%28%29.md) (1 shared connections)
+- [monitoring models](monitoring_models.md) (13 shared connections)
+- [player respawn](player_respawn.md) (8 shared connections)
+- [.append()](append%28%29.md) (6 shared connections)
+- [HealthMeter](HealthMeter.md) (4 shared connections)
+- [Instance](Instance.md) (3 shared connections)
+- [MythosTimeHud](MythosTimeHud.md) (3 shared connections)
+- [ConnectionCleaner](ConnectionCleaner.md) (3 shared connections)
+- [GameClientV2Dock.test](GameClientV2Dock.test.md) (2 shared connections)
+- [useConnectionStateMachine.test](useConnectionStateMachine.test.md) (1 shared connections)
 
 ## Source Files
 
-- `server/app/task_registry.py`
+- `client/src/components/ui-v2/utils/__tests__/roomMergeUtils.test.ts`
+- `client/src/components/ui-v2/utils/__tests__/stateUpdateUtils.test.ts`
+- `client/src/components/ui-v2/utils/roomMergeUtils.ts`
+- `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 88 (97%)
+- EXTRACTED: 114 (97%)
 - INFERRED: 3 (3%)
 - AMBIGUOUS: 0 (0%)
 

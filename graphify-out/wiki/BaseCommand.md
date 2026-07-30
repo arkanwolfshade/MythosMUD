@@ -1,65 +1,68 @@
 # BaseCommand
 
-> 116 nodes
+> 207 nodes
 
 ## Key Concepts
 
-- **BaseCommand** (143 connections) — `server/models/command_base.py`
-- **CommandFactory** (82 connections) — `server/utils/command_factories.py`
-- **Create SayCommand from arguments.** (35 connections) — `server/utils/command_factories.py`
-- **command_factories.py** (20 connections) — `server/utils/command_factories.py`
-- **PlayerStateCommandFactory** (17 connections) — `server/utils/command_factories_player_state.py`
-- **CommunicationCommandFactory** (15 connections) — `server/utils/command_factories_communication.py`
-- **ModerationCommandFactory** (13 connections) — `server/utils/command_factories_moderation.py`
-- **CombatCommandFactory** (12 connections) — `server/utils/command_factories_combat.py`
-- **.__init__()** (9 connections) — `server/utils/command_factories.py`
-- **command_factories_combat.py** (7 connections) — `server/utils/command_factories_combat.py`
-- **_build_command_factory()** (6 connections) — `server/utils/command_parser.py`
-- **.create_npc_command()** (4 connections) — `server/utils/command_factories.py`
-- **.create_spawn_command()** (4 connections) — `server/utils/command_factories.py`
-- **_build_command_factory_part1()** (4 connections) — `server/utils/command_parser.py`
-- **_build_command_factory_part2()** (4 connections) — `server/utils/command_parser.py`
-- **.create_say_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_local_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_system_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_emote_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_me_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_pose_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_whisper_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_reply_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_channel_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_look_command()** (3 connections) — `server/utils/command_factories.py`
-- *... and 91 more nodes in this community*
+- **TransferContainerRequest** (57 connections) — `server/api/container_models.py`
+- **container_endpoints_basic.py** (50 connections) — `server/api/container_endpoints_basic.py`
+- **container_helpers.py** (44 connections) — `server/api/container_helpers.py`
+- **test_container_helpers.py** (43 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **transfer_items()** (25 connections) — `server/api/container_endpoints_basic.py`
+- **open_container()** (23 connections) — `server/api/container_endpoints_basic.py`
+- **TestTransferItems** (20 connections) — `server/tests/unit/api/test_containers.py`
+- **close_container()** (19 connections) — `server/api/container_endpoints_basic.py`
+- **get_player_id_from_user()** (19 connections) — `server/api/container_helpers.py`
+- **handle_container_service_error()** (19 connections) — `server/api/container_helpers.py`
+- **emit_transfer_event()** (17 connections) — `server/api/container_events.py`
+- **get_container_service()** (16 connections) — `server/api/container_helpers.py`
+- **CloseContainerRequest** (14 connections) — `server/api/container_models.py`
+- **TestHandleContainerServiceError** (13 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **execute_transfer()** (12 connections) — `server/api/container_helpers.py`
+- **container_models.py** (12 connections) — `server/api/container_models.py`
+- **TestEmitTransferEvent** (12 connections) — `server/tests/unit/api/test_container_events.py`
+- **Request** (11 connections)
+- **TestGetPlayerIdFromUser** (11 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **TestValidateUserForOpenContainer** (11 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **TestApplyRateLimitingForOpenContainer** (11 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **TestValidateUserForTransfer** (11 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **TestApplyRateLimitingForTransfer** (11 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **TestExecuteTransfer** (11 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **TestValidateUserForCloseContainer** (11 connections) — `server/tests/unit/api/test_container_helpers.py`
+- *... and 182 more nodes in this community*
 
 ## Relationships
 
-- [.validate spell name()](validate_spell_name%28%29.md) (36 shared connections)
-- [test command factories player state](test_command_factories_player_state.md) (12 shared connections)
-- [main()](main%28%29.md) (11 shared connections)
-- [test command factories communication](test_command_factories_communication.md) (10 shared connections)
-- [.validate message()](validate_message%28%29.md) (9 shared connections)
-- [.validate search term()](validate_search_term%28%29.md) (8 shared connections)
-- [.validate player name field()](validate_player_name_field%28%29.md) (8 shared connections)
-- [.validate target()](validate_target%28%29.md) (8 shared connections)
-- [test command factories moderation](test_command_factories_moderation.md) (8 shared connections)
-- [command admin](command_admin.md) (6 shared connections)
-- [test command base](test_command_base.md) (5 shared connections)
-- [Any](Any.md) (5 shared connections)
+- [AbstractContextManager](AbstractContextManager.md) (128 shared connections)
+- [. init ()](_init_%28%29.md) (36 shared connections)
+- [APIRouter](APIRouter.md) (36 shared connections)
+- [metrics](metrics.md) (34 shared connections)
+- [DeadLetterMessage](DeadLetterMessage.md) (22 shared connections)
+- [.get population stats()](get_population_stats%28%29.md) (20 shared connections)
+- [test path validator](test_path_validator.md) (10 shared connections)
+- [Player](Player.md) (7 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (5 shared connections)
+- [test player event handlers state](test_player_event_handlers_state.md) (5 shared connections)
+- [chat nats publisher](chat_nats_publisher.md) (4 shared connections)
+- [Lock](Lock.md) (3 shared connections)
 
 ## Source Files
 
-- `server/models/command_base.py`
-- `server/utils/command_factories.py`
-- `server/utils/command_factories_combat.py`
-- `server/utils/command_factories_communication.py`
-- `server/utils/command_factories_moderation.py`
-- `server/utils/command_factories_player_state.py`
-- `server/utils/command_parser.py`
+- `server/api/container_endpoints_basic.py`
+- `server/api/container_events.py`
+- `server/api/container_helpers.py`
+- `server/api/container_models.py`
+- `server/schemas/containers/__init__.py`
+- `server/schemas/containers/container.py`
+- `server/schemas/containers/container_data.py`
+- `server/tests/unit/api/test_container_events.py`
+- `server/tests/unit/api/test_container_helpers.py`
+- `server/tests/unit/api/test_containers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 536 (88%)
-- INFERRED: 70 (12%)
+- EXTRACTED: 878 (82%)
+- INFERRED: 187 (18%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,22 +1,20 @@
 # items
 
-> 8 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **items** (5 connections) — `db/static/schemas/holidays.schema.json`
 - **bonus_tags** (4 connections) — `db/static/schemas/holidays.schema.json`
 - **items** (3 connections) — `db/static/schemas/holidays.schema.json`
 - **type** (2 connections) — `db/static/schemas/holidays.schema.json`
 - **type** (1 connections) — `db/static/schemas/holidays.schema.json`
 - **minLength** (1 connections) — `db/static/schemas/holidays.schema.json`
 - **uniqueItems** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **additionalProperties** (1 connections) — `db/static/schemas/holidays.schema.json`
 
 ## Relationships
 
-- [type](type.md) (3 shared connections)
-- [required](required.md) (1 shared connections)
+- [test inventory service helpers](test_inventory_service_helpers.md) (1 shared connections)
+- [type](type.md) (1 shared connections)
 
 ## Source Files
 
@@ -24,7 +22,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

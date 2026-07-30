@@ -1,39 +1,47 @@
 # description
 
-> 14 nodes
+> 44 nodes
 
 ## Key Concepts
 
-- **properties** (12 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **sub_zone** (4 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **id** (3 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **field1** (2 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **field2** (2 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **field3** (2 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **pattern** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **subzone_schema.json** (7 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **properties** (6 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **special_rules** (5 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **properties** (4 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **environment** (4 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **enum** (4 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **description** (4 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **lucidity_drain_rate** (4 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **npc_spawn_modifier** (4 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **access_requirements** (4 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **combat_modifier** (3 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **exploration_bonus** (3 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **required** (2 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **items** (2 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **$schema** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **title** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **environment** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **indoors** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **outdoors** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **underwater** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [description](description.md) (3 shared connections)
-- [unified room schema](unified_room_schema.md) (1 shared connections)
-- [default](default.md) (1 shared connections)
-- [additionalProperties](additionalProperties.md) (1 shared connections)
-- [zone](zone.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 33 (100%)
+- EXTRACTED: 86 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

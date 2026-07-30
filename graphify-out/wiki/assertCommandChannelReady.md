@@ -1,22 +1,23 @@
 # assertCommandChannelReady
 
-> 1 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **assertCommandChannelReady** (0 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **test_is_player_disconnecting_no_disconnecting_players_attr()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test is_player_disconnecting() handles missing disconnecting_players attribute.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test player event handlers utils](test_player_event_handlers_utils.md) (1 shared connections)
 
 ## Source Files
 
-- `client/tests/e2e/runtime/fixtures/auth.ts`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,11 +1,10 @@
 # test validation
 
-> 56 nodes
+> 64 nodes
 
 ## Key Concepts
 
 - **test_validation.py** (36 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
-- **Test validate_subject_basic() returns False for empty subject.** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
 - **validator()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
 - **strict_validator()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
 - **custom_length_validator()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
@@ -17,7 +16,6 @@
 - **test_validate_parameter_value_strict_no_underscores()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
 - **test_validate_pattern_params_invalid()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
 - **test_validate_pattern_params_multiple_invalid()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
-- **Test validate_subject_components() returns True for valid components.** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
 - **test_validate_subject_basic_valid()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
 - **test_validate_subject_basic_empty()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
 - **test_validate_subject_basic_too_long()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
@@ -29,7 +27,9 @@
 - **test_validate_subject_components_with_underscores()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
 - **test_validate_subject_components_strict_no_underscores()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
 - **test_validate_subject_components_invalid_characters()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
-- *... and 31 more nodes in this community*
+- **test_validate_subject_components_empty_component()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_validate_subject_components_numbers()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- *... and 39 more nodes in this community*
 
 ## Relationships
 

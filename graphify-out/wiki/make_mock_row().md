@@ -1,30 +1,40 @@
 # make mock row()
 
-> 14 nodes
+> 61 nodes
 
 ## Key Concepts
 
+- **test_player_repository.py** (40 connections) — `server/tests/unit/persistence/test_player_repository.py`
 - **_make_mock_row()** (10 connections) — `server/tests/unit/persistence/test_player_repository.py`
 - **test_get_player_by_name_success()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
 - **UUID** (3 connections)
+- **player_repository()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **mock_player()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_player_repository_initialization()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_player_repository_initialization_with_cache()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_player_repository_initialization_with_event_bus()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
 - **test_list_players_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
 - **test_get_player_by_id_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
 - **test_get_players_by_user_id_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_get_active_players_by_user_id_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_get_player_by_user_id_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
 - **test_get_players_in_room_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_save_players_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
 - **test_get_players_batch_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test get_player_by_name successfully retrieves player.** (2 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Create a mock procedure result row for row_to_player.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test list_players successfully retrieves players.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test get_players_by_user_id successfully retrieves players.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test get_players_in_room successfully retrieves players.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test get_players_batch successfully retrieves multiple players.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_validate_and_fix_player_room_valid()** (2 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_validate_and_fix_player_room_invalid()** (2 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_get_player_by_name_not_found()** (2 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_save_player_success()** (2 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_save_player_with_bool_is_admin()** (2 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_list_players_empty()** (2 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_get_player_by_id_not_found()** (2 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_get_player_by_user_id_not_found()** (2 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- *... and 36 more nodes in this community*
 
 ## Relationships
 
-- [test player repository](test_player_repository.md) (8 shared connections)
-- [Test get active players by](Test_get_active_players_by.md) (1 shared connections)
-- [main()](main%28%29.md) (1 shared connections)
-- [. init ()](_init_%28%29.md) (1 shared connections)
+- [real time](real_time.md) (12 shared connections)
+- [. init ()](_init_%28%29.md) (6 shared connections)
 
 ## Source Files
 
@@ -32,8 +42,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 37 (95%)
-- INFERRED: 2 (5%)
+- EXTRACTED: 149 (97%)
+- INFERRED: 5 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

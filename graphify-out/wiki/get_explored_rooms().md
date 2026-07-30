@@ -1,40 +1,43 @@
 # .get explored rooms()
 
-> 17 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **.mark_room_as_explored()** (7 connections) — `server/services/exploration_service.py`
-- **UUID** (7 connections)
-- **._get_room_uuid_by_stable_id()** (7 connections) — `server/services/exploration_service.py`
-- **.is_room_explored()** (6 connections) — `server/services/exploration_service.py`
-- **AsyncSession** (5 connections)
-- **._mark_explored_in_session()** (5 connections) — `server/services/exploration_service.py`
-- **.get_explored_rooms()** (5 connections) — `server/services/exploration_service.py`
-- **.__init__()** (4 connections) — `server/services/exploration_service.py`
-- **.mark_room_as_explored_sync()** (4 connections) — `server/services/exploration_service.py`
-- **Any** (2 connections)
-- **Initialize the exploration service.          Args:             database_manager:** (1 connections) — `server/services/exploration_service.py`
-- **Mark a room as explored by a player.          This method inserts a record into** (1 connections) — `server/services/exploration_service.py`
-- **Get room UUID by stable_id (hierarchical room ID).          Args:             st** (1 connections) — `server/services/exploration_service.py`
-- **Mark room as explored using the provided session.          Args:             ses** (1 connections) — `server/services/exploration_service.py`
-- **Get list of room IDs that a player has explored.          Args:             play** (1 connections) — `server/services/exploration_service.py`
-- **Check if a player has explored a specific room.          Args:             playe** (1 connections) — `server/services/exploration_service.py`
-- **Synchronous wrapper for mark_room_as_explored.          This method is designed** (1 connections) — `server/services/exploration_service.py`
+- **._should_idle_move_inner()** (8 connections) — `server/npc/idle_movement.py`
+- **.execute_idle_movement()** (8 connections) — `server/npc/idle_movement.py`
+- **_npc_id_str()** (7 connections) — `server/npc/idle_movement.py`
+- **.select_exit()** (6 connections) — `server/npc/idle_movement.py`
+- **.should_idle_move()** (5 connections) — `server/npc/idle_movement.py`
+- **_passes_movement_probability()** (4 connections) — `server/npc/idle_movement.py`
+- **._try_idle_room_change()** (4 connections) — `server/npc/idle_movement.py`
+- **_cfg_bool()** (3 connections) — `server/npc/idle_movement.py`
+- **.get_valid_exits()** (3 connections) — `server/npc/idle_movement.py`
+- **._select_weighted_exit()** (3 connections) — `server/npc/idle_movement.py`
+- **._log_idle_move_outcome()** (3 connections) — `server/npc/idle_movement.py`
+- **_cfg_float()** (2 connections) — `server/npc/idle_movement.py`
+- **_resolve_spawn_room()** (2 connections) — `server/npc/idle_movement.py`
+- **Core gating for idle movement (interval handled by scheduler).** (1 connections) — `server/npc/idle_movement.py`
+- **Determine if an NPC should attempt idle movement.          Checks multiple con** (1 connections) — `server/npc/idle_movement.py`
+- **Get exits from current room that stay within subzone boundaries.          Args** (1 connections) — `server/npc/idle_movement.py`
+- **Select exit based on weighted probabilities.          Args:             exit_** (1 connections) — `server/npc/idle_movement.py`
+- **Select an exit using weighted random selection favoring exits closer to spawn ro** (1 connections) — `server/npc/idle_movement.py`
+- **Execute idle movement for an NPC.          This method orchestrates the full i** (1 connections) — `server/npc/idle_movement.py`
 
 ## Relationships
 
-- [AsyncSession](AsyncSession.md) (7 shared connections)
-- [main()](main%28%29.md) (5 shared connections)
-- [.get instance()](get_instance%28%29.md) (1 shared connections)
+- [cfg float()](cfg_float%28%29.md) (9 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (5 shared connections)
+- [Player](Player.md) (1 shared connections)
+- [.get active status effects()](get_active_status_effects%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/exploration_service.py`
+- `server/npc/idle_movement.py`
 
 ## Audit Trail
 
-- EXTRACTED: 59 (100%)
+- EXTRACTED: 64 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

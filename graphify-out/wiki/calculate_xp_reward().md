@@ -1,27 +1,23 @@
 # .calculate xp reward()
 
-> 5 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **.__init__()** (4 connections) — `server/services/npc_combat_rewards.py`
-- **.calculate_xp_reward()** (3 connections) — `server/services/npc_combat_rewards.py`
-- **Any** (2 connections)
-- **Initialize the rewards manager.          Args:             async_persistence: As** (1 connections) — `server/services/npc_combat_rewards.py`
-- **Calculate XP reward from NPC definition.          Args:             npc_definiti** (1 connections) — `server/services/npc_combat_rewards.py`
+- **test_parse_exits_json_other_type()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **Test _parse_exits_json with non-string, non-list value.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Relationships
 
-- [. init ()](_init_%28%29.md) (2 shared connections)
-- [main()](main%28%29.md) (1 shared connections)
+- [test async persistence room cache](test_async_persistence_room_cache.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/npc_combat_rewards.py`
+- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,66 +1,68 @@
 # AsyncPersistenceLayer
 
-> 206 nodes
+> 119 nodes
 
 ## Key Concepts
 
-- **AsyncPersistenceLayer** (183 connections) — `server/async_persistence.py`
-- **test_async_persistence_delegates.py** (35 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **RoomCacheLoader** (29 connections) — `server/async_persistence_room_loader.py`
-- **Player** (22 connections)
-- **UUID** (21 connections)
-- **Any** (19 connections)
-- **._ensure_room_cache_loaded()** (13 connections) — `server/async_persistence.py`
-- **Any** (12 connections)
-- **CreateItemInstanceInput** (11 connections) — `server/async_persistence_constants.py`
-- **.load()** (10 connections) — `server/async_persistence_room_loader.py`
-- **Delegate to room loader; exposed for unit tests.** (8 connections) — `server/async_persistence.py`
-- **._generate_room_id_from_zone_data()** (7 connections) — `server/async_persistence_room_loader.py`
-- **datetime** (6 connections)
-- **reset_async_persistence()** (6 connections) — `server/async_persistence.py`
-- **._process_combined_rows()** (6 connections) — `server/async_persistence_room_loader.py`
-- **.get_player_by_id()** (5 connections) — `server/async_persistence.py`
-- **.get_players_batch()** (5 connections) — `server/async_persistence.py`
-- **Profession** (5 connections)
-- **._build_room_data_from_row()** (5 connections) — `server/async_persistence_room_loader.py`
-- **._process_exit_rows()** (5 connections) — `server/async_persistence_room_loader.py`
-- **.__init__()** (5 connections) — `server/npc/combat_integration_base.py`
-- **.__init__()** (5 connections) — `server/npc/movement_integration.py`
-- **_DatabaseLoadResult** (5 connections) — `server/services/schedule_service.py`
-- **conftest.py** (5 connections) — `server/tests/unit/infrastructure/conftest.py`
-- **.get_player_by_name()** (4 connections) — `server/async_persistence.py`
-- *... and 181 more nodes in this community*
+- **CombatInstance** (167 connections) — `server/models/combat.py`
+- **combat_flee_handler.py** (22 connections) — `server/services/combat_flee_handler.py`
+- **test_combat_flee_handler.py** (17 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
+- **execute_voluntary_flee()** (15 connections) — `server/services/combat_flee_handler.py`
+- **try_voluntary_flee_roll()** (11 connections) — `server/services/combat_flee_handler.py`
+- **_make_participant()** (11 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
+- **_check_involuntary_flee_with_session()** (8 connections) — `server/services/combat_flee_handler.py`
+- **._execute_round()** (7 connections) — `server/services/combat_turn_processor.py`
+- **check_involuntary_flee()** (6 connections) — `server/services/combat_flee_handler.py`
+- **.is_dead()** (5 connections) — `server/models/combat.py`
+- **.get_alive_participants()** (5 connections) — `server/models/combat.py`
+- **_involuntary_flee_on_cooldown()** (5 connections) — `server/services/combat_flee_handler.py`
+- **._handle_player_dp_update()** (5 connections) — `server/services/combat_service.py`
+- **.apply_attack_damage()** (5 connections) — `server/services/combat_service.py`
+- **.process_game_tick()** (5 connections) — `server/services/combat_turn_processor.py`
+- **test_try_voluntary_flee_roll_zero_exits_returns_false()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
+- **test_try_voluntary_flee_roll_roll_above_chance_fails()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
+- **test_try_voluntary_flee_roll_roll_below_chance_succeeds()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
+- **test_try_voluntary_flee_roll_opponents_reduce_chance()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
+- **test_try_voluntary_flee_roll_dead_opponent_not_counted()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
+- **test_execute_voluntary_flee_no_room_returns_false()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
+- **test_execute_voluntary_flee_no_exits_returns_false()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
+- **UUID** (4 connections)
+- **.get_participants_by_initiative()** (4 connections) — `server/models/combat.py`
+- **UUID** (4 connections)
+- *... and 94 more nodes in this community*
 
 ## Relationships
 
-- [main()](main%28%29.md) (40 shared connections)
-- [. init ()](_init_%28%29.md) (20 shared connections)
-- [.initialize()](initialize%28%29.md) (9 shared connections)
-- [initialize nats and combat services()](initialize_nats_and_combat_services%28%29.md) (8 shared connections)
-- [Any](Any.md) (8 shared connections)
-- [APIRouter](APIRouter.md) (7 shared connections)
-- [Player Position Service](Player_Position_Service.md) (7 shared connections)
-- [real time](real_time.md) (5 shared connections)
-- [. repr ()](_repr_%28%29.md) (5 shared connections)
-- [get skill repository()](get_skill_repository%28%29.md) (4 shared connections)
-- [combat](combat.md) (4 shared connections)
-- [datetime](datetime.md) (4 shared connections)
+- [test combat attack handler](test_combat_attack_handler.md) (60 shared connections)
+- [Any](Any.md) (43 shared connections)
+- [. initialize handlers()](_initialize_handlers%28%29.md) (20 shared connections)
+- [close db()](close_db%28%29.md) (14 shared connections)
+- [.model dump()](model_dump%28%29.md) (12 shared connections)
+- [combat flee](combat_flee.md) (8 shared connections)
+- [test player event handlers room](test_player_event_handlers_room.md) (6 shared connections)
+- [test exploration service](test_exploration_service.md) (4 shared connections)
+- [test flee command](test_flee_command.md) (4 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (4 shared connections)
+- [get health service()](get_health_service%28%29.md) (3 shared connections)
+- [.end combat()](end_combat%28%29.md) (3 shared connections)
 
 ## Source Files
 
-- `server/async_persistence.py`
-- `server/async_persistence_constants.py`
-- `server/async_persistence_room_loader.py`
-- `server/npc/combat_integration_base.py`
-- `server/npc/movement_integration.py`
-- `server/services/schedule_service.py`
-- `server/tests/unit/infrastructure/conftest.py`
-- `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- `server/models/combat.py`
+- `server/services/combat_cleanup_handler.py`
+- `server/services/combat_flee_handler.py`
+- `server/services/combat_service.py`
+- `server/services/combat_turn_processor.py`
+- `server/services/lucidity_command_disruption.py`
+- `server/tests/unit/models/test_combat.py`
+- `server/tests/unit/services/test_combat_attack_handler.py`
+- `server/tests/unit/services/test_combat_cleanup_handler.py`
+- `server/tests/unit/services/test_combat_flee_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 761 (90%)
-- INFERRED: 83 (10%)
+- EXTRACTED: 487 (96%)
+- INFERRED: 22 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

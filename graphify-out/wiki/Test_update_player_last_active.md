@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_update_player_last_active_success()** (2 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test update_player_last_active successfully updates timestamp.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_get_room_info_not_found()** (2 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test get_room_info() returns None when room not found.** (1 connections) — `server/tests/unit/game/test_room_service.py`
 
 ## Relationships
 
-- [test player repository](test_player_repository.md) (1 shared connections)
+- [test room service](test_room_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_player_repository.py`
+- `server/tests/unit/game/test_room_service.py`
 
 ## Audit Trail
 

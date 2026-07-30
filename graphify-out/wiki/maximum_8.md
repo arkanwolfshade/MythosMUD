@@ -4,10 +4,10 @@
 
 ## Key Concepts
 
-- **end_hour** (4 connections) — `schemas/calendar/schedule.schema.json`
-- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **minimum** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **maximum** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **duration_hours** (4 connections) — `schemas/calendar/holiday.schema.json`
+- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **minimum** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **maximum** (1 connections) — `schemas/calendar/holiday.schema.json`
 
 ## Relationships
 
@@ -15,7 +15,7 @@
 
 ## Source Files
 
-- `schemas/calendar/schedule.schema.json`
+- `schemas/calendar/holiday.schema.json`
 
 ## Audit Trail
 

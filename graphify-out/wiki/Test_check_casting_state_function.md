@@ -1,32 +1,29 @@
 # Test check casting state function.
 
-> 10 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **TestCheckCastingState** (6 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_casting_state_allowed_command()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_casting_state_no_magic_service()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_casting_state_player_casting()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_casting_state_handles_error()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _check_casting_state function.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _check_casting_state allows stop/interrupt/status during casting.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _check_casting_state returns None when no magic service.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _check_casting_state returns block result when player is casting.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _check_casting_state returns None on error.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **strict_mocker()** (5 connections) — `server/tests/fixtures/unit/mock_helpers.py`
+- **mock_helpers.py** (4 connections) — `server/tests/fixtures/unit/mock_helpers.py`
+- **strict_patch()** (4 connections) — `server/tests/fixtures/unit/mock_helpers.py`
+- **MockerFixture** (2 connections)
+- **Any** (2 connections)
+- **Strict mocking helpers for unit tests.  Provides fixtures and helpers that defau** (1 connections) — `server/tests/fixtures/unit/mock_helpers.py`
+- **Return a patch helper that enables autospec by default.      Usage:         patc** (1 connections) — `server/tests/fixtures/unit/mock_helpers.py`
+- **Convenience helper for direct calls with autospec=True by default.** (1 connections) — `server/tests/fixtures/unit/mock_helpers.py`
 
 ## Relationships
 
-- [check alias safety()](check_alias_safety%28%29.md) (4 shared connections)
-- [CommandExecutionRequest](CommandExecutionRequest.md) (1 shared connections)
+- [test command parser](test_command_parser.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_validation.py`
+- `server/tests/fixtures/unit/mock_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (100%)
+- EXTRACTED: 20 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

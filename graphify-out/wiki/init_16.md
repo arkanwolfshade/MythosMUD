@@ -28,7 +28,7 @@
 ## Relationships
 
 - [message broker](message_broker.md) (2 shared connections)
-- [message handler factory](message_handler_factory.md) (1 shared connections)
+- [. init ()](_init_%28%29.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,36 +1,33 @@
 # find dead connections()
 
-> 12 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **_find_dead_connections()** (11 connections) — `server/realtime/connection_establishment.py`
-- **test_find_dead_connections_no_player()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_find_dead_connections_all_active()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_find_dead_connections_not_in_active()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_find_dead_connections_none_websocket()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_find_dead_connections_not_connected()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Find dead WebSocket connections for a player before acquiring lock.      Args:** (1 connections) — `server/realtime/connection_establishment.py`
-- **Test _find_dead_connections() returns empty list when player not found.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _find_dead_connections() returns empty list when all connections are active** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _find_dead_connections() skips connections not in active_websockets.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _find_dead_connections() raises ConnectionError when websocket is None.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _find_dead_connections() finds dead connections.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **datetime** (6 connections)
+- **.update_player_last_active()** (4 connections) — `server/async_persistence.py`
+- **.get_decayed_containers()** (4 connections) — `server/async_persistence.py`
+- **Update the last_active timestamp for a player. Delegates to PlayerRepository.** (1 connections) — `server/async_persistence.py`
+- **Get decayed containers.** (1 connections) — `server/async_persistence.py`
 
 ## Relationships
 
-- [test connection establishment](test_connection_establishment.md) (6 shared connections)
-- [connection establishment](connection_establishment.md) (4 shared connections)
+- [chat nats publisher](chat_nats_publisher.md) (2 shared connections)
+- [init](init.md) (1 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
+- [time commands](time_commands.md) (1 shared connections)
+- [Protocol](Protocol.md) (1 shared connections)
+- [real time](real_time.md) (1 shared connections)
+- [PlayerChannelPreferences](PlayerChannelPreferences.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_establishment.py`
-- `server/tests/unit/realtime/test_connection_establishment.py`
+- `server/async_persistence.py`
 
 ## Audit Trail
 
-- EXTRACTED: 32 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 13 (81%)
+- INFERRED: 3 (19%)
 - AMBIGUOUS: 0 (0%)
 
 ---

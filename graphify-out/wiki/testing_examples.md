@@ -1,6 +1,6 @@
 # testing examples
 
-> 51 nodes
+> 53 nodes
 
 ## Key Concepts
 
@@ -10,6 +10,7 @@
 - **process_batch()** (4 connections) — `docs/examples/logging/testing_examples.py`
 - **WebSocket** (4 connections) — `docs/examples/logging/testing_examples.py`
 - **test_performance_logging()** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **test_exception_tracking()** (3 connections) — `docs/examples/logging/testing_examples.py`
 - **test_api_request_logging()** (3 connections) — `docs/examples/logging/testing_examples.py`
 - **test_async_logging()** (3 connections) — `docs/examples/logging/testing_examples.py`
 - **test_database_logging()** (3 connections) — `docs/examples/logging/testing_examples.py`
@@ -28,14 +29,13 @@
 - **LoggingMiddleware** (3 connections) — `docs/examples/logging/testing_examples.py`
 - **.process_request()** (3 connections) — `docs/examples/logging/testing_examples.py`
 - **request** (3 connections) — `docs/examples/logging/testing_examples.py`
-- **test_basic_logging()** (2 connections) — `docs/examples/logging/testing_examples.py`
-- *... and 26 more nodes in this community*
+- *... and 28 more nodes in this community*
 
 ## Relationships
 
-- [main()](main%28%29.md) (5 shared connections)
-- [. call ()](_call_%28%29.md) (2 shared connections)
-- [Test exception tracking functionality.](Test_exception_tracking_functionality.md) (2 shared connections)
+- [websocket integration](websocket_integration.md) (5 shared connections)
+- [fastapi integration](fastapi_integration.md) (2 shared connections)
+- [.shutdown()](shutdown%28%29.md) (2 shared connections)
 - [deprecated patterns](deprecated_patterns.md) (1 shared connections)
 
 ## Source Files
@@ -44,7 +44,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 131 (98%)
+- EXTRACTED: 135 (98%)
 - INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 

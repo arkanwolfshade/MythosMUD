@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_process_message_with_retry_exhaustion()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test _process_message_with_retry adds to DLQ and re-raises when all retries exha** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **.test_try_user_object_name_no_user_attr()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **Test _try_user_object_name without user attribute.** (1 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
 
 ## Relationships
 
-- [test nats message handler](test_nats_message_handler.md) (1 shared connections)
+- [container websocket events](container_websocket_events.md) (1 shared connections)
+- [PlayerNameExtractor](PlayerNameExtractor.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/tests/unit/realtime/test_player_name_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,51 +1,41 @@
 # test find item in room
 
-> 27 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **_find_item_in_room_drops()** (23 connections) — `server/commands/look_item.py`
-- **Test finding item in room drops by name.** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_room_drops_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_room_drops_by_prototype_id()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_room_drops_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_room_drops_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_room_drops_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_room_drops_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_room_drops_by_item_id()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_room_drops_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_room_drops_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_room_drops_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_room_drops_empty()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_room_drops_no_match()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_room_drops_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_room_drops_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_room_drops_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_room_drops_instance_number_zero()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_room_drops() with instance number.** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test finding item in room drops with instance number.** (2 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test _find_item_in_room_drops() with instance number out of range.** (2 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Find an item in room drops by name or prototype_id.      Args:         room_drop** (1 connections) — `server/commands/look_item.py`
-- **Test finding item in room drops with multiple matches.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test _find_item_in_room_drops() finds item by name.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_room_drops() returns None when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- *... and 2 more nodes in this community*
+- **lifespan_shutdown.py** (15 connections) — `server/app/lifespan_shutdown.py`
+- **shutdown_services()** (12 connections) — `server/app/lifespan_shutdown.py`
+- **FastAPI** (5 connections)
+- **_shutdown_mythos_chronicle()** (4 connections) — `server/app/lifespan_shutdown.py`
+- **_shutdown_nats_handler()** (4 connections) — `server/app/lifespan_shutdown.py`
+- **_shutdown_connection_manager()** (4 connections) — `server/app/lifespan_shutdown.py`
+- **_shutdown_mythos_tick_scheduler()** (4 connections) — `server/app/lifespan_shutdown.py`
+- **_shutdown_task_registry()** (4 connections) — `server/app/lifespan_shutdown.py`
+- **_shutdown_event_bus()** (4 connections) — `server/app/lifespan_shutdown.py`
+- **Application shutdown logic.  This module handles graceful shutdown of all servic** (1 connections) — `server/app/lifespan_shutdown.py`
+- **Shutdown and persist mythos chronicle state.** (1 connections) — `server/app/lifespan_shutdown.py`
+- **Shutdown NATS message handler if present.** (1 connections) — `server/app/lifespan_shutdown.py`
+- **Shutdown connection manager if present.** (1 connections) — `server/app/lifespan_shutdown.py`
+- **Shutdown mythos tick scheduler if present.** (1 connections) — `server/app/lifespan_shutdown.py`
+- **Shutdown task registry if present.** (1 connections) — `server/app/lifespan_shutdown.py`
+- **Shutdown event bus and clean up all service subscriptions.** (1 connections) — `server/app/lifespan_shutdown.py`
+- **Handle graceful shutdown of all services.** (1 connections) — `server/app/lifespan_shutdown.py`
 
 ## Relationships
 
-- [test find item in equipped](test_find_item_in_equipped.md) (10 shared connections)
-- [test look item](test_look_item.md) (8 shared connections)
-- [look item](look_item.md) (4 shared connections)
+- [test command parser](test_command_parser.md) (4 shared connections)
+- [.shutdown()](shutdown%28%29.md) (3 shared connections)
+- [get health status()](get_health_status%28%29.md) (3 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/look_item.py`
-- `server/tests/unit/commands/test_look_item.py`
-- `server/tests/unit/commands/test_look_item_helpers.py`
+- `server/app/lifespan_shutdown.py`
 
 ## Audit Trail
 
-- EXTRACTED: 88 (100%)
+- EXTRACTED: 64 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

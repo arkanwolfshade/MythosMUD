@@ -1,51 +1,50 @@
 # NPCDefinitionCRUDMixin
 
-> 30 nodes
+> 21 nodes
 
 ## Key Concepts
 
-- **NPCDefinitionCRUDMixin** (18 connections) — `server/services/npc_service/definition_crud.py`
-- **.update_npc_definition()** (9 connections) — `server/services/npc_service/definition_crud.py`
-- **AsyncSession** (8 connections)
-- **.create_npc_definition()** (8 connections) — `server/services/npc_service/definition_crud.py`
-- **._execute_npc_update()** (8 connections) — `server/services/npc_service/definition_crud.py`
-- **.get_npc_definitions()** (7 connections) — `server/services/npc_service/definition_crud.py`
-- **.get_npc_definition()** (7 connections) — `server/services/npc_service/definition_crud.py`
-- **._build_npc_update_data()** (7 connections) — `server/services/npc_service/definition_crud.py`
-- **.get_npc_definition_by_name()** (5 connections) — `server/services/npc_service/definition_crud.py`
-- **._log_npc_definition_created()** (4 connections) — `server/services/npc_service/definition_crud.py`
-- **._add_simple_field()** (4 connections) — `server/services/npc_service/definition_crud.py`
-- **Any** (4 connections)
-- **._add_json_field()** (4 connections) — `server/services/npc_service/definition_crud.py`
-- **.delete_npc_definition()** (4 connections) — `server/services/npc_service/definition_crud.py`
-- **._validate_create_npc_definition_params()** (3 connections) — `server/services/npc_service/definition_crud.py`
-- **._validate_npc_update_params()** (3 connections) — `server/services/npc_service/definition_crud.py`
-- **Mixin providing NPC definition CRUD operations.** (1 connections) — `server/services/npc_service/definition_crud.py`
-- **Get all NPC definitions.** (1 connections) — `server/services/npc_service/definition_crud.py`
-- **Get a specific NPC definition by ID.** (1 connections) — `server/services/npc_service/definition_crud.py`
-- **Get an NPC definition by name (case-insensitive).** (1 connections) — `server/services/npc_service/definition_crud.py`
-- **Create a new NPC definition.** (1 connections) — `server/services/npc_service/definition_crud.py`
-- **Validate create_npc_definition parameters. Raises ValueError if invalid.** (1 connections) — `server/services/npc_service/definition_crud.py`
-- **Log successful NPC definition creation.** (1 connections) — `server/services/npc_service/definition_crud.py`
-- **Validate NPC update parameters.** (1 connections) — `server/services/npc_service/definition_crud.py`
-- **Add a simple field to update_data if value is not None.** (1 connections) — `server/services/npc_service/definition_crud.py`
-- *... and 5 more nodes in this community*
+- **ConnectionCleaner** (27 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Any** (15 connections)
+- **.cleanup_ghost_players()** (9 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **.cleanup_orphaned_data()** (7 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._close_and_remove_stale_websocket()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._get_online_player_ids()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._filter_actual_ghost_players()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._get_player_id_from_metadata()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._get_potential_ghost_players()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._remove_ghost_players_from_room()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._identify_stale_connections()** (3 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Manages connection cleanup and maintenance operations.      This class provides:** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Return connection IDs that exceed max_connection_age.** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Extract player_id from connection metadata if present.** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Close stale WebSocket and remove from tracking. Handles None websocket defensive** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Clean up orphaned data that might accumulate over time.          Args:** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Return set of online player IDs as strings (room._players uses string UUIDs).** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Return players in room but not online. Empty if room has no get_players.** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Filter to players with zero WebSocket connections (or invalid UUIDs).** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Remove ghost players from room and log.** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Clean up ghost players from all rooms.          This method removes players from** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
 
 ## Relationships
 
-- [main()](main%28%29.md) (11 shared connections)
-- [. repr ()](_repr_%28%29.md) (7 shared connections)
-- [Request](Request.md) (2 shared connections)
-- [.initialize()](initialize%28%29.md) (1 shared connections)
+- [Reset database state before each](Reset_database_state_before_each.md) (11 shared connections)
+- [real time](real_time.md) (5 shared connections)
+- [occupation slots 9()](occupation_slots_9%28%29.md) (5 shared connections)
+- [Test check grace period block](Test_check_grace_period_block.md) (4 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
+- [generate invites](generate_invites.md) (2 shared connections)
+- [test connection cleaner](test_connection_cleaner.md) (1 shared connections)
+- [.get stats()](get_stats%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/npc_service/definition_crud.py`
+- `server/realtime/maintenance/connection_cleaner.py`
 
 ## Audit Trail
 
-- EXTRACTED: 116 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 94 (95%)
+- INFERRED: 5 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

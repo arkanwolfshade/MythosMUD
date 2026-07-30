@@ -26,8 +26,8 @@
 
 - [ChatPanelTest](ChatPanelTest.md) (2 shared connections)
 - [AppCreationFlowViews](AppCreationFlowViews.md) (1 shared connections)
-- [EdgeDetailsPanel](EdgeDetailsPanel.md) (1 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
+- [EdgeCreationModal](EdgeCreationModal.md) (1 shared connections)
+- [GameLogMessagesList](GameLogMessagesList.md) (1 shared connections)
 
 ## Source Files
 

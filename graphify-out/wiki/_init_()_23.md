@@ -1,51 +1,36 @@
 # . init ()
 
-> 42 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **ValidationRule** (10 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **ValidationError** (8 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **.validate()** (6 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **.validate_room()** (5 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
-- **Path** (5 connections)
-- **base_rule.py** (5 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **.__init__()** (4 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
-- **.validate_room_file()** (4 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
-- **.validate_subzone_config()** (4 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
-- **.validate_zone_config()** (4 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
-- **._load_schema()** (3 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
-- **.validate_room_database()** (3 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
-- **__init__.py** (3 connections) — `tools/room_toolkit/room_validator/rules/__init__.py`
-- **.create_error()** (3 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **.create_warning()** (3 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **.__init__()** (2 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **.to_dict()** (2 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **.__str__()** (2 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **ABC** (2 connections)
-- **.__init__()** (2 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **._filter_rooms_by_zone()** (2 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **.get_rule_info()** (2 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **Initialize the schema validator.          Args:             schema_path: Path to** (1 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
-- **Load and cache the JSON schema.** (1 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
-- **Validate a single room against the schema.          Args:             room_data:** (1 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
-- *... and 17 more nodes in this community*
+- **🎯 MANDATORY AI EXECUTION PROTOCOL** (8 connections) — `.cursor/commands/lint-remediation.md`
+- **Phase 5: Fix Implementation Patterns** (4 connections) — `.cursor/commands/lint-remediation.md`
+- **Phase 4: Tool Selection Guide** (3 connections) — `.cursor/commands/lint-remediation.md`
+- **Phase 3: Systematic Fixing Process** (2 connections) — `.cursor/commands/lint-remediation.md`
+- **Phase 1: Initial Assessment (REQUIRED FIRST)** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **For Each Issue Category** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **Python/Ruff Issues** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **React/ESLint Issues** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **🔴 CRITICAL FIXES - Compilation Errors** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **🟡 HIGH PRIORITY FIXES - Code Quality Issues** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **🟢 MEDIUM PRIORITY FIXES - Style Issues** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **Phase 6: Verification Protocol** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **Phase 7: Success Validation** (1 connections) — `.cursor/commands/lint-remediation.md`
 
 ## Relationships
 
-- [Convert legacy string format exits](Convert_legacy_string_format_exits.md) (7 shared connections)
-- [Any](Any.md) (1 shared connections)
+- [lint remediation](lint_remediation.md) (1 shared connections)
+- [minLength](minLength.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/core/schema_validator.py`
-- `tools/room_toolkit/room_validator/rules/__init__.py`
-- `tools/room_toolkit/room_validator/rules/base_rule.py`
+- `.cursor/commands/lint-remediation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 97 (93%)
-- INFERRED: 7 (7%)
+- EXTRACTED: 26 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

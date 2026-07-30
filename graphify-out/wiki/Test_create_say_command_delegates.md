@@ -1,28 +1,24 @@
 # Test create say command delegates
 
-> 7 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Test create_say_command delegates to communication factory.** (6 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **test_create_say_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **test_create_system_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **test_create_me_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **test_create_pose_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **test_create_whisper_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **test_create_reply_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_behavior_engine_init()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test BehaviorEngine initialization.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [test command factories](test_command_factories.md) (6 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [test behavior engine](test_behavior_engine.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,51 +1,52 @@
 # test command parser helpers
 
-> 38 nodes
+> 28 nodes
 
 ## Key Concepts
 
-- **test_command_parser_helpers.py** (24 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_normalize_command_removes_slash_prefix()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_normalize_command_cleans_whitespace()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_normalize_command_strips_whitespace()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_normalize_command_no_slash()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_parse_command_parts_simple()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_parse_command_parts_with_args()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_parse_command_parts_lowercases_command()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_parse_command_parts_empty_raises()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_parse_command_parts_whitespace_only_raises()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_get_command_help_specific_command()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_get_command_help_unknown_command()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_get_command_help_none()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_create_command_object_with_alias_l()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_create_command_object_with_alias_g()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_create_command_object_with_alias_w()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_create_command_object_unsupported_command()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_create_command_object_pydantic_validation_error()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_create_command_object_value_error()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **Unit tests for command_parser helper methods.  Tests the helper methods in Comma** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **Test _normalize_command() removes leading slash.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **Test _normalize_command() cleans multiple whitespace.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **Test _normalize_command() strips leading/trailing whitespace.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **Test _normalize_command() handles command without slash.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **Test _parse_command_parts() parses simple command.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- *... and 13 more nodes in this community*
+- **.create_equip_command()** (16 connections) — `server/utils/command_factories_inventory.py`
+- **_parse_equip_selector()** (5 connections) — `server/utils/command_factories_inventory.py`
+- **test_create_equip_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_equip_command_index_zero()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_equip_command_index_negative()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_equip_command_empty_search_term()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_equip_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_equip_command_index_with_slot()** (3 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_equip_command_search_term_with_slot()** (3 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_equip_command_inferred_slot()** (3 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_equip_command_with_slot()** (3 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
+- **test_create_equip_command_with_name_and_slot()** (3 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
+- **_normalize_equip_slot_tokens()** (3 connections) — `server/utils/command_factories_inventory.py`
+- **_maybe_extract_equip_slot()** (3 connections) — `server/utils/command_factories_inventory.py`
+- **Test create_equip_command() creates EquipCommand.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **Test create_equip_command() raises error with no args.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **Test create_equip_command() raises error when index is zero.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **Test create_equip_command() raises error when index is negative.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **Test create_equip_command() handles index with slot.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **Test create_equip_command() handles search term with slot.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **Test create_equip_command() raises error when search term is empty.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **Test create_equip_command() infers slot from known slots.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **Test create_equip_command() with slot.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
+- **Test create_equip_command() with item name and inferred slot.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
+- **Normalize multi-word slot tokens (e.g. 'main hand' -> 'main_hand'); reduces crea** (1 connections) — `server/utils/command_factories_inventory.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [command parser()](command_parser%28%29.md) (2 shared connections)
-- [main()](main%28%29.md) (1 shared connections)
-- [. init ()](_init_%28%29.md) (1 shared connections)
-- [Any](Any.md) (1 shared connections)
+- [Spell Targeting](Spell_Targeting.md) (16 shared connections)
+- [.initialize()](initialize%28%29.md) (4 shared connections)
+- [.validate search term()](validate_search_term%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_parser_helpers.py`
+- `server/tests/unit/utils/test_command_factories_inventory.py`
+- `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
+- `server/utils/command_factories_inventory.py`
 
 ## Audit Trail
 
-- EXTRACTED: 79 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 71 (95%)
+- INFERRED: 4 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

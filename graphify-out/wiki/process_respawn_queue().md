@@ -20,8 +20,7 @@
 
 ## Relationships
 
-- [. repr ()](_repr_%28%29.md) (3 shared connections)
-- [main()](main%28%29.md) (3 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (6 shared connections)
 
 ## Source Files
 

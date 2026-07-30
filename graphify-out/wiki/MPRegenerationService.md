@@ -1,49 +1,49 @@
 # MPRegenerationService
 
-> 22 nodes
+> 62 nodes
 
 ## Key Concepts
 
-- **MPRegenerationService** (20 connections) — `server/game/magic/mp_regeneration_service.py`
-- **.process_tick_regeneration()** (6 connections) — `server/game/magic/mp_regeneration_service.py`
-- **UUID** (5 connections)
-- **Any** (5 connections)
-- **._get_regen_multiplier()** (4 connections) — `server/game/magic/mp_regeneration_service.py`
-- **.restore_mp_from_rest()** (4 connections) — `server/game/magic/mp_regeneration_service.py`
-- **.restore_mp_from_meditation()** (4 connections) — `server/game/magic/mp_regeneration_service.py`
-- **.restore_mp_from_item()** (4 connections) — `server/game/magic/mp_regeneration_service.py`
+- **test_mp_regeneration_service.py** (33 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 - **mp_regeneration_service()** (4 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **.__init__()** (3 connections) — `server/game/magic/mp_regeneration_service.py`
 - **test_mp_regeneration_service_init()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 - **test_mp_regeneration_service_init_custom_rate()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **Service for managing MP regeneration.      Handles passive regeneration over tim** (1 connections) — `server/game/magic/mp_regeneration_service.py`
-- **Initialize the MP regeneration service.          Args:             player_servic** (1 connections) — `server/game/magic/mp_regeneration_service.py`
-- **Process MP regeneration for a player on a game tick.          Args:** (1 connections) — `server/game/magic/mp_regeneration_service.py`
-- **Get MP regeneration multiplier based on player state.          Args:** (1 connections) — `server/game/magic/mp_regeneration_service.py`
-- **Restore MP from resting (accelerated regeneration).          Args:             p** (1 connections) — `server/game/magic/mp_regeneration_service.py`
-- **Restore MP from meditation (highly accelerated regeneration).          Args:** (1 connections) — `server/game/magic/mp_regeneration_service.py`
-- **Restore MP from consuming an item.          Args:             player_id: Player** (1 connections) — `server/game/magic/mp_regeneration_service.py`
-- **Create an MPRegenerationService instance.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **Test MPRegenerationService initialization.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **Test MPRegenerationService initialization with custom regen_rate.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **mock_player_service()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **sample_player_id()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **mock_player()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **test_process_tick_regeneration_player_not_found()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **test_process_tick_regeneration_at_max()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **test_process_tick_regeneration_restores_mp()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **test_process_tick_regeneration_calculates_max_from_power()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **test_process_tick_regeneration_fractional_accumulation()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **test_get_regen_multiplier_standing()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **test_get_regen_multiplier_sitting()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **test_get_regen_multiplier_lying()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **test_get_regen_multiplier_default_position()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **test_restore_mp_from_rest_player_not_found()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **test_restore_mp_from_rest_at_max()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **test_restore_mp_from_rest_restores_mp()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **test_restore_mp_from_rest_calculates_max_from_power()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **test_restore_mp_from_meditation_player_not_found()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **test_restore_mp_from_meditation_at_max()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **test_restore_mp_from_meditation_restores_mp()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **test_restore_mp_from_meditation_higher_than_rest()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **test_restore_mp_from_item_player_not_found()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- *... and 37 more nodes in this community*
 
 ## Relationships
 
-- [. init ()](_init_%28%29.md) (7 shared connections)
-- [Connection Manager](Connection_Manager.md) (4 shared connections)
-- [test mp regeneration service](test_mp_regeneration_service.md) (4 shared connections)
-- [UUID](UUID.md) (1 shared connections)
-- [Any](Any.md) (1 shared connections)
+- [message handler factory](message_handler_factory.md) (5 shared connections)
+- [CommandHandler](CommandHandler.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/magic/mp_regeneration_service.py`
 - `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 71 (95%)
-- INFERRED: 4 (5%)
+- EXTRACTED: 127 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

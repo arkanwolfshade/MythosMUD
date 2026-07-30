@@ -1,11 +1,12 @@
 # multiplayer playwright testing
 
-> 9 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **multiplayer-playwright-testing.md** (8 connections) — `.cursor/commands/multiplayer-playwright-testing.md`
+- **multiplayer-playwright-testing.md** (9 connections) — `.cursor/commands/multiplayer-playwright-testing.md`
 - **🚨 CRITICAL AI EXECUTOR REQUIREMENTS 🚨** (1 connections) — `.cursor/commands/multiplayer-playwright-testing.md`
+- **🛑 MANDATORY EXECUTION PROTOCOL 🛑** (1 connections) — `.cursor/commands/multiplayer-playwright-testing.md`
 - **🎮 MODULAR E2E TEST SUITE STRUCTURE 🎮** (1 connections) — `.cursor/commands/multiplayer-playwright-testing.md`
 - **📋 EXECUTION OPTIONS** (1 connections) — `.cursor/commands/multiplayer-playwright-testing.md`
 - **🎯 AVAILABLE SCENARIOS** (1 connections) — `.cursor/commands/multiplayer-playwright-testing.md`
@@ -24,7 +25,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,54 +1,56 @@
 # MapZoneContext
 
-> 52 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **map_minimap.py** (21 connections) — `server/api/map_minimap.py`
-- **test_map_minimap_helpers.py** (20 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- **MapZoneContext** (19 connections) — `server/api/map_helpers.py`
-- **generate_minimap_html()** (16 connections) — `server/api/map_minimap.py`
-- **_ensure_current_room_in_minimap_rooms()** (11 connections) — `server/api/map_minimap.py`
-- **_resolve_current_room_for_minimap()** (9 connections) — `server/api/map_minimap.py`
-- **_apply_minimap_fallback_coordinates()** (9 connections) — `server/api/map_minimap.py`
-- **_append_room_with_fallback_coords_if_needed()** (8 connections) — `server/api/map_minimap.py`
-- **TestApplyMinimapFallbackCoordinates** (8 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- **TestAppendRoomWithFallbackCoordsIfNeeded** (7 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- **test_generate_minimap_html_admin_path()** (5 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- **test_generate_minimap_html_non_admin_filters_exploration()** (5 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- **Any** (4 connections)
-- **AsyncSession** (3 connections)
-- **.test_appends_room_unchanged_when_has_coords()** (3 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- **.test_appends_copy_with_fallback_0_0_when_coords_missing()** (3 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- **.test_appends_fallback_when_only_one_coord_missing()** (3 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- **.test_admin_gets_grid_layout_for_rooms_without_coords()** (3 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- **.test_fallback_grid_wraps_by_fallback_grid_width()** (3 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- **.test_non_admin_gets_fallback_only_for_current_room()** (3 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- **.test_non_admin_uses_stable_id_for_current_room_match()** (3 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- **test_resolve_current_room_from_pre_filter_list()** (3 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- **test_resolve_current_room_loads_when_not_in_list()** (3 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- **test_ensure_current_room_in_minimap_noop_without_id()** (3 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- **test_ensure_current_room_in_minimap_noop_when_already_present()** (3 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- *... and 27 more nodes in this community*
+- **NATSConfig** (22 connections) — `server/config/models/nats.py`
+- **.__init__()** (5 connections) — `server/infrastructure/nats_broker.py`
+- **test_connect_with_tls_enabled_passes_tls_options()** (4 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_nats_service_init_with_dict()** (4 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_service_init_with_none()** (4 connections) — `server/tests/unit/services/test_nats_service.py`
+- **.validate_tls_files()** (3 connections) — `server/config/models/nats.py`
+- **.validate_tls_config()** (3 connections) — `server/config/models/nats.py`
+- **nats_config()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **nats_config()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **.validate_max_payload()** (2 connections) — `server/config/models/nats.py`
+- **.validate_positive()** (2 connections) — `server/config/models/nats.py`
+- **BaseSettings** (1 connections)
+- **Any** (1 connections)
+- **NATS messaging configuration.** (1 connections) — `server/config/models/nats.py`
+- **Validate TLS file paths exist when TLS is enabled.** (1 connections) — `server/config/models/nats.py`
+- **Validate TLS configuration is complete when enabled.** (1 connections) — `server/config/models/nats.py`
+- **Validate max payload is reasonable.** (1 connections) — `server/config/models/nats.py`
+- **Validate value is positive.** (1 connections) — `server/config/models/nats.py`
+- **Initialize NATS message broker.          Args:             config: NATS configur** (1 connections) — `server/infrastructure/nats_broker.py`
+- **Create a NATSConfig instance.** (1 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **Test connect() passes TLS options to nats.connect when tls_enabled=True.** (1 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **Create a NATSConfig instance.** (1 connections) — `server/tests/unit/services/test_nats_service.py`
+- **Test NATSService initialization with dict config.** (1 connections) — `server/tests/unit/services/test_nats_service.py`
+- **Test NATSService initialization with None config.** (1 connections) — `server/tests/unit/services/test_nats_service.py`
 
 ## Relationships
 
-- [AsyncSession](AsyncSession.md) (15 shared connections)
-- [map helpers](map_helpers.md) (7 shared connections)
-- [maps](maps.md) (6 shared connections)
-- [main()](main%28%29.md) (5 shared connections)
-- [ascii map renderer](ascii_map_renderer.md) (3 shared connections)
+- [message broker](message_broker.md) (6 shared connections)
+- [world](world.md) (4 shared connections)
+- [BaseUserManager](BaseUserManager.md) (4 shared connections)
+- [FollowTargetValue](FollowTargetValue.md) (3 shared connections)
+- [. init ()](_init_%28%29.md) (2 shared connections)
+- [connection state machine](connection_state_machine.md) (1 shared connections)
+- [get subject manager dependency()](get_subject_manager_dependency%28%29.md) (1 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/map_helpers.py`
-- `server/api/map_minimap.py`
-- `server/tests/unit/api/test_map_minimap_helpers.py`
+- `server/config/models/nats.py`
+- `server/infrastructure/nats_broker.py`
+- `server/tests/unit/infrastructure/test_nats_broker.py`
+- `server/tests/unit/services/test_nats_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 199 (96%)
-- INFERRED: 9 (4%)
+- EXTRACTED: 63 (93%)
+- INFERRED: 5 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

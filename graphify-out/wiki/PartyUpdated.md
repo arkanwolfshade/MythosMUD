@@ -1,49 +1,38 @@
 # PartyUpdated
 
-> 16 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **party_service.py** (16 connections) — `server/game/party_service.py`
-- **PartyUpdated** (12 connections) — `server/events/event_types.py`
-- **test_party_flow.py** (12 connections) — `server/tests/integration/test_party_flow.py`
-- **party_events()** (4 connections) — `server/tests/integration/test_party_flow.py`
-- **party_service()** (4 connections) — `server/tests/integration/test_party_flow.py`
-- **test_party_invite_join_leave_disband_state_and_events()** (4 connections) — `server/tests/integration/test_party_flow.py`
-- **test_party_leader_leaves_disbands()** (4 connections) — `server/tests/integration/test_party_flow.py`
-- **event_bus()** (3 connections) — `server/tests/integration/test_party_flow.py`
-- **Event fired when party membership or leadership changes.      Emitted by PartySe** (1 connections) — `server/events/event_types.py`
-- **Party service for MythosMUD.  In-memory ephemeral party state: parties exist onl** (1 connections) — `server/game/party_service.py`
-- **Integration tests for party (ephemeral grouping) feature.  Flow: Two players; le** (1 connections) — `server/tests/integration/test_party_flow.py`
-- **Real EventBus for integration.** (1 connections) — `server/tests/integration/test_party_flow.py`
-- **Collect PartyUpdated events published during test.** (1 connections) — `server/tests/integration/test_party_flow.py`
-- **PartyService wired to real EventBus.** (1 connections) — `server/tests/integration/test_party_flow.py`
-- **Two players: A creates party, adds B; B leaves; A disbands.     Verify in-memory** (1 connections) — `server/tests/integration/test_party_flow.py`
-- **When leader leaves, party is disbanded and disbanded event is emitted.** (1 connections) — `server/tests/integration/test_party_flow.py`
+- **extract_subzone_from_room_id()** (15 connections) — `server/utils/room_utils.py`
+- **room_utils.py** (9 connections) — `server/utils/room_utils.py`
+- **get_subzone_local_channel_subject()** (6 connections) — `server/utils/room_utils.py`
+- **._get_destination_subzone()** (4 connections) — `server/npc/movement_integration.py`
+- **.validate_subzone_boundary()** (3 connections) — `server/npc/movement_integration.py`
+- **Resolve the subzone ID for a destination room (from room attribute or room_id).** (1 connections) — `server/npc/movement_integration.py`
+- **Validate that a destination room is within the NPC's allowed subzone.** (1 connections) — `server/npc/movement_integration.py`
+- **Room utility functions for MythosMUD.  This module provides utility functions fo** (1 connections) — `server/utils/room_utils.py`
+- **Extract sub-zone from room ID.      Room ID format: {plane}_{zone}_{sub_zone}_{r** (1 connections) — `server/utils/room_utils.py`
+- **Generate NATS subject for sub-zone local channel messages.      This creates a s** (1 connections) — `server/utils/room_utils.py`
 
 ## Relationships
 
-- [PartyService](PartyService.md) (8 shared connections)
-- [Any](Any.md) (6 shared connections)
-- [.initialize()](initialize%28%29.md) (5 shared connections)
-- [Party](Party.md) (2 shared connections)
-- [UUID](UUID.md) (2 shared connections)
-- [main()](main%28%29.md) (2 shared connections)
-- [. post init ()](_post_init_%28%29.md) (1 shared connections)
-- [.create party()](create_party%28%29.md) (1 shared connections)
+- [. get destination subzone()](_get_destination_subzone%28%29.md) (12 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (5 shared connections)
+- [. init ()](_init_%28%29.md) (2 shared connections)
 - [Player](Player.md) (1 shared connections)
-- [test party service](test_party_service.md) (1 shared connections)
+- [EnvironmentalContainerLoader](EnvironmentalContainerLoader.md) (1 shared connections)
+- [AsyncSession](AsyncSession.md) (1 shared connections)
 
 ## Source Files
 
-- `server/events/event_types.py`
-- `server/game/party_service.py`
-- `server/tests/integration/test_party_flow.py`
+- `server/npc/movement_integration.py`
+- `server/utils/room_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 65 (97%)
-- INFERRED: 2 (3%)
+- EXTRACTED: 42 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

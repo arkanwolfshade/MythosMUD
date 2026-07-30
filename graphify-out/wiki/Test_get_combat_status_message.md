@@ -1,24 +1,23 @@
 # Test get combat status message
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **test_get_combat_status_message_in_combat()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_get_combat_status_message_not_in_combat()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test get_combat_status_message when in combat.** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_get_player_lucidity_tier_default()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _get_player_lucidity_tier returns default on error.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [test combat validator](test_combat_validator.md) (2 shared connections)
+- [test nats message handler chat](test_nats_message_handler_chat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

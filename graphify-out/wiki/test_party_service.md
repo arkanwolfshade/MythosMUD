@@ -1,11 +1,10 @@
 # test party service
 
-> 60 nodes
+> 58 nodes
 
 ## Key Concepts
 
-- **test_party_service.py** (35 connections) — `server/tests/unit/game/test_party_service.py`
-- **party_service()** (3 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_party_service.py** (38 connections) — `server/tests/unit/game/test_party_service.py`
 - **test_create_party_success()** (2 connections) — `server/tests/unit/game/test_party_service.py`
 - **test_create_party_already_in_party_rejected()** (2 connections) — `server/tests/unit/game/test_party_service.py`
 - **test_add_member_success()** (2 connections) — `server/tests/unit/game/test_party_service.py`
@@ -29,13 +28,17 @@
 - **test_is_leader_false_when_not_in_party()** (2 connections) — `server/tests/unit/game/test_party_service.py`
 - **test_is_leader_false_when_member()** (2 connections) — `server/tests/unit/game/test_party_service.py`
 - **test_on_player_disconnect_member_removed()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- *... and 35 more nodes in this community*
+- **test_on_player_disconnect_leader_disbands_party()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- *... and 33 more nodes in this community*
 
 ## Relationships
 
-- [Party](Party.md) (3 shared connections)
-- [PartyService](PartyService.md) (2 shared connections)
-- [PartyUpdated](PartyUpdated.md) (1 shared connections)
+- [Any](Any.md) (3 shared connections)
+- [.validate player name field()](validate_player_name_field%28%29.md) (2 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
+- [test command factories player state](test_command_factories_player_state.md) (1 shared connections)
+- [get user db()](get_user_db%28%29.md) (1 shared connections)
+- [conftest](conftest.md) (1 shared connections)
 
 ## Source Files
 
@@ -43,7 +46,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 124 (100%)
+- EXTRACTED: 123 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

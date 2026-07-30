@@ -1,33 +1,25 @@
 # handle explore command()
 
-> 9 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **handle_explore_command()** (8 connections) — `server/commands/exploration_commands.py`
-- **test_exploration_commands.py** (5 connections) — `server/tests/unit/commands/test_exploration_commands.py`
-- **test_handle_explore_command()** (3 connections) — `server/tests/unit/commands/test_exploration_commands.py`
-- **test_handle_explore_command_no_persistence()** (3 connections) — `server/tests/unit/commands/test_exploration_commands.py`
-- **Any** (1 connections)
-- **Handle exploration requests by returning a simple message.      This lightweight** (1 connections) — `server/commands/exploration_commands.py`
-- **Unit tests for exploration command handlers.  Tests the exploration command func** (1 connections) — `server/tests/unit/commands/test_exploration_commands.py`
-- **Test handle_explore_command() explores area.** (1 connections) — `server/tests/unit/commands/test_exploration_commands.py`
-- **Test handle_explore_command() handles missing persistence.** (1 connections) — `server/tests/unit/commands/test_exploration_commands.py`
+- **._handle_event_message()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **Handle incoming event messages from NATS.** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
 
 ## Relationships
 
-- [Any](Any.md) (3 shared connections)
-- [.state()](state%28%29.md) (1 shared connections)
+- [NATSMessageSubscriptionMixin](NATSMessageSubscriptionMixin.md) (1 shared connections)
+- [PerformanceTracker](PerformanceTracker.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/exploration_commands.py`
-- `server/tests/unit/commands/test_exploration_commands.py`
+- `server/realtime/nats_message_handler_subscriptions.py`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (96%)
-- INFERRED: 1 (4%)
+- EXTRACTED: 4 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

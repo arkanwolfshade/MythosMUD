@@ -1,50 +1,35 @@
 # . init ()
 
-> 16 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **QuestInstanceRepository** (19 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- **QuestDefinitionRepository** (17 connections) — `server/persistence/repositories/quest_definition_repository.py`
-- **test_quest_flow.py** (15 connections) — `server/tests/integration/test_quest_flow.py`
-- **test_quest_start_log_abandon_flow()** (7 connections) — `server/tests/integration/test_quest_flow.py`
-- **test_quest_start_by_trigger_then_abandon()** (7 connections) — `server/tests/integration/test_quest_flow.py`
-- **_make_shared_session_factory()** (5 connections) — `server/tests/integration/test_quest_flow.py`
-- **quest_instance_repository()** (3 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
-- **.__init__()** (2 connections) — `server/persistence/repositories/quest_definition_repository.py`
-- **.__init__()** (2 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- **Repository for quest_definitions and quest_offers (read-only for offers).** (1 connections) — `server/persistence/repositories/quest_definition_repository.py`
-- **Repository for quest_instances table.** (1 connections) — `server/persistence/repositories/quest_instance_repository.py`
-- **Integration tests for quest subsystem: start, quest log, abandon flow.  Uses rea** (1 connections) — `server/tests/integration/test_quest_flow.py`
-- **Return a callable that behaves like a session maker but always yields the same** (1 connections) — `server/tests/integration/test_quest_flow.py`
-- **Integration: start leave_the_tutorial, get_quest_log shows it, abandon, log empt** (1 connections) — `server/tests/integration/test_quest_flow.py`
-- **Start quest via start_quest_by_trigger(room), then abandon.     Verifies trigger** (1 connections) — `server/tests/integration/test_quest_flow.py`
-- **Create a QuestInstanceRepository instance.** (1 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
+- **schedule_end_combat_if_npc_died_best_effort()** (8 connections) — `server/npc/npc_combat_schedule.py`
+- **test_npc_combat_schedule.py** (5 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
+- **._schedule_end_combat_if_npc_died()** (4 connections) — `server/npc/npc_base.py`
+- **test_schedule_end_combat_if_npc_died_no_service()** (3 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
+- **test_schedule_end_combat_if_npc_died_no_running_loop()** (3 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
+- **Schedule end_combat_if_npc_died so the slain NPC no longer gets combat turns (be** (1 connections) — `server/npc/npc_base.py`
+- **Schedule end_combat_if_npc_died so the slain NPC no longer gets combat turns (be** (1 connections) — `server/npc/npc_combat_schedule.py`
+- **Unit tests for best-effort NPC combat cleanup scheduling.** (1 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
+- **When combat service is missing, scheduling is a no-op.** (1 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
+- **Without a running asyncio loop, scheduling fails quietly (RuntimeError path).** (1 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
 
 ## Relationships
 
-- [main()](main%28%29.md) (18 shared connections)
-- [Any](Any.md) (6 shared connections)
-- [Base](Base.md) (4 shared connections)
-- [QuestCompleted](QuestCompleted.md) (4 shared connections)
-- [test quest definition repository](test_quest_definition_repository.md) (2 shared connections)
-- [test quest instance repository](test_quest_instance_repository.md) (2 shared connections)
-- [. init ()](_init_%28%29.md) (2 shared connections)
-- [async sessionmaker](async_sessionmaker.md) (2 shared connections)
-- [APIRouter](APIRouter.md) (1 shared connections)
-- [AsyncSessionFactory](AsyncSessionFactory.md) (1 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (5 shared connections)
+- [. initialize handlers()](_initialize_handlers%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/persistence/repositories/quest_definition_repository.py`
-- `server/persistence/repositories/quest_instance_repository.py`
-- `server/tests/integration/test_quest_flow.py`
-- `server/tests/unit/persistence/test_quest_instance_repository.py`
+- `server/npc/npc_base.py`
+- `server/npc/npc_combat_schedule.py`
+- `server/tests/unit/npc/test_npc_combat_schedule.py`
 
 ## Audit Trail
 
-- EXTRACTED: 75 (89%)
-- INFERRED: 9 (11%)
+- EXTRACTED: 28 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

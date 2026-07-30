@@ -1,49 +1,51 @@
 # CORSConfig
 
-> 28 nodes
+> 34 nodes
 
 ## Key Concepts
 
-- **CORSConfig** (19 connections) — `server/config/models/cors.py`
-- **._parse_csv()** (10 connections) — `server/config/models/cors.py`
-- **._validate_non_empty()** (5 connections) — `server/config/models/cors.py`
-- **._clean_list_items()** (5 connections) — `server/config/models/cors.py`
-- **._parse_json_array()** (5 connections) — `server/config/models/cors.py`
-- **._parse_comma_separated()** (4 connections) — `server/config/models/cors.py`
-- **.parse_allow_origins()** (3 connections) — `server/config/models/cors.py`
-- **.parse_allow_methods()** (3 connections) — `server/config/models/cors.py`
-- **.parse_allow_headers()** (3 connections) — `server/config/models/cors.py`
-- **.parse_expose_headers()** (3 connections) — `server/config/models/cors.py`
-- **._validate_and_warn_wildcards()** (2 connections) — `server/config/models/cors.py`
-- **.parse_max_age()** (2 connections) — `server/config/models/cors.py`
-- **.validate_max_age()** (2 connections) — `server/config/models/cors.py`
-- **BaseSettings** (1 connections)
-- **Any** (1 connections)
-- **Cross-origin resource sharing configuration.      Configuration precedence (high** (1 connections) — `server/config/models/cors.py`
-- **Validate CORS configuration and warn about wildcard origins.** (1 connections) — `server/config/models/cors.py`
-- **Validate that cleaned list is not empty if allow_empty is False.** (1 connections) — `server/config/models/cors.py`
-- **Clean and filter list items, removing empty strings.** (1 connections) — `server/config/models/cors.py`
-- **Parse JSON array string if it looks like one, otherwise return None.** (1 connections) — `server/config/models/cors.py`
-- **Parse comma-separated string into cleaned list.** (1 connections) — `server/config/models/cors.py`
-- **Parse comma separated strings or lists into a cleaned list of strings.** (1 connections) — `server/config/models/cors.py`
-- **Parse allowed origins from various input formats.** (1 connections) — `server/config/models/cors.py`
-- **Parse and validate CORS allowed methods. Converts all methods to uppercase.** (1 connections) — `server/config/models/cors.py`
-- **Parse and validate CORS allowed headers.** (1 connections) — `server/config/models/cors.py`
-- *... and 3 more nodes in this community*
+- **MovementMonitor** (21 connections) — `server/game/movement_monitor.py`
+- **movement_monitor.py** (12 connections) — `server/game/movement_monitor.py`
+- **reset_movement_monitor()** (8 connections) — `server/game/movement_monitor.py`
+- **.get_metrics()** (6 connections) — `server/game/movement_monitor.py`
+- **.get_alerts()** (6 connections) — `server/game/movement_monitor.py`
+- **.get_performance_summary()** (5 connections) — `server/game/movement_monitor.py`
+- **.record_movement_attempt()** (4 connections) — `server/game/movement_monitor.py`
+- **.validate_room_integrity()** (4 connections) — `server/game/movement_monitor.py`
+- **._check_alerts()** (4 connections) — `server/game/movement_monitor.py`
+- **.log_performance_summary()** (4 connections) — `server/game/movement_monitor.py`
+- **test_reset_movement_monitor()** (4 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **.__init__()** (3 connections) — `server/game/movement_monitor.py`
+- **.record_integrity_check()** (3 connections) — `server/game/movement_monitor.py`
+- **Any** (3 connections)
+- **.reset_metrics()** (3 connections) — `server/game/movement_monitor.py`
+- **movement_monitor()** (3 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **UUID** (2 connections)
+- **.record_concurrent_movement()** (2 connections) — `server/game/movement_monitor.py`
+- **Movement monitoring and validation system for MythosMUD.  This module provides c** (1 connections) — `server/game/movement_monitor.py`
+- **Comprehensive monitoring system for the movement system.      This class provide** (1 connections) — `server/game/movement_monitor.py`
+- **Initialize the movement monitor with empty metrics.** (1 connections) — `server/game/movement_monitor.py`
+- **Record a movement attempt with metrics.** (1 connections) — `server/game/movement_monitor.py`
+- **Record concurrent movement count.** (1 connections) — `server/game/movement_monitor.py`
+- **Record an integrity check result.** (1 connections) — `server/game/movement_monitor.py`
+- **Validate room data integrity.          Returns a dictionary with validation resu** (1 connections) — `server/game/movement_monitor.py`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [main()](main%28%29.md) (3 shared connections)
-- [init](init.md) (2 shared connections)
+- [fetch container items()](fetch_container_items%28%29.md) (11 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (5 shared connections)
+- [connection models](connection_models.md) (5 shared connections)
 
 ## Source Files
 
-- `server/config/models/cors.py`
+- `server/game/movement_monitor.py`
+- `server/tests/unit/game/test_movement_monitor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 80 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 113 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

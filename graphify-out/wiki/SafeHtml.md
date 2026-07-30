@@ -1,69 +1,55 @@
 # SafeHtml
 
-> 50 nodes
+> 38 nodes
 
 ## Key Concepts
 
-- **security.ts** (35 connections) — `client/src/utils/security.ts`
-- **SafeHtml.tsx** (14 connections) — `client/src/components/common/SafeHtml.tsx`
-- **domPurifyClient.ts** (14 connections) — `client/src/utils/domPurifyClient.ts`
-- **SessionManager** (12 connections) — `client/src/utils/security.ts`
-- **SafeHtml()** (11 connections) — `client/src/components/common/SafeHtml.tsx`
-- **inputSanitizer** (8 connections) — `client/src/utils/security.ts`
-- **AsciiMinimap.tsx** (7 connections) — `client/src/components/map/AsciiMinimap.tsx`
-- **CSRFProtection** (7 connections) — `client/src/utils/security.ts`
-- **domPurifyClient.test.ts** (5 connections) — `client/src/utils/__tests__/domPurifyClient.test.ts`
-- **secureTokenStorage.test.ts** (5 connections) — `client/src/utils/__tests__/secureTokenStorage.test.ts`
-- **resolveSanitizeWindow()** (5 connections) — `client/src/utils/domPurifyClient.ts`
-- **getDomPurify()** (5 connections) — `client/src/utils/domPurifyClient.ts`
-- **csrfProtection.test.ts** (4 connections) — `client/src/utils/__tests__/csrfProtection.test.ts`
-- **security.test-utils.ts** (4 connections) — `client/src/utils/__tests__/security.test-utils.ts`
-- **verifiesDomPurifySanitize()** (4 connections) — `client/src/utils/domPurifyClient.ts`
-- **resolveVitestSanitizeWindow()** (4 connections) — `client/src/utils/domPurifyClient.ts`
-- **sanitizeWithDomPurify()** (4 connections) — `client/src/utils/domPurifyClient.ts`
-- **.generateToken()** (4 connections) — `client/src/utils/security.ts`
-- **AsciiMinimap()** (3 connections) — `client/src/components/map/AsciiMinimap.tsx`
-- **setupSecurityMocks()** (3 connections) — `client/src/utils/__tests__/security.test-utils.ts`
-- **sessionManager.test.ts** (3 connections) — `client/src/utils/__tests__/sessionManager.test.ts`
-- **collectWindowCandidates()** (3 connections) — `client/src/utils/domPurifyClient.ts`
-- **resetDomPurifyClientForTests()** (3 connections) — `client/src/utils/domPurifyClient.ts`
-- **.cleanupExpiredSessions()** (3 connections) — `client/src/utils/security.ts`
-- **.startCleanupInterval()** (3 connections) — `client/src/utils/security.ts`
-- *... and 25 more nodes in this community*
+- **HealthService** (21 connections) — `server/services/health_service.py`
+- **.get_health_status()** (10 connections) — `server/services/health_service.py`
+- **.check_database_health_async()** (7 connections) — `server/services/health_service.py`
+- **.get_server_component_health()** (7 connections) — `server/services/health_service.py`
+- **.check_database_health()** (6 connections) — `server/services/health_service.py`
+- **Any** (5 connections)
+- **._create_health_response()** (5 connections) — `server/services/health_service.py`
+- **.check_connections_health()** (5 connections) — `server/services/health_service.py`
+- **.get_database_component_health()** (5 connections) — `server/services/health_service.py`
+- **.get_connections_component_health()** (5 connections) — `server/services/health_service.py`
+- **.determine_overall_status()** (5 connections) — `server/services/health_service.py`
+- **room_service()** (5 connections) — `server/tests/unit/game/test_room_service.py`
+- **.get_server_uptime()** (4 connections) — `server/services/health_service.py`
+- **.get_database_component_health_async()** (4 connections) — `server/services/health_service.py`
+- **.generate_alerts()** (4 connections) — `server/services/health_service.py`
+- **.__init__()** (3 connections) — `server/services/health_service.py`
+- **.get_memory_usage()** (3 connections) — `server/services/health_service.py`
+- **.get_cpu_usage()** (3 connections) — `server/services/health_service.py`
+- **health_service()** (3 connections) — `server/tests/unit/services/test_health_service.py`
+- **HealthStatus** (2 connections)
+- **Health monitoring service for MythosMUD server.      Provides comprehensive heal** (1 connections) — `server/services/health_service.py`
+- **Initialize the health service.          Args:             connection_manager: Co** (1 connections) — `server/services/health_service.py`
+- **Get server uptime in seconds.** (1 connections) — `server/services/health_service.py`
+- **Get current memory usage in MB.** (1 connections) — `server/services/health_service.py`
+- **Get current CPU usage percentage.** (1 connections) — `server/services/health_service.py`
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [maps](maps.md) (5 shared connections)
-- [fetchSpy](fetchSpy.md) (5 shared connections)
-- [chatPanelChannelFilter](chatPanelChannelFilter.md) (4 shared connections)
-- [useConnectionStateMachine.test](useConnectionStateMachine.test.md) (4 shared connections)
-- [AppCreationFlowViews](AppCreationFlowViews.md) (4 shared connections)
-- [applyAuthenticatedSession](applyAuthenticatedSession.md) (3 shared connections)
-- [ChatHistoryToggle()](ChatHistoryToggle%28%29.md) (2 shared connections)
-- [GameLogMessagesList](GameLogMessagesList.md) (2 shared connections)
-- [ChatPanelTest](ChatPanelTest.md) (2 shared connections)
-- [HealthMeter](HealthMeter.md) (2 shared connections)
-- [PanelManager](PanelManager.md) (2 shared connections)
-- [domPurifyTestWindow](domPurifyTestWindow.md) (2 shared connections)
+- [alias](alias.md) (8 shared connections)
+- [Any](Any.md) (6 shared connections)
+- [Player](Player.md) (1 shared connections)
+- [fetch container items()](fetch_container_items%28%29.md) (1 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (1 shared connections)
+- [test room service](test_room_service.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/common/SafeHtml.tsx`
-- `client/src/components/common/__tests__/SafeHtml.test.tsx`
-- `client/src/components/map/AsciiMinimap.tsx`
-- `client/src/utils/__tests__/csrfProtection.test.ts`
-- `client/src/utils/__tests__/domPurifyClient.test.ts`
-- `client/src/utils/__tests__/inputSanitizer.test.ts`
-- `client/src/utils/__tests__/secureTokenStorage.test.ts`
-- `client/src/utils/__tests__/security.test-utils.ts`
-- `client/src/utils/__tests__/sessionManager.test.ts`
-- `client/src/utils/domPurifyClient.ts`
-- `client/src/utils/security.ts`
+- `server/services/health_service.py`
+- `server/tests/unit/game/test_room_service.py`
+- `server/tests/unit/services/test_health_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 211 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 125 (96%)
+- INFERRED: 5 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

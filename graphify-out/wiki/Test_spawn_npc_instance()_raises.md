@@ -4,20 +4,20 @@
 
 ## Key Concepts
 
-- **test_spawn_npc_instance_definition_not_found()** (2 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **Test spawn_npc_instance() raises ValueError when definition not found.** (1 connections) — `server/tests/unit/services/test_npc_instance_service.py`
+- **test_should_idle_move_false_when_registered_in_combat()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **Gating skips idle movement when combat service lists this NPC.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
 
 ## Relationships
 
-- [test npc instance service](test_npc_instance_service.md) (1 shared connections)
+- [cfg float()](cfg_float%28%29.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_npc_instance_service.py`
+- `server/tests/unit/npc/test_idle_movement.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

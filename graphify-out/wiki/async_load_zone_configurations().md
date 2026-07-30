@@ -1,54 +1,47 @@
 # async load zone configurations()
 
-> 34 nodes
+> 23 nodes
 
 ## Key Concepts
 
-- **test_zone_config_loader.py** (35 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **process_zone_rows()** (13 connections) — `server/npc/zone_config_loader.py`
-- **async_load_zone_configurations()** (13 connections) — `server/npc/zone_config_loader.py`
-- **_empty_zone_load_result()** (13 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **ZoneLoadResult** (12 connections) — `server/npc/zone_config_loader.py`
-- **process_subzone_rows()** (9 connections) — `server/npc/zone_config_loader.py`
-- **test_process_zone_rows()** (5 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_process_subzone_rows()** (5 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_async_load_zone_configurations_converts_url()** (5 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_async_load_zone_configurations_passes_search_path_for_mythos_e2e()** (5 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_process_zone_rows_empty()** (4 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_process_zone_rows_json_strings()** (4 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_process_subzone_rows_empty()** (4 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_async_load_zone_configurations_success()** (4 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_async_load_zone_configurations_no_database_url()** (4 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_async_load_zone_configurations_error()** (4 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_async_load_zone_configurations_closes_connection()** (4 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **Connection** (2 connections)
-- **MonkeyPatch** (2 connections)
-- **Test process_zone_rows() handles empty result.** (2 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **Result of loading zone and sub-zone configs from PostgreSQL.** (1 connections) — `server/npc/zone_config_loader.py`
-- **Process zone rows from database and populate zone configurations.      Args:** (1 connections) — `server/npc/zone_config_loader.py`
-- **Process subzone rows from database and populate subzone configurations.      Arg** (1 connections) — `server/npc/zone_config_loader.py`
-- **Async helper to load zone configurations from PostgreSQL database.** (1 connections) — `server/npc/zone_config_loader.py`
-- **Unit tests for zone configuration loader.  Tests the zone_config_loader module f** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- *... and 9 more nodes in this community*
+- **GameTerminalContext.test.tsx** (18 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
+- **useGameTerminalContext.ts** (9 connections) — `client/src/contexts/hooks/useGameTerminalContext.ts`
+- **GameTerminalContext.tsx** (8 connections) — `client/src/contexts/GameTerminalContext.tsx`
+- **useGameTerminalContext()** (7 connections) — `client/src/contexts/hooks/useGameTerminalContext.ts`
+- **ErrorBoundary** (4 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
+- **useConnectionState()** (4 connections) — `client/src/contexts/hooks/useGameTerminalContext.ts`
+- **useSessionState()** (4 connections) — `client/src/contexts/hooks/useGameTerminalContext.ts`
+- **useGameState()** (4 connections) — `client/src/contexts/hooks/useGameTerminalContext.ts`
+- **useGameActions()** (4 connections) — `client/src/contexts/hooks/useGameTerminalContext.ts`
+- **GameTerminalProvider()** (3 connections) — `client/src/contexts/GameTerminalContext.tsx`
+- **GameTerminalContextType** (2 connections) — `client/src/contexts/GameTerminalContext.tsx`
+- **GameTerminalContext** (2 connections) — `client/src/contexts/GameTerminalContext.tsx`
+- **TestComponent()** (2 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
+- **ConnectionTestComponent()** (2 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
+- **SessionTestComponent()** (2 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
+- **GameStateTestComponent()** (2 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
+- **GameActionsTestComponent()** (2 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
+- **GameTerminalProviderProps** (1 connections) — `client/src/contexts/GameTerminalContext.tsx`
+- **createDefaultGameTerminalState()** (1 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
+- **useGameTerminalMock** (1 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
+- **.constructor()** (1 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
+- **.getDerivedStateFromError()** (1 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
+- **.render()** (1 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
 
 ## Relationships
 
-- [TypedDict](TypedDict.md) (12 shared connections)
-- [parse json field()](parse_json_field%28%29.md) (7 shared connections)
-- [extract zone name()](extract_zone_name%28%29.md) (6 shared connections)
-- [Represents the configuration for a](Represents_the_configuration_for_a.md) (5 shared connections)
-- [load zone configurations()](load_zone_configurations%28%29.md) (4 shared connections)
-- [get asyncpg server settings for](get_asyncpg_server_settings_for.md) (1 shared connections)
+- [createInitialState()](createInitialState%28%29.md) (5 shared connections)
 
 ## Source Files
 
-- `server/npc/zone_config_loader.py`
-- `server/tests/unit/npc/test_zone_config_loader.py`
+- `client/src/contexts/GameTerminalContext.tsx`
+- `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
+- `client/src/contexts/hooks/useGameTerminalContext.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 158 (97%)
-- INFERRED: 5 (3%)
+- EXTRACTED: 85 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

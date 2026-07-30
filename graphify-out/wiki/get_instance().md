@@ -1,62 +1,61 @@
 # .get instance()
 
-> 95 nodes
+> 43 nodes
 
 ## Key Concepts
 
-- **NPCStartupService** (44 connections) — `server/services/npc_startup_service.py`
-- **test_npc_startup_service.py** (39 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **.get_instance()** (29 connections) — `server/container/main.py`
-- **mock_container()** (12 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **_assign_container_get_instance()** (12 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **.spawn_npcs_on_startup()** (8 connections) — `server/services/npc_startup_service.py`
-- **get_npc_startup_service()** (8 connections) — `server/services/npc_startup_service.py`
-- **_errors_len()** (7 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **._spawn_required_npcs()** (6 connections) — `server/services/npc_startup_service.py`
-- **._determine_spawn_room()** (6 connections) — `server/services/npc_startup_service.py`
-- **._spawn_optional_npcs()** (5 connections) — `server/services/npc_startup_service.py`
-- **._spawn_arena_npcs()** (5 connections) — `server/services/npc_startup_service.py`
-- **test_determine_spawn_room_with_room_id()** (5 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_determine_spawn_room_with_sub_zone()** (5 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_determine_spawn_room_fallback()** (5 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_determine_spawn_room_no_persistence()** (5 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_determine_spawn_room_room_id_not_found()** (5 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_determine_spawn_room_sub_zone_room_not_found()** (5 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_determine_spawn_room_fallback_not_found()** (5 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_determine_spawn_room_exception()** (5 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_determine_spawn_room_no_container()** (5 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Any** (4 connections)
-- **npc_startup_service()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_required_npcs_no_spawn_room()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_get_npc_startup_service()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- *... and 70 more nodes in this community*
+- **communication_commands.py** (31 connections) — `server/commands/communication_commands.py`
+- **request_with_app_container()** (28 connections) — `server/tests/unit/commands/communication_commands_mocks.py`
+- **test_communication_commands_say_me_pose.py** (22 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **handle_say_command()** (17 connections) — `server/commands/communication_commands.py`
+- **handle_pose_command()** (14 connections) — `server/commands/communication_commands.py`
+- **handle_me_command()** (8 connections) — `server/commands/communication_commands.py`
+- **communication_commands_mocks.py** (5 connections) — `server/tests/unit/commands/communication_commands_mocks.py`
+- **test_handle_say_command_player_not_found()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_say_command_success()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_say_command_delegates_broadcast_to_chat_service_with_ids()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_pose_command_player_not_found()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_pose_command_clear_pose()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_pose_command_set_pose()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_say_command_no_room()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_say_command_no_player_id()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_say_command_chat_service_failure()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_say_command_exception()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_say_command_no_message()** (3 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_say_command_no_services()** (3 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_me_command_no_action()** (3 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_me_command_success()** (3 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_pose_command_no_persistence()** (3 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **Communication commands for MythosMUD.  Handlers delegate heavy logic to commun** (1 connections) — `server/commands/communication_commands.py`
+- **Room-wide say; returns user-facing result dict.** (1 connections) — `server/commands/communication_commands.py`
+- **Set or clear persistent pose text.** (1 connections) — `server/commands/communication_commands.py`
+- *... and 18 more nodes in this community*
 
 ## Relationships
 
-- [.initialize()](initialize%28%29.md) (7 shared connections)
-- [.shutdown()](shutdown%28%29.md) (6 shared connections)
-- [UUID](UUID.md) (5 shared connections)
-- [. init ()](_init_%28%29.md) (4 shared connections)
-- [lifespan](lifespan.md) (2 shared connections)
-- [Any](Any.md) (2 shared connections)
-- [initialize nats and combat services()](initialize_nats_and_combat_services%28%29.md) (2 shared connections)
-- [. is npc in combat()](_is_npc_in_combat%28%29.md) (1 shared connections)
-- [. repr ()](_repr_%28%29.md) (1 shared connections)
-- [event publisher()](event_publisher%28%29.md) (1 shared connections)
-- [combat](combat.md) (1 shared connections)
-- [CombatDPSync](CombatDPSync.md) (1 shared connections)
+- [test quest service collect](test_quest_service_collect.md) (13 shared connections)
+- [handle global command()](handle_global_command%28%29.md) (12 shared connections)
+- [ConnectionsComponent](ConnectionsComponent.md) (6 shared connections)
+- [test magic commands](test_magic_commands.md) (4 shared connections)
+- [websocket handler app state](websocket_handler_app_state.md) (4 shared connections)
+- [DropResolved](DropResolved.md) (4 shared connections)
+- [.validate alias name field()](validate_alias_name_field%28%29.md) (4 shared connections)
+- [chat send with room bundle()](chat_send_with_room_bundle%28%29.md) (4 shared connections)
+- [Player Position Service](Player_Position_Service.md) (3 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
+- [AuthSlice](AuthSlice.md) (1 shared connections)
+- [Spell Targeting](Spell_Targeting.md) (1 shared connections)
 
 ## Source Files
 
-- `server/container/main.py`
-- `server/services/npc_startup_service.py`
-- `server/tests/unit/services/test_container_websocket_events.py`
-- `server/tests/unit/services/test_npc_startup_service.py`
+- `server/commands/communication_commands.py`
+- `server/tests/unit/commands/communication_commands_mocks.py`
+- `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
 
 ## Audit Trail
 
-- EXTRACTED: 338 (93%)
-- INFERRED: 24 (7%)
+- EXTRACTED: 197 (98%)
+- INFERRED: 4 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_evaluate_inequality_not_inequality()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test _evaluate_inequality() returns None for non-inequality condition.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_log_player_movement_no_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **Test log_player_movement() skips when connection manager not available.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Relationships
 
-- [BehaviorEngine](BehaviorEngine.md) (1 shared connections)
-- [test behavior engine](test_behavior_engine.md) (1 shared connections)
+- [. call ()](_call_%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_behavior_engine.py`
+- `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

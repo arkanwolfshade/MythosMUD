@@ -1,50 +1,41 @@
 # . apply player info()
 
-> 27 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **.change_position()** (12 connections) — `server/services/player_position_service.py`
-- **Player** (8 connections)
-- **PositionChangeResponse** (6 connections) — `server/services/player_position_service.py`
-- **._get_player_for_position_change()** (5 connections) — `server/services/player_position_service.py`
-- **._apply_player_info()** (5 connections) — `server/services/player_position_service.py`
-- **._load_player_stats()** (5 connections) — `server/services/player_position_service.py`
-- **._get_current_position()** (5 connections) — `server/services/player_position_service.py`
-- **._update_player_position()** (5 connections) — `server/services/player_position_service.py`
-- **._update_connection_manager()** (5 connections) — `server/services/player_position_service.py`
-- **.save_player()** (4 connections) — `server/services/player_position_service.py`
-- **._initial_response()** (4 connections) — `server/services/player_position_service.py`
-- **.get_player_by_name()** (3 connections) — `server/services/player_position_service.py`
-- **.ensure_default_aliases()** (3 connections) — `server/services/player_position_service.py`
-- **._validate_position()** (3 connections) — `server/services/player_position_service.py`
-- **.get_online_player_by_display_name()** (2 connections) — `server/services/player_position_service.py`
-- **TypedDict** (1 connections)
-- **Result payload for a posture transition attempt.** (1 connections) — `server/services/player_position_service.py`
-- **Ensure the expected aliases exist for position commands.** (1 connections) — `server/services/player_position_service.py`
-- **Validate and normalize position.** (1 connections) — `server/services/player_position_service.py`
-- **Get player for position change.          Returns:             Tuple of (player,** (1 connections) — `server/services/player_position_service.py`
-- **Copy player identity fields into the position-change response.** (1 connections) — `server/services/player_position_service.py`
-- **Load player stats, returning {} when loading fails.** (1 connections) — `server/services/player_position_service.py`
-- **Get current position from player stats.** (1 connections) — `server/services/player_position_service.py`
-- **Update player position in persistence.** (1 connections) — `server/services/player_position_service.py`
-- **Build the default unsuccessful position-change payload.** (1 connections) — `server/services/player_position_service.py`
-- *... and 2 more nodes in this community*
+- **test_players_quests.py** (13 connections) — `server/tests/unit/api/test_players_quests.py`
+- **test_get_player_quests_403_when_not_owner()** (4 connections) — `server/tests/unit/api/test_players_quests.py`
+- **test_get_player_quests_returns_quest_log()** (3 connections) — `server/tests/unit/api/test_players_quests.py`
+- **test_get_player_quests_include_completed_false()** (3 connections) — `server/tests/unit/api/test_players_quests.py`
+- **mock_request()** (2 connections) — `server/tests/unit/api/test_players_quests.py`
+- **mock_user()** (2 connections) — `server/tests/unit/api/test_players_quests.py`
+- **player_id()** (2 connections) — `server/tests/unit/api/test_players_quests.py`
+- **mock_player_service()** (2 connections) — `server/tests/unit/api/test_players_quests.py`
+- **mock_quest_service()** (2 connections) — `server/tests/unit/api/test_players_quests.py`
+- **Unit tests for GET /api/players/{player_id}/quests (quest log).  Tests get_playe** (1 connections) — `server/tests/unit/api/test_players_quests.py`
+- **Minimal request for endpoint (not used for quest logic).** (1 connections) — `server/tests/unit/api/test_players_quests.py`
+- **Character (player) UUID.** (1 connections) — `server/tests/unit/api/test_players_quests.py`
+- **PlayerService that validates character access.** (1 connections) — `server/tests/unit/api/test_players_quests.py`
+- **QuestService that returns quest log entries.** (1 connections) — `server/tests/unit/api/test_players_quests.py`
+- **GET quests returns QuestLogResponse with entries when access allowed.** (1 connections) — `server/tests/unit/api/test_players_quests.py`
+- **GET quests with include_completed=False passes to get_quest_log.** (1 connections) — `server/tests/unit/api/test_players_quests.py`
+- **GET quests raises 403 when validate_character_access returns not ok.** (1 connections) — `server/tests/unit/api/test_players_quests.py`
 
 ## Relationships
 
-- [PlayerPositionService](PlayerPositionService.md) (10 shared connections)
-- [AliasStorage](AliasStorage.md) (4 shared connections)
-- [.set player combat service()](set_player_combat_service%28%29.md) (1 shared connections)
+- [append unique valid occupant()](append_unique_valid_occupant%28%29.md) (5 shared connections)
+- [AbstractContextManager](AbstractContextManager.md) (2 shared connections)
+- [metrics](metrics.md) (2 shared connections)
 
 ## Source Files
 
-- `server/services/player_position_service.py`
+- `server/tests/unit/api/test_players_quests.py`
 
 ## Audit Trail
 
-- EXTRACTED: 86 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 40 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

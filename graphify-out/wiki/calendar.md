@@ -1,49 +1,33 @@
 # calendar
 
-> 26 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **test_calendar.py** (13 connections) — `server/tests/unit/models/test_calendar.py`
-- **HolidayModel** (9 connections) — `server/models/calendar.py`
-- **NPCScheduleModel** (9 connections) — `server/models/calendar.py`
-- **calendar.py** (7 connections) — `server/models/calendar.py`
-- **test_holiday_model_creation()** (3 connections) — `server/tests/unit/models/test_calendar.py`
-- **test_holiday_model_with_bonus_tags()** (3 connections) — `server/tests/unit/models/test_calendar.py`
-- **test_holiday_model_repr()** (3 connections) — `server/tests/unit/models/test_calendar.py`
-- **test_npc_schedule_model_creation()** (3 connections) — `server/tests/unit/models/test_calendar.py`
-- **test_npc_schedule_model_with_notes()** (3 connections) — `server/tests/unit/models/test_calendar.py`
-- **test_npc_schedule_model_repr()** (3 connections) — `server/tests/unit/models/test_calendar.py`
-- **test_npc_schedule_model_empty_arrays()** (3 connections) — `server/tests/unit/models/test_calendar.py`
-- **Base** (2 connections)
-- **test_holiday_model_table_name()** (2 connections) — `server/tests/unit/models/test_calendar.py`
-- **test_npc_schedule_model_table_name()** (2 connections) — `server/tests/unit/models/test_calendar.py`
-- **SQLAlchemy models for calendar data (holidays and NPC schedules).** (1 connections) — `server/models/calendar.py`
-- **Mythos holidays tracker.** (1 connections) — `server/models/calendar.py`
-- **Unit tests for calendar models.  Tests the HolidayModel and NPCScheduleModel SQL** (1 connections) — `server/tests/unit/models/test_calendar.py`
-- **Test HolidayModel can be instantiated with required fields.** (1 connections) — `server/tests/unit/models/test_calendar.py`
-- **Test HolidayModel can have bonus_tags.** (1 connections) — `server/tests/unit/models/test_calendar.py`
-- **Test HolidayModel has correct table name.** (1 connections) — `server/tests/unit/models/test_calendar.py`
-- **Test HolidayModel __repr__ method.** (1 connections) — `server/tests/unit/models/test_calendar.py`
-- **Test NPCScheduleModel can be instantiated with required fields.** (1 connections) — `server/tests/unit/models/test_calendar.py`
-- **Test NPCScheduleModel can have optional notes.** (1 connections) — `server/tests/unit/models/test_calendar.py`
-- **Test NPCScheduleModel has correct table name.** (1 connections) — `server/tests/unit/models/test_calendar.py`
-- **Test NPCScheduleModel __repr__ method.** (1 connections) — `server/tests/unit/models/test_calendar.py`
-- *... and 1 more nodes in this community*
+- **MockPersistence** (7 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **mock_persistence()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **.get_player_by_name()** (2 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **.get_room_by_id()** (2 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **.__setattr__()** (2 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **.__init__()** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **Mock persistence layer with async methods.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **Mock async method that uses configured mock.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **Mock method that uses configured mock.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **Allow setting get_player_by_name and get_room_by_id to mocks.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
 
 ## Relationships
 
-- [Base](Base.md) (7 shared connections)
+- [.check and interrupt rest()](check_and_interrupt_rest%28%29.md) (2 shared connections)
 
 ## Source Files
 
-- `server/models/calendar.py`
-- `server/tests/unit/models/test_calendar.py`
+- `server/tests/unit/commands/test_rest_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 75 (97%)
-- INFERRED: 2 (3%)
+- EXTRACTED: 22 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

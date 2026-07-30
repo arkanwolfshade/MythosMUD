@@ -1,24 +1,24 @@
 # .should retry()
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **.should_retry()** (4 connections) — `server/realtime/nats_retry_handler.py`
-- **Exception** (1 connections)
-- **Determine if a message should be retried.          Args:             message: Me** (1 connections) — `server/realtime/nats_retry_handler.py`
+- **test_remove_rule_not_found()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test remove_rule() returns False when rule not found.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [nats retry handler](nats_retry_handler.md) (2 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [test behavior engine](test_behavior_engine.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/nats_retry_handler.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

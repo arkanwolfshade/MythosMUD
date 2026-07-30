@@ -1,59 +1,63 @@
 # .get population stats()
 
-> 144 nodes
+> 113 nodes
 
 ## Key Concepts
 
-- **test_population_control.py** (65 connections) — `server/tests/unit/npc/test_population_control.py`
-- **PopulationStats** (42 connections) — `server/npc/population_stats.py`
-- **test_population_stats.py** (23 connections) — `server/tests/unit/npc/test_population_stats.py`
-- **population_stats.py** (7 connections) — `server/npc/population_stats.py`
-- **test_should_spawn_npc()** (5 connections) — `server/tests/unit/npc/test_population_control.py`
-- **.get_population_stats()** (4 connections) — `server/npc/population_control.py`
-- **.get_population_stats()** (4 connections) — `server/npc/spawning_service.py`
-- **test_check_spawn_requirements_for_room_with_definitions()** (4 connections) — `server/tests/unit/npc/test_population_control.py`
-- **.to_dict()** (3 connections) — `server/npc/population_stats.py`
-- **mock_event_bus()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **population_controller()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_population_controller_init()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_population_controller_init_requires_async_persistence()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_load_npc_definitions()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_load_npc_definitions_overwrites()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_load_spawn_rules()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_get_population_stats_existing()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_clear_population_stats()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_get_zone_population_summary_with_stats()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_handle_player_entered_room()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_handle_player_left_room()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_handle_npc_entered_room()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_handle_npc_left_room()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_spawn_npc_no_lifecycle_manager()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_spawn_npc_success()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- *... and 119 more nodes in this community*
+- **container.py** (25 connections) — `server/models/container.py`
+- **test_container_websocket_events.py** (23 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_container_events.py** (22 connections) — `server/tests/unit/api/test_container_events.py`
+- **container_events.py** (21 connections) — `server/api/container_events.py`
+- **emit_loot_all_event()** (17 connections) — `server/api/container_events.py`
+- **container_websocket_events.py** (17 connections) — `server/services/container_websocket_events.py`
+- **emit_container_opened_events()** (16 connections) — `server/api/container_events.py`
+- **_emit_close_container_event()** (14 connections) — `server/api/container_events.py`
+- **emit_container_opened()** (14 connections) — `server/services/container_websocket_events.py`
+- **TestEmitLootAllEvent** (13 connections) — `server/tests/unit/api/test_container_events.py`
+- **emit_container_opened_to_room()** (12 connections) — `server/services/container_websocket_events.py`
+- **TestEmitCloseContainerEvent** (12 connections) — `server/tests/unit/api/test_container_events.py`
+- **TestEmitContainerOpenedEvents** (11 connections) — `server/tests/unit/api/test_container_events.py`
+- **emit_container_updated()** (10 connections) — `server/services/container_websocket_events.py`
+- **emit_container_closed()** (9 connections) — `server/services/container_websocket_events.py`
+- **emit_container_decayed()** (8 connections) — `server/services/container_websocket_events.py`
+- **UUID** (6 connections)
+- **UUID** (5 connections)
+- **Any** (5 connections)
+- **Any** (4 connections)
+- **.test_emit_loot_all_event_success()** (4 connections) — `server/tests/unit/api/test_container_events.py`
+- **.test_emit_loot_all_event_no_connection_manager()** (4 connections) — `server/tests/unit/api/test_container_events.py`
+- **.test_emit_loot_all_event_no_room_id()** (4 connections) — `server/tests/unit/api/test_container_events.py`
+- **.test_emit_loot_all_event_emission_error()** (4 connections) — `server/tests/unit/api/test_container_events.py`
+- **.test_emit_loot_all_event_calculates_items_removed()** (4 connections) — `server/tests/unit/api/test_container_events.py`
+- *... and 88 more nodes in this community*
 
 ## Relationships
 
-- [. repr ()](_repr_%28%29.md) (21 shared connections)
-- [.initialize()](initialize%28%29.md) (13 shared connections)
-- [Any](Any.md) (6 shared connections)
-- [Represents the configuration for a](Represents_the_configuration_for_a.md) (6 shared connections)
-- [main()](main%28%29.md) (2 shared connections)
-- [.is required()](is_required%28%29.md) (2 shared connections)
-- [FollowTargetValue](FollowTargetValue.md) (2 shared connections)
-- [TypedDict](TypedDict.md) (1 shared connections)
+- [APIRouter](APIRouter.md) (37 shared connections)
+- [BaseCommand](BaseCommand.md) (20 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (4 shared connections)
+- [datetime](datetime.md) (3 shared connections)
+- [process all status effects()](process_all_status_effects%28%29.md) (3 shared connections)
+- [Any](Any.md) (3 shared connections)
+- [Lock](Lock.md) (2 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [main()](main%28%29.md) (1 shared connections)
+- [AbstractContextManager](AbstractContextManager.md) (1 shared connections)
+- [real time](real_time.md) (1 shared connections)
+- [.validate message()](validate_message%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/population_control.py`
-- `server/npc/population_stats.py`
-- `server/npc/spawning_service.py`
-- `server/tests/unit/npc/test_population_control.py`
-- `server/tests/unit/npc/test_population_stats.py`
+- `server/api/container_events.py`
+- `server/models/container.py`
+- `server/services/container_websocket_events.py`
+- `server/tests/unit/api/test_container_events.py`
+- `server/tests/unit/services/test_container_websocket_events.py`
 
 ## Audit Trail
 
-- EXTRACTED: 386 (96%)
-- INFERRED: 15 (4%)
+- EXTRACTED: 424 (97%)
+- INFERRED: 12 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

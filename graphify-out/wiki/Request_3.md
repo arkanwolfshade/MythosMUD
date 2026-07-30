@@ -1,28 +1,23 @@
 # Request
 
-> 5 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **.on_after_forgot_password()** (4 connections) — `server/auth/users.py`
-- **.on_after_request_verify()** (4 connections) — `server/auth/users.py`
-- **Request** (3 connections)
-- **Handle forgot password logic.** (1 connections) — `server/auth/users.py`
-- **Handle username verification logic.** (1 connections) — `server/auth/users.py`
+- **test_parse_exits_json_string_valid()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **Test _parse_exits_json with valid JSON string.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Relationships
 
-- [Custom user manager for MythosMUD.](Custom_user_manager_for_MythosMUD.md) (2 shared connections)
-- [APIRouter](APIRouter.md) (2 shared connections)
-- [BaseUserManager](BaseUserManager.md) (1 shared connections)
+- [test async persistence room cache](test_async_persistence_room_cache.md) (1 shared connections)
 
 ## Source Files
 
-- `server/auth/users.py`
+- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

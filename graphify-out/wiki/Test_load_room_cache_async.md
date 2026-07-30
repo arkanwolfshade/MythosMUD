@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_load_room_cache_async_rooms_none()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **Test _load_room_cache_async handles case when rooms is None.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_convert_ids_to_uuids_none_target()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _convert_ids_to_uuids handles None target.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [test async persistence room cache](test_async_persistence_room_cache.md) (1 shared connections)
+- [test nats message handler chat](test_nats_message_handler_chat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 

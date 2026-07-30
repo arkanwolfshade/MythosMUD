@@ -1,13 +1,13 @@
 # QuestCompleted
 
-> 84 nodes
+> 79 nodes
 
 ## Key Concepts
 
 - **QuestService** (53 connections) — `server/game/quest/quest_service.py`
+- **quest_service.py** (31 connections) — `server/game/quest/quest_service.py`
 - **Any** (27 connections)
 - **UUID** (26 connections)
-- **QuestInstance** (21 connections) — `server/models/quest.py`
 - **QuestDefinitionSchema** (18 connections) — `server/schemas/quest/quest.py`
 - **_parse_definition()** (13 connections) — `server/game/quest/quest_service.py`
 - **._apply_activity_progress()** (12 connections) — `server/game/quest/quest_service.py`
@@ -16,7 +16,6 @@
 - **.turn_in()** (11 connections) — `server/game/quest/quest_service.py`
 - **.start_quest()** (10 connections) — `server/game/quest/quest_service.py`
 - **._turn_in_validation_error()** (10 connections) — `server/game/quest/quest_service.py`
-- **QuestCompleted** (9 connections) — `server/events/event_types.py`
 - **._start_quest_validation_error()** (9 connections) — `server/game/quest/quest_service.py`
 - **.sync_collect_progress()** (9 connections) — `server/game/quest/quest_service.py`
 - **._consume_collect_n_items()** (9 connections) — `server/game/quest/quest_service.py`
@@ -29,36 +28,34 @@
 - **_has_collect_n_goals()** (6 connections) — `server/game/quest/quest_service.py`
 - **.start_quest_by_trigger()** (6 connections) — `server/game/quest/quest_service.py`
 - **._load_player_for_collect()** (6 connections) — `server/game/quest/quest_service.py`
-- *... and 59 more nodes in this community*
+- **._turn_in_inventory_full_error()** (6 connections) — `server/game/quest/quest_service.py`
+- *... and 54 more nodes in this community*
 
 ## Relationships
 
-- [collect inventory](collect_inventory.md) (20 shared connections)
-- [main()](main%28%29.md) (7 shared connections)
-- [. init ()](_init_%28%29.md) (6 shared connections)
-- [Connection Manager](Connection_Manager.md) (5 shared connections)
-- [notify quest abandoned()](notify_quest_abandoned%28%29.md) (5 shared connections)
-- [Any](Any.md) (4 shared connections)
-- [test quest service collect](test_quest_service_collect.md) (4 shared connections)
-- [Base](Base.md) (4 shared connections)
-- [ExitStack](ExitStack.md) (3 shared connections)
+- [bench cache npc](bench_cache_npc.md) (11 shared connections)
+- [.initialize()](initialize%28%29.md) (10 shared connections)
+- [UUID](UUID.md) (8 shared connections)
+- [collect inventory](collect_inventory.md) (6 shared connections)
+- [test player event handlers respawn](test_player_event_handlers_respawn.md) (5 shared connections)
+- [append unique valid occupant()](append_unique_valid_occupant%28%29.md) (5 shared connections)
+- [.validate player name field()](validate_player_name_field%28%29.md) (3 shared connections)
 - [test quest service](test_quest_service.md) (3 shared connections)
-- [test quest instance repository](test_quest_instance_repository.md) (2 shared connections)
-- [lifespan](lifespan.md) (1 shared connections)
+- [Calculate max magic points (MP)](Calculate_max_magic_points_%28MP%29.md) (3 shared connections)
+- [.get room by id()](get_room_by_id%28%29.md) (3 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
+- [emit close container event()](emit_close_container_event%28%29.md) (2 shared connections)
 
 ## Source Files
 
-- `server/events/event_types.py`
-- `server/game/magic/spell_effect_types.py`
+- `server/game/quest/__init__.py`
 - `server/game/quest/quest_service.py`
-- `server/models/quest.py`
-- `server/npc/npc_base.py`
 - `server/schemas/quest/quest.py`
 
 ## Audit Trail
 
-- EXTRACTED: 431 (97%)
-- INFERRED: 13 (3%)
+- EXTRACTED: 430 (99%)
+- INFERRED: 4 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -28,8 +28,9 @@
 
 ## Relationships
 
-- [main()](main%28%29.md) (6 shared connections)
-- [admin shutdown command](admin_shutdown_command.md) (3 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (4 shared connections)
+- [get skill repository()](get_skill_repository%28%29.md) (3 shared connections)
+- [real time](real_time.md) (2 shared connections)
 
 ## Source Files
 

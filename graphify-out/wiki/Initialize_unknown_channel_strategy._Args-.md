@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **.__init__()** (2 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Initialize unknown channel strategy.          Args:             channel_type: Un** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **test_send_messages_to_players_blocked()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _send_messages_to_players skips blocked messages.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [channel broadcasting strategies](channel_broadcasting_strategies.md) (1 shared connections)
+- [test nats message handler chat](test_nats_message_handler_chat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/channel_broadcasting_strategies.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 

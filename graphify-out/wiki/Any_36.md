@@ -1,32 +1,24 @@
 # Any
 
-> 9 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **._open()** (5 connections) — `server/structured_logging/logging_handlers.py`
-- **.shouldRollover()** (5 connections) — `server/structured_logging/logging_handlers.py`
-- **.filter()** (3 connections) — `server/structured_logging/logging_handlers.py`
-- **Path** (3 connections)
-- **LogRecord** (2 connections)
-- **Any** (1 connections)
-- **Open the log file, ensuring directory exists first.          This overrides the** (1 connections) — `server/structured_logging/logging_handlers.py`
-- **Determine if rollover should occur, ensuring directory exists first.          Th** (1 connections) — `server/structured_logging/logging_handlers.py`
-- **Only allow WARNING level logs.** (1 connections) — `server/structured_logging/logging_handlers.py`
+- **test_evaluate_equality_not_equality()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test _evaluate_equality() returns None for non-equality condition.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [Formatter](Formatter.md) (2 shared connections)
-- [Path](Path.md) (2 shared connections)
-- [logging handlers](logging_handlers.md) (2 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [test behavior engine](test_behavior_engine.md) (1 shared connections)
 
 ## Source Files
 
-- `server/structured_logging/logging_handlers.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 22 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

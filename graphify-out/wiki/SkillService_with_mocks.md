@@ -1,26 +1,25 @@
 # SkillService with mocks.
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **skill_service()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
-- **SkillService with mocks.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **📊 LINT ISSUE CATEGORIZATION GUIDE** (3 connections) — `.cursor/commands/lint-remediation.md`
+- **Python/Ruff Error Codes** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **React/ESLint Error Codes** (1 connections) — `.cursor/commands/lint-remediation.md`
 
 ## Relationships
 
-- [skills commands](skills_commands.md) (1 shared connections)
-- [get skill repository()](get_skill_repository%28%29.md) (1 shared connections)
-- [test skill service](test_skill_service.md) (1 shared connections)
+- [lint remediation](lint_remediation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_skill_service.py`
+- `.cursor/commands/lint-remediation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (80%)
-- INFERRED: 1 (20%)
+- EXTRACTED: 5 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,61 +1,55 @@
 # init
 
-> 31 nodes
+> 53 nodes
 
 ## Key Concepts
 
-- **AppConfig** (31 connections) — `server/config/models/app.py`
-- **__init__.py** (11 connections) — `server/config/__init__.py`
-- **.error()** (8 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
-- **.to_legacy_dict()** (7 connections) — `server/config/models/app.py`
-- **Any** (6 connections)
-- **_create_config_instance()** (5 connections) — `server/config/__init__.py`
-- **_get_config_cached()** (5 connections) — `server/config/__init__.py`
-- **_get_config_test()** (5 connections) — `server/config/__init__.py`
-- **.__init__()** (5 connections) — `server/config/models/app.py`
-- **._legacy_game_entries()** (5 connections) — `server/config/models/app.py`
-- **._legacy_nats_dict()** (5 connections) — `server/config/models/app.py`
-- **._legacy_chat_dict()** (5 connections) — `server/config/models/app.py`
-- **._legacy_cors_dict()** (5 connections) — `server/config/models/app.py`
-- **._sanitize_environment_for_nested_configs()** (4 connections) — `server/config/models/app.py`
-- **._first_cors_origins_env()** (3 connections) — `server/config/models/app.py`
-- **.set_legacy_environment_variables()** (2 connections) — `server/config/models/app.py`
-- **Configuration module for MythosMUD server.  This module provides type-safe, vali** (1 connections) — `server/config/__init__.py`
-- **Create a new AppConfig instance from current environment.      This is a helper** (1 connections) — `server/config/__init__.py`
-- **Production config loader with caching.      Uses both @lru_cache and global _con** (1 connections) — `server/config/__init__.py`
-- **Test config loader without caching - always returns fresh instances.      This e** (1 connections) — `server/config/__init__.py`
-- **BaseSettings** (1 connections)
-- **Composite application configuration.      This is the main configuration class t** (1 connections) — `server/config/models/app.py`
-- **Initialize configuration and set environment variables for legacy compatibility.** (1 connections) — `server/config/models/app.py`
-- **Set environment variables for legacy code that reads them directly.** (1 connections) — `server/config/models/app.py`
-- **Return first set CORS origins env var to reduce CCN in _sanitize.** (1 connections) — `server/config/models/app.py`
-- *... and 6 more nodes in this community*
+- **LRUCache** (27 connections) — `server/caching/lru_cache.py`
+- **CacheManager** (12 connections) — `server/caching/lru_cache.py`
+- **.items()** (8 connections) — `server/caching/lru_cache.py`
+- **K** (7 connections)
+- **.get_or_set()** (7 connections) — `server/caching/lru_cache.py`
+- **.get()** (6 connections) — `server/caching/lru_cache.py`
+- **.put()** (6 connections) — `server/caching/lru_cache.py`
+- **V** (5 connections)
+- **.get_stats()** (5 connections) — `server/caching/lru_cache.py`
+- **.keys()** (5 connections) — `server/caching/lru_cache.py`
+- **.get_cache()** (5 connections) — `server/caching/lru_cache.py`
+- **.get_all_stats()** (5 connections) — `server/caching/lru_cache.py`
+- **._evict_expired_entries()** (4 connections) — `server/caching/lru_cache.py`
+- **.delete()** (4 connections) — `server/caching/lru_cache.py`
+- **Any** (4 connections)
+- **.values()** (4 connections) — `server/caching/lru_cache.py`
+- **._initialize_default_caches()** (4 connections) — `server/caching/lru_cache.py`
+- **.create_cache()** (4 connections) — `server/caching/lru_cache.py`
+- **.clear()** (3 connections) — `server/caching/lru_cache.py`
+- **.size()** (3 connections) — `server/caching/lru_cache.py`
+- **.__len__()** (3 connections) — `server/caching/lru_cache.py`
+- **.__contains__()** (3 connections) — `server/caching/lru_cache.py`
+- **.__repr__()** (3 connections) — `server/caching/lru_cache.py`
+- **.__init__()** (3 connections) — `server/caching/lru_cache.py`
+- **.clear_all_caches()** (3 connections) — `server/caching/lru_cache.py`
+- *... and 28 more nodes in this community*
 
 ## Relationships
 
-- [main()](main%28%29.md) (10 shared connections)
-- [initialize nats and combat services()](initialize_nats_and_combat_services%28%29.md) (7 shared connections)
-- [CORSConfig](CORSConfig.md) (2 shared connections)
-- [GameConfig](GameConfig.md) (2 shared connections)
-- [nats config()](nats_config%28%29.md) (2 shared connections)
-- [default cors origins()](default_cors_origins%28%29.md) (2 shared connections)
-- [. init ()](_init_%28%29.md) (2 shared connections)
-- [test command factories utility](test_command_factories_utility.md) (2 shared connections)
-- [get app instance()](get_app_instance%28%29.md) (1 shared connections)
-- [combat](combat.md) (1 shared connections)
-- [Any](Any.md) (1 shared connections)
-- [lifespan](lifespan.md) (1 shared connections)
+- [. init ()](_init_%28%29.md) (6 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (3 shared connections)
+- [test lru cache](test_lru_cache.md) (1 shared connections)
+- [test rate limiter utils](test_rate_limiter_utils.md) (1 shared connections)
+- [test command factories communication](test_command_factories_communication.md) (1 shared connections)
+- [container helpers inventory display](container_helpers_inventory_display.md) (1 shared connections)
+- [DeadLetterMessage](DeadLetterMessage.md) (1 shared connections)
+- [.shutdown()](shutdown%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/config/__init__.py`
-- `server/config/models/app.py`
-- `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- `server/caching/lru_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 109 (86%)
-- INFERRED: 18 (14%)
+- EXTRACTED: 167 (95%)
+- INFERRED: 8 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,54 +1,55 @@
 # . init ()
 
-> 49 nodes
+> 36 nodes
 
 ## Key Concepts
 
-- **LRUCache** (27 connections) — `server/caching/lru_cache.py`
-- **.items()** (8 connections) — `server/caching/lru_cache.py`
-- **K** (7 connections)
-- **.get_or_set()** (7 connections) — `server/caching/lru_cache.py`
-- **.get()** (6 connections) — `server/caching/lru_cache.py`
-- **.put()** (6 connections) — `server/caching/lru_cache.py`
-- **V** (5 connections)
-- **.get_stats()** (5 connections) — `server/caching/lru_cache.py`
-- **.keys()** (5 connections) — `server/caching/lru_cache.py`
-- **.get_cache()** (5 connections) — `server/caching/lru_cache.py`
-- **.get_all_stats()** (5 connections) — `server/caching/lru_cache.py`
-- **._evict_expired_entries()** (4 connections) — `server/caching/lru_cache.py`
-- **.delete()** (4 connections) — `server/caching/lru_cache.py`
-- **Any** (4 connections)
-- **.values()** (4 connections) — `server/caching/lru_cache.py`
-- **._initialize_default_caches()** (4 connections) — `server/caching/lru_cache.py`
-- **.create_cache()** (4 connections) — `server/caching/lru_cache.py`
-- **.clear()** (3 connections) — `server/caching/lru_cache.py`
-- **.size()** (3 connections) — `server/caching/lru_cache.py`
-- **.__len__()** (3 connections) — `server/caching/lru_cache.py`
-- **.__contains__()** (3 connections) — `server/caching/lru_cache.py`
-- **.__repr__()** (3 connections) — `server/caching/lru_cache.py`
-- **.__init__()** (3 connections) — `server/caching/lru_cache.py`
-- **.clear_all_caches()** (3 connections) — `server/caching/lru_cache.py`
-- **.__init__()** (2 connections) — `server/caching/lru_cache.py`
-- *... and 24 more nodes in this community*
+- **chat_nats_publisher.py** (29 connections) — `server/game/chat_nats_publisher.py`
+- **_build_standardized_subject()** (9 connections) — `server/game/chat_nats_publisher.py`
+- **chat_validator.py** (9 connections) — `server/game/chat_validator.py`
+- **Any** (8 connections)
+- **build_nats_subject()** (6 connections) — `server/game/chat_nats_publisher.py`
+- **_extract_subzone_from_room()** (5 connections) — `server/game/chat_nats_publisher.py`
+- **_subject_whisper_standardized()** (5 connections) — `server/game/chat_nats_publisher.py`
+- **_subject_system_standardized()** (5 connections) — `server/game/chat_nats_publisher.py`
+- **_chat_passes_nats_validation()** (5 connections) — `server/game/chat_nats_publisher.py`
+- **validate_chat_message()** (5 connections) — `server/game/chat_validator.py`
+- **_subject_party_standardized()** (4 connections) — `server/game/chat_nats_publisher.py`
+- **_build_legacy_subject()** (4 connections) — `server/game/chat_nats_publisher.py`
+- **_nats_service_ready()** (4 connections) — `server/game/chat_nats_publisher.py`
+- **_build_nats_message_data()** (4 connections) — `server/game/chat_nats_publisher.py`
+- **_log_nats_publish_error()** (4 connections) — `server/game/chat_nats_publisher.py`
+- **_log_nats_unexpected_error()** (4 connections) — `server/game/chat_nats_publisher.py`
+- **validate_room_access()** (4 connections) — `server/game/chat_validator.py`
+- **contains_malicious_content()** (3 connections) — `server/game/chat_validator.py`
+- **Exception** (1 connections)
+- **Chat NATS publishing utilities.  This module provides NATS subject building and** (1 connections) — `server/game/chat_nats_publisher.py`
+- **Extract subzone from room_id, returning 'unknown' if extraction fails.** (1 connections) — `server/game/chat_nats_publisher.py`
+- **Build whisper subject; returns fallback 'chat.whisper' if no target_id.** (1 connections) — `server/game/chat_nats_publisher.py`
+- **Build party subject; returns None if no party_id.** (1 connections) — `server/game/chat_nats_publisher.py`
+- **System subject; personal system (quest lifecycle) routes like whisper when targe** (1 connections) — `server/game/chat_nats_publisher.py`
+- **Build NATS subject using standardized patterns via subject_manager.** (1 connections) — `server/game/chat_nats_publisher.py`
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
-- [main()](main%28%29.md) (10 shared connections)
-- [. init ()](_init_%28%29.md) (4 shared connections)
-- [bench cache npc](bench_cache_npc.md) (1 shared connections)
-- [test lru cache](test_lru_cache.md) (1 shared connections)
-- [AsyncSessionFactory](AsyncSessionFactory.md) (1 shared connections)
-- [container helpers inventory display](container_helpers_inventory_display.md) (1 shared connections)
-- [APIRouter](APIRouter.md) (1 shared connections)
+- [ChatMessage](ChatMessage.md) (14 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (4 shared connections)
+- [test combat persistence handler events](test_combat_persistence_handler_events.md) (3 shared connections)
+- [Any](Any.md) (2 shared connections)
+- [PartyUpdated](PartyUpdated.md) (2 shared connections)
+- [.initialize()](initialize%28%29.md) (1 shared connections)
+- [get mythos time()](get_mythos_time%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/caching/lru_cache.py`
+- `server/game/chat_nats_publisher.py`
+- `server/game/chat_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 151 (95%)
-- INFERRED: 8 (5%)
+- EXTRACTED: 134 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

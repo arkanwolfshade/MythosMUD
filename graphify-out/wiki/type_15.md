@@ -27,7 +27,7 @@
 ## Relationships
 
 - [enabled](enabled.md) (1 shared connections)
-- [default](default.md) (1 shared connections)
+- [test motd loader](test_motd_loader.md) (1 shared connections)
 - [locked](locked.md) (1 shared connections)
 
 ## Source Files

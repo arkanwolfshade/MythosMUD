@@ -2,7 +2,7 @@
 
 > God node · 183 connections · `server/async_persistence.py`
 
-**Community:** [AsyncPersistenceLayer](AsyncPersistenceLayer.md)
+**Community:** [chat nats publisher](chat_nats_publisher.md)
 
 ## Connections by Relation
 
@@ -34,8 +34,8 @@
 - player_event_handlers_respawn.py `EXTRACTED`
 - service.py `EXTRACTED`
 - movement_service.py `EXTRACTED`
-- combat_loader.py `EXTRACTED`
 - player_disconnect_handlers.py `EXTRACTED`
+- combat_loader.py `EXTRACTED`
 
 ### indirect_call
 - .is_admin() `INFERRED`

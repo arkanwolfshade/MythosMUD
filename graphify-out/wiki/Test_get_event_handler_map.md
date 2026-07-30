@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_event_handler_map()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test _get_event_handler_map delegates to event handler.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_ensure_room_cache_loaded_concurrent_load()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _ensure_room_cache_loaded handles concurrent load scenario (double-check pa** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Relationships
 
-- [test nats message handler subzone](test_nats_message_handler_subzone.md) (1 shared connections)
+- [test async persistence room loading](test_async_persistence_room_loading.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Audit Trail
 

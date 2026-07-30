@@ -1,52 +1,62 @@
 # Instance
 
-> 32 nodes
+> 30 nodes
 
 ## Key Concepts
 
-- **InstanceManager** (19 connections) — `server/game/instance_manager.py`
-- **.create_instance()** (7 connections) — `server/game/instance_manager.py`
-- **._build_instance_rooms()** (6 connections) — `server/game/instance_manager.py`
-- **.__init__()** (5 connections) — `server/game/instance_manager.py`
-- **Room** (5 connections)
-- **._stable_id_from_room()** (5 connections) — `server/game/instance_manager.py`
-- **Instance** (4 connections) — `server/game/instance_manager.py`
-- **._get_template_rooms()** (4 connections) — `server/game/instance_manager.py`
-- **._remap_exits()** (4 connections) — `server/game/instance_manager.py`
-- **._stable_id_from_target()** (3 connections) — `server/game/instance_manager.py`
-- **.get_instance()** (3 connections) — `server/game/instance_manager.py`
-- **.get_room_by_id()** (3 connections) — `server/game/instance_manager.py`
-- **instance_manager()** (3 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **UUID** (2 connections)
-- **.destroy_instance()** (2 connections) — `server/game/instance_manager.py`
-- **.get_first_room_id()** (2 connections) — `server/game/instance_manager.py`
-- **.get_exit_room_id()** (2 connections) — `server/game/instance_manager.py`
-- **An instanced set of rooms, unique per player or group.** (1 connections) — `server/game/instance_manager.py`
-- **Manages instanced rooms: create from templates, destroy, and lookup.      Instan** (1 connections) — `server/game/instance_manager.py`
-- **Initialize the instance manager.          Args:             room_cache: Shared r** (1 connections) — `server/game/instance_manager.py`
-- **Create an instance from room templates with the given template_id.          Args** (1 connections) — `server/game/instance_manager.py`
-- **Return template rooms matching instance_template_id.** (1 connections) — `server/game/instance_manager.py`
-- **Clone template rooms into instance-scoped rooms with remapped exits.** (1 connections) — `server/game/instance_manager.py`
-- **Extract stable_id from room - use room.id if it looks like a full path.** (1 connections) — `server/game/instance_manager.py`
-- **Remap exit targets: same-instance rooms use instance IDs, outside exits use fixe** (1 connections) — `server/game/instance_manager.py`
-- *... and 7 more nodes in this community*
+- **projectorHandlersMessages.ts** (26 connections) — `client/src/components/ui-v2/eventLog/projectorHandlersMessages.ts`
+- **projectorHandlersState.ts** (23 connections) — `client/src/components/ui-v2/eventLog/projectorHandlersState.ts`
+- **projectorRoom.ts** (18 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
+- **projectorMessageUtils.ts** (11 connections) — `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
+- **messageMapper.ts** (8 connections) — `client/src/components/ui-v2/eventLog/messageMapper.ts`
+- **messageMapper.test.ts** (7 connections) — `client/src/components/ui-v2/eventLog/__tests__/messageMapper.test.ts`
+- **deriveRoomFromRoomUpdate()** (6 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
+- **deriveRoomFromRoomOccupants()** (5 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
+- **buildChatMessage()** (4 connections) — `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
+- **appendMessage()** (4 connections) — `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
+- **appendMovementMessage()** (4 connections) — `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
+- **formatNpcTookDamageLine()** (3 connections) — `client/src/components/ui-v2/eventLog/messageMapper.ts`
+- **formatNpcAttackedLine()** (3 connections) — `client/src/components/ui-v2/eventLog/messageMapper.ts`
+- **formatPlayerAttackedLine()** (3 connections) — `client/src/components/ui-v2/eventLog/messageMapper.ts`
+- **mergePlayerDpFromPlayerAttackedPayload()** (3 connections) — `client/src/components/ui-v2/eventLog/messageMapper.ts`
+- **createRoomUpdateWithPreservedOccupants()** (3 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
+- **deriveRoomFromRoomState()** (3 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
+- **messageHandlers** (2 connections) — `client/src/components/ui-v2/eventLog/projectorHandlersMessages.ts`
+- **ProjectorHandler** (2 connections) — `client/src/components/ui-v2/eventLog/projectorHandlersState.ts`
+- **stateHandlers** (2 connections) — `client/src/components/ui-v2/eventLog/projectorHandlersState.ts`
+- **channelToMessageType()** (2 connections) — `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
+- **extractRoomMetadata()** (2 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
+- **hasOccupantData()** (2 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
+- **getRoomDataFromEvent()** (2 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
+- **createInitialRoomState()** (2 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
-- [spawn defaults](spawn_defaults.md) (5 shared connections)
-- [Any](Any.md) (3 shared connections)
-- [.initialize()](initialize%28%29.md) (1 shared connections)
-- [main()](main%28%29.md) (1 shared connections)
+- [monitoring models](monitoring_models.md) (9 shared connections)
+- [player respawn](player_respawn.md) (8 shared connections)
+- [HealthMeter](HealthMeter.md) (5 shared connections)
+- [MythosTimeHud](MythosTimeHud.md) (5 shared connections)
+- [ConnectionCleaner](ConnectionCleaner.md) (4 shared connections)
+- [Cancel lifecycle/critical tasks first (Phase](Cancel_lifecycle-critical_tasks_first_%28Phase.md) (3 shared connections)
+- [useConnectionStateMachine.test](useConnectionStateMachine.test.md) (2 shared connections)
+- [chatPanelChannelFilter](chatPanelChannelFilter.md) (1 shared connections)
+- [messageHandlers](messageHandlers.md) (1 shared connections)
+- [GameClientV2Dock.test](GameClientV2Dock.test.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/instance_manager.py`
-- `server/tests/unit/game/test_instance_manager.py`
+- `client/src/components/ui-v2/eventLog/__tests__/messageMapper.test.ts`
+- `client/src/components/ui-v2/eventLog/messageMapper.ts`
+- `client/src/components/ui-v2/eventLog/projectorHandlersMessages.ts`
+- `client/src/components/ui-v2/eventLog/projectorHandlersState.ts`
+- `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
+- `client/src/components/ui-v2/eventLog/projectorRoom.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 93 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 159 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

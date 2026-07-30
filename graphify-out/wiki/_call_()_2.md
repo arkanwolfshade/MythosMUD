@@ -1,41 +1,43 @@
 # . call ()
 
-> 16 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **._apply_sanitarium_liability_update()** (12 connections) — `server/services/player_respawn_service.py`
-- **DecodeLiabilitiesFn** (7 connections) — `server/utils/liability_types.py`
-- **EncodeLiabilitiesFn** (7 connections) — `server/utils/liability_types.py`
-- **_RandomChoiceSource** (6 connections) — `server/services/player_respawn_service.py`
-- **.choice()** (3 connections) — `server/services/player_respawn_service.py`
-- **.__call__()** (3 connections) — `server/utils/liability_types.py`
-- **LiabilityStackEntry** (3 connections)
-- **.__call__()** (3 connections) — `server/utils/liability_types.py`
-- **Protocol** (2 connections)
-- **Subset of random.Random / random module API used for liability picks.** (1 connections) — `server/services/player_respawn_service.py`
-- **Return one element from a non-empty sequence of liability codes.** (1 connections) — `server/services/player_respawn_service.py`
-- **Increase existing liability stacks or add one liability if none exist.** (1 connections) — `server/services/player_respawn_service.py`
-- **Callable that parses liability JSON into normalized stack entries.** (1 connections) — `server/utils/liability_types.py`
-- **Decode stored liability text (or empty state) into stack rows.** (1 connections) — `server/utils/liability_types.py`
-- **Callable that serializes liability stack rows for persistence.** (1 connections) — `server/utils/liability_types.py`
-- **Encode stack rows into JSON suitable for PlayerLucidity.liabilities.** (1 connections) — `server/utils/liability_types.py`
+- **test_player_event_handlers_room.py** (37 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_process_player_entered_event_success()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_process_player_entered_event_no_player_info()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_process_player_entered_event_no_room_id()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_send_occupants_snapshot_to_player_string_id()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **Unit tests for player room event handlers.  Tests the PlayerRoomEventHandler cla** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **Test send_occupants_snapshot_to_player() handles string player_id.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **Test _process_player_entered_event() successfully processes event.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **Test _process_player_entered_event() returns None when player not found.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **Test _process_player_entered_event() returns None when room_id is None.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Relationships
 
-- [. init ()](_init_%28%29.md) (10 shared connections)
-- [LiabilityStackEntry](LiabilityStackEntry.md) (5 shared connections)
-- [datetime](datetime.md) (2 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (5 shared connections)
+- [Test is available for selection](Test_is_available_for_selection.md) (2 shared connections)
+- [Test evaluate numeric comparison() raises](Test_evaluate_numeric_comparison%28%29_raises.md) (1 shared connections)
+- [Test query rooms with exits](Test_query_rooms_with_exits.md) (1 shared connections)
+- [test_apply_lucidity_loss_player_not_found](test_apply_lucidity_loss_player_not_found.md) (1 shared connections)
+- [Test BehaviorEngine initialization.](Test_BehaviorEngine_initialization.md) (1 shared connections)
+- [Test evaluate equality() returns None](Test_evaluate_equality%28%29_returns_None.md) (1 shared connections)
+- [Test evaluate equality() returns False](Test_evaluate_equality%28%29_returns_False.md) (1 shared connections)
+- [Test evaluate numeric comparison() returns](Test_evaluate_numeric_comparison%28%29_returns.md) (1 shared connections)
+- [Test set stat requirements stores](Test_set_stat_requirements_stores.md) (1 shared connections)
+- [Test evaluate inequality() returns True](Test_evaluate_inequality%28%29_returns_True.md) (1 shared connections)
+- [Test evaluate inequality() returns None](Test_evaluate_inequality%28%29_returns_None.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/player_respawn_service.py`
-- `server/utils/liability_types.py`
+- `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Audit Trail
 
-- EXTRACTED: 47 (89%)
-- INFERRED: 6 (11%)
+- EXTRACTED: 53 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,28 +1,24 @@
 # .get requirement display text()
 
-> 6 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **.get_stat_requirements()** (5 connections) — `server/models/profession.py`
-- **.meets_stat_requirements()** (3 connections) — `server/models/profession.py`
-- **.get_requirement_display_text()** (3 connections) — `server/models/profession.py`
-- **Get profession stat requirements as dictionary.** (1 connections) — `server/models/profession.py`
-- **Check if given stats meet the profession requirements.          Args:** (1 connections) — `server/models/profession.py`
-- **Get formatted text for displaying stat requirements.          Returns:** (1 connections) — `server/models/profession.py`
+- **test_evaluate_equality_invalid_format()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test _evaluate_equality() returns None for invalid format.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [Profession](Profession.md) (3 shared connections)
-- [.get mechanical effects()](get_mechanical_effects%28%29.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [test behavior engine](test_behavior_engine.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/profession.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

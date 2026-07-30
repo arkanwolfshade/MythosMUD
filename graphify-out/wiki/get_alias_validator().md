@@ -1,33 +1,23 @@
 # get alias validator()
 
-> 8 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **_get_alias_validator()** (8 connections) — `server/alias_storage.py`
-- **test_get_alias_validator_caching()** (3 connections) — `server/tests/unit/test_alias_storage.py`
-- **test_get_alias_validator_import_failure()** (3 connections) — `server/tests/unit/test_alias_storage.py`
-- **test_get_alias_validator_creation_failure()** (3 connections) — `server/tests/unit/test_alias_storage.py`
-- **Lazily instantiate and cache the alias schema validator.** (1 connections) — `server/alias_storage.py`
-- **Test _get_alias_validator caches the validator.** (1 connections) — `server/tests/unit/test_alias_storage.py`
-- **Test _get_alias_validator returns None when import has previously failed.** (1 connections) — `server/tests/unit/test_alias_storage.py`
-- **Test _get_alias_validator handles validator creation failure.** (1 connections) — `server/tests/unit/test_alias_storage.py`
+- **.unsubscribe_from_room()** (2 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **Unsubscribe from chat messages for a specific room.          Args:             r** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
 
 ## Relationships
 
-- [test alias storage](test_alias_storage.md) (4 shared connections)
-- [main()](main%28%29.md) (1 shared connections)
-- [Any](Any.md) (1 shared connections)
-- [.add alias()](add_alias%28%29.md) (1 shared connections)
+- [NATSMessageSubscriptionMixin](NATSMessageSubscriptionMixin.md) (1 shared connections)
 
 ## Source Files
 
-- `server/alias_storage.py`
-- `server/tests/unit/test_alias_storage.py`
+- `server/realtime/nats_message_handler_subscriptions.py`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

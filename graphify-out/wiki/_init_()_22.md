@@ -1,56 +1,48 @@
 # . init ()
 
-> 55 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **MythosChronicle** (27 connections) — `server/time/time_service.py`
-- **datetime** (15 connections)
-- **_ensure_utc()** (11 connections) — `server/time/time_service.py`
-- **.get_calendar_components()** (10 connections) — `server/time/time_service.py`
-- **ChronicleState** (9 connections) — `server/time/time_service.py`
-- **.get_current_mythos_datetime()** (9 connections) — `server/time/time_service.py`
-- **.get_daypart()** (8 connections) — `server/time/time_service.py`
-- **._load_state()** (8 connections) — `server/time/time_service.py`
-- **._persist_state()** (8 connections) — `server/time/time_service.py`
-- **.__init__()** (7 connections) — `server/time/tick_scheduler.py`
-- **.to_mythos_datetime()** (7 connections) — `server/time/time_service.py`
-- **.is_witching_hour()** (7 connections) — `server/time/time_service.py`
-- **.is_daytime()** (7 connections) — `server/time/time_service.py`
-- **._migrate_old_state_file()** (6 connections) — `server/time/time_service.py`
-- **.__init__()** (5 connections) — `server/time/time_service.py`
-- **.to_real_datetime()** (5 connections) — `server/time/time_service.py`
-- **.freeze()** (5 connections) — `server/time/time_service.py`
-- **._hours_between()** (5 connections) — `server/time/time_service.py`
-- **.format_clock()** (4 connections) — `server/time/time_service.py`
-- **.advance_mythos()** (4 connections) — `server/time/time_service.py`
-- **.get_current_mythos_datetime()** (3 connections) — `server/time/time_service.py`
-- **.format_clock()** (3 connections) — `server/time/time_service.py`
-- **.get_instance()** (3 connections) — `server/time/time_service.py`
-- **.get_state_snapshot()** (3 connections) — `server/time/time_service.py`
-- **.get_last_freeze_state()** (3 connections) — `server/time/time_service.py`
-- *... and 30 more nodes in this community*
+- **ValidationRule** (10 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
+- **ValidationError** (8 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
+- **base_rule.py** (5 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
+- **__init__.py** (3 connections) — `tools/room_toolkit/room_validator/rules/__init__.py`
+- **.create_error()** (3 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
+- **.create_warning()** (3 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
+- **.__init__()** (2 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
+- **.to_dict()** (2 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
+- **.__str__()** (2 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
+- **ABC** (2 connections)
+- **.__init__()** (2 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
+- **._filter_rooms_by_zone()** (2 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
+- **.get_rule_info()** (2 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
+- **Validation rules for room pathing analysis.  This module contains the rule syste** (1 connections) — `tools/room_toolkit/room_validator/rules/__init__.py`
+- **Base validation rule class.  This module defines the abstract base class for all** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
+- **Represents a validation error with metadata.      As documented in the restricte** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
+- **Initialize a validation error.          Args:             rule_name: Name of the** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
+- **Convert error to dictionary format.** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
+- **String representation of the error.** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
+- **Abstract base class for all validation rules.      Each rule implements specific** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
+- **Initialize the validation rule.          Args:             name: Name of the rul** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
+- **Filter rooms by zone if specified.          Args:             room_database: Dic** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
+- **Create a validation error for this rule.          Args:             room_id: Roo** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
+- **Create a validation warning for this rule.          Args:             room_id: R** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
+- **Get information about this rule.          Returns:             Dictionary with r** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
 
 ## Relationships
 
-- [main()](main%28%29.md) (12 shared connections)
-- [Any](Any.md) (2 shared connections)
-- [time commands](time_commands.md) (2 shared connections)
-- [init](init.md) (2 shared connections)
-- [Cancel lifecycle/critical tasks first (Phase](Cancel_lifecycle-critical_tasks_first_%28Phase.md) (1 shared connections)
-- [.initialize()](initialize%28%29.md) (1 shared connections)
-- [Lock](Lock.md) (1 shared connections)
-- [initialize nats and combat services()](initialize_nats_and_combat_services%28%29.md) (1 shared connections)
+- [Convert legacy string format exits](Convert_legacy_string_format_exits.md) (2 shared connections)
 
 ## Source Files
 
-- `server/time/tick_scheduler.py`
-- `server/time/time_service.py`
+- `tools/room_toolkit/room_validator/rules/__init__.py`
+- `tools/room_toolkit/room_validator/rules/base_rule.py`
 
 ## Audit Trail
 
-- EXTRACTED: 212 (98%)
-- INFERRED: 4 (2%)
+- EXTRACTED: 58 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

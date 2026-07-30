@@ -1,54 +1,53 @@
 # Any
 
-> 47 nodes
+> 69 nodes
 
 ## Key Concepts
 
-- **RoomSubscriptionManager** (37 connections) — `server/realtime/room_subscription_manager.py`
-- **Any** (13 connections)
-- **._canonical_room_id()** (13 connections) — `server/realtime/room_subscription_manager.py`
-- **.get_room_occupants()** (8 connections) — `server/realtime/room_subscription_manager.py`
-- **._get_fallback_npcs_from_room()** (7 connections) — `server/realtime/room_subscription_manager.py`
-- **._query_npcs_from_lifecycle_manager()** (6 connections) — `server/realtime/room_subscription_manager.py`
-- **._add_npc_to_occupants()** (5 connections) — `server/realtime/room_subscription_manager.py`
-- **.list_room_drops()** (4 connections) — `server/realtime/room_subscription_manager.py`
-- **.add_room_drop()** (4 connections) — `server/realtime/room_subscription_manager.py`
-- **.take_room_drop()** (4 connections) — `server/realtime/room_subscription_manager.py`
-- **._get_online_player_occupants()** (4 connections) — `server/realtime/room_subscription_manager.py`
-- **._get_npc_name_from_lifecycle_manager()** (4 connections) — `server/realtime/room_subscription_manager.py`
-- **._filter_fallback_npcs()** (4 connections) — `server/realtime/room_subscription_manager.py`
-- **.reconcile_room_presence()** (4 connections) — `server/realtime/room_subscription_manager.py`
-- **.set_async_persistence()** (3 connections) — `server/realtime/room_subscription_manager.py`
-- **.subscribe_to_room()** (3 connections) — `server/realtime/room_subscription_manager.py`
-- **.unsubscribe_from_room()** (3 connections) — `server/realtime/room_subscription_manager.py`
-- **.get_room_subscribers()** (3 connections) — `server/realtime/room_subscription_manager.py`
-- **.adjust_room_drop()** (3 connections) — `server/realtime/room_subscription_manager.py`
-- **.add_room_occupant()** (3 connections) — `server/realtime/room_subscription_manager.py`
-- **.remove_room_occupant()** (3 connections) — `server/realtime/room_subscription_manager.py`
-- **.get_stats()** (3 connections) — `server/realtime/room_subscription_manager.py`
-- **.__init__()** (2 connections) — `server/realtime/room_subscription_manager.py`
-- **.remove_player_from_all_rooms()** (2 connections) — `server/realtime/room_subscription_manager.py`
-- **Manages room subscriptions and occupant tracking.      This class handles room s** (1 connections) — `server/realtime/room_subscription_manager.py`
-- *... and 22 more nodes in this community*
+- **test_metrics.py** (27 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
+- **SubjectManagerMetrics** (16 connections) — `server/services/nats_subject_manager/metrics.py`
+- **._calculate_percentile()** (6 connections) — `server/services/nats_subject_manager/metrics.py`
+- **.__init__()** (5 connections) — `server/services/nats_subject_manager/manager.py`
+- **.get_metrics()** (4 connections) — `server/services/nats_subject_manager/metrics.py`
+- **.__init__()** (3 connections) — `server/services/nats_subject_manager/metrics.py`
+- **metrics()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
+- **test_subject_manager_metrics_init()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
+- **test_calculate_percentile_empty()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
+- **test_calculate_percentile_single_value()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
+- **test_calculate_percentile_multiple_values()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
+- **.record_validation()** (2 connections) — `server/services/nats_subject_manager/metrics.py`
+- **.record_build()** (2 connections) — `server/services/nats_subject_manager/metrics.py`
+- **.record_error()** (2 connections) — `server/services/nats_subject_manager/metrics.py`
+- **.reset()** (2 connections) — `server/services/nats_subject_manager/metrics.py`
+- **test_record_validation_success()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
+- **test_record_validation_failure()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
+- **test_record_validation_cache_hit()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
+- **test_record_validation_multiple()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
+- **test_record_validation_stores_times()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
+- **test_record_build_success()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
+- **test_record_build_failure()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
+- **test_record_build_multiple()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
+- **test_record_build_stores_times()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
+- **test_record_error_pattern_not_found()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
+- *... and 44 more nodes in this community*
 
 ## Relationships
 
-- [main()](main%28%29.md) (4 shared connections)
-- [SendPersonalMessage](SendPersonalMessage.md) (2 shared connections)
-- [test room subscription manager](test_room_subscription_manager.md) (2 shared connections)
-- [test room subscription manager drops](test_room_subscription_manager_drops.md) (2 shared connections)
-- [test room subscription manager helpers](test_room_subscription_manager_helpers.md) (2 shared connections)
-- [test room subscription manager npcs](test_room_subscription_manager_npcs.md) (2 shared connections)
-- [Any](Any.md) (2 shared connections)
+- [Any](Any.md) (5 shared connections)
+- [get subject manager dependency()](get_subject_manager_dependency%28%29.md) (2 shared connections)
+- [. init ()](_init_%28%29.md) (1 shared connections)
+- [Coord](Coord.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/room_subscription_manager.py`
+- `server/services/nats_subject_manager/manager.py`
+- `server/services/nats_subject_manager/metrics.py`
+- `server/tests/unit/services/nats_subject_manager/test_metrics.py`
 
 ## Audit Trail
 
-- EXTRACTED: 168 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 155 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,24 +1,23 @@
 # Test subscribe to chat subjects()
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **test_subscribe_to_chat_subjects_no_subject_manager()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_subscribe_to_event_subjects_no_subject_manager()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test _subscribe_to_chat_subjects() raises error when subject manager not availab** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_process_exit_rows_missing_direction()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **Test _process_exit_rows handles missing direction.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Relationships
 
-- [test nats message handler](test_nats_message_handler.md) (2 shared connections)
+- [test async persistence room cache](test_async_persistence_room_cache.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

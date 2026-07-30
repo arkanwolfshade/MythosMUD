@@ -1,44 +1,55 @@
 # Any
 
-> 19 nodes
+> 52 nodes
 
 ## Key Concepts
 
-- **NPCSpawnRuleCRUDMixin** (10 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **._execute_create_spawn_rule()** (8 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **_row_to_npc_spawn_rule()** (8 connections) — `server/services/npc_service_models.py`
-- **.create_spawn_rule()** (7 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **.get_spawn_rules()** (6 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **AsyncSession** (6 connections)
-- **.get_spawn_rule()** (6 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **._validate_spawn_rule_inputs()** (4 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **.delete_spawn_rule()** (4 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **Any** (2 connections)
-- **Any** (2 connections)
-- **Mixin providing NPC spawn rule CRUD operations.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **Get all NPC spawn rules.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **Get a specific NPC spawn rule by ID.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **Create a new NPC spawn rule.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **Validate NPC definition existence and population counts for spawn rule creation.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **Execute create_spawn_rule stored procedure and return the created spawn rule.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **Delete an NPC spawn rule.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **Map procedure result row to NPCSpawnRule model.** (1 connections) — `server/services/npc_service_models.py`
+- **test_admin_shutdown_command.py** (57 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **_await_shutdown_result()** (14 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_initiate_shutdown_countdown_success()** (5 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_initiate_shutdown_countdown_supersedes()** (5 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **_InitiateStateStub** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **_InitiateAppStub** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_handle_shutdown_command_no_player_service()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_handle_shutdown_command_player_not_found()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_handle_shutdown_command_no_permission()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_handle_shutdown_command_invalid_parameters()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_handle_shutdown_command_cancel()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_handle_shutdown_command_cancel_no_active()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_handle_shutdown_command_initiate()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_handle_shutdown_command_initiate_superseding()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_handle_shutdown_command_initiate_no_seconds()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_handle_shutdown_command_initiate_failure()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_get_shutdown_blocking_message_login()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_get_shutdown_blocking_message_character_creation()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_get_shutdown_blocking_message_default()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_broadcast_shutdown_notification_success()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_broadcast_shutdown_notification_failure()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_parse_shutdown_parameters_no_args()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_parse_shutdown_parameters_cancel()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_parse_shutdown_parameters_seconds()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_parse_shutdown_parameters_invalid_negative()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- *... and 27 more nodes in this community*
 
 ## Relationships
 
-- [main()](main%28%29.md) (7 shared connections)
-- [. repr ()](_repr_%28%29.md) (5 shared connections)
-- [.initialize()](initialize%28%29.md) (1 shared connections)
+- [get skill repository()](get_skill_repository%28%29.md) (17 shared connections)
+- [test npc combat integration service](test_npc_combat_integration_service.md) (12 shared connections)
+- [admin shutdown command](admin_shutdown_command.md) (4 shared connections)
+- [test format player location invalid()](test_format_player_location_invalid%28%29.md) (4 shared connections)
+- [get item description from prototype()](get_item_description_from_prototype%28%29.md) (4 shared connections)
+- [test magic commands](test_magic_commands.md) (2 shared connections)
+- [AuthSlice](AuthSlice.md) (1 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/npc_service/spawn_rule_crud.py`
-- `server/services/npc_service_models.py`
+- `server/tests/unit/commands/test_admin_shutdown_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 70 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 175 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

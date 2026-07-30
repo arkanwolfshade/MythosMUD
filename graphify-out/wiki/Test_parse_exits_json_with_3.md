@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_parse_exits_json_list()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **Test _parse_exits_json with list.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_apply_dampening_and_send_message_exception()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _apply_dampening_and_send_message handles exceptions.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [test async persistence room cache](test_async_persistence_room_cache.md) (1 shared connections)
+- [test nats message handler chat](test_nats_message_handler_chat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 

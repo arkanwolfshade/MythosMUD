@@ -1,30 +1,25 @@
 # .check and cleanup()
 
-> 6 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **.check_and_cleanup()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **.force_cleanup()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **_stale_prune_max_age_seconds()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **Stale-prune threshold (seconds). Higher in e2e/local to avoid mid-run drops.** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **Force immediate cleanup of all orphaned data.          Args:             cleanup** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **Periodically check for cleanup conditions and perform cleanup if needed.** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **test_evaluate_inequality_true()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test _evaluate_inequality() returns True for non-matching condition.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [ConnectionCleaner](ConnectionCleaner.md) (4 shared connections)
-- [main()](main%28%29.md) (3 shared connections)
-- [. identify stale players()](_identify_stale_players%28%29.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [test behavior engine](test_behavior_engine.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/maintenance/connection_cleaner.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 17 (94%)
-- INFERRED: 1 (6%)
+- EXTRACTED: 4 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

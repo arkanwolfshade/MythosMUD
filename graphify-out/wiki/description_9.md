@@ -1,13 +1,12 @@
 # description
 
-> 5 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **description** (5 connections) — `schemas/intersection_schema.json`
+- **plane** (4 connections) — `schemas/intersection_schema.json`
 - **type** (1 connections) — `schemas/intersection_schema.json`
-- **minLength** (1 connections) — `schemas/intersection_schema.json`
-- **maxLength** (1 connections) — `schemas/intersection_schema.json`
+- **pattern** (1 connections) — `schemas/intersection_schema.json`
 - **description** (1 connections) — `schemas/intersection_schema.json`
 
 ## Relationships
@@ -20,7 +19,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

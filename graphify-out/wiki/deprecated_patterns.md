@@ -1,11 +1,10 @@
 # deprecated patterns
 
-> 34 nodes
+> 40 nodes
 
 ## Key Concepts
 
 - **deprecated_patterns.py** (19 connections) — `docs/examples/logging/deprecated_patterns.py`
-- **Demonstrate DEPRECATED basic logging patterns.** (6 connections) — `docs/examples/logging/deprecated_patterns.py`
 - **deprecated_api_logging()** (4 connections) — `docs/examples/logging/deprecated_patterns.py`
 - **risky_operation()** (4 connections) — `docs/examples/logging/deprecated_patterns.py`
 - **deprecated_error_handling()** (3 connections) — `docs/examples/logging/deprecated_patterns.py`
@@ -25,11 +24,12 @@
 - **deprecated_websocket_logging()** (2 connections) — `docs/examples/logging/deprecated_patterns.py`
 - **deprecated_logging_in_loops()** (2 connections) — `docs/examples/logging/deprecated_patterns.py`
 - **deprecated_logging_without_context()** (2 connections) — `docs/examples/logging/deprecated_patterns.py`
-- **Demonstrate DEPRECATED error handling patterns.** (2 connections) — `docs/examples/logging/deprecated_patterns.py`
 - **async_work()** (1 connections) — `docs/examples/logging/deprecated_patterns.py`
+- **Demonstrate DEPRECATED basic logging patterns.** (1 connections) — `docs/examples/logging/deprecated_patterns.py`
+- **Demonstrate DEPRECATED error handling patterns.** (1 connections) — `docs/examples/logging/deprecated_patterns.py`
+- **Demonstrate DEPRECATED performance logging patterns.** (1 connections) — `docs/examples/logging/deprecated_patterns.py`
 - **Demonstrate DEPRECATED request context patterns.** (1 connections) — `docs/examples/logging/deprecated_patterns.py`
-- **Demonstrate DEPRECATED security logging patterns.** (1 connections) — `docs/examples/logging/deprecated_patterns.py`
-- *... and 9 more nodes in this community*
+- *... and 15 more nodes in this community*
 
 ## Relationships
 

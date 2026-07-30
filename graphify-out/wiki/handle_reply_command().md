@@ -1,52 +1,47 @@
 # handle reply command()
 
-> 47 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **handle_whisper_command()** (21 connections) — `server/commands/communication_commands.py`
-- **test_communication_commands_whisper_reply.py** (17 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_whisper_command.py** (13 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- **handle_reply_command()** (11 connections) — `server/commands/communication_commands.py`
-- **test_handle_whisper_command_target_not_found()** (4 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_handle_whisper_command_whisper_to_self()** (4 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_handle_whisper_command_success()** (4 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_handle_reply_command_no_last_whisper_sender()** (4 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_handle_reply_command_success()** (4 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_handle_whisper_command_chat_service_failure()** (4 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_handle_whisper_command_no_target()** (3 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_handle_whisper_command_no_message()** (3 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_handle_whisper_command_no_services()** (3 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_handle_reply_command_no_message()** (3 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_handle_reply_command_no_services()** (3 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_whisper_command_missing_target()** (3 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- **test_whisper_command_missing_message()** (3 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- **test_whisper_command_no_player_service()** (3 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- **test_whisper_command_sender_not_found()** (3 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- **test_whisper_command_target_not_found()** (3 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- **test_whisper_command_whisper_to_self()** (3 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- **test_whisper_command_success()** (3 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- **Test handle_whisper_command with no target.** (2 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **mock_request()** (2 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- **mock_sender()** (2 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- *... and 22 more nodes in this community*
+- **CharacterNameScreen.tsx** (20 connections) — `client/src/components/CharacterNameScreen.tsx`
+- **SkillAssignmentScreen.tsx** (15 connections) — `client/src/components/SkillAssignmentScreen.tsx`
+- **SkillAssignmentScreen.helpers.tsx** (12 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
+- **SkillAssignmentScreen()** (5 connections) — `client/src/components/SkillAssignmentScreen.tsx`
+- **CharacterNameScreen()** (4 connections) — `client/src/components/CharacterNameScreen.tsx`
+- **SkillsPayload** (3 connections) — `client/src/components/CharacterNameScreen.tsx`
+- **SkillAssignmentScreenProps** (3 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
+- **loadSkillsCatalog()** (3 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
+- **renderLoadingState()** (3 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
+- **renderErrorState()** (3 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
+- **renderSkillInstructions()** (3 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
+- **OccupationSlotPayload** (2 connections) — `client/src/components/CharacterNameScreen.tsx`
+- **PersonalInterestPayload** (2 connections) — `client/src/components/CharacterNameScreen.tsx`
+- **CreateCharacterPayload** (2 connections) — `client/src/components/CharacterNameScreen.tsx`
+- **buildCreateCharacterPayload()** (2 connections) — `client/src/components/CharacterNameScreen.tsx`
+- **OCCUPATION_VALUES** (2 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
+- **SkillCatalogEntry** (2 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
+- **MIN_TOUCH_TARGET_STYLE** (2 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
+- **SkillsLoadResult** (1 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
 
 ## Relationships
 
-- [handle global command()](handle_global_command%28%29.md) (8 shared connections)
-- [Any](Any.md) (6 shared connections)
-- [communication commands](communication_commands.md) (6 shared connections)
+- [SERVER UNAVAILABLE PATTERNS](SERVER_UNAVAILABLE_PATTERNS.md) (6 shared connections)
+- [CharacterSelectionScreen](CharacterSelectionScreen.md) (4 shared connections)
+- [useConnectionStateMachine.test](useConnectionStateMachine.test.md) (4 shared connections)
+- [fetchSpy](fetchSpy.md) (2 shared connections)
+- [test character creation service](test_character_creation_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/communication_commands.py`
-- `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- `server/tests/unit/commands/test_whisper_command.py`
+- `client/src/components/CharacterNameScreen.tsx`
+- `client/src/components/SkillAssignmentScreen.helpers.tsx`
+- `client/src/components/SkillAssignmentScreen.tsx`
 
 ## Audit Trail
 
-- EXTRACTED: 150 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 89 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

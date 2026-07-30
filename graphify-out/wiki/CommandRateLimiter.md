@@ -27,7 +27,7 @@
 
 ## Relationships
 
-- [main()](main%28%29.md) (2 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
 
 ## Source Files
 

@@ -1,65 +1,52 @@
 # combat taunt
 
-> 151 nodes
+> 75 nodes
 
 ## Key Concepts
 
-- **combat_taunt.py** (32 connections) — `server/commands/combat_taunt.py`
-- **TargetType** (30 connections) — `server/schemas/shared/target_resolution.py`
-- **TauntCommandHandler** (29 connections) — `server/commands/combat_taunt.py`
-- **test_aggro_threat.py** (29 connections) — `server/tests/unit/services/test_aggro_threat.py`
-- **aggro_threat.py** (28 connections) — `server/services/aggro_threat.py`
-- **update_aggro()** (24 connections) — `server/services/aggro_threat.py`
-- **_make_combat()** (23 connections) — `server/tests/unit/services/test_aggro_threat.py`
-- **add_damage_threat()** (20 connections) — `server/services/aggro_threat.py`
-- **test_combat_taunt.py** (20 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **get_or_create_hate_list()** (19 connections) — `server/services/aggro_threat.py`
-- **add_heal_threat()** (14 connections) — `server/services/aggro_threat.py`
-- **test_aggro_flow.py** (14 connections) — `server/tests/integration/test_aggro_flow.py`
-- **_validate_taunt_context()** (13 connections) — `server/commands/combat_taunt.py`
-- **run_handle_taunt_command()** (13 connections) — `server/commands/combat_taunt.py`
-- **_make_participant()** (13 connections) — `server/tests/unit/services/test_aggro_threat.py`
-- **apply_taunt()** (12 connections) — `server/services/aggro_threat.py`
-- **target_resolution.py** (11 connections) — `server/schemas/shared/target_resolution.py`
-- **UUID** (11 connections)
-- **_validate_taunt_target()** (9 connections) — `server/commands/combat_taunt.py`
-- **_resolve_taunt_combat_and_participant()** (9 connections) — `server/commands/combat_taunt.py`
-- **_apply_taunt_and_maybe_broadcast()** (9 connections) — `server/commands/combat_taunt.py`
-- **_make_participant()** (9 connections) — `server/tests/integration/test_aggro_flow.py`
-- **_make_combat()** (8 connections) — `server/tests/integration/test_aggro_flow.py`
-- **_get_aggro_config()** (7 connections) — `server/services/aggro_threat.py`
-- **apply_stealth_wipe()** (7 connections) — `server/services/aggro_threat.py`
-- *... and 126 more nodes in this community*
+- **test_room_sync_service.py** (40 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **RoomSyncService** (19 connections) — `server/services/room_sync_service.py`
+- **room_sync_service()** (4 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **.process_event_with_ordering()** (3 connections) — `server/services/room_sync_service.py`
+- **room_sync_service_with_room_service()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **sample_event()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_process_room_update_with_validation_handles_error()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_invalidate_stale_cache_error()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_fetch_fresh_room_data_handles_error()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_get_room_sync_service_returns_singleton()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **.clear_cache()** (2 connections) — `server/services/room_sync_service.py`
+- **mock_room_service()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_room_sync_service_init()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_room_sync_service_init_with_room_service()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_set_room_service()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_process_event_with_ordering()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_process_event_with_ordering_increments_counter()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_process_event_with_ordering_tracks_last_processed()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_process_event_with_ordering_handles_error()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_process_room_update_with_validation_valid_data()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_process_room_update_with_validation_invalid_data()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_process_room_update_with_validation_stale_data()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_invalidate_stale_cache_success()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_invalidate_stale_cache_no_room_service()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_fetch_fresh_room_data_success()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- *... and 50 more nodes in this community*
 
 ## Relationships
 
-- [combat](combat.md) (58 shared connections)
-- [Spell Targeting](Spell_Targeting.md) (24 shared connections)
-- [Player Position Service](Player_Position_Service.md) (16 shared connections)
-- [Any](Any.md) (8 shared connections)
-- [initialize nats and combat services()](initialize_nats_and_combat_services%28%29.md) (7 shared connections)
-- [.end combat()](end_combat%28%29.md) (3 shared connections)
-- [FollowTargetValue](FollowTargetValue.md) (3 shared connections)
-- [get current tick()](get_current_tick%28%29.md) (3 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (2 shared connections)
-- [init](init.md) (2 shared connections)
-- [follow commands](follow_commands.md) (2 shared connections)
-- [. init ()](_init_%28%29.md) (2 shared connections)
+- [Any](Any.md) (10 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (10 shared connections)
+- [UUID](UUID.md) (3 shared connections)
+- [Manages room data caching and](Manages_room_data_caching_and.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/combat_taunt.py`
-- `server/models/combat.py`
-- `server/schemas/shared/target_resolution.py`
-- `server/services/aggro_threat.py`
-- `server/tests/integration/test_aggro_flow.py`
-- `server/tests/unit/commands/test_combat_taunt.py`
-- `server/tests/unit/services/test_aggro_threat.py`
+- `server/services/room_sync_service.py`
+- `server/tests/unit/services/test_room_sync_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 731 (98%)
-- INFERRED: 14 (2%)
+- EXTRACTED: 168 (95%)
+- INFERRED: 8 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

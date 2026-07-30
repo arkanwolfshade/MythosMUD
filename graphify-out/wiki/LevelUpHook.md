@@ -1,25 +1,24 @@
 # LevelUpHook
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **.__init__()** (4 connections) — `server/game/level_service.py`
-- **Any** (1 connections)
-- **LevelUpHook** (1 connections)
-- **Initialize the level service.          Args:             async_persistence: Asyn** (1 connections) — `server/game/level_service.py`
+- **test_evaluate_condition_less_than()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test evaluate_condition() handles < operator.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [Any](Any.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [test behavior engine](test_behavior_engine.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/level_service.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

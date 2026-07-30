@@ -1,31 +1,27 @@
 # .connect websocket()
 
-> 9 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **.connect_websocket()** (5 connections) — `server/realtime/connection_manager.py`
-- **WebSocket** (4 connections)
-- **._is_websocket_open()** (3 connections) — `server/realtime/connection_manager.py`
-- **._safe_close_websocket()** (3 connections) — `server/realtime/connection_manager.py`
-- **.get_connection_id_from_websocket()** (3 connections) — `server/realtime/connection_manager.py`
-- **Check if a WebSocket is open.** (1 connections) — `server/realtime/connection_manager.py`
-- **Safely close a WebSocket connection.** (1 connections) — `server/realtime/connection_manager.py`
-- **Connect a WebSocket for a player.** (1 connections) — `server/realtime/connection_manager.py`
-- **Get connection ID from a WebSocket instance.** (1 connections) — `server/realtime/connection_manager.py`
+- **🔧 COMMON FIX TEMPLATES** (6 connections) — `.cursor/commands/lint-remediation.md`
+- **Template 1: Python Import Fix** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **Template 2: Python Import Sorting Fix** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **Template 3: Python Line Length Fix** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **Template 4: React Hook Dependency Fix** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **Template 5: TypeScript Unused Variable Fix** (1 connections) — `.cursor/commands/lint-remediation.md`
 
 ## Relationships
 
-- [Player](Player.md) (5 shared connections)
-- [connection establishment](connection_establishment.md) (1 shared connections)
+- [lint remediation](lint_remediation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_manager.py`
+- `.cursor/commands/lint-remediation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 22 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

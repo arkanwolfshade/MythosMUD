@@ -1,57 +1,37 @@
 # admin summon command
 
-> 25 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **admin_summon_command.py** (34 connections) — `server/commands/admin_summon_command.py`
-- **resolve_player()** (18 connections) — `server/commands/inventory_command_helpers.py`
-- **_resolve_summon_context()** (11 connections) — `server/commands/admin_summon_command.py`
-- **Any** (10 connections)
-- **handle_summon_command()** (10 connections) — `server/commands/admin_summon_command.py`
-- **_broadcast_and_log_summon_success()** (7 connections) — `server/commands/admin_summon_command.py`
-- **_complete_summon()** (7 connections) — `server/commands/admin_summon_command.py`
-- **_persist_summoned_item()** (6 connections) — `server/commands/admin_summon_command.py`
-- **_parse_summon_command_data()** (5 connections) — `server/commands/admin_summon_command.py`
-- **_validate_summon_prerequisites()** (4 connections) — `server/commands/admin_summon_command.py`
-- **_summon_npc_stub_response()** (4 connections) — `server/commands/admin_summon_command.py`
-- **_create_summon_item_instance()** (4 connections) — `server/commands/admin_summon_command.py`
-- **_log_summon_success()** (4 connections) — `server/commands/admin_summon_command.py`
-- **Administrative summon command implementation.** (1 connections) — `server/commands/admin_summon_command.py`
-- **Return an error result dict if item services or room manager are missing; otherw** (1 connections) — `server/commands/admin_summon_command.py`
-- **If target_type is 'npc', log and return stub message; otherwise return None.** (1 connections) — `server/commands/admin_summon_command.py`
-- **Create item instance via factory. Returns (instance, None) or (None, error_dict)** (1 connections) — `server/commands/admin_summon_command.py`
-- **Persist item instance to DB. Logs and continues on failure (room drop still adde** (1 connections) — `server/commands/admin_summon_command.py`
-- **Resolve state, player, admin permission, and summon prerequisites.      Returns** (1 connections) — `server/commands/admin_summon_command.py`
-- **Parse and validate command_data; optionally record quantity spike; check NPC stu** (1 connections) — `server/commands/admin_summon_command.py`
-- **Broadcast admin_summon event to room, then record success logs.** (1 connections) — `server/commands/admin_summon_command.py`
-- **Log successful summon in admin logger and structured logs.** (1 connections) — `server/commands/admin_summon_command.py`
-- **Create item, persist, add to room, broadcast event, log; return success message.** (1 connections) — `server/commands/admin_summon_command.py`
-- **Handle the `/summon` administrative command.** (1 connections) — `server/commands/admin_summon_command.py`
-- **Resolve player from persistence and current user.** (1 connections) — `server/commands/inventory_command_helpers.py`
+- **RoomBasedChannelStrategy** (10 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **test_channel_broadcasting_strategy_factory_get_strategy_known()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **test_room_based_channel_strategy_broadcast()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **test_room_based_channel_strategy_broadcast_no_room_id()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **.__init__()** (2 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Strategy for room-based channels (say, local, emote, pose).** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Initialize room-based channel strategy.          Args:             channel_type:** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Test RoomBasedChannelStrategy.broadcast() broadcasts to room.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **Test RoomBasedChannelStrategy.broadcast() handles missing room_id.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **Test ChannelBroadcastingStrategyFactory.get_strategy() returns known strategy.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
 
 ## Relationships
 
-- [Any](Any.md) (14 shared connections)
-- [test resolve state no app()](test_resolve_state_no_app%28%29.md) (13 shared connections)
-- [main()](main%28%29.md) (10 shared connections)
-- [DropResolved](DropResolved.md) (4 shared connections)
-- [UUID](UUID.md) (3 shared connections)
-- [. init ()](_init_%28%29.md) (2 shared connections)
-- [.state()](state%28%29.md) (1 shared connections)
-- [communication commands support](communication_commands_support.md) (1 shared connections)
-- [. get persistence from app()](_get_persistence_from_app%28%29.md) (1 shared connections)
-- [MythosValidationError](MythosValidationError.md) (1 shared connections)
+- [channel broadcasting strategies](channel_broadcasting_strategies.md) (4 shared connections)
+- [add fastapi users columns](add_fastapi_users_columns.md) (2 shared connections)
+- [test inventory mutation guard internal](test_inventory_mutation_guard_internal.md) (1 shared connections)
+- [.broadcast()](broadcast%28%29.md) (1 shared connections)
+- [PartyService](PartyService.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/admin_summon_command.py`
-- `server/commands/inventory_command_helpers.py`
+- `server/realtime/channel_broadcasting_strategies.py`
+- `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 130 (96%)
-- INFERRED: 6 (4%)
+- EXTRACTED: 25 (93%)
+- INFERRED: 2 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

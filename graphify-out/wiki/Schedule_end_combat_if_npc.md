@@ -1,55 +1,59 @@
 # Schedule end combat if npc
 
-> 37 nodes
+> 26 nodes
 
 ## Key Concepts
 
-- **CommunicationIntegrationProtocol** (10 connections) — `server/npc/npc_protocols.py`
-- **schedule_end_combat_if_npc_died_best_effort()** (8 connections) — `server/npc/npc_combat_schedule.py`
-- **CombatIntegrationProtocol** (7 connections) — `server/npc/npc_protocols.py`
-- **._handle_npc_death()** (6 connections) — `server/npc/npc_base.py`
-- **.take_damage()** (5 connections) — `server/npc/npc_base.py`
-- **test_npc_combat_schedule.py** (5 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
-- **._publish_damage_event()** (4 connections) — `server/npc/npc_base.py`
-- **._schedule_end_combat_if_npc_died()** (4 connections) — `server/npc/npc_base.py`
-- **.speak()** (4 connections) — `server/npc/npc_base.py`
-- **.listen()** (4 connections) — `server/npc/npc_base.py`
-- **npc_protocols.py** (4 connections) — `server/npc/npc_protocols.py`
-- **._update_determination_points()** (3 connections) — `server/npc/npc_base.py`
-- **test_schedule_end_combat_if_npc_died_no_service()** (3 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
-- **test_schedule_end_combat_if_npc_died_no_running_loop()** (3 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
-- **Protocol** (2 connections)
-- **.handle_npc_death()** (2 connections) — `server/npc/npc_protocols.py`
-- **.send_whisper_to_player()** (2 connections) — `server/npc/npc_protocols.py`
-- **.send_message_to_room()** (2 connections) — `server/npc/npc_protocols.py`
-- **.handle_player_message()** (2 connections) — `server/npc/npc_protocols.py`
-- **Update determination points after taking damage; return new DP.** (1 connections) — `server/npc/npc_base.py`
-- **Publish damage event to event bus.** (1 connections) — `server/npc/npc_base.py`
-- **Handle NPC death after taking fatal damage.** (1 connections) — `server/npc/npc_base.py`
-- **Schedule end_combat_if_npc_died so the slain NPC no longer gets combat turns (be** (1 connections) — `server/npc/npc_base.py`
-- **Take damage and update determination points (DP).** (1 connections) — `server/npc/npc_base.py`
-- **NPC speaks a message.** (1 connections) — `server/npc/npc_base.py`
-- *... and 12 more nodes in this community*
+- **config.ts** (14 connections) — `client/src/components/map/config.ts`
+- **ExitEdge.tsx** (10 connections) — `client/src/components/map/edges/ExitEdge.tsx`
+- **ReactFlowConfig.test.tsx** (9 connections) — `client/src/components/map/__tests__/ReactFlowConfig.test.tsx`
+- **RoomNode.tsx** (9 connections) — `client/src/components/map/nodes/RoomNode.tsx`
+- **IntersectionNode.tsx** (7 connections) — `client/src/components/map/nodes/IntersectionNode.tsx`
+- **ExitEdge** (6 connections) — `client/src/components/map/edges/ExitEdge.tsx`
+- **ExitEdge.rendering.test.tsx** (6 connections) — `client/src/components/map/edges/__tests__/ExitEdge.rendering.test.tsx`
+- **ExitEdge.test-fixtures.tsx** (6 connections) — `client/src/components/map/edges/__tests__/ExitEdge.test-fixtures.tsx`
+- **RoomNode.test.tsx** (5 connections) — `client/src/components/map/nodes/__tests__/RoomNode.test.tsx`
+- **ExitEdge.edge-creation.test.tsx** (4 connections) — `client/src/components/map/edges/__tests__/ExitEdge.edge-creation.test.tsx`
+- **ExitEdge.interactions.test.tsx** (4 connections) — `client/src/components/map/edges/__tests__/ExitEdge.interactions.test.tsx`
+- **defaultExitEdgeProps** (4 connections) — `client/src/components/map/edges/__tests__/ExitEdge.test-fixtures.tsx`
+- **IntersectionNode** (4 connections) — `client/src/components/map/nodes/IntersectionNode.tsx`
+- **RoomNode** (4 connections) — `client/src/components/map/nodes/RoomNode.tsx`
+- **IntersectionNode.test.tsx** (4 connections) — `client/src/components/map/nodes/__tests__/IntersectionNode.test.tsx`
+- **nodeTypes** (3 connections) — `client/src/components/map/config.ts`
+- **edgeTypes** (3 connections) — `client/src/components/map/config.ts`
+- **getNodeTypes()** (2 connections) — `client/src/components/map/config.ts`
+- **getEdgeTypes()** (2 connections) — `client/src/components/map/config.ts`
+- **RoomNodeProps** (2 connections) — `client/src/components/map/nodes/RoomNode.tsx`
+- **getNodeShape()** (2 connections) — `client/src/components/map/nodes/RoomNode.tsx`
+- **getNodeClasses()** (2 connections) — `client/src/components/map/nodes/RoomNode.tsx`
+- **defaultReactFlowOptions** (1 connections) — `client/src/components/map/config.ts`
+- **ExitEdgeProps** (1 connections) — `client/src/components/map/edges/ExitEdge.tsx`
+- **getFlagIcon()** (1 connections) — `client/src/components/map/edges/ExitEdge.tsx`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [.initialize()](initialize%28%29.md) (13 shared connections)
-- [Any](Any.md) (3 shared connections)
-- [main()](main%28%29.md) (2 shared connections)
-- [. repr ()](_repr_%28%29.md) (1 shared connections)
-- [initialize nats and combat services()](initialize_nats_and_combat_services%28%29.md) (1 shared connections)
+- [EdgeCreationModal](EdgeCreationModal.md) (17 shared connections)
+- [EdgeDetailsPanel](EdgeDetailsPanel.md) (3 shared connections)
 
 ## Source Files
 
-- `server/npc/npc_base.py`
-- `server/npc/npc_combat_schedule.py`
-- `server/npc/npc_protocols.py`
-- `server/tests/unit/npc/test_npc_combat_schedule.py`
+- `client/src/components/map/__tests__/ReactFlowConfig.test.tsx`
+- `client/src/components/map/config.ts`
+- `client/src/components/map/edges/ExitEdge.tsx`
+- `client/src/components/map/edges/__tests__/ExitEdge.edge-creation.test.tsx`
+- `client/src/components/map/edges/__tests__/ExitEdge.interactions.test.tsx`
+- `client/src/components/map/edges/__tests__/ExitEdge.rendering.test.tsx`
+- `client/src/components/map/edges/__tests__/ExitEdge.test-fixtures.tsx`
+- `client/src/components/map/nodes/IntersectionNode.tsx`
+- `client/src/components/map/nodes/RoomNode.tsx`
+- `client/src/components/map/nodes/__tests__/IntersectionNode.test.tsx`
+- `client/src/components/map/nodes/__tests__/RoomNode.test.tsx`
 
 ## Audit Trail
 
-- EXTRACTED: 90 (92%)
-- INFERRED: 8 (8%)
+- EXTRACTED: 116 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

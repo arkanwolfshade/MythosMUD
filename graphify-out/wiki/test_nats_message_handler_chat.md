@@ -1,31 +1,34 @@
 # test nats message handler chat
 
-> 7 nodes
+> 10 nodes
 
 ## Key Concepts
 
 - **test_nats_message_handler_chat.py** (40 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _validate_chat_message_fields raises TypeError for invalid types.** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **test_validate_chat_message_fields_type_errors()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **test_validate_chat_message_fields_sender_name_type_error()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **test_validate_chat_message_fields_content_type_error()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **test_validate_chat_message_fields_sender_id_type_error()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_validate_chat_message_fields_missing()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_convert_ids_to_uuids()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_apply_dampening_and_send_message_blocked()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_get_player_lucidity_tier_exception_in_processing()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 - **Unit tests for NATS message handler chat and messaging.  Tests chat field extrac** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _validate_chat_message_fields raises error when fields missing.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _convert_ids_to_uuids converts IDs.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _apply_dampening_and_send_message handles blocked messages.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _get_player_lucidity_tier handles exceptions during processing.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [Test should echo to sender](Test_should_echo_to_sender.md) (6 shared connections)
-- [Test get player lucidity tier](Test_get_player_lucidity_tier.md) (4 shared connections)
-- [Test send messages to players](Test_send_messages_to_players.md) (4 shared connections)
-- [Test apply dampening and send](Test_apply_dampening_and_send.md) (3 shared connections)
-- [Test convert ids to uuids](Test_convert_ids_to_uuids.md) (3 shared connections)
-- [. init ()](_init_%28%29.md) (2 shared connections)
-- [Test echo message to sender](Test_echo_message_to_sender.md) (2 shared connections)
-- [Test extract chat message fields](Test_extract_chat_message_fields.md) (2 shared connections)
-- [Test validate chat message fields](Test_validate_chat_message_fields.md) (2 shared connections)
-- [Test broadcast by channel type](Test_broadcast_by_channel_type.md) (1 shared connections)
-- [Test broadcast to room with](Test_broadcast_to_room_with.md) (1 shared connections)
-- [Test build chat event builds](Test_build_chat_event_builds.md) (1 shared connections)
+- [Test parse exits json with](Test_parse_exits_json_with.md) (4 shared connections)
+- [Test generate room id from](Test_generate_room_id_from.md) (3 shared connections)
+- [test combat persistence handler events](test_combat_persistence_handler_events.md) (1 shared connections)
+- [Any](Any.md) (1 shared connections)
+- [.is unlocked()](is_unlocked%28%29.md) (1 shared connections)
+- [.can hold()](can_hold%28%29.md) (1 shared connections)
+- [Test load room cache async](Test_load_room_cache_async.md) (1 shared connections)
+- [.get used slots()](get_used_slots%28%29.md) (1 shared connections)
+- [Test get players batch with](Test_get_players_batch_with.md) (1 shared connections)
+- [Hash password using Argon2 instead](Hash_password_using_Argon2_instead.md) (1 shared connections)
+- [Verify password using Argon2 instead](Verify_password_using_Argon2_instead.md) (1 shared connections)
+- [multiplayer browser window.d](multiplayer_browser_window.d.md) (1 shared connections)
 
 ## Source Files
 

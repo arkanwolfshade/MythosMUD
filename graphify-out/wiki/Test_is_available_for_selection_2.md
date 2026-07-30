@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_profession_is_available_for_selection_false()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **Test is_available_for_selection returns False when is_available is False.** (1 connections) — `server/tests/unit/models/test_profession.py`
+- **test_query_room_occupants_snapshot()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **Test query_room_occupants_snapshot() queries occupants.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Relationships
 
-- [Profession](Profession.md) (1 shared connections)
-- [test profession](test_profession.md) (1 shared connections)
+- [. call ()](_call_%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/models/test_profession.py`
+- `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

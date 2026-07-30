@@ -1,32 +1,25 @@
 # Tests for get spell targeting
 
-> 9 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **TestGetSpellTargetingService** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **TestGetSpellLearningService** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_spell_targeting_service_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_spell_targeting_service_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_spell_learning_service_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_spell_learning_service_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Tests for get_spell_targeting_service dependency function.** (2 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_spell_targeting_service returns service when present.** (2 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_spell_targeting_service raises RuntimeError when service is None.** (2 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **._handle_player_entered_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **Handle player_entered event.** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
 
 ## Relationships
 
-- [. init ()](_init_%28%29.md) (6 shared connections)
-- [Connection Manager](Connection_Manager.md) (2 shared connections)
+- [NATSMessageSubscriptionMixin](NATSMessageSubscriptionMixin.md) (1 shared connections)
+- [PerformanceTracker](PerformanceTracker.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_dependencies.py`
+- `server/realtime/nats_message_handler_subscriptions.py`
 
 ## Audit Trail
 
-- EXTRACTED: 26 (93%)
-- INFERRED: 2 (7%)
+- EXTRACTED: 4 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

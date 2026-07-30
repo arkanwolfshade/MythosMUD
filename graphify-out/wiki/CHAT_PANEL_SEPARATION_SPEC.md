@@ -1,11 +1,12 @@
 # CHAT PANEL SEPARATION SPEC
 
-> 6 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **CHAT_PANEL_SEPARATION_SPEC.md** (11 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Chat Panel Separation Specification** (12 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
 - **Current State Analysis** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **CHAT_PANEL_SEPARATION_SPEC.md** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
 - **Overview** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
 - **Existing Structure** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
 - **Current Integration Points** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
@@ -28,7 +29,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
+- EXTRACTED: 20 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

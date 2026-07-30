@@ -4,29 +4,29 @@
 
 ## Key Concepts
 
-- **test_combat_messaging_integration.py** (32 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_broadcast_combat_attack()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_broadcast_combat_attack_personal_message_error()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_broadcast_combat_attack_with_attacker_id()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **test_combat_messaging_integration.py** (34 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **test_messaging_integration_init_no_connection_manager()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **test_resolve_connection_manager_from_container()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **test_broadcast_player_mortally_wounded()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
 - **Unit tests for combat messaging integration.  Tests the CombatMessagingIntegrati** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test broadcast_combat_attack broadcasts attack event.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test broadcast_combat_attack handles personal message errors gracefully.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test broadcast_combat_attack sends personal message to attacker.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **Test CombatMessagingIntegration initialization without connection manager.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **Test _resolve_connection_manager_from_container resolves manager.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **Test broadcast_player_mortally_wounded broadcasts message.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
 
 ## Relationships
 
-- [Test broadcast player mortally wounded](Test_broadcast_player_mortally_wounded.md) (4 shared connections)
-- [Test resolve connection manager from](Test_resolve_connection_manager_from.md) (3 shared connections)
-- [Test broadcast combat ended broadcasts](Test_broadcast_combat_ended_broadcasts.md) (2 shared connections)
-- [Test send dp decay message](Test_send_dp_decay_message.md) (2 shared connections)
-- [messaging integration()](messaging_integration%28%29.md) (1 shared connections)
-- [mock connection manager()](mock_connection_manager%28%29.md) (1 shared connections)
-- [Test broadcast combat attack without](Test_broadcast_combat_attack_without.md) (1 shared connections)
-- [Test broadcast combat death broadcasts](Test_broadcast_combat_death_broadcasts.md) (1 shared connections)
-- [Test broadcast combat error sends](Test_broadcast_combat_error_sends.md) (1 shared connections)
-- [Test broadcast combat error handles](Test_broadcast_combat_error_handles.md) (1 shared connections)
-- [Test broadcast combat start broadcasts](Test_broadcast_combat_start_broadcasts.md) (1 shared connections)
-- [Test broadcast player death handles](Test_broadcast_player_death_handles.md) (1 shared connections)
+- [.validate player name field()](validate_player_name_field%28%29.md) (2 shared connections)
+- [test_parse_command_empty_string](test_parse_command_empty_string.md) (1 shared connections)
+- [test_create_command_object_attribute_error](test_create_command_object_attribute_error.md) (1 shared connections)
+- [test_broadcast_combat_attack](test_broadcast_combat_attack.md) (1 shared connections)
+- [test_broadcast_combat_attack_no_attacker_id](test_broadcast_combat_attack_no_attacker_id.md) (1 shared connections)
+- [test_get_command_help_specific](test_get_command_help_specific.md) (1 shared connections)
+- [test_broadcast_combat_attack_with_attacker_id](test_broadcast_combat_attack_with_attacker_id.md) (1 shared connections)
+- [Test get npc instances() successfully](Test_get_npc_instances%28%29_successfully.md) (1 shared connections)
+- [test_parse_command_too_long](test_parse_command_too_long.md) (1 shared connections)
+- [test_parse_command_global_function](test_parse_command_global_function.md) (1 shared connections)
+- [test_parse_command_spawn_alias](test_parse_command_spawn_alias.md) (1 shared connections)
+- [test_broadcast_combat_error_send_error](test_broadcast_combat_error_send_error.md) (1 shared connections)
 
 ## Source Files
 
@@ -34,8 +34,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 42 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 44 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

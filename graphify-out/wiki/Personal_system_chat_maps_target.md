@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_extract_chat_message_fields_system_target_id()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Personal system chat maps target_id to target_player_id and keeps speaker_kind.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_get_room_without_cache()** (2 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test get_room() falls back to persistence when cache unavailable.** (1 connections) — `server/tests/unit/game/test_room_service.py`
 
 ## Relationships
 
-- [test nats message handler chat](test_nats_message_handler_chat.md) (1 shared connections)
+- [test room service](test_room_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `server/tests/unit/game/test_room_service.py`
 
 ## Audit Trail
 

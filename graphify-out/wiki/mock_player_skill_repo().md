@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **mock_player_skill_repo()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
-- **Mock PlayerSkillRepository.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_validate_chat_message_fields()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _validate_chat_message_fields validates fields.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [test skill service](test_skill_service.md) (1 shared connections)
+- [test nats message handler chat](test_nats_message_handler_chat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_skill_service.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 

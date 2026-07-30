@@ -1,53 +1,61 @@
 # Send a system message to
 
-> 68 nodes
+> 53 nodes
 
 ## Key Concepts
 
-- **test_websocket_handler_validation_errors.py** (39 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **send_system_message()** (13 connections) — `server/realtime/websocket_handler.py`
-- **test_websocket_handler_system_message.py** (8 connections) — `server/tests/unit/realtime/test_websocket_handler_system_message.py`
-- **test_send_system_message_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_system_message.py`
-- **test_send_system_message_warning()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_system_message.py`
-- **test_send_system_message_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_system_message.py`
-- **test_send_system_message_disconnected()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_system_message.py`
-- **test_validate_message_validation_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_validate_message_restores_csrf_from_message_jwt_when_metadata_token_missing()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_handle_game_command_with_broadcast()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_handle_game_command_broadcast_no_player()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_handle_game_command_broadcast_no_current_room_id()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_handle_game_command_with_args()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_handle_game_command_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_send_system_message_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_process_websocket_command_player_no_current_room_id()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **mock_websocket()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_system_message.py`
-- **Test send_system_message() with warning type.** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_system_message.py`
-- **test_is_websocket_disconnected()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_check_rate_limit_no_connection_id()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_check_rate_limit_passed()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_check_rate_limit_exceeded()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_validate_message_success()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_validate_message_passes_expected_token_from_connection_metadata()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_send_error_response_websocket_disconnect()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- *... and 43 more nodes in this community*
+- **handle_ground_command()** (32 connections) — `server/commands/rescue_commands.py`
+- **test_rescue_commands.py** (23 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **handle_rescue_command()** (14 connections) — `server/commands/rescue_commands.py`
+- **Any** (7 connections)
+- **_apply_grounding_adjustment()** (7 connections) — `server/commands/rescue_commands.py`
+- **_get_ground_services()** (5 connections) — `server/commands/rescue_commands.py`
+- **_validate_ground_context()** (5 connections) — `server/commands/rescue_commands.py`
+- **_normalize_player_ids()** (5 connections) — `server/commands/rescue_commands.py`
+- **_validate_ground_target()** (4 connections) — `server/commands/rescue_commands.py`
+- **test_handle_ground_command_not_catatonic()** (4 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **test_handle_ground_command_success()** (4 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **test_handle_ground_command_target_player_key()** (4 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **test_handle_ground_command_apply_lucidity_error()** (4 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **test_handle_ground_command()** (3 connections) — `server/tests/unit/commands/test_position_commands.py`
+- **test_handle_rescue_command()** (3 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **test_handle_rescue_command_no_target()** (3 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **test_handle_rescue_command_no_persistence()** (3 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **test_handle_rescue_command_target_player_key()** (3 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **test_handle_rescue_command_no_app()** (3 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **test_handle_rescue_command_no_state()** (3 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **test_handle_ground_command_no_persistence()** (3 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **test_handle_ground_command_no_target()** (3 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **test_handle_ground_command_rescuer_not_found()** (3 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **test_handle_ground_command_target_not_found()** (3 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **test_handle_ground_command_different_rooms()** (3 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- *... and 28 more nodes in this community*
 
 ## Relationships
 
-- [websocket handler commands](websocket_handler_commands.md) (10 shared connections)
-- [. init ()](_init_%28%29.md) (9 shared connections)
-- [websocket handler app state](websocket_handler_app_state.md) (4 shared connections)
+- [LiabilityStackEntry](LiabilityStackEntry.md) (13 shared connections)
+- [test rate limiter utils](test_rate_limiter_utils.md) (7 shared connections)
+- [websocket handler app state](websocket_handler_app_state.md) (3 shared connections)
+- [.state()](state%28%29.md) (2 shared connections)
+- [. get persistence from app()](_get_persistence_from_app%28%29.md) (2 shared connections)
+- [test magic commands](test_magic_commands.md) (2 shared connections)
+- [test player preferences service](test_player_preferences_service.md) (2 shared connections)
 - [UUID](UUID.md) (1 shared connections)
+- [test command factories communication](test_command_factories_communication.md) (1 shared connections)
+- [DropResolved](DropResolved.md) (1 shared connections)
+- [Player Position Service](Player_Position_Service.md) (1 shared connections)
+- [map helpers](map_helpers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/websocket_handler.py`
-- `server/tests/unit/realtime/test_websocket_handler_system_message.py`
-- `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- `server/commands/rescue_commands.py`
+- `server/tests/unit/commands/test_position_commands.py`
+- `server/tests/unit/commands/test_rescue_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 166 (97%)
-- INFERRED: 6 (3%)
+- EXTRACTED: 175 (94%)
+- INFERRED: 11 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,10 +4,10 @@
 
 ## Key Concepts
 
-- **end_hour** (4 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **minimum** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **maximum** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **duration_hours** (4 connections) — `db/static/schemas/holidays.schema.json`
+- **type** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **minimum** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **maximum** (1 connections) — `db/static/schemas/holidays.schema.json`
 
 ## Relationships
 
@@ -15,7 +15,7 @@
 
 ## Source Files
 
-- `db/static/schemas/npc_schedules.schema.json`
+- `db/static/schemas/holidays.schema.json`
 
 ## Audit Trail
 

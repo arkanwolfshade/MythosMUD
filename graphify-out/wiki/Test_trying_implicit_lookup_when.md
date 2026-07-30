@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_try_lookup_item_implicit_in_equipped()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test trying implicit lookup when item is equipped.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_should_echo_to_sender_with_targets()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _should_echo_to_sender returns True when targets exist.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [look item](look_item.md) (1 shared connections)
-- [test look item](test_look_item.md) (1 shared connections)
+- [test nats message handler chat](test_nats_message_handler_chat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_item.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

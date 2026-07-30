@@ -1,8 +1,8 @@
 # ValidationError
 
-> God node · 524 connections · `server/exceptions.py`
+> God node · 538 connections · `server/exceptions.py`
 
-**Community:** [. init ()](_init_%28%29.md)
+**Community:** [.initialize()](initialize%28%29.md)
 
 ## Connections by Relation
 
@@ -63,6 +63,7 @@
 - .open_container() `INFERRED`
 - .handle_exception() `INFERRED`
 - .transfer_to_container() `INFERRED`
+- _execute_movement() `INFERRED`
 - _weapon_from_prototype_registry() `INFERRED`
 - _initialize_npc_database() `INFERRED`
 - .lock_container() `INFERRED`
@@ -73,7 +74,6 @@
 - init_npc_db() `INFERRED`
 - _seed_new_container_items() `INFERRED`
 - update_container_items() `INFERRED`
-- create_item_instance_async() `INFERRED`
 
 ### inherits
 - MythosMUDError `EXTRACTED`

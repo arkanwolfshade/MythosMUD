@@ -1,27 +1,24 @@
 # test websocket handler helpers
 
-> 6 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **test_websocket_handler_helpers.py** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers.py`
-- **test_is_websocket_disconnected_true()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers.py`
-- **test_is_websocket_disconnected_false()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers.py`
-- **Unit tests for websocket handler helper functions.  Tests the helper functions i** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers.py`
-- **Test _is_websocket_disconnected() returns True for disconnection messages.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers.py`
-- **Test _is_websocket_disconnected() returns False for other messages.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers.py`
+- **test_evaluate_numeric_comparison_false()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test _evaluate_numeric_comparison() returns False when condition not met.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [. init ()](_init_%28%29.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [test behavior engine](test_behavior_engine.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_websocket_handler_helpers.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

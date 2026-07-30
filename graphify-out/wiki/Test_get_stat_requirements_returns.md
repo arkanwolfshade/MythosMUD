@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_profession_get_stat_requirements_valid_json()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **Test get_stat_requirements returns dict for valid JSON.** (1 connections) — `server/tests/unit/models/test_profession.py`
+- **test_execute_applicable_rules_executes_highest_priority()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test execute_applicable_rules() executes highest priority rule.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [Profession](Profession.md) (1 shared connections)
-- [test profession](test_profession.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [test behavior engine](test_behavior_engine.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/models/test_profession.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 

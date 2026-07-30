@@ -33,11 +33,14 @@
 
 ## Relationships
 
-- [Any](Any.md) (7 shared connections)
-- [utility commands](utility_commands.md) (3 shared connections)
-- [test utility commands whoami](test_utility_commands_whoami.md) (3 shared connections)
-- [main()](main%28%29.md) (2 shared connections)
-- [AttributeError](AttributeError.md) (2 shared connections)
+- [test magic commands](test_magic_commands.md) (3 shared connections)
+- [Any](Any.md) (3 shared connections)
+- [skills commands](skills_commands.md) (3 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
+- [Player Position Service](Player_Position_Service.md) (2 shared connections)
+- [UUID](UUID.md) (2 shared connections)
+- [AuthSlice](AuthSlice.md) (1 shared connections)
+- [Spell Targeting](Spell_Targeting.md) (1 shared connections)
 - [. get persistence from app()](_get_persistence_from_app%28%29.md) (1 shared connections)
 
 ## Source Files

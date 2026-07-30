@@ -1,45 +1,54 @@
 # combat messages game info.spec
 
-> 19 nodes
+> 37 nodes
 
 ## Key Concepts
 
-- **combat-messages-game-info.spec.ts** (29 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
-- **tryStartCombat()** (5 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
-- **ensurePlayableAlive** (4 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- **retryUntilCombatStarted()** (4 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
-- **resolveSpawnedCultistTarget()** (4 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
-- **despawnSanitariumCultists** (3 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
+- **player.ts** (35 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
+- **combat-messages-game-info.spec.ts** (31 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
+- **ensureStanding()** (23 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
+- **admin-set-stat-command.spec.ts** (22 connections) — `client/tests/e2e/runtime/admin/admin-set-stat-command.spec.ts`
+- **ensurePlayableAlive()** (18 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
+- **tryStartCombat()** (9 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
+- **getPageSessionCredentials()** (9 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **despawnSanitariumCultists()** (9 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
+- **spawnCombatTargetNpc()** (8 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
+- **ensureNotInCombat()** (8 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
+- **listSanitariumCultistIds()** (8 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
+- **goEastFromFoyer()** (8 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
+- **retryUntilCombatStarted()** (7 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
+- **clickWithoutStability()** (7 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **resolveSpawnedCultistTarget()** (6 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
+- **lookAndStand()** (5 connections) — `client/tests/e2e/runtime/admin/admin-set-stat-command.spec.ts`
+- **prepAwForAdminSet()** (5 connections) — `client/tests/e2e/runtime/admin/admin-set-stat-command.spec.ts`
+- **prepNonAdminForSetAttempt()** (4 connections) — `client/tests/e2e/runtime/admin/admin-set-stat-command.spec.ts`
+- **runAdminSetWithRecovery()** (4 connections) — `client/tests/e2e/runtime/admin/admin-set-stat-command.spec.ts`
+- **keepFirstCultistInstanceId()** (4 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
+- **dismissDeathInterstitial()** (4 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
+- **prepareForDirectionalMove()** (4 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
 - **hasCombatMessage()** (3 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
-- **spawnCombatTargetNpc()** (3 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
-- **isWardBlockingCombat()** (2 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
-- **isInCombatStatus()** (2 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
-- **isInDeathVoid()** (2 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
-- **waitForCombatRoundMessage()** (2 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
-- **assertNpcSpawnVisible()** (2 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
-- **keepFirstCultistInstanceId()** (2 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
-- **getPageSessionCredentials** (1 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **ensureNotInCombat** (1 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- **listSanitariumCultistIds** (1 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- **waitForEntryWardCleared()** (1 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
-- **assertStillConnected()** (1 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
+- **waitForCombatRoundMessage()** (3 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
+- **resetPlayerPosition()** (3 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
+- *... and 12 more nodes in this community*
 
 ## Relationships
 
-- [assertLookVisibleInPanels()](assertLookVisibleInPanels%28%29.md) (12 shared connections)
-- [nudgeStandBothPlayers()](nudgeStandBothPlayers%28%29.md) (2 shared connections)
-- [whisper movement.spec](whisper_movement.spec.md) (1 shared connections)
-- [ensurePlayableConnection](ensurePlayableConnection.md) (1 shared connections)
+- [assertLookVisibleInPanels()](assertLookVisibleInPanels%28%29.md) (39 shared connections)
+- [whisper movement.spec](whisper_movement.spec.md) (23 shared connections)
+- [character deletion.spec](character_deletion.spec.md) (20 shared connections)
+- [ensurePlayableConnection](ensurePlayableConnection.md) (16 shared connections)
+- [generate invites db](generate_invites_db.md) (4 shared connections)
 
 ## Source Files
 
+- `client/tests/e2e/runtime/admin/admin-set-stat-command.spec.ts`
 - `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
 - `client/tests/e2e/runtime/fixtures/auth.ts`
 - `client/tests/e2e/runtime/fixtures/player.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 72 (100%)
+- EXTRACTED: 268 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_validate_combat_command_suspicious_patterns()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test validate_combat_command with suspicious patterns in target name.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_is_player_disconnecting_no_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test is_player_disconnecting() returns False when connection manager not availab** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [test combat validator](test_combat_validator.md) (1 shared connections)
+- [test player event handlers utils](test_player_event_handlers_utils.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 

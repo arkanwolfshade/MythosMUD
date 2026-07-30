@@ -1,26 +1,23 @@
 # rename invites columns
 
-> 5 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **rename_invites_columns.py** (4 connections) — `server/scripts/rename_invites_columns.py`
-- **apply_migration()** (3 connections) — `server/scripts/rename_invites_columns.py`
-- **main()** (3 connections) — `server/scripts/rename_invites_columns.py`
-- **Apply the migration to rename columns.      Args:         database_url: PostgreS** (1 connections) — `server/scripts/rename_invites_columns.py`
-- **Main entry point for the migration script.** (1 connections) — `server/scripts/rename_invites_columns.py`
+- **test_load_room_cache_async_rooms_none()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **Test _load_room_cache_async handles case when rooms is None.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Relationships
 
-- [main()](main%28%29.md) (2 shared connections)
+- [test async persistence room cache](test_async_persistence_room_cache.md) (1 shared connections)
 
 ## Source Files
 
-- `server/scripts/rename_invites_columns.py`
+- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

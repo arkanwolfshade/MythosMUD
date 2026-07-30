@@ -1,64 +1,49 @@
 # ExitEdge
 
-> 35 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **types.ts** (32 connections) — `client/src/components/map/types.ts`
-- **config.ts** (14 connections) — `client/src/components/map/config.ts`
-- **ExitEdge.tsx** (10 connections) — `client/src/components/map/edges/ExitEdge.tsx`
-- **ReactFlowConfig.test.tsx** (9 connections) — `client/src/components/map/__tests__/ReactFlowConfig.test.tsx`
-- **RoomNode.tsx** (9 connections) — `client/src/components/map/nodes/RoomNode.tsx`
-- **IntersectionNode.tsx** (7 connections) — `client/src/components/map/nodes/IntersectionNode.tsx`
-- **ExitEdge** (6 connections) — `client/src/components/map/edges/ExitEdge.tsx`
-- **ExitEdge.rendering.test.tsx** (6 connections) — `client/src/components/map/edges/__tests__/ExitEdge.rendering.test.tsx`
-- **ExitEdge.test-fixtures.tsx** (6 connections) — `client/src/components/map/edges/__tests__/ExitEdge.test-fixtures.tsx`
-- **RoomNode.test.tsx** (5 connections) — `client/src/components/map/nodes/__tests__/RoomNode.test.tsx`
-- **ExitEdge.edge-creation.test.tsx** (4 connections) — `client/src/components/map/edges/__tests__/ExitEdge.edge-creation.test.tsx`
-- **ExitEdge.interactions.test.tsx** (4 connections) — `client/src/components/map/edges/__tests__/ExitEdge.interactions.test.tsx`
-- **defaultExitEdgeProps** (4 connections) — `client/src/components/map/edges/__tests__/ExitEdge.test-fixtures.tsx`
-- **useMapLayout.test.ts** (4 connections) — `client/src/components/map/hooks/__tests__/useMapLayout.test.ts`
-- **IntersectionNode** (4 connections) — `client/src/components/map/nodes/IntersectionNode.tsx`
-- **RoomNode** (4 connections) — `client/src/components/map/nodes/RoomNode.tsx`
-- **IntersectionNode.test.tsx** (4 connections) — `client/src/components/map/nodes/__tests__/IntersectionNode.test.tsx`
-- **nodeTypes** (3 connections) — `client/src/components/map/config.ts`
-- **edgeTypes** (3 connections) — `client/src/components/map/config.ts`
-- **layout.test-fixtures.ts** (3 connections) — `client/src/components/map/utils/__tests__/layout.test-fixtures.ts`
-- **getNodeTypes()** (2 connections) — `client/src/components/map/config.ts`
-- **getEdgeTypes()** (2 connections) — `client/src/components/map/config.ts`
-- **RoomNodeProps** (2 connections) — `client/src/components/map/nodes/RoomNode.tsx`
-- **getNodeShape()** (2 connections) — `client/src/components/map/nodes/RoomNode.tsx`
-- **getNodeClasses()** (2 connections) — `client/src/components/map/nodes/RoomNode.tsx`
-- *... and 10 more nodes in this community*
+- **_find_item_in_inventory()** (18 connections) — `server/commands/look_item.py`
+- **test_find_item_in_inventory_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_inventory_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_inventory_by_item_id()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_inventory_with_name_field()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_inventory_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_empty()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_no_match()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Find an item in player inventory by name or prototype_id.      Args:         inv** (1 connections) — `server/commands/look_item.py`
+- **Test finding item in inventory by name.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test finding item in inventory when not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test finding item in inventory by item_id.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test finding item in inventory using 'name' field.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test _find_item_in_inventory() finds item by name.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_inventory() returns None when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_inventory() with empty list.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_inventory() with no matching items.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_inventory() with multiple matches (ambiguous).** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_inventory() with instance number.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_inventory() with instance number out of range.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
 
 ## Relationships
 
-- [EdgeDetailsPanel](EdgeDetailsPanel.md) (20 shared connections)
-- [useRoomMapData.test](useRoomMapData.test.md) (6 shared connections)
-- [useMapLayout](useMapLayout.md) (6 shared connections)
-- [EdgeCreationModal](EdgeCreationModal.md) (2 shared connections)
-- [RoomEditModal](RoomEditModal.md) (1 shared connections)
+- [Any](Any.md) (8 shared connections)
+- [test look item](test_look_item.md) (5 shared connections)
+- [DeathInterstitial](DeathInterstitial.md) (4 shared connections)
 
 ## Source Files
 
-- `client/src/components/map/__tests__/ReactFlowConfig.test.tsx`
-- `client/src/components/map/config.ts`
-- `client/src/components/map/edges/ExitEdge.tsx`
-- `client/src/components/map/edges/__tests__/ExitEdge.edge-creation.test.tsx`
-- `client/src/components/map/edges/__tests__/ExitEdge.interactions.test.tsx`
-- `client/src/components/map/edges/__tests__/ExitEdge.rendering.test.tsx`
-- `client/src/components/map/edges/__tests__/ExitEdge.test-fixtures.tsx`
-- `client/src/components/map/hooks/__tests__/useMapLayout.test.ts`
-- `client/src/components/map/nodes/IntersectionNode.tsx`
-- `client/src/components/map/nodes/RoomNode.tsx`
-- `client/src/components/map/nodes/__tests__/IntersectionNode.test.tsx`
-- `client/src/components/map/nodes/__tests__/RoomNode.test.tsx`
-- `client/src/components/map/types.ts`
-- `client/src/components/map/utils/__tests__/layout.test-fixtures.ts`
+- `server/commands/look_item.py`
+- `server/tests/unit/commands/test_look_item.py`
+- `server/tests/unit/commands/test_look_item_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 161 (100%)
+- EXTRACTED: 63 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

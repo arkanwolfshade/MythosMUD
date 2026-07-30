@@ -1,55 +1,52 @@
 # Any
 
-> 55 nodes
+> 53 nodes
 
 ## Key Concepts
 
-- **test_combat_schema.py** (20 connections) — `server/tests/unit/schemas/test_combat_schema.py`
-- **CombatSchemaValidationError** (17 connections) — `server/schemas/combat/combat_schema.py`
-- **validate_npc_combat_data()** (13 connections) — `server/schemas/combat/combat_schema.py`
-- **validate_base_stats_combat_data()** (11 connections) — `server/schemas/combat/combat_schema.py`
-- **validate_combat_messages()** (11 connections) — `server/schemas/combat/combat_schema.py`
-- **__init__.py** (10 connections) — `server/schemas/combat/__init__.py`
-- **migrate_npc_combat_data()** (10 connections) — `server/scripts/migrate_combat_data.py`
-- **validate_behavior_config_combat_data()** (9 connections) — `server/schemas/combat/combat_schema.py`
-- **add_default_combat_data_to_stats()** (9 connections) — `server/schemas/combat/combat_schema.py`
-- **add_default_combat_data_to_config()** (8 connections) — `server/schemas/combat/combat_schema.py`
-- **validate_migration_results()** (8 connections) — `server/scripts/migrate_combat_data.py`
-- **rollback_migration()** (7 connections) — `server/scripts/migrate_combat_data.py`
-- **get_combat_stats_summary()** (6 connections) — `server/schemas/combat/combat_schema.py`
+- **TestRoomDataFixer** (20 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **RoomDataFixer** (14 connections) — `server/services/room_data_fixer.py`
+- **.apply_room_data_fixes()** (13 connections) — `server/services/room_data_fixer.py`
+- **.fix_missing_name()** (7 connections) — `server/services/room_data_fixer.py`
+- **.fix_occupant_count_mismatch()** (7 connections) — `server/services/room_data_fixer.py`
+- **.fix_missing_description()** (6 connections) — `server/services/room_data_fixer.py`
+- **.fix_missing_timestamp()** (6 connections) — `server/services/room_data_fixer.py`
 - **Any** (5 connections)
-- **validate_message_template_variables()** (4 connections) — `server/schemas/combat/combat_schema.py`
-- **Draft7Validator** (4 connections)
-- **test_validate_base_stats_combat_data_missing_required()** (4 connections) — `server/tests/unit/schemas/test_combat_schema.py`
-- **test_validate_base_stats_combat_data_invalid_type()** (4 connections) — `server/tests/unit/schemas/test_combat_schema.py`
-- **test_validate_combat_messages_missing_required()** (4 connections) — `server/tests/unit/schemas/test_combat_schema.py`
-- **AsyncSession** (3 connections)
-- **Any** (3 connections)
-- **test_validate_base_stats_combat_data_valid()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
-- **test_validate_behavior_config_combat_data_valid()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
-- **test_validate_combat_messages_valid()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
-- **test_add_default_combat_data_to_stats()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
-- *... and 30 more nodes in this community*
+- **.count_applied_fixes()** (5 connections) — `server/services/room_data_fixer.py`
+- **.test_apply_room_data_fixes_exception_handling()** (5 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **test_room_data_fixer.py** (4 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_missing_name()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_missing_name_no_error()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_missing_name_unknown_id()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_missing_description()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_missing_description_no_error()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_occupant_count_mismatch()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_occupant_count_mismatch_no_error()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_occupant_count_mismatch_no_occupants()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_missing_timestamp()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_missing_timestamp_existing()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_count_applied_fixes()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_count_applied_fixes_no_fixable()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_apply_room_data_fixes_all_fixes()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_apply_room_data_fixes_no_errors()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- *... and 28 more nodes in this community*
 
 ## Relationships
 
-- [. repr ()](_repr_%28%29.md) (13 shared connections)
-- [.initialize()](initialize%28%29.md) (10 shared connections)
-- [main()](main%28%29.md) (1 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (3 shared connections)
+- [combat taunt](combat_taunt.md) (1 shared connections)
+- [Any](Any.md) (1 shared connections)
 - [UUID](UUID.md) (1 shared connections)
-- [init](init.md) (1 shared connections)
 
 ## Source Files
 
-- `server/schemas/combat/__init__.py`
-- `server/schemas/combat/combat_schema.py`
-- `server/scripts/migrate_combat_data.py`
-- `server/tests/unit/schemas/test_combat_schema.py`
+- `server/services/room_data_fixer.py`
+- `server/tests/unit/services/test_room_data_fixer.py`
 
 ## Audit Trail
 
-- EXTRACTED: 199 (90%)
-- INFERRED: 21 (10%)
+- EXTRACTED: 160 (96%)
+- INFERRED: 6 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

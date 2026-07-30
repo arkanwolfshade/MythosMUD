@@ -1,27 +1,25 @@
 # test websocket handler disconnect
 
-> 6 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_websocket_handler_disconnect.py** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
-- **test_handle_websocket_disconnect()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
-- **test_handle_websocket_disconnect_no_connection_id()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
-- **Unit tests for websocket handler disconnect handling.  Tests the disconnect hand** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
-- **Test _handle_websocket_disconnect() returns True.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
-- **Test _handle_websocket_disconnect() with no connection_id.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
+- **Recommendations Summary** (4 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **High Priority Decisions** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **Medium Priority Enhancements** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **Low Priority (Future Considerations)** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
 
 ## Relationships
 
-- [. init ()](_init_%28%29.md) (1 shared connections)
+- [disconnect grace period comparison](disconnect_grace_period_comparison.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
+- `.cursor/plans/disconnect_grace_period_comparison.md`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

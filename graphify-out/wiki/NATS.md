@@ -1,59 +1,62 @@
 # NATS
 
-> 105 nodes
+> 97 nodes
 
 ## Key Concepts
 
-- **NATSService** (71 connections) — `server/services/nats_service.py`
-- **Any** (17 connections)
-- **.disconnect()** (11 connections) — `server/services/nats_service.py`
-- **.publish_with_pool()** (10 connections) — `server/services/nats_service.py`
-- **._create_tracked_task()** (9 connections) — `server/services/nats_service.py`
-- **.connect()** (8 connections) — `server/services/nats_service.py`
-- **.__init__()** (7 connections) — `server/services/nats_service.py`
-- **._flush_batch()** (7 connections) — `server/services/nats_service.py`
-- **._verify_subscription_cleanup()** (6 connections) — `server/services/nats_service.py`
-- **.publish_batch()** (6 connections) — `server/services/nats_service.py`
-- **._start_health_monitoring()** (5 connections) — `server/services/nats_service.py`
-- **.publish()** (5 connections) — `server/services/nats_service.py`
-- **._on_error()** (5 connections) — `server/services/nats_service.py`
-- **._get_connection()** (5 connections) — `server/services/nats_service.py`
-- **._retry_failed_batch_groups()** (5 connections) — `server/services/nats_service.py`
-- **nats_service()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
-- **._build_connect_options()** (4 connections) — `server/services/nats_service.py`
-- **._configure_tls()** (4 connections) — `server/services/nats_service.py`
-- **._close_all_subscriptions()** (4 connections) — `server/services/nats_service.py`
-- **._health_check_loop()** (4 connections) — `server/services/nats_service.py`
-- **.subscribe()** (4 connections) — `server/services/nats_service.py`
-- **.unsubscribe()** (4 connections) — `server/services/nats_service.py`
-- **.request()** (4 connections) — `server/services/nats_service.py`
-- **._handle_error_async()** (4 connections) — `server/services/nats_service.py`
-- **._on_disconnect()** (4 connections) — `server/services/nats_service.py`
-- *... and 80 more nodes in this community*
+- **test_command_service.py** (36 connections) — `server/tests/unit/commands/test_command_service.py`
+- **CommandService** (20 connections) — `server/commands/command_service.py`
+- **Any** (10 connections)
+- **MythosValidationError** (8 connections)
+- **._extract_parsed_fields()** (7 connections) — `server/commands/command_service.py`
+- **.process_command()** (7 connections) — `server/commands/command_service.py`
+- **._execute_command_handler()** (6 connections) — `server/commands/command_service.py`
+- **.process_validated_command()** (5 connections) — `server/commands/command_service.py`
+- **._parse_command_string()** (5 connections) — `server/commands/command_service.py`
+- **._prepare_command_data()** (5 connections) — `server/commands/command_service.py`
+- **._fallback_parsed_fields()** (4 connections) — `server/commands/command_service.py`
+- **._log_parsed_command_inspection()** (4 connections) — `server/commands/command_service.py`
+- **._log_model_dump_result()** (4 connections) — `server/commands/command_service.py`
+- **test_parse_command_string_validation_error()** (4 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_create_command_object_re_raises_mythos_validation_error()** (4 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_process_command_string_mythos_validation_error()** (4 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **.register_command_handler()** (3 connections) — `server/commands/command_service.py`
+- **command_service()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_process_validated_command_validation_error()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_extract_parsed_fields_handles_missing_attributes()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **.get_available_commands()** (2 connections) — `server/commands/command_service.py`
+- **.unregister_command_handler()** (2 connections) — `server/commands/command_service.py`
+- **mock_request()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
+- **mock_user()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_process_validated_command_success()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
+- *... and 72 more nodes in this community*
 
 ## Relationships
 
-- [nats config()](nats_config%28%29.md) (15 shared connections)
-- [. init ()](_init_%28%29.md) (6 shared connections)
-- [Any](Any.md) (5 shared connections)
-- [initialize nats and combat services()](initialize_nats_and_combat_services%28%29.md) (5 shared connections)
-- [NATSMetrics](NATSMetrics.md) (2 shared connections)
-- [get subject manager dependency()](get_subject_manager_dependency%28%29.md) (2 shared connections)
+- [.initialize()](initialize%28%29.md) (4 shared connections)
+- [DropResolved](DropResolved.md) (3 shared connections)
+- [test magic commands](test_magic_commands.md) (3 shared connections)
+- [.validate topic()](validate_topic%28%29.md) (2 shared connections)
+- [convert pydantic error()](convert_pydantic_error%28%29.md) (2 shared connections)
+- [check alias safety()](check_alias_safety%28%29.md) (1 shared connections)
+- [websocket handler app state](websocket_handler_app_state.md) (1 shared connections)
+- [Player Position Service](Player_Position_Service.md) (1 shared connections)
+- [Spell Targeting](Spell_Targeting.md) (1 shared connections)
+- [AbstractContextManager](AbstractContextManager.md) (1 shared connections)
+- [real time](real_time.md) (1 shared connections)
 - [UUID](UUID.md) (1 shared connections)
-- [connection state machine](connection_state_machine.md) (1 shared connections)
-- [message broker](message_broker.md) (1 shared connections)
-- [metrics](metrics.md) (1 shared connections)
-- [create npc services on app()](create_npc_services_on_app%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/nats_service.py`
-- `server/tests/unit/services/test_nats_service.py`
+- `server/commands/command_service.py`
+- `server/tests/unit/commands/test_command_service.py`
+- `server/tests/unit/utils/test_command_parser.py`
+- `server/tests/unit/utils/test_command_processor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 346 (97%)
-- INFERRED: 10 (3%)
+- EXTRACTED: 240 (96%)
+- INFERRED: 11 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

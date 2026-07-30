@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_evaluate_condition_unknown()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test evaluate_condition() returns False for unknown condition.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **.test_extract_initial_player_name_none()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **Test _extract_initial_player_name when name is None.** (1 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
 
 ## Relationships
 
-- [BehaviorEngine](BehaviorEngine.md) (1 shared connections)
-- [test behavior engine](test_behavior_engine.md) (1 shared connections)
+- [container websocket events](container_websocket_events.md) (1 shared connections)
+- [PlayerNameExtractor](PlayerNameExtractor.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_behavior_engine.py`
+- `server/tests/unit/realtime/test_player_name_utils.py`
 
 ## Audit Trail
 

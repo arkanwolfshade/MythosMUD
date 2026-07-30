@@ -1,18 +1,17 @@
 # connection compatibility
 
-> 24 nodes
+> 27 nodes
 
 ## Key Concepts
 
-- **attach_compatibility_properties()** (13 connections) — `server/realtime/connection_compatibility.py`
+- **attach_compatibility_properties()** (14 connections) — `server/realtime/connection_compatibility.py`
 - **test_connection_compatibility.py** (9 connections) — `server/tests/unit/realtime/test_connection_compatibility.py`
-- **connection_compatibility.py** (7 connections) — `server/realtime/connection_compatibility.py`
+- **connection_compatibility.py** (8 connections) — `server/realtime/connection_compatibility.py`
 - **_create_property_with_accessors()** (6 connections) — `server/realtime/connection_compatibility.py`
 - **Any** (5 connections)
 - **_attach_room_properties()** (5 connections) — `server/realtime/connection_compatibility.py`
 - **_attach_connection_properties()** (5 connections) — `server/realtime/connection_compatibility.py`
 - **_attach_message_properties()** (5 connections) — `server/realtime/connection_compatibility.py`
-- **Test attach_compatibility_properties() attaches room_subscriptions property.** (4 connections) — `server/tests/unit/realtime/test_connection_compatibility.py`
 - **test_attach_compatibility_properties_room_subscriptions()** (3 connections) — `server/tests/unit/realtime/test_connection_compatibility.py`
 - **test_attach_compatibility_properties_room_occupants()** (3 connections) — `server/tests/unit/realtime/test_connection_compatibility.py`
 - **test_attach_compatibility_properties_connection_attempts()** (3 connections) — `server/tests/unit/realtime/test_connection_compatibility.py`
@@ -26,12 +25,15 @@
 - **Attach message-related compatibility properties.** (1 connections) — `server/realtime/connection_compatibility.py`
 - **Attach compatibility properties to the ConnectionManager class.** (1 connections) — `server/realtime/connection_compatibility.py`
 - **Unit tests for connection compatibility.  Tests the connection_compatibility mod** (1 connections) — `server/tests/unit/realtime/test_connection_compatibility.py`
+- **Test attach_compatibility_properties() attaches room_subscriptions property.** (1 connections) — `server/tests/unit/realtime/test_connection_compatibility.py`
+- **Test attach_compatibility_properties() attaches room_occupants property.** (1 connections) — `server/tests/unit/realtime/test_connection_compatibility.py`
+- **Test attach_compatibility_properties() attaches connection_attempts property.** (1 connections) — `server/tests/unit/realtime/test_connection_compatibility.py`
 - **Test attach_compatibility_properties() attaches pending_messages property.** (1 connections) — `server/tests/unit/realtime/test_connection_compatibility.py`
-- **Test attach_compatibility_properties() attaches connection_window property.** (1 connections) — `server/tests/unit/realtime/test_connection_compatibility.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Player](Player.md) (2 shared connections)
 
 ## Source Files
 
@@ -40,7 +42,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 86 (100%)
+- EXTRACTED: 88 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

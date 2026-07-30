@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_process_combined_rows_with_exits()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **Test _process_combined_rows processes rows with exits JSON.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_occupant_formatter_init()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **Test OccupantFormatter.__init__() initializes formatter.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
 
 ## Relationships
 
-- [test async persistence room cache](test_async_persistence_room_cache.md) (1 shared connections)
+- [command parser()](command_parser%28%29.md) (1 shared connections)
+- [occupant formatter](occupant_formatter.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- `server/tests/unit/realtime/test_occupant_formatter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

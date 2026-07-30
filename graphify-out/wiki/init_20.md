@@ -1,53 +1,51 @@
 # init
 
-> 29 nodes
+> 28 nodes
 
 ## Key Concepts
 
-- **test_user_schemas.py** (13 connections) — `server/tests/unit/schemas/test_user_schemas.py`
-- **__init__.py** (12 connections) — `server/schemas/auth/__init__.py`
-- **user.py** (9 connections) — `server/schemas/auth/user.py`
-- **UserUpdate** (9 connections) — `server/schemas/auth/user.py`
-- **UserBase** (8 connections) — `server/schemas/auth/user.py`
-- **UserCreate** (8 connections) — `server/schemas/auth/user.py`
-- **UserRead** (7 connections) — `server/schemas/auth/user.py`
-- **test_user_create_password_validation()** (4 connections) — `server/tests/unit/schemas/test_user_schemas.py`
-- **test_user_update_password_validation()** (4 connections) — `server/tests/unit/schemas/test_user_schemas.py`
-- **test_user_base()** (3 connections) — `server/tests/unit/schemas/test_user_schemas.py`
-- **test_user_base_defaults()** (3 connections) — `server/tests/unit/schemas/test_user_schemas.py`
-- **test_user_create()** (3 connections) — `server/tests/unit/schemas/test_user_schemas.py`
-- **test_user_read()** (3 connections) — `server/tests/unit/schemas/test_user_schemas.py`
-- **test_user_update()** (3 connections) — `server/tests/unit/schemas/test_user_schemas.py`
-- **test_user_update_all_optional()** (3 connections) — `server/tests/unit/schemas/test_user_schemas.py`
-- **Test UserUpdate can be instantiated with optional fields.** (2 connections) — `server/tests/unit/schemas/test_user_schemas.py`
-- **Auth domain schemas: user and invite.** (1 connections) — `server/schemas/auth/__init__.py`
-- **Pydantic schemas for User model.  This module defines Pydantic schemas for user** (1 connections) — `server/schemas/auth/user.py`
-- **Base user schema with common fields.** (1 connections) — `server/schemas/auth/user.py`
-- **Schema for creating a new user.** (1 connections) — `server/schemas/auth/user.py`
-- **Schema for reading user data.** (1 connections) — `server/schemas/auth/user.py`
-- **Schema for updating user data.** (1 connections) — `server/schemas/auth/user.py`
-- **Unit tests for user schemas.  Tests the Pydantic models in user.py module.** (1 connections) — `server/tests/unit/schemas/test_user_schemas.py`
-- **Test UserBase can be instantiated.** (1 connections) — `server/tests/unit/schemas/test_user_schemas.py`
-- **Test UserBase has correct default values.** (1 connections) — `server/tests/unit/schemas/test_user_schemas.py`
-- *... and 4 more nodes in this community*
+- **test_invite_schemas.py** (15 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **InviteBase** (10 connections) — `server/schemas/auth/invite.py`
+- **InviteUpdate** (9 connections) — `server/schemas/auth/invite.py`
+- **InviteCreate** (8 connections) — `server/schemas/auth/invite.py`
+- **test_invite_base_validation()** (4 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **test_invite_update_validation()** (4 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **test_invite_base()** (3 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **test_invite_base_defaults()** (3 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **test_invite_create()** (3 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **test_invite_create_no_expiry()** (3 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **test_invite_read()** (3 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **test_invite_read_with_used_by()** (3 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **test_invite_update()** (3 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **test_invite_update_all_optional()** (3 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **Base invite schema with common fields.** (1 connections) — `server/schemas/auth/invite.py`
+- **Schema for creating a new invite.** (1 connections) — `server/schemas/auth/invite.py`
+- **Schema for updating invite data.** (1 connections) — `server/schemas/auth/invite.py`
+- **Unit tests for invite schemas.  Tests the Pydantic models in invite.py module.** (1 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **Test InviteBase can be instantiated.** (1 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **Test InviteBase has correct default values.** (1 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **Test InviteBase validates invite_code length.** (1 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **Test InviteCreate can be instantiated.** (1 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **Test InviteCreate can be instantiated without expiry.** (1 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **Test InviteRead can be instantiated.** (1 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **Test InviteRead with used_by_user_id.** (1 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [invite](invite.md) (7 shared connections)
-- [Request](Request.md) (4 shared connections)
-- [InviteBase](InviteBase.md) (3 shared connections)
-- [. init ()](_init_%28%29.md) (2 shared connections)
-- [BaseUserManager](BaseUserManager.md) (1 shared connections)
+- [NPCInstanceService](NPCInstanceService.md) (8 shared connections)
+- [Connection Manager](Connection_Manager.md) (4 shared connections)
+- [test player event handlers state](test_player_event_handlers_state.md) (2 shared connections)
+- [.initialize()](initialize%28%29.md) (2 shared connections)
 
 ## Source Files
 
-- `server/schemas/auth/__init__.py`
-- `server/schemas/auth/user.py`
-- `server/tests/unit/schemas/test_user_schemas.py`
+- `server/schemas/auth/invite.py`
+- `server/tests/unit/schemas/test_invite_schemas.py`
 
 ## Audit Trail
 
-- EXTRACTED: 105 (98%)
+- EXTRACTED: 86 (98%)
 - INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 

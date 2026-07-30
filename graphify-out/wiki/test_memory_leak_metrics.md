@@ -1,11 +1,10 @@
 # test memory leak metrics
 
-> 37 nodes
+> 42 nodes
 
 ## Key Concepts
 
 - **test_memory_leak_metrics.py** (23 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
-- **Test collection of connection metrics.** (5 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
 - **collector()** (3 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
 - **test_collector_initialization()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
 - **test_collect_connection_metrics()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
@@ -26,14 +25,16 @@
 - **test_metrics_collection_performance()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
 - **test_metrics_history_bounded()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
 - **test_collect_all_metrics_error_handling()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
-- **Test alert checking for subscriber growth rate.** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
 - **Unit tests for memory leak metrics collector.  Tests the MemoryLeakMetricsCollec** (1 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
 - **Create a MemoryLeakMetricsCollector instance.** (1 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
-- *... and 12 more nodes in this community*
+- **Test MemoryLeakMetricsCollector initialization.** (1 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **Test collection of connection metrics.** (1 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [memory leak metrics](memory_leak_metrics.md) (3 shared connections)
+- [.shutdown()](shutdown%28%29.md) (2 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,6 +1,6 @@
 # .to dict()
 
-> 66 nodes
+> 73 nodes
 
 ## Key Concepts
 
@@ -29,16 +29,16 @@
 - **.add_alert_callback()** (3 connections) — `server/services/combat_monitoring_service.py`
 - **.remove_alert_callback()** (3 connections) — `server/services/combat_monitoring_service.py`
 - **._update_timing_metrics()** (3 connections) — `server/services/combat_monitoring_service.py`
-- *... and 41 more nodes in this community*
+- *... and 48 more nodes in this community*
 
 ## Relationships
 
 - [test combat monitoring service](test_combat_monitoring_service.md) (9 shared connections)
-- [CombatMetrics](CombatMetrics.md) (5 shared connections)
-- [. init ()](_init_%28%29.md) (4 shared connections)
-- [main()](main%28%29.md) (3 shared connections)
-- [initialize nats and combat services()](initialize_nats_and_combat_services%28%29.md) (2 shared connections)
-- [combat configuration service](combat_configuration_service.md) (2 shared connections)
+- [CombatMetrics](CombatMetrics.md) (8 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (3 shared connections)
+- [process dead players()](process_dead_players%28%29.md) (2 shared connections)
+- [FeatureFlagService](FeatureFlagService.md) (2 shared connections)
+- [CombatConfiguration](CombatConfiguration.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,7 +47,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 208 (99%)
+- EXTRACTED: 220 (99%)
 - INFERRED: 3 (1%)
 - AMBIGUOUS: 0 (0%)
 

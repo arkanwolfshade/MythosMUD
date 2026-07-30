@@ -1,33 +1,32 @@
 # extract zone name()
 
-> 10 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **extract_zone_name()** (9 connections) — `server/npc/zone_config_loader.py`
-- **test_extract_zone_name_with_slash()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_extract_zone_name_no_slash()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_extract_zone_name_multiple_slashes()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_extract_zone_name_empty()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **Extract zone name from stable_id (format: 'plane/zone').      Args:         stab** (1 connections) — `server/npc/zone_config_loader.py`
-- **Test extract_zone_name() extracts zone from stable_id.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **Test extract_zone_name() returns stable_id when no slash.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **Test extract_zone_name() extracts from first slash.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **Test extract_zone_name() handles empty string.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **optimized_validate_reason_content()** (7 connections) — `server/validators/optimized_security_validator.py`
+- **test_optimized_validate_reason_content_empty()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_reason_content_valid()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_reason_content_injection()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating empty reason content.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating valid reason content.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating reason content with injection pattern.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Optimized validation for reason content fields.      Args:         value: The re** (1 connections) — `server/validators/optimized_security_validator.py`
 
 ## Relationships
 
-- [async load zone configurations()](async_load_zone_configurations%28%29.md) (6 shared connections)
-- [TypedDict](TypedDict.md) (2 shared connections)
+- [test optimized security validator](test_optimized_security_validator.md) (4 shared connections)
+- [Test stripping ANSI codes from](Test_stripping_ANSI_codes_from.md) (1 shared connections)
+- [as bound logger()](as_bound_logger%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/zone_config_loader.py`
-- `server/tests/unit/npc/test_zone_config_loader.py`
+- `server/tests/unit/validators/test_optimized_security_validator.py`
+- `server/validators/optimized_security_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 26 (100%)
+- EXTRACTED: 20 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

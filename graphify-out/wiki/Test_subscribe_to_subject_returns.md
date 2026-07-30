@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_subscribe_to_subject_no_nats_service()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test _subscribe_to_subject returns False when nats_service is None.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_load_room_cache_async_warning_logging()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **Test _load_room_cache_async logs warning when table not found.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Relationships
 
-- [test nats message handler](test_nats_message_handler.md) (1 shared connections)
+- [test async persistence room cache](test_async_persistence_room_cache.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Audit Trail
 

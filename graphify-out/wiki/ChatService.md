@@ -1,6 +1,6 @@
 # ChatService
 
-> 133 nodes
+> 142 nodes
 
 ## Key Concepts
 
@@ -8,7 +8,7 @@
 - **test_chat_service.py** (39 connections) — `server/tests/unit/game/test_chat_service.py`
 - **UUID** (27 connections)
 - **Any** (16 connections)
-- **Test send_say_message() when player is not found.** (5 connections) — `server/tests/unit/game/test_chat_service.py`
+- **._normalize_player_id()** (5 connections) — `server/game/chat_service.py`
 - **.send_local_message()** (4 connections) — `server/game/chat_service.py`
 - **.send_global_message()** (4 connections) — `server/game/chat_service.py`
 - **.send_party_message()** (4 connections) — `server/game/chat_service.py`
@@ -29,27 +29,31 @@
 - **.unmute_player()** (3 connections) — `server/game/chat_service.py`
 - **.is_player_muted()** (3 connections) — `server/game/chat_service.py`
 - **.mute_global()** (3 connections) — `server/game/chat_service.py`
-- *... and 108 more nodes in this community*
+- *... and 117 more nodes in this community*
 
 ## Relationships
 
 - [ChatMessage](ChatMessage.md) (21 shared connections)
-- [. init ()](_init_%28%29.md) (8 shared connections)
-- [.initialize()](initialize%28%29.md) (6 shared connections)
-- [Any](Any.md) (3 shared connections)
-- [create npc services on app()](create_npc_services_on_app%28%29.md) (1 shared connections)
-- [Protocol](Protocol.md) (1 shared connections)
+- [. init ()](_init_%28%29.md) (6 shared connections)
+- [test magic commands](test_magic_commands.md) (3 shared connections)
+- [.initialize()](initialize%28%29.md) (3 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (2 shared connections)
+- [test command parser](test_command_parser.md) (2 shared connections)
+- [message handler factory](message_handler_factory.md) (1 shared connections)
 - [chat moderation](chat_moderation.md) (1 shared connections)
-- [NPCCommunicationIntegration](NPCCommunicationIntegration.md) (1 shared connections)
+- [player preferences service](player_preferences_service.md) (1 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
+- [Path](Path.md) (1 shared connections)
 
 ## Source Files
 
 - `server/game/chat_service.py`
+- `server/tests/unit/game/test_chat_npc_system.py`
 - `server/tests/unit/game/test_chat_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 431 (98%)
+- EXTRACTED: 441 (98%)
 - INFERRED: 9 (2%)
 - AMBIGUOUS: 0 (0%)
 

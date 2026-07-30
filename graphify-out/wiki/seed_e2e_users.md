@@ -17,8 +17,8 @@
 
 ## Relationships
 
-- [PasswordHasher](PasswordHasher.md) (3 shared connections)
-- [spawn defaults](spawn_defaults.md) (1 shared connections)
+- [create access token()](create_access_token%28%29.md) (3 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,78 +1,58 @@
 # . init ()
 
-> 563 nodes
+> 81 nodes
 
 ## Key Concepts
 
-- **ValidationError** (524 connections) — `server/exceptions.py`
-- **MythosMUDError** (79 connections) — `server/exceptions.py`
-- **AuthenticationError** (63 connections) — `server/exceptions.py`
-- **ErrorContext** (54 connections) — `server/exceptions.py`
-- **legacy_error_handlers.py** (48 connections) — `server/legacy_error_handlers.py`
-- **ErrorType** (47 connections) — `server/error_types.py`
-- **ErrorMessages** (47 connections) — `server/error_types.py`
-- **test_exceptions.py** (43 connections) — `server/tests/unit/test_exceptions.py`
-- **test_legacy_error_handlers.py** (41 connections) — `server/tests/unit/test_legacy_error_handlers.py`
-- **CircuitBreaker** (38 connections) — `server/legacy_error_handlers.py`
-- **error_types.py** (37 connections) — `server/error_types.py`
-- **NetworkError** (37 connections) — `server/exceptions.py`
-- **ErrorResponse** (37 connections) — `server/legacy_error_handlers.py`
-- **StandardizedErrorResponse** (35 connections) — `server/error_handlers/standardized_responses.py`
-- **test_exceptions_comprehensive.py** (35 connections) — `server/tests/unit/test_exceptions_comprehensive.py`
-- **TestErrorMapping** (35 connections) — `server/tests/unit/test_legacy_error_handlers.py`
-- **ResourceNotFoundError** (34 connections) — `server/exceptions.py`
-- **create_error_context()** (33 connections) — `server/exceptions.py`
-- **standardized_responses.py** (32 connections) — `server/error_handlers/standardized_responses.py`
-- **create_websocket_error_response()** (32 connections) — `server/error_types.py`
-- **ConfigurationError** (32 connections) — `server/exceptions.py`
-- **GameLogicError** (31 connections) — `server/exceptions.py`
-- **TestSanitization** (31 connections) — `server/tests/unit/test_legacy_error_handlers.py`
-- **JSONResponse** (30 connections) — `docs/examples/logging/fastapi_integration.py`
-- **ErrorSeverity** (30 connections) — `server/error_types.py`
-- *... and 538 more nodes in this community*
+- **RoomCacheService** (17 connections) — `server/caching/cache_service.py`
+- **ProfessionCacheService** (15 connections) — `server/caching/cache_service.py`
+- **NPCCacheService** (14 connections) — `server/caching/cache_service.py`
+- **Any** (13 connections)
+- **__init__.py** (12 connections) — `server/caching/__init__.py`
+- **CacheService** (8 connections) — `server/caching/cache_service.py`
+- **_FakeNPCService** (7 connections) — `scripts/bench_cache_npc.py`
+- **bench_npc_cache()** (7 connections) — `scripts/bench_cache_npc.py`
+- **bench_cache_professions.py** (7 connections) — `scripts/bench_cache_professions.py`
+- **.__init__()** (7 connections) — `server/caching/cache_service.py`
+- **bench_cache.py** (6 connections) — `scripts/bench_cache.py`
+- **_FakePersistence** (6 connections) — `scripts/bench_cache.py`
+- **bench_cache_npc.py** (6 connections) — `scripts/bench_cache_npc.py`
+- **bench_profession_cache()** (6 connections) — `scripts/bench_cache_professions.py`
+- **bench_room_cache()** (5 connections) — `scripts/bench_cache.py`
+- **_FakePersistence** (5 connections) — `scripts/bench_cache_professions.py`
+- **.get_all_professions()** (5 connections) — `scripts/bench_cache_professions.py`
+- **cached()** (5 connections) — `server/caching/cache_service.py`
+- **.get_all_professions()** (5 connections) — `server/caching/cache_service.py`
+- **.get_npc_definitions()** (4 connections) — `scripts/bench_cache_npc.py`
+- **Any** (4 connections)
+- **.get_spawn_rules()** (4 connections) — `scripts/bench_cache_npc.py`
+- **_get_empty_dict()** (4 connections) — `scripts/bench_cache_professions.py`
+- **.__init__()** (4 connections) — `server/caching/cache_service.py`
+- **.get_room_sync()** (4 connections) — `server/caching/cache_service.py`
+- *... and 56 more nodes in this community*
 
 ## Relationships
 
-- [main()](main%28%29.md) (161 shared connections)
-- [APIRouter](APIRouter.md) (113 shared connections)
-- [Connection Manager](Connection_Manager.md) (36 shared connections)
-- [test command factories inventory](test_command_factories_inventory.md) (30 shared connections)
-- [convert pydantic error()](convert_pydantic_error%28%29.md) (29 shared connections)
-- [character creation](character_creation.md) (27 shared connections)
-- [.initialize()](initialize%28%29.md) (27 shared connections)
-- [.validate search term()](validate_search_term%28%29.md) (24 shared connections)
-- [close db()](close_db%28%29.md) (21 shared connections)
-- [. init ()](_init_%28%29.md) (21 shared connections)
-- [test command factories utility](test_command_factories_utility.md) (18 shared connections)
-- [.validate message()](validate_message%28%29.md) (17 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (11 shared connections)
+- [init](init.md) (6 shared connections)
+- [.shutdown()](shutdown%28%29.md) (6 shared connections)
+- [emit close container event()](emit_close_container_event%28%29.md) (6 shared connections)
+- [chat send with room bundle()](chat_send_with_room_bundle%28%29.md) (4 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/examples/logging/fastapi_integration.py`
-- `server/database.py`
-- `server/database_helpers.py`
-- `server/error_handlers/__init__.py`
-- `server/error_handlers/pydantic_error_handler.py`
-- `server/error_handlers/standardized_responses.py`
-- `server/error_types.py`
-- `server/exceptions.py`
-- `server/game/emote_service.py`
-- `server/legacy_error_handlers.py`
-- `server/legacy_error_sanitization.py`
-- `server/npc/combat_integration.py`
-- `server/persistence/container_persistence.py`
-- `server/persistence/container_persistence_async.py`
-- `server/realtime/websocket_handler_validation.py`
-- `server/tests/unit/error_handlers/test_standardized_responses_security.py`
-- `server/tests/unit/infrastructure/test_database_extended.py`
-- `server/tests/unit/infrastructure/test_database_helpers.py`
-- `server/tests/unit/infrastructure/test_database_init.py`
-- `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
+- `scripts/bench_cache.py`
+- `scripts/bench_cache_npc.py`
+- `scripts/bench_cache_professions.py`
+- `server/caching/__init__.py`
+- `server/caching/cache_service.py`
+- `server/caching/lru_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2418 (70%)
-- INFERRED: 1021 (30%)
+- EXTRACTED: 252 (92%)
+- INFERRED: 22 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

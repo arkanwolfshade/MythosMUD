@@ -1,62 +1,58 @@
 # . init ()
 
-> 104 nodes
+> 42 nodes
 
 ## Key Concepts
 
-- **NATSError** (101 connections) — `server/services/nats_exceptions.py`
-- **nats_exceptions.py** (33 connections) — `server/services/nats_exceptions.py`
-- **NATSPublishError** (32 connections) — `server/services/nats_exceptions.py`
-- **NATSSubscribeError** (27 connections) — `server/services/nats_exceptions.py`
-- **CombatPersistenceHandler** (22 connections) — `server/services/combat_persistence_handler.py`
-- **NATSConnectionError** (18 connections) — `server/services/nats_exceptions.py`
-- **NATSHealthCheckError** (17 connections) — `server/services/nats_exceptions.py`
-- **combat_persistence_handler.py** (15 connections) — `server/services/combat_persistence_handler.py`
-- **test_nats_exceptions.py** (13 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **TestNATSConnectionError** (11 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **TestNATSPublishError** (11 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **TestNATSSubscribeError** (11 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **TestNATSHealthCheckError** (11 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **TestExceptionHierarchy** (11 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **nats_message_handler_subscriptions.py** (10 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **TestNATSError** (9 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **UUID** (8 connections)
-- **._persist_player_dp_sync()** (7 connections) — `server/services/combat_persistence_handler.py`
-- **.__init__()** (7 connections) — `server/services/nats_exceptions.py`
-- **.test_all_errors_inherit_from_nats_error()** (7 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **._get_persistence_layer()** (6 connections) — `server/services/combat_persistence_handler.py`
-- **._publish_player_dp_update_event_impl()** (6 connections) — `server/services/combat_persistence_handler.py`
-- **Exception** (6 connections)
-- **.test_all_errors_inherit_from_exception()** (6 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **._verify_player_save()** (5 connections) — `server/services/combat_persistence_handler.py`
-- *... and 79 more nodes in this community*
+- **WebSocketMessageValidator** (42 connections) — `server/realtime/message_validator.py`
+- **MessageValidationError** (36 connections) — `server/realtime/message_validator.py`
+- **test_message_validator.py** (28 connections) — `server/tests/unit/realtime/test_message_validator.py`
+- **message_validator.py** (9 connections) — `server/realtime/message_validator.py`
+- **get_message_validator()** (5 connections) — `server/realtime/message_validator.py`
+- **_deep_dict()** (5 connections) — `server/tests/unit/realtime/test_message_validator.py`
+- **test_parse_and_validate_inner_json_depth_exceeded()** (5 connections) — `server/tests/unit/realtime/test_message_validator.py`
+- **test_validate_size_counts_utf8_bytes()** (4 connections) — `server/tests/unit/realtime/test_message_validator.py`
+- **test_validate_json_structure_depth_exceeded()** (4 connections) — `server/tests/unit/realtime/test_message_validator.py`
+- **test_validate_json_structure_accepts_depth_equal_to_limit()** (4 connections) — `server/tests/unit/realtime/test_message_validator.py`
+- **test_validate_json_structure_list_nesting_counts_toward_depth()** (4 connections) — `server/tests/unit/realtime/test_message_validator.py`
+- **test_parse_and_validate_rejects_oversized_raw_payload()** (4 connections) — `server/tests/unit/realtime/test_message_validator.py`
+- **test_parse_and_validate_csrf_inner_token_must_match_expected_not_outer_wrapper()** (4 connections) — `server/tests/unit/realtime/test_message_validator.py`
+- **test_validate_size_exceeds_limit()** (3 connections) — `server/tests/unit/realtime/test_message_validator.py`
+- **test_validate_json_structure_string_length_exceeded()** (3 connections) — `server/tests/unit/realtime/test_message_validator.py`
+- **test_validate_json_structure_key_length_exceeded()** (3 connections) — `server/tests/unit/realtime/test_message_validator.py`
+- **test_extract_csrf_invalid_type_rejected()** (3 connections) — `server/tests/unit/realtime/test_message_validator.py`
+- **test_validate_csrf_missing_when_expected()** (3 connections) — `server/tests/unit/realtime/test_message_validator.py`
+- **test_validate_csrf_mismatch()** (3 connections) — `server/tests/unit/realtime/test_message_validator.py`
+- **test_validate_csrf_present_without_expected_token_rejected()** (3 connections) — `server/tests/unit/realtime/test_message_validator.py`
+- **test_parse_and_validate_rejects_invalid_json()** (3 connections) — `server/tests/unit/realtime/test_message_validator.py`
+- **test_parse_and_validate_rejects_non_object_json()** (3 connections) — `server/tests/unit/realtime/test_message_validator.py`
+- **validator()** (2 connections) — `server/tests/unit/realtime/test_message_validator.py`
+- **test_validate_size_within_limit()** (2 connections) — `server/tests/unit/realtime/test_message_validator.py`
+- **test_validate_csrf_matches_expected()** (2 connections) — `server/tests/unit/realtime/test_message_validator.py`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [initialize nats and combat services()](initialize_nats_and_combat_services%28%29.md) (33 shared connections)
-- [nats config()](nats_config%28%29.md) (16 shared connections)
-- [message formatters](message_formatters.md) (11 shared connections)
-- [Any](Any.md) (11 shared connections)
-- [UUID](UUID.md) (9 shared connections)
-- [test nats message handler](test_nats_message_handler.md) (9 shared connections)
-- [combat](combat.md) (7 shared connections)
-- [test combat persistence handler events](test_combat_persistence_handler_events.md) (6 shared connections)
-- [NATS](NATS.md) (6 shared connections)
-- [main()](main%28%29.md) (4 shared connections)
-- [test nats message handler subzone](test_nats_message_handler_subzone.md) (4 shared connections)
-- [. init ()](_init_%28%29.md) (4 shared connections)
+- [nudgeStandBothPlayers()](nudgeStandBothPlayers%28%29.md) (18 shared connections)
+- [.is required()](is_required%28%29.md) (4 shared connections)
+- [websocket handler commands](websocket_handler_commands.md) (4 shared connections)
+- [convert pydantic error()](convert_pydantic_error%28%29.md) (3 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
+- [local channel isolation.spec](local_channel_isolation.spec.md) (2 shared connections)
+- [quest events](quest_events.md) (2 shared connections)
+- [test websocket handler helpers extended](test_websocket_handler_helpers_extended.md) (1 shared connections)
+- [test_parse_command_parts_empty_string](test_parse_command_parts_empty_string.md) (1 shared connections)
+- [test_command_parser_initialization](test_command_parser_initialization.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/nats_message_handler_subscriptions.py`
-- `server/services/combat_persistence_handler.py`
-- `server/services/nats_exceptions.py`
-- `server/tests/unit/services/test_nats_exceptions.py`
+- `server/realtime/message_validator.py`
+- `server/tests/unit/realtime/test_message_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 434 (77%)
-- INFERRED: 128 (23%)
+- EXTRACTED: 178 (86%)
+- INFERRED: 30 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

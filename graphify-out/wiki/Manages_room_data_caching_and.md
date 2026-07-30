@@ -1,6 +1,6 @@
 # Manages room data caching and
 
-> 59 nodes
+> 60 nodes
 
 ## Key Concepts
 
@@ -29,12 +29,13 @@
 - **.test_merge_room_data_new_field()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
 - **.test_merge_room_data_preserves_old_data()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
 - **.test_merge_room_data_invalid_input()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- *... and 34 more nodes in this community*
+- *... and 35 more nodes in this community*
 
 ## Relationships
 
-- [Any](Any.md) (8 shared connections)
-- [main()](main%28%29.md) (3 shared connections)
+- [Any](Any.md) (7 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (3 shared connections)
+- [combat taunt](combat_taunt.md) (1 shared connections)
 
 ## Source Files
 

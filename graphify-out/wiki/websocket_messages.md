@@ -1,6 +1,6 @@
 # websocket messages
 
-> 60 nodes
+> 65 nodes
 
 ## Key Concepts
 
@@ -29,11 +29,11 @@
 - **test_wrapped_message()** (3 connections) — `server/tests/unit/schemas/test_websocket_messages.py`
 - **test_base_websocket_message_with_csrf_token()** (3 connections) — `server/tests/unit/schemas/test_websocket_messages.py`
 - **test_base_websocket_message_with_timestamp()** (3 connections) — `server/tests/unit/schemas/test_websocket_messages.py`
-- *... and 35 more nodes in this community*
+- *... and 40 more nodes in this community*
 
 ## Relationships
 
-- [. init ()](_init_%28%29.md) (4 shared connections)
+- [.initialize()](initialize%28%29.md) (4 shared connections)
 
 ## Source Files
 

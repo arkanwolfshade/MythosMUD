@@ -1,39 +1,33 @@
 # .get config()
 
-> 16 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **RetryConfig** (10 connections) — `server/realtime/nats_retry_handler.py`
-- **test_get_config()** (4 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **.__init__()** (3 connections) — `server/realtime/nats_retry_handler.py`
-- **.get_config()** (3 connections) — `server/realtime/nats_retry_handler.py`
-- **test_retry_config_calculate_delay_base()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_retry_config_calculate_delay_capped()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_retry_config_defaults()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **.calculate_delay()** (2 connections) — `server/realtime/nats_retry_handler.py`
-- **Configuration for retry behavior.      Defines retry parameters for handling tra** (1 connections) — `server/realtime/nats_retry_handler.py`
-- **Calculate delay for a given attempt number.          Uses exponential backoff ca** (1 connections) — `server/realtime/nats_retry_handler.py`
-- **Initialize retry handler.          Args:             max_retries: Maximum number** (1 connections) — `server/realtime/nats_retry_handler.py`
-- **Get current retry configuration.          Returns:             Current RetryConf** (1 connections) — `server/realtime/nats_retry_handler.py`
-- **Test RetryConfig.calculate_delay() with base delay.** (1 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **Test RetryConfig.calculate_delay() respects max_delay.** (1 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **Test RetryConfig default values.** (1 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **Test get_config() returns current RetryConfig.** (1 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
+- **TestHandleSpecialCommandRouting** (7 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_handle_special_command_routing_alias_command()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_handle_special_command_routing_alias_storage_none()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_handle_special_command_routing_emote_conversion()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_handle_special_command_routing_returns_none()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **Tests for _handle_special_command_routing function.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **Test _handle_special_command_routing processes alias commands.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **Test _handle_special_command_routing returns error when alias_storage is None.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **Test _handle_special_command_routing converts single-word emotes.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **Test _handle_special_command_routing returns None for normal commands.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
 
 ## Relationships
 
-- [nats retry handler](nats_retry_handler.md) (9 shared connections)
+- [check alias safety()](check_alias_safety%28%29.md) (5 shared connections)
+- [test magic commands](test_magic_commands.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/nats_retry_handler.py`
-- `server/tests/unit/realtime/test_nats_retry_handler.py`
+- `server/tests/unit/commands/test_command_handler_unified_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 37 (95%)
-- INFERRED: 2 (5%)
+- EXTRACTED: 23 (96%)
+- INFERRED: 1 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

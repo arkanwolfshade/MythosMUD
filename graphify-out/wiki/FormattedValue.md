@@ -1,6 +1,6 @@
 # FormattedValue
 
-> 20 nodes
+> 21 nodes
 
 ## Key Concepts
 
@@ -13,13 +13,14 @@
 - **.visit_Call()** (3 connections) — `scripts/lint_logging_patterns.py`
 - **.visit_FormattedValue()** (3 connections) — `scripts/lint_logging_patterns.py`
 - **Path** (2 connections)
-- **Check for deprecated logging imports.** (2 connections) — `scripts/lint_logging_patterns.py`
 - **.__init__()** (1 connections) — `scripts/lint_logging_patterns.py`
 - **Import** (1 connections)
 - **ImportFrom** (1 connections)
 - **Call** (1 connections)
 - **FormattedValue** (1 connections)
 - **AST visitor to detect deprecated logging patterns.** (1 connections) — `scripts/lint_logging_patterns.py`
+- **Check for deprecated logging imports.** (1 connections) — `scripts/lint_logging_patterns.py`
+- **Check for deprecated logging imports.** (1 connections) — `scripts/lint_logging_patterns.py`
 - **Check for deprecated logging patterns in function calls.** (1 connections) — `scripts/lint_logging_patterns.py`
 - **Check for f-string usage in logging contexts.** (1 connections) — `scripts/lint_logging_patterns.py`
 - **Lint a single Python file for logging patterns.** (1 connections) — `scripts/lint_logging_patterns.py`

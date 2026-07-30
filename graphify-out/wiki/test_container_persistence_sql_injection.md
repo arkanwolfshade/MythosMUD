@@ -1,37 +1,34 @@
 # test container persistence sql injection
 
-> 15 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **test_container_persistence_sql_injection.py** (6 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **_create_mock_container_row()** (6 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **TestContainerPersistenceSQLInjection** (6 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **.test_update_container_sql_injection_in_metadata()** (4 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **.test_update_container_uses_parameterized_queries()** (4 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **.test_update_container_safe_column_names()** (4 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **.test_update_container_sql_injection_in_lock_state()** (3 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **UUID** (2 connections)
-- **Tests for SQL injection protection in container persistence operations.  These t** (1 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **Create a complete mock container row with all required columns.** (1 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **Test SQL injection protection in container persistence.** (1 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **Test that SQL injection in lock_state is prevented.** (1 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **Test that SQL injection in metadata_json is prevented.** (1 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **Test that update_container uses parameterized queries, not string concatenation.** (1 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **Test that column names are hardcoded, not from user input.** (1 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
+- **TestCreateErrorContext** (12 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **.test_create_error_context_with_user()** (3 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **.test_create_error_context_no_user()** (3 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **.test_create_error_context_no_request()** (3 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **Test create_error_context function.** (1 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **Test create_error_context includes user information (returns flat dict for **kwa** (1 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **Test create_error_context handles None user (returns flat dict).** (1 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **Test create_error_context handles None request (returns flat dict).** (1 connections) — `server/tests/unit/api/test_container_helpers.py`
 
 ## Relationships
 
-- [datetime](datetime.md) (6 shared connections)
+- [AbstractContextManager](AbstractContextManager.md) (5 shared connections)
+- [BaseCommand](BaseCommand.md) (2 shared connections)
+- [. init ()](_init_%28%29.md) (2 shared connections)
+- [metrics](metrics.md) (1 shared connections)
+- [DeadLetterMessage](DeadLetterMessage.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/test_container_persistence_sql_injection.py`
+- `server/tests/unit/api/test_container_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 42 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 18 (72%)
+- INFERRED: 7 (28%)
 - AMBIGUOUS: 0 (0%)
 
 ---

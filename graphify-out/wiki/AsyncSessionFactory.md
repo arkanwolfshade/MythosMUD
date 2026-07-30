@@ -1,59 +1,54 @@
 # AsyncSessionFactory
 
-> 72 nodes
+> 76 nodes
 
 ## Key Concepts
 
-- **test_rescue_service.py** (32 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **rescue_service.py** (16 connections) — `server/services/rescue_service.py`
-- **RescueService** (11 connections) — `server/services/rescue_service.py`
-- **.rescue()** (7 connections) — `server/services/rescue_service.py`
-- **factory()** (7 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **.__init__()** (6 connections) — `server/services/rescue_service.py`
-- **_ensure_uuid()** (5 connections) — `server/services/rescue_service.py`
-- **Any** (4 connections)
-- **_maybe_await()** (4 connections) — `server/services/rescue_service.py`
-- **async_session_factory()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **lucidity_service_factory()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **rescue_service()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **sample_lucidity_record()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_no_persistence()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **Test rescue() returns error when rescuer is not found.** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **UUID** (2 connections)
-- **mock_persistence()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **mock_session()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **mock_lucidity_service()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **mock_event_dispatcher()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **sample_rescuer()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **sample_target()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_rescuer_not_found()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_target_not_found()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_different_rooms()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
-- *... and 47 more nodes in this community*
+- **test_game.py** (20 connections) — `server/tests/unit/api/test_game.py`
+- **MythosTimeResponse** (15 connections) — `server/schemas/game/game.py`
+- **get_mythos_time()** (14 connections) — `server/api/game.py`
+- **broadcast_message()** (13 connections) — `server/api/game.py`
+- **TestGetMythosTime** (12 connections) — `server/tests/unit/api/test_game.py`
+- **GameStatusResponse** (9 connections) — `server/schemas/game/game.py`
+- **BroadcastMessageResponse** (9 connections) — `server/schemas/game/game.py`
+- **get_game_status()** (7 connections) — `server/api/game.py`
+- **__init__.py** (7 connections) — `server/schemas/game/__init__.py`
+- **game.py** (7 connections) — `server/schemas/game/game.py`
+- **BroadcastStats** (6 connections) — `server/schemas/game/game.py`
+- **TestBroadcastMessage** (6 connections) — `server/tests/unit/api/test_game.py`
+- **TestGetMythosTimeEdgeCases** (6 connections) — `server/tests/unit/api/test_game.py`
+- **TestGetGameStatus** (5 connections) — `server/tests/unit/api/test_game.py`
+- **BaseModel** (4 connections)
+- **.test_get_game_status_success()** (4 connections) — `server/tests/unit/api/test_game.py`
+- **.test_broadcast_message_success()** (4 connections) — `server/tests/unit/api/test_game.py`
+- **.test_get_mythos_time_success()** (4 connections) — `server/tests/unit/api/test_game.py`
+- **.test_get_mythos_time_no_holiday_service()** (4 connections) — `server/tests/unit/api/test_game.py`
+- **.test_get_mythos_time_holiday_service_error()** (4 connections) — `server/tests/unit/api/test_game.py`
+- **.test_get_mythos_time_with_holidays()** (4 connections) — `server/tests/unit/api/test_game.py`
+- **.test_get_mythos_time_no_container()** (4 connections) — `server/tests/unit/api/test_game.py`
+- **.test_get_mythos_time_holiday_service_upcoming_error()** (4 connections) — `server/tests/unit/api/test_game.py`
+- **TestGetGameStatusLogger** (4 connections) — `server/tests/unit/api/test_game.py`
+- **.test_get_mythos_time_container_no_holiday_service_attribute()** (4 connections) — `server/tests/unit/api/test_game.py`
+- *... and 51 more nodes in this community*
 
 ## Relationships
 
-- [. init ()](_init_%28%29.md) (9 shared connections)
-- [rescue commands](rescue_commands.md) (3 shared connections)
-- [datetime](datetime.md) (3 shared connections)
-- [LiabilityStackEntry](LiabilityStackEntry.md) (2 shared connections)
-- [main()](main%28%29.md) (2 shared connections)
-- [UUID](UUID.md) (1 shared connections)
-- [Any](Any.md) (1 shared connections)
-- [. get persistence from app()](_get_persistence_from_app%28%29.md) (1 shared connections)
-- [test command factories](test_command_factories.md) (1 shared connections)
-- [BaseCommand](BaseCommand.md) (1 shared connections)
+- [metrics](metrics.md) (18 shared connections)
+- [test player event handlers state](test_player_event_handlers_state.md) (4 shared connections)
+- [HolidayCollection](HolidayCollection.md) (3 shared connections)
+- [get health status()](get_health_status%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/rescue_service.py`
-- `server/tests/unit/services/test_rescue_service.py`
-- `server/tests/unit/utils/test_command_factories.py`
+- `server/api/game.py`
+- `server/schemas/game/__init__.py`
+- `server/schemas/game/game.py`
+- `server/tests/unit/api/test_game.py`
 
 ## Audit Trail
 
-- EXTRACTED: 179 (94%)
-- INFERRED: 11 (6%)
+- EXTRACTED: 233 (90%)
+- INFERRED: 25 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

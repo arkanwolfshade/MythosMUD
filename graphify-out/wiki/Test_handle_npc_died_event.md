@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_handle_npc_died_event()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test _handle_npc_died_event delegates to event handler.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_process_exit_rows_multiple_exits_same_room()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _process_exit_rows with multiple exits from same room.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Relationships
 
-- [test nats message handler subzone](test_nats_message_handler_subzone.md) (1 shared connections)
+- [test async persistence room loading](test_async_persistence_room_loading.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Audit Trail
 

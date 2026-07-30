@@ -1,38 +1,31 @@
 # get item description from prototype()
 
-> 15 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **_get_item_description_from_prototype()** (12 connections) — `server/commands/look_item.py`
-- **test_get_item_description_from_prototype_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_get_item_description_from_prototype_no_registry()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_get_item_description_from_prototype_no_prototype_id()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_get_item_description_from_prototype_fallback()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_get_item_description_from_prototype_fallback_no_prototype()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_get_item_description_from_prototype_with_item_id()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_get_item_description_from_prototype_exception_handling()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test getting item description with fallback name when prototype exists.** (2 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Get item description from prototype registry.      Returns:         Formatted re** (1 connections) — `server/commands/look_item.py`
-- **Test getting item description from prototype.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test getting item description when prototype registry is None.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test getting item description when prototype_id is missing.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test getting item description using item_id when prototype_id missing.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test getting item description handles exceptions.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **calculate_notification_times()** (7 connections) — `server/commands/admin_shutdown_command.py`
+- **test_calculate_notification_times_short()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_calculate_notification_times_long()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_calculate_notification_times_sorted()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **Calculate notification times for countdown.      Notifications occur:     - Ever** (1 connections) — `server/commands/admin_shutdown_command.py`
+- **Test calculate_notification_times() for short countdown.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **Test calculate_notification_times() for long countdown.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **Test calculate_notification_times() returns sorted descending.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
 
 ## Relationships
 
-- [test look item](test_look_item.md) (8 shared connections)
-- [look item](look_item.md) (3 shared connections)
+- [Any](Any.md) (4 shared connections)
+- [get skill repository()](get_skill_repository%28%29.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/look_item.py`
-- `server/tests/unit/commands/test_look_item.py`
+- `server/commands/admin_shutdown_command.py`
+- `server/tests/unit/commands/test_admin_shutdown_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 41 (100%)
+- EXTRACTED: 20 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

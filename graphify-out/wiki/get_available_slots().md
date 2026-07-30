@@ -1,23 +1,26 @@
 # .get available slots()
 
-> 2 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **.get_available_slots()** (2 connections) — `server/models/container.py`
-- **Get number of available inventory slots.** (1 connections) — `server/models/container.py`
+- **rename_used_to_is_active.py** (4 connections) — `server/scripts/rename_used_to_is_active.py`
+- **apply_migration()** (3 connections) — `server/scripts/rename_used_to_is_active.py`
+- **main()** (3 connections) — `server/scripts/rename_used_to_is_active.py`
+- **Apply the migration to rename used back to is_active.      Args:         databas** (1 connections) — `server/scripts/rename_used_to_is_active.py`
+- **Main entry point for the migration script.** (1 connections) — `server/scripts/rename_used_to_is_active.py`
 
 ## Relationships
 
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
 
 ## Source Files
 
-- `server/models/container.py`
+- `server/scripts/rename_used_to_is_active.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

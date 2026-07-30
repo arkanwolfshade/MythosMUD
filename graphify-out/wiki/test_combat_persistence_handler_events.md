@@ -1,48 +1,62 @@
 # test combat persistence handler events
 
-> 37 nodes
+> 81 nodes
 
 ## Key Concepts
 
-- **test_combat_persistence_handler_events.py** (25 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **persistence_handler()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_update_event_impl_event_bus_publish_error()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **Test _publish_player_dp_update_event_impl publishes to event bus.** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **Test _publish_player_dp_correction_event handles errors gracefully.** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **mock_combat_service()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_update_event()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_update_event_impl()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_update_event_impl_no_event_bus()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_update_event_impl_error()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_update_event_impl_with_nats()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_update_event_impl_legacy_subject()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_update_event_impl_nats_error()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_update_event_impl_no_nats()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_update_event_impl_all_parameters()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_correction_event()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_correction_event_error()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_correction_event_no_event_bus()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_correction_event_all_parameters()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_correction_event_success_new()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_correction_event_publish_error_new()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_correction_event_all_parameters_new()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_correction_event_outer_exception()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **Test _publish_player_dp_update_event_impl handles errors gracefully.** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **Unit tests for combat persistence handler - event publishing.  Tests DP update a** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- *... and 12 more nodes in this community*
+- **nats_exceptions.py** (33 connections) — `server/services/nats_exceptions.py`
+- **NATSPublishError** (32 connections) — `server/services/nats_exceptions.py`
+- **NATSSubscribeError** (27 connections) — `server/services/nats_exceptions.py`
+- **NATSConnectionError** (18 connections) — `server/services/nats_exceptions.py`
+- **NATSHealthCheckError** (17 connections) — `server/services/nats_exceptions.py`
+- **test_nats_exceptions.py** (13 connections) — `server/tests/unit/services/test_nats_exceptions.py`
+- **TestNATSConnectionError** (11 connections) — `server/tests/unit/services/test_nats_exceptions.py`
+- **TestNATSPublishError** (11 connections) — `server/tests/unit/services/test_nats_exceptions.py`
+- **TestNATSSubscribeError** (11 connections) — `server/tests/unit/services/test_nats_exceptions.py`
+- **TestNATSHealthCheckError** (11 connections) — `server/tests/unit/services/test_nats_exceptions.py`
+- **TestExceptionHierarchy** (11 connections) — `server/tests/unit/services/test_nats_exceptions.py`
+- **TestNATSError** (9 connections) — `server/tests/unit/services/test_nats_exceptions.py`
+- **.test_all_errors_inherit_from_nats_error()** (7 connections) — `server/tests/unit/services/test_nats_exceptions.py`
+- **.test_all_errors_inherit_from_exception()** (6 connections) — `server/tests/unit/services/test_nats_exceptions.py`
+- **.test_connection_error_creation()** (4 connections) — `server/tests/unit/services/test_nats_exceptions.py`
+- **.test_publish_error_creation()** (4 connections) — `server/tests/unit/services/test_nats_exceptions.py`
+- **.test_subscribe_error_creation()** (4 connections) — `server/tests/unit/services/test_nats_exceptions.py`
+- **.test_health_check_error_creation()** (4 connections) — `server/tests/unit/services/test_nats_exceptions.py`
+- **.test_exception_can_be_caught_by_base()** (4 connections) — `server/tests/unit/services/test_nats_exceptions.py`
+- **test_subscribe_to_subject_failure()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_subscribe_to_standardized_chat_subjects_nats_subscribe_error_handled()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **.test_nats_error_creation()** (3 connections) — `server/tests/unit/services/test_nats_exceptions.py`
+- **.test_nats_error_inheritance()** (3 connections) — `server/tests/unit/services/test_nats_exceptions.py`
+- **.test_connection_error_with_url()** (3 connections) — `server/tests/unit/services/test_nats_exceptions.py`
+- **.test_connection_error_with_original_error()** (3 connections) — `server/tests/unit/services/test_nats_exceptions.py`
+- *... and 56 more nodes in this community*
 
 ## Relationships
 
-- [. init ()](_init_%28%29.md) (6 shared connections)
+- [Any](Any.md) (30 shared connections)
+- [Player](Player.md) (9 shared connections)
+- [BaseUserManager](BaseUserManager.md) (7 shared connections)
+- [correct patterns](correct_patterns.md) (6 shared connections)
+- [FollowTargetValue](FollowTargetValue.md) (6 shared connections)
+- [initialize nats and combat services()](initialize_nats_and_combat_services%28%29.md) (4 shared connections)
+- [. init ()](_init_%28%29.md) (3 shared connections)
+- [connection state machine](connection_state_machine.md) (3 shared connections)
+- [test combat persistence handler persistence](test_combat_persistence_handler_persistence.md) (1 shared connections)
+- [test combat attack handler](test_combat_attack_handler.md) (1 shared connections)
+- [.model dump()](model_dump%28%29.md) (1 shared connections)
+- [test nats message handler chat](test_nats_message_handler_chat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- `server/services/nats_exceptions.py`
+- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/tests/unit/services/test_nats_exceptions.py`
+- `server/tests/unit/services/test_nats_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 88 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 267 (78%)
+- INFERRED: 75 (22%)
 - AMBIGUOUS: 0 (0%)
 
 ---

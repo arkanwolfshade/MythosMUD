@@ -1,78 +1,65 @@
 # main()
 
-> 879 nodes
+> 39 nodes
 
 ## Key Concepts
 
-- **get_logger()** (493 connections) — `server/structured_logging/enhanced_logging_config.py`
-- **enhanced_logging_config.py** (468 connections) — `server/structured_logging/enhanced_logging_config.py`
-- **DatabaseError** (397 connections) — `server/exceptions.py`
-- **exceptions.py** (188 connections) — `server/exceptions.py`
-- **log_and_raise()** (164 connections) — `server/utils/error_logging.py`
-- **log_and_raise_enhanced()** (97 connections) — `server/utils/enhanced_error_logging.py`
-- **get_session_maker()** (91 connections) — `server/database.py`
-- **time.py** (89 connections) — `server/container/bundles/time.py`
-- **database.py** (75 connections) — `server/database.py`
-- **async_persistence.py** (73 connections) — `server/async_persistence.py`
-- **error_logging.py** (55 connections) — `server/utils/error_logging.py`
-- **get_async_session()** (53 connections) — `server/database.py`
-- **threading.py** (45 connections) — `server/npc/threading.py`
-- **MovementService** (41 connections) — `server/game/movement_service.py`
-- **enhanced_error_logging.py** (38 connections) — `server/utils/enhanced_error_logging.py`
-- **__init__.py** (32 connections) — `server/persistence/__init__.py`
-- **PlayerRepository** (31 connections) — `server/persistence/repositories/player_repository.py`
-- **database_helpers.py** (30 connections) — `server/database_helpers.py`
-- **DatabaseManager** (29 connections) — `server/database.py`
-- **__init__.py** (28 connections) — `server/persistence/repositories/__init__.py`
-- **player_repository.py** (28 connections) — `server/persistence/repositories/player_repository.py`
-- **movement_service.py** (27 connections) — `server/game/movement_service.py`
-- **container_helpers.py** (26 connections) — `server/persistence/container_helpers.py`
-- **monitoring_dashboard.py** (25 connections) — `server/monitoring/monitoring_dashboard.py`
-- **schedule_service.py** (25 connections) — `server/services/schedule_service.py`
-- *... and 854 more nodes in this community*
+- **safe_subprocess.py** (21 connections) — `scripts/utils/safe_subprocess.py`
+- **safe_run()** (19 connections) — `scripts/utils/safe_subprocess.py`
+- **run_quality_fragmentation_guard.py** (12 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **main()** (6 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **_run_git()** (5 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **_resolved_changed_files()** (5 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **validate_path()** (5 connections) — `scripts/utils/safe_subprocess.py`
+- **run_psql_command()** (4 connections) — `scripts/load_seed_data.py`
+- **_git_executable()** (4 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **_changed_files_between()** (4 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **_local_changed_files()** (4 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **_build_guard_command()** (4 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **validate_command()** (4 connections) — `scripts/utils/safe_subprocess.py`
+- **main()** (3 connections) — `scripts/load_seed_data.py`
+- **_resolve_base_sha()** (3 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **_is_graphify_path()** (3 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **Path** (3 connections)
+- **install.py** (2 connections) — `scripts/install.py`
+- **get_project_root()** (2 connections) — `scripts/install.py`
+- **load_seed_data.py** (2 connections) — `scripts/load_seed_data.py`
+- **_argv_char_len()** (2 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **Any** (2 connections)
+- **CompletedProcess** (2 connections)
+- **bandit.py** (1 connections) — `scripts/bandit.py`
+- **build.py** (1 connections) — `scripts/build.py`
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
-- [. init ()](_init_%28%29.md) (394 shared connections)
-- [Any](Any.md) (255 shared connections)
-- [.initialize()](initialize%28%29.md) (108 shared connections)
-- [APIRouter](APIRouter.md) (73 shared connections)
-- [Connection Manager](Connection_Manager.md) (59 shared connections)
-- [datetime](datetime.md) (46 shared connections)
-- [initialize nats and combat services()](initialize_nats_and_combat_services%28%29.md) (44 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (40 shared connections)
-- [. repr ()](_repr_%28%29.md) (37 shared connections)
-- [BaseUserManager](BaseUserManager.md) (35 shared connections)
-- [UUID](UUID.md) (35 shared connections)
-- [get skill repository()](get_skill_repository%28%29.md) (35 shared connections)
+- [sqlint](sqlint.md) (7 shared connections)
+- [quality fragmentation ai guardrails](quality_fragmentation_ai_guardrails.md) (3 shared connections)
+- [test runner](test_runner.md) (2 shared connections)
+- [compare linting results](compare_linting_results.md) (1 shared connections)
+- [main()](main%28%29.md) (1 shared connections)
+- [grype](grype.md) (1 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
+- [git show file()](git_show_file%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `e2e-tests/load-tests/get_invite_codes.py`
-- `schemas/validator.py`
-- `scripts/add_flavor_text_column.py`
-- `scripts/load_seed_using_project_db.py`
-- `scripts/run_test_ci.py`
-- `scripts/verify_and_load_seed.py`
-- `server/api/base.py`
-- `server/api/monitoring_models.py`
-- `server/api/system_monitoring.py`
-- `server/app/lifespan_event_subscriptions.py`
-- `server/app/memory_cleanup_service.py`
-- `server/async_persistence.py`
-- `server/async_persistence_direct_queries.py`
-- `server/async_persistence_room_loader.py`
-- `server/caching/__init__.py`
-- `server/caching/cache_service.py`
-- `server/caching/lru_cache.py`
-- `server/commands/container_helpers_inventory_logging.py`
-- `server/commands/shutdown_process_termination.py`
-- `server/config/models/__init__.py`
+- `scripts/bandit.py`
+- `scripts/build.py`
+- `scripts/format.py`
+- `scripts/install.py`
+- `scripts/lint.py`
+- `scripts/load_seed_data.py`
+- `scripts/pylint.py`
+- `scripts/run.py`
+- `scripts/run_quality_fragmentation_guard.py`
+- `scripts/sqlfluff.py`
+- `scripts/utils/safe_subprocess.py`
 
 ## Audit Trail
 
-- EXTRACTED: 5941 (92%)
-- INFERRED: 486 (8%)
+- EXTRACTED: 133 (97%)
+- INFERRED: 4 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_broadcast_player_mortally_wounded()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test broadcast_player_mortally_wounded broadcasts message.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **test_query_rooms_with_exits_async_table_not_found()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **Test _query_rooms_with_exits_async handles table not found error.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Relationships
 
-- [test combat messaging integration](test_combat_messaging_integration.md) (1 shared connections)
+- [test async persistence room cache](test_async_persistence_room_cache.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_messaging_integration.py`
+- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Audit Trail
 

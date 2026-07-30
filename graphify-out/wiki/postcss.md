@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **postcss** (2 connections) — `client/package.json`
-- **postcss** (1 connections) — `client/package.json`
+- **test_validate_chat_message_fields_sender_name_type_error()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _validate_chat_message_fields raises TypeError for invalid sender_name type** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [autoprefixer](autoprefixer.md) (1 shared connections)
+- [test nats message handler chat](test_nats_message_handler_chat.md) (1 shared connections)
 
 ## Source Files
 
-- `client/package.json`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 

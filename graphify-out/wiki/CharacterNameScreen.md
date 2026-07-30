@@ -1,46 +1,50 @@
 # CharacterNameScreen
 
-> 19 nodes
+> 28 nodes
 
 ## Key Concepts
 
-- **CharacterNameScreen.tsx** (20 connections) — `client/src/components/CharacterNameScreen.tsx`
-- **SkillAssignmentScreen.tsx** (15 connections) — `client/src/components/SkillAssignmentScreen.tsx`
-- **SkillAssignmentScreen.helpers.tsx** (12 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
-- **SkillAssignmentScreen()** (5 connections) — `client/src/components/SkillAssignmentScreen.tsx`
-- **getCreateCharacterErrorMessage()** (4 connections) — `client/src/components/CharacterNameScreen.tsx`
-- **CharacterNameScreen()** (4 connections) — `client/src/components/CharacterNameScreen.tsx`
-- **SkillsPayload** (3 connections) — `client/src/components/CharacterNameScreen.tsx`
-- **SkillAssignmentScreenProps** (3 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
-- **loadSkillsCatalog()** (3 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
-- **renderLoadingState()** (3 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
-- **renderErrorState()** (3 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
-- **renderSkillInstructions()** (3 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
-- **OccupationSlotPayload** (2 connections) — `client/src/components/CharacterNameScreen.tsx`
-- **PersonalInterestPayload** (2 connections) — `client/src/components/CharacterNameScreen.tsx`
-- **buildCreateCharacterPayload()** (2 connections) — `client/src/components/CharacterNameScreen.tsx`
-- **OCCUPATION_VALUES** (2 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
-- **SkillCatalogEntry** (2 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
-- **MIN_TOUCH_TARGET_STYLE** (2 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
-- **SkillsLoadResult** (1 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
+- **format_player_location()** (13 connections) — `server/commands/who_commands.py`
+- **test_who_commands_helpers.py** (12 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
+- **test_format_player_location_valid()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_format_player_location_invalid()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_format_player_location_none()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_format_player_location_short_format()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_format_player_location_non_string()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_filter_players_by_name_found()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
+- **test_filter_players_by_name_not_found()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
+- **test_filter_players_by_name_empty_filter()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
+- **test_format_player_location_valid()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
+- **test_format_player_location_invalid()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
+- **test_format_player_entry()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
+- **test_format_player_entry_admin()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
+- **Format player location as Zone: Sub-zone: Room from room ID.      Args:** (1 connections) — `server/commands/who_commands.py`
+- **Test formatting valid player location.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **Test formatting invalid player location.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **Test formatting None location.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **Test format_player_location() with short room ID format.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **Test format_player_location() with non-string input.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **Unit tests for who command helper functions.  Tests the helper functions in who_** (1 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
+- **Test filter_players_by_name() filters players by name.** (1 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
+- **Test filter_players_by_name() returns empty list when no matches.** (1 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
+- **Test filter_players_by_name() returns all players when filter is empty.** (1 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
+- **Test format_player_location() formats valid room ID.** (1 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [CharacterSelectionScreen](CharacterSelectionScreen.md) (5 shared connections)
-- [useConnectionStateMachine.test](useConnectionStateMachine.test.md) (4 shared connections)
-- [AuthSlice](AuthSlice.md) (3 shared connections)
-- [SERVER UNAVAILABLE PATTERNS](SERVER_UNAVAILABLE_PATTERNS.md) (3 shared connections)
-- [fetchSpy](fetchSpy.md) (2 shared connections)
+- [utility commands](utility_commands.md) (16 shared connections)
+- [Any](Any.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/CharacterNameScreen.tsx`
-- `client/src/components/SkillAssignmentScreen.helpers.tsx`
-- `client/src/components/SkillAssignmentScreen.tsx`
+- `server/commands/who_commands.py`
+- `server/tests/unit/commands/test_who_commands.py`
+- `server/tests/unit/commands/test_who_commands_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 91 (100%)
+- EXTRACTED: 75 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,52 +1,67 @@
 # test player event handlers state
 
-> 47 nodes
+> 63 nodes
 
 ## Key Concepts
 
-- **test_player_event_handlers_state.py** (33 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **mock_utils()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **player_state_event_handler()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_xp_awarded_success()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_xp_awarded_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_xp_awarded_player_not_found()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_xp_awarded_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_xp_awarded_player_no_current_room_id()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_dp_updated_success()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_dp_updated_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_dp_updated_player_not_found()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_dp_updated_player_no_get_stats()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_dp_updated_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **Test handle_player_dp_updated() skips when connection manager not available.** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **mock_logger()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_player_state_event_handler_init()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_died_success()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_died_no_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_died_no_death_location()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_died_invalid_player_id()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_died_error_handling()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_dp_decay_success()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_dp_decay_no_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_dp_decay_error_handling()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- *... and 22 more nodes in this community*
+- **__init__.py** (70 connections) — `server/schemas/__init__.py`
+- **__init__.py** (38 connections) — `server/schemas/players/__init__.py`
+- **professions.py** (19 connections) — `server/api/professions.py`
+- **npc_admin.py** (15 connections) — `server/schemas/admin/npc_admin.py`
+- **AdminSession** (14 connections) — `server/schemas/admin/admin_data.py`
+- **AuditLogEntry** (14 connections) — `server/schemas/admin/admin_data.py`
+- **__init__.py** (13 connections) — `server/schemas/admin/__init__.py`
+- **test_professions_endpoints.py** (13 connections) — `server/tests/unit/api/test_professions_endpoints.py`
+- **get_all_professions()** (10 connections) — `server/api/professions.py`
+- **get_profession_by_id()** (10 connections) — `server/api/professions.py`
+- **BaseModel** (10 connections)
+- **NPCSpawnResponse** (9 connections) — `server/schemas/admin/npc_admin.py`
+- **NPCDespawnResponse** (9 connections) — `server/schemas/admin/npc_admin.py`
+- **NPCMoveResponse** (9 connections) — `server/schemas/admin/npc_admin.py`
+- **NPCStatsResponse** (9 connections) — `server/schemas/admin/npc_admin.py`
+- **NPCPopulationStatsResponse** (9 connections) — `server/schemas/admin/npc_admin.py`
+- **NPCSystemStatusResponse** (9 connections) — `server/schemas/admin/npc_admin.py`
+- **AdminSessionsResponse** (9 connections) — `server/schemas/admin/npc_admin.py`
+- **AdminAuditLogResponse** (9 connections) — `server/schemas/admin/npc_admin.py`
+- **AdminCleanupSessionsResponse** (9 connections) — `server/schemas/admin/npc_admin.py`
+- **profession.py** (7 connections) — `server/schemas/players/profession.py`
+- **ProfessionListResponse** (7 connections) — `server/schemas/players/profession.py`
+- **ProfessionResponse** (7 connections) — `server/schemas/players/profession.py`
+- **BaseModel** (5 connections)
+- **admin_data.py** (4 connections) — `server/schemas/admin/admin_data.py`
+- *... and 38 more nodes in this community*
 
 ## Relationships
 
-- [Any](Any.md) (13 shared connections)
-- [UUID](UUID.md) (3 shared connections)
-- [. initialize handlers()](_initialize_handlers%28%29.md) (2 shared connections)
-- [disconnect grace period](disconnect_grace_period.md) (1 shared connections)
-- [.set player combat service()](set_player_combat_service%28%29.md) (1 shared connections)
+- [metrics](metrics.md) (38 shared connections)
+- [append unique valid occupant()](append_unique_valid_occupant%28%29.md) (20 shared connections)
+- [admin shutdown command](admin_shutdown_command.md) (13 shared connections)
+- [Room](Room.md) (11 shared connections)
+- [AbstractContextManager](AbstractContextManager.md) (6 shared connections)
+- [memory leak metrics](memory_leak_metrics.md) (6 shared connections)
+- [BaseCommand](BaseCommand.md) (5 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (5 shared connections)
+- [AsyncSessionFactory](AsyncSessionFactory.md) (4 shared connections)
+- [follow commands](follow_commands.md) (4 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (3 shared connections)
+- [hash password()](hash_password%28%29.md) (3 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- `server/api/professions.py`
+- `server/schemas/__init__.py`
+- `server/schemas/admin/__init__.py`
+- `server/schemas/admin/admin_data.py`
+- `server/schemas/admin/npc_admin.py`
+- `server/schemas/players/__init__.py`
+- `server/schemas/players/player_effects.py`
+- `server/schemas/players/profession.py`
+- `server/tests/unit/api/test_professions_endpoints.py`
 
 ## Audit Trail
 
-- EXTRACTED: 118 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 360 (90%)
+- INFERRED: 41 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

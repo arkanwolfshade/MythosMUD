@@ -1,69 +1,65 @@
 # AuthSlice
 
-> 48 nodes
+> 111 nodes
 
 ## Key Concepts
 
-- **useMythosAppState.ts** (28 connections) — `client/src/mythosApp/useMythosAppState.ts`
-- **1774539086359-useMythosAppState.ts** (24 connections) — `client/src/mythosApp/1774539086359-useMythosAppState.ts`
-- **creationCompleteFlow.ts** (20 connections) — `client/src/mythosApp/creationCompleteFlow.ts`
-- **CharacterInfo** (20 connections) — `client/src/types/auth.ts`
-- **characterSessionApi.ts** (18 connections) — `client/src/mythosApp/characterSessionApi.ts`
-- **creationCompleteActions.ts** (16 connections) — `client/src/mythosApp/creationCompleteActions.ts`
-- **Stats** (15 connections) — `client/src/hooks/useStatsRolling.ts`
-- **useAuthSessionRestore.ts** (15 connections) — `client/src/mythosApp/useAuthSessionRestore.ts`
-- **auth.ts** (15 connections) — `client/src/types/auth.ts`
-- **CreationStep** (13 connections) — `client/src/mythosApp/creationTypes.ts`
-- **mapServerCharacters.ts** (10 connections) — `client/src/mythosApp/mapServerCharacters.ts`
-- **creationTypes.ts** (8 connections) — `client/src/mythosApp/creationTypes.ts`
-- **parseSelectCharacterResult()** (7 connections) — `client/src/mythosApp/characterSessionApi.ts`
-- **runAfterCharacterCreatedFlow()** (7 connections) — `client/src/mythosApp/creationCompleteActions.ts`
-- **toCharacterInfoFromList()** (7 connections) — `client/src/mythosApp/mapServerCharacters.ts`
-- **useAuthSessionRestore()** (7 connections) — `client/src/mythosApp/useAuthSessionRestore.ts`
-- **isServerCharacterResponseArray()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
-- **CreationCompleteActions** (6 connections) — `client/src/mythosApp/creationCompleteActions.ts`
-- **refreshCharactersAfterCreation()** (6 connections) — `client/src/mythosApp/creationCompleteFlow.ts`
-- **useReducerStateSlices()** (5 connections) — `client/src/mythosApp/1774539086359-useMythosAppState.ts`
-- **restoreCharactersOnMount()** (5 connections) — `client/src/mythosApp/characterSessionApi.ts`
-- **useReducerStateSlices()** (5 connections) — `client/src/mythosApp/useMythosAppState.ts`
-- **CreationSlice** (4 connections) — `client/src/mythosApp/1774539086359-useMythosAppState.ts`
-- **useMythosAppState()** (4 connections) — `client/src/mythosApp/1774539086359-useMythosAppState.ts`
-- **CreationSlice** (4 connections) — `client/src/mythosApp/useMythosAppState.ts`
-- *... and 23 more nodes in this community*
+- **alias_storage.py** (66 connections) — `server/alias_storage.py`
+- **SchemaValidator** (27 connections) — `schemas/validator.py`
+- **emote_service.py** (19 connections) — `server/game/emote_service.py`
+- **validate_room_data()** (16 connections) — `server/world_loader.py`
+- **world_loader.py** (14 connections) — `server/world_loader.py`
+- **get_room_environment()** (13 connections) — `server/world_loader.py`
+- **TestGetRoomEnvironment** (12 connections) — `server/tests/unit/test_world_loader.py`
+- **exploration_commands.py** (11 connections) — `server/commands/exploration_commands.py`
+- **TestValidateRoomData** (11 connections) — `server/tests/unit/test_world_loader.py`
+- **create_validator()** (10 connections) — `schemas/validator.py`
+- **test_world_loader.py** (10 connections) — `server/tests/unit/test_world_loader.py`
+- **generate_room_id()** (9 connections) — `server/world_loader.py`
+- **_get_alias_validator()** (8 connections) — `server/alias_storage.py`
+- **schema_validator.py** (8 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
+- **validator.py** (7 connections) — `schemas/validator.py`
+- **Any** (7 connections)
+- **TestGenerateRoomId** (7 connections) — `server/tests/unit/test_world_loader.py`
+- **.validate_data()** (6 connections) — `schemas/validator.py`
+- **.validate_room()** (6 connections) — `schemas/validator.py`
+- **EmoteDefinition** (5 connections) — `server/game/emote_service.py`
+- **.format_emote_messages()** (5 connections) — `server/game/emote_service.py`
+- **.__init__()** (4 connections) — `schemas/validator.py`
+- **.validate_room_file()** (4 connections) — `schemas/validator.py`
+- **.validate_room_database()** (4 connections) — `schemas/validator.py`
+- **.validate_alias_bundle()** (4 connections) — `schemas/validator.py`
+- *... and 86 more nodes in this community*
 
 ## Relationships
 
-- [AppState](AppState.md) (27 shared connections)
-- [CharacterSelectionScreen](CharacterSelectionScreen.md) (25 shared connections)
-- [SERVER UNAVAILABLE PATTERNS](SERVER_UNAVAILABLE_PATTERNS.md) (17 shared connections)
-- [LoginResponse](LoginResponse.md) (13 shared connections)
-- [AppCreationFlowViews](AppCreationFlowViews.md) (12 shared connections)
-- [applyAuthenticatedSession](applyAuthenticatedSession.md) (11 shared connections)
-- [.constructor()](constructor%28%29.md) (4 shared connections)
-- [CharacterNameScreen](CharacterNameScreen.md) (3 shared connections)
-- [SafeHtml](SafeHtml.md) (1 shared connections)
-- [fetchSpy](fetchSpy.md) (1 shared connections)
+- [.initialize()](initialize%28%29.md) (12 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (10 shared connections)
+- [real time](real_time.md) (10 shared connections)
+- [Any](Any.md) (9 shared connections)
+- [test magic commands](test_magic_commands.md) (5 shared connections)
+- [PlayerIdCarrier](PlayerIdCarrier.md) (5 shared connections)
+- [test alias storage](test_alias_storage.md) (5 shared connections)
+- [Convert legacy string format exits](Convert_legacy_string_format_exits.md) (4 shared connections)
+- [Spell Targeting](Spell_Targeting.md) (4 shared connections)
+- [DropResolved](DropResolved.md) (4 shared connections)
+- [test command factories inventory](test_command_factories_inventory.md) (3 shared connections)
+- [test resolve state no app()](test_resolve_state_no_app%28%29.md) (3 shared connections)
 
 ## Source Files
 
-- `client/src/components/CharacterNameScreen.tsx`
-- `client/src/components/StatsRollingScreen.tsx`
-- `client/src/hooks/useStatsRolling.ts`
-- `client/src/mythosApp/1774539086359-useMythosAppState.ts`
-- `client/src/mythosApp/characterSessionApi.ts`
-- `client/src/mythosApp/creationCompleteActions.ts`
-- `client/src/mythosApp/creationCompleteFlow.ts`
-- `client/src/mythosApp/creationTypes.ts`
-- `client/src/mythosApp/mapServerCharacters.ts`
-- `client/src/mythosApp/useAuthSessionRestore.ts`
-- `client/src/mythosApp/useMythosAppState.ts`
-- `client/src/types/auth.ts`
-- `client/src/utils/apiTypeGuards.ts`
+- `schemas/validator.py`
+- `server/alias_storage.py`
+- `server/commands/exploration_commands.py`
+- `server/game/emote_service.py`
+- `server/tests/unit/test_world_loader.py`
+- `server/world_loader.py`
+- `tools/room_toolkit/room_validator/core/schema_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 310 (97%)
-- INFERRED: 10 (3%)
+- EXTRACTED: 430 (95%)
+- INFERRED: 23 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

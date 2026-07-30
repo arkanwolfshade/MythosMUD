@@ -1,42 +1,53 @@
 # GameConfig
 
-> 19 nodes
+> 34 nodes
 
 ## Key Concepts
 
-- **GameConfig** (15 connections) — `server/config/models/game.py`
-- **.validate_max_connections()** (2 connections) — `server/config/models/game.py`
-- **.validate_aliases_dir()** (2 connections) — `server/config/models/game.py`
-- **.validate_combat_tick_interval()** (2 connections) — `server/config/models/game.py`
-- **.validate_combat_timeout()** (2 connections) — `server/config/models/game.py`
-- **.validate_combat_xp_multiplier()** (2 connections) — `server/config/models/game.py`
-- **.validate_combat_alert_threshold()** (2 connections) — `server/config/models/game.py`
-- **.validate_combat_performance_threshold()** (2 connections) — `server/config/models/game.py`
-- **.validate_combat_error_threshold()** (2 connections) — `server/config/models/game.py`
-- **BaseSettings** (1 connections)
-- **Game-specific configuration.** (1 connections) — `server/config/models/game.py`
-- **Validate max connections is reasonable.** (1 connections) — `server/config/models/game.py`
-- **Validate aliases directory path.** (1 connections) — `server/config/models/game.py`
-- **Validate combat tick interval.** (1 connections) — `server/config/models/game.py`
-- **Validate combat timeout.** (1 connections) — `server/config/models/game.py`
-- **Validate combat XP multiplier.** (1 connections) — `server/config/models/game.py`
-- **Validate combat alert threshold.** (1 connections) — `server/config/models/game.py`
-- **Validate combat performance threshold.** (1 connections) — `server/config/models/game.py`
-- **Validate combat error threshold.** (1 connections) — `server/config/models/game.py`
+- **HealthMonitor** (22 connections) — `server/realtime/monitoring/health_monitor.py`
+- **UUID** (9 connections)
+- **._process_single_connection()** (8 connections) — `server/realtime/monitoring/health_monitor.py`
+- **.check_all_connections_health()** (6 connections) — `server/realtime/monitoring/health_monitor.py`
+- **.periodic_health_check_task()** (5 connections) — `server/realtime/monitoring/health_monitor.py`
+- **.start_periodic_checks()** (5 connections) — `server/realtime/monitoring/health_monitor.py`
+- **.check_player_connection_health()** (4 connections) — `server/realtime/monitoring/health_monitor.py`
+- **._find_player_id_for_cleanup()** (4 connections) — `server/realtime/monitoring/health_monitor.py`
+- **._cleanup_stale_connections()** (4 connections) — `server/realtime/monitoring/health_monitor.py`
+- **._wait_for_task_cancellation()** (4 connections) — `server/realtime/monitoring/health_monitor.py`
+- **.__init__()** (3 connections) — `server/realtime/monitoring/health_monitor.py`
+- **._check_connection_stale()** (3 connections) — `server/realtime/monitoring/health_monitor.py`
+- **._check_websocket_open()** (3 connections) — `server/realtime/monitoring/health_monitor.py`
+- **._validate_and_update_token()** (3 connections) — `server/realtime/monitoring/health_monitor.py`
+- **.stop_periodic_checks()** (3 connections) — `server/realtime/monitoring/health_monitor.py`
+- **health_monitor()** (3 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **test_health_monitor_init_custom_intervals()** (3 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **Any** (2 connections)
+- **Monitors connection health and manages periodic health checks.      This class p** (1 connections) — `server/realtime/monitoring/health_monitor.py`
+- **Initialize the health monitor.          Args:             is_websocket_open_call** (1 connections) — `server/realtime/monitoring/health_monitor.py`
+- **Check the health of all connections for a player.          Args:             pla** (1 connections) — `server/realtime/monitoring/health_monitor.py`
+- **Find player_id for cleanup when metadata is missing.** (1 connections) — `server/realtime/monitoring/health_monitor.py`
+- **Check if connection is stale based on timeout.** (1 connections) — `server/realtime/monitoring/health_monitor.py`
+- **Check if WebSocket is actually open.** (1 connections) — `server/realtime/monitoring/health_monitor.py`
+- **Validate token and update last validation time if needed.** (1 connections) — `server/realtime/monitoring/health_monitor.py`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [main()](main%28%29.md) (3 shared connections)
-- [init](init.md) (2 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (3 shared connections)
+- [test health monitor](test_health_monitor.md) (3 shared connections)
+- [test statistics aggregator](test_statistics_aggregator.md) (2 shared connections)
+- [test connection cleaner](test_connection_cleaner.md) (1 shared connections)
+- [test command parser](test_command_parser.md) (1 shared connections)
 
 ## Source Files
 
-- `server/config/models/game.py`
+- `server/realtime/monitoring/health_monitor.py`
+- `server/tests/unit/realtime/monitoring/test_health_monitor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 40 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 109 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

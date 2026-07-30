@@ -1,59 +1,54 @@
 # UUID
 
-> 36 nodes
+> 42 nodes
 
 ## Key Concepts
 
-- **send_rescue_update_event()** (18 connections) — `server/services/lucidity_event_dispatcher.py`
-- **lucidity_trigger_handlers.py** (18 connections) — `server/services/lucidity_trigger_handlers.py`
-- **CatatoniaObserverProtocol** (17 connections) — `server/services/lucidity_helpers.py`
-- **handle_catatonia_transitions()** (10 connections) — `server/services/lucidity_trigger_handlers.py`
-- **handle_delirium_and_sanitarium_triggers()** (8 connections) — `server/services/lucidity_trigger_handlers.py`
-- **utc_now()** (7 connections) — `server/services/lucidity_helpers.py`
-- **handle_sanitarium_trigger()** (6 connections) — `server/services/lucidity_trigger_handlers.py`
+- **hallucinations.py** (12 connections) — `server/services/passive_lucidity_flux/hallucinations.py`
+- **PhantomHostileService** (12 connections) — `server/services/phantom_hostile_service.py`
+- **handle_hallucination_triggers()** (10 connections) — `server/services/passive_lucidity_flux/hallucinations.py`
+- **FakeHallucinationService** (8 connections) — `server/services/fake_hallucination_service.py`
+- **send_hallucination_event()** (7 connections) — `server/services/lucidity_event_dispatcher.py`
+- **handle_phantom_hostile_hallucination()** (6 connections) — `server/services/passive_lucidity_flux/hallucinations.py`
+- **handle_fake_hallucination()** (6 connections) — `server/services/passive_lucidity_flux/hallucinations.py`
+- **.create_phantom_hostile_data()** (5 connections) — `server/services/phantom_hostile_service.py`
 - **UUID** (5 connections)
-- **UUID** (5 connections)
-- **handle_delirium_trigger()** (5 connections) — `server/services/lucidity_trigger_handlers.py`
-- **datetime** (4 connections)
-- **.on_catatonia_entered()** (4 connections) — `server/services/lucidity_helpers.py`
-- **.on_catatonia_cleared()** (4 connections) — `server/services/lucidity_helpers.py`
-- **.on_sanitarium_failover()** (3 connections) — `server/services/lucidity_helpers.py`
-- **.should_trigger_sanitarium_failover()** (3 connections) — `server/services/lucidity_helpers.py`
-- **test_send_rescue_update_event_basic()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **test_send_rescue_update_event_with_all_fields()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **test_send_rescue_update_event_with_progress_only()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **test_send_rescue_update_event_dispatch_error()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **Send rescue progress/status updates to either participant.** (1 connections) — `server/services/lucidity_event_dispatcher.py`
-- **Protocol** (1 connections)
-- **Return naive UTC timestamp suitable for PostgreSQL TIMESTAMP WITHOUT TIME ZONE.** (1 connections) — `server/services/lucidity_helpers.py`
-- **Protocol for observers interested in catatonia state changes.** (1 connections) — `server/services/lucidity_helpers.py`
-- **Handle a player crossing into catatonia.** (1 connections) — `server/services/lucidity_helpers.py`
-- **Handle a player returning from catatonia.** (1 connections) — `server/services/lucidity_helpers.py`
-- *... and 11 more nodes in this community*
+- **.generate_fake_npc_tell()** (4 connections) — `server/services/fake_hallucination_service.py`
+- **.generate_room_text_overlay()** (4 connections) — `server/services/fake_hallucination_service.py`
+- **UUID** (4 connections)
+- **UUID** (3 connections)
+- **.generate_phantom_name()** (3 connections) — `server/services/phantom_hostile_service.py`
+- **.remove_phantom()** (3 connections) — `server/services/phantom_hostile_service.py`
+- **.get_active_phantoms()** (3 connections) — `server/services/phantom_hostile_service.py`
+- **.clear_all_phantoms()** (3 connections) — `server/services/phantom_hostile_service.py`
+- **.__init__()** (2 connections) — `server/services/fake_hallucination_service.py`
+- **Any** (2 connections)
+- **.select_hallucination_type()** (2 connections) — `server/services/fake_hallucination_service.py`
+- **.__init__()** (2 connections) — `server/services/phantom_hostile_service.py`
+- **.should_spawn_phantom_hostile()** (2 connections) — `server/services/phantom_hostile_service.py`
+- **Service for generating fake NPC tells and room text overlays.      These halluci** (1 connections) — `server/services/fake_hallucination_service.py`
+- **Initialize the fake hallucination service.** (1 connections) — `server/services/fake_hallucination_service.py`
+- **Generate a fake NPC tell hallucination.          Args:             player_id: Pl** (1 connections) — `server/services/fake_hallucination_service.py`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [LiabilityStackEntry](LiabilityStackEntry.md) (23 shared connections)
-- [rescue commands](rescue_commands.md) (4 shared connections)
-- [. init ()](_init_%28%29.md) (4 shared connections)
-- [main()](main%28%29.md) (3 shared connections)
-- [datetime](datetime.md) (2 shared connections)
-- [AsyncSessionFactory](AsyncSessionFactory.md) (1 shared connections)
-- [HallucinationFrequencyService](HallucinationFrequencyService.md) (1 shared connections)
-- [CatatoniaRegistry](CatatoniaRegistry.md) (1 shared connections)
-- [config](config.md) (1 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (6 shared connections)
+- [LiabilityStackEntry](LiabilityStackEntry.md) (3 shared connections)
+- [config](config.md) (3 shared connections)
+- [map helpers](map_helpers.md) (2 shared connections)
 
 ## Source Files
 
+- `server/services/fake_hallucination_service.py`
 - `server/services/lucidity_event_dispatcher.py`
-- `server/services/lucidity_helpers.py`
-- `server/services/lucidity_trigger_handlers.py`
-- `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- `server/services/passive_lucidity_flux/hallucinations.py`
+- `server/services/phantom_hostile_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 145 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 128 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

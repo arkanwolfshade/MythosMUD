@@ -1,78 +1,78 @@
 # HealthMeter
 
-> 150 nodes
+> 105 nodes
 
 ## Key Concepts
 
-- **types.ts** (76 connections) — `client/src/components/ui-v2/types.ts`
-- **GameClientV2.tsx** (52 connections) — `client/src/components/ui-v2/GameClientV2.tsx`
-- **types.ts** (40 connections) — `client/src/components/ui-v2/eventHandlers/types.ts`
-- **Room** (36 connections) — `client/src/components/ui-v2/types.ts`
-- **Player** (32 connections) — `client/src/components/ui-v2/types.ts`
+- **types.ts** (79 connections) — `client/src/components/ui-v2/types.ts`
 - **GameClientV2AuxiliaryPanels.tsx** (29 connections) — `client/src/components/ui-v2/GameClientV2AuxiliaryPanels.tsx`
-- **ChatMessage** (29 connections) — `client/src/components/ui-v2/types.ts`
-- **lucidity.ts** (29 connections) — `client/src/types/lucidity.ts`
-- **health.ts** (26 connections) — `client/src/types/health.ts`
-- **LucidityStatus** (26 connections) — `client/src/types/lucidity.ts`
-- **HealthStatus** (25 connections) — `client/src/types/health.ts`
-- **MythosTimeState** (23 connections) — `client/src/types/mythosTime.ts`
-- **playerHandlers.ts** (22 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
-- **index.ts** (17 connections) — `client/src/components/ui-v2/eventHandlers/index.ts`
-- **CharacterInfoPanel.tsx** (17 connections) — `client/src/components/ui-v2/panels/CharacterInfoPanel.tsx`
-- **GameInfoPanel.tsx** (17 connections) — `client/src/components/ui-v2/panels/GameInfoPanel.tsx`
-- **RescueState** (17 connections) — `client/src/types/lucidity.ts`
-- **messageHandlers.test-utils.ts** (15 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/messageHandlers.test-utils.ts`
-- **EventHandlerContext** (15 connections) — `client/src/components/ui-v2/eventHandlers/types.ts`
-- **playerHandlers.test.ts** (14 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/playerHandlers.test.ts`
-- **useEventProcessing.test.ts** (14 connections) — `client/src/components/ui-v2/hooks/__tests__/useEventProcessing.test.ts`
-- **useRefSynchronization.ts** (14 connections) — `client/src/components/ui-v2/hooks/useRefSynchronization.ts`
-- **characterInfoPanelOutline.ts** (13 connections) — `client/src/components/ui-v2/utils/characterInfoPanelOutline.ts`
-- **healthEventUtils.ts** (12 connections) — `client/src/utils/healthEventUtils.ts`
-- **GameClientV2RefsBundle** (11 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerRefsAndBootstrap.ts`
-- *... and 125 more nodes in this community*
+- **panelReducerHandlers.ts** (24 connections) — `client/src/components/ui-v2/PanelSystem/panelReducerHandlers.ts`
+- **PanelState** (24 connections) — `client/src/components/ui-v2/types.ts`
+- **panelManagerReducer.ts** (20 connections) — `client/src/components/ui-v2/PanelSystem/panelManagerReducer.ts`
+- **panelReducerHandlers.test.ts** (19 connections) — `client/src/components/ui-v2/PanelSystem/__tests__/panelReducerHandlers.test.ts`
+- **PanelContainer.tsx** (16 connections) — `client/src/components/ui-v2/PanelSystem/PanelContainer.tsx`
+- **GameClientV2Minimap.tsx** (15 connections) — `client/src/components/ui-v2/GameClientV2Minimap.tsx`
+- **savePanelLayout()** (13 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutValidation.ts`
+- **panelMinimizeDock.ts** (13 connections) — `client/src/components/ui-v2/PanelSystem/panelMinimizeDock.ts`
+- **usePanelManagerProviderState.ts** (13 connections) — `client/src/components/ui-v2/PanelSystem/usePanelManagerProviderState.ts`
+- **PanelManagerContext.tsx** (12 connections) — `client/src/components/ui-v2/PanelSystem/PanelManagerContext.tsx`
+- **panelLayoutBootstrap.ts** (12 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutBootstrap.ts`
+- **panelLayoutValidationTypeCheck.ts** (12 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutValidationTypeCheck.ts`
+- **PanelManager.test.tsx** (11 connections) — `client/src/components/ui-v2/PanelSystem/__tests__/PanelManager.test.tsx`
+- **panelLayoutValidation.ts** (11 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutValidation.ts`
+- **PanelManager.tsx** (10 connections) — `client/src/components/ui-v2/PanelSystem/PanelManager.tsx`
+- **PanelManagerContextValue** (10 connections) — `client/src/components/ui-v2/PanelSystem/PanelManagerContext.tsx`
+- **panelLayoutClamp.ts** (10 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutClamp.ts`
+- **PanelPosition** (10 connections) — `client/src/components/ui-v2/types.ts`
+- **PanelSize** (10 connections) — `client/src/components/ui-v2/types.ts`
+- **panelMinimizeDock.test.ts** (9 connections) — `client/src/components/ui-v2/PanelSystem/__tests__/panelMinimizeDock.test.ts`
+- **resolveInitialPanelLayout()** (9 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutBootstrap.ts`
+- **relayoutMinimizedDock()** (8 connections) — `client/src/components/ui-v2/PanelSystem/panelMinimizeDock.ts`
+- **handleToggleMinimize()** (8 connections) — `client/src/components/ui-v2/PanelSystem/panelReducerHandlers.ts`
+- *... and 80 more nodes in this community*
 
 ## Relationships
 
-- [.append()](append%28%29.md) (77 shared connections)
-- [PanelManager](PanelManager.md) (41 shared connections)
-- [MythosTimeHud](MythosTimeHud.md) (38 shared connections)
-- [Room](Room.md) (23 shared connections)
-- [ChatPanelTest](ChatPanelTest.md) (15 shared connections)
-- [projectorHandlersMessages](projectorHandlersMessages.md) (12 shared connections)
-- [messageHandlers](messageHandlers.md) (10 shared connections)
-- [roomHandlers](roomHandlers.md) (10 shared connections)
-- [useConnectionStateMachine.test](useConnectionStateMachine.test.md) (7 shared connections)
-- [chatPanelChannelFilter](chatPanelChannelFilter.md) (6 shared connections)
-- [DeathInterstitial](DeathInterstitial.md) (2 shared connections)
-- [GameClientV2Dock.test](GameClientV2Dock.test.md) (2 shared connections)
+- [GameClientV2Dock.test](GameClientV2Dock.test.md) (24 shared connections)
+- [monitoring models](monitoring_models.md) (24 shared connections)
+- [ChatPanelTest](ChatPanelTest.md) (10 shared connections)
+- [look item](look_item.md) (8 shared connections)
+- [Instance](Instance.md) (5 shared connections)
+- [player respawn](player_respawn.md) (4 shared connections)
+- [Cancel lifecycle/critical tasks first (Phase](Cancel_lifecycle-critical_tasks_first_%28Phase.md) (4 shared connections)
+- [maps](maps.md) (3 shared connections)
+- [ConnectionCleaner](ConnectionCleaner.md) (3 shared connections)
+- [MythosTimeHud](MythosTimeHud.md) (3 shared connections)
+- [domPurifyTestWindow](domPurifyTestWindow.md) (2 shared connections)
+- [roomHandlers](roomHandlers.md) (2 shared connections)
 
 ## Source Files
 
-- `client/src/components/GameTerminal.tsx`
-- `client/src/components/health/HealthMeter.tsx`
-- `client/src/components/health/__tests__/HealthMeter.test.tsx`
-- `client/src/components/lucidity/LucidityMeter.tsx`
-- `client/src/components/lucidity/__tests__/LucidityMeter.test.tsx`
-- `client/src/components/magic/MagicPointsMeter.tsx`
-- `client/src/components/magic/__tests__/MagicPointsMeter.test.tsx`
-- `client/src/components/ui-v2/GameClientV2.tsx`
+- `client/src/components/PanelManager.tsx`
+- `client/src/components/__tests__/PanelManager.test.tsx`
+- `client/src/components/map/AsciiMinimap.tsx`
 - `client/src/components/ui-v2/GameClientV2AuxiliaryPanels.tsx`
-- `client/src/components/ui-v2/TentacleBackdrop.tsx`
-- `client/src/components/ui-v2/__tests__/GameClientV2.test.tsx`
-- `client/src/components/ui-v2/__tests__/TentacleBackdrop.test.tsx`
-- `client/src/components/ui-v2/eventHandlers/__tests__/index.test.ts`
-- `client/src/components/ui-v2/eventHandlers/__tests__/messageHandlers.test-utils.ts`
-- `client/src/components/ui-v2/eventHandlers/__tests__/playerHandlers.test.ts`
-- `client/src/components/ui-v2/eventHandlers/index.ts`
-- `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
-- `client/src/components/ui-v2/eventHandlers/types.ts`
-- `client/src/components/ui-v2/eventLog/__tests__/messageMapper.test.ts`
-- `client/src/components/ui-v2/eventLog/messageMapper.ts`
+- `client/src/components/ui-v2/GameClientV2Minimap.tsx`
+- `client/src/components/ui-v2/PanelSystem/PanelContainer.tsx`
+- `client/src/components/ui-v2/PanelSystem/PanelManager.tsx`
+- `client/src/components/ui-v2/PanelSystem/PanelManagerContext.tsx`
+- `client/src/components/ui-v2/PanelSystem/__tests__/PanelContainer.test.tsx`
+- `client/src/components/ui-v2/PanelSystem/__tests__/PanelManager.test.tsx`
+- `client/src/components/ui-v2/PanelSystem/__tests__/panelLayoutBootstrap.test.ts`
+- `client/src/components/ui-v2/PanelSystem/__tests__/panelLayoutClamp.test.ts`
+- `client/src/components/ui-v2/PanelSystem/__tests__/panelMinimizeDock.test.ts`
+- `client/src/components/ui-v2/PanelSystem/__tests__/panelReducerHandlers.test.ts`
+- `client/src/components/ui-v2/PanelSystem/__tests__/usePanelManager.test.ts`
+- `client/src/components/ui-v2/PanelSystem/__tests__/usePanelManagerProviderState.test.ts`
+- `client/src/components/ui-v2/PanelSystem/panelLayoutBootstrap.ts`
+- `client/src/components/ui-v2/PanelSystem/panelLayoutClamp.ts`
+- `client/src/components/ui-v2/PanelSystem/panelLayoutValidation.ts`
+- `client/src/components/ui-v2/PanelSystem/panelLayoutValidationTypeCheck.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 1071 (100%)
-- INFERRED: 3 (0%)
+- EXTRACTED: 661 (99%)
+- INFERRED: 5 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **duration_hours** (4 connections) — `schemas/calendar/holiday.schema.json`
+- **day** (4 connections) — `schemas/calendar/holiday.schema.json`
 - **type** (1 connections) — `schemas/calendar/holiday.schema.json`
 - **minimum** (1 connections) — `schemas/calendar/holiday.schema.json`
 - **maximum** (1 connections) — `schemas/calendar/holiday.schema.json`

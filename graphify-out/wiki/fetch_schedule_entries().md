@@ -1,53 +1,63 @@
 # fetch schedule entries()
 
-> 41 nodes
+> 138 nodes
 
 ## Key Concepts
 
-- **TestScheduleService** (14 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **_schedule_entry_from_row()** (8 connections) — `server/services/schedule_service.py`
-- **._async_load_from_database()** (7 connections) — `server/services/schedule_service.py`
-- **_fetch_schedule_entries()** (6 connections) — `server/services/schedule_service.py`
-- **normalize_weekday_names()** (5 connections) — `server/services/schedule_service.py`
-- **.test_async_load_from_database_passes_search_path_for_mythos_e2e()** (5 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **_string_list_from_row()** (4 connections) — `server/services/schedule_service.py`
-- **_lower_string_list_from_row()** (4 connections) — `server/services/schedule_service.py`
-- **.test_init_loads_from_database()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_get_active_entries_with_matches()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_get_active_entries_boundary_conditions()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_get_active_entries_wrong_day()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_entries_property()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_normalize_weekday_names_latin_to_standard()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_entry_count_property()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **_resolve_asyncpg_database_url()** (3 connections) — `server/services/schedule_service.py`
-- **.test_init_with_collections()** (3 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_init_without_persistence_raises()** (3 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_get_active_entries_no_matches()** (3 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **Record** (2 connections)
-- **Connection** (2 connections)
-- **Map Latin weekday names to standard English (Sunday, Monday, ...); pass-through** (1 connections) — `server/services/schedule_service.py`
-- **Normalize nullable PostgreSQL array columns to string values.** (1 connections) — `server/services/schedule_service.py`
-- **Normalize nullable PostgreSQL array columns to lowercase slug strings.** (1 connections) — `server/services/schedule_service.py`
-- **Return asyncpg-compatible DATABASE_URL from the environment.** (1 connections) — `server/services/schedule_service.py`
-- *... and 16 more nodes in this community*
+- **ErrorContext** (54 connections) — `server/exceptions.py`
+- **test_exceptions.py** (43 connections) — `server/tests/unit/test_exceptions.py`
+- **test_exceptions_comprehensive.py** (35 connections) — `server/tests/unit/test_exceptions_comprehensive.py`
+- **create_error_context()** (33 connections) — `server/exceptions.py`
+- **LoggedException** (23 connections) — `server/exceptions.py`
+- **.__init__()** (16 connections) — `server/exceptions.py`
+- **Any** (14 connections)
+- **handle_exception()** (13 connections) — `server/exceptions.py`
+- **.__init__()** (8 connections) — `server/exceptions.py`
+- **.mark_logged()** (5 connections) — `server/exceptions.py`
+- **test_logged_http_exception_initialization()** (5 connections) — `server/tests/unit/test_exceptions.py`
+- **test_handle_exception_standard_exception()** (5 connections) — `server/tests/unit/test_exceptions_comprehensive.py`
+- **require_admin_user()** (4 connections) — `server/api/admin/subject_controller.py`
+- **.__init__()** (4 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **.to_dict()** (4 connections) — `server/exceptions.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **test_mythos_mud_error_initialization()** (4 connections) — `server/tests/unit/test_exceptions.py`
+- *... and 113 more nodes in this community*
 
 ## Relationships
 
-- [Any](Any.md) (12 shared connections)
-- [Path](Path.md) (11 shared connections)
-- [main()](main%28%29.md) (6 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (3 shared connections)
-- [get asyncpg server settings for](get_asyncpg_server_settings_for.md) (1 shared connections)
+- [. init ()](_init_%28%29.md) (63 shared connections)
+- [real time](real_time.md) (14 shared connections)
+- [convert pydantic error()](convert_pydantic_error%28%29.md) (10 shared connections)
+- [AbstractContextManager](AbstractContextManager.md) (9 shared connections)
+- [.initialize()](initialize%28%29.md) (9 shared connections)
+- [Any](Any.md) (5 shared connections)
+- [create access token()](create_access_token%28%29.md) (5 shared connections)
+- [cfg bool()](cfg_bool%28%29.md) (4 shared connections)
+- [metrics](metrics.md) (3 shared connections)
+- [nats retry handler](nats_retry_handler.md) (3 shared connections)
+- [test clear corrupted cache entry](test_clear_corrupted_cache_entry.md) (3 shared connections)
+- [Request](Request.md) (2 shared connections)
 
 ## Source Files
 
-- `server/services/schedule_service.py`
-- `server/tests/unit/services/test_schedule_service.py`
+- `server/api/admin/subject_controller.py`
+- `server/error_handlers/pydantic_error_handler.py`
+- `server/exceptions.py`
+- `server/tests/unit/test_exceptions.py`
+- `server/tests/unit/test_exceptions_comprehensive.py`
 
 ## Audit Trail
 
-- EXTRACTED: 112 (96%)
-- INFERRED: 5 (4%)
+- EXTRACTED: 500 (96%)
+- INFERRED: 22 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

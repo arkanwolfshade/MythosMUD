@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_evaluate_boolean_condition_variable_false()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test _evaluate_boolean_condition() returns False for missing variable.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_get_adjacent_rooms_target_not_found()** (2 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test get_adjacent_rooms() handles target room not found.** (1 connections) — `server/tests/unit/game/test_room_service.py`
 
 ## Relationships
 
-- [BehaviorEngine](BehaviorEngine.md) (1 shared connections)
-- [test behavior engine](test_behavior_engine.md) (1 shared connections)
+- [test room service](test_room_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_behavior_engine.py`
+- `server/tests/unit/game/test_room_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

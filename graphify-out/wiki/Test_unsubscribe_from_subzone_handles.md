@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_unsubscribe_from_subzone_not_subscribed()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test unsubscribe_from_subzone handles not subscribed case.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_ensure_room_cache_loaded_os_error()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _ensure_room_cache_loaded handles OSError gracefully.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Relationships
 
-- [test nats message handler subzone](test_nats_message_handler_subzone.md) (1 shared connections)
+- [test async persistence room loading](test_async_persistence_room_loading.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Audit Trail
 

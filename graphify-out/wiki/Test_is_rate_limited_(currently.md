@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_is_rate_limited()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test _is_rate_limited (currently always returns False).** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_extract_occupant_names_invalid_names()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test extract_occupant_names() filters invalid names.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [test combat validator](test_combat_validator.md) (1 shared connections)
+- [test player event handlers utils](test_player_event_handlers_utils.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 

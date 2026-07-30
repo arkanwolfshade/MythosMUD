@@ -33,11 +33,10 @@
 
 ## Relationships
 
-- [Any](Any.md) (3 shared connections)
-- [.initialize()](initialize%28%29.md) (3 shared connections)
-- [Player Position Service](Player_Position_Service.md) (3 shared connections)
-- [initialize nats and combat services()](initialize_nats_and_combat_services%28%29.md) (2 shared connections)
-- [main()](main%28%29.md) (2 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (5 shared connections)
+- [emit close container event()](emit_close_container_event%28%29.md) (3 shared connections)
+- [CombatService](CombatService.md) (3 shared connections)
+- [process dead players()](process_dead_players%28%29.md) (2 shared connections)
 
 ## Source Files
 

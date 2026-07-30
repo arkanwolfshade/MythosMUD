@@ -1,51 +1,69 @@
 # test find item in equipped
 
-> 37 nodes
+> 34 nodes
 
 ## Key Concepts
 
-- **test_look_item_helpers.py** (28 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **_find_item_in_equipped()** (17 connections) — `server/commands/look_item.py`
-- **test_find_item_in_equipped_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_equipped_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_equipped_by_prototype_id()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_inventory_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_inventory_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_equipped_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_equipped_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_inventory_empty()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_inventory_no_match()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_inventory_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_inventory_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_inventory_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_equipped_empty()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_equipped_no_match()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_equipped_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_equipped_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_equipped_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_equipped() with no matching items.** (2 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Find an item in equipped items by name or prototype_id.      Args:         equip** (1 connections) — `server/commands/look_item.py`
-- **Test finding item in equipped items by name.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test finding item in equipped items when not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test finding item in equipped by prototype_id.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Unit tests for look item helper functions.  Tests the helper functions in look_i** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- *... and 12 more nodes in this community*
+- **GameClientV2ContainerView.tsx** (22 connections) — `client/src/components/ui-v2/GameClientV2ContainerView.tsx`
+- **MapView.tsx** (10 connections) — `client/src/components/MapView.tsx`
+- **TabbedInterface.tsx** (8 connections) — `client/src/components/ui-v2/TabbedInterface.tsx`
+- **TabbedInterfaceOverlay.tsx** (7 connections) — `client/src/components/ui-v2/components/TabbedInterfaceOverlay.tsx`
+- **Tab** (6 connections) — `client/src/components/ui-v2/TabbedInterface.tsx`
+- **useTabbedInterface.ts** (5 connections) — `client/src/components/ui-v2/useTabbedInterface.ts`
+- **DeathInterstitial.tsx** (4 connections) — `client/src/components/DeathInterstitial.tsx`
+- **MainMenuModal.tsx** (4 connections) — `client/src/components/MainMenuModal.tsx`
+- **MapView()** (4 connections) — `client/src/components/MapView.tsx`
+- **GameClientV2ContainerView.test.tsx** (4 connections) — `client/src/components/ui-v2/__tests__/GameClientV2ContainerView.test.tsx`
+- **useTabbedInterface.test.ts** (4 connections) — `client/src/components/ui-v2/__tests__/useTabbedInterface.test.ts`
+- **TabbedInterfaceOverlay.test.tsx** (4 connections) — `client/src/components/ui-v2/components/__tests__/TabbedInterfaceOverlay.test.tsx`
+- **useTabbedInterface()** (4 connections) — `client/src/components/ui-v2/useTabbedInterface.ts`
+- **DeathInterstitial()** (3 connections) — `client/src/components/DeathInterstitial.tsx`
+- **DeliriumInterstitial.tsx** (3 connections) — `client/src/components/DeliriumInterstitial.tsx`
+- **MainMenuModal()** (3 connections) — `client/src/components/MainMenuModal.tsx`
+- **GameClientV2ContainerView()** (3 connections) — `client/src/components/ui-v2/GameClientV2ContainerView.tsx`
+- **TabbedInterfaceOverlay()** (3 connections) — `client/src/components/ui-v2/components/TabbedInterfaceOverlay.tsx`
+- **layout.ts** (3 connections) — `client/src/constants/layout.ts`
+- **DeliriumInterstitial()** (2 connections) — `client/src/components/DeliriumInterstitial.tsx`
+- **DeathInterstitial.test.tsx** (2 connections) — `client/src/components/__tests__/DeathInterstitial.test.tsx`
+- **MainMenuModal.test.tsx** (2 connections) — `client/src/components/__tests__/MainMenuModal.test.tsx`
+- **MapView.test.tsx** (2 connections) — `client/src/components/map/__tests__/MapView.test.tsx`
+- **GameClientV2ContainerViewProps** (2 connections) — `client/src/components/ui-v2/GameClientV2ContainerView.tsx`
+- **TabbedInterface()** (2 connections) — `client/src/components/ui-v2/TabbedInterface.tsx`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [look item](look_item.md) (13 shared connections)
-- [test find item in room](test_find_item_in_room.md) (10 shared connections)
-- [test look item](test_look_item.md) (4 shared connections)
+- [.append()](append%28%29.md) (7 shared connections)
+- [maps](maps.md) (2 shared connections)
+- [EdgeCreationModal](EdgeCreationModal.md) (2 shared connections)
+- [GameClientV2Dock.test](GameClientV2Dock.test.md) (2 shared connections)
+- [ChatPanelTest](ChatPanelTest.md) (2 shared connections)
+- [useConnectionStateMachine.test](useConnectionStateMachine.test.md) (2 shared connections)
+- [AppCreationFlowViews](AppCreationFlowViews.md) (1 shared connections)
+- [HealthMeter](HealthMeter.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/look_item.py`
-- `server/tests/unit/commands/test_look_item.py`
-- `server/tests/unit/commands/test_look_item_helpers.py`
+- `client/src/components/DeathInterstitial.tsx`
+- `client/src/components/DeliriumInterstitial.tsx`
+- `client/src/components/MainMenuModal.tsx`
+- `client/src/components/MapView.tsx`
+- `client/src/components/__tests__/DeathInterstitial.test.tsx`
+- `client/src/components/__tests__/MainMenuModal.test.tsx`
+- `client/src/components/map/__tests__/MapView.test.tsx`
+- `client/src/components/ui-v2/GameClientV2ContainerView.tsx`
+- `client/src/components/ui-v2/TabbedInterface.tsx`
+- `client/src/components/ui-v2/__tests__/GameClientV2ContainerView.test.tsx`
+- `client/src/components/ui-v2/__tests__/TabbedInterface.test.tsx`
+- `client/src/components/ui-v2/__tests__/useTabbedInterface.test.ts`
+- `client/src/components/ui-v2/components/TabbedInterfaceOverlay.tsx`
+- `client/src/components/ui-v2/components/__tests__/TabbedInterfaceOverlay.test.tsx`
+- `client/src/components/ui-v2/useTabbedInterface.ts`
+- `client/src/constants/layout.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 115 (100%)
+- EXTRACTED: 127 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

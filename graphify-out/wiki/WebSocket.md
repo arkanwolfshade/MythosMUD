@@ -1,30 +1,27 @@
 # WebSocket
 
-> 7 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **_register_new_connection()** (9 connections) — `server/realtime/connection_establishment.py`
-- **test_register_new_connection()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_register_new_connection_existing_player()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **WebSocket** (2 connections)
-- **Register a new WebSocket connection.      Args:         websocket: The WebSocket** (1 connections) — `server/realtime/connection_establishment.py`
-- **Test _register_new_connection() registers new connection.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _register_new_connection() adds to existing player connections.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_inventory_service_helpers.py** (6 connections) — `server/tests/unit/commands/test_inventory_service_helpers.py`
+- **_request_with_persistence()** (3 connections) — `server/tests/unit/commands/test_inventory_service_helpers.py`
+- **test_get_shared_services_raises_without_async_persistence()** (2 connections) — `server/tests/unit/commands/test_inventory_service_helpers.py`
+- **test_get_shared_services_initializes_and_reuses_singletons()** (2 connections) — `server/tests/unit/commands/test_inventory_service_helpers.py`
+- **reset_shared_inventory_services_autouse()** (1 connections) — `server/tests/unit/commands/test_inventory_service_helpers.py`
+- **Unit tests for inventory_service_helpers.get_shared_services.** (1 connections) — `server/tests/unit/commands/test_inventory_service_helpers.py`
 
 ## Relationships
 
-- [connection establishment](connection_establishment.md) (5 shared connections)
-- [test connection establishment](test_connection_establishment.md) (3 shared connections)
+- [test resolve state no app()](test_resolve_state_no_app%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_establishment.py`
-- `server/tests/unit/realtime/test_connection_establishment.py`
+- `server/tests/unit/commands/test_inventory_service_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

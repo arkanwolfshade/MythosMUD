@@ -1,6 +1,6 @@
 # Test validating empty action.
 
-> 9 nodes
+> 10 nodes
 
 ## Key Concepts
 
@@ -13,13 +13,13 @@
 - **Test validating valid action.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
 - **Test validating action with dangerous characters.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
 - **Test validating action with injection pattern.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Optimized validation for action content fields.      Args:         value: The ac** (1 connections) — `server/validators/optimized_security_validator.py`
 
 ## Relationships
 
 - [test optimized security validator](test_optimized_security_validator.md) (5 shared connections)
-- [Test sanitizing empty string.](Test_sanitizing_empty_string.md) (1 shared connections)
-- [Test comprehensive security validation of](Test_comprehensive_security_validation_of.md) (1 shared connections)
-- [Test validating empty command content.](Test_validating_empty_command_content.md) (1 shared connections)
+- [Test stripping ANSI codes from](Test_stripping_ANSI_codes_from.md) (1 shared connections)
+- [as bound logger()](as_bound_logger%28%29.md) (1 shared connections)
 
 ## Source Files
 
@@ -28,7 +28,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 24 (100%)
+- EXTRACTED: 25 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

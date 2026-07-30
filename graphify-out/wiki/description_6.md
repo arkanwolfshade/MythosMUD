@@ -1,21 +1,29 @@
 # description
 
-> 8 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **required** (8 connections) — `schemas/intersection_schema.json`
-- **id** (1 connections) — `schemas/intersection_schema.json`
-- **name** (1 connections) — `schemas/intersection_schema.json`
+- **properties** (12 connections) — `schemas/intersection_schema.json`
+- **id** (4 connections) — `schemas/intersection_schema.json`
+- **field1** (2 connections) — `schemas/intersection_schema.json`
+- **field2** (2 connections) — `schemas/intersection_schema.json`
+- **field3** (2 connections) — `schemas/intersection_schema.json`
+- **type** (1 connections) — `schemas/intersection_schema.json`
+- **pattern** (1 connections) — `schemas/intersection_schema.json`
 - **description** (1 connections) — `schemas/intersection_schema.json`
-- **plane** (1 connections) — `schemas/intersection_schema.json`
-- **zone** (1 connections) — `schemas/intersection_schema.json`
-- **sub_zone** (1 connections) — `schemas/intersection_schema.json`
-- **exits** (1 connections) — `schemas/intersection_schema.json`
+- **description** (1 connections) — `schemas/intersection_schema.json`
+- **description** (1 connections) — `schemas/intersection_schema.json`
+- **description** (1 connections) — `schemas/intersection_schema.json`
 
 ## Relationships
 
+- [description](description.md) (3 shared connections)
 - [intersection schema](intersection_schema.md) (1 shared connections)
+- [default](default.md) (1 shared connections)
+- [oneOf](oneOf.md) (1 shared connections)
+- [Test execute action() handles exceptions.](Test_execute_action%28%29_handles_exceptions.md) (1 shared connections)
+- [get nats message handler()](get_nats_message_handler%28%29.md) (1 shared connections)
 
 ## Source Files
 
@@ -23,7 +31,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
+- EXTRACTED: 28 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

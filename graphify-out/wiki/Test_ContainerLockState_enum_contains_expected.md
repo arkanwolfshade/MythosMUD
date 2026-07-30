@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_container_lock_state_enum_values()** (2 connections) — `server/tests/unit/models/test_container.py`
-- **Test ContainerLockState enum contains expected values.** (1 connections) — `server/tests/unit/models/test_container.py`
+- **test_prepare_room_data_without_to_dict()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **Test _prepare_room_data() handles room without to_dict method.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Relationships
 
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [. call ()](_call_%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/models/test_container.py`
+- `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Audit Trail
 

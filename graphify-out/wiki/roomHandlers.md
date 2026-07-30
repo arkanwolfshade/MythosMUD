@@ -26,8 +26,9 @@
 
 ## Relationships
 
-- [HealthMeter](HealthMeter.md) (10 shared connections)
+- [monitoring models](monitoring_models.md) (8 shared connections)
 - [useConnectionStateMachine.test](useConnectionStateMachine.test.md) (4 shared connections)
+- [HealthMeter](HealthMeter.md) (2 shared connections)
 
 ## Source Files
 

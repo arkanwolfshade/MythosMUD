@@ -1,53 +1,44 @@
 # test clear corrupted cache entry
 
-> 46 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **logout_commands.py** (20 connections) — `server/commands/logout_commands.py`
-- **test_logout_commands_helpers.py** (15 connections) — `server/tests/unit/commands/test_logout_commands_helpers.py`
-- **_get_player_position_from_connection_manager()** (14 connections) — `server/commands/logout_commands.py`
-- **_clear_corrupted_cache_entry()** (12 connections) — `server/commands/logout_commands.py`
-- **_sync_player_position()** (12 connections) — `server/commands/logout_commands.py`
-- **test_clear_corrupted_cache_entry_with_cache()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **test_clear_corrupted_cache_entry_no_cache()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **test_clear_corrupted_cache_entry_no_request()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **test_get_player_position_from_connection_manager_by_id()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **test_get_player_position_from_connection_manager_by_name()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **test_get_player_position_from_connection_manager_not_found()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **test_get_player_position_from_connection_manager_no_manager()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **test_sync_player_position_updates_stats()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **test_sync_player_position_no_change()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **test_sync_player_position_none_value()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **test_clear_corrupted_cache_entry()** (3 connections) — `server/tests/unit/commands/test_logout_commands_helpers.py`
-- **test_clear_corrupted_cache_entry_no_request()** (3 connections) — `server/tests/unit/commands/test_logout_commands_helpers.py`
-- **test_clear_corrupted_cache_entry_no_state()** (3 connections) — `server/tests/unit/commands/test_logout_commands_helpers.py`
-- **test_get_player_position_from_connection_manager()** (3 connections) — `server/tests/unit/commands/test_logout_commands_helpers.py`
-- **test_get_player_position_from_connection_manager_by_name()** (3 connections) — `server/tests/unit/commands/test_logout_commands_helpers.py`
-- **test_get_player_position_from_connection_manager_no_manager()** (3 connections) — `server/tests/unit/commands/test_logout_commands_helpers.py`
-- **test_get_player_position_from_connection_manager_not_found()** (3 connections) — `server/tests/unit/commands/test_logout_commands_helpers.py`
-- **test_sync_player_position()** (3 connections) — `server/tests/unit/commands/test_logout_commands_helpers.py`
-- **test_sync_player_position_none()** (3 connections) — `server/tests/unit/commands/test_logout_commands_helpers.py`
-- **test_sync_player_position_no_change()** (3 connections) — `server/tests/unit/commands/test_logout_commands_helpers.py`
-- *... and 21 more nodes in this community*
+- **validate_subject()** (7 connections) — `server/api/admin/subject_controller.py`
+- **BaseModel** (6 connections)
+- **get_subject_statistics()** (6 connections) — `server/api/admin/subject_controller.py`
+- **get_patterns()** (6 connections) — `server/api/admin/subject_controller.py`
+- **ValidateSubjectRequest** (4 connections) — `server/api/admin/subject_controller.py`
+- **ValidateSubjectResponse** (4 connections) — `server/api/admin/subject_controller.py`
+- **RegisterPatternRequest** (4 connections) — `server/api/admin/subject_controller.py`
+- **RegisterPatternResponse** (4 connections) — `server/api/admin/subject_controller.py`
+- **SubjectStatisticsResponse** (4 connections) — `server/api/admin/subject_controller.py`
+- **PatternsResponse** (4 connections) — `server/api/admin/subject_controller.py`
+- **Request model for subject validation.** (1 connections) — `server/api/admin/subject_controller.py`
+- **Response model for subject validation.** (1 connections) — `server/api/admin/subject_controller.py`
+- **Request model for pattern registration.** (1 connections) — `server/api/admin/subject_controller.py`
+- **Response model for pattern registration.** (1 connections) — `server/api/admin/subject_controller.py`
+- **Response model for subject management statistics.** (1 connections) — `server/api/admin/subject_controller.py`
+- **Response model for pattern listing.** (1 connections) — `server/api/admin/subject_controller.py`
+- **Get NATS subject management statistics and health status.      This endpoint pro** (1 connections) — `server/api/admin/subject_controller.py`
+- **Validate a NATS subject against registered patterns.      This endpoint allows a** (1 connections) — `server/api/admin/subject_controller.py`
+- **Get all registered subject patterns.      This endpoint allows administrators to** (1 connections) — `server/api/admin/subject_controller.py`
 
 ## Relationships
 
-- [disconnect player connections()](disconnect_player_connections%28%29.md) (25 shared connections)
-- [Any](Any.md) (3 shared connections)
-- [test player cache](test_player_cache.md) (3 shared connections)
-- [main()](main%28%29.md) (2 shared connections)
-- [utility commands](utility_commands.md) (1 shared connections)
+- [metrics](metrics.md) (9 shared connections)
+- [fetch schedule entries()](fetch_schedule_entries%28%29.md) (3 shared connections)
+- [AbstractContextManager](AbstractContextManager.md) (3 shared connections)
+- [get subject manager dependency()](get_subject_manager_dependency%28%29.md) (3 shared connections)
+- [test nats message handler](test_nats_message_handler.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/logout_commands.py`
-- `server/tests/unit/commands/test_logout_commands.py`
-- `server/tests/unit/commands/test_logout_commands_helpers.py`
+- `server/api/admin/subject_controller.py`
 
 ## Audit Trail
 
-- EXTRACTED: 158 (100%)
+- EXTRACTED: 58 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

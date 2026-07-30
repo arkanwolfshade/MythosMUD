@@ -1,51 +1,38 @@
 # connection manager api
 
-> 23 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **connection_manager_api.py** (15 connections) — `server/realtime/connection_manager_api.py`
-- **broadcast_game_event()** (11 connections) — `server/realtime/connection_manager_api.py`
-- **resolve_connection_manager()** (8 connections) — `server/realtime/connection_manager_utils.py`
-- **_ConnectionManagerAPI** (7 connections) — `server/realtime/connection_manager_api.py`
-- **_require_manager()** (7 connections) — `server/realtime/connection_manager_api.py`
-- **send_room_event()** (7 connections) — `server/realtime/connection_manager_api.py`
-- **connection_manager_utils.py** (7 connections) — `server/realtime/connection_manager_utils.py`
-- **_ensure_async_compat()** (4 connections) — `server/realtime/connection_manager_utils.py`
-- **_coerce_connection_manager()** (3 connections) — `server/realtime/connection_manager_utils.py`
-- **_make_async_compat_wrapper()** (3 connections) — `server/realtime/connection_manager_utils.py`
-- **.broadcast_global()** (2 connections) — `server/realtime/connection_manager_api.py`
-- **.broadcast_to_room()** (2 connections) — `server/realtime/connection_manager_api.py`
-- **Protocol** (1 connections)
-- **Public API utility functions for connection manager.  This module provides conve** (1 connections) — `server/realtime/connection_manager_api.py`
-- **Structural type for API helpers; avoids importing ConnectionManager.** (1 connections) — `server/realtime/connection_manager_api.py`
-- **Resolve manager without importing ConnectionManager (import cycle).** (1 connections) — `server/realtime/connection_manager_api.py`
-- **Broadcast a game event to all connected players.      Args:         event_type:** (1 connections) — `server/realtime/connection_manager_api.py`
-- **Send a room event to all players in a specific room.      Args:         room_id:** (1 connections) — `server/realtime/connection_manager_api.py`
-- **Utility functions and module-level code for ConnectionManager.  This module cont** (1 connections) — `server/realtime/connection_manager_utils.py`
-- **Pass-through for container values; typing lives at call sites.** (1 connections) — `server/realtime/connection_manager_utils.py`
-- **Wrap a sync or async callable so callers can always await it.** (1 connections) — `server/realtime/connection_manager_utils.py`
-- **Ensure connection manager methods are awaitable.      Wraps synchronous callable** (1 connections) — `server/realtime/connection_manager_utils.py`
-- **Resolve a connection manager instance.      Prefers explicitly supplied candidat** (1 connections) — `server/realtime/connection_manager_utils.py`
+- **Any** (7 connections)
+- **.process_dict_occupant()** (5 connections) — `server/realtime/player_event_handlers_utils.py`
+- **.__init__()** (4 connections) — `server/realtime/player_event_handlers_utils.py`
+- **._extract_name_from_occupant()** (4 connections) — `server/realtime/player_event_handlers_utils.py`
+- **.extract_occupant_names()** (4 connections) — `server/realtime/player_event_handlers_utils.py`
+- **.build_occupants_snapshot_data()** (4 connections) — `server/realtime/player_event_handlers_utils.py`
+- **.add_valid_name_to_lists()** (3 connections) — `server/realtime/player_event_handlers_utils.py`
+- **.count_occupants_by_type()** (3 connections) — `server/realtime/player_event_handlers_utils.py`
+- **Initialize utility functions.          Args:             connection_manager: Con** (1 connections) — `server/realtime/player_event_handlers_utils.py`
+- **Extract name from a single occupant entry.          Args:             occ: Occup** (1 connections) — `server/realtime/player_event_handlers_utils.py`
+- **Extract occupant names from occupant information.          Args:             occ** (1 connections) — `server/realtime/player_event_handlers_utils.py`
+- **Add a valid name to the appropriate lists.          Args:             name: The** (1 connections) — `server/realtime/player_event_handlers_utils.py`
+- **Process a dictionary occupant and add to appropriate lists.          Args:** (1 connections) — `server/realtime/player_event_handlers_utils.py`
+- **Build structured occupants data from snapshot.          Args:             occupa** (1 connections) — `server/realtime/player_event_handlers_utils.py`
+- **Count NPCs and players in occupants snapshot.          Args:             occupan** (1 connections) — `server/realtime/player_event_handlers_utils.py`
 
 ## Relationships
 
-- [UUID](UUID.md) (12 shared connections)
-- [Any](Any.md) (4 shared connections)
-- [game tick processing](game_tick_processing.md) (3 shared connections)
-- [main()](main%28%29.md) (2 shared connections)
-- [. post init ()](_post_init_%28%29.md) (1 shared connections)
-- [memory leak metrics](memory_leak_metrics.md) (1 shared connections)
+- [NPCCombatIntegrationBase](NPCCombatIntegrationBase.md) (8 shared connections)
+- [container websocket events](container_websocket_events.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_manager_api.py`
-- `server/realtime/connection_manager_utils.py`
+- `server/realtime/player_event_handlers_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 85 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 41 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

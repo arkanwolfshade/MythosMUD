@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_run_improvement_rolls_roll_under_current_no_change()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
-- **When roll <= current value, no update_value call.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_try_lookup_item_implicit_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test trying implicit lookup when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
 
 ## Relationships
 
-- [test skill service](test_skill_service.md) (1 shared connections)
+- [DeathInterstitial](DeathInterstitial.md) (1 shared connections)
+- [test look item](test_look_item.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_skill_service.py`
+- `server/tests/unit/commands/test_look_item.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

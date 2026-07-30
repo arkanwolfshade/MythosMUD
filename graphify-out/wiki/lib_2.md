@@ -1,25 +1,24 @@
 # lib
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **lib** (4 connections) — `client/tsconfig.build.json`
-- **ES2022** (1 connections) — `client/tsconfig.build.json`
-- **DOM** (1 connections) — `client/tsconfig.build.json`
-- **DOM.Iterable** (1 connections) — `client/tsconfig.build.json`
+- **test_evaluate_condition_greater_than()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test evaluate_condition() handles > operator.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [compilerOptions](compilerOptions.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [test behavior engine](test_behavior_engine.md) (1 shared connections)
 
 ## Source Files
 
-- `client/tsconfig.build.json`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

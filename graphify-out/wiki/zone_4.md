@@ -1,25 +1,24 @@
 # zone
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **zone** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **pattern** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **test_execute_action_success()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test execute_action() successfully executes action.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [description](description.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [test behavior engine](test_behavior_engine.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

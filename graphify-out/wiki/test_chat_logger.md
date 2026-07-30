@@ -1,6 +1,6 @@
 # test chat logger
 
-> 27 nodes
+> 28 nodes
 
 ## Key Concepts
 
@@ -18,7 +18,6 @@
 - **test_get_log_file_paths()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
 - **test_get_log_stats()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
 - **test_log_whisper_channel_message()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **Test log_player_muted writes entry.** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
 - **Unit tests for chat logger service.  Tests the ChatLogger class for structured c** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
 - **Create a temporary directory for chat logs.** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
 - **Test ChatLogger initialization with explicit directory.** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
@@ -26,16 +25,17 @@
 - **Test log_moderation_event writes entry.** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
 - **Test log_system_event writes entry.** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
 - **Test shutdown stops writer thread.** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **Test log_player_muted writes entry.** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **Test log_player_unmuted writes entry.** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
 - **Test log_player_joined_room writes entry.** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
 - **Test log_rate_limit_violation writes entry.** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **Test get_log_file_paths returns correct paths.** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
-- *... and 2 more nodes in this community*
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
 - [ChatLogger](ChatLogger.md) (2 shared connections)
-- [main()](main%28%29.md) (1 shared connections)
-- [message filtering](message_filtering.md) (1 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
+- [CorpseNotFoundError](CorpseNotFoundError.md) (1 shared connections)
 
 ## Source Files
 

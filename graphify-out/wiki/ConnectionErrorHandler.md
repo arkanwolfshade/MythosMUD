@@ -1,43 +1,35 @@
 # ConnectionErrorHandler
 
-> 20 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **ConnectionErrorHandler** (10 connections) — `server/realtime/errors/error_handler.py`
-- **UUID** (8 connections)
-- **.detect_and_handle_error_state()** (8 connections) — `server/realtime/errors/error_handler.py`
-- **Any** (7 connections)
-- **.handle_websocket_error()** (5 connections) — `server/realtime/errors/error_handler.py`
-- **.handle_authentication_error()** (5 connections) — `server/realtime/errors/error_handler.py`
-- **.handle_security_violation()** (5 connections) — `server/realtime/errors/error_handler.py`
-- **.get_error_statistics()** (5 connections) — `server/realtime/errors/error_handler.py`
-- **.__init__()** (4 connections) — `server/realtime/errors/error_handler.py`
-- **.recover_from_error()** (4 connections) — `server/realtime/errors/error_handler.py`
-- **__init__.py** (3 connections) — `server/realtime/errors/__init__.py`
-- **Error handling components for connection management.  This package provides spec** (1 connections) — `server/realtime/errors/__init__.py`
-- **Handles error detection, logging, and recovery for connection management.      T** (1 connections) — `server/realtime/errors/error_handler.py`
-- **Initialize the error handler.          Args:             force_disconnect_callba** (1 connections) — `server/realtime/errors/error_handler.py`
-- **Detect when a client is in an error state and handle it appropriately.** (1 connections) — `server/realtime/errors/error_handler.py`
-- **Handle WebSocket-specific errors.          Args:             player_id: The play** (1 connections) — `server/realtime/errors/error_handler.py`
-- **Handle authentication-related errors.          Args:             player_id: The** (1 connections) — `server/realtime/errors/error_handler.py`
-- **Handle security violations.          Args:             player_id: The player's I** (1 connections) — `server/realtime/errors/error_handler.py`
-- **Attempt to recover from an error state for a player.          Args:** (1 connections) — `server/realtime/errors/error_handler.py`
-- **Get error handling statistics.          Args:             online_players: Online** (1 connections) — `server/realtime/errors/error_handler.py`
+- **🎯 MANDATORY AI EXECUTION PROTOCOL** (8 connections) — `.cursor/commands/lint-remediation.md`
+- **Phase 5: Fix Implementation Patterns** (4 connections) — `.cursor/commands/lint-remediation.md`
+- **Phase 4: Tool Selection Guide** (3 connections) — `.cursor/commands/lint-remediation.md`
+- **Phase 3: Systematic Fixing Process** (2 connections) — `.cursor/commands/lint-remediation.md`
+- **Phase 1: Initial Assessment (REQUIRED FIRST)** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **For Each Issue Category** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **Python/Ruff Issues** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **React/ESLint Issues** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **🔴 CRITICAL FIXES - Compilation Errors** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **🟡 HIGH PRIORITY FIXES - Code Quality Issues** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **🟢 MEDIUM PRIORITY FIXES - Style Issues** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **Phase 6: Verification Protocol** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **Phase 7: Success Validation** (1 connections) — `.cursor/commands/lint-remediation.md`
 
 ## Relationships
 
-- [main()](main%28%29.md) (3 shared connections)
-- [initialize nats and combat services()](initialize_nats_and_combat_services%28%29.md) (2 shared connections)
+- [. post init ()](_post_init_%28%29.md) (1 shared connections)
+- [test websocket room updates build](test_websocket_room_updates_build.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/errors/__init__.py`
-- `server/realtime/errors/error_handler.py`
+- `.cursor/commands/lint-remediation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 73 (100%)
+- EXTRACTED: 26 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

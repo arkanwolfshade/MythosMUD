@@ -1,61 +1,65 @@
 # UUID
 
-> 30 nodes
+> 86 nodes
 
 ## Key Concepts
 
-- **send_game_event()** (29 connections) — `server/realtime/connection_manager_api.py`
-- **MagicServiceHealingMixin** (15 connections) — `server/game/magic/magic_healing_events.py`
-- **magic_healing_events.py** (14 connections) — `server/game/magic/magic_healing_events.py`
-- **__getattr__()** (8 connections) — `server/realtime/connection_manager.py`
-- **._send_healing_update_event()** (7 connections) — `server/game/magic/magic_healing_events.py`
-- **._publish_dp_event()** (7 connections) — `server/game/magic/magic_healing_events.py`
-- **UUID** (6 connections)
-- **._publish_or_send_dp_update()** (6 connections) — `server/game/magic/magic_healing_events.py`
-- **UUID** (6 connections)
-- **send_system_notification()** (6 connections) — `server/realtime/connection_manager_api.py`
-- **send_player_status_update()** (6 connections) — `server/realtime/connection_manager_api.py`
-- **send_room_description()** (6 connections) — `server/realtime/connection_manager_api.py`
-- **._is_heal_other_target()** (5 connections) — `server/game/magic/magic_healing_events.py`
-- **Any** (5 connections)
-- **._send_instant_heal_event_if_applied()** (5 connections) — `server/game/magic/magic_healing_events.py`
-- **._effect_result_has_healing()** (4 connections) — `server/game/magic/magic_healing_events.py`
-- **.send_personal_message()** (3 connections) — `server/realtime/connection_manager_api.py`
-- **Healing event notification for spellcasting.  Mixin that sends player_dp_updated** (1 connections) — `server/game/magic/magic_healing_events.py`
-- **Mixin for MagicService: send DP update events when spells apply healing.** (1 connections) — `server/game/magic/magic_healing_events.py`
-- **True when healing was applied to another player (heal-other, not steal-life or s** (1 connections) — `server/game/magic/magic_healing_events.py`
-- **True if effect result indicates healing was applied (success, effect_applied, he** (1 connections) — `server/game/magic/magic_healing_events.py`
-- **Send player_dp_updated event for the healed player (target for heal other, caste** (1 connections) — `server/game/magic/magic_healing_events.py`
-- **Load player stats and delegate DP event publishing.** (1 connections) — `server/game/magic/magic_healing_events.py`
-- **Publish DP update via event bus, or send fallback game event.** (1 connections) — `server/game/magic/magic_healing_events.py`
-- **If instant cast applied healing, send DP update event to the healed player.** (1 connections) — `server/game/magic/magic_healing_events.py`
-- *... and 5 more nodes in this community*
+- **LucidityService** (78 connections) — `server/services/lucidity_service.py`
+- **debrief_command.py** (25 connections) — `server/commands/debrief_command.py`
+- **LucidityAdjustmentLog** (23 connections) — `server/models/lucidity.py`
+- **active_lucidity_service.py** (22 connections) — `server/services/active_lucidity_service.py`
+- **ActiveLucidityService** (20 connections) — `server/services/active_lucidity_service.py`
+- **handle_debrief_command()** (16 connections) — `server/commands/debrief_command.py`
+- **UUID** (14 connections)
+- **test_lucidity_service.py** (11 connections) — `server/tests/unit/services/test_lucidity_service.py`
+- **UnknownEncounterCategoryError** (10 connections) — `server/services/active_lucidity_service.py`
+- **Any** (8 connections)
+- **._calculate_max_lcd()** (8 connections) — `server/services/lucidity_service.py`
+- **LucidityActionError** (7 connections) — `server/services/active_lucidity_service.py`
+- **_generate_narrative_recap()** (6 connections) — `server/commands/debrief_command.py`
+- **Tier** (6 connections)
+- **._add_liabilities_for_adjustment()** (6 connections) — `server/services/lucidity_service.py`
+- **.add_liability()** (6 connections) — `server/services/lucidity_service.py`
+- **test_lucidity_service_smoke.py** (6 connections) — `server/tests/unit/test_lucidity_service_smoke.py`
+- **_check_debrief_availability()** (5 connections) — `server/commands/debrief_command.py`
+- **_perform_therapy_if_requested()** (5 connections) — `server/commands/debrief_command.py`
+- **_complete_debrief()** (5 connections) — `server/commands/debrief_command.py`
+- **.__init__()** (5 connections) — `server/services/active_lucidity_service.py`
+- **.apply_encounter_lucidity_loss()** (5 connections) — `server/services/active_lucidity_service.py`
+- **worsened_tier()** (5 connections) — `server/services/lucidity_helpers.py`
+- **.set_cooldown()** (5 connections) — `server/services/lucidity_service.py`
+- **._default_liability_picker()** (5 connections) — `server/services/lucidity_service.py`
+- *... and 61 more nodes in this community*
 
 ## Relationships
 
-- [connection manager api](connection_manager_api.md) (9 shared connections)
-- [Any](Any.md) (8 shared connections)
+- [test rate limiter utils](test_rate_limiter_utils.md) (30 shared connections)
+- [LiabilityStackEntry](LiabilityStackEntry.md) (26 shared connections)
+- [CommandHandler](CommandHandler.md) (14 shared connections)
+- [emote](emote.md) (11 shared connections)
+- [map helpers](map_helpers.md) (10 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (8 shared connections)
+- [monitoring](monitoring.md) (8 shared connections)
 - [. init ()](_init_%28%29.md) (7 shared connections)
-- [Connection Manager](Connection_Manager.md) (4 shared connections)
-- [FollowTargetValue](FollowTargetValue.md) (4 shared connections)
-- [Spell Targeting](Spell_Targeting.md) (3 shared connections)
-- [main()](main%28%29.md) (2 shared connections)
-- [MagicServiceCore](MagicServiceCore.md) (2 shared connections)
-- [message handlers](message_handlers.md) (2 shared connections)
-- [LiabilityStackEntry](LiabilityStackEntry.md) (2 shared connections)
-- [.shutdown()](shutdown%28%29.md) (1 shared connections)
-- [spell registry](spell_registry.md) (1 shared connections)
+- [Lock](Lock.md) (4 shared connections)
+- [test player preferences service](test_player_preferences_service.md) (3 shared connections)
+- [admin setlucidity command](admin_setlucidity_command.md) (3 shared connections)
+- [test command parser](test_command_parser.md) (3 shared connections)
 
 ## Source Files
 
-- `server/game/magic/magic_healing_events.py`
-- `server/realtime/connection_manager.py`
-- `server/realtime/connection_manager_api.py`
+- `server/commands/debrief_command.py`
+- `server/models/lucidity.py`
+- `server/services/active_lucidity_service.py`
+- `server/services/lucidity_helpers.py`
+- `server/services/lucidity_service.py`
+- `server/tests/unit/services/test_lucidity_service.py`
+- `server/tests/unit/test_lucidity_service_smoke.py`
 
 ## Audit Trail
 
-- EXTRACTED: 135 (89%)
-- INFERRED: 16 (11%)
+- EXTRACTED: 378 (89%)
+- INFERRED: 45 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

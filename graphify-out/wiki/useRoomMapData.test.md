@@ -1,76 +1,61 @@
 # useRoomMapData.test
 
-> 41 nodes
+> 32 nodes
 
 ## Key Concepts
 
-- **mapUtils.ts** (27 connections) — `client/src/components/map/utils/mapUtils.ts`
-- **RoomMapViewer.tsx** (25 connections) — `client/src/components/map/RoomMapViewer.tsx`
-- **useRoomMapData.ts** (18 connections) — `client/src/components/map/hooks/useRoomMapData.ts`
-- **RoomMapViewer.test-utils.tsx** (17 connections) — `client/src/components/map/__tests__/RoomMapViewer.test-utils.tsx`
-- **RoomMapViewer.map-controls.test.tsx** (16 connections) — `client/src/components/map/__tests__/RoomMapViewer.map-controls.test.tsx`
-- **createEdgesFromRooms()** (16 connections) — `client/src/components/map/utils/mapUtils.ts`
-- **Room** (16 connections) — `client/src/stores/gameStore.ts`
-- **useMapLayout()** (15 connections) — `client/src/components/map/hooks/useMapLayout.ts`
-- **roomsToNodes()** (15 connections) — `client/src/components/map/utils/mapUtils.ts`
-- **RoomMapViewer.rendering.test.tsx** (14 connections) — `client/src/components/map/__tests__/RoomMapViewer.rendering.test.tsx`
-- **useRoomMapData()** (14 connections) — `client/src/components/map/hooks/useRoomMapData.ts`
-- **RoomMapViewer.interactions.test.tsx** (12 connections) — `client/src/components/map/__tests__/RoomMapViewer.interactions.test.tsx`
-- **RoomMapViewer()** (10 connections) — `client/src/components/map/RoomMapViewer.tsx`
-- **RoomMapViewer.data-loading.test.tsx** (10 connections) — `client/src/components/map/__tests__/RoomMapViewer.data-loading.test.tsx`
-- **MapControls.tsx** (9 connections) — `client/src/components/map/MapControls.tsx`
-- **RoomDetailsPanel.tsx** (9 connections) — `client/src/components/map/RoomDetailsPanel.tsx`
-- **setupDefaultMocks()** (9 connections) — `client/src/components/map/__tests__/RoomMapViewer.test-utils.tsx`
-- **mapUtils.test.ts** (7 connections) — `client/src/components/map/utils/__tests__/mapUtils.test.ts`
-- **MapControls()** (6 connections) — `client/src/components/map/MapControls.tsx`
-- **theme.test.tsx** (6 connections) — `client/src/components/map/__tests__/theme.test.tsx`
-- **RoomDetailsPanel()** (5 connections) — `client/src/components/map/RoomDetailsPanel.tsx`
-- **useRoomMapData.test.ts** (5 connections) — `client/src/components/map/hooks/__tests__/useRoomMapData.test.ts`
-- **isApiErrorWithDetail()** (5 connections) — `client/src/utils/apiTypeGuards.ts`
-- **RoomDetailsPanel.test.tsx** (4 connections) — `client/src/components/map/__tests__/RoomDetailsPanel.test.tsx`
-- **transformRoomsToMapData()** (4 connections) — `client/src/components/map/utils/mapUtils.ts`
-- *... and 16 more nodes in this community*
+- **enhanced_error_logging.py** (38 connections) — `server/utils/enhanced_error_logging.py`
+- **Any** (9 connections)
+- **log_structured_error()** (9 connections) — `server/utils/enhanced_error_logging.py`
+- **_log_http_error()** (8 connections) — `server/utils/enhanced_error_logging.py`
+- **create_logged_http_exception_enhanced()** (7 connections) — `server/utils/enhanced_error_logging.py`
+- **log_and_raise_http_enhanced()** (6 connections) — `server/utils/enhanced_error_logging.py`
+- **increment_exception()** (5 connections) — `server/monitoring/exception_metrics.py`
+- **log_performance_metric()** (5 connections) — `server/utils/enhanced_error_logging.py`
+- **log_security_event_enhanced()** (5 connections) — `server/utils/enhanced_error_logging.py`
+- **Any** (5 connections)
+- **log_error_with_context()** (5 connections) — `server/utils/error_logging.py`
+- **create_logged_http_exception()** (5 connections) — `server/utils/error_logging.py`
+- **exception_metrics.py** (4 connections) — `server/monitoring/exception_metrics.py`
+- **log_and_raise_http()** (4 connections) — `server/utils/error_logging.py`
+- **get_summary()** (3 connections) — `server/monitoring/exception_metrics.py`
+- **HTTPException** (2 connections)
+- **Exception** (2 connections)
+- **Any** (1 connections)
+- **Exception metrics tracking for monitoring.  This module provides thread-safe exc** (1 connections) — `server/monitoring/exception_metrics.py`
+- **Increment the count for a specific exception type.      Args:         exc_type:** (1 connections) — `server/monitoring/exception_metrics.py`
+- **Get a summary of exception counts.      Returns:         dict[str, Any]: Diction** (1 connections) — `server/monitoring/exception_metrics.py`
+- **Enhanced error logging utilities with structured logging and context management.** (1 connections) — `server/utils/enhanced_error_logging.py`
+- **Log HTTP error and optionally raise or return HTTPException. Shared by raise vs** (1 connections) — `server/utils/enhanced_error_logging.py`
+- **Enhanced HTTP error logging with structured logging.      This function provides** (1 connections) — `server/utils/enhanced_error_logging.py`
+- **Create an HTTPException with proper logging and return it (caller raises when ap** (1 connections) — `server/utils/enhanced_error_logging.py`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [EdgeDetailsPanel](EdgeDetailsPanel.md) (23 shared connections)
-- [useMapLayout](useMapLayout.md) (13 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (10 shared connections)
-- [ExitEdge](ExitEdge.md) (6 shared connections)
-- [RoomMapViewerProps](RoomMapViewerProps.md) (4 shared connections)
-- [LoginResponse](LoginResponse.md) (3 shared connections)
-- [RoomEditModal](RoomEditModal.md) (3 shared connections)
-- [maps](maps.md) (2 shared connections)
-- [.append()](append%28%29.md) (2 shared connections)
-- [performance.test](performance.test.md) (1 shared connections)
-- [AppCreationFlowViews](AppCreationFlowViews.md) (1 shared connections)
-- [createInitialState()](createInitialState%28%29.md) (1 shared connections)
+- [Spell Targeting](Spell_Targeting.md) (11 shared connections)
+- [real time](real_time.md) (10 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (7 shared connections)
+- [test player repository](test_player_repository.md) (5 shared connections)
+- [Player](Player.md) (4 shared connections)
+- [fastapi integration](fastapi_integration.md) (4 shared connections)
+- [. init ()](_init_%28%29.md) (3 shared connections)
+- [fetch schedule entries()](fetch_schedule_entries%28%29.md) (2 shared connections)
+- [.initialize()](initialize%28%29.md) (2 shared connections)
+- [nats retry handler](nats_retry_handler.md) (2 shared connections)
+- [create access token()](create_access_token%28%29.md) (1 shared connections)
+- [.shutdown()](shutdown%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/map/MapControls.tsx`
-- `client/src/components/map/RoomDetailsPanel.tsx`
-- `client/src/components/map/RoomMapViewer.tsx`
-- `client/src/components/map/__tests__/MapControls.test.tsx`
-- `client/src/components/map/__tests__/RoomDetailsPanel.test.tsx`
-- `client/src/components/map/__tests__/RoomMapViewer.data-loading.test.tsx`
-- `client/src/components/map/__tests__/RoomMapViewer.interactions.test.tsx`
-- `client/src/components/map/__tests__/RoomMapViewer.map-controls.test.tsx`
-- `client/src/components/map/__tests__/RoomMapViewer.rendering.test.tsx`
-- `client/src/components/map/__tests__/RoomMapViewer.test-utils.tsx`
-- `client/src/components/map/__tests__/theme.test.tsx`
-- `client/src/components/map/hooks/__tests__/useRoomMapData.test.ts`
-- `client/src/components/map/hooks/useMapLayout.ts`
-- `client/src/components/map/hooks/useRoomMapData.ts`
-- `client/src/components/map/utils/__tests__/mapUtils.test.ts`
-- `client/src/components/map/utils/mapUtils.ts`
-- `client/src/stores/gameStore.ts`
-- `client/src/utils/apiTypeGuards.ts`
+- `server/monitoring/exception_metrics.py`
+- `server/utils/enhanced_error_logging.py`
+- `server/utils/error_logging.py`
 
 ## Audit Trail
 
-- EXTRACTED: 319 (98%)
-- INFERRED: 8 (2%)
+- EXTRACTED: 133 (97%)
+- INFERRED: 4 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

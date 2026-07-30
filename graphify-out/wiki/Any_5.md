@@ -1,63 +1,60 @@
 # Any
 
-> 89 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **admin_teleport_commands.py** (38 connections) — `server/commands/admin_teleport_commands.py`
-- **get_admin_actions_logger()** (25 connections) — `server/structured_logging/admin_actions_logger.py`
-- **teleport_helpers.py** (23 connections) — `server/commands/teleport_helpers.py`
-- **handle_teleport_command()** (20 connections) — `server/commands/admin_teleport_commands.py`
-- **goto_helpers.py** (20 connections) — `server/commands/goto_helpers.py`
-- **handle_goto_command()** (15 connections) — `server/commands/admin_teleport_commands.py`
-- **admin_actions_logger.py** (15 connections) — `server/structured_logging/admin_actions_logger.py`
-- **validate_admin_permission()** (13 connections) — `server/commands/admin_permission_utils.py`
-- **admin_teleport_utils.py** (13 connections) — `server/commands/admin_teleport_utils.py`
-- **create_teleport_effect_message()** (13 connections) — `server/commands/admin_teleport_utils.py`
-- **test_admin_commands_helpers.py** (13 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
-- **broadcast_teleport_effects()** (11 connections) — `server/commands/admin_teleport_utils.py`
-- **get_online_player_by_display_name()** (10 connections) — `server/commands/admin_teleport_utils.py`
-- **notify_player_of_teleport()** (10 connections) — `server/commands/admin_teleport_utils.py`
-- **handle_confirm_teleport_command()** (9 connections) — `server/commands/admin_teleport_commands.py`
-- **handle_confirm_goto_command()** (9 connections) — `server/commands/admin_teleport_commands.py`
-- **execute_goto_teleport()** (9 connections) — `server/commands/goto_helpers.py`
-- **Any** (9 connections)
-- **execute_confirm_teleport()** (9 connections) — `server/commands/teleport_helpers.py`
-- **admin_permission_utils.py** (8 connections) — `server/commands/admin_permission_utils.py`
-- **execute_confirm_goto()** (8 connections) — `server/commands/goto_helpers.py`
-- **update_player_room_location()** (8 connections) — `server/commands/teleport_helpers.py`
-- **Any** (7 connections)
-- **log_goto_failure()** (7 connections) — `server/commands/goto_helpers.py`
-- **broadcast_teleport_updates()** (7 connections) — `server/commands/teleport_helpers.py`
-- *... and 64 more nodes in this community*
+- **utility_commands.py** (20 connections) — `server/commands/utility_commands.py`
+- **handle_emote_command()** (15 connections) — `server/commands/emote_commands.py`
+- **emote_commands.py** (14 connections) — `server/commands/emote_commands.py`
+- **_get_emote_services()** (7 connections) — `server/commands/emote_commands.py`
+- **test_emote_commands.py** (6 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **Any** (5 connections)
+- **_extract_emote_action()** (4 connections) — `server/commands/emote_commands.py`
+- **_validate_player_for_emote()** (4 connections) — `server/commands/emote_commands.py`
+- **_format_emote_messages()** (4 connections) — `server/commands/emote_commands.py`
+- **_handle_emote_result()** (4 connections) — `server/commands/emote_commands.py`
+- **test_handle_emote_command()** (3 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **test_handle_emote_command_no_message()** (3 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **test_handle_emote_command_no_chat_service()** (3 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **Emote command handlers for MythosMUD.  This module contains handlers for the emo** (1 connections) — `server/commands/emote_commands.py`
+- **Extract action from command_data.      Args:         command_data: Command data** (1 connections) — `server/commands/emote_commands.py`
+- **Get chat service and player service from app state.      Args:         request:** (1 connections) — `server/commands/emote_commands.py`
+- **Validate player and extract required information for emote.      Args:         p** (1 connections) — `server/commands/emote_commands.py`
+- **Format emote messages for predefined or custom emotes.      Args:         action** (1 connections) — `server/commands/emote_commands.py`
+- **Handle the result from chat service after sending emote.      Args:         resu** (1 connections) — `server/commands/emote_commands.py`
+- **Handle the emote command for performing emotes.      Args:         command_data:** (1 connections) — `server/commands/emote_commands.py`
+- **Utility commands for MythosMUD.  This module contains handlers for utility comma** (1 connections) — `server/commands/utility_commands.py`
+- **Unit tests for emote command handlers.  Tests the emote command functionality.** (1 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **Test handle_emote_command() processes emote.** (1 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **Test handle_emote_command() handles missing message.** (1 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **Test handle_emote_command() handles missing chat service.** (1 connections) — `server/tests/unit/commands/test_emote_commands.py`
 
 ## Relationships
 
-- [Any](Any.md) (19 shared connections)
-- [main()](main%28%29.md) (18 shared connections)
-- [test admin commands](test_admin_commands.md) (7 shared connections)
-- [admin summon command](admin_summon_command.md) (6 shared connections)
-- [UUID](UUID.md) (4 shared connections)
-- [admin setlucidity command](admin_setlucidity_command.md) (4 shared connections)
-- [admin setstat command](admin_setstat_command.md) (3 shared connections)
-- [AdminActionsLogger](AdminActionsLogger.md) (2 shared connections)
-- [admin shutdown command](admin_shutdown_command.md) (1 shared connections)
-- [initialize nats and combat services()](initialize_nats_and_combat_services%28%29.md) (1 shared connections)
+- [utility commands](utility_commands.md) (4 shared connections)
+- [disconnect player connections()](disconnect_player_connections%28%29.md) (3 shared connections)
+- [status commands](status_commands.md) (3 shared connections)
+- [test magic commands](test_magic_commands.md) (2 shared connections)
+- [PlayerIdCarrier](PlayerIdCarrier.md) (2 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
+- [get health status()](get_health_status%28%29.md) (2 shared connections)
+- [AuthSlice](AuthSlice.md) (1 shared connections)
+- [ContainerData](ContainerData.md) (1 shared connections)
+- [websocket integration](websocket_integration.md) (1 shared connections)
+- [.state()](state%28%29.md) (1 shared connections)
+- [Player Position Service](Player_Position_Service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/admin_permission_utils.py`
-- `server/commands/admin_teleport_commands.py`
-- `server/commands/admin_teleport_utils.py`
-- `server/commands/goto_helpers.py`
-- `server/commands/teleport_helpers.py`
-- `server/structured_logging/admin_actions_logger.py`
-- `server/tests/unit/commands/test_admin_commands_helpers.py`
+- `server/commands/emote_commands.py`
+- `server/commands/utility_commands.py`
+- `server/tests/unit/commands/test_emote_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 469 (99%)
-- INFERRED: 6 (1%)
+- EXTRACTED: 100 (96%)
+- INFERRED: 4 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

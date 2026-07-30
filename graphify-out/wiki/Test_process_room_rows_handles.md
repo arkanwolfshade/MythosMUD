@@ -1,16 +1,15 @@
 # Test process room rows handles
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **test_process_room_rows_with_none_zone_stable_id()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 - **test_process_room_rows_with_none_stable_id()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **Test _process_room_rows handles None zone_stable_id.** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **Test _process_room_rows handles None stable_id.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Relationships
 
-- [test async persistence room cache](test_async_persistence_room_cache.md) (2 shared connections)
+- [test async persistence room cache](test_async_persistence_room_cache.md) (1 shared connections)
 
 ## Source Files
 
@@ -18,7 +17,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

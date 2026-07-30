@@ -1,6 +1,6 @@
 # test message filtering
 
-> 47 nodes
+> 48 nodes
 
 ## Key Concepts
 
@@ -28,13 +28,12 @@
 - **test_is_player_muted_by_receiver_not_muted()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 - **test_get_user_manager_custom()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 - **test_get_user_manager_global()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **Test should_apply_mute_check() returns True for sensitive channels.** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- *... and 22 more nodes in this community*
+- **Unit tests for message filtering.  Tests the MessageFilteringHelper class.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- *... and 23 more nodes in this community*
 
 ## Relationships
 
-- [. init ()](_init_%28%29.md) (2 shared connections)
-- [message filtering](message_filtering.md) (1 shared connections)
+- [Player](Player.md) (3 shared connections)
 
 ## Source Files
 

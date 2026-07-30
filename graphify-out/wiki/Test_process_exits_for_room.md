@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_process_exits_for_room_with_direction()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **Test _process_exits_for_room processes exits with direction.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_get_player_lucidity_tier()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _get_player_lucidity_tier gets tier.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [test async persistence room cache](test_async_persistence_room_cache.md) (1 shared connections)
+- [test nats message handler chat](test_nats_message_handler_chat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 

@@ -1,25 +1,25 @@
 # Test create mute global command
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **test_create_mute_global_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **test_create_unmute_global_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_mute_global_command delegates to moderation factory.** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_fetch_container_items_invalid_json_metadata()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **Test _fetch_container_items handles invalid JSON metadata.** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
 
 ## Relationships
 
-- [test command factories](test_command_factories.md) (2 shared connections)
+- [container persistence](container_persistence.md) (1 shared connections)
+- [disconnect grace period](disconnect_grace_period.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

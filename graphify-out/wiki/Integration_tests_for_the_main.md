@@ -1,39 +1,28 @@
 # Integration tests for the main
 
-> 13 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **TestValidatorIntegration** (12 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **.test_validator_with_valid_rooms()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **.test_validator_with_invalid_rooms()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **.test_validator_json_output()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **.test_validator_zone_filtering()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **.test_validator_help_output()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **.test_validator_schema_only_flag()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **Test validator with valid room files.** (2 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **Integration tests for the main validator.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **Test validator JSON output format.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **Test validator zone filtering.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **Test that help text is properly displayed.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **Test schema-only validation flag.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- **test_websocket_handler_helpers.py** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers.py`
+- **test_is_websocket_disconnected_true()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers.py`
+- **test_is_websocket_disconnected_false()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers.py`
+- **Unit tests for websocket handler helper functions.  Tests the helper functions i** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers.py`
+- **Test _is_websocket_disconnected() returns True for disconnection messages.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers.py`
+- **Test _is_websocket_disconnected() returns False for other messages.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers.py`
 
 ## Relationships
 
-- [PathValidator](PathValidator.md) (1 shared connections)
-- [Any](Any.md) (1 shared connections)
-- [Path](Path.md) (1 shared connections)
-- [Convert legacy string format exits](Convert_legacy_string_format_exits.md) (1 shared connections)
-- [Create a temporary directory for](Create_a_temporary_directory_for.md) (1 shared connections)
+- [.is required()](is_required%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- `server/tests/unit/realtime/test_websocket_handler_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 27 (87%)
-- INFERRED: 4 (13%)
+- EXTRACTED: 11 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

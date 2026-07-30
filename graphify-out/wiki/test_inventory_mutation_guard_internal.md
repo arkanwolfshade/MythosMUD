@@ -1,44 +1,35 @@
 # test inventory mutation guard internal
 
-> 22 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **test_inventory_mutation_guard_internal.py** (15 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
-- **guard()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
-- **test_prune_tokens()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
-- **test_prune_tokens_ttl_zero()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
-- **test_enforce_limit()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
-- **test_get_async_global_lock()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
-- **test_get_async_state_creates_lazily()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
-- **test_cleanup_async_state_locked()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
-- **test_cleanup_async_state_empty()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
-- **test_prune_tokens_async()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
-- **test_prune_tokens_async_ttl_zero()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
-- **test_enforce_limit_async()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
-- **Test _prune_tokens with token_ttl=0 doesn't prune.** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
-- **Test _enforce_limit removes oldest tokens when limit exceeded.** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
-- **Unit tests for inventory mutation guard - internal helper methods.  Tests intern** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
-- **Create an InventoryMutationGuard instance.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
-- **Test _prune_tokens removes expired tokens.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
-- **Test _get_async_global_lock creates lock lazily.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
-- **Test _get_async_state creates state lazily.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
-- **Test _cleanup_async_state handles locked state.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
-- **Test _cleanup_async_state removes empty state.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
-- **Test _prune_tokens_async removes expired tokens.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **WhisperChannelStrategy** (8 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.__init__()** (7 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **test_whisper_channel_strategy_broadcast()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **test_whisper_channel_strategy_broadcast_no_target()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **Strategy for whisper channel broadcasting.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Initialize the strategy factory.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Test WhisperChannelStrategy.broadcast() sends personal message.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **Test WhisperChannelStrategy.broadcast() handles missing target_player_id.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
 
 ## Relationships
 
-- [main()](main%28%29.md) (2 shared connections)
-- [Lock](Lock.md) (2 shared connections)
+- [channel broadcasting strategies](channel_broadcasting_strategies.md) (4 shared connections)
+- [add fastapi users columns](add_fastapi_users_columns.md) (3 shared connections)
+- [.broadcast()](broadcast%28%29.md) (1 shared connections)
+- [admin summon command](admin_summon_command.md) (1 shared connections)
+- [BehaviorEngine](BehaviorEngine.md) (1 shared connections)
+- [PartyService](PartyService.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- `server/realtime/channel_broadcasting_strategies.py`
+- `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 50 (100%)
+- EXTRACTED: 25 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

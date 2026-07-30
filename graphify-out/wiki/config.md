@@ -1,10 +1,11 @@
 # config
 
-> 65 nodes
+> 68 nodes
 
 ## Key Concepts
 
 - **PassiveLucidityFluxService** (34 connections) — `server/services/passive_lucidity_flux/service.py`
+- **service.py** (30 connections) — `server/services/passive_lucidity_flux/service.py`
 - **.process_tick()** (14 connections) — `server/services/passive_lucidity_flux/service.py`
 - **._process_single_player()** (12 connections) — `server/services/passive_lucidity_flux/service.py`
 - **config.py** (11 connections) — `server/services/passive_lucidity_flux/config.py`
@@ -27,33 +28,36 @@
 - **._lookup_base_flux_for_room()** (6 connections) — `server/services/passive_lucidity_flux/service.py`
 - **._get_room_for_context()** (6 connections) — `server/services/passive_lucidity_flux/service.py`
 - **normalize_environment_config()** (5 connections) — `server/services/passive_lucidity_flux/config.py`
-- **._build_room_cache()** (5 connections) — `server/services/passive_lucidity_flux/service.py`
-- **._normalize_datetime_timezone()** (5 connections) — `server/services/passive_lucidity_flux/service.py`
-- *... and 40 more nodes in this community*
+- **build_override_key()** (5 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
+- *... and 43 more nodes in this community*
 
 ## Relationships
 
-- [. init ()](_init_%28%29.md) (20 shared connections)
-- [.initialize()](initialize%28%29.md) (2 shared connections)
-- [UUID](UUID.md) (2 shared connections)
-- [rate overrides](rate_overrides.md) (2 shared connections)
-- [main()](main%28%29.md) (2 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
-- [LiabilityStackEntry](LiabilityStackEntry.md) (1 shared connections)
-- [datetime](datetime.md) (1 shared connections)
-- [AbstractContextManager](AbstractContextManager.md) (1 shared connections)
+- [test rate limiter utils](test_rate_limiter_utils.md) (7 shared connections)
+- [. init ()](_init_%28%29.md) (6 shared connections)
+- [UUID](UUID.md) (5 shared connections)
+- [rate overrides](rate_overrides.md) (4 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (4 shared connections)
+- [. is npc in combat()](_is_npc_in_combat%28%29.md) (3 shared connections)
+- [LiabilityStackEntry](LiabilityStackEntry.md) (3 shared connections)
+- [chat nats publisher](chat_nats_publisher.md) (2 shared connections)
+- [real time](real_time.md) (2 shared connections)
+- [map helpers](map_helpers.md) (1 shared connections)
+- [.shutdown()](shutdown%28%29.md) (1 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (1 shared connections)
 
 ## Source Files
 
 - `server/services/passive_lucidity_flux/__init__.py`
 - `server/services/passive_lucidity_flux/config.py`
 - `server/services/passive_lucidity_flux/models.py`
+- `server/services/passive_lucidity_flux/rate_overrides.py`
 - `server/services/passive_lucidity_flux/service.py`
 - `server/services/passive_lucidity_flux_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 271 (95%)
+- EXTRACTED: 302 (95%)
 - INFERRED: 15 (5%)
 - AMBIGUOUS: 0 (0%)
 

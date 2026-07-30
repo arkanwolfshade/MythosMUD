@@ -1,54 +1,46 @@
 # projectorHandlersMessages
 
-> 28 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **projectorHandlersState.ts** (20 connections) — `client/src/components/ui-v2/eventLog/projectorHandlersState.ts`
-- **projectorRoom.ts** (17 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
-- **roomMergeUtils.ts** (10 connections) — `client/src/components/ui-v2/utils/roomMergeUtils.ts`
-- **mergeRoomState()** (7 connections) — `client/src/components/ui-v2/utils/roomMergeUtils.ts`
-- **deriveRoomFromRoomUpdate()** (6 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
-- **deriveRoomFromRoomOccupants()** (5 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
-- **roomMergeUtils.test.ts** (4 connections) — `client/src/components/ui-v2/utils/__tests__/roomMergeUtils.test.ts`
-- **projectorHandlersMessages.ts** (4 connections) — `client/src/components/ui-v2/eventLog/projectorHandlersMessages.ts`
-- **createRoomUpdateWithPreservedOccupants()** (3 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
-- **selectPlayersArray()** (3 connections) — `client/src/components/ui-v2/utils/roomMergeUtils.ts`
-- **selectNpcsArray()** (3 connections) — `client/src/components/ui-v2/utils/roomMergeUtils.ts`
-- **extractRoomMetadata()** (2 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
-- **hasOccupantData()** (2 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
-- **getRoomDataFromEvent()** (2 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
-- **createInitialRoomState()** (2 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
-- **createMinimalRoomFromOccupantsEvent()** (2 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
-- **validateRoomIdMatch()** (2 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
-- **handleStructuredOccupantsFormat()** (2 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
-- **deriveRoomFromGameState()** (2 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
-- **deriveRoomFromRoomState()** (2 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
-- **getPlayersArray()** (2 connections) — `client/src/components/ui-v2/utils/roomMergeUtils.ts`
-- **getNpcsArray()** (2 connections) — `client/src/components/ui-v2/utils/roomMergeUtils.ts`
-- **buildChatMessage** (2 connections) — `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
-- **appendMessage** (2 connections) — `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
-- **appendMovementMessage** (2 connections) — `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
-- *... and 3 more nodes in this community*
+- **NPCSpawnRuleCRUDMixin** (10 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **._execute_create_spawn_rule()** (8 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **_row_to_npc_spawn_rule()** (8 connections) — `server/services/npc_service_models.py`
+- **.create_spawn_rule()** (7 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **.get_spawn_rules()** (6 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **AsyncSession** (6 connections)
+- **.get_spawn_rule()** (6 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **._validate_spawn_rule_inputs()** (4 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **.delete_spawn_rule()** (4 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **Any** (2 connections)
+- **Any** (2 connections)
+- **Mixin providing NPC spawn rule CRUD operations.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **Get all NPC spawn rules.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **Get a specific NPC spawn rule by ID.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **Create a new NPC spawn rule.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **Validate NPC definition existence and population counts for spawn rule creation.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **Execute create_spawn_rule stored procedure and return the created spawn rule.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **Delete an NPC spawn rule.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **Map procedure result row to NPCSpawnRule model.** (1 connections) — `server/services/npc_service_models.py`
 
 ## Relationships
 
-- [HealthMeter](HealthMeter.md) (12 shared connections)
-- [.append()](append%28%29.md) (7 shared connections)
+- [. repr ()](_repr_%28%29.md) (5 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (4 shared connections)
+- [real time](real_time.md) (2 shared connections)
+- [def row()](def_row%28%29.md) (1 shared connections)
+- [test mp regeneration service](test_mp_regeneration_service.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/ui-v2/eventLog/projectorHandlersMessages.ts`
-- `client/src/components/ui-v2/eventLog/projectorHandlersState.ts`
-- `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
-- `client/src/components/ui-v2/eventLog/projectorRoom.ts`
-- `client/src/components/ui-v2/utils/__tests__/roomMergeUtils.test.ts`
-- `client/src/components/ui-v2/utils/roomMergeUtils.ts`
+- `server/services/npc_service/spawn_rule_crud.py`
+- `server/services/npc_service_models.py`
 
 ## Audit Trail
 
-- EXTRACTED: 113 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 70 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

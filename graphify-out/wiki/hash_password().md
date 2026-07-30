@@ -1,53 +1,58 @@
 # hash password()
 
-> 31 nodes
+> 76 nodes
 
 ## Key Concepts
 
-- **hash_password()** (18 connections) — `server/auth_utils.py`
-- **verify_password()** (9 connections) — `server/auth_utils.py`
-- **test_verify_password_success()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_verify_password_failure()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_hash_password_raises_on_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_hash_password_authentication_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_hash_password_value_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_hash_password_type_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_hash_password_runtime_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_verify_password_attribute_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_hash_password_empty_string()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_verify_password_empty_string()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_hash_password_with_very_long_password()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_verify_password_with_very_long_password()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_hash_password_success()** (3 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_verify_password_returns_false_on_error()** (3 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_verify_password_runtime_error()** (3 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **Test hash_password raises AuthenticationError on ValueError.** (3 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **Test verify_password handles AttributeError and returns False.** (2 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **Hash a plaintext password using Argon2id.      This function provides superior** (1 connections) — `server/auth_utils.py`
-- **Verify a plaintext password against a hash.      This function safely handles** (1 connections) — `server/auth_utils.py`
-- **Test successful password hashing.** (1 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **Test successful password verification.** (1 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **Test password verification with wrong password.** (1 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **Test that hash_password raises AuthenticationError on error.** (1 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- *... and 6 more nodes in this community*
+- **ScheduleEntry** (28 connections) — `server/schemas/calendar/calendar.py`
+- **test_calendar_schemas.py** (21 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
+- **validate_calendar.py** (17 connections) — `scripts/validate_calendar.py`
+- **ScheduleCollection** (12 connections) — `server/schemas/calendar/calendar.py`
+- **__init__.py** (10 connections) — `server/schemas/calendar/__init__.py`
+- **run_validation()** (9 connections) — `scripts/validate_calendar.py`
+- **calendar.py** (9 connections) — `server/schemas/calendar/calendar.py`
+- **load_schedule_directory()** (8 connections) — `server/schemas/calendar/calendar.py`
+- **extract_observance_ids()** (8 connections) — `server/schemas/calendar/calendar.py`
+- **_get_calendar_paths()** (7 connections) — `scripts/validate_calendar.py`
+- **Path** (6 connections)
+- **_load_and_validate_holidays()** (6 connections) — `scripts/validate_calendar.py`
+- **_check_holiday_coverage()** (6 connections) — `scripts/validate_calendar.py`
+- **_validate_schedule_files()** (6 connections) — `scripts/validate_calendar.py`
+- **slugify_observance()** (6 connections) — `server/schemas/calendar/calendar.py`
+- **_print_success_message()** (5 connections) — `scripts/validate_calendar.py`
+- **.load_file()** (5 connections) — `server/schemas/calendar/calendar.py`
+- **.load_file()** (5 connections) — `server/schemas/calendar/calendar.py`
+- **parse_args()** (4 connections) — `scripts/validate_calendar.py`
+- **load_document_ids()** (4 connections) — `scripts/validate_calendar.py`
+- **BaseModel** (4 connections)
+- **test_holiday_entry_validation_tradition()** (4 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
+- **test_holiday_entry_validation_season()** (4 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
+- **test_holiday_entry_validation_bonus_tags()** (4 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
+- **test_holiday_collection()** (4 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
+- *... and 51 more nodes in this community*
 
 ## Relationships
 
-- [create access token()](create_access_token%28%29.md) (17 shared connections)
-- [. init ()](_init_%28%29.md) (10 shared connections)
-- [PasswordHasher](PasswordHasher.md) (4 shared connections)
-- [main()](main%28%29.md) (1 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
+- [HolidayCollection](HolidayCollection.md) (23 shared connections)
+- [parse jsonb column()](parse_jsonb_column%28%29.md) (11 shared connections)
+- [Formatter](Formatter.md) (8 shared connections)
+- [chat nats publisher](chat_nats_publisher.md) (5 shared connections)
+- [.initialize()](initialize%28%29.md) (4 shared connections)
+- [test player event handlers state](test_player_event_handlers_state.md) (3 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
 
 ## Source Files
 
-- `server/auth_utils.py`
-- `server/tests/unit/auth/test_auth_utils.py`
+- `scripts/validate_calendar.py`
+- `server/npc/lifecycle_manager.py`
+- `server/schemas/calendar/__init__.py`
+- `server/schemas/calendar/calendar.py`
+- `server/tests/unit/schemas/test_calendar_schemas.py`
 
 ## Audit Trail
 
-- EXTRACTED: 91 (90%)
-- INFERRED: 10 (10%)
+- EXTRACTED: 284 (99%)
+- INFERRED: 4 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,6 +1,6 @@
 # handle pickup command()
 
-> 58 nodes
+> 60 nodes
 
 ## Key Concepts
 
@@ -9,6 +9,7 @@
 - **command_result_text()** (17 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
 - **PickupTestWiring** (17 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
 - **test_inventory_commands_pickup.py** (17 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
+- **handle_inventory_command()** (14 connections) — `server/commands/inventory_commands.py`
 - **inventory_commands_test_support.py** (7 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
 - **test_handle_pickup_command()** (7 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
 - **test_handle_pickup_command_inventory_capacity_error()** (7 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
@@ -28,18 +29,24 @@
 - **test_handle_put_command_no_target()** (4 connections) — `server/tests/unit/commands/test_inventory_commands.py`
 - **test_handle_get_command_no_target()** (4 connections) — `server/tests/unit/commands/test_inventory_commands.py`
 - **test_handle_inventory_command()** (3 connections) — `server/tests/unit/commands/test_inventory_commands.py`
-- **test_handle_drop_command()** (3 connections) — `server/tests/unit/commands/test_inventory_commands.py`
-- *... and 33 more nodes in this community*
+- *... and 35 more nodes in this community*
 
 ## Relationships
 
-- [DropResolved](DropResolved.md) (19 shared connections)
-- [AbstractContextManager](AbstractContextManager.md) (6 shared connections)
-- [Any](Any.md) (5 shared connections)
-- [equipment helpers](equipment_helpers.md) (2 shared connections)
+- [Any](Any.md) (13 shared connections)
+- [test resolve state no app()](test_resolve_state_no_app%28%29.md) (10 shared connections)
+- [Lock](Lock.md) (4 shared connections)
+- [test magic commands](test_magic_commands.md) (2 shared connections)
+- [Player Position Service](Player_Position_Service.md) (2 shared connections)
+- [container helpers inventory display](container_helpers_inventory_display.md) (2 shared connections)
+- [maps](maps.md) (2 shared connections)
+- [websocket handler app state](websocket_handler_app_state.md) (1 shared connections)
+- [DropResolved](DropResolved.md) (1 shared connections)
+- [test format metadata empty()](test_format_metadata_empty%28%29.md) (1 shared connections)
 
 ## Source Files
 
+- `server/commands/inventory_commands.py`
 - `server/commands/inventory_pickup_command.py`
 - `server/tests/unit/commands/inventory_commands_test_support.py`
 - `server/tests/unit/commands/test_inventory_commands.py`
@@ -47,8 +54,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 209 (89%)
-- INFERRED: 25 (11%)
+- EXTRACTED: 215 (90%)
+- INFERRED: 25 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

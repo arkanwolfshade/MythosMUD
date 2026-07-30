@@ -1,64 +1,53 @@
 # main()
 
-> 39 nodes
+> 82 nodes
 
 ## Key Concepts
 
-- **safe_subprocess.py** (21 connections) — `scripts/utils/safe_subprocess.py`
-- **safe_run()** (19 connections) — `scripts/utils/safe_subprocess.py`
-- **run_quality_fragmentation_guard.py** (12 connections) — `scripts/run_quality_fragmentation_guard.py`
-- **main()** (6 connections) — `scripts/run_quality_fragmentation_guard.py`
-- **_run_git()** (5 connections) — `scripts/run_quality_fragmentation_guard.py`
-- **_resolved_changed_files()** (5 connections) — `scripts/run_quality_fragmentation_guard.py`
-- **validate_path()** (5 connections) — `scripts/utils/safe_subprocess.py`
-- **run_psql_command()** (4 connections) — `scripts/load_seed_data.py`
-- **_git_executable()** (4 connections) — `scripts/run_quality_fragmentation_guard.py`
-- **_changed_files_between()** (4 connections) — `scripts/run_quality_fragmentation_guard.py`
-- **_local_changed_files()** (4 connections) — `scripts/run_quality_fragmentation_guard.py`
-- **_build_guard_command()** (4 connections) — `scripts/run_quality_fragmentation_guard.py`
-- **validate_command()** (4 connections) — `scripts/utils/safe_subprocess.py`
-- **main()** (3 connections) — `scripts/load_seed_data.py`
-- **_resolve_base_sha()** (3 connections) — `scripts/run_quality_fragmentation_guard.py`
-- **_is_graphify_path()** (3 connections) — `scripts/run_quality_fragmentation_guard.py`
-- **Path** (3 connections)
-- **install.py** (2 connections) — `scripts/install.py`
-- **get_project_root()** (2 connections) — `scripts/install.py`
-- **load_seed_data.py** (2 connections) — `scripts/load_seed_data.py`
-- **_argv_char_len()** (2 connections) — `scripts/run_quality_fragmentation_guard.py`
-- **Any** (2 connections)
-- **CompletedProcess** (2 connections)
-- **bandit.py** (1 connections) — `scripts/bandit.py`
-- **build.py** (1 connections) — `scripts/build.py`
-- *... and 14 more nodes in this community*
+- **DependencyAnalyzer** (21 connections) — `scripts/dependency_analyzer.py`
+- **ManualDependencyAnalyzer** (20 connections) — `scripts/manual_dependency_analysis.py`
+- **DepInfo** (20 connections) — `scripts/utils/dependency_analysis_types.py`
+- **manual_dependency_analysis.py** (16 connections) — `scripts/manual_dependency_analysis.py`
+- **PriorityItem** (13 connections) — `scripts/utils/dependency_analysis_types.py`
+- **.analyze_dependencies()** (11 connections) — `scripts/manual_dependency_analysis.py`
+- **.analyze_all_dependencies()** (10 connections) — `scripts/dependency_analyzer.py`
+- **.generate_report()** (10 connections) — `scripts/manual_dependency_analysis.py`
+- **AnalysisSnapshot** (10 connections) — `scripts/utils/dependency_analysis_types.py`
+- **.generate_report()** (9 connections) — `scripts/dependency_analyzer.py`
+- **dependency_analysis_types.py** (9 connections) — `scripts/utils/dependency_analysis_types.py`
+- **BreakingChange** (9 connections) — `scripts/utils/dependency_analysis_types.py`
+- **NpmManualRow** (8 connections) — `scripts/manual_dependency_analysis.py`
+- **PipManualRow** (8 connections) — `scripts/manual_dependency_analysis.py`
+- **RiskAssessment** (8 connections) — `scripts/utils/dependency_analysis_types.py`
+- **categorize_update()** (8 connections) — `scripts/utils/dependency_risk.py`
+- **dependency_analyzer.py** (7 connections) — `scripts/dependency_analyzer.py`
+- **._analyze_python_dependencies()** (7 connections) — `scripts/dependency_analyzer.py`
+- **UpdateStrategy** (7 connections) — `scripts/utils/dependency_analysis_types.py`
+- **_dep_info_from_npm_row()** (6 connections) — `scripts/dependency_analyzer.py`
+- **._analyze_npm_dependencies()** (6 connections) — `scripts/dependency_analyzer.py`
+- **main()** (6 connections) — `scripts/dependency_analyzer.py`
+- **TypedDict** (6 connections)
+- **dependency_risk.py** (6 connections) — `scripts/utils/dependency_risk.py`
+- **_parse_npm_outdated_json()** (5 connections) — `scripts/dependency_analyzer.py`
+- *... and 57 more nodes in this community*
 
 ## Relationships
 
-- [sqlint](sqlint.md) (7 shared connections)
-- [quality fragmentation ai guardrails](quality_fragmentation_ai_guardrails.md) (3 shared connections)
-- [main()](main%28%29.md) (2 shared connections)
-- [test runner](test_runner.md) (2 shared connections)
-- [compare linting results](compare_linting_results.md) (1 shared connections)
-- [grype](grype.md) (1 shared connections)
-- [git show file()](git_show_file%28%29.md) (1 shared connections)
+- [sqlint](sqlint.md) (2 shared connections)
+- [. init ()](_init_%28%29.md) (2 shared connections)
+- [main()](main%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/bandit.py`
-- `scripts/build.py`
-- `scripts/format.py`
-- `scripts/install.py`
-- `scripts/lint.py`
-- `scripts/load_seed_data.py`
-- `scripts/pylint.py`
-- `scripts/run.py`
-- `scripts/run_quality_fragmentation_guard.py`
-- `scripts/sqlfluff.py`
-- `scripts/utils/safe_subprocess.py`
+- `scripts/dependency_analyzer.py`
+- `scripts/manual_dependency_analysis.py`
+- `scripts/utils/dependency_analysis_types.py`
+- `scripts/utils/dependency_risk.py`
 
 ## Audit Trail
 
-- EXTRACTED: 133 (97%)
-- INFERRED: 4 (3%)
+- EXTRACTED: 315 (82%)
+- INFERRED: 68 (18%)
 - AMBIGUOUS: 0 (0%)
 
 ---

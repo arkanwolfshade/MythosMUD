@@ -1,33 +1,31 @@
 # Tests for handle special command
 
-> 10 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **TestHandleSpecialCommandRouting** (7 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **.test_handle_special_command_routing_alias_command()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **.test_handle_special_command_routing_alias_storage_none()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **.test_handle_special_command_routing_emote_conversion()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **.test_handle_special_command_routing_returns_none()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **Tests for _handle_special_command_routing function.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **Test _handle_special_command_routing processes alias commands.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **Test _handle_special_command_routing returns error when alias_storage is None.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **Test _handle_special_command_routing converts single-word emotes.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **Test _handle_special_command_routing returns None for normal commands.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.create_instance()** (6 connections) — `server/game/items/item_factory.py`
+- **initialize_components()** (5 connections) — `server/game/items/component_hooks.py`
+- **Any** (1 connections)
+- **Prepare component state metadata for a new item instance.      This routine curr** (1 connections) — `server/game/items/component_hooks.py`
+- **Any** (1 connections)
+- **ItemInstance** (1 connections)
+- **Create an item instance from a prototype.          Args:             prototype_i** (1 connections) — `server/game/items/item_factory.py`
 
 ## Relationships
 
-- [check alias safety()](check_alias_safety%28%29.md) (5 shared connections)
-- [Any](Any.md) (1 shared connections)
+- [emit close container event()](emit_close_container_event%28%29.md) (3 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- `server/game/items/component_hooks.py`
+- `server/game/items/item_factory.py`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (96%)
-- INFERRED: 1 (4%)
+- EXTRACTED: 16 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

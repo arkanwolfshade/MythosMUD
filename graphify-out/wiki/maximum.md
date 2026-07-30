@@ -1,25 +1,23 @@
 # maximum
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **month** (4 connections) — `db/static/schemas/holidays.schema.json`
-- **type** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **minimum** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **maximum** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **knip** (2 connections) — `client/package.json`
+- **knip** (1 connections) — `client/package.json`
 
 ## Relationships
 
-- [type](type.md) (1 shared connections)
+- [autoprefixer](autoprefixer.md) (1 shared connections)
 
 ## Source Files
 
-- `db/static/schemas/holidays.schema.json`
+- `client/package.json`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,49 +1,39 @@
 # Test health check endpoint returns
 
-> 27 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **TestMonitoringEndpoints** (16 connections) — `server/tests/unit/test_main.py`
-- **.test_health_check_failure()** (4 connections) — `server/tests/unit/test_main.py`
-- **.test_get_metrics_failure()** (4 connections) — `server/tests/unit/test_main.py`
-- **.test_get_monitoring_summary_failure()** (4 connections) — `server/tests/unit/test_main.py`
-- **.test_get_alerts_failure()** (4 connections) — `server/tests/unit/test_main.py`
-- **.test_resolve_alert_not_found()** (4 connections) — `server/tests/unit/test_main.py`
-- **.test_resolve_alert_failure()** (4 connections) — `server/tests/unit/test_main.py`
-- **.test_health_check_success()** (3 connections) — `server/tests/unit/test_main.py`
-- **.test_get_metrics_success()** (3 connections) — `server/tests/unit/test_main.py`
-- **.test_get_monitoring_summary_success()** (3 connections) — `server/tests/unit/test_main.py`
-- **.test_get_alerts_success()** (3 connections) — `server/tests/unit/test_main.py`
-- **.test_resolve_alert_success()** (3 connections) — `server/tests/unit/test_main.py`
-- **.mock_app()** (2 connections) — `server/tests/unit/test_main.py`
-- **.mock_dashboard()** (2 connections) — `server/tests/unit/test_main.py`
-- **Test metrics endpoint handles errors.** (2 connections) — `server/tests/unit/test_main.py`
-- **Test monitoring endpoint functions.** (1 connections) — `server/tests/unit/test_main.py`
-- **Create a mock FastAPI app.** (1 connections) — `server/tests/unit/test_main.py`
-- **Create a mock monitoring dashboard.** (1 connections) — `server/tests/unit/test_main.py`
-- **Test health check endpoint returns system health.** (1 connections) — `server/tests/unit/test_main.py`
-- **Test health check endpoint handles errors.** (1 connections) — `server/tests/unit/test_main.py`
-- **Test metrics endpoint returns monitoring data.** (1 connections) — `server/tests/unit/test_main.py`
-- **Test monitoring summary endpoint returns summary data.** (1 connections) — `server/tests/unit/test_main.py`
-- **Test monitoring summary endpoint handles errors.** (1 connections) — `server/tests/unit/test_main.py`
-- **Test alerts endpoint returns alert data.** (1 connections) — `server/tests/unit/test_main.py`
-- **Test resolve alert endpoint succeeds.** (1 connections) — `server/tests/unit/test_main.py`
-- *... and 2 more nodes in this community*
+- **format_combat_status()** (6 connections) — `server/commands/combat_helpers.py`
+- **get_combat_target()** (6 connections) — `server/commands/combat_helpers.py`
+- **test_combat_helpers.py** (6 connections) — `server/tests/unit/commands/test_combat_helpers.py`
+- **test_format_combat_status_in_combat()** (3 connections) — `server/tests/unit/commands/test_combat_helpers.py`
+- **test_format_combat_status_not_in_combat()** (3 connections) — `server/tests/unit/commands/test_combat_helpers.py`
+- **test_get_combat_target()** (3 connections) — `server/tests/unit/commands/test_combat_helpers.py`
+- **test_get_combat_target_not_found()** (3 connections) — `server/tests/unit/commands/test_combat_helpers.py`
+- **Any** (2 connections)
+- **Produce a human-readable combat status string.      This helper is retained for** (1 connections) — `server/commands/combat_helpers.py`
+- **Resolve a combat target by name.      The current implementation is intentionall** (1 connections) — `server/commands/combat_helpers.py`
+- **Unit tests for combat command helper functions.  Tests helper functions in comba** (1 connections) — `server/tests/unit/commands/test_combat_helpers.py`
+- **Test format_combat_status() formats combat status.** (1 connections) — `server/tests/unit/commands/test_combat_helpers.py`
+- **Test format_combat_status() handles player not in combat.** (1 connections) — `server/tests/unit/commands/test_combat_helpers.py`
+- **Test get_combat_target() finds target.** (1 connections) — `server/tests/unit/commands/test_combat_helpers.py`
+- **Test get_combat_target() returns None when target not found.** (1 connections) — `server/tests/unit/commands/test_combat_helpers.py`
 
 ## Relationships
 
-- [main()](main%28%29.md) (12 shared connections)
-- [APIRouter](APIRouter.md) (7 shared connections)
+- [CombatService](CombatService.md) (3 shared connections)
+- [combat flee](combat_flee.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/test_main.py`
+- `server/commands/combat_helpers.py`
+- `server/tests/unit/commands/test_combat_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 66 (90%)
-- INFERRED: 7 (10%)
+- EXTRACTED: 31 (79%)
+- INFERRED: 8 (21%)
 - AMBIGUOUS: 0 (0%)
 
 ---

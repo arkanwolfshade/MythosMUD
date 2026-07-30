@@ -1,55 +1,64 @@
 # close db()
 
-> 59 nodes
+> 272 nodes
 
 ## Key Concepts
 
-- **test_database_extended.py** (43 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **init_db()** (11 connections) — `server/database.py`
-- **close_db()** (9 connections) — `server/database.py`
-- **get_engine()** (8 connections) — `server/database.py`
-- **get_database_url()** (6 connections) — `server/database.py`
-- **test_get_engine_initializes_database()** (5 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_database_manager_get_database_path_unsupported()** (5 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_get_session_maker_initializes_database()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_get_database_url_initializes_database()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_database_manager_get_engine_initializes()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_database_manager_get_engine_reinitializes_if_none()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_database_manager_get_session_maker_initializes()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_database_manager_get_database_url_initializes()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_database_manager_get_database_path_postgresql()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_database_manager_close_with_engine()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_database_manager_close_without_engine()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_database_manager_close_dispose_error()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_database_manager_get_engine_event_loop_check()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_database_manager_get_engine_no_running_loop()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **.close()** (3 connections) — `server/database.py`
-- **test_get_async_session_success()** (3 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_get_async_session_http_exception_re_raised()** (3 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_get_async_session_rollback_on_error()** (3 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_get_async_session_rollback_error()** (3 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_init_db_success()** (3 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- *... and 34 more nodes in this community*
+- **.get_instance()** (88 connections) — `server/database.py`
+- **.reset_instance()** (87 connections) — `server/database.py`
+- **test_database_helpers.py** (46 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **test_database_error_handling.py** (41 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_database_init.py** (36 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **database_helpers.py** (30 connections) — `server/database_helpers.py`
+- **DatabaseManager** (29 connections) — `server/database.py`
+- **reset_database()** (16 connections) — `server/database.py`
+- **get_database_path()** (16 connections) — `server/database_helpers.py`
+- **get_async_session()** (13 connections) — `server/database_helpers.py`
+- **get_engine()** (9 connections) — `server/database_helpers.py`
+- **get_session_maker()** (9 connections) — `server/database_helpers.py`
+- **close_db()** (9 connections) — `server/database_helpers.py`
+- **reset_database()** (8 connections) — `server/database_helpers.py`
+- **init_db()** (8 connections) — `server/database_helpers.py`
+- **ensure_database_directory()** (7 connections) — `server/database_helpers.py`
+- **test_database.py** (7 connections) — `server/tests/unit/infrastructure/test_database.py`
+- **get_database_url()** (6 connections) — `server/database_helpers.py`
+- **_reset_database_url_state()** (5 connections) — `server/database.py`
+- **test_database_manager_init_raises_when_instance_exists()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_initialize_database_config_validation_error()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_initialize_database_config_runtime_error()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_initialize_database_none_url()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_initialize_database_unsupported_url()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_initialize_database_value_error()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- *... and 247 more nodes in this community*
 
 ## Relationships
 
-- [main()](main%28%29.md) (19 shared connections)
-- [.get instance()](get_instance%28%29.md) (15 shared connections)
-- [.reset instance()](reset_instance%28%29.md) (14 shared connections)
-- [. init ()](_init_%28%29.md) (7 shared connections)
-- [Reset database state before each](Reset_database_state_before_each.md) (3 shared connections)
-- [.initialize()](initialize%28%29.md) (2 shared connections)
-- [ensure database directory()](ensure_database_directory%28%29.md) (2 shared connections)
+- [real time](real_time.md) (65 shared connections)
+- [.initialize()](initialize%28%29.md) (34 shared connections)
+- [test command parser](test_command_parser.md) (3 shared connections)
+- [. init ()](_init_%28%29.md) (3 shared connections)
+- [test rate limiter utils](test_rate_limiter_utils.md) (3 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (2 shared connections)
+- [UUID](UUID.md) (2 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
+- [.use invite()](use_invite%28%29.md) (1 shared connections)
+- [metrics](metrics.md) (1 shared connections)
+- [Any](Any.md) (1 shared connections)
 
 ## Source Files
 
 - `server/database.py`
+- `server/database_helpers.py`
+- `server/tests/unit/infrastructure/test_database.py`
+- `server/tests/unit/infrastructure/test_database_error_handling.py`
 - `server/tests/unit/infrastructure/test_database_extended.py`
+- `server/tests/unit/infrastructure/test_database_helpers.py`
+- `server/tests/unit/infrastructure/test_database_init.py`
 
 ## Audit Trail
 
-- EXTRACTED: 195 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 1034 (96%)
+- INFERRED: 47 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,12 +1,11 @@
 # Represents the configuration for a
 
-> 49 nodes
+> 54 nodes
 
 ## Key Concepts
 
 - **ZoneConfiguration** (53 connections) — `server/npc/zone_configuration.py`
 - **test_zone_configuration.py** (23 connections) — `server/tests/unit/npc/test_zone_configuration.py`
-- **Test get_effective_spawn_probability() with no modifier.** (5 connections) — `server/tests/unit/npc/test_zone_configuration.py`
 - **test_get_zone_configuration_exact_match()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
 - **test_get_zone_configuration_zone_fallback()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
 - **test_get_zone_configuration_no_slash()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
@@ -29,17 +28,18 @@
 - **test_zone_configuration_description()** (3 connections) — `server/tests/unit/npc/test_zone_configuration.py`
 - **test_zone_configuration_zone_type()** (3 connections) — `server/tests/unit/npc/test_zone_configuration.py`
 - **test_zone_configuration_environment()** (3 connections) — `server/tests/unit/npc/test_zone_configuration.py`
-- *... and 24 more nodes in this community*
+- **test_get_effective_spawn_probability_zero_base()** (3 connections) — `server/tests/unit/npc/test_zone_configuration.py`
+- *... and 29 more nodes in this community*
 
 ## Relationships
 
-- [. repr ()](_repr_%28%29.md) (9 shared connections)
-- [TypedDict](TypedDict.md) (6 shared connections)
-- [.get population stats()](get_population_stats%28%29.md) (6 shared connections)
-- [async load zone configurations()](async_load_zone_configurations%28%29.md) (5 shared connections)
-- [.is required()](is_required%28%29.md) (2 shared connections)
-- [.initialize()](initialize%28%29.md) (1 shared connections)
-- [load zone configurations()](load_zone_configurations%28%29.md) (1 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (15 shared connections)
+- [memory lifespan coordinator](memory_lifespan_coordinator.md) (7 shared connections)
+- [. repr ()](_repr_%28%29.md) (3 shared connections)
+- [HealthMonitor](HealthMonitor.md) (2 shared connections)
+- [.apply dp change()](apply_dp_change%28%29.md) (2 shared connections)
+- [. is uuid string()](_is_uuid_string%28%29.md) (1 shared connections)
+- [datetime](datetime.md) (1 shared connections)
 
 ## Source Files
 
@@ -50,8 +50,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 172 (96%)
-- INFERRED: 8 (4%)
+- EXTRACTED: 169 (95%)
+- INFERRED: 8 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

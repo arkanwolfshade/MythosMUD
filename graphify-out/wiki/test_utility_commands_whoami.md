@@ -1,31 +1,24 @@
 # test utility commands whoami
 
-> 8 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **test_utility_commands_whoami.py** (5 connections) — `server/tests/unit/commands/test_utility_commands_whoami.py`
-- **test_handle_whoami_command()** (3 connections) — `server/tests/unit/commands/test_utility_commands_whoami.py`
-- **test_handle_whoami_command_no_persistence()** (3 connections) — `server/tests/unit/commands/test_utility_commands_whoami.py`
-- **test_handle_whoami_command_player_not_found()** (3 connections) — `server/tests/unit/commands/test_utility_commands_whoami.py`
-- **Unit tests for utility command handlers.  Tests the whoami command functionality** (1 connections) — `server/tests/unit/commands/test_utility_commands_whoami.py`
-- **Test handle_whoami_command() returns player information.** (1 connections) — `server/tests/unit/commands/test_utility_commands_whoami.py`
-- **Test handle_whoami_command() handles missing persistence.** (1 connections) — `server/tests/unit/commands/test_utility_commands_whoami.py`
-- **Test handle_whoami_command() handles player not found.** (1 connections) — `server/tests/unit/commands/test_utility_commands_whoami.py`
+- **test_get_professions_no_session()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **Test get_professions when no session is yielded.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Relationships
 
-- [status commands](status_commands.md) (3 shared connections)
-- [utility commands](utility_commands.md) (1 shared connections)
+- [test async persistence room cache](test_async_persistence_room_cache.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_utility_commands_whoami.py`
+- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (83%)
-- INFERRED: 3 (17%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

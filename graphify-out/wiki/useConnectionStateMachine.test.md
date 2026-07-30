@@ -1,15 +1,14 @@
 # useConnectionStateMachine.test
 
-> 82 nodes
+> 70 nodes
 
 ## Key Concepts
 
-- **logger.ts** (33 connections) — `client/src/utils/logger.ts`
-- **logger** (30 connections) — `client/src/utils/logger.ts`
+- **logger.ts** (35 connections) — `client/src/utils/logger.ts`
+- **logger** (32 connections) — `client/src/utils/logger.ts`
 - **useGameConnectionRefactored.ts** (18 connections) — `client/src/hooks/useGameConnectionRefactored.ts`
 - **useWebSocketConnection.ts** (18 connections) — `client/src/hooks/useWebSocketConnection.ts`
-- **.error()** (17 connections) — `client/src/utils/logger.ts`
-- **ClientLogger** (13 connections) — `client/src/utils/logger.ts`
+- **useGameConnectionManagement.ts** (15 connections) — `client/src/components/ui-v2/hooks/useGameConnectionManagement.ts`
 - **useWebSocketConnectionTestFixtures.ts** (12 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
 - **MockWebSocket** (12 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
 - **useGameConnection()** (12 connections) — `client/src/hooks/useGameConnectionRefactored.ts`
@@ -28,26 +27,28 @@
 - **wsConnectionAfterEach()** (7 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
 - **useConnectionState.ts** (7 connections) — `client/src/hooks/useConnectionState.ts`
 - **useSessionManagement.ts** (7 connections) — `client/src/hooks/useSessionManagement.ts`
-- **.info()** (6 connections) — `client/src/utils/logger.ts`
-- *... and 57 more nodes in this community*
+- **useGameConnectionManagement()** (5 connections) — `client/src/components/ui-v2/hooks/useGameConnectionManagement.ts`
+- **useGameConnection.ts** (5 connections) — `client/src/hooks/useGameConnection.ts`
+- *... and 45 more nodes in this community*
 
 ## Relationships
 
-- [.append()](append%28%29.md) (13 shared connections)
 - [SERVER UNAVAILABLE PATTERNS](SERVER_UNAVAILABLE_PATTERNS.md) (8 shared connections)
-- [HealthMeter](HealthMeter.md) (7 shared connections)
-- [MythosTimeHud](MythosTimeHud.md) (6 shared connections)
+- [player respawn](player_respawn.md) (7 shared connections)
+- [.append()](append%28%29.md) (7 shared connections)
+- [monitoring models](monitoring_models.md) (6 shared connections)
 - [fetchSpy](fetchSpy.md) (6 shared connections)
-- [SafeHtml](SafeHtml.md) (4 shared connections)
 - [AppCreationFlowViews](AppCreationFlowViews.md) (4 shared connections)
-- [CharacterNameScreen](CharacterNameScreen.md) (4 shared connections)
+- [handle reply command()](handle_reply_command%28%29.md) (4 shared connections)
 - [roomHandlers](roomHandlers.md) (4 shared connections)
+- [MythosTimeHud](MythosTimeHud.md) (4 shared connections)
+- [ConnectionCleaner](ConnectionCleaner.md) (3 shared connections)
+- [test combat persistence handler](test_combat_persistence_handler.md) (3 shared connections)
 - [useComponentLifecycleTracking.test](useComponentLifecycleTracking.test.md) (3 shared connections)
-- [CharacterSelectionScreen](CharacterSelectionScreen.md) (3 shared connections)
-- [messageHandlers](messageHandlers.md) (3 shared connections)
 
 ## Source Files
 
+- `client/src/components/ui-v2/hooks/useGameConnectionManagement.ts`
 - `client/src/hooks/__tests__/useConnectionState.test.ts`
 - `client/src/hooks/__tests__/useConnectionStateMachine.test.ts`
 - `client/src/hooks/__tests__/useGameConnection.export.test.ts`
@@ -67,12 +68,11 @@
 - `client/src/hooks/useGameConnectionRefactored.ts`
 - `client/src/hooks/useSessionManagement.ts`
 - `client/src/hooks/useWebSocketConnection.ts`
-- `client/src/utils/logger.test.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 386 (96%)
-- INFERRED: 15 (4%)
+- EXTRACTED: 351 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

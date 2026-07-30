@@ -1,42 +1,50 @@
 # Any
 
-> 18 nodes
+> 27 nodes
 
 ## Key Concepts
 
-- **TrackedTaskManager** (14 connections) — `server/app/tracked_task_manager.py`
-- **.create_tracked_task()** (5 connections) — `server/app/tracked_task_manager.py`
-- **.create_supervised_task()** (5 connections) — `server/app/tracked_task_manager.py`
-- **.__init__()** (3 connections) — `server/app/tracked_task_manager.py`
-- **.set_task_registry()** (3 connections) — `server/app/tracked_task_manager.py`
-- **Any** (2 connections)
-- **Task** (2 connections)
-- **.audit_orphans()** (2 connections) — `server/app/tracked_task_manager.py`
-- **.cleanup_orphaned_tasks()** (2 connections) — `server/app/tracked_task_manager.py`
-- **.actively_tracked_task_count()** (2 connections) — `server/app/tracked_task_manager.py`
-- **Central namespace for tracked task lifecycle coordination preventing orphaned me** (1 connections) — `server/app/tracked_task_manager.py`
-- **Initialize the TrackedTaskManager.          Args:             task_registry: Opt** (1 connections) — `server/app/tracked_task_manager.py`
-- **Create a managed asyncio.Task with mandatory lifecycle tracking.          Args:** (1 connections) — `server/app/tracked_task_manager.py`
-- **Create a task with enhanced supervision for legacy cleanup scenarios.          A** (1 connections) — `server/app/tracked_task_manager.py`
-- **Audit and reclaim orphaned task candidates across the system.          Returns:** (1 connections) — `server/app/tracked_task_manager.py`
-- **Proactively clean up orphaned tasks by cancelling leak prevention violations.** (1 connections) — `server/app/tracked_task_manager.py`
-- **Return count of currently tracked task references within the manager's supervisi** (1 connections) — `server/app/tracked_task_manager.py`
-- **Attach a TaskRegistry instance to this Tracker for shared coordination.** (1 connections) — `server/app/tracked_task_manager.py`
+- **CommandRequest** (11 connections) — `server/command_handler_unified.py`
+- **TestProcessCommandUnified** (7 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **TestLegacyFunctions** (6 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **TestHandleCommand** (5 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **.test_handle_command_unauthorized()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **.test_handle_command_success()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **.test_process_command_legacy()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **.test_get_help_content()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **.test_get_help_content_none()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **.test_process_command_unified_rate_limited()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **.test_process_command_unified_blocked()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **.test_process_command_unified_special_routing()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **.test_process_command_unified_normal_processing()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **BaseModel** (1 connections)
+- **Request model for command processing.** (1 connections) — `server/command_handler_unified.py`
+- **Test legacy compatibility functions.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **Test process_command() legacy function.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **Test get_help_content() delegates to help system.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **Test get_help_content() with None command.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **Test process_command_unified function.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **Test process_command_unified returns rate limit result.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **Test process_command_unified returns block result.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **Test process_command_unified handles special command routing.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **Test process_command_unified processes normal commands.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **Test handle_command HTTP endpoint.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [Cancel lifecycle/critical tasks first (Phase](Cancel_lifecycle-critical_tasks_first_%28Phase.md) (3 shared connections)
-- [.initialize()](initialize%28%29.md) (3 shared connections)
-- [memory lifespan coordinator](memory_lifespan_coordinator.md) (2 shared connections)
+- [check alias safety()](check_alias_safety%28%29.md) (15 shared connections)
+- [test magic commands](test_magic_commands.md) (1 shared connections)
 
 ## Source Files
 
-- `server/app/tracked_task_manager.py`
+- `server/command_handler_unified.py`
+- `server/tests/unit/commands/test_command_handler_unified.py`
 
 ## Audit Trail
 
-- EXTRACTED: 46 (96%)
-- INFERRED: 2 (4%)
+- EXTRACTED: 65 (90%)
+- INFERRED: 7 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

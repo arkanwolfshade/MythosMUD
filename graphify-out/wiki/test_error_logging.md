@@ -15,7 +15,7 @@
 
 ## Relationships
 
-- [main()](main%28%29.md) (1 shared connections)
+- [real time](real_time.md) (1 shared connections)
 
 ## Source Files
 

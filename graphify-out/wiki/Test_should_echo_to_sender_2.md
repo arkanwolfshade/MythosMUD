@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_should_echo_to_sender_not_chat_message()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _should_echo_to_sender returns False for non-chat messages.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **.test_check_uuid_string_matches_exact()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **Test _check_uuid_string_matches with exact match.** (1 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
 
 ## Relationships
 
-- [test nats message handler chat](test_nats_message_handler_chat.md) (1 shared connections)
+- [container websocket events](container_websocket_events.md) (1 shared connections)
+- [PlayerNameExtractor](PlayerNameExtractor.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `server/tests/unit/realtime/test_player_name_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -20,8 +20,8 @@
 
 ## Relationships
 
-- [occupant formatter](occupant_formatter.md) (6 shared connections)
-- [. is uuid string()](_is_uuid_string%28%29.md) (2 shared connections)
+- [command parser()](command_parser%28%29.md) (6 shared connections)
+- [metadata](metadata.md) (2 shared connections)
 
 ## Source Files
 

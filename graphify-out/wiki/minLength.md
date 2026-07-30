@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **description** (3 connections) — `db/static/schemas/room.schema.json`
+- **plane** (3 connections) — `db/static/schemas/room.schema.json`
 - **type** (1 connections) — `db/static/schemas/room.schema.json`
 - **minLength** (1 connections) — `db/static/schemas/room.schema.json`
 

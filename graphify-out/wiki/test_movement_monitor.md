@@ -1,48 +1,49 @@
 # test movement monitor
 
-> 53 nodes
+> 42 nodes
 
 ## Key Concepts
 
-- **test_movement_monitor.py** (33 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_get_movement_monitor_returns_singleton()** (3 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **sample_player_id()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_movement_monitor_init()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_record_movement_attempt_success()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_record_movement_attempt_failure()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_record_movement_attempt_string_player_id()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_record_movement_attempt_uuid_player_id()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_record_movement_attempt_multiple_players()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_record_concurrent_movement()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_record_concurrent_movement_updates_max()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_record_integrity_check_no_violation()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_record_integrity_check_with_violation()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_validate_room_integrity_valid()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_validate_room_integrity_duplicate_players()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_validate_room_integrity_empty_rooms()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_validate_room_integrity_room_without_get_players()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_get_metrics_empty()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_get_metrics_with_data()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_get_metrics_integrity_rate()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_get_alerts_no_alerts()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_get_alerts_high_concurrent()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_get_alerts_high_failure_rate()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_get_alerts_slow_movement_time()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_reset_metrics()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- *... and 28 more nodes in this community*
+- **test_combat_persistence_handler_events.py** (25 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **persistence_handler()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event_impl_event_bus_publish_error()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **mock_combat_service()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event_impl()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event_impl_no_event_bus()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event_impl_error()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event_impl_with_nats()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event_impl_legacy_subject()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event_impl_nats_error()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event_impl_no_nats()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event_impl_all_parameters()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_correction_event()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_correction_event_error()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_correction_event_no_event_bus()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_correction_event_all_parameters()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_correction_event_success_new()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_correction_event_publish_error_new()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_correction_event_all_parameters_new()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_correction_event_outer_exception()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **Unit tests for combat persistence handler - event publishing.  Tests DP update a** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **Create mock combat service.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **Create CombatPersistenceHandler instance.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **Test publish_player_dp_update_event publishes event.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [movement monitor](movement_monitor.md) (5 shared connections)
-- [monitoring](monitoring.md) (2 shared connections)
+- [test combat persistence handler persistence](test_combat_persistence_handler_persistence.md) (3 shared connections)
+- [Any](Any.md) (2 shared connections)
+- [test combat persistence handler events](test_combat_persistence_handler_events.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_movement_monitor.py`
+- `server/tests/unit/services/test_combat_persistence_handler_events.py`
 
 ## Audit Trail
 
-- EXTRACTED: 113 (100%)
+- EXTRACTED: 88 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

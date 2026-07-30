@@ -1,49 +1,54 @@
 # test mp regeneration service
 
-> 52 nodes
+> 34 nodes
 
 ## Key Concepts
 
-- **test_mp_regeneration_service.py** (33 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **mock_player_service()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **sample_player_id()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **mock_player()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_process_tick_regeneration_player_not_found()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_process_tick_regeneration_at_max()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_process_tick_regeneration_restores_mp()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_process_tick_regeneration_calculates_max_from_power()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_process_tick_regeneration_fractional_accumulation()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_get_regen_multiplier_standing()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_get_regen_multiplier_sitting()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_get_regen_multiplier_lying()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_get_regen_multiplier_default_position()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_restore_mp_from_rest_player_not_found()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_restore_mp_from_rest_at_max()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_restore_mp_from_rest_restores_mp()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_restore_mp_from_rest_calculates_max_from_power()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_restore_mp_from_meditation_player_not_found()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_restore_mp_from_meditation_at_max()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_restore_mp_from_meditation_restores_mp()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_restore_mp_from_meditation_higher_than_rest()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_restore_mp_from_item_player_not_found()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_restore_mp_from_item_restores_mp()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_restore_mp_from_item_respects_max()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_restore_mp_from_item_uses_magic_service()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- *... and 27 more nodes in this community*
+- **NPCDefinitionCRUDMixin** (18 connections) — `server/services/npc_service/definition_crud.py`
+- **_row_to_npc_definition()** (12 connections) — `server/services/npc_service_models.py`
+- **.update_npc_definition()** (9 connections) — `server/services/npc_service/definition_crud.py`
+- **AsyncSession** (8 connections)
+- **.create_npc_definition()** (8 connections) — `server/services/npc_service/definition_crud.py`
+- **._execute_create_npc_definition()** (8 connections) — `server/services/npc_service/definition_crud.py`
+- **._execute_npc_update()** (8 connections) — `server/services/npc_service/definition_crud.py`
+- **.get_npc_definitions()** (7 connections) — `server/services/npc_service/definition_crud.py`
+- **.get_npc_definition()** (7 connections) — `server/services/npc_service/definition_crud.py`
+- **._build_npc_update_data()** (7 connections) — `server/services/npc_service/definition_crud.py`
+- **.get_npc_definition_by_name()** (5 connections) — `server/services/npc_service/definition_crud.py`
+- **._log_npc_definition_created()** (4 connections) — `server/services/npc_service/definition_crud.py`
+- **._add_simple_field()** (4 connections) — `server/services/npc_service/definition_crud.py`
+- **Any** (4 connections)
+- **._add_json_field()** (4 connections) — `server/services/npc_service/definition_crud.py`
+- **.delete_npc_definition()** (4 connections) — `server/services/npc_service/definition_crud.py`
+- **._validate_create_npc_definition_params()** (3 connections) — `server/services/npc_service/definition_crud.py`
+- **._validate_npc_update_params()** (3 connections) — `server/services/npc_service/definition_crud.py`
+- **Mixin providing NPC definition CRUD operations.** (1 connections) — `server/services/npc_service/definition_crud.py`
+- **Get all NPC definitions.** (1 connections) — `server/services/npc_service/definition_crud.py`
+- **Get a specific NPC definition by ID.** (1 connections) — `server/services/npc_service/definition_crud.py`
+- **Get an NPC definition by name (case-insensitive).** (1 connections) — `server/services/npc_service/definition_crud.py`
+- **Create a new NPC definition.** (1 connections) — `server/services/npc_service/definition_crud.py`
+- **Execute create_npc_definition stored procedure and return the created definition** (1 connections) — `server/services/npc_service/definition_crud.py`
+- **Validate create_npc_definition parameters. Raises ValueError if invalid.** (1 connections) — `server/services/npc_service/definition_crud.py`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [MPRegenerationService](MPRegenerationService.md) (4 shared connections)
-- [Connection Manager](Connection_Manager.md) (1 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (16 shared connections)
+- [real time](real_time.md) (3 shared connections)
+- [message handlers](message_handlers.md) (2 shared connections)
+- [Profession](Profession.md) (2 shared connections)
+- [def row()](def_row%28%29.md) (1 shared connections)
+- [projectorHandlersMessages](projectorHandlersMessages.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- `server/services/npc_service/definition_crud.py`
+- `server/services/npc_service_models.py`
 
 ## Audit Trail
 
-- EXTRACTED: 115 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 138 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

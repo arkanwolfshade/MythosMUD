@@ -2,7 +2,7 @@
 
 > God node · 306 connections · `server/models/user.py`
 
-**Community:** [APIRouter](APIRouter.md)
+**Community:** [metrics](metrics.md)
 
 ## Connections by Relation
 

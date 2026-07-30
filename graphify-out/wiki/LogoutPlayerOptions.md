@@ -1,22 +1,23 @@
 # LogoutPlayerOptions
 
-> 1 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **LogoutPlayerOptions** (0 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **test_get_player_info_no_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test get_player_info() returns None when connection manager not available.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test player event handlers utils](test_player_event_handlers_utils.md) (1 shared connections)
 
 ## Source Files
 
-- `client/tests/e2e/runtime/fixtures/auth.ts`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

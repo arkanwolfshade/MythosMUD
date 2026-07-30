@@ -1,35 +1,27 @@
 # .cleanup dead connections()
 
-> 11 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **UUID** (12 connections)
-- **.cleanup_dead_connections()** (7 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._cleanup_dead_connections_for_player()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **.__init__()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._get_players_to_check()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._is_websocket_dead()** (3 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **Initialize the connection cleaner.          Args:             memory_monitor: Me** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **Return True if websocket appears dead (should be cleaned up).** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **Return list of player IDs to check (single player or all).** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **Clean up dead connections for a single player.** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **Clean up dead connections for a specific player or all players.          Args:** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **WebSocketRateLimiter** (4 connections) — `docs/examples/logging/websocket_integration.py`
+- **.check_rate_limit()** (2 connections) — `docs/examples/logging/websocket_integration.py`
+- **.__init__()** (1 connections) — `docs/examples/logging/websocket_integration.py`
+- **WebSocket rate limiter with enhanced logging.** (1 connections) — `docs/examples/logging/websocket_integration.py`
+- **Check if client is within rate limit with enhanced logging.** (1 connections) — `docs/examples/logging/websocket_integration.py`
 
 ## Relationships
 
-- [ConnectionCleaner](ConnectionCleaner.md) (11 shared connections)
-- [main()](main%28%29.md) (3 shared connections)
-- [. identify stale players()](_identify_stale_players%28%29.md) (3 shared connections)
+- [websocket integration](websocket_integration.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/maintenance/connection_cleaner.py`
+- `docs/examples/logging/websocket_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 39 (95%)
-- INFERRED: 2 (5%)
+- EXTRACTED: 9 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

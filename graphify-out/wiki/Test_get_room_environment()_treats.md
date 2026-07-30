@@ -1,51 +1,54 @@
 # Test get room environment() treats
 
-> 42 nodes
+> 32 nodes
 
 ## Key Concepts
 
-- **validate_room_data()** (16 connections) — `server/world_loader.py`
-- **get_room_environment()** (13 connections) — `server/world_loader.py`
-- **TestGetRoomEnvironment** (12 connections) — `server/tests/unit/test_world_loader.py`
-- **TestValidateRoomData** (11 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_validate_room_data_strict_validation_raises()** (4 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_validate_room_data_validation_exception_strict()** (4 connections) — `server/tests/unit/test_world_loader.py`
-- **Any** (4 connections)
-- **.test_get_room_environment_from_room_data()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_get_room_environment_from_subzone()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_get_room_environment_from_zone()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_get_room_environment_default()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_get_room_environment_room_takes_priority()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_get_room_environment_subzone_takes_priority_over_zone()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_get_room_environment_subzone_none()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_get_room_environment_zone_none()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_get_room_environment_empty_string_in_room_data()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_validate_room_data_validation_not_available()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_validate_room_data_with_validator()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_validate_room_data_creates_validator()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_validate_room_data_with_errors()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_validate_room_data_validator_creation_fails()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_validate_room_data_validation_exception()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **SchemaValidator** (3 connections)
-- **Test get_room_environment() returns subzone environment when room doesn't have o** (2 connections) — `server/tests/unit/test_world_loader.py`
-- **Test get_room_environment() handles None subzone_config.** (2 connections) — `server/tests/unit/test_world_loader.py`
-- *... and 17 more nodes in this community*
+- **test_player_related_models.py** (19 connections) — `server/tests/unit/models/test_player_related_models.py`
+- **PlayerExploration** (18 connections) — `server/models/player.py`
+- **test_player_channel_preferences_creation()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
+- **test_player_channel_preferences_defaults()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
+- **test_player_channel_preferences_with_muted_channels()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
+- **test_player_channel_preferences_repr()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
+- **test_player_inventory_creation()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
+- **test_player_inventory_defaults()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
+- **test_player_inventory_with_data()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
+- **test_player_inventory_repr()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
+- **test_player_exploration_creation()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
+- **test_player_exploration_repr()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
+- **test_player_exploration_multiple_rooms()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
+- **test_player_channel_preferences_table_name()** (2 connections) — `server/tests/unit/models/test_player_related_models.py`
+- **test_player_inventory_table_name()** (2 connections) — `server/tests/unit/models/test_player_related_models.py`
+- **test_player_exploration_table_name()** (2 connections) — `server/tests/unit/models/test_player_related_models.py`
+- **Junction table tracking which rooms each player has explored.** (1 connections) — `server/models/player.py`
+- **Unit tests for Player-related SQLAlchemy models.  Tests PlayerChannelPreferences** (1 connections) — `server/tests/unit/models/test_player_related_models.py`
+- **Test PlayerChannelPreferences can be instantiated with required fields.** (1 connections) — `server/tests/unit/models/test_player_related_models.py`
+- **Test PlayerChannelPreferences has correct default values.** (1 connections) — `server/tests/unit/models/test_player_related_models.py`
+- **Test PlayerChannelPreferences can have muted channels.** (1 connections) — `server/tests/unit/models/test_player_related_models.py`
+- **Test PlayerChannelPreferences has correct table name.** (1 connections) — `server/tests/unit/models/test_player_related_models.py`
+- **Test PlayerChannelPreferences __repr__ method.** (1 connections) — `server/tests/unit/models/test_player_related_models.py`
+- **Test PlayerInventory can be instantiated with required fields.** (1 connections) — `server/tests/unit/models/test_player_related_models.py`
+- **Test PlayerInventory has correct default values.** (1 connections) — `server/tests/unit/models/test_player_related_models.py`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [main()](main%28%29.md) (8 shared connections)
-- [. init ()](_init_%28%29.md) (7 shared connections)
-- [Any](Any.md) (2 shared connections)
+- [. init ()](_init_%28%29.md) (10 shared connections)
+- [test player preferences service](test_player_preferences_service.md) (5 shared connections)
+- [main()](main%28%29.md) (4 shared connections)
+- [test rate limiter utils](test_rate_limiter_utils.md) (3 shared connections)
+- [UUID](UUID.md) (1 shared connections)
+- [metrics](metrics.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/test_world_loader.py`
-- `server/world_loader.py`
+- `server/models/player.py`
+- `server/tests/unit/models/test_player_related_models.py`
 
 ## Audit Trail
 
-- EXTRACTED: 124 (93%)
-- INFERRED: 9 (7%)
+- EXTRACTED: 82 (89%)
+- INFERRED: 10 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

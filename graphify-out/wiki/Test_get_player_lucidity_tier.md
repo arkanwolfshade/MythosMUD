@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_player_lucidity_tier()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _get_player_lucidity_tier gets tier.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_room_service_init_with_cache()** (2 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test RoomService initialization with cache.** (1 connections) — `server/tests/unit/game/test_room_service.py`
 
 ## Relationships
 
-- [test nats message handler chat](test_nats_message_handler_chat.md) (1 shared connections)
+- [test room service](test_room_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `server/tests/unit/game/test_room_service.py`
 
 ## Audit Trail
 

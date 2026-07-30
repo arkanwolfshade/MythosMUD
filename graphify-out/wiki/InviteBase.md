@@ -1,53 +1,49 @@
 # InviteBase
 
-> 27 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **test_invite_schemas.py** (15 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
-- **InviteBase** (10 connections) — `server/schemas/auth/invite.py`
-- **InviteUpdate** (9 connections) — `server/schemas/auth/invite.py`
-- **InviteCreate** (8 connections) — `server/schemas/auth/invite.py`
-- **test_invite_base_validation()** (4 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
-- **test_invite_update_validation()** (4 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
-- **test_invite_base()** (3 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
-- **test_invite_base_defaults()** (3 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
-- **test_invite_create()** (3 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
-- **test_invite_create_no_expiry()** (3 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
-- **test_invite_read()** (3 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
-- **test_invite_read_with_used_by()** (3 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
-- **test_invite_update()** (3 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
-- **test_invite_update_all_optional()** (3 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
-- **Test InviteUpdate can be instantiated with optional fields.** (2 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
-- **Base invite schema with common fields.** (1 connections) — `server/schemas/auth/invite.py`
-- **Schema for creating a new invite.** (1 connections) — `server/schemas/auth/invite.py`
-- **Schema for updating invite data.** (1 connections) — `server/schemas/auth/invite.py`
-- **Unit tests for invite schemas.  Tests the Pydantic models in invite.py module.** (1 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
-- **Test InviteBase can be instantiated.** (1 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
-- **Test InviteBase has correct default values.** (1 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
-- **Test InviteBase validates invite_code length.** (1 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
-- **Test InviteCreate can be instantiated.** (1 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
-- **Test InviteCreate can be instantiated without expiry.** (1 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
-- **Test InviteRead can be instantiated.** (1 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
-- *... and 2 more nodes in this community*
+- **TestGameTickService** (20 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_init_default_interval()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_stop_not_running()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_stop_failure()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_get_tick_interval()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_tick_loop_increments_count()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_tick_loop_publishes_events()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_tick_loop_handles_exceptions()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **Test suite for GameTickService class.** (1 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **Test GameTickService initialization with default interval.** (1 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **Test stop returns True when not running.** (1 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **Test stop handles exceptions gracefully.** (1 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **Test get_tick_interval returns interval.** (1 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **Test _tick_loop increments tick count.** (1 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **Test _tick_loop publishes game tick events.** (1 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **Test _tick_loop handles exceptions and continues.** (1 connections) — `server/tests/unit/services/test_game_tick_service.py`
 
 ## Relationships
 
-- [invite](invite.md) (5 shared connections)
-- [BaseUserManager](BaseUserManager.md) (4 shared connections)
-- [init](init.md) (3 shared connections)
-- [Request](Request.md) (2 shared connections)
-- [. init ()](_init_%28%29.md) (2 shared connections)
+- [GameTickService](GameTickService.md) (8 shared connections)
+- [test_game_tick_service.py](test_game_tick_service.py.md) (1 shared connections)
+- [.test_get_tick_count](test_get_tick_count.md) (1 shared connections)
+- [.test_init_custom_interval](test_init_custom_interval.md) (1 shared connections)
+- [.test_reset_tick_count](test_reset_tick_count.md) (1 shared connections)
+- [.test_start_already_running](test_start_already_running.md) (1 shared connections)
+- [.test_start_failure](test_start_failure.md) (1 shared connections)
+- [.test_start_success](test_start_success.md) (1 shared connections)
+- [.test_stop_success](test_stop_success.md) (1 shared connections)
+- [.test_stop_task_already_done](test_stop_task_already_done.md) (1 shared connections)
+- [.test_tick_loop_handles_cancellation](test_tick_loop_handles_cancellation.md) (1 shared connections)
+- [.test_tick_loop_handles_publish_failure](test_tick_loop_handles_publish_failure.md) (1 shared connections)
 
 ## Source Files
 
-- `server/schemas/auth/invite.py`
-- `server/tests/unit/schemas/test_invite_schemas.py`
+- `server/tests/unit/services/test_game_tick_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 86 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 48 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

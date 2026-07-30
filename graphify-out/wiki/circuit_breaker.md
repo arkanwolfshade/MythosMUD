@@ -1,13 +1,13 @@
 # circuit breaker
 
-> 88 nodes
+> 86 nodes
 
 ## Key Concepts
 
-- **CircuitBreaker** (41 connections) — `server/realtime/circuit_breaker.py`
+- **CircuitBreaker** (43 connections) — `server/realtime/circuit_breaker.py`
 - **test_circuit_breaker.py** (31 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **CircuitBreakerOpen** (12 connections) — `server/realtime/circuit_breaker.py`
-- **circuit_breaker.py** (11 connections) — `server/realtime/circuit_breaker.py`
+- **CircuitBreakerOpen** (14 connections) — `server/realtime/circuit_breaker.py`
+- **circuit_breaker.py** (12 connections) — `server/realtime/circuit_breaker.py`
 - **.call()** (9 connections) — `server/realtime/circuit_breaker.py`
 - **CircuitState** (6 connections) — `server/realtime/circuit_breaker.py`
 - **._transition_to()** (6 connections) — `server/realtime/circuit_breaker.py`
@@ -29,26 +29,23 @@
 - **test_call_reopens_from_half_open_on_failure()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
 - **test_on_success_resets_failure_count_closed()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
 - **test_on_success_increments_success_count_half_open()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- *... and 63 more nodes in this community*
+- *... and 61 more nodes in this community*
 
 ## Relationships
 
-- [UUID](UUID.md) (4 shared connections)
-- [test nats message handler](test_nats_message_handler.md) (4 shared connections)
-- [main()](main%28%29.md) (2 shared connections)
-- [Any](Any.md) (2 shared connections)
-- [. init ()](_init_%28%29.md) (1 shared connections)
+- [Player](Player.md) (12 shared connections)
+- [initialize nats and combat services()](initialize_nats_and_combat_services%28%29.md) (4 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
 
 ## Source Files
 
 - `server/realtime/circuit_breaker.py`
 - `server/tests/unit/realtime/test_circuit_breaker.py`
-- `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 269 (99%)
-- INFERRED: 4 (1%)
+- EXTRACTED: 267 (97%)
+- INFERRED: 7 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,51 +1,54 @@
 # default cors origins()
 
-> 49 nodes
+> 33 nodes
 
 ## Key Concepts
 
-- **test_config_models.py** (19 connections) — `server/tests/unit/config/test_config_models.py`
-- **DatabaseConfig** (14 connections) — `server/config/models/server_db.py`
-- **ServerConfig** (12 connections) — `server/config/models/server_db.py`
-- **_parse_env_list()** (11 connections) — `server/config/models/_helpers.py`
-- **_default_cors_origins()** (7 connections) — `server/config/models/_helpers.py`
-- **.ensure_url_set()** (4 connections) — `server/config/models/server_db.py`
-- **_parse_list_from_string()** (3 connections) — `server/config/models/_helpers.py`
-- **test_parse_env_list_none()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_parse_env_list_empty_string()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_parse_env_list_json()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_parse_env_list_csv()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_default_cors_origins_no_env()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_default_cors_origins_with_env()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_server_config_default_host()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_server_config_validate_port_valid()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_server_config_validate_port_invalid_low()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_server_config_validate_port_invalid_high()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_database_config_validate_url_postgresql()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_database_config_validate_url_empty()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_database_config_validate_pool_config_positive()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_database_config_validate_pool_config_invalid()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **BaseSettings** (2 connections)
-- **.validate_port()** (2 connections) — `server/config/models/server_db.py`
-- **.validate_database_url()** (2 connections) — `server/config/models/server_db.py`
-- **.validate_pool_config()** (2 connections) — `server/config/models/server_db.py`
-- *... and 24 more nodes in this community*
+- **._build_player_attacked_event()** (8 connections) — `server/npc/combat_integration.py`
+- **UUID** (7 connections)
+- **._compute_dp_update_fields()** (6 connections) — `server/npc/combat_integration.py`
+- **._get_combat_event_publisher()** (6 connections) — `server/npc/combat_integration.py`
+- **._calculate_max_dp()** (6 connections) — `server/npc/combat_integration.py`
+- **._get_npc_display_name()** (5 connections) — `server/npc/combat_integration.py`
+- **._get_npc_lifecycle_manager()** (5 connections) — `server/npc/combat_integration.py`
+- **._publish_player_dp_updated_after_npc_damage()** (5 connections) — `server/npc/combat_integration.py`
+- **._publish_npc_attack_to_nats()** (5 connections) — `server/npc/combat_integration.py`
+- **._get_int_stat()** (5 connections) — `server/npc/combat_integration.py`
+- **._get_npc_name_from_lifecycle()** (4 connections) — `server/npc/combat_integration.py`
+- **._get_player_for_dp_update()** (4 connections) — `server/npc/combat_integration.py`
+- **._get_player_and_stats_for_nats()** (4 connections) — `server/npc/combat_integration.py`
+- **.handle_npc_death()** (4 connections) — `server/npc/combat_integration.py`
+- **._get_player_combat_stats()** (4 connections) — `server/npc/combat_integration.py`
+- **._derive_npc_name_from_id()** (3 connections) — `server/npc/combat_integration.py`
+- **.get_stats()** (3 connections) — `server/npc/npc_base.py`
+- **Resolve NPC instance display name from lifecycle manager, or derive from npc_id.** (1 connections) — `server/npc/combat_integration.py`
+- **Best-effort lookup of NPC name from the lifecycle manager.** (1 connections) — `server/npc/combat_integration.py`
+- **Resolve the NPC lifecycle manager from the app state, if available.** (1 connections) — `server/npc/combat_integration.py`
+- **Fallback name derivation: first segment of npc_id (e.g. nightgaunt_limbo_... ->** (1 connections) — `server/npc/combat_integration.py`
+- **Publish PlayerDPUpdated so the client's health/DP bar updates after NPC damage.** (1 connections) — `server/npc/combat_integration.py`
+- **Resolve the player and UUID needed for DP update events.** (1 connections) — `server/npc/combat_integration.py`
+- **Compute old_dp, new_dp, and max_dp values for PlayerDPUpdated.** (1 connections) — `server/npc/combat_integration.py`
+- **Publish NPC-on-player attack as player_attacked to NATS so the client receives i** (1 connections) — `server/npc/combat_integration.py`
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [main()](main%28%29.md) (13 shared connections)
-- [init](init.md) (2 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (19 shared connections)
+- [.initialize()](initialize%28%29.md) (3 shared connections)
+- [process dead players()](process_dead_players%28%29.md) (2 shared connections)
+- [.state()](state%28%29.md) (2 shared connections)
+- [PanelManager](PanelManager.md) (1 shared connections)
+- [Any](Any.md) (1 shared connections)
 
 ## Source Files
 
-- `server/config/models/_helpers.py`
-- `server/config/models/server_db.py`
-- `server/tests/unit/config/test_config_models.py`
+- `server/npc/combat_integration.py`
+- `server/npc/npc_base.py`
 
 ## Audit Trail
 
-- EXTRACTED: 143 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 95 (95%)
+- INFERRED: 5 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,22 +1,35 @@
 # tsconfig
 
-> 13 nodes
+> 49 nodes
 
 ## Key Concepts
 
-- **compilerOptions** (6 connections) — `client/tests/e2e/tsconfig.json`
-- **tsconfig.json** (5 connections) — `client/tests/e2e/tsconfig.json`
-- **types** (2 connections) — `client/tests/e2e/tsconfig.json`
-- **include** (2 connections) — `client/tests/e2e/tsconfig.json`
-- **extends** (1 connections) — `client/tests/e2e/tsconfig.json`
-- **../../tsconfig.json** (1 connections) — `client/tests/e2e/tsconfig.json`
-- **composite** (1 connections) — `client/tests/e2e/tsconfig.json`
-- **node** (1 connections) — `client/tests/e2e/tsconfig.json`
-- **noEmit** (1 connections) — `client/tests/e2e/tsconfig.json`
-- **allowImportingTsExtensions** (1 connections) — `client/tests/e2e/tsconfig.json`
-- **rootDir** (1 connections) — `client/tests/e2e/tsconfig.json`
-- **./**/*.ts** (1 connections) — `client/tests/e2e/tsconfig.json`
-- **exclude** (1 connections) — `client/tests/e2e/tsconfig.json`
+- **compilerOptions** (18 connections) — `client/tsconfig.json`
+- **paths** (9 connections) — `client/tsconfig.json`
+- **exclude** (8 connections) — `client/tsconfig.json`
+- **tsconfig.json** (4 connections) — `client/tsconfig.json`
+- **lib** (4 connections) — `client/tsconfig.json`
+- **@components/*** (2 connections) — `client/tsconfig.json`
+- **@hooks/*** (2 connections) — `client/tsconfig.json`
+- **@stores/*** (2 connections) — `client/tsconfig.json`
+- **@utils/*** (2 connections) — `client/tsconfig.json`
+- **@styles/*** (2 connections) — `client/tsconfig.json`
+- **@types/*** (2 connections) — `client/tsconfig.json`
+- **@api/*** (2 connections) — `client/tsconfig.json`
+- **@lib/*** (2 connections) — `client/tsconfig.json`
+- **include** (2 connections) — `client/tsconfig.json`
+- **target** (1 connections) — `client/tsconfig.json`
+- **useDefineForClassFields** (1 connections) — `client/tsconfig.json`
+- **ES2020** (1 connections) — `client/tsconfig.json`
+- **DOM** (1 connections) — `client/tsconfig.json`
+- **DOM.Iterable** (1 connections) — `client/tsconfig.json`
+- **module** (1 connections) — `client/tsconfig.json`
+- **skipLibCheck** (1 connections) — `client/tsconfig.json`
+- **moduleResolution** (1 connections) — `client/tsconfig.json`
+- **allowImportingTsExtensions** (1 connections) — `client/tsconfig.json`
+- **resolveJsonModule** (1 connections) — `client/tsconfig.json`
+- **isolatedModules** (1 connections) — `client/tsconfig.json`
+- *... and 24 more nodes in this community*
 
 ## Relationships
 
@@ -24,11 +37,11 @@
 
 ## Source Files
 
-- `client/tests/e2e/tsconfig.json`
+- `client/tsconfig.json`
 
 ## Audit Trail
 
-- EXTRACTED: 24 (100%)
+- EXTRACTED: 96 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

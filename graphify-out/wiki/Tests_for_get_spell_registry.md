@@ -1,29 +1,26 @@
 # Tests for get spell registry
 
-> 6 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **TestGetSpellRegistry** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_spell_registry_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_spell_registry_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Tests for get_spell_registry dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_spell_registry returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_spell_registry raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **1. Disconnect Grace Period Duration** (4 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **Industry Practices** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **Our Plan** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **Gap Analysis** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
 
 ## Relationships
 
-- [. init ()](_init_%28%29.md) (3 shared connections)
-- [Connection Manager](Connection_Manager.md) (1 shared connections)
+- [disconnect grace period comparison](disconnect_grace_period_comparison.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_dependencies.py`
+- `.cursor/plans/disconnect_grace_period_comparison.md`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (93%)
-- INFERRED: 1 (7%)
+- EXTRACTED: 7 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,31 +1,23 @@
 # Test process alias expansion function.
 
-> 10 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **TestProcessAliasExpansion** (6 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **.test_process_alias_expansion_no_alias_storage()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **.test_process_alias_expansion_no_alias()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **.test_process_alias_expansion_unsafe_alias()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **.test_process_alias_expansion_invalid_expanded()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _process_alias_expansion function.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _process_alias_expansion returns None when no alias storage.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _process_alias_expansion returns None when alias not found.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _process_alias_expansion returns error for unsafe alias.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _process_alias_expansion returns error for invalid expanded command.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.to_dict()** (2 connections) — `server/persistence/container_data.py`
+- **Convert container data to dictionary.          Returns dictionary with model fie** (1 connections) — `server/persistence/container_data.py`
 
 ## Relationships
 
-- [check alias safety()](check_alias_safety%28%29.md) (5 shared connections)
+- [disconnect grace period](disconnect_grace_period.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_aliases.py`
+- `server/persistence/container_data.py`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

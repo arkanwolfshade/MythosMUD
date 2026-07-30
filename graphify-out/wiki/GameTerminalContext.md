@@ -1,46 +1,39 @@
 # GameTerminalContext
 
-> 23 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **GameTerminalContext.test.tsx** (18 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
-- **useGameTerminalContext.ts** (9 connections) — `client/src/contexts/hooks/useGameTerminalContext.ts`
-- **GameTerminalContext.tsx** (8 connections) — `client/src/contexts/GameTerminalContext.tsx`
-- **useGameTerminalContext()** (7 connections) — `client/src/contexts/hooks/useGameTerminalContext.ts`
-- **ErrorBoundary** (4 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
-- **useConnectionState()** (4 connections) — `client/src/contexts/hooks/useGameTerminalContext.ts`
-- **useSessionState()** (4 connections) — `client/src/contexts/hooks/useGameTerminalContext.ts`
-- **useGameState()** (4 connections) — `client/src/contexts/hooks/useGameTerminalContext.ts`
-- **useGameActions()** (4 connections) — `client/src/contexts/hooks/useGameTerminalContext.ts`
-- **GameTerminalProvider()** (3 connections) — `client/src/contexts/GameTerminalContext.tsx`
-- **GameTerminalContextType** (2 connections) — `client/src/contexts/GameTerminalContext.tsx`
-- **GameTerminalContext** (2 connections) — `client/src/contexts/GameTerminalContext.tsx`
-- **TestComponent()** (2 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
-- **ConnectionTestComponent()** (2 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
-- **SessionTestComponent()** (2 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
-- **GameStateTestComponent()** (2 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
-- **GameActionsTestComponent()** (2 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
-- **GameTerminalProviderProps** (1 connections) — `client/src/contexts/GameTerminalContext.tsx`
-- **createDefaultGameTerminalState()** (1 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
-- **useGameTerminalMock** (1 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
-- **.constructor()** (1 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
-- **.getDerivedStateFromError()** (1 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
-- **.render()** (1 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
+- **UUID** (8 connections)
+- **.detect_and_handle_error_state()** (8 connections) — `server/realtime/errors/error_handler.py`
+- **Any** (7 connections)
+- **.handle_websocket_error()** (5 connections) — `server/realtime/errors/error_handler.py`
+- **.handle_authentication_error()** (5 connections) — `server/realtime/errors/error_handler.py`
+- **.handle_security_violation()** (5 connections) — `server/realtime/errors/error_handler.py`
+- **.get_error_statistics()** (5 connections) — `server/realtime/errors/error_handler.py`
+- **.__init__()** (4 connections) — `server/realtime/errors/error_handler.py`
+- **.recover_from_error()** (4 connections) — `server/realtime/errors/error_handler.py`
+- **Initialize the error handler.          Args:             force_disconnect_callba** (1 connections) — `server/realtime/errors/error_handler.py`
+- **Detect when a client is in an error state and handle it appropriately.** (1 connections) — `server/realtime/errors/error_handler.py`
+- **Handle WebSocket-specific errors.          Args:             player_id: The play** (1 connections) — `server/realtime/errors/error_handler.py`
+- **Handle authentication-related errors.          Args:             player_id: The** (1 connections) — `server/realtime/errors/error_handler.py`
+- **Handle security violations.          Args:             player_id: The player's I** (1 connections) — `server/realtime/errors/error_handler.py`
+- **Attempt to recover from an error state for a player.          Args:** (1 connections) — `server/realtime/errors/error_handler.py`
+- **Get error handling statistics.          Args:             online_players: Online** (1 connections) — `server/realtime/errors/error_handler.py`
 
 ## Relationships
 
-- [createInitialState()](createInitialState%28%29.md) (5 shared connections)
+- [test connection cleaner](test_connection_cleaner.md) (7 shared connections)
+- [process dead players()](process_dead_players%28%29.md) (2 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/contexts/GameTerminalContext.tsx`
-- `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
-- `client/src/contexts/hooks/useGameTerminalContext.ts`
+- `server/realtime/errors/error_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 85 (100%)
+- EXTRACTED: 58 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

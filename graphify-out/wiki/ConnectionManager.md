@@ -1,51 +1,47 @@
 # ConnectionManager
 
-> 106 nodes
+> 40 nodes
 
 ## Key Concepts
 
-- **connection_manager_methods.py** (67 connections) — `server/realtime/connection_manager_methods.py`
-- **ConnectionManager** (50 connections)
-- **UUID** (21 connections)
-- **broadcast_to_room_impl()** (5 connections) — `server/realtime/connection_manager_methods.py`
-- **get_player_impl()** (5 connections) — `server/realtime/connection_manager_methods.py`
-- **get_players_batch_impl()** (5 connections) — `server/realtime/connection_manager_methods.py`
-- **send_initial_game_state_impl()** (5 connections) — `server/realtime/connection_manager_methods.py`
-- **is_websocket_open_impl()** (5 connections) — `server/realtime/connection_manager_methods.py`
-- **safe_close_websocket_impl()** (5 connections) — `server/realtime/connection_manager_methods.py`
-- **get_rate_limit_info_impl()** (4 connections) — `server/realtime/connection_manager_methods.py`
-- **get_message_delivery_stats_impl()** (4 connections) — `server/realtime/connection_manager_methods.py`
-- **get_player_presence_info_method()** (4 connections) — `server/realtime/connection_manager_methods.py`
-- **validate_player_presence_method()** (4 connections) — `server/realtime/connection_manager_methods.py`
-- **get_player_session_impl()** (4 connections) — `server/realtime/connection_manager_methods.py`
-- **validate_session_impl()** (4 connections) — `server/realtime/connection_manager_methods.py`
-- **get_connection_count_impl()** (4 connections) — `server/realtime/connection_manager_methods.py`
-- **has_websocket_connection_impl()** (4 connections) — `server/realtime/connection_manager_methods.py`
-- **get_player_websocket_connection_id_impl()** (4 connections) — `server/realtime/connection_manager_methods.py`
-- **get_connection_id_from_websocket_impl()** (4 connections) — `server/realtime/connection_manager_methods.py`
-- **broadcast_global_impl()** (4 connections) — `server/realtime/connection_manager_methods.py`
-- **broadcast_room_event_impl()** (4 connections) — `server/realtime/connection_manager_methods.py`
-- **broadcast_global_event_impl()** (4 connections) — `server/realtime/connection_manager_methods.py`
-- **force_disconnect_player_impl()** (4 connections) — `server/realtime/connection_manager_methods.py`
-- **disconnect_websocket_connection_impl()** (4 connections) — `server/realtime/connection_manager_methods.py`
-- **check_connection_health_impl()** (4 connections) — `server/realtime/connection_manager_methods.py`
-- *... and 81 more nodes in this community*
+- **test_population_stats.py** (23 connections) — `server/tests/unit/npc/test_population_stats.py`
+- **test_population_stats_init()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
+- **test_add_npc_required()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
+- **test_add_npc_optional()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
+- **test_add_npc_multiple_same_type()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
+- **test_add_npc_multiple_same_room()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
+- **test_add_npc_without_definition_id()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
+- **test_add_npc_updates_timestamp()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
+- **test_remove_npc_required()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
+- **test_remove_npc_optional()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
+- **test_remove_npc_partial()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
+- **test_remove_npc_not_found()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
+- **test_remove_npc_prevents_negative()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
+- **test_remove_npc_without_definition_id()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
+- **test_remove_npc_updates_timestamp()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
+- **test_to_dict()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
+- **test_to_dict_copies()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
+- **test_mixed_required_optional()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
+- **test_multiple_definitions_same_type()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
+- **test_remove_npc_different_definition()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
+- **Unit tests for population statistics.  Tests the PopulationStats class.** (1 connections) — `server/tests/unit/npc/test_population_stats.py`
+- **Test PopulationStats initialization.** (1 connections) — `server/tests/unit/npc/test_population_stats.py`
+- **Test add_npc() adds required NPC.** (1 connections) — `server/tests/unit/npc/test_population_stats.py`
+- **Test add_npc() adds optional NPC.** (1 connections) — `server/tests/unit/npc/test_population_stats.py`
+- **Test add_npc() increments count for same type.** (1 connections) — `server/tests/unit/npc/test_population_stats.py`
+- *... and 15 more nodes in this community*
 
 ## Relationships
 
-- [connection delegates](connection_delegates.md) (8 shared connections)
-- [connection disconnection](connection_disconnection.md) (4 shared connections)
-- [. init ()](_init_%28%29.md) (1 shared connections)
-- [Any](Any.md) (1 shared connections)
-- [UUID](UUID.md) (1 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (22 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_manager_methods.py`
+- `server/tests/unit/npc/test_population_stats.py`
 
 ## Audit Trail
 
-- EXTRACTED: 377 (100%)
+- EXTRACTED: 100 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

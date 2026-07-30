@@ -1,23 +1,15 @@
 # cfg float()
 
-> 87 nodes
+> 69 nodes
 
 ## Key Concepts
 
 - **IdleMovementHandler** (60 connections) — `server/npc/idle_movement.py`
 - **test_idle_movement.py** (35 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **._should_idle_move_inner()** (8 connections) — `server/npc/idle_movement.py`
-- **.execute_idle_movement()** (8 connections) — `server/npc/idle_movement.py`
-- **_npc_id_str()** (7 connections) — `server/npc/idle_movement.py`
-- **.should_idle_move()** (5 connections) — `server/npc/idle_movement.py`
-- **_passes_movement_probability()** (4 connections) — `server/npc/idle_movement.py`
 - **._npc_registered_in_combat()** (4 connections) — `server/npc/idle_movement.py`
 - **._is_npc_in_combat()** (4 connections) — `server/npc/idle_movement.py`
-- **._try_idle_room_change()** (4 connections) — `server/npc/idle_movement.py`
 - **._check_npc_combat_via_uuid()** (3 connections) — `server/npc/idle_movement.py`
 - **._check_npc_combat_via_string_mapping()** (3 connections) — `server/npc/idle_movement.py`
-- **.get_valid_exits()** (3 connections) — `server/npc/idle_movement.py`
-- **._log_idle_move_outcome()** (3 connections) — `server/npc/idle_movement.py`
 - **idle_movement_handler()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
 - **test_idle_movement_handler_init()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
 - **test_idle_movement_handler_init_no_persistence()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
@@ -26,20 +18,30 @@
 - **test_should_idle_move_not_active()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
 - **test_should_idle_move_probability_check()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
 - **test_should_idle_move_probability_passes_when_random_below_threshold()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **test_should_idle_move_probability_fails_when_random_above_threshold()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **test_should_idle_move_false_when_registered_in_combat()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
 - **test_should_idle_move_true_when_not_in_combat_and_probability_succeeds()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- *... and 62 more nodes in this community*
+- **test_is_npc_in_combat_true()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_is_npc_in_combat_no_attribute()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_get_valid_exits_empty_room()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_get_valid_exits_no_subzone()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_get_valid_exits_filters_exits_outside_subzone()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_get_valid_exits_all_exits_invalid_subzone_returns_empty()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_get_valid_exits_keeps_all_exits_when_subzone_boundary_allows()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_select_exit_empty_dict()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_select_exit_single_exit()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_select_exit_multiple_exits()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- *... and 44 more nodes in this community*
 
 ## Relationships
 
-- [main()](main%28%29.md) (7 shared connections)
-- [cfg bool()](cfg_bool%28%29.md) (7 shared connections)
-- [.initialize()](initialize%28%29.md) (5 shared connections)
-- [. is npc in combat()](_is_npc_in_combat%28%29.md) (2 shared connections)
-- [. init ()](_init_%28%29.md) (2 shared connections)
-- [. repr ()](_repr_%28%29.md) (2 shared connections)
-- [.get active status effects()](get_active_status_effects%28%29.md) (1 shared connections)
+- [.get explored rooms()](get_explored_rooms%28%29.md) (9 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (7 shared connections)
+- [.get active status effects()](get_active_status_effects%28%29.md) (3 shared connections)
+- [. init ()](_init_%28%29.md) (3 shared connections)
+- [get current tick()](get_current_tick%28%29.md) (2 shared connections)
+- [Test validate command basics returns](Test_validate_command_basics_returns.md) (2 shared connections)
+- [Test get mortally wounded players()](Test_get_mortally_wounded_players%28%29.md) (2 shared connections)
+- [Test spawn npc instance() raises](Test_spawn_npc_instance%28%29_raises.md) (2 shared connections)
+- [useMapLayout](useMapLayout.md) (2 shared connections)
 
 ## Source Files
 
@@ -48,8 +50,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 283 (98%)
-- INFERRED: 7 (2%)
+- EXTRACTED: 221 (97%)
+- INFERRED: 7 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,73 +1,70 @@
 # UUID
 
-> 187 nodes
+> 348 nodes
 
 ## Key Concepts
 
-- **build_event()** (112 connections) — `server/realtime/envelope.py`
-- **nats_message_handler.py** (34 connections) — `server/realtime/nats_message_handler.py`
-- **test_envelope.py** (28 connections) — `server/tests/unit/realtime/test_envelope.py`
-- **envelope.py** (26 connections) — `server/realtime/envelope.py`
-- **event_handlers.py** (23 connections) — `server/realtime/event_handlers.py`
-- **player_event_handlers_state.py** (23 connections) — `server/realtime/player_event_handlers_state.py`
-- **nats_message_handler_processing.py** (19 connections) — `server/realtime/nats_message_handler_processing.py`
-- **CombatMessagingService** (18 connections) — `server/services/combat_messaging_service.py`
-- **CombatBroadcastMixin** (15 connections) — `server/services/combat_messaging/combat_broadcasts.py`
-- **PlayerStateEventHandler** (14 connections) — `server/realtime/player_event_handlers_state.py`
-- **rest_countdown_task.py** (12 connections) — `server/commands/rest_countdown_task.py`
-- **CombatMessagingIntegration** (12 connections) — `server/services/combat_messaging/integration.py`
-- **base.py** (11 connections) — `server/services/combat_messaging/base.py`
-- **PlayerBroadcastMixin** (11 connections) — `server/services/combat_messaging/player_broadcasts.py`
-- **_dispatch_player_dp_updated_payload()** (10 connections) — `server/realtime/player_event_handlers_state.py`
-- **dead_letter_queue.py** (9 connections) — `server/realtime/dead_letter_queue.py`
-- **combat_broadcasts.py** (9 connections) — `server/services/combat_messaging/combat_broadcasts.py`
-- **integration.py** (9 connections) — `server/services/combat_messaging/integration.py`
-- **player_broadcasts.py** (9 connections) — `server/services/combat_messaging/player_broadcasts.py`
-- **_send_combat_participant_updates()** (8 connections) — `server/realtime/event_handlers.py`
-- **CombatMessagingBase** (8 connections) — `server/services/combat_messaging/base.py`
-- **UUIDEncoder** (8 connections) — `server/realtime/envelope.py`
-- **create_rest_countdown_task()** (7 connections) — `server/commands/rest_countdown_task.py`
-- **_send_player_death_notification()** (7 connections) — `server/realtime/player_event_handlers_state.py`
-- **HasConnectionManager** (7 connections) — `server/services/combat_messaging/base.py`
-- *... and 162 more nodes in this community*
+- **websocket_initial_state.py** (45 connections) — `server/realtime/websocket_initial_state.py`
+- **test_websocket_initial_state.py** (45 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
+- **RealTimeEventHandler** (44 connections) — `server/realtime/event_handler.py`
+- **AttributeError** (37 connections)
+- **websocket_helpers.py** (37 connections) — `server/realtime/websocket_helpers.py`
+- **websocket_room_updates.py** (35 connections) — `server/realtime/websocket_room_updates.py`
+- **test_websocket_helpers.py** (34 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_websocket_room_updates.py** (32 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **broadcast_room_update()** (24 connections) — `server/realtime/websocket_room_updates.py`
+- **test_websocket_helpers_player.py** (23 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
+- **get_async_persistence()** (19 connections) — `server/async_persistence.py`
+- **send_initial_room_state()** (19 connections) — `server/realtime/websocket_initial_state.py`
+- **send_initial_game_state()** (15 connections) — `server/realtime/websocket_initial_state.py`
+- **validate_occupant_name()** (14 connections) — `server/realtime/websocket_helpers.py`
+- **get_player_and_room()** (14 connections) — `server/realtime/websocket_helpers.py`
+- **check_and_send_death_notification()** (14 connections) — `server/realtime/websocket_initial_state.py`
+- **build_room_update_event()** (13 connections) — `server/realtime/websocket_room_updates.py`
+- **get_npc_name_from_instance()** (12 connections) — `server/realtime/websocket_helpers.py`
+- **check_shutdown_and_reject()** (12 connections) — `server/realtime/websocket_helpers.py`
+- **prepare_player_data()** (12 connections) — `server/realtime/websocket_helpers.py`
+- **get_occupant_names()** (11 connections) — `server/realtime/websocket_helpers.py`
+- **convert_uuids_to_strings()** (11 connections) — `server/realtime/websocket_helpers.py`
+- **get_player_occupants()** (11 connections) — `server/realtime/websocket_room_updates.py`
+- **get_npc_occupants_from_lifecycle_manager()** (11 connections) — `server/realtime/websocket_room_updates.py`
+- **send_game_state_event_safely()** (10 connections) — `server/realtime/websocket_initial_state.py`
+- *... and 323 more nodes in this community*
 
 ## Relationships
 
-- [Any](Any.md) (43 shared connections)
-- [main()](main%28%29.md) (24 shared connections)
-- [. init ()](_init_%28%29.md) (19 shared connections)
-- [Player](Player.md) (11 shared connections)
-- [as event data dict()](as_event_data_dict%28%29.md) (11 shared connections)
-- [message formatters](message_formatters.md) (6 shared connections)
-- [. initialize handlers()](_initialize_handlers%28%29.md) (6 shared connections)
-- [initialize nats and combat services()](initialize_nats_and_combat_services%28%29.md) (5 shared connections)
-- [DeadLetterMessage](DeadLetterMessage.md) (5 shared connections)
-- [Room](Room.md) (5 shared connections)
-- [circuit breaker](circuit_breaker.md) (4 shared connections)
-- [test combat messaging service](test_combat_messaging_service.md) (4 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (35 shared connections)
+- [Player](Player.md) (19 shared connections)
+- [.is required()](is_required%28%29.md) (19 shared connections)
+- [Any](Any.md) (15 shared connections)
+- [NPCCombatIntegrationBase](NPCCombatIntegrationBase.md) (14 shared connections)
+- [. init ()](_init_%28%29.md) (14 shared connections)
+- [spawn defaults](spawn_defaults.md) (6 shared connections)
+- [login grace period](login_grace_period.md) (6 shared connections)
+- [chat nats publisher](chat_nats_publisher.md) (5 shared connections)
+- [test build room drop summary](test_build_room_drop_summary.md) (5 shared connections)
+- [clean command input()](clean_command_input%28%29.md) (4 shared connections)
+- [follow commands](follow_commands.md) (3 shared connections)
 
 ## Source Files
 
-- `server/commands/rest_countdown_task.py`
-- `server/realtime/dead_letter_queue.py`
-- `server/realtime/envelope.py`
-- `server/realtime/event_handlers.py`
-- `server/realtime/nats_message_handler.py`
-- `server/realtime/nats_message_handler_processing.py`
-- `server/realtime/player_event_handlers_state.py`
-- `server/services/combat_messaging/__init__.py`
-- `server/services/combat_messaging/base.py`
-- `server/services/combat_messaging/combat_broadcasts.py`
-- `server/services/combat_messaging/integration.py`
-- `server/services/combat_messaging/player_broadcasts.py`
-- `server/services/combat_messaging_integration.py`
-- `server/services/combat_messaging_service.py`
-- `server/tests/unit/realtime/test_envelope.py`
+- `server/async_persistence.py`
+- `server/realtime/event_handler.py`
+- `server/realtime/websocket_helpers.py`
+- `server/realtime/websocket_initial_state.py`
+- `server/realtime/websocket_room_updates.py`
+- `server/tests/unit/realtime/test_event_handler.py`
+- `server/tests/unit/realtime/test_websocket_helpers.py`
+- `server/tests/unit/realtime/test_websocket_helpers_player.py`
+- `server/tests/unit/realtime/test_websocket_initial_state.py`
+- `server/tests/unit/realtime/test_websocket_room_updates.py`
+- `server/tests/unit/realtime/test_websocket_room_updates_build_event.py`
+- `server/tests/unit/services/test_npc_instance_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 791 (97%)
-- INFERRED: 25 (3%)
+- EXTRACTED: 1207 (93%)
+- INFERRED: 95 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

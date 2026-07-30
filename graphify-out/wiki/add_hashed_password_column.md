@@ -1,26 +1,23 @@
 # add hashed password column
 
-> 5 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **add_hashed_password_column.py** (4 connections) — `server/scripts/add_hashed_password_column.py`
-- **apply_migration()** (3 connections) — `server/scripts/add_hashed_password_column.py`
-- **main()** (3 connections) — `server/scripts/add_hashed_password_column.py`
-- **Apply the migration to add hashed_password column.      Args:         database_u** (1 connections) — `server/scripts/add_hashed_password_column.py`
-- **Main entry point for the migration script.** (1 connections) — `server/scripts/add_hashed_password_column.py`
+- **test_parse_exits_json_list()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **Test _parse_exits_json with list.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Relationships
 
-- [main()](main%28%29.md) (2 shared connections)
+- [test async persistence room cache](test_async_persistence_room_cache.md) (1 shared connections)
 
 ## Source Files
 
-- `server/scripts/add_hashed_password_column.py`
+- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

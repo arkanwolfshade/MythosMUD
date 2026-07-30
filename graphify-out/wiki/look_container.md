@@ -1,53 +1,59 @@
 # look container
 
-> 81 nodes
+> 30 nodes
 
 ## Key Concepts
 
-- **test_look_container_helpers.py** (45 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **look_container.py** (23 connections) — `server/commands/look_container.py`
-- **_find_container_in_room()** (22 connections) — `server/commands/look_container.py`
-- **_format_container_display()** (19 connections) — `server/commands/look_container.py`
-- **Any** (14 connections)
-- **_format_container_contents()** (11 connections) — `server/commands/look_container.py`
-- **_try_lookup_container_implicit()** (10 connections) — `server/commands/look_container.py`
-- **_matches_item_instance_id()** (8 connections) — `server/commands/look_container.py`
-- **_try_match_container_component()** (8 connections) — `server/commands/look_container.py`
-- **_matches_name_or_slot()** (7 connections) — `server/commands/look_container.py`
-- **_get_container_data_from_component()** (7 connections) — `server/commands/look_container.py`
-- **_extract_container_metadata()** (6 connections) — `server/commands/look_container.py`
-- **_find_container_via_wearable_service()** (6 connections) — `server/commands/look_container.py`
-- **test_find_container_in_room_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_format_container_contents_with_items()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_format_container_contents_empty()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_format_container_display_locked()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_format_container_display_sealed()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_format_container_display_with_contents()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_find_container_in_room_found()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_in_room_not_found()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_in_room_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_in_room_empty()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_in_room_no_match()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_in_room_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- *... and 56 more nodes in this community*
+- **NPCCombatRewards** (18 connections) — `server/services/npc_combat_rewards.py`
+- **NPCCombatHandlers** (16 connections) — `server/services/npc_combat_handlers.py`
+- **.__init__()** (7 connections) — `server/services/npc_combat_handlers.py`
+- **._handle_npc_death_on_combat_end()** (7 connections) — `server/services/npc_combat_handlers.py`
+- **.handle_combat_result()** (4 connections) — `server/services/npc_combat_handlers.py`
+- **.__init__()** (4 connections) — `server/services/npc_combat_rewards.py`
+- **Any** (3 connections)
+- **._is_valid_uuid()** (3 connections) — `server/services/npc_combat_handlers.py`
+- **.get_rewards_service()** (3 connections) — `server/services/npc_combat_integration_service.py`
+- **.calculate_xp_reward()** (3 connections) — `server/services/npc_combat_rewards.py`
+- **.award_xp_to_killer()** (3 connections) — `server/services/npc_combat_rewards.py`
+- **._is_valid_uuid()** (3 connections) — `server/services/npc_combat_rewards.py`
+- **npc_combat_handlers()** (3 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
+- **.test_init()** (3 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
+- **.handle_npc_death()** (2 connections) — `server/services/npc_combat_handlers.py`
+- **Any** (2 connections)
+- **Handles combat result processing and NPC death operations.** (1 connections) — `server/services/npc_combat_handlers.py`
+- **Initialize the combat handlers.          Args:             data_provider: NPC co** (1 connections) — `server/services/npc_combat_handlers.py`
+- **Handle combat result, including broadcasting messages and handling NPC death.** (1 connections) — `server/services/npc_combat_handlers.py`
+- **Handle NPC death when combat ends, with defensive exception handling.          A** (1 connections) — `server/services/npc_combat_handlers.py`
+- **Handle NPC death and related effects.          Args:             npc_id: ID of t** (1 connections) — `server/services/npc_combat_handlers.py`
+- **Check if a string is a valid UUID.** (1 connections) — `server/services/npc_combat_handlers.py`
+- **Return rewards dependency for integration collaborators.** (1 connections) — `server/services/npc_combat_integration_service.py`
+- **Manages XP rewards for NPC combat.** (1 connections) — `server/services/npc_combat_rewards.py`
+- **Initialize the rewards manager.          Args:             async_persistence: As** (1 connections) — `server/services/npc_combat_rewards.py`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
-- [find container in room or](find_container_in_room_or.md) (50 shared connections)
-- [look command](look_command.md) (3 shared connections)
-- [look helpers](look_helpers.md) (3 shared connections)
-- [main()](main%28%29.md) (2 shared connections)
+- [Any](Any.md) (7 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (5 shared connections)
+- [combat](combat.md) (4 shared connections)
+- [test npc combat rewards](test_npc_combat_rewards.md) (4 shared connections)
+- [Test despawn npc handles NPC](Test_despawn_npc_handles_NPC.md) (3 shared connections)
+- [communication commands support](communication_commands_support.md) (2 shared connections)
+- [test npc combat handlers](test_npc_combat_handlers.md) (2 shared connections)
+- [.initialize()](initialize%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/look_container.py`
-- `server/tests/unit/commands/test_look_container.py`
-- `server/tests/unit/commands/test_look_container_helpers.py`
+- `server/services/npc_combat_handlers.py`
+- `server/services/npc_combat_integration_service.py`
+- `server/services/npc_combat_rewards.py`
+- `server/tests/unit/services/test_npc_combat_handlers.py`
+- `server/tests/unit/services/test_npc_combat_rewards.py`
 
 ## Audit Trail
 
-- EXTRACTED: 322 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 89 (91%)
+- INFERRED: 9 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

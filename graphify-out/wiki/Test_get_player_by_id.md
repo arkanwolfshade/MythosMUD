@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_player_by_id_not_found()** (2 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test get_player_by_id returns None when player not found.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_validate_player_in_room_cache_not_found()** (2 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test validate_player_in_room() returns False when room not found.** (1 connections) — `server/tests/unit/game/test_room_service.py`
 
 ## Relationships
 
-- [test player repository](test_player_repository.md) (1 shared connections)
+- [test room service](test_room_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_player_repository.py`
+- `server/tests/unit/game/test_room_service.py`
 
 ## Audit Trail
 

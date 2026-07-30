@@ -1,46 +1,50 @@
 # Any
 
-> 23 nodes
+> 76 nodes
 
 ## Key Concepts
 
-- **Stats** (11 connections)
-- **.roll_stats_with_profession()** (7 connections) — `server/game/stats_generator.py`
-- **.roll_stats()** (6 connections) — `server/game/stats_generator.py`
-- **._roll_size()** (5 connections) — `server/game/stats_generator.py`
-- **._roll_3d6()** (5 connections) — `server/game/stats_generator.py`
-- **.get_available_classes()** (5 connections) — `server/game/stats_generator.py`
-- **.roll_stats_with_validation()** (5 connections) — `server/game/stats_generator.py`
-- **._roll_4d6_drop_lowest()** (4 connections) — `server/game/stats_generator.py`
-- **._roll_point_buy()** (4 connections) — `server/game/stats_generator.py`
-- **.validate_class_prerequisites()** (4 connections) — `server/game/stats_generator.py`
-- **._check_profession_requirements()** (4 connections) — `server/game/stats_generator.py`
-- **.get_stat_summary()** (4 connections) — `server/game/stats_generator.py`
-- **Any** (2 connections)
-- **Roll stats and validate against class requirements.          Args:             m** (2 connections) — `server/game/stats_generator.py`
-- **Roll character stats using the specified method.          Args:             meth** (1 connections) — `server/game/stats_generator.py`
-- **Roll Size using formula: (2D6+6)*5 (range 40-90).** (1 connections) — `server/game/stats_generator.py`
-- **Roll stats using 3d6 method (scaled to 15-90 range).** (1 connections) — `server/game/stats_generator.py`
-- **Roll stats using 4d6 drop lowest method (more generous, scaled to 15-90 range).** (1 connections) — `server/game/stats_generator.py`
-- **Generate stats using a point-buy system (balanced, scaled to 1-100 range).** (1 connections) — `server/game/stats_generator.py`
-- **Check if stats meet the prerequisites for a given class.          Args:** (1 connections) — `server/game/stats_generator.py`
-- **Get a list of classes that the character qualifies for.          Args:** (1 connections) — `server/game/stats_generator.py`
-- **Check if stats meet profession requirements.          Args:             stats: T** (1 connections) — `server/game/stats_generator.py`
-- **Get a summary of the character's stats including modifiers and totals.** (1 connections) — `server/game/stats_generator.py`
+- **test_npc_utils.py** (30 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **get_zone_key_from_room_id()** (17 connections) — `server/npc/npc_utils.py`
+- **extract_npc_metadata()** (12 connections) — `server/npc/npc_utils.py`
+- **extract_definition_id_from_npc()** (12 connections) — `server/npc/npc_utils.py`
+- **extract_room_id_from_npc()** (11 connections) — `server/npc/npc_utils.py`
+- **npc_utils.py** (8 connections) — `server/npc/npc_utils.py`
+- **.despawn_npc()** (8 connections) — `server/npc/population_control.py`
+- **._get_active_npcs_from_lifecycle_manager()** (6 connections) — `server/npc/population_control.py`
+- **._get_zone_key_from_room_id()** (5 connections) — `server/npc/population_control.py`
+- **.cleanup_inactive_npcs()** (5 connections) — `server/npc/population_control.py`
+- **._update_population_stats_for_despawn()** (4 connections) — `server/npc/population_control.py`
+- **Any** (3 connections)
+- **_stable_room_id_for_zone()** (3 connections) — `server/npc/npc_utils.py`
+- **.get_zone_population_summary()** (3 connections) — `server/npc/population_control.py`
+- **test_extract_room_id_from_npc_current_room()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_room_id_from_npc_current_room_id()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_room_id_from_npc_room_id()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_room_id_from_npc_not_found()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_room_id_from_npc_non_string()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_npc_metadata_valid()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_npc_metadata_defaults()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_npc_metadata_non_string_type()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_npc_metadata_truthy_required()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_npc_metadata_none_required()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_definition_id_from_npc_has_definition_id()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- *... and 51 more nodes in this community*
 
 ## Relationships
 
-- [character creation](character_creation.md) (12 shared connections)
-- [.get instance()](get_instance%28%29.md) (1 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (17 shared connections)
 
 ## Source Files
 
-- `server/game/stats_generator.py`
+- `server/npc/npc_utils.py`
+- `server/npc/population_control.py`
+- `server/tests/unit/npc/test_npc_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 77 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 236 (100%)
+- INFERRED: 1 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

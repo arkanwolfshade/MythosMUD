@@ -1,51 +1,50 @@
 # .add alias()
 
-> 35 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **._get_alias_file_path()** (8 connections) — `server/alias_storage.py`
-- **.get_player_aliases()** (8 connections) — `server/alias_storage.py`
-- **.save_player_aliases()** (7 connections) — `server/alias_storage.py`
-- **.create_alias()** (7 connections) — `server/alias_storage.py`
-- **._validate_alias_payload()** (7 connections) — `server/alias_storage.py`
-- **._load_alias_data()** (6 connections) — `server/alias_storage.py`
-- **._save_alias_data()** (6 connections) — `server/alias_storage.py`
-- **.add_alias()** (6 connections) — `server/alias_storage.py`
-- **Path** (4 connections)
-- **.remove_alias()** (4 connections) — `server/alias_storage.py`
-- **.get_alias()** (4 connections) — `server/alias_storage.py`
-- **.get_alias_count()** (4 connections) — `server/alias_storage.py`
-- **.backup_aliases()** (4 connections) — `server/alias_storage.py`
+- **get_cached_player()** (15 connections) — `server/utils/player_cache.py`
+- **cache_player()** (13 connections) — `server/utils/player_cache.py`
+- **test_player_cache.py** (11 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **player_cache.py** (7 connections) — `server/utils/player_cache.py`
+- **_get_request_state()** (6 connections) — `server/utils/player_cache.py`
+- **test_cache_and_get_player()** (4 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **test_cache_player_multiple()** (4 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **test_cache_player_overwrite()** (4 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **test_get_cached_player_none()** (3 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **test_get_cached_player_nonexistent()** (3 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **test_get_cached_player_no_state()** (3 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **test_cache_player_no_state()** (3 connections) — `server/tests/unit/utils/test_player_cache.py`
 - **Any** (3 connections)
-- **.clear_aliases()** (3 connections) — `server/alias_storage.py`
-- **.validate_alias_name()** (3 connections) — `server/alias_storage.py`
-- **.validate_alias_command()** (3 connections) — `server/alias_storage.py`
-- **.delete_player_aliases()** (3 connections) — `server/alias_storage.py`
-- **.__init__()** (2 connections) — `server/alias_storage.py`
-- **Get the file path for a player's aliases.          Human: reject path separators** (1 connections) — `server/alias_storage.py`
-- **Load alias data from JSON file.** (1 connections) — `server/alias_storage.py`
-- **Save alias data to JSON file.** (1 connections) — `server/alias_storage.py`
-- **Get all aliases for a player.** (1 connections) — `server/alias_storage.py`
-- **Save aliases for a player.** (1 connections) — `server/alias_storage.py`
-- **Add or update an alias for a player.** (1 connections) — `server/alias_storage.py`
-- *... and 10 more nodes in this community*
+- **Unit tests for player_cache utilities.  Tests the player caching functions for r** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **Test get_cached_player() returns None when no cache exists.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **Test cache_player() and get_cached_player() operations.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **Test get_cached_player() returns None for nonexistent key.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **Test cache_player() can cache multiple players.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **Test cache_player() overwrites existing entries.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **Test get_cached_player() handles missing state.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **Test cache_player() handles missing state gracefully.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **Helpers for caching player objects during a single command request.  This avoids** (1 connections) — `server/utils/player_cache.py`
+- **Safely extract the state object from a FastAPI/Starlette request.** (1 connections) — `server/utils/player_cache.py`
+- **Return a cached player object for this request if one exists.** (1 connections) — `server/utils/player_cache.py`
+- **Cache a player object on the request for reuse within the command.** (1 connections) — `server/utils/player_cache.py`
 
 ## Relationships
 
-- [Any](Any.md) (17 shared connections)
-- [alias](alias.md) (5 shared connections)
-- [.validate player name field()](validate_player_name_field%28%29.md) (1 shared connections)
-- [get alias validator()](get_alias_validator%28%29.md) (1 shared connections)
+- [CommandExecutionRequest](CommandExecutionRequest.md) (5 shared connections)
+- [disconnect player connections()](disconnect_player_connections%28%29.md) (5 shared connections)
+- [.state()](state%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/alias_storage.py`
+- `server/tests/unit/utils/test_player_cache.py`
+- `server/utils/player_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 108 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 90 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

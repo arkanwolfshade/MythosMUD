@@ -1,68 +1,58 @@
 # DeathInterstitial
 
-> 35 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **GameClientV2ContainerView.tsx** (22 connections) — `client/src/components/ui-v2/GameClientV2ContainerView.tsx`
-- **MapView.tsx** (10 connections) — `client/src/components/MapView.tsx`
-- **TabbedInterface.tsx** (8 connections) — `client/src/components/ui-v2/TabbedInterface.tsx`
-- **TabbedInterfaceOverlay.tsx** (7 connections) — `client/src/components/ui-v2/components/TabbedInterfaceOverlay.tsx`
-- **Tab** (6 connections) — `client/src/components/ui-v2/TabbedInterface.tsx`
-- **ModalContainer.tsx** (5 connections) — `client/src/components/ui/ModalContainer.tsx`
-- **DeathInterstitial.tsx** (4 connections) — `client/src/components/DeathInterstitial.tsx`
-- **MainMenuModal.tsx** (4 connections) — `client/src/components/MainMenuModal.tsx`
-- **MapView()** (4 connections) — `client/src/components/MapView.tsx`
-- **GameClientV2ContainerView.test.tsx** (4 connections) — `client/src/components/ui-v2/__tests__/GameClientV2ContainerView.test.tsx`
-- **TabbedInterfaceOverlay.test.tsx** (4 connections) — `client/src/components/ui-v2/components/__tests__/TabbedInterfaceOverlay.test.tsx`
-- **DeathInterstitial()** (3 connections) — `client/src/components/DeathInterstitial.tsx`
-- **DeliriumInterstitial.tsx** (3 connections) — `client/src/components/DeliriumInterstitial.tsx`
-- **MainMenuModal()** (3 connections) — `client/src/components/MainMenuModal.tsx`
-- **GameClientV2ContainerView()** (3 connections) — `client/src/components/ui-v2/GameClientV2ContainerView.tsx`
-- **TabbedInterfaceOverlay()** (3 connections) — `client/src/components/ui-v2/components/TabbedInterfaceOverlay.tsx`
-- **ModalContainer()** (3 connections) — `client/src/components/ui/ModalContainer.tsx`
-- **layout.ts** (3 connections) — `client/src/constants/layout.ts`
-- **DeliriumInterstitial()** (2 connections) — `client/src/components/DeliriumInterstitial.tsx`
-- **DeathInterstitial.test.tsx** (2 connections) — `client/src/components/__tests__/DeathInterstitial.test.tsx`
-- **MainMenuModal.test.tsx** (2 connections) — `client/src/components/__tests__/MainMenuModal.test.tsx`
-- **MapView.test.tsx** (2 connections) — `client/src/components/map/__tests__/MapView.test.tsx`
-- **GameClientV2ContainerViewProps** (2 connections) — `client/src/components/ui-v2/GameClientV2ContainerView.tsx`
-- **TabbedInterface()** (2 connections) — `client/src/components/ui-v2/TabbedInterface.tsx`
-- **TabbedInterface.test.tsx** (2 connections) — `client/src/components/ui-v2/__tests__/TabbedInterface.test.tsx`
-- *... and 10 more nodes in this community*
+- **_find_item_in_equipped()** (17 connections) — `server/commands/look_item.py`
+- **_handle_item_look()** (17 connections) — `server/commands/look_item.py`
+- **_try_lookup_item_implicit()** (15 connections) — `server/commands/look_item.py`
+- **look_item.py** (14 connections) — `server/commands/look_item.py`
+- **_check_item_in_location()** (13 connections) — `server/commands/look_item.py`
+- **_get_item_description_from_prototype()** (12 connections) — `server/commands/look_item.py`
+- **_check_equipped_item()** (10 connections) — `server/commands/look_item.py`
+- **Any** (8 connections)
+- **test_get_item_description_from_prototype_fallback_no_prototype()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_check_item_in_location_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_handle_item_look_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_handle_item_look_look_in_skips_equipped()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_equipped_by_prototype_id()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Item look functionality for MythosMUD.  This module handles looking at items, in** (1 connections) — `server/commands/look_item.py`
+- **Find an item in equipped items by name or prototype_id.      Args:         equip** (1 connections) — `server/commands/look_item.py`
+- **Get item description from prototype registry.      Returns:         Formatted re** (1 connections) — `server/commands/look_item.py`
+- **Check if item found in a location and return formatted result.** (1 connections) — `server/commands/look_item.py`
+- **Check if item is equipped and return formatted result.** (1 connections) — `server/commands/look_item.py`
+- **Handle looking at a specific item.** (1 connections) — `server/commands/look_item.py`
+- **Try to find and display an item in implicit lookup.** (1 connections) — `server/commands/look_item.py`
+- **Test getting item description with fallback name when prototype doesn't exist.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test checking item in location when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test handling item look when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test handling item look with look_in flag skips equipped items.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test finding item in equipped by prototype_id.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
 
 ## Relationships
 
-- [.append()](append%28%29.md) (8 shared connections)
-- [maps](maps.md) (2 shared connections)
-- [EdgeDetailsPanel](EdgeDetailsPanel.md) (2 shared connections)
-- [HealthMeter](HealthMeter.md) (2 shared connections)
-- [useConnectionStateMachine.test](useConnectionStateMachine.test.md) (2 shared connections)
-- [ChatPanelTest](ChatPanelTest.md) (2 shared connections)
-- [AppCreationFlowViews](AppCreationFlowViews.md) (1 shared connections)
-- [PanelManager](PanelManager.md) (1 shared connections)
+- [test look item](test_look_item.md) (27 shared connections)
+- [Any](Any.md) (9 shared connections)
+- [look helpers](look_helpers.md) (5 shared connections)
+- [ExitEdge](ExitEdge.md) (4 shared connections)
+- [game tick processing](game_tick_processing.md) (4 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
+- [get player skills for owned](get_player_skills_for_owned.md) (1 shared connections)
+- [get skills used this level](get_skills_used_this_level.md) (1 shared connections)
+- [get player skills for another](get_player_skills_for_another.md) (1 shared connections)
+- [run improvement rolls when no](run_improvement_rolls_when_no.md) (1 shared connections)
+- [When roll <= skill value,](When_roll__%3D_skill_value%2C.md) (1 shared connections)
+- [When roll > current value,](When_roll___current_value%2C.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/DeathInterstitial.tsx`
-- `client/src/components/DeliriumInterstitial.tsx`
-- `client/src/components/MainMenuModal.tsx`
-- `client/src/components/MapView.tsx`
-- `client/src/components/__tests__/DeathInterstitial.test.tsx`
-- `client/src/components/__tests__/MainMenuModal.test.tsx`
-- `client/src/components/map/__tests__/MapView.test.tsx`
-- `client/src/components/ui-v2/GameClientV2ContainerView.tsx`
-- `client/src/components/ui-v2/TabbedInterface.tsx`
-- `client/src/components/ui-v2/__tests__/GameClientV2ContainerView.test.tsx`
-- `client/src/components/ui-v2/__tests__/TabbedInterface.test.tsx`
-- `client/src/components/ui-v2/components/TabbedInterfaceOverlay.tsx`
-- `client/src/components/ui-v2/components/__tests__/TabbedInterfaceOverlay.test.tsx`
-- `client/src/components/ui/ModalContainer.tsx`
-- `client/src/constants/layout.ts`
+- `server/commands/look_item.py`
+- `server/tests/unit/commands/test_look_item.py`
 
 ## Audit Trail
 
-- EXTRACTED: 124 (100%)
+- EXTRACTED: 133 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

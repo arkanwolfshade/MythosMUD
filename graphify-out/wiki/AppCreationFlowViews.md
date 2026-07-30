@@ -1,12 +1,11 @@
 # AppCreationFlowViews
 
-> 34 nodes
+> 32 nodes
 
 ## Key Concepts
 
 - **config.ts** (27 connections) — `client/src/utils/config.ts`
 - **API_V1_BASE** (18 connections) — `client/src/utils/config.ts`
-- **mythosAppViewModel.ts** (15 connections) — `client/src/mythosApp/mythosAppViewModel.ts`
 - **MythosAppViewModel** (14 connections) — `client/src/mythosApp/mythosAppViewModel.ts`
 - **AppRootViews.tsx** (11 connections) — `client/src/mythosApp/AppRootViews.tsx`
 - **AppCreationFlowViews.tsx** (10 connections) — `client/src/mythosApp/AppCreationFlowViews.tsx`
@@ -20,7 +19,6 @@
 - **AppCreationFlowViews()** (4 connections) — `client/src/mythosApp/AppCreationFlowViews.tsx`
 - **AppDemoView()** (4 connections) — `client/src/mythosApp/AppDemoView.tsx`
 - **AppSessionOutroViews()** (4 connections) — `client/src/mythosApp/AppSessionOutroViews.tsx`
-- **startLoginGracePeriod.ts** (4 connections) — `client/src/mythosApp/startLoginGracePeriod.ts`
 - **SkillsPage.test.tsx** (3 connections) — `client/src/pages/__tests__/SkillsPage.test.tsx`
 - **getApiBaseUrl()** (3 connections) — `client/src/utils/config.ts`
 - **MythosLoginForm.tsx** (2 connections) — `client/src/mythosApp/MythosLoginForm.tsx`
@@ -29,22 +27,24 @@
 - **GameClientV2Container** (2 connections) — `client/src/mythosApp/appLazyScreens.tsx`
 - **MotdInterstitialScreen** (2 connections) — `client/src/mythosApp/appLazyScreens.tsx`
 - **ProfessionSelectionScreen** (2 connections) — `client/src/mythosApp/appLazyScreens.tsx`
-- *... and 9 more nodes in this community*
+- **StatsRollingScreen** (2 connections) — `client/src/mythosApp/appLazyScreens.tsx`
+- **CharacterSelectionScreen** (2 connections) — `client/src/mythosApp/appLazyScreens.tsx`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [AuthSlice](AuthSlice.md) (12 shared connections)
-- [AppState](AppState.md) (8 shared connections)
-- [fetchSpy](fetchSpy.md) (6 shared connections)
-- [EdgeDetailsPanel](EdgeDetailsPanel.md) (5 shared connections)
-- [SafeHtml](SafeHtml.md) (4 shared connections)
-- [SERVER UNAVAILABLE PATTERNS](SERVER_UNAVAILABLE_PATTERNS.md) (4 shared connections)
+- [CharacterSelectionScreen](CharacterSelectionScreen.md) (11 shared connections)
+- [SERVER UNAVAILABLE PATTERNS](SERVER_UNAVAILABLE_PATTERNS.md) (10 shared connections)
+- [fetchSpy](fetchSpy.md) (10 shared connections)
+- [EdgeCreationModal](EdgeCreationModal.md) (5 shared connections)
 - [useConnectionStateMachine.test](useConnectionStateMachine.test.md) (4 shared connections)
 - [mockOpenContainers](mockOpenContainers.md) (2 shared connections)
 - [MythosTimeHud](MythosTimeHud.md) (2 shared connections)
-- [.append()](append%28%29.md) (2 shared connections)
-- [CharacterSelectionScreen](CharacterSelectionScreen.md) (2 shared connections)
+- [player respawn](player_respawn.md) (2 shared connections)
 - [applyAuthenticatedSession](applyAuthenticatedSession.md) (2 shared connections)
+- [RoomMapViewerProps](RoomMapViewerProps.md) (2 shared connections)
+- [maps](maps.md) (1 shared connections)
+- [test find item in equipped](test_find_item_in_equipped.md) (1 shared connections)
 
 ## Source Files
 
@@ -55,7 +55,6 @@
 - `client/src/mythosApp/MythosLoginForm.tsx`
 - `client/src/mythosApp/appLazyScreens.tsx`
 - `client/src/mythosApp/mythosAppViewModel.ts`
-- `client/src/mythosApp/startLoginGracePeriod.ts`
 - `client/src/pages/SkillsPage.tsx`
 - `client/src/pages/__tests__/SkillsPage.test.tsx`
 - `client/src/utils/__tests__/config.test.ts`
@@ -63,7 +62,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 191 (100%)
+- EXTRACTED: 172 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

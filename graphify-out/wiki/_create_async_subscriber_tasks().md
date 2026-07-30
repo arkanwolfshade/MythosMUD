@@ -1,49 +1,48 @@
 # . create async subscriber tasks()
 
-> 41 nodes
+> 26 nodes
 
 ## Key Concepts
 
-- **Any** (10 connections)
-- **._handle_event_async()** (8 connections) — `server/events/event_bus.py`
-- **._ensure_async_processing()** (6 connections) — `server/events/event_bus.py`
-- **._create_async_subscriber_tasks()** (6 connections) — `server/events/event_bus.py`
-- **.unsubscribe()** (6 connections) — `server/events/event_bus.py`
-- **._separate_subscribers()** (5 connections) — `server/events/event_bus.py`
-- **._process_sync_subscribers()** (5 connections) — `server/events/event_bus.py`
-- **._wait_for_async_subscribers()** (5 connections) — `server/events/event_bus.py`
-- **.subscribe()** (5 connections) — `server/events/event_bus.py`
-- **._process_events_async()** (4 connections) — `server/events/event_bus.py`
-- **._handle_task_result_async()** (4 connections) — `server/events/event_bus.py`
-- **.publish()** (4 connections) — `server/events/event_bus.py`
-- **.inject()** (4 connections) — `server/events/event_bus.py`
-- **.unsubscribe_all_for_service()** (4 connections) — `server/events/event_bus.py`
-- **.get_subscriber_stats()** (4 connections) — `server/events/event_bus.py`
-- **.shutdown()** (4 connections) — `server/events/event_bus.py`
-- **._ensure_processing_started()** (3 connections) — `server/events/event_bus.py`
-- **Task** (3 connections)
-- **.get_all_subscriber_counts()** (3 connections) — `server/events/event_bus.py`
-- **.get_active_task_details()** (3 connections) — `server/events/event_bus.py`
-- **.get_subscriber_lifecycle_metrics()** (3 connections) — `server/events/event_bus.py`
-- **T** (2 connections)
-- **Ensure async processing is started only when needed and within an event loop.** (1 connections) — `server/events/event_bus.py`
-- **Legacy wrapper for API compatibility during transition.** (1 connections) — `server/events/event_bus.py`
-- **Pure async event processing loop replacing the dangerous threading pattern.** (1 connections) — `server/events/event_bus.py`
-- *... and 16 more nodes in this community*
+- **test_player_event_handlers_room_left.py** (15 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **test_handle_player_left_success()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **test_handle_player_left_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **test_handle_player_left_no_player_info()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **test_handle_player_left_disconnecting()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **test_handle_player_left_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **test_unsubscribe_player_from_room_success()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **test_unsubscribe_player_from_room_string_id()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **test_unsubscribe_player_from_room_invalid_id()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **test_broadcast_player_left_message_not_disconnecting()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **test_broadcast_player_left_message_disconnecting()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **test_broadcast_player_left_message_no_room_id()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **test_log_occupants_info()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **Unit tests for player room event handlers (player left / unsubscribe / broadcast** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **Test unsubscribe_player_from_room() successfully unsubscribes player.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **Test unsubscribe_player_from_room() handles string player_id.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **Test unsubscribe_player_from_room() handles invalid player_id.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **Test broadcast_player_left_message() broadcasts when not disconnecting.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **Test broadcast_player_left_message() skips when player is disconnecting.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **Test broadcast_player_left_message() skips when room_id is None.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **Test handle_player_left() successfully handles event.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **Test handle_player_left() skips when connection manager not available.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **Test handle_player_left() handles player not found.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **Test handle_player_left() skips broadcast when player is disconnecting.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **Test handle_player_left() handles errors.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [.initialize()](initialize%28%29.md) (20 shared connections)
-- [Any](Any.md) (8 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (7 shared connections)
 
 ## Source Files
 
-- `server/events/event_bus.py`
+- `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
 
 ## Audit Trail
 
-- EXTRACTED: 118 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 57 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

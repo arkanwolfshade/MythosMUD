@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_profession_meets_stat_requirements_one_not_met()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **Test meets_stat_requirements returns False when one requirement is not met.** (1 connections) — `server/tests/unit/models/test_profession.py`
+- **test_player_room_event_handler_init()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **Test PlayerRoomEventHandler initialization.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Relationships
 
-- [Profession](Profession.md) (1 shared connections)
-- [test profession](test_profession.md) (1 shared connections)
+- [. call ()](_call_%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/models/test_profession.py`
+- `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

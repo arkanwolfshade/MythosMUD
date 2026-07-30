@@ -1,54 +1,49 @@
 # get room service()
 
-> 36 nodes
+> 26 nodes
 
 ## Key Concepts
 
-- **get_room_service()** (12 connections) — `server/dependencies.py`
-- **Tests for get_player_service dependency function.** (7 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **TestGetPlayerService** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **TestGetRoomService** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **TestGetPlayerRespawnService** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **TestGetPlayerCombatService** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **TestGetPlayerDeathService** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **TestGetCombatService** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **TestGetMagicService** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **TestGetChatService** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_player_service returns service when present.** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_player_service raises RuntimeError when service is None.** (4 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_player_service_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_player_service_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_room_service_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_room_service_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_player_respawn_service_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_player_respawn_service_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_player_combat_service_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_player_death_service_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_player_death_service_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_combat_service_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_combat_service_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_magic_service_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_magic_service_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- *... and 11 more nodes in this community*
+- **test_command_factories_combat.py** (14 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **.create_kick_command()** (5 connections) — `server/utils/command_factories_combat.py`
+- **test_create_attack_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **test_create_attack_command_no_args()** (3 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **test_create_punch_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **test_create_punch_command_no_args()** (3 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **test_create_kick_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **test_create_kick_command_no_args()** (3 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **test_create_strike_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **test_create_strike_command_no_args()** (3 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **test_create_flee_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **test_create_taunt_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **test_create_taunt_command_no_args()** (3 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **Unit tests for combat command factories.  Tests the CombatCommandFactory class m** (1 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **Test create_attack_command() creates AttackCommand.** (1 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **Test create_attack_command() allows None target (validation happens later).** (1 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **Test create_punch_command() creates PunchCommand.** (1 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **Test create_punch_command() allows None target (validation happens later).** (1 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **Test create_kick_command() creates KickCommand.** (1 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **Test create_kick_command() allows None target (validation happens later).** (1 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **Test create_strike_command() creates StrikeCommand.** (1 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **Test create_strike_command() allows None target (validation happens later).** (1 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **Test create_flee_command() creates FleeCommand (no arguments).** (1 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **Test create_taunt_command() creates TauntCommand with target.** (1 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **Test create_taunt_command() allows None target (validation happens later).** (1 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [. init ()](_init_%28%29.md) (26 shared connections)
-- [Connection Manager](Connection_Manager.md) (8 shared connections)
-- [AsyncSession](AsyncSession.md) (2 shared connections)
-- [character creation](character_creation.md) (2 shared connections)
-- [Tests for get exploration service](Tests_for_get_exploration_service.md) (1 shared connections)
+- [Spell Targeting](Spell_Targeting.md) (13 shared connections)
 
 ## Source Files
 
-- `server/dependencies.py`
-- `server/tests/unit/infrastructure/test_dependencies.py`
-- `server/tests/unit/test_dependency_injection.py`
+- `server/tests/unit/utils/test_command_factories_combat.py`
+- `server/utils/command_factories_combat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 116 (93%)
-- INFERRED: 9 (7%)
+- EXTRACTED: 65 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

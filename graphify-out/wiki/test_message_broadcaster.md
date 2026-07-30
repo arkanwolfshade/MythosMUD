@@ -1,47 +1,37 @@
 # test message broadcaster
 
-> 30 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **test_message_broadcaster.py** (17 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **message_broadcaster()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **mock_room_manager()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **mock_send_personal_message()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **test_message_broadcaster_init()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **test_broadcast_to_room()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **test_broadcast_to_room_exclude_player()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **test_broadcast_to_room_empty()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **test_broadcast_global()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **test_broadcast_to_room_with_uuid_exclude()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **test_broadcast_to_room_delivery_failure()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **test_broadcast_global_exclude_player()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **test_broadcast_global_empty()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **test_broadcast_room_event()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **test_broadcast_global_event()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **Unit tests for message broadcaster.  Tests the MessageBroadcaster class.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **Create a mock room manager.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **Create a mock send_personal_message callback.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **Create a MessageBroadcaster instance.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **Test MessageBroadcaster initialization.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **Test broadcast_to_room() broadcasts to room subscribers.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **Test broadcast_to_room() excludes specified player.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **Test broadcast_to_room() when room has no subscribers.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **Test broadcast_global() broadcasts globally.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **Test broadcast_to_room() with UUID exclude_player.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- *... and 5 more nodes in this community*
+- **Phase 2: Enhanced Features** (6 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
+- **Task 2.1: Add Chat History and Statistics to ChatPanel** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
+- **Task 2.2: Implement Quick Chat Commands** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
+- **Task 2.3: Add Channel Activity Indicators** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
+- **Task 2.4: Enhance GameLogPanel with Better Message Categorization** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
+- **Task 2.5: Add Game Log Filtering and Search Capabilities** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
+- **Sub-tasks** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
+- **Acceptance Criteria** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
+- **Sub-tasks** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
+- **Acceptance Criteria** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
+- **Sub-tasks** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
+- **Acceptance Criteria** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
+- **Sub-tasks** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
+- **Acceptance Criteria** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
+- **Sub-tasks** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
+- **Acceptance Criteria** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
 
 ## Relationships
 
-- [SendPersonalMessage](SendPersonalMessage.md) (3 shared connections)
+- [CHAT PANEL SEPARATION TASKS](CHAT_PANEL_SEPARATION_TASKS.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 61 (100%)
+- EXTRACTED: 31 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

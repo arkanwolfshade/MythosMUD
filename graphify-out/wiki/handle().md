@@ -1,46 +1,35 @@
 # .handle()
 
-> 20 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **WebSocket** (8 connections)
-- **Any** (8 connections)
-- **.handle_message()** (7 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (6 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.get_handler()** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (4 connections) — `server/realtime/message_handler_factory.py`
-- **Handle a specific message type.          Args:             websocket: The WebSoc** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handle command message type.** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handle chat message type.** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handle ping message type.** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handle follow_response message type.** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handle party_invite_response message type.** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handle client_error_report message type.** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Get a handler for the specified message type.          Args:             message** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handle a WebSocket message using the appropriate handler.          Args:** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Phase 3: Polish and Optimization** (5 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
+- **Task 3.1: Improve Visual Design and Theming** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
+- **Task 3.2: Add Advanced Chat Features** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
+- **Task 3.3: Implement Chat Search and Filtering** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
+- **Task 3.4: Add Chat Export Functionality** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
+- **Sub-tasks** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
+- **Acceptance Criteria** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
+- **Sub-tasks** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
+- **Acceptance Criteria** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
+- **Sub-tasks** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
+- **Acceptance Criteria** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
+- **Sub-tasks** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
+- **Acceptance Criteria** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
 
 ## Relationships
 
-- [message handler factory](message_handler_factory.md) (8 shared connections)
-- [message handlers](message_handlers.md) (6 shared connections)
-- [MessageHandlerFactory](MessageHandlerFactory.md) (2 shared connections)
-- [NPCCombatIntegrationBase](NPCCombatIntegrationBase.md) (1 shared connections)
-- [. init ()](_init_%28%29.md) (1 shared connections)
+- [CHAT PANEL SEPARATION TASKS](CHAT_PANEL_SEPARATION_TASKS.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/message_handler_factory.py`
+- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 71 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 25 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

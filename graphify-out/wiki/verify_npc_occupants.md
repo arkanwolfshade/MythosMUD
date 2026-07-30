@@ -1,35 +1,28 @@
 # verify npc occupants
 
-> 13 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **verify_npc_occupants.py** (8 connections) — `server/scripts/verify_npc_occupants.py`
-- **verify_npcs_in_lifecycle_manager()** (6 connections) — `server/scripts/verify_npc_occupants.py`
-- **_check_service_availability()** (5 connections) — `server/scripts/verify_npc_occupants.py`
-- **_collect_npcs_by_room()** (4 connections) — `server/scripts/verify_npc_occupants.py`
-- **_test_query_for_room()** (4 connections) — `server/scripts/verify_npc_occupants.py`
-- **Any** (3 connections)
-- **_print_summary()** (3 connections) — `server/scripts/verify_npc_occupants.py`
-- **Verification script to check NPCs in lifecycle manager and test occupant query l** (1 connections) — `server/scripts/verify_npc_occupants.py`
-- **Check if NPC service, lifecycle manager, and active_npcs are available.      Ret** (1 connections) — `server/scripts/verify_npc_occupants.py`
-- **Collect NPCs grouped by room ID.      Args:         active_npcs: Dictionary of a** (1 connections) — `server/scripts/verify_npc_occupants.py`
-- **Test query logic for a specific room.      Args:         active_npcs: Dictionary** (1 connections) — `server/scripts/verify_npc_occupants.py`
-- **Print verification summary.      Args:         npc_count: Total number of active** (1 connections) — `server/scripts/verify_npc_occupants.py`
-- **Verify NPCs exist in lifecycle manager and test query logic.** (1 connections) — `server/scripts/verify_npc_occupants.py`
+- **.unsubscribe_from_subzone()** (4 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **.cleanup_empty_subzone_subscriptions()** (4 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **.get_players_in_subzone()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **Unsubscribe from local channel messages for a specific sub-zone.          Args:** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **Get list of players currently in a specific sub-zone.          Args:** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **Clean up sub-zone subscriptions that have no active players.** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
 
 ## Relationships
 
-- [Any](Any.md) (2 shared connections)
-- [.initialize()](initialize%28%29.md) (1 shared connections)
+- [NATSMessageSubscriptionMixin](NATSMessageSubscriptionMixin.md) (3 shared connections)
+- [EnvironmentalContainerLoader](EnvironmentalContainerLoader.md) (1 shared connections)
 
 ## Source Files
 
-- `server/scripts/verify_npc_occupants.py`
+- `server/realtime/nats_message_handler_subscriptions.py`
 
 ## Audit Trail
 
-- EXTRACTED: 39 (100%)
+- EXTRACTED: 14 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,70 +1,68 @@
 # Any
 
-> 147 nodes
+> 118 nodes
 
 ## Key Concepts
 
-- **get_npc_instance_service()** (77 connections) — `server/services/npc_instance_service.py`
-- **router.py** (30 connections) — `server/commands/npc_admin/router.py`
-- **__init__.py** (24 connections) — `server/commands/npc_admin/__init__.py`
-- **test_npc_admin_commands.py** (23 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
-- **instance.py** (22 connections) — `server/commands/npc_admin/instance.py`
-- **npc_admin_commands.py** (21 connections) — `server/commands/npc_admin_commands.py`
-- **_build_subcommand_map()** (20 connections) — `server/commands/npc_admin/router.py`
-- **handle_npc_command()** (17 connections) — `server/commands/npc_admin/router.py`
-- **definition.py** (16 connections) — `server/commands/npc_admin/definition.py`
-- **test_occupants.py** (14 connections) — `server/commands/npc_admin/test_occupants.py`
-- **handle_npc_spawn_command()** (13 connections) — `server/commands/npc_admin/instance.py`
-- **handle_npc_create_command()** (12 connections) — `server/commands/npc_admin/definition.py`
-- **behavior.py** (11 connections) — `server/commands/npc_admin/behavior.py`
-- **monitoring.py** (11 connections) — `server/commands/npc_admin/monitoring.py`
-- **handle_npc_test_occupants_command()** (11 connections) — `server/commands/npc_admin/test_occupants.py`
-- **handle_npc_edit_command()** (10 connections) — `server/commands/npc_admin/definition.py`
-- **handle_npc_despawn_command()** (10 connections) — `server/commands/npc_admin/instance.py`
-- **handle_npc_move_command()** (10 connections) — `server/commands/npc_admin/instance.py`
-- **handle_npc_stats_command()** (10 connections) — `server/commands/npc_admin/instance.py`
-- **NPCDefinitionType** (10 connections) — `server/models/npc.py`
-- **handle_npc_behavior_command()** (9 connections) — `server/commands/npc_admin/behavior.py`
-- **handle_npc_react_command()** (9 connections) — `server/commands/npc_admin/behavior.py`
-- **handle_npc_stop_command()** (9 connections) — `server/commands/npc_admin/behavior.py`
-- **handle_npc_delete_command()** (9 connections) — `server/commands/npc_admin/definition.py`
-- **handle_npc_list_command()** (9 connections) — `server/commands/npc_admin/definition.py`
-- *... and 122 more nodes in this community*
+- **inventory_command_helpers.py** (48 connections) — `server/commands/inventory_command_helpers.py`
+- **inventory_pickup_command.py** (35 connections) — `server/commands/inventory_pickup_command.py`
+- **persist_player()** (30 connections) — `server/commands/inventory_command_helpers.py`
+- **inventory_get_command.py** (29 connections) — `server/commands/inventory_get_command.py`
+- **inventory_drop_command.py** (25 connections) — `server/commands/inventory_drop_command.py`
+- **RoomDropManager** (19 connections) — `server/commands/inventory_command_contracts.py`
+- **clone_inventory()** (18 connections) — `server/commands/inventory_command_helpers.py`
+- **handle_drop_command()** (15 connections) — `server/commands/inventory_drop_command.py`
+- **handle_get_command()** (14 connections) — `server/commands/inventory_get_command.py`
+- **build_and_broadcast_inventory_event()** (13 connections) — `server/commands/inventory_command_helpers.py`
+- **_handle_get_from_room()** (13 connections) — `server/commands/inventory_get_command.py`
+- **_pickup_commit_inventory_after_floor_extract()** (13 connections) — `server/commands/inventory_pickup_command.py`
+- **_drop_resolve_stack_or_error()** (12 connections) — `server/commands/inventory_drop_command.py`
+- **_get_from_container_path()** (12 connections) — `server/commands/inventory_get_command.py`
+- **test_inventory_commands_persistence_helpers.py** (12 connections) — `server/tests/unit/commands/test_inventory_commands_persistence_helpers.py`
+- **Player** (11 connections)
+- **add_pickup_to_inventory()** (10 connections) — `server/commands/inventory_command_helpers.py`
+- **FloorPickupAfterExtract** (10 connections) — `server/commands/inventory_pickup_command.py`
+- **_pickup_resolve_floor_stack_or_error()** (10 connections) — `server/commands/inventory_pickup_command.py`
+- **GetCommandRuntime** (9 connections) — `server/commands/inventory_get_command.py`
+- **GetItemSpec** (9 connections) — `server/commands/inventory_get_command.py`
+- **FloorPickupEnvironment** (9 connections) — `server/commands/inventory_pickup_command.py`
+- **FloorPickupPayload** (9 connections) — `server/commands/inventory_pickup_command.py`
+- **complete_pickup_after_floor_extract()** (9 connections) — `server/commands/inventory_pickup_command.py`
+- **resolve_pickup_item_index()** (8 connections) — `server/commands/inventory_command_helpers.py`
+- *... and 93 more nodes in this community*
 
 ## Relationships
 
-- [Any](Any.md) (37 shared connections)
-- [main()](main%28%29.md) (17 shared connections)
-- [Request](Request.md) (13 shared connections)
-- [.initialize()](initialize%28%29.md) (12 shared connections)
-- [Player Position Service](Player_Position_Service.md) (5 shared connections)
-- [. repr ()](_repr_%28%29.md) (5 shared connections)
-- [look npc](look_npc.md) (4 shared connections)
-- [NPCEventHandler](NPCEventHandler.md) (3 shared connections)
-- [initialize nats and combat services()](initialize_nats_and_combat_services%28%29.md) (3 shared connections)
-- [test npc instance service](test_npc_instance_service.md) (3 shared connections)
-- [. init ()](_init_%28%29.md) (2 shared connections)
-- [Spell Targeting](Spell_Targeting.md) (2 shared connections)
+- [test resolve state no app()](test_resolve_state_no_app%28%29.md) (36 shared connections)
+- [DropResolved](DropResolved.md) (21 shared connections)
+- [handle pickup command()](handle_pickup_command%28%29.md) (13 shared connections)
+- [. init ()](_init_%28%29.md) (11 shared connections)
+- [Lock](Lock.md) (10 shared connections)
+- [clean command input()](clean_command_input%28%29.md) (8 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (8 shared connections)
+- [container helpers inventory](container_helpers_inventory.md) (8 shared connections)
+- [maps](maps.md) (5 shared connections)
+- [lifespan](lifespan.md) (5 shared connections)
+- [test magic commands](test_magic_commands.md) (5 shared connections)
+- [AuthSlice](AuthSlice.md) (3 shared connections)
 
 ## Source Files
 
-- `server/commands/combat_handler.py`
-- `server/commands/npc_admin/__init__.py`
-- `server/commands/npc_admin/behavior.py`
-- `server/commands/npc_admin/definition.py`
-- `server/commands/npc_admin/instance.py`
-- `server/commands/npc_admin/monitoring.py`
-- `server/commands/npc_admin/router.py`
-- `server/commands/npc_admin/test_occupants.py`
-- `server/commands/npc_admin_commands.py`
-- `server/models/npc.py`
-- `server/services/npc_instance_service.py`
-- `server/tests/unit/commands/test_npc_admin_commands.py`
+- `server/commands/inventory_command_coercion.py`
+- `server/commands/inventory_command_contracts.py`
+- `server/commands/inventory_command_helpers.py`
+- `server/commands/inventory_drop_command.py`
+- `server/commands/inventory_get_command.py`
+- `server/commands/inventory_pickup_command.py`
+- `server/tests/unit/commands/test_inventory_commands.py`
+- `server/tests/unit/commands/test_inventory_commands_more_helpers.py`
+- `server/tests/unit/commands/test_inventory_commands_persistence_helpers.py`
+- `server/tests/unit/commands/test_inventory_helpers_extended.py`
 
 ## Audit Trail
 
-- EXTRACTED: 652 (90%)
-- INFERRED: 76 (10%)
+- EXTRACTED: 570 (91%)
+- INFERRED: 57 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

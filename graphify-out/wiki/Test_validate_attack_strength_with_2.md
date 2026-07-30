@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_validate_attack_strength_weak_weapon()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test validate_attack_strength with weak weapon.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_extract_name_from_occupant_string()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test _extract_name_from_occupant() with string.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [test combat validator](test_combat_validator.md) (1 shared connections)
+- [test player event handlers utils](test_player_event_handlers_utils.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 

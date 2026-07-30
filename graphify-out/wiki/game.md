@@ -1,40 +1,26 @@
 # game
 
-> 11 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **GameStatusResponse** (9 connections) — `server/schemas/game/game.py`
-- **BroadcastMessageResponse** (9 connections) — `server/schemas/game/game.py`
-- **__init__.py** (7 connections) — `server/schemas/game/__init__.py`
-- **game.py** (7 connections) — `server/schemas/game/game.py`
-- **BroadcastStats** (6 connections) — `server/schemas/game/game.py`
-- **BaseModel** (4 connections)
-- **Game domain schemas: status, broadcast, Mythos time.** (1 connections) — `server/schemas/game/__init__.py`
-- **Game API response schemas for MythosMUD server.  This module provides Pydantic m** (1 connections) — `server/schemas/game/game.py`
-- **Response model for game status endpoint.** (1 connections) — `server/schemas/game/game.py`
-- **Statistics for a broadcast operation.** (1 connections) — `server/schemas/game/game.py`
-- **Response model for broadcast message endpoint.** (1 connections) — `server/schemas/game/game.py`
+- **.__init__()** (4 connections) — `server/realtime/messaging/message_broadcaster.py`
+- **SendPersonalMessage** (1 connections)
+- **Initialize the message broadcaster.          Args:             room_manager: Roo** (1 connections) — `server/realtime/messaging/message_broadcaster.py`
 
 ## Relationships
 
-- [Request](Request.md) (3 shared connections)
-- [get mythos time()](get_mythos_time%28%29.md) (3 shared connections)
-- [BaseUserManager](BaseUserManager.md) (3 shared connections)
-- [broadcast message()](broadcast_message%28%29.md) (3 shared connections)
-- [get game status()](get_game_status%28%29.md) (2 shared connections)
-- [test game](test_game.md) (2 shared connections)
-- [HolidayCollection](HolidayCollection.md) (1 shared connections)
+- [Remove sensitive data from log](Remove_sensitive_data_from_log.md) (1 shared connections)
+- [Any](Any.md) (1 shared connections)
 
 ## Source Files
 
-- `server/schemas/game/__init__.py`
-- `server/schemas/game/game.py`
+- `server/realtime/messaging/message_broadcaster.py`
 
 ## Audit Trail
 
-- EXTRACTED: 45 (96%)
-- INFERRED: 2 (4%)
+- EXTRACTED: 6 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

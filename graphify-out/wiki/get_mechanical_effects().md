@@ -1,37 +1,30 @@
 # .get mechanical effects()
 
-> 15 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **Any** (8 connections)
-- **.set_stat_requirements()** (3 connections) — `server/models/profession.py`
-- **.get_mechanical_effects()** (3 connections) — `server/models/profession.py`
-- **.set_mechanical_effects()** (3 connections) — `server/models/profession.py`
-- **.get_stat_modifiers()** (3 connections) — `server/models/profession.py`
-- **.set_stat_modifiers()** (3 connections) — `server/models/profession.py`
-- **.get_skill_modifiers()** (3 connections) — `server/models/profession.py`
-- **.set_skill_modifiers()** (3 connections) — `server/models/profession.py`
-- **Set profession stat requirements from dictionary.** (1 connections) — `server/models/profession.py`
-- **Get profession mechanical effects as dictionary.** (1 connections) — `server/models/profession.py`
-- **Set profession mechanical effects from dictionary.** (1 connections) — `server/models/profession.py`
-- **Get stat modifiers as list of {stat, value}.** (1 connections) — `server/models/profession.py`
-- **Set stat modifiers from list of {stat, value}.** (1 connections) — `server/models/profession.py`
-- **Get skill modifiers as list of {skill_key, value}.** (1 connections) — `server/models/profession.py`
-- **Set skill modifiers from list of {skill_key, value}.** (1 connections) — `server/models/profession.py`
+- **.get_party_for_player()** (8 connections) — `server/game/party_service.py`
+- **.is_leader()** (5 connections) — `server/game/party_service.py`
+- **.is_in_same_party()** (5 connections) — `server/game/party_service.py`
+- **.get_party_members()** (4 connections) — `server/game/party_service.py`
+- **Return the party the player is in, or None.** (1 connections) — `server/game/party_service.py`
+- **Return True if the player is the leader of their current party.** (1 connections) — `server/game/party_service.py`
+- **Return list of party member IDs for the given player (including themselves).** (1 connections) — `server/game/party_service.py`
+- **Return True if both players are in the same party. For combat/validator hook:** (1 connections) — `server/game/party_service.py`
 
 ## Relationships
 
-- [Profession](Profession.md) (7 shared connections)
-- [.get requirement display text()](get_requirement_display_text%28%29.md) (1 shared connections)
+- [test command factories player state](test_command_factories_player_state.md) (11 shared connections)
+- [Any](Any.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/profession.py`
+- `server/game/party_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 36 (100%)
+- EXTRACTED: 26 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

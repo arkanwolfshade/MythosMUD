@@ -1,38 +1,43 @@
 # UUID
 
-> 13 nodes
+> 16 nodes
 
 ## Key Concepts
 
+- **MagicServiceHealingMixin** (15 connections) — `server/game/magic/magic_healing_events.py`
+- **._send_healing_update_event()** (7 connections) — `server/game/magic/magic_healing_events.py`
+- **._publish_dp_event()** (7 connections) — `server/game/magic/magic_healing_events.py`
 - **UUID** (6 connections)
-- **_ensure_player_in_room_occupancy()** (6 connections) — `server/realtime/websocket_helpers.py`
-- **.player_entered()** (5 connections) — `server/models/room.py`
-- **.player_left()** (4 connections) — `server/models/room.py`
-- **.has_player()** (4 connections) — `server/models/room.py`
-- **.add_player_silently()** (3 connections) — `server/models/room.py`
-- **.remove_player_silently()** (3 connections) — `server/models/room.py`
-- **Add a player to the room and trigger event.          Args:             player_id** (1 connections) — `server/models/room.py`
-- **Add a player to the room without triggering an event.          This method is us** (1 connections) — `server/models/room.py`
-- **Remove a player from the room without triggering an event.          This method** (1 connections) — `server/models/room.py`
-- **Remove a player from the room and trigger event.          Args:             play** (1 connections) — `server/models/room.py`
-- **Check if a player is in the room.          Args:             player_id: The ID o** (1 connections) — `server/models/room.py`
-- **If the room tracks occupancy, register the player when missing.** (1 connections) — `server/realtime/websocket_helpers.py`
+- **._publish_or_send_dp_update()** (6 connections) — `server/game/magic/magic_healing_events.py`
+- **._is_heal_other_target()** (5 connections) — `server/game/magic/magic_healing_events.py`
+- **Any** (5 connections)
+- **._send_instant_heal_event_if_applied()** (5 connections) — `server/game/magic/magic_healing_events.py`
+- **._effect_result_has_healing()** (4 connections) — `server/game/magic/magic_healing_events.py`
+- **Mixin for MagicService: send DP update events when spells apply healing.** (1 connections) — `server/game/magic/magic_healing_events.py`
+- **True when healing was applied to another player (heal-other, not steal-life or s** (1 connections) — `server/game/magic/magic_healing_events.py`
+- **True if effect result indicates healing was applied (success, effect_applied, he** (1 connections) — `server/game/magic/magic_healing_events.py`
+- **Send player_dp_updated event for the healed player (target for heal other, caste** (1 connections) — `server/game/magic/magic_healing_events.py`
+- **Load player stats and delegate DP event publishing.** (1 connections) — `server/game/magic/magic_healing_events.py`
+- **Publish DP update via event bus, or send fallback game event.** (1 connections) — `server/game/magic/magic_healing_events.py`
+- **If instant cast applied healing, send DP update event to the healed player.** (1 connections) — `server/game/magic/magic_healing_events.py`
 
 ## Relationships
 
-- [spawn defaults](spawn_defaults.md) (6 shared connections)
-- [.get room by id()](get_room_by_id%28%29.md) (3 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (4 shared connections)
+- [message handler factory](message_handler_factory.md) (3 shared connections)
+- [. init ()](_init_%28%29.md) (2 shared connections)
 - [Any](Any.md) (2 shared connections)
+- [append unique valid occupant()](append_unique_valid_occupant%28%29.md) (1 shared connections)
+- [command execution request](command_execution_request.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/room.py`
-- `server/realtime/websocket_helpers.py`
+- `server/game/magic/magic_healing_events.py`
 
 ## Audit Trail
 
-- EXTRACTED: 33 (89%)
-- INFERRED: 4 (11%)
+- EXTRACTED: 61 (91%)
+- INFERRED: 6 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,6 +1,6 @@
 # test hierarchical schema
 
-> 44 nodes
+> 47 nodes
 
 ## Key Concepts
 
@@ -27,14 +27,14 @@
 - **.test_valid_environment_values()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
 - **.test_invalid_environment_values()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
 - **.__init__()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **Test that invalid environment values fail validation.** (2 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **Test that a valid zone configuration passes validation.** (2 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- *... and 19 more nodes in this community*
+- **Any** (1 connections)
+- **Tests for hierarchical room schema validation.  This module tests the new hierar** (1 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- *... and 22 more nodes in this community*
 
 ## Relationships
 
 - [Convert legacy string format exits](Convert_legacy_string_format_exits.md) (3 shared connections)
-- [fixer](fixer.md) (1 shared connections)
+- [AuthSlice](AuthSlice.md) (1 shared connections)
 
 ## Source Files
 

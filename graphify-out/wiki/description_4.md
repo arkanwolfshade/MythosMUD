@@ -1,13 +1,12 @@
 # description
 
-> 6 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **name** (6 connections) — `schemas/alias_schema.json`
+- **command** (5 connections) — `schemas/alias_schema.json`
 - **type** (1 connections) — `schemas/alias_schema.json`
 - **description** (1 connections) — `schemas/alias_schema.json`
-- **pattern** (1 connections) — `schemas/alias_schema.json`
 - **minLength** (1 connections) — `schemas/alias_schema.json`
 - **maxLength** (1 connections) — `schemas/alias_schema.json`
 
@@ -21,7 +20,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

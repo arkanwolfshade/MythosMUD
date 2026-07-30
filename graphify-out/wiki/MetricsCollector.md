@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **MetricsCollector** (12 connections) — `server/middleware/metrics_collector.py`
+- **MetricsCollector** (13 connections) — `server/middleware/metrics_collector.py`
 - **.__init__()** (3 connections) — `server/middleware/metrics_collector.py`
 - **.get_metrics()** (3 connections) — `server/middleware/metrics_collector.py`
 - **.get_summary()** (3 connections) — `server/middleware/metrics_collector.py`
@@ -30,7 +30,8 @@
 
 ## Relationships
 
-- [main()](main%28%29.md) (1 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
+- [Player](Player.md) (1 shared connections)
 - [Lock](Lock.md) (1 shared connections)
 
 ## Source Files
@@ -39,7 +40,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 47 (98%)
+- EXTRACTED: 48 (98%)
 - INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 

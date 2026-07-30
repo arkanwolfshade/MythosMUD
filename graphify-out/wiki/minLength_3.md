@@ -1,25 +1,26 @@
 # minLength
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **id** (4 connections) — `schemas/calendar/schedule.schema.json`
-- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **pattern** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **minLength** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **Phase 2: Categorize and Prioritize Lint Issues** (5 connections) — `.cursor/commands/lint-remediation.md`
+- **🔴 CRITICAL (Fix First - Blocking Issues)** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **🟡 HIGH PRIORITY (Fix Second - Core Functionality)** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **🟢 MEDIUM PRIORITY (Fix Third - Enhancement)** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **🔵 LOW PRIORITY (Fix Last - Polish)** (1 connections) — `.cursor/commands/lint-remediation.md`
 
 ## Relationships
 
-- [type](type.md) (1 shared connections)
+- [. init ()](_init_%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/calendar/schedule.schema.json`
+- `.cursor/commands/lint-remediation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

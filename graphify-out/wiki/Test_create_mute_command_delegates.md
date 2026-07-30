@@ -1,25 +1,24 @@
 # Test create mute command delegates
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Test create_mute_command delegates to moderation factory.** (3 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **test_create_mute_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **test_create_unmute_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **test_create_mutes_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_execute_applicable_rules_no_handler()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test execute_applicable_rules() returns False when no handler.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [test command factories](test_command_factories.md) (3 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [test behavior engine](test_behavior_engine.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

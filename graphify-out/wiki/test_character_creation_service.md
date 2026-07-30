@@ -1,51 +1,41 @@
 # test character creation service
 
-> 51 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **test_character_creation_service.py** (31 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- **character_creation_service()** (3 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- **test_character_creation_service_init()** (3 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- **test_roll_character_stats_with_profession()** (3 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- **test_roll_character_stats_with_class()** (3 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- **test_roll_character_stats_without_class_or_profession()** (3 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- **test_roll_character_stats_class_not_available()** (3 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- **test_roll_character_stats_value_error()** (3 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- **test_validate_character_stats_invalid_format()** (3 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- **test_validate_character_stats_value_error()** (3 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- **test_create_character_with_stats_validation_error()** (3 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- **test_create_character_with_stats_pydantic_error()** (3 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- **test_create_character_with_stats_value_error()** (3 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- **test_roll_character_stats_profession_meets_requirements_false()** (3 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- **mock_player_service()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- **sample_stats()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- **test_validate_character_stats_with_class()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- **test_validate_character_stats_without_class()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- **test_create_character_with_stats_success()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- **test_create_character_with_stats_with_user_id()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- **test_create_character_with_stats_custom_starting_room()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- **test_get_available_classes_info()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- **test_get_class_description_known_class()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- **test_get_class_description_unknown_class()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- **test_get_class_description_all_classes()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- *... and 26 more nodes in this community*
+- **errorHandler.ts** (26 connections) — `client/src/utils/errorHandler.ts`
+- **errorHandler.test.ts** (14 connections) — `client/src/utils/errorHandler.test.ts`
+- **getErrorType()** (8 connections) — `client/src/utils/errorHandler.ts`
+- **formatErrorForDisplay()** (6 connections) — `client/src/utils/errorHandler.ts`
+- **getErrorDetails()** (4 connections) — `client/src/utils/errorHandler.ts`
+- **getErrorSeverity()** (4 connections) — `client/src/utils/errorHandler.ts`
+- **isErrorType()** (3 connections) — `client/src/utils/errorHandler.ts`
+- **isNetworkError()** (3 connections) — `client/src/utils/errorHandler.ts`
+- **isAuthenticationError()** (3 connections) — `client/src/utils/errorHandler.ts`
+- **isValidationError()** (3 connections) — `client/src/utils/errorHandler.ts`
+- **StandardErrorResponse** (2 connections) — `client/src/utils/errorHandler.ts`
+- **WebSocketErrorResponse** (2 connections) — `client/src/utils/errorHandler.ts`
+- **ErrorTypes** (2 connections) — `client/src/utils/errorHandler.ts`
+- **SSEErrorResponse** (1 connections) — `client/src/utils/errorHandler.ts`
+- **ErrorResponse** (1 connections) — `client/src/utils/errorHandler.ts`
 
 ## Relationships
 
-- [. init ()](_init_%28%29.md) (7 shared connections)
-- [Core character statistics with Lovecraftian](Core_character_statistics_with_Lovecraftian.md) (6 shared connections)
-- [character creation](character_creation.md) (3 shared connections)
-- [main()](main%28%29.md) (2 shared connections)
+- [CharacterSelectionScreen](CharacterSelectionScreen.md) (14 shared connections)
+- [SERVER UNAVAILABLE PATTERNS](SERVER_UNAVAILABLE_PATTERNS.md) (2 shared connections)
+- [handle reply command()](handle_reply_command%28%29.md) (1 shared connections)
+- [applyAuthenticatedSession](applyAuthenticatedSession.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_character_creation_service.py`
+- `client/src/utils/errorHandler.test.ts`
+- `client/src/utils/errorHandler.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 110 (92%)
-- INFERRED: 10 (8%)
+- EXTRACTED: 82 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

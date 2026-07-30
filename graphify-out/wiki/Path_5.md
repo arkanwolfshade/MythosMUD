@@ -1,52 +1,48 @@
 # Path
 
-> 79 nodes
+> 31 nodes
 
 ## Key Concepts
 
-- **RoomLoader** (56 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **TestRoomLoader** (19 connections) — `tools/room_toolkit/room_validator/tests/test_room_loader.py`
-- **.load_room_data()** (11 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **Path** (8 connections)
-- **._load_referenced_intersections()** (7 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **.build_room_database()** (6 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **.discover_room_files()** (5 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **._validate_or_update_room_id()** (5 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **.discover_config_files()** (4 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **.test_build_room_database_empty_directory()** (4 connections) — `tools/room_toolkit/room_validator/tests/test_room_loader.py`
-- **.test_build_room_database_with_errors()** (4 connections) — `tools/room_toolkit/room_validator/tests/test_room_loader.py`
-- **.__init__()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **.parse_room_filename()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **.generate_room_id()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **._validate_room_structure()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **._extract_location_from_path()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **._validate_required_fields()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **._add_location_fields()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **._check_intersection_references_rooms()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **._add_intersection_to_database()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **.count_config_subzones()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **.validate_file_structure()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **.load_config_file()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **.test_init_with_default_path()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_room_loader.py`
-- **.test_init_with_custom_path()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_room_loader.py`
-- *... and 54 more nodes in this community*
+- **RoomFixer** (19 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **Path** (7 connections)
+- **.fix_schema_issues()** (7 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **.create_backup()** (6 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **.load_room_file()** (6 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **.save_room_file()** (6 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **.fix_bidirectional_connections()** (5 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **.fix_self_references()** (5 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **._create_backup_if_requested()** (5 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **._fix_missing_fields()** (5 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **._save_fixed_room()** (5 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **._find_room_file()** (4 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **.__init__()** (3 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **._fix_missing_exits()** (3 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **._fix_missing_optional_fields()** (3 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **.get_fix_summary()** (2 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **Automatically fixes common room validation issues.      Implements safe correcti** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **Initialize the room fixer.          Args:             base_path: Base directory** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **Create a backup of a room file.          Args:             file_path: Path to th** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **Load a room file safely.          Args:             file_path: Path to the room** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **Save a room file safely.          Args:             file_path: Path to the room** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **Fix missing bidirectional connections.          Args:             room_database:** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **Fix self-references by adding proper flags.          Args:             room_data** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **Find the file for a room. Returns None if file doesn't exist.** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **Create backup if requested.** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- *... and 6 more nodes in this community*
 
 ## Relationships
 
-- [fixer](fixer.md) (8 shared connections)
-- [Create a temporary directory for](Create_a_temporary_directory_for.md) (8 shared connections)
-- [PathValidator](PathValidator.md) (3 shared connections)
-- [Integration tests for the main](Integration_tests_for_the_main.md) (1 shared connections)
+- [fixer](fixer.md) (4 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/core/room_loader.py`
-- `tools/room_toolkit/room_validator/tests/test_room_loader.py`
+- `tools/room_toolkit/room_validator/core/fixer.py`
 
 ## Audit Trail
 
-- EXTRACTED: 211 (83%)
-- INFERRED: 43 (17%)
+- EXTRACTED: 106 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

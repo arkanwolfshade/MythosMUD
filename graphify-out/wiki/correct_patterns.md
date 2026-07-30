@@ -1,52 +1,51 @@
 # correct patterns
 
-> 32 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **correct_patterns.py** (20 connections) — `docs/examples/logging/correct_patterns.py`
-- **correct_performance_logging()** (5 connections) — `docs/examples/logging/correct_patterns.py`
-- **correct_async_logging()** (5 connections) — `docs/examples/logging/correct_patterns.py`
-- **correct_exception_tracking()** (4 connections) — `docs/examples/logging/correct_patterns.py`
-- **risky_operation()** (4 connections) — `docs/examples/logging/correct_patterns.py`
-- **database** (4 connections) — `docs/examples/logging/correct_patterns.py`
-- **.execute()** (4 connections) — `docs/examples/logging/correct_patterns.py`
-- **correct_error_handling()** (3 connections) — `docs/examples/logging/correct_patterns.py`
-- **correct_database_logging()** (3 connections) — `docs/examples/logging/correct_patterns.py`
-- **process_data()** (3 connections) — `docs/examples/logging/correct_patterns.py`
-- **.query()** (3 connections) — `docs/examples/logging/correct_patterns.py`
-- **correct_basic_logging()** (2 connections) — `docs/examples/logging/correct_patterns.py`
-- **correct_security_logging()** (2 connections) — `docs/examples/logging/correct_patterns.py`
-- **correct_api_logging()** (2 connections) — `docs/examples/logging/correct_patterns.py`
-- **correct_websocket_logging()** (2 connections) — `docs/examples/logging/correct_patterns.py`
-- **correct_batch_logging()** (2 connections) — `docs/examples/logging/correct_patterns.py`
-- **async_work()** (2 connections) — `docs/examples/logging/correct_patterns.py`
-- **Demonstrate correct basic logging patterns.** (1 connections) — `docs/examples/logging/correct_patterns.py`
-- **Demonstrate correct error handling with logging.** (1 connections) — `docs/examples/logging/correct_patterns.py`
-- **Demonstrate correct performance logging patterns.** (1 connections) — `docs/examples/logging/correct_patterns.py`
-- **Demonstrate correct security logging patterns.** (1 connections) — `docs/examples/logging/correct_patterns.py`
-- **Demonstrate correct async logging patterns.** (1 connections) — `docs/examples/logging/correct_patterns.py`
-- **Demonstrate correct exception tracking.** (1 connections) — `docs/examples/logging/correct_patterns.py`
-- **Demonstrate correct database operation logging.** (1 connections) — `docs/examples/logging/correct_patterns.py`
-- **Demonstrate correct API request/response logging.** (1 connections) — `docs/examples/logging/correct_patterns.py`
-- *... and 7 more nodes in this community*
+- **NATSUnsubscribeError** (12 connections) — `server/services/nats_exceptions.py`
+- **NATSRequestError** (11 connections) — `server/services/nats_exceptions.py`
+- **.__init__()** (7 connections) — `server/services/nats_exceptions.py`
+- **Exception** (6 connections)
+- **.__init__()** (3 connections) — `server/services/nats_exceptions.py`
+- **.__init__()** (3 connections) — `server/services/nats_exceptions.py`
+- **.__init__()** (3 connections) — `server/services/nats_exceptions.py`
+- **.__init__()** (3 connections) — `server/services/nats_exceptions.py`
+- **test_unsubscribe_from_subject_not_found()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_unsubscribe_not_found()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_unsubscribe_error()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_request_not_connected()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_request_timeout()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_request_error()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **Raised when unsubscribe operations fail.** (1 connections) — `server/services/nats_exceptions.py`
+- **Raised when request/response operations fail.** (1 connections) — `server/services/nats_exceptions.py`
+- **Test _unsubscribe_from_subject() handles subscription not found.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **Test unsubscribe() raises NATSUnsubscribeError when subscription not found.** (1 connections) — `server/tests/unit/services/test_nats_service.py`
+- **Test unsubscribe() raises NATSUnsubscribeError on unsubscribe errors.** (1 connections) — `server/tests/unit/services/test_nats_service.py`
+- **Test request() raises NATSRequestError when not connected.** (1 connections) — `server/tests/unit/services/test_nats_service.py`
+- **Test request() raises NATSRequestError on timeout.** (1 connections) — `server/tests/unit/services/test_nats_service.py`
+- **Test request() raises NATSRequestError on errors.** (1 connections) — `server/tests/unit/services/test_nats_service.py`
 
 ## Relationships
 
-- [main()](main%28%29.md) (5 shared connections)
-- [. call ()](_call_%28%29.md) (2 shared connections)
-- [Test exception tracking functionality.](Test_exception_tracking_functionality.md) (2 shared connections)
-- [fastapi integration](fastapi_integration.md) (1 shared connections)
-- [BaseUserManager](BaseUserManager.md) (1 shared connections)
+- [BaseUserManager](BaseUserManager.md) (7 shared connections)
+- [test combat persistence handler events](test_combat_persistence_handler_events.md) (6 shared connections)
+- [FollowTargetValue](FollowTargetValue.md) (4 shared connections)
+- [Any](Any.md) (3 shared connections)
+- [connection state machine](connection_state_machine.md) (2 shared connections)
+- [initialize nats and combat services()](initialize_nats_and_combat_services%28%29.md) (2 shared connections)
 
 ## Source Files
 
-- `docs/examples/logging/correct_patterns.py`
+- `server/services/nats_exceptions.py`
+- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/tests/unit/services/test_nats_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 82 (96%)
-- INFERRED: 3 (4%)
+- EXTRACTED: 62 (84%)
+- INFERRED: 12 (16%)
 - AMBIGUOUS: 0 (0%)
 
 ---

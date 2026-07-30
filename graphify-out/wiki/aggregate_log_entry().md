@@ -1,10 +1,11 @@
 # aggregate log entry()
 
-> 41 nodes
+> 43 nodes
 
 ## Key Concepts
 
 - **LogAggregator** (23 connections) — `server/structured_logging/log_aggregator.py`
+- **log_aggregator.py** (13 connections) — `server/structured_logging/log_aggregator.py`
 - **LogEntry** (13 connections) — `server/structured_logging/log_aggregator.py`
 - **.get_logs()** (9 connections) — `server/structured_logging/log_aggregator.py`
 - **.export_logs()** (7 connections) — `server/structured_logging/log_aggregator.py`
@@ -26,18 +27,17 @@
 - **datetime** (2 connections)
 - **.shutdown()** (2 connections) — `server/structured_logging/log_aggregator.py`
 - **._process_logs()** (2 connections) — `server/structured_logging/log_aggregator.py`
+- **Log aggregation and centralized collection system for MythosMUD server.  This mo** (1 connections) — `server/structured_logging/log_aggregator.py`
 - **Represents a single log entry.** (1 connections) — `server/structured_logging/log_aggregator.py`
-- **Centralized log aggregation and collection system.      This class provides comp** (1 connections) — `server/structured_logging/log_aggregator.py`
-- **Initialize the log aggregator.          Args:             max_entries: Maximum n** (1 connections) — `server/structured_logging/log_aggregator.py`
-- *... and 16 more nodes in this community*
+- *... and 18 more nodes in this community*
 
 ## Relationships
 
-- [main()](main%28%29.md) (4 shared connections)
-- [.initialize()](initialize%28%29.md) (2 shared connections)
-- [lifespan](lifespan.md) (2 shared connections)
-- [PerformanceStats](PerformanceStats.md) (2 shared connections)
-- [Test exception tracking functionality.](Test_exception_tracking_functionality.md) (1 shared connections)
+- [.shutdown()](shutdown%28%29.md) (5 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (3 shared connections)
+- [PerformanceStats](PerformanceStats.md) (3 shared connections)
+- [test command parser](test_command_parser.md) (3 shared connections)
+- [. init ()](_init_%28%29.md) (1 shared connections)
 
 ## Source Files
 
@@ -45,7 +45,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 138 (98%)
+- EXTRACTED: 152 (98%)
 - INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 

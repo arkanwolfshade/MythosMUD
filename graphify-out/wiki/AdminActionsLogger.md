@@ -29,9 +29,9 @@
 
 ## Relationships
 
-- [Any](Any.md) (2 shared connections)
-- [admin shutdown command](admin_shutdown_command.md) (1 shared connections)
-- [initialize nats and combat services()](initialize_nats_and_combat_services%28%29.md) (1 shared connections)
+- [test command factories inventory](test_command_factories_inventory.md) (2 shared connections)
+- [get skill repository()](get_skill_repository%28%29.md) (1 shared connections)
+- [process dead players()](process_dead_players%28%29.md) (1 shared connections)
 
 ## Source Files
 

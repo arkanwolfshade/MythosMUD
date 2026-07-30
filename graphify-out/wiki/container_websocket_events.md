@@ -1,55 +1,60 @@
 # container websocket events
 
-> 41 nodes
+> 32 nodes
 
 ## Key Concepts
 
-- **test_container_websocket_events.py** (23 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **container_websocket_events.py** (17 connections) — `server/services/container_websocket_events.py`
-- **emit_container_opened()** (14 connections) — `server/services/container_websocket_events.py`
-- **emit_container_opened_to_room()** (12 connections) — `server/services/container_websocket_events.py`
-- **emit_container_updated()** (10 connections) — `server/services/container_websocket_events.py`
-- **emit_container_closed()** (9 connections) — `server/services/container_websocket_events.py`
-- **emit_container_decayed()** (8 connections) — `server/services/container_websocket_events.py`
-- **UUID** (6 connections)
-- **Any** (5 connections)
-- **datetime** (3 connections)
-- **test_emit_container_opened()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_opened_with_owner()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_opened_to_room()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_closed()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_opened_with_owner_id()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_opened_to_room_with_owner()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_updated()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_updated_empty_diff()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_decayed()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_opened_returns_delivery_status()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_opened_to_room_returns_stats()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_closed_returns_stats()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **Test emit_container_opened handles container with owner.** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **ContainerComponent** (2 connections)
-- **mock_connection_manager()** (2 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- *... and 16 more nodes in this community*
+- **PlayerNameExtractor** (104 connections) — `server/realtime/player_name_utils.py`
+- **test_player_name_utils.py** (4 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **.test_extract_player_name_user_exception()** (4 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **.__init__()** (3 connections) — `server/realtime/player_name_utils.py`
+- **.test_is_uuid_string_invalid_length()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **.test_is_uuid_string_valid_format()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **.test_is_valid_name_valid_string()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **.test_is_valid_name_empty_string()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **.test_is_valid_name_none()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **.test_extract_initial_player_name_with_getattr()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **.test_try_user_object_name_with_user()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **.test_validate_name_basic_whitespace_only()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **.test_check_uuid_string_matches_lowercase()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **.test_validate_name_not_uuid_uuid_pattern()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **.test_extract_and_validate_player_name_invalid_uuid()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **.test_validate_player_name_not_uuid_valid()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **Utility class for extracting and validating player names.      CRITICAL: NEVER u** (1 connections) — `server/realtime/player_name_utils.py`
+- **Initialize the player name extractor.** (1 connections) — `server/realtime/player_name_utils.py`
+- **Tests for player name extraction and validation utilities.  As documented in "Id** (1 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **Test _is_uuid_string with invalid length.** (1 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **Test _is_uuid_string with valid format variations.** (1 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **Test _is_valid_name with valid string.** (1 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **Test _is_valid_name with empty string.** (1 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **Test _is_valid_name with None.** (1 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **Test _extract_initial_player_name with getattr fallback.** (1 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [APIRouter](APIRouter.md) (7 shared connections)
-- [emit close container event()](emit_close_container_event%28%29.md) (5 shared connections)
-- [game tick processing](game_tick_processing.md) (3 shared connections)
-- [UUID](UUID.md) (3 shared connections)
-- [ContainerComponent](ContainerComponent.md) (2 shared connections)
-- [main()](main%28%29.md) (2 shared connections)
-- [.get instance()](get_instance%28%29.md) (1 shared connections)
+- [PlayerNameExtractor](PlayerNameExtractor.md) (34 shared connections)
+- [connection statistics](connection_statistics.md) (17 shared connections)
+- [NPCCombatIntegrationBase](NPCCombatIntegrationBase.md) (10 shared connections)
+- [login grace period](login_grace_period.md) (8 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (5 shared connections)
+- [Test should echo to sender](Test_should_echo_to_sender.md) (5 shared connections)
+- [Test send messages to players](Test_send_messages_to_players.md) (4 shared connections)
+- [Test get applicable rules() returns](Test_get_applicable_rules%28%29_returns.md) (3 shared connections)
+- [UUID](UUID.md) (2 shared connections)
+- [connection manager api](connection_manager_api.md) (1 shared connections)
+- [NPCOccupantProcessor](NPCOccupantProcessor.md) (1 shared connections)
+- [test_alias_hash_different_name](test_alias_hash_different_name.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/container_websocket_events.py`
-- `server/tests/unit/services/test_container_websocket_events.py`
+- `server/realtime/player_name_utils.py`
+- `server/tests/unit/realtime/test_player_name_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 167 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 159 (95%)
+- INFERRED: 8 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

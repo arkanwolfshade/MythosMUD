@@ -1,25 +1,24 @@
 # Test validate target exists with
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Test validate_target_exists with exact match.** (3 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_validate_target_exists_exact_match()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_validate_target_exists_partial_match()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_validate_target_exists_no_match()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_register_action_handler_overwrites()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test register_action_handler() overwrites existing handler.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [test combat validator](test_combat_validator.md) (3 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [test behavior engine](test_behavior_engine.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

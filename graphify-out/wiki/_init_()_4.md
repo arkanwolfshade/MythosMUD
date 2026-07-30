@@ -1,72 +1,55 @@
 # . init ()
 
-> 193 nodes
+> 47 nodes
 
 ## Key Concepts
 
-- **magic_service.py** (39 connections) — `server/game/magic/magic_service.py`
-- **PlayerSpellRepository** (36 connections) — `server/persistence/repositories/player_spell_repository.py`
-- **SpellRegistry** (35 connections) — `server/game/magic/spell_registry.py`
-- **lifespan_magic.py** (34 connections) — `server/app/lifespan_magic.py`
-- **SpellLearningService** (30 connections) — `server/game/magic/spell_learning_service.py`
-- **MagicService** (29 connections) — `server/game/magic/magic_service.py`
-- **magic_service_completion.py** (25 connections) — `server/game/magic/magic_service_completion.py`
-- **SpellTargetingService** (25 connections) — `server/game/magic/spell_targeting.py`
-- **MagicServiceCompletionMixin** (21 connections) — `server/game/magic/magic_service_completion.py`
-- **spell_learning_service.py** (21 connections) — `server/game/magic/spell_learning_service.py`
-- **magic.py** (19 connections) — `server/container/bundles/magic.py`
-- **MagicBundle** (18 connections) — `server/container/bundles/magic.py`
-- **CastingStateManager** (18 connections) — `server/game/magic/casting_state_manager.py`
-- **MagicServiceOptionalDeps** (17 connections) — `server/game/magic/magic_service.py`
-- **initialize_magic_services()** (15 connections) — `server/app/lifespan_magic.py`
-- **SpellCostsService** (14 connections) — `server/game/magic/spell_costs.py`
-- **SpellRepository** (14 connections) — `server/persistence/repositories/spell_repository.py`
-- **spell_targeting.py** (14 connections) — `server/game/magic/spell_targeting.py`
-- **_initialize_magic_service()** (13 connections) — `server/app/lifespan_magic.py`
-- **_create_registry_and_targeting()** (13 connections) — `server/container/bundles/magic.py`
-- **SpellCommandError** (12 connections) — `server/commands/magic_commands.py`
-- **UUID** (12 connections)
-- **spell_costs.py** (12 connections) — `server/game/magic/spell_costs.py`
-- **.__init__()** (11 connections) — `server/game/magic/magic_service.py`
-- **Any** (11 connections)
-- *... and 168 more nodes in this community*
+- **AppConfig** (31 connections) — `server/config/models/app.py`
+- **GameConfig** (15 connections) — `server/config/models/game.py`
+- **.to_legacy_dict()** (7 connections) — `server/config/models/app.py`
+- **Any** (6 connections)
+- **_create_config_instance()** (5 connections) — `server/config/__init__.py`
+- **_get_config_cached()** (5 connections) — `server/config/__init__.py`
+- **_get_config_test()** (5 connections) — `server/config/__init__.py`
+- **.__init__()** (5 connections) — `server/config/models/app.py`
+- **._legacy_game_entries()** (5 connections) — `server/config/models/app.py`
+- **._legacy_nats_dict()** (5 connections) — `server/config/models/app.py`
+- **._legacy_chat_dict()** (5 connections) — `server/config/models/app.py`
+- **._legacy_cors_dict()** (5 connections) — `server/config/models/app.py`
+- **._sanitize_environment_for_nested_configs()** (4 connections) — `server/config/models/app.py`
+- **._first_cors_origins_env()** (3 connections) — `server/config/models/app.py`
+- **.set_legacy_environment_variables()** (2 connections) — `server/config/models/app.py`
+- **.validate_max_connections()** (2 connections) — `server/config/models/game.py`
+- **.validate_aliases_dir()** (2 connections) — `server/config/models/game.py`
+- **.validate_combat_tick_interval()** (2 connections) — `server/config/models/game.py`
+- **.validate_combat_timeout()** (2 connections) — `server/config/models/game.py`
+- **.validate_combat_xp_multiplier()** (2 connections) — `server/config/models/game.py`
+- **.validate_combat_alert_threshold()** (2 connections) — `server/config/models/game.py`
+- **.validate_combat_performance_threshold()** (2 connections) — `server/config/models/game.py`
+- **.validate_combat_error_threshold()** (2 connections) — `server/config/models/game.py`
+- **Create a new AppConfig instance from current environment.      This is a helper** (1 connections) — `server/config/__init__.py`
+- **Production config loader with caching.      Uses both @lru_cache and global _con** (1 connections) — `server/config/__init__.py`
+- *... and 22 more nodes in this community*
 
 ## Relationships
 
-- [Spell Targeting](Spell_Targeting.md) (39 shared connections)
-- [main()](main%28%29.md) (36 shared connections)
-- [Connection Manager](Connection_Manager.md) (19 shared connections)
-- [Any](Any.md) (19 shared connections)
-- [spell registry](spell_registry.md) (16 shared connections)
-- [.shutdown()](shutdown%28%29.md) (14 shared connections)
-- [. init ()](_init_%28%29.md) (12 shared connections)
-- [MagicServiceCore](MagicServiceCore.md) (11 shared connections)
-- [initialize nats and combat services()](initialize_nats_and_combat_services%28%29.md) (11 shared connections)
-- [Player Position Service](Player_Position_Service.md) (7 shared connections)
-- [UUID](UUID.md) (7 shared connections)
-- [MPRegenerationService](MPRegenerationService.md) (5 shared connections)
+- [world](world.md) (17 shared connections)
+- [process dead players()](process_dead_players%28%29.md) (3 shared connections)
+- [.model dump()](model_dump%28%29.md) (3 shared connections)
+- [.get lucidity service()](get_lucidity_service%28%29.md) (2 shared connections)
+- [MapZoneContext](MapZoneContext.md) (2 shared connections)
+- [get health status()](get_health_status%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/app/lifespan_magic.py`
-- `server/commands/magic_commands.py`
-- `server/container/bundles/magic.py`
-- `server/game/magic/casting_state_manager.py`
-- `server/game/magic/magic_service.py`
-- `server/game/magic/magic_service_completion.py`
-- `server/game/magic/spell_costs.py`
-- `server/game/magic/spell_effects.py`
-- `server/game/magic/spell_learning_service.py`
-- `server/game/magic/spell_registry.py`
-- `server/game/magic/spell_targeting.py`
-- `server/persistence/repositories/player_spell_repository.py`
-- `server/persistence/repositories/spell_repository.py`
-- `server/tests/unit/game/magic/test_spell_targeting.py`
+- `server/config/__init__.py`
+- `server/config/models/app.py`
+- `server/config/models/game.py`
 
 ## Audit Trail
 
-- EXTRACTED: 856 (87%)
-- INFERRED: 130 (13%)
+- EXTRACTED: 136 (92%)
+- INFERRED: 12 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

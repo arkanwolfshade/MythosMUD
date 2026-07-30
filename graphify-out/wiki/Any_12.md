@@ -1,31 +1,37 @@
 # Any
 
-> 7 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **.create_instance()** (6 connections) — `server/game/items/item_factory.py`
-- **initialize_components()** (5 connections) — `server/game/items/component_hooks.py`
-- **Any** (1 connections)
-- **Prepare component state metadata for a new item instance.      This routine curr** (1 connections) — `server/game/items/component_hooks.py`
-- **Any** (1 connections)
-- **ItemInstance** (1 connections)
-- **Create an item instance from a prototype.          Args:             prototype_i** (1 connections) — `server/game/items/item_factory.py`
+- **Party** (12 connections) — `server/game/party_service.py`
+- **.get_party()** (3 connections) — `server/game/party_service.py`
+- **test_party_post_init_includes_leader_in_members()** (3 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_party_post_init_preserves_other_members()** (3 connections) — `server/tests/unit/game/test_party_service.py`
+- **.__post_init__()** (2 connections) — `server/game/party_service.py`
+- **In-memory party model.      Ephemeral: not persisted. party_id and member_ids ar** (1 connections) — `server/game/party_service.py`
+- **Ensure leader is in member set.** (1 connections) — `server/game/party_service.py`
+- **Return the party by id, or None.** (1 connections) — `server/game/party_service.py`
+- **Party __post_init__ ensures leader is in member_ids.** (1 connections) — `server/tests/unit/game/test_party_service.py`
+- **Party __post_init__ keeps existing members and adds leader.** (1 connections) — `server/tests/unit/game/test_party_service.py`
 
 ## Relationships
 
-- [main()](main%28%29.md) (3 shared connections)
-- [Any](Any.md) (1 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (3 shared connections)
+- [test party service](test_party_service.md) (3 shared connections)
+- [test command factories player state](test_command_factories_player_state.md) (2 shared connections)
+- [Player](Player.md) (1 shared connections)
+- [.get mechanical effects()](get_mechanical_effects%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/items/component_hooks.py`
-- `server/game/items/item_factory.py`
+- `server/game/party_service.py`
+- `server/tests/unit/game/test_party_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 25 (89%)
+- INFERRED: 3 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

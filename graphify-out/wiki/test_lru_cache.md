@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [main()](main%28%29.md) (2 shared connections)
-- [. init ()](_init_%28%29.md) (1 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
+- [init](init.md) (1 shared connections)
 
 ## Source Files
 

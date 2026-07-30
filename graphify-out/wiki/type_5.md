@@ -25,9 +25,10 @@
 
 ## Relationships
 
-- [minLength](minLength.md) (2 shared connections)
 - [room.schema](room.schema.md) (1 shared connections)
+- [.add message()](add_message%28%29.md) (1 shared connections)
 - [type](type.md) (1 shared connections)
+- [minLength](minLength.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,77 +1,74 @@
 # .initialize()
 
-> 178 nodes
+> 349 nodes
 
 ## Key Concepts
 
-- **lifespan_startup.py** (59 connections) — `server/app/lifespan_startup.py`
-- **main.py** (33 connections) — `server/container/main.py`
-- **npc_database.py** (27 connections) — `server/npc_database.py`
-- **PerformanceMonitor** (24 connections) — `server/monitoring/performance_monitor.py`
-- **npc_instance_service.py** (23 connections) — `server/services/npc_instance_service.py`
-- **get_npc_session()** (22 connections) — `server/npc_database.py`
-- **test_npc_database.py** (22 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **__init__.py** (19 connections) — `server/container/bundles/__init__.py`
-- **CombatBundle** (19 connections) — `server/container/bundles/combat.py`
-- **core.py** (18 connections) — `server/container/bundles/core.py`
-- **npc_startup_service.py** (16 connections) — `server/services/npc_startup_service.py`
-- **migrate_combat_data.py** (15 connections) — `server/scripts/migrate_combat_data.py`
-- **CoreBundle** (14 connections) — `server/container/bundles/core.py`
-- **npc.py** (14 connections) — `server/container/bundles/npc.py`
-- **get_npc_engine()** (14 connections) — `server/npc_database.py`
-- **NPCService** (14 connections) — `server/services/npc_service/__init__.py`
-- **combat.py** (13 connections) — `server/container/bundles/combat.py`
-- **MonitoringBundle** (13 connections) — `server/container/bundles/monitoring.py`
-- **.initialize()** (12 connections) — `server/container/bundles/core.py`
-- **.initialize()** (12 connections) — `server/container/main.py`
-- **_initialize_npc_database()** (12 connections) — `server/npc_database.py`
-- **monitoring.py** (11 connections) — `server/container/bundles/monitoring.py`
-- **NPCBundle** (11 connections) — `server/container/bundles/npc.py`
-- **init_npc_db()** (11 connections) — `server/npc_database.py`
-- **get_npc_database_path()** (11 connections) — `server/npc_database.py`
-- *... and 153 more nodes in this community*
+- **ValidationError** (538 connections) — `server/exceptions.py`
+- **test_command_communication.py** (45 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_command_factories_communication.py** (29 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
+- **test_command_factories_moderation.py** (29 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
+- **test_command_magic.py** (27 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_command_factories_player_state.py** (27 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- **player_respawn.py** (24 connections) — `server/api/player_respawn.py`
+- **.create_pickup_command()** (19 connections) — `server/utils/command_factories_inventory.py`
+- **GameMechanicsService** (17 connections) — `server/game/mechanics.py`
+- **test_player_respawn_handlers.py** (14 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
+- **_handle_delirium_respawn_validation_error()** (12 connections) — `server/api/player_respawn.py`
+- **_handle_respawn_validation_error()** (11 connections) — `server/api/player_respawn.py`
+- **respawn_player_from_delirium()** (9 connections) — `server/api/player_respawn.py`
+- **respawn_player()** (9 connections) — `server/api/player_respawn.py`
+- **RespawnResponse** (8 connections) — `server/schemas/players/player_respawn.py`
+- **_user()** (8 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
+- **.get_combat_stats()** (7 connections) — `server/npc/combat_integration.py`
+- **test_enhanced_error_logging.py** (7 connections) — `server/tests/unit/utils/test_enhanced_error_logging.py`
+- **.gain_occult_knowledge()** (6 connections) — `server/game/mechanics.py`
+- **.apply_lucidity_loss()** (5 connections) — `server/game/mechanics.py`
+- **test_handle_respawn_validation_not_found()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
+- **test_handle_respawn_validation_must_be_dead()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
+- **test_handle_respawn_validation_generic_500()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
+- **test_handle_delirium_validation_not_found()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
+- **test_handle_delirium_validation_must_be_delirious()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
+- *... and 324 more nodes in this community*
 
 ## Relationships
 
-- [main()](main%28%29.md) (66 shared connections)
-- [Any](Any.md) (44 shared connections)
-- [. init ()](_init_%28%29.md) (40 shared connections)
-- [.shutdown()](shutdown%28%29.md) (25 shared connections)
-- [.initialize()](initialize%28%29.md) (17 shared connections)
-- [. repr ()](_repr_%28%29.md) (16 shared connections)
-- [create npc services on app()](create_npc_services_on_app%28%29.md) (11 shared connections)
-- [initialize nats and combat services()](initialize_nats_and_combat_services%28%29.md) (10 shared connections)
-- [lifespan](lifespan.md) (6 shared connections)
-- [.get instance()](get_instance%28%29.md) (6 shared connections)
-- [get item prototype count()](get_item_prototype_count%28%29.md) (5 shared connections)
-- [Request](Request.md) (5 shared connections)
+- [Spell Targeting](Spell_Targeting.md) (215 shared connections)
+- [real time](real_time.md) (50 shared connections)
+- [close db()](close_db%28%29.md) (34 shared connections)
+- [. init ()](_init_%28%29.md) (32 shared connections)
+- [AbstractContextManager](AbstractContextManager.md) (28 shared connections)
+- [Player](Player.md) (25 shared connections)
+- [.validate search term()](validate_search_term%28%29.md) (25 shared connections)
+- [Any](Any.md) (22 shared connections)
+- [test command factories utility](test_command_factories_utility.md) (18 shared connections)
+- [test command factories exploration](test_command_factories_exploration.md) (14 shared connections)
+- [append unique valid occupant()](append_unique_valid_occupant%28%29.md) (13 shared connections)
+- [AuthSlice](AuthSlice.md) (12 shared connections)
 
 ## Source Files
 
-- `server/app/lifespan_event_subscriptions.py`
-- `server/app/lifespan_startup.py`
-- `server/container/bundles/__init__.py`
-- `server/container/bundles/chat.py`
-- `server/container/bundles/combat.py`
-- `server/container/bundles/core.py`
-- `server/container/bundles/monitoring.py`
-- `server/container/bundles/npc.py`
-- `server/container/bundles/time.py`
-- `server/container/main.py`
-- `server/database.py`
-- `server/monitoring/performance_monitor.py`
-- `server/npc_database.py`
-- `server/scripts/migrate_combat_data.py`
-- `server/services/npc_instance_service.py`
-- `server/services/npc_service/__init__.py`
-- `server/services/npc_service/queries.py`
-- `server/services/npc_startup_service.py`
-- `server/tests/unit/infrastructure/test_npc_database.py`
+- `server/api/player_respawn.py`
+- `server/exceptions.py`
+- `server/game/mechanics.py`
+- `server/npc/combat_integration.py`
+- `server/schemas/players/player_respawn.py`
+- `server/tests/unit/api/test_player_respawn_handlers.py`
+- `server/tests/unit/game/test_player_service.py`
+- `server/tests/unit/models/test_command_communication.py`
+- `server/tests/unit/models/test_command_magic.py`
+- `server/tests/unit/utils/test_command_factories_communication.py`
+- `server/tests/unit/utils/test_command_factories_inventory.py`
+- `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
+- `server/tests/unit/utils/test_command_factories_moderation.py`
+- `server/tests/unit/utils/test_command_factories_player_state.py`
+- `server/tests/unit/utils/test_enhanced_error_logging.py`
+- `server/utils/command_factories_inventory.py`
 
 ## Audit Trail
 
-- EXTRACTED: 795 (93%)
-- INFERRED: 60 (7%)
+- EXTRACTED: 1080 (68%)
+- INFERRED: 508 (32%)
 - AMBIGUOUS: 0 (0%)
 
 ---

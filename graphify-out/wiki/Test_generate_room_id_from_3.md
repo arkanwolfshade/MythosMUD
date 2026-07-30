@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_generate_room_id_from_zone_data_none_values()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **Test _generate_room_id_from_zone_data with None values.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_apply_dampening_and_send_message_no_original_content()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _apply_dampening_and_send_message handles missing original_content.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [test async persistence room cache](test_async_persistence_room_cache.md) (1 shared connections)
+- [test nats message handler chat](test_nats_message_handler_chat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 

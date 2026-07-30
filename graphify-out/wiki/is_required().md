@@ -1,56 +1,69 @@
 # .is required()
 
-> 87 nodes
+> 179 nodes
 
 ## Key Concepts
 
-- **test_npc_utils.py** (30 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **get_zone_key_from_room_id()** (17 connections) — `server/npc/npc_utils.py`
-- **_PopulationLifecycleManager** (13 connections) — `server/npc/population_control.py`
-- **extract_npc_metadata()** (12 connections) — `server/npc/npc_utils.py`
-- **extract_definition_id_from_npc()** (12 connections) — `server/npc/npc_utils.py`
-- **extract_room_id_from_npc()** (11 connections) — `server/npc/npc_utils.py`
-- **npc_utils.py** (8 connections) — `server/npc/npc_utils.py`
-- **.despawn_npc()** (8 connections) — `server/npc/population_control.py`
-- **._check_spawn_requirements_for_room()** (7 connections) — `server/npc/population_control.py`
-- **._spawn_npc()** (7 connections) — `server/npc/population_control.py`
-- **._register_spawned_npc_in_population_stats()** (6 connections) — `server/npc/population_control.py`
-- **._handle_player_entered_room()** (5 connections) — `server/npc/population_control.py`
-- **._get_zone_key_from_room_id()** (5 connections) — `server/npc/population_control.py`
-- **.is_required()** (4 connections) — `server/models/npc.py`
-- **.spawn_npc()** (4 connections) — `server/npc/population_control.py`
-- **._handle_player_left_room()** (4 connections) — `server/npc/population_control.py`
-- **._update_player_count()** (4 connections) — `server/npc/population_control.py`
-- **.get_zone_configuration()** (4 connections) — `server/npc/population_control.py`
-- **._update_population_stats_for_despawn()** (4 connections) — `server/npc/population_control.py`
-- **Any** (3 connections)
-- **_stable_room_id_for_zone()** (3 connections) — `server/npc/npc_utils.py`
-- **test_extract_room_id_from_npc_current_room()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **test_extract_room_id_from_npc_current_room_id()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **test_extract_room_id_from_npc_room_id()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **test_extract_room_id_from_npc_not_found()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- *... and 62 more nodes in this community*
+- **websocket_handler.py** (64 connections) — `server/realtime/websocket_handler.py`
+- **websocket_handler_commands.py** (32 connections) — `server/realtime/websocket_handler_commands.py`
+- **handle_game_command()** (29 connections) — `server/realtime/websocket_handler_commands.py`
+- **websocket_handler_message_loop.py** (25 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **test_websocket_handler_coverage_gaps.py** (24 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_websocket_handler_app_state_connection.py** (23 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **handle_websocket_connection()** (21 connections) — `server/realtime/websocket_handler.py`
+- **resolve_and_setup_app_state_services()** (20 connections) — `server/realtime/websocket_handler_app_state.py`
+- **handle_chat_message()** (18 connections) — `server/realtime/websocket_handler.py`
+- **websocket_handler_connection.py** (17 connections) — `server/realtime/websocket_handler_connection.py`
+- **send_system_message()** (13 connections) — `server/realtime/websocket_handler.py`
+- **websocket_handler_app_state.py** (11 connections) — `server/realtime/websocket_handler_app_state.py`
+- **handle_websocket_message()** (10 connections) — `server/realtime/websocket_handler.py`
+- **_websocket_unified_command_result()** (10 connections) — `server/realtime/websocket_handler_commands.py`
+- **handle_message_loop_exception()** (10 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **request_context.py** (9 connections) — `server/realtime/request_context.py`
+- **create_websocket_request_context()** (9 connections) — `server/realtime/request_context.py`
+- **test_websocket_handler_system_message.py** (8 connections) — `server/tests/unit/realtime/test_websocket_handler_system_message.py`
+- **cleanup_websocket_connection()** (7 connections) — `server/realtime/websocket_handler_connection.py`
+- **setup_initial_connection_state()** (7 connections) — `server/realtime/websocket_handler_connection.py`
+- **send_websocket_error_response()** (7 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **WebSocket** (7 connections)
+- **load_player_mute_data()** (7 connections) — `server/realtime/websocket_helpers.py`
+- **PlayerDisconnectService** (6 connections) — `server/realtime/websocket_handler_connection.py`
+- **AsyncPersistenceRoomLookup** (6 connections) — `server/realtime/websocket_handler_connection.py`
+- *... and 154 more nodes in this community*
 
 ## Relationships
 
-- [.initialize()](initialize%28%29.md) (16 shared connections)
-- [. repr ()](_repr_%28%29.md) (13 shared connections)
-- [Any](Any.md) (4 shared connections)
-- [.get population stats()](get_population_stats%28%29.md) (2 shared connections)
-- [Represents the configuration for a](Represents_the_configuration_for_a.md) (2 shared connections)
-- [FollowTargetValue](FollowTargetValue.md) (1 shared connections)
+- [help content](help_content.md) (35 shared connections)
+- [. init ()](_init_%28%29.md) (22 shared connections)
+- [UUID](UUID.md) (19 shared connections)
+- [convert pydantic error()](convert_pydantic_error%28%29.md) (14 shared connections)
+- [Any](Any.md) (14 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (13 shared connections)
+- [websocket handler commands](websocket_handler_commands.md) (13 shared connections)
+- [Player](Player.md) (10 shared connections)
+- [follow commands](follow_commands.md) (4 shared connections)
+- [ContainerData](ContainerData.md) (2 shared connections)
+- [test magic commands](test_magic_commands.md) (2 shared connections)
+- [check alias safety()](check_alias_safety%28%29.md) (2 shared connections)
 
 ## Source Files
 
-- `server/models/npc.py`
-- `server/npc/npc_utils.py`
-- `server/npc/population_control.py`
-- `server/tests/unit/npc/test_npc_utils.py`
+- `server/realtime/request_context.py`
+- `server/realtime/websocket_handler.py`
+- `server/realtime/websocket_handler_app_state.py`
+- `server/realtime/websocket_handler_commands.py`
+- `server/realtime/websocket_handler_connection.py`
+- `server/realtime/websocket_handler_message_loop.py`
+- `server/realtime/websocket_helpers.py`
+- `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- `server/tests/unit/realtime/test_websocket_handler_system_message.py`
+- `server/tests/unit/realtime/test_websocket_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 279 (96%)
-- INFERRED: 11 (4%)
+- EXTRACTED: 688 (96%)
+- INFERRED: 29 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

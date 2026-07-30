@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_combat_victory_message()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test get_combat_victory_message returns victory message.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_process_dict_occupant_with_name()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test process_dict_occupant() processes generic name.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [test combat validator](test_combat_validator.md) (1 shared connections)
+- [test player event handlers utils](test_player_event_handlers_utils.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 

@@ -1,56 +1,50 @@
 # test corpse lifecycle service
 
-> 65 nodes
+> 50 nodes
 
 ## Key Concepts
 
-- **test_corpse_lifecycle_service.py** (55 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **corpse_service()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_corpse_lifecycle_service_init_no_persistence()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_create_corpse_on_death_success()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_can_access_corpse_admin()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_can_access_corpse_owner()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_can_access_corpse_grace_period_active()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_can_access_corpse_grace_period_expired()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_is_corpse_decayed_not_decayed()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_is_corpse_decayed_decayed()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_is_corpse_decayed_no_decay_time()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_is_corpse_decayed_uses_real_time_not_mythos_time()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_can_access_corpse_no_grace_period_start()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_create_corpse_on_death_player_no_name()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_create_corpse_on_death_custom_grace_period()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_is_corpse_decayed_timezone_aware()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **mock_persistence()** (2 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_corpse_lifecycle_service_init()** (2 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_get_decayed_corpses_in_room_empty()** (2 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_get_decayed_corpses_in_room_with_decayed()** (2 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_cleanup_decayed_corpse_success()** (2 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_cleanup_decayed_corpses_in_room()** (2 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_get_all_decayed_corpses()** (2 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_cleanup_all_decayed_corpses()** (2 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_get_decayed_corpses_in_room_validation_error()** (2 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- *... and 40 more nodes in this community*
+- **test_manager.py** (48 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_build_subject_invalid_parameter_value()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_build_subject_success()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_build_subject_no_params()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_build_subject_multiple_params()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_validate_subject_valid()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_validate_subject_invalid()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_validate_subject_event_domain()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_validate_subject_empty()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_validate_subject_uses_cache()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_validate_subject_no_cache()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_register_pattern_success()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_register_pattern_clears_cache()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_get_pattern_info_success()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_get_all_patterns()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_get_subscription_pattern_success()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_get_chat_subscription_patterns()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_get_event_subscription_patterns()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_clear_cache()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_get_performance_metrics_with_metrics()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_get_performance_metrics_without_metrics()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_build_subject_records_metrics()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_build_subject_records_error_metrics()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_validate_subject_records_metrics()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_validate_subject_records_cache_hit()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- *... and 25 more nodes in this community*
 
 ## Relationships
 
-- [ContainerComponent](ContainerComponent.md) (14 shared connections)
-- [CorpseNotFoundError](CorpseNotFoundError.md) (9 shared connections)
-- [APIRouter](APIRouter.md) (3 shared connections)
-- [.can access corpse()](can_access_corpse%28%29.md) (3 shared connections)
-- [initialize nats and combat services()](initialize_nats_and_combat_services%28%29.md) (3 shared connections)
-- [Test can access corpse() handles](Test_can_access_corpse%28%29_handles.md) (2 shared connections)
-- [main()](main%28%29.md) (1 shared connections)
-- [Test can access corpse() allows](Test_can_access_corpse%28%29_allows.md) (1 shared connections)
-- [Test is corpse decayed() handles](Test_is_corpse_decayed%28%29_handles.md) (1 shared connections)
+- [test nats message handler](test_nats_message_handler.md) (10 shared connections)
+- [get subject manager dependency()](get_subject_manager_dependency%28%29.md) (10 shared connections)
+- [Any](Any.md) (4 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- `server/tests/unit/services/nats_subject_manager/test_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 164 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 121 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

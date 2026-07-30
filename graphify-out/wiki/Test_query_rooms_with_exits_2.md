@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_query_rooms_with_exits_async_other_error_raises()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **Test _query_rooms_with_exits_async raises other errors.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_broadcast_player_entered_message_no_room_id()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **Test broadcast_player_entered_message() skips when room_id is None.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Relationships
 
-- [test async persistence room cache](test_async_persistence_room_cache.md) (1 shared connections)
+- [. call ()](_call_%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Audit Trail
 

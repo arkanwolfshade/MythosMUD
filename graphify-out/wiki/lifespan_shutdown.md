@@ -1,41 +1,37 @@
 # lifespan shutdown
 
-> 17 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **lifespan_shutdown.py** (15 connections) — `server/app/lifespan_shutdown.py`
-- **shutdown_services()** (12 connections) — `server/app/lifespan_shutdown.py`
-- **FastAPI** (5 connections)
-- **_shutdown_mythos_chronicle()** (4 connections) — `server/app/lifespan_shutdown.py`
-- **_shutdown_nats_handler()** (4 connections) — `server/app/lifespan_shutdown.py`
-- **_shutdown_connection_manager()** (4 connections) — `server/app/lifespan_shutdown.py`
-- **_shutdown_mythos_tick_scheduler()** (4 connections) — `server/app/lifespan_shutdown.py`
-- **_shutdown_task_registry()** (4 connections) — `server/app/lifespan_shutdown.py`
-- **_shutdown_event_bus()** (4 connections) — `server/app/lifespan_shutdown.py`
-- **Application shutdown logic.  This module handles graceful shutdown of all servic** (1 connections) — `server/app/lifespan_shutdown.py`
-- **Shutdown and persist mythos chronicle state.** (1 connections) — `server/app/lifespan_shutdown.py`
-- **Shutdown NATS message handler if present.** (1 connections) — `server/app/lifespan_shutdown.py`
-- **Shutdown connection manager if present.** (1 connections) — `server/app/lifespan_shutdown.py`
-- **Shutdown mythos tick scheduler if present.** (1 connections) — `server/app/lifespan_shutdown.py`
-- **Shutdown task registry if present.** (1 connections) — `server/app/lifespan_shutdown.py`
-- **Shutdown event bus and clean up all service subscriptions.** (1 connections) — `server/app/lifespan_shutdown.py`
-- **Handle graceful shutdown of all services.** (1 connections) — `server/app/lifespan_shutdown.py`
+- **test_command_helpers.py** (27 connections) — `server/tests/unit/utils/test_command_helpers.py`
+- **get_command_help()** (12 connections) — `server/utils/command_helpers.py`
+- **test_get_command_help_no_command()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
+- **test_get_command_help_specific_commands()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
+- **test_get_command_help_unknown_command()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
+- **test_get_command_help_case_insensitive()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
+- **Unit tests for command helper utilities.  Tests helper functions for command par** (1 connections) — `server/tests/unit/utils/test_command_helpers.py`
+- **Test get_command_help with no command (general help).** (1 connections) — `server/tests/unit/utils/test_command_helpers.py`
+- **Test get_command_help with specific command types.** (1 connections) — `server/tests/unit/utils/test_command_helpers.py`
+- **Test get_command_help with unknown command.** (1 connections) — `server/tests/unit/utils/test_command_helpers.py`
+- **Test get_command_help is case insensitive.** (1 connections) — `server/tests/unit/utils/test_command_helpers.py`
+- **Get help text for commands.      Args:         command_type: Specific command to** (1 connections) — `server/utils/command_helpers.py`
 
 ## Relationships
 
-- [.shutdown()](shutdown%28%29.md) (4 shared connections)
-- [lifespan](lifespan.md) (3 shared connections)
-- [main()](main%28%29.md) (3 shared connections)
-- [time commands](time_commands.md) (2 shared connections)
+- [. get persistence from app()](_get_persistence_from_app%28%29.md) (21 shared connections)
+- [Spell Targeting](Spell_Targeting.md) (4 shared connections)
+- [real time](real_time.md) (1 shared connections)
+- [.initialize()](initialize%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/app/lifespan_shutdown.py`
+- `server/tests/unit/utils/test_command_helpers.py`
+- `server/utils/command_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 64 (100%)
+- EXTRACTED: 57 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

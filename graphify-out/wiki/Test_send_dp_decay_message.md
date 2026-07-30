@@ -1,4 +1,4 @@
-# Test send dp decay message
+# test_send_dp_decay_message
 
 > 2 nodes
 

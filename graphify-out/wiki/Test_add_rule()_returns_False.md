@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_add_rule_missing_fields()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test add_rule() returns False when fields missing.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **mock_persistence()** (2 connections) — `server/tests/unit/game/test_room_service.py`
+- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/game/test_room_service.py`
 
 ## Relationships
 
-- [BehaviorEngine](BehaviorEngine.md) (1 shared connections)
-- [test behavior engine](test_behavior_engine.md) (1 shared connections)
+- [test room service](test_room_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_behavior_engine.py`
+- `server/tests/unit/game/test_room_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

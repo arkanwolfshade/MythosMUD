@@ -1,37 +1,48 @@
 # connection models
 
-> 15 nodes
+> 54 nodes
 
 ## Key Concepts
 
-- **test_connection_models.py** (9 connections) — `server/tests/unit/realtime/test_connection_models.py`
-- **ConnectionMetadata** (8 connections) — `server/realtime/connection_models.py`
-- **connection_models.py** (3 connections) — `server/realtime/connection_models.py`
-- **test_connection_metadata_init()** (3 connections) — `server/tests/unit/realtime/test_connection_models.py`
-- **test_connection_metadata_with_optional_fields()** (3 connections) — `server/tests/unit/realtime/test_connection_models.py`
-- **test_connection_metadata_dataclass_fields()** (3 connections) — `server/tests/unit/realtime/test_connection_models.py`
-- **test_connection_metadata_equality()** (3 connections) — `server/tests/unit/realtime/test_connection_models.py`
-- **test_connection_metadata_inequality()** (3 connections) — `server/tests/unit/realtime/test_connection_models.py`
-- **Test ConnectionMetadata equality comparison.** (2 connections) — `server/tests/unit/realtime/test_connection_models.py`
-- **Data models for connection management.  This module defines data structures used** (1 connections) — `server/realtime/connection_models.py`
-- **Metadata for tracking connection details in the WebSocket-only system.      This** (1 connections) — `server/realtime/connection_models.py`
-- **Unit tests for connection models.  Tests the connection_models module classes.** (1 connections) — `server/tests/unit/realtime/test_connection_models.py`
-- **Test ConnectionMetadata.__init__() creates metadata with required fields.** (1 connections) — `server/tests/unit/realtime/test_connection_models.py`
-- **Test ConnectionMetadata.__init__() with optional fields.** (1 connections) — `server/tests/unit/realtime/test_connection_models.py`
-- **Test ConnectionMetadata has all expected dataclass fields.** (1 connections) — `server/tests/unit/realtime/test_connection_models.py`
+- **test_movement_monitor.py** (33 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_get_movement_monitor_returns_singleton()** (3 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **sample_player_id()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_movement_monitor_init()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_record_movement_attempt_success()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_record_movement_attempt_failure()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_record_movement_attempt_string_player_id()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_record_movement_attempt_uuid_player_id()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_record_movement_attempt_multiple_players()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_record_concurrent_movement()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_record_concurrent_movement_updates_max()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_record_integrity_check_no_violation()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_record_integrity_check_with_violation()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_validate_room_integrity_valid()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_validate_room_integrity_duplicate_players()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_validate_room_integrity_empty_rooms()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_validate_room_integrity_room_without_get_players()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_get_metrics_empty()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_get_metrics_with_data()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_get_metrics_integrity_rate()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_get_alerts_no_alerts()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_get_alerts_high_concurrent()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_get_alerts_high_failure_rate()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_get_alerts_slow_movement_time()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_reset_metrics()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- *... and 29 more nodes in this community*
 
 ## Relationships
 
-- [main()](main%28%29.md) (1 shared connections)
+- [CORSConfig](CORSConfig.md) (5 shared connections)
+- [fetch container items()](fetch_container_items%28%29.md) (2 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_models.py`
-- `server/tests/unit/realtime/test_connection_models.py`
+- `server/tests/unit/game/test_movement_monitor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 43 (100%)
+- EXTRACTED: 113 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

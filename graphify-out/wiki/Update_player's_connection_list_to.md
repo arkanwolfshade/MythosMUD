@@ -1,32 +1,24 @@
 # Update player's connection list to
 
-> 8 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **_update_player_connection_list()** (9 connections) — `server/realtime/connection_establishment.py`
-- **test_update_player_connection_list_no_player()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_update_player_connection_list_with_active()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_update_player_connection_list_no_active()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Update player's connection list to only include active connections.      Args:** (1 connections) — `server/realtime/connection_establishment.py`
-- **Test _update_player_connection_list() handles player not in player_websockets.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _update_player_connection_list() keeps active connections.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _update_player_connection_list() removes player when no active connections.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **8. Error Handling and Debugging** (3 connections) — `.cursor/commands/server-test-remediation.md`
+- **Test Debugging** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **Common Debug Commands** (1 connections) — `.cursor/commands/server-test-remediation.md`
 
 ## Relationships
 
-- [test connection establishment](test_connection_establishment.md) (4 shared connections)
-- [connection establishment](connection_establishment.md) (3 shared connections)
-- [cleanup dead connections()](cleanup_dead_connections%28%29_2.md) (1 shared connections)
+- [10. Final Verification](10._Final_Verification.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_establishment.py`
-- `server/tests/unit/realtime/test_connection_establishment.py`
+- `.cursor/commands/server-test-remediation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 22 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

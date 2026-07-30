@@ -1,49 +1,40 @@
 # PlayerIdCarrier
 
-> 22 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **validate_token_impl()** (13 connections) — `server/realtime/connection_delegates.py`
-- **Protocol** (4 connections)
-- **test_validate_token_impl_database_error()** (4 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
-- **_PlayerIdCarrier** (4 connections) — `server/realtime/connection_delegates.py`
-- **_TokenPersistence** (4 connections) — `server/realtime/connection_delegates.py`
-- **.get_player_by_user_id()** (4 connections) — `server/realtime/connection_delegates.py`
-- **_TokenValidateManager** (4 connections) — `server/realtime/connection_delegates.py`
-- **._validate_token()** (4 connections) — `server/realtime/connection_manager.py`
-- **test_validate_token_impl_success()** (3 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
-- **test_validate_token_impl_invalid_payload()** (3 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
-- **test_validate_token_impl_no_persistence()** (3 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
-- **test_validate_token_impl_player_mismatch()** (3 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
-- **Test validate_token_impl() returns False for invalid payload.** (2 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
-- **Test validate_token_impl() successfully validates token.** (1 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
-- **Test validate_token_impl() returns False when persistence not available.** (1 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
-- **Test validate_token_impl() handles DatabaseError.** (1 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
-- **Minimal player shape for token validation.** (1 connections) — `server/realtime/connection_delegates.py`
-- **Persistence surface used by validate_token_impl.** (1 connections) — `server/realtime/connection_delegates.py`
-- **Look up a player by auth user id.** (1 connections) — `server/realtime/connection_delegates.py`
-- **ConnectionManager surface used by validate_token_impl.** (1 connections) — `server/realtime/connection_delegates.py`
-- **Validate a JWT token for a connection.      Args:         token: JWT token to va** (1 connections) — `server/realtime/connection_delegates.py`
-- **Validate a JWT token for a connection.** (1 connections) — `server/realtime/connection_manager.py`
+- **EmoteService** (18 connections) — `server/game/emote_service.py`
+- **._load_emotes()** (4 connections) — `server/game/emote_service.py`
+- **.__init__()** (3 connections) — `server/game/emote_service.py`
+- **.reload_emotes()** (3 connections) — `server/game/emote_service.py`
+- **._validate_emote_payload()** (3 connections) — `server/game/emote_service.py`
+- **.is_emote_alias()** (2 connections) — `server/game/emote_service.py`
+- **.list_available_emotes()** (2 connections) — `server/game/emote_service.py`
+- **Service for managing predefined emote actions and their messages.** (1 connections) — `server/game/emote_service.py`
+- **Initialize the EmoteService.          Args:             emote_file_path: DEPRECA** (1 connections) — `server/game/emote_service.py`
+- **Load emote definitions from PostgreSQL database.** (1 connections) — `server/game/emote_service.py`
+- **Check if a command is an emote alias.          Args:             command: The co** (1 connections) — `server/game/emote_service.py`
+- **Get a list of all available emotes and their aliases.          Returns:** (1 connections) — `server/game/emote_service.py`
+- **Reload emote definitions from the file.** (1 connections) — `server/game/emote_service.py`
+- **Validate emote definitions against the shared schema when available.          Ar** (1 connections) — `server/game/emote_service.py`
 
 ## Relationships
 
-- [connection delegates](connection_delegates.md) (12 shared connections)
-- [Player](Player.md) (2 shared connections)
-- [main()](main%28%29.md) (1 shared connections)
-- [Any](Any.md) (1 shared connections)
+- [AuthSlice](AuthSlice.md) (5 shared connections)
+- [.get uuid mapping()](get_uuid_mapping%28%29.md) (2 shared connections)
+- [Any](Any.md) (2 shared connections)
+- [ChatMessage](ChatMessage.md) (2 shared connections)
+- [rate overrides](rate_overrides.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_delegates.py`
-- `server/realtime/connection_manager.py`
-- `server/tests/unit/realtime/test_connection_delegates.py`
+- `server/game/emote_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 64 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 41 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

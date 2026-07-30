@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_evaluate_equality_not_equality()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test _evaluate_equality() returns None for non-equality condition.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_handle_player_entered_no_player_info()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **Test handle_player_entered() handles player not found.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Relationships
 
-- [BehaviorEngine](BehaviorEngine.md) (1 shared connections)
-- [test behavior engine](test_behavior_engine.md) (1 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
+- [. call ()](_call_%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_behavior_engine.py`
+- `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Audit Trail
 

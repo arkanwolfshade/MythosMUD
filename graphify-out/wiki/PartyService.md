@@ -1,55 +1,38 @@
 # PartyService
 
-> 29 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **PartyService** (35 connections) — `server/game/party_service.py`
-- **UUID** (17 connections)
-- **_str_id()** (16 connections) — `server/game/party_service.py`
-- **._send_result_to_player()** (8 connections) — `server/game/party_service.py`
-- **.accept_party_invite()** (8 connections) — `server/game/party_service.py`
-- **.get_party_for_player()** (8 connections) — `server/game/party_service.py`
-- **.add_member()** (7 connections) — `server/game/party_service.py`
-- **._expire_pending_invites()** (7 connections) — `server/game/party_service.py`
-- **.request_party_invite()** (7 connections) — `server/game/party_service.py`
-- **.decline_party_invite()** (7 connections) — `server/game/party_service.py`
-- **.on_player_disconnect()** (6 connections) — `server/game/party_service.py`
-- **._send_party_invite_to_target()** (5 connections) — `server/game/party_service.py`
-- **.is_leader()** (5 connections) — `server/game/party_service.py`
-- **.is_in_same_party()** (5 connections) — `server/game/party_service.py`
-- **.get_party_members()** (4 connections) — `server/game/party_service.py`
-- **Normalize ID to string for dict keys and membership sets.** (1 connections) — `server/game/party_service.py`
-- **In-memory party management: create, disband, add/remove/kick members, leader che** (1 connections) — `server/game/party_service.py`
-- **Add a player to a party. Fails if party does not exist or player is already in a** (1 connections) — `server/game/party_service.py`
-- **Remove expired pending invites and notify inviters.** (1 connections) — `server/game/party_service.py`
-- **Send a command_response-style message to a single player.** (1 connections) — `server/game/party_service.py`
-- **Send party_invite event to the target player only.** (1 connections) — `server/game/party_service.py`
-- **Create a pending party invite and send party_invite event to target.         Tar** (1 connections) — `server/game/party_service.py`
-- **Accept a party invite. Target is the player who accepted (the invitee).** (1 connections) — `server/game/party_service.py`
-- **Decline a party invite.** (1 connections) — `server/game/party_service.py`
-- **Return the party the player is in, or None.** (1 connections) — `server/game/party_service.py`
-- *... and 4 more nodes in this community*
+- **ChannelBroadcastingStrategyFactory** (11 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **test_channel_broadcasting_strategy_factory_get_strategy_unknown()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **.register_strategy()** (3 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **test_channel_broadcasting_strategy_factory_init()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **test_channel_broadcasting_strategy_factory_register_strategy()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **test_global_channel_strategy_factory_instance()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **Factory for creating channel broadcasting strategies.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Register a new strategy for a channel type.          Args:             channel_t** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Test ChannelBroadcastingStrategyFactory.__init__() initializes with default stra** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **Test ChannelBroadcastingStrategyFactory.get_strategy() returns UnknownChannelStr** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **Test ChannelBroadcastingStrategyFactory.register_strategy() registers new strate** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **Test global channel_strategy_factory instance exists.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
 
 ## Relationships
 
-- [.create party()](create_party%28%29.md) (24 shared connections)
-- [PartyUpdated](PartyUpdated.md) (8 shared connections)
-- [Any](Any.md) (3 shared connections)
-- [Party](Party.md) (2 shared connections)
-- [test party service](test_party_service.md) (2 shared connections)
-- [UUID](UUID.md) (2 shared connections)
-- [.initialize()](initialize%28%29.md) (1 shared connections)
-- [Player](Player.md) (1 shared connections)
+- [channel broadcasting strategies](channel_broadcasting_strategies.md) (5 shared connections)
+- [add fastapi users columns](add_fastapi_users_columns.md) (4 shared connections)
+- [test inventory mutation guard internal](test_inventory_mutation_guard_internal.md) (1 shared connections)
+- [admin summon command](admin_summon_command.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/party_service.py`
+- `server/realtime/channel_broadcasting_strategies.py`
+- `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 155 (97%)
-- INFERRED: 4 (3%)
+- EXTRACTED: 30 (91%)
+- INFERRED: 3 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

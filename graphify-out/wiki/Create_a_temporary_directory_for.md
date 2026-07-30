@@ -1,48 +1,38 @@
 # Create a temporary directory for
 
-> 18 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **temp_dir()** (11 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
-- **TestValidatorEdgeCases** (10 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **.test_room_with_nonexistent_exit_targets()** (5 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **test_validator_integration.py** (4 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **.test_empty_room_directory()** (4 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **.test_room_with_malformed_json()** (4 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **.test_room_with_missing_required_fields()** (4 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **temp_rooms_dir()** (3 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
-- **.test_validate_file_structure_unusual_names()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_room_loader.py`
-- **Create a temporary directory for testing.** (1 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
-- **Create a temporary directory with test room files.** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
-- **Test file structure validation with unusual filenames.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_room_loader.py`
-- **Integration tests for the main validator CLI.  Tests the complete validation pip** (1 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **Test edge cases and error conditions.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **Test validator with empty room directory.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **Test validator with malformed JSON files.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **Test validator with rooms missing required fields.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **Test validator with rooms referencing non-existent targets.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- **conftest.py** (9 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **sample_room_data()** (2 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **sample_room_database()** (2 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **invalid_room_data()** (2 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **room_with_new_exit_format()** (2 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **room_with_self_reference()** (2 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **dead_end_room()** (2 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **unreachable_room()** (2 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **Pytest configuration and fixtures for room validator tests.  Provides test data** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **Sample room data for testing.** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **Sample room database for testing.** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **Invalid room data for testing error conditions.** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **Room data using the new object format for exits.** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **Room data with self-reference exit.** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **Room data with no exits (dead end).** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **Room data that would be unreachable from the starting room.** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
 
 ## Relationships
 
-- [Path](Path.md) (10 shared connections)
-- [PathValidator](PathValidator.md) (3 shared connections)
-- [conftest](conftest.md) (1 shared connections)
-- [Integration tests for the main](Integration_tests_for_the_main.md) (1 shared connections)
-- [Any](Any.md) (1 shared connections)
-- [Convert legacy string format exits](Convert_legacy_string_format_exits.md) (1 shared connections)
+- [Path](Path.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/structured_logging/test_logging_utilities.py`
 - `tools/room_toolkit/room_validator/tests/conftest.py`
-- `tools/room_toolkit/room_validator/tests/test_room_loader.py`
-- `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 34 (60%)
-- INFERRED: 23 (40%)
+- EXTRACTED: 31 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

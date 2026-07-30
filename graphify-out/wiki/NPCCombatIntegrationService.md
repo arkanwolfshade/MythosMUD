@@ -1,60 +1,73 @@
 # NPCCombatIntegrationService
 
-> 98 nodes
+> 346 nodes
 
 ## Key Concepts
 
-- **NPCCombatIntegrationService** (89 connections) — `server/services/npc_combat_integration_service.py`
-- **test_npc_combat_integration_service.py** (44 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **.__init__()** (12 connections) — `server/services/npc_combat_integration_service.py`
-- **._init_messaging_handlers_and_publisher()** (6 connections) — `server/services/npc_combat_integration_service.py`
-- **_StubConfigRoot** (6 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **integration_service()** (6 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **._init_persistence_and_event_bus()** (5 connections) — `server/services/npc_combat_integration_service.py`
-- **._init_combat_service()** (4 connections) — `server/services/npc_combat_integration_service.py`
-- **.handle_player_attack_on_npc()** (4 connections) — `server/services/npc_combat_integration_service.py`
-- **test_integration_service_init_with_shared_player_combat_service()** (4 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **test_integration_service_init_creates_combat_service_when_none()** (4 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **._init_player_combat_service()** (3 connections) — `server/services/npc_combat_integration_service.py`
-- **.get_messaging_integration()** (3 connections) — `server/services/npc_combat_integration_service.py`
-- **.get_combat_service()** (3 connections) — `server/services/npc_combat_integration_service.py`
-- **.get_data_provider()** (3 connections) — `server/services/npc_combat_integration_service.py`
-- **._complete_player_attack_on_npc_after_grace()** (3 connections) — `server/services/npc_combat_integration_service.py`
-- **_StubGameConfig** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **test_integration_service_init()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **test_get_integration_config()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **test_is_auto_progression_enabled()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **test_handle_player_attack_on_npc()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **test_validate_and_get_npc_instance_provided()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **test_validate_and_get_npc_instance_lookup()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **test_validate_and_get_npc_instance_dead()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **test_validate_combat_location()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- *... and 73 more nodes in this community*
+- **ExplorationService** (75 connections) — `server/services/exploration_service.py`
+- **RoomService** (70 connections) — `server/game/room_service.py`
+- **maps.py** (53 connections) — `server/api/maps.py`
+- **test_exploration_service.py** (45 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **test_maps.py** (32 connections) — `server/tests/unit/api/test_maps.py`
+- **map_minimap.py** (21 connections) — `server/api/map_minimap.py`
+- **room_service.py** (21 connections) — `server/game/room_service.py`
+- **test_map_minimap_helpers.py** (20 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
+- **MapZoneContext** (19 connections) — `server/api/map_helpers.py`
+- **_prepare_ascii_map_context()** (17 connections) — `server/api/maps.py`
+- **generate_minimap_html()** (16 connections) — `server/api/map_minimap.py`
+- **exploration_service.py** (16 connections) — `server/services/exploration_service.py`
+- **test_map_helpers.py** (15 connections) — `server/tests/unit/api/test_map_helpers.py`
+- **map_helpers.py** (14 connections) — `server/api/map_helpers.py`
+- **load_rooms_with_coordinates()** (14 connections) — `server/api/map_helpers.py`
+- **_ensure_coordinates_generated()** (14 connections) — `server/api/maps.py`
+- **_apply_exploration_filter_if_needed()** (13 connections) — `server/api/maps.py`
+- **get_ascii_minimap()** (13 connections) — `server/api/maps.py`
+- **_apply_exploration_filter_if_needed()** (13 connections) — `server/api/rooms.py`
+- **get_ascii_map()** (12 connections) — `server/api/maps.py`
+- **test_rooms_exploration_filter.py** (12 connections) — `server/tests/unit/api/test_rooms_exploration_filter.py`
+- **load_single_room_with_coordinates()** (11 connections) — `server/api/map_helpers.py`
+- **_ensure_current_room_in_minimap_rooms()** (11 connections) — `server/api/map_minimap.py`
+- **_filter_explored_rooms()** (11 connections) — `server/api/maps.py`
+- **set_map_origin()** (11 connections) — `server/api/maps.py`
+- *... and 321 more nodes in this community*
 
 ## Relationships
 
-- [initialize nats and combat services()](initialize_nats_and_combat_services%28%29.md) (14 shared connections)
-- [.initialize()](initialize%28%29.md) (10 shared connections)
-- [. init ()](_init_%28%29.md) (8 shared connections)
-- [mock async persistence()](mock_async_persistence%28%29.md) (6 shared connections)
-- [Player Position Service](Player_Position_Service.md) (5 shared connections)
-- [.get original string id()](get_original_string_id%28%29.md) (4 shared connections)
-- [.set player combat service()](set_player_combat_service%28%29.md) (3 shared connections)
-- [test npc combat integration service](test_npc_combat_integration_service.md) (3 shared connections)
-- [combat taunt](combat_taunt.md) (2 shared connections)
-- [.get lucidity service()](get_lucidity_service%28%29.md) (2 shared connections)
-- [.get uuid mapping()](get_uuid_mapping%28%29.md) (2 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (2 shared connections)
+- [metrics](metrics.md) (29 shared connections)
+- [real time](real_time.md) (24 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (21 shared connections)
+- [. init ()](_init_%28%29.md) (13 shared connections)
+- [memory leak metrics](memory_leak_metrics.md) (13 shared connections)
+- [ascii map renderer](ascii_map_renderer.md) (7 shared connections)
+- [AbstractContextManager](AbstractContextManager.md) (6 shared connections)
+- [emit close container event()](emit_close_container_event%28%29.md) (6 shared connections)
+- [CoordinateGenerator](CoordinateGenerator.md) (5 shared connections)
+- [test player event handlers state](test_player_event_handlers_state.md) (5 shared connections)
+- [chat nats publisher](chat_nats_publisher.md) (2 shared connections)
+- [test room service](test_room_service.md) (2 shared connections)
 
 ## Source Files
 
-- `server/services/npc_combat_integration_service.py`
-- `server/tests/unit/services/test_npc_combat_integration_service.py`
+- `server/api/map_helpers.py`
+- `server/api/map_minimap.py`
+- `server/api/maps.py`
+- `server/api/rooms.py`
+- `server/game/room_service.py`
+- `server/schemas/maps/__init__.py`
+- `server/schemas/maps/map.py`
+- `server/services/ascii_map_renderer.py`
+- `server/services/coordinate_validator.py`
+- `server/services/exploration_service.py`
+- `server/tests/unit/api/test_map_helpers.py`
+- `server/tests/unit/api/test_map_minimap_helpers.py`
+- `server/tests/unit/api/test_maps.py`
+- `server/tests/unit/api/test_rooms_exploration_filter.py`
+- `server/tests/unit/services/test_exploration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 325 (94%)
-- INFERRED: 22 (6%)
+- EXTRACTED: 1398 (95%)
+- INFERRED: 75 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

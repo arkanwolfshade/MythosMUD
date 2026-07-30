@@ -1,56 +1,78 @@
 # test command parser
 
-> 68 nodes
+> 300 nodes
 
 ## Key Concepts
 
-- **test_command_parser.py** (45 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **parse_command()** (24 connections) — `server/utils/command_parser.py`
-- **Test _create_command_object handles ValueError.** (4 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_empty_string()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_whitespace_only()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_too_long()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_unknown_command()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_valid_look()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_valid_go()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_with_slash_prefix()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_spawn_alias()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_alias_l()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_alias_g()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_global_function()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_global_function_with_args()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **Test _create_command_object handles 'w' alias.** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_command_parser_initialization()** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_normalize_command_removes_slash()** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_normalize_command_cleans_whitespace()** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_normalize_command_no_slash()** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_parts_basic()** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_parts_no_args()** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_parts_multiple_args()** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_parts_empty_string()** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_parts_mock_object_detection()** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
-- *... and 43 more nodes in this community*
+- **ApplicationContainer** (139 connections) — `server/container/main.py`
+- **TaskRegistry** (33 connections) — `server/app/task_registry.py`
+- **main.py** (33 connections) — `server/container/main.py`
+- **test_application_container.py** (26 connections) — `server/tests/unit/test_application_container.py`
+- **EventPublisher** (23 connections) — `server/realtime/event_publisher.py`
+- **__init__.py** (19 connections) — `server/container/bundles/__init__.py`
+- **CombatBundle** (19 connections) — `server/container/bundles/combat.py`
+- **get_global_tracked_manager()** (18 connections) — `server/app/tracked_task_manager.py`
+- **core.py** (18 connections) — `server/container/bundles/core.py`
+- **RealtimeBundle** (17 connections) — `server/container/bundles/realtime.py`
+- **get_container()** (17 connections) — `server/container/main.py`
+- **tracked_task_manager.py** (14 connections) — `server/app/tracked_task_manager.py`
+- **TrackedTaskManager** (14 connections) — `server/app/tracked_task_manager.py`
+- **CoreBundle** (14 connections) — `server/container/bundles/core.py`
+- **combat.py** (13 connections) — `server/container/bundles/combat.py`
+- **MonitoringBundle** (13 connections) — `server/container/bundles/monitoring.py`
+- **.initialize()** (12 connections) — `server/container/bundles/core.py`
+- **realtime.py** (12 connections) — `server/container/bundles/realtime.py`
+- **.initialize()** (12 connections) — `server/container/main.py`
+- **DistributedEventBus** (12 connections) — `server/events/distributed_event_bus.py`
+- **monitoring.py** (11 connections) — `server/container/bundles/monitoring.py`
+- **NPCBundle** (11 connections) — `server/container/bundles/npc.py`
+- **memory_cleanup_service.py** (10 connections) — `server/app/memory_cleanup_service.py`
+- **MemoryThresholdMonitor** (10 connections) — `server/app/memory_cleanup_service.py`
+- **memory_lifespan_coordinator.py** (10 connections) — `server/app/memory_lifespan_coordinator.py`
+- *... and 275 more nodes in this community*
 
 ## Relationships
 
-- [.validate spell name()](validate_spell_name%28%29.md) (5 shared connections)
-- [command parser()](command_parser%28%29.md) (4 shared connections)
-- [Any](Any.md) (3 shared connections)
-- [main()](main%28%29.md) (2 shared connections)
-- [. init ()](_init_%28%29.md) (1 shared connections)
-- [MythosValidationError](MythosValidationError.md) (1 shared connections)
-- [CommandHandler](CommandHandler.md) (1 shared connections)
-- [command processor()](command_processor%28%29.md) (1 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (73 shared connections)
+- [Any](Any.md) (26 shared connections)
+- [message handler factory](message_handler_factory.md) (19 shared connections)
+- [emit close container event()](emit_close_container_event%28%29.md) (15 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (12 shared connections)
+- [Player](Player.md) (9 shared connections)
+- [. init ()](_init_%28%29.md) (8 shared connections)
+- [.shutdown()](shutdown%28%29.md) (7 shared connections)
+- [UUID](UUID.md) (6 shared connections)
+- [Formatter](Formatter.md) (6 shared connections)
+- [. initialize handlers()](_initialize_handlers%28%29.md) (5 shared connections)
+- [event publisher()](event_publisher%28%29.md) (5 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_parser.py`
-- `server/utils/command_parser.py`
+- `server/app/memory_cleanup_service.py`
+- `server/app/memory_lifespan_coordinator.py`
+- `server/app/task_registry.py`
+- `server/app/tracked_task_manager.py`
+- `server/container/__init__.py`
+- `server/container/bundles/__init__.py`
+- `server/container/bundles/chat.py`
+- `server/container/bundles/combat.py`
+- `server/container/bundles/core.py`
+- `server/container/bundles/monitoring.py`
+- `server/container/bundles/npc.py`
+- `server/container/bundles/realtime.py`
+- `server/container/bundles/time.py`
+- `server/container/main.py`
+- `server/container/utils.py`
+- `server/events/distributed_event_bus.py`
+- `server/realtime/event_publisher.py`
+- `server/services/game_tick_service.py`
+- `server/tests/fixtures/unit/__init__.py`
+- `server/tests/unit/realtime/test_event_publisher_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 188 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 1137 (95%)
+- INFERRED: 65 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -19,8 +19,8 @@
 
 ## Relationships
 
-- [useMapLayout](useMapLayout.md) (2 shared connections)
-- [useRoomMapData.test](useRoomMapData.test.md) (1 shared connections)
+- [.validate direction()](validate_direction%28%29.md) (2 shared connections)
+- [EdgeDetailsPanel](EdgeDetailsPanel.md) (1 shared connections)
 
 ## Source Files
 

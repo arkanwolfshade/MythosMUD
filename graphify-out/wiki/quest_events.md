@@ -1,44 +1,33 @@
 # quest events
 
-> 16 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **quest_events.py** (14 connections) — `server/game/quest/quest_events.py`
-- **subscribe_quest_events()** (13 connections) — `server/game/quest/quest_events.py`
-- **_make_on_player_entered()** (5 connections) — `server/game/quest/quest_events.py`
-- **Any** (4 connections)
-- **_make_on_player_left()** (4 connections) — `server/game/quest/quest_events.py`
-- **_make_on_npc_died()** (4 connections) — `server/game/quest/quest_events.py`
-- **_parse_player_id()** (3 connections) — `server/game/quest/quest_events.py`
-- **_entity_id_for_quest_offer()** (2 connections) — `server/game/quest/quest_events.py`
-- **UUID** (2 connections)
-- **Quest event subscriptions: room entry (trigger start), room exit (complete_activ** (1 connections) — `server/game/quest/quest_events.py`
-- **Return entity_id for quest_offers lookup: strip instance_<uuid>_ prefix if prese** (1 connections) — `server/game/quest/quest_events.py`
-- **Subscribe to room events for quest triggers and progress.      - PlayerEnteredRo** (1 connections) — `server/game/quest/quest_events.py`
-- **Return an async handler for PlayerEnteredRoom (entering via exit); starts room-o** (1 connections) — `server/game/quest/quest_events.py`
-- **Return an async handler for PlayerLeftRoom that records exit_<room_id> activity.** (1 connections) — `server/game/quest/quest_events.py`
-- **Return an async handler for NPCDied that records kill for kill_N goals when kill** (1 connections) — `server/game/quest/quest_events.py`
-- **Parse player_id string to UUID. Returns None if invalid.** (1 connections) — `server/game/quest/quest_events.py`
+- **test_websocket_handler_validation.py** (7 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
+- **test_validate_message_failure()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
+- **mock_websocket()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
+- **mock_validator()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
+- **test_validate_message_success()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
+- **Unit tests for websocket handler message validation.  Tests the message validati** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
+- **Create a mock WebSocket.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
+- **Create a mock message validator.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
+- **Test _validate_message() returns message when validation succeeds.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
+- **Test _validate_message() returns None when validation fails.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
 
 ## Relationships
 
-- [Any](Any.md) (5 shared connections)
-- [main()](main%28%29.md) (3 shared connections)
-- [. repr ()](_repr_%28%29.md) (2 shared connections)
-- [lifespan](lifespan.md) (1 shared connections)
-- [Player](Player.md) (1 shared connections)
-- [test quest service](test_quest_service.md) (1 shared connections)
-- [FollowTargetValue](FollowTargetValue.md) (1 shared connections)
+- [. init ()](_init_%28%29.md) (2 shared connections)
+- [.is required()](is_required%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/quest/quest_events.py`
+- `server/tests/unit/realtime/test_websocket_handler_validation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 52 (90%)
-- INFERRED: 6 (10%)
+- EXTRACTED: 21 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
