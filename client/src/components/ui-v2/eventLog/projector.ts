@@ -31,13 +31,14 @@ function ensureSelfListedInRoomPlayers(state: GameState): GameState {
   }
   const nextPlayers = [...players, name];
   const npcs = room.npcs ?? [];
+  // Do not recompute occupant_count: server value is authoritative and may include
+  // hidden/other entities not present in players/npcs lists.
   return {
     ...state,
     room: {
       ...room,
       players: nextPlayers,
       occupants: [...nextPlayers, ...npcs],
-      occupant_count: nextPlayers.length + npcs.length,
     },
   };
 }

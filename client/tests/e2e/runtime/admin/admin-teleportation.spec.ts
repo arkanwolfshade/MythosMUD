@@ -85,7 +85,12 @@ test.describe('Admin Teleportation', () => {
     try {
       await runTeleport();
     } catch {
-      await recoverPlayableSession(awContext.page, awContext.player.username, awContext.player.password, 45000);
+      awContext.page = await recoverPlayableSession(
+        awContext.page,
+        awContext.player.username,
+        awContext.player.password,
+        45000
+      );
       await runTeleport();
     }
 

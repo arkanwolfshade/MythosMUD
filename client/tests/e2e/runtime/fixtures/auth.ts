@@ -301,19 +301,19 @@ async function reconnectPlayableSession(
   page: Page,
   options: EnsurePlayableConnectionOptions | undefined,
   timeoutMs: number
-): Promise<void> {
+): Promise<Page> {
   if (options?.username && options?.password) {
     // Full reload drops the SPA session and returns to login; re-enter the game instead.
-    await recoverPlayableSession(page, options.username, options.password, timeoutMs);
-    return;
+    return recoverPlayableSession(page, options.username, options.password, timeoutMs);
   }
 
   await refreshPlayableSession(page, timeoutMs);
   if (await assertCommandChannelReady(page, timeoutMs)) {
-    return;
+    return page;
   }
 
   await waitForPlayableSession(page, timeoutMs);
+  return page;
 }
 
 async function reopenIfClosed(page: Page, options: EnsurePlayableConnectionOptions | undefined): Promise<Page> {
@@ -339,12 +339,12 @@ function resolveEnsuredPage(activePage: Page, username: string | undefined): Pag
  * Send Command stays disabled until the input has text; do not probe readiness with that button.
  */
 export async function ensurePlayableConnection(page: Page, options?: EnsurePlayableConnectionOptions): Promise<Page> {
-  const activePage = await reopenIfClosed(resolveActivePage(page), options);
+  let activePage = await reopenIfClosed(resolveActivePage(page), options);
   const timeoutMs = options?.timeoutMs ?? 45000;
   await activePage.bringToFront().catch(() => {});
 
   if (!(await assertCommandChannelReady(activePage, timeoutMs))) {
-    await reconnectPlayableSession(activePage, options, timeoutMs);
+    activePage = await reconnectPlayableSession(activePage, options, timeoutMs);
   }
 
   return resolveEnsuredPage(activePage, options?.username);
@@ -399,18 +399,19 @@ async function recoverPlayableViaSpaNavigation(
 /**
  * Restore a playable session when linkdead/disconnect left Send Command disabled.
  * Re-logs in only when reload did not restore command input.
+ * Returns the live page (may differ from the input handle after reopen).
  */
 export async function recoverPlayableSession(
   page: Page,
   username: string,
   password: string,
   timeoutMs: number = 45000
-): Promise<void> {
+): Promise<Page> {
   let activePage = page;
   if (!isPageUsable(activePage)) {
     activePage = await reopenClosedPage(activePage, username, password, timeoutMs);
     if (await assertCommandChannelReady(activePage, RECOVER_COMMAND_READY_MS)) {
-      return;
+      return activePage;
     }
   }
 
@@ -418,23 +419,24 @@ export async function recoverPlayableSession(
 
   if (await isUsernameLoginVisible(activePage)) {
     await restorePlayableAfterLogin(activePage, username, password, timeoutMs);
-    return;
+    return activePage;
   }
 
   if (await assertCommandChannelReady(activePage, RECOVER_COMMAND_READY_MS)) {
-    return;
+    return activePage;
   }
 
   if (await tryInPlacePlayableRecovery(activePage, timeoutMs)) {
-    return;
+    return activePage;
   }
 
   if (await isUsernameLoginVisible(activePage)) {
     await restorePlayableAfterLogin(activePage, username, password, timeoutMs);
-    return;
+    return activePage;
   }
 
   await recoverPlayableViaSpaNavigation(activePage, username, password, timeoutMs);
+  return activePage;
 }
 
 /**

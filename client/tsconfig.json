@@ -38,9 +38,5 @@
     "tests/**/*",
     "playwright.config.ts"
   ],
-  "references": [
-    { "path": "./tsconfig.node.json" },
-    { "path": "./tsconfig.test.json" },
-    { "path": "./tests/e2e/tsconfig.json" }
-  ]
+  "references": [{ "path": "./tsconfig.node.json" }, { "path": "./tests/e2e/tsconfig.json" }]
 }

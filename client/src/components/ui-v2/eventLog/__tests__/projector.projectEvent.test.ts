@@ -136,6 +136,32 @@ describe('projector', () => {
       expect(next.room?.occupants).toContain('ArkanWolfshade');
     });
 
+    it('preserves server occupant_count when injecting self into room.players', () => {
+      // Server count can exceed visible players/NPCs (hidden occupants, other entities).
+      const prev = {
+        ...getInitialGameState(),
+        player: { name: 'ArkanWolfshade', id: 'p1' },
+        room: {
+          id: 'room1',
+          name: 'Foyer',
+          description: '',
+          exits: {},
+          players: ['Ithaqua'],
+          npcs: ['Morgan'],
+          occupants: ['Ithaqua', 'Morgan'],
+          occupant_count: 5,
+        },
+      };
+      const next = projectEvent(prev, {
+        event_type: 'chat_message',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { message: 'hello', channel: 'say' },
+      });
+      expect(next.room?.players).toContain('ArkanWolfshade');
+      expect(next.room?.occupant_count).toBe(5);
+    });
+
     it('game_state with empty room then room_occupants results in occupants', () => {
       const log: EventLog = [
         {
