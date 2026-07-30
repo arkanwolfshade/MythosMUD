@@ -28,7 +28,7 @@
 ## Relationships
 
 - [UUID](UUID.md) (16 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
+- [world](world.md) (1 shared connections)
 - [MythosValidationError](MythosValidationError.md) (1 shared connections)
 
 ## Source Files

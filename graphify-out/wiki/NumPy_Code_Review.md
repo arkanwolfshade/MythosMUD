@@ -1,11 +1,15 @@
 # NumPy Code Review
 
-> 2 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **NumPy Code Review** (1 connections) — `docs/NUMPY_CODE_REVIEW.md`
-- **NumPy Usage Review** (1 connections) — `docs/NUMPY_CODE_REVIEW.md`
+- **Summary (from Codacy UI snapshot)** (4 connections) — `docs/archive/investigations/codacy_high_critical_baseline.md`
+- **Codacy High/Critical Baseline – MythosMUD** (2 connections) — `docs/archive/investigations/codacy_high_critical_baseline.md`
+- **codacy_high_critical_baseline.md** (1 connections) — `docs/archive/investigations/codacy_high_critical_baseline.md`
+- **Top code patterns by issue count** (1 connections) — `docs/archive/investigations/codacy_high_critical_baseline.md`
+- **Example issue types** (1 connections) — `docs/archive/investigations/codacy_high_critical_baseline.md`
+- **Distribution notes** (1 connections) — `docs/archive/investigations/codacy_high_critical_baseline.md`
 
 ## Relationships
 
@@ -13,11 +17,11 @@
 
 ## Source Files
 
-- `docs/NUMPY_CODE_REVIEW.md`
+- `docs/archive/investigations/codacy_high_critical_baseline.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 10 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

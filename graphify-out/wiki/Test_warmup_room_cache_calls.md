@@ -1,24 +1,27 @@
 # Test warmup room cache calls
 
-> 2 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **test_occupant_formatter_process_string_occupant_for_update_uuid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter._process_string_occupant_for_update() skips UUID string.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **Test Suite Analysis** (6 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Current Test Organization** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Dependency Access Patterns** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Pattern 1: Direct app.state Access (Broken - 445 instances)** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Pattern 2: Using Real Lifespan (Works - Limited)** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Pattern 3: Fixture-Based Mocking (Mixed)** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
 
 ## Relationships
 
-- [command parser()](command_parser%28%29.md) (1 shared connections)
-- [occupant formatter](occupant_formatter.md) (1 shared connections)
+- [get mythos time()](get_mythos_time%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_occupant_formatter.py`
+- `docs/archive/TEST_MODERNIZATION_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

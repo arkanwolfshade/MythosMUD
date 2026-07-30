@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_add_room_drop_invalid_quantity()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **Test add_room_drop() raises error for invalid quantity.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **test_is_in_same_party_false_when_one_not_in_party()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **is_in_same_party returns False when one player is not in a party.** (1 connections) — `server/tests/unit/game/test_party_service.py`
 
 ## Relationships
 
-- [test room subscription manager drops](test_room_subscription_manager_drops.md) (1 shared connections)
+- [test party service](test_party_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- `server/tests/unit/game/test_party_service.py`
 
 ## Audit Trail
 

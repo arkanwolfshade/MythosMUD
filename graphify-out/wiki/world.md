@@ -1,69 +1,78 @@
 # world
 
-> 119 nodes
+> 620 nodes
 
 ## Key Concepts
 
+- **get_logger()** (511 connections) — `server/structured_logging/enhanced_logging_config.py`
+- **enhanced_logging_config.py** (485 connections) — `server/structured_logging/enhanced_logging_config.py`
+- **enhanced_error_logging.py** (38 connections) — `server/utils/enhanced_error_logging.py`
+- **test_logging_processors.py** (36 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **LRUCache** (27 connections) — `server/caching/lru_cache.py`
 - **__init__.py** (24 connections) — `server/config/models/__init__.py`
+- **HealthMonitor** (22 connections) — `server/realtime/monitoring/health_monitor.py`
+- **game_state_provider.py** (21 connections) — `server/realtime/integration/game_state_provider.py`
+- **optimized_security_validator.py** (21 connections) — `server/validators/optimized_security_validator.py`
 - **app.py** (20 connections) — `server/config/models/app.py`
+- **RoomIDUtils** (20 connections) — `server/realtime/room_id_utils.py`
+- **user_manager.py** (20 connections) — `server/services/user_manager.py`
+- **room_occupant_manager.py** (19 connections) — `server/realtime/room_occupant_manager.py`
 - **test_config_models.py** (19 connections) — `server/tests/unit/config/test_config_models.py`
-- **DatabaseConfig** (14 connections) — `server/config/models/server_db.py`
-- **npc_combat_grace.py** (13 connections) — `server/services/npc_combat_grace.py`
-- **ServerConfig** (12 connections) — `server/config/models/server_db.py`
-- **__init__.py** (11 connections) — `server/config/__init__.py`
-- **_helpers.py** (11 connections) — `server/config/models/_helpers.py`
-- **_parse_env_list()** (11 connections) — `server/config/models/_helpers.py`
-- **LoggingConfig** (10 connections) — `server/config/models/security_logging.py`
-- **TimeConfig** (9 connections) — `server/config/models/chat_time.py`
-- **PlayerStatsConfig** (9 connections) — `server/config/models/player_stats.py`
-- **server_db.py** (9 connections) — `server/config/models/server_db.py`
-- **ChatConfig** (8 connections) — `server/config/models/chat_time.py`
-- **nats.py** (8 connections) — `server/config/models/nats.py`
-- **_connection_manager_from_config_app()** (8 connections) — `server/services/npc_combat_grace.py`
-- **_default_cors_origins()** (7 connections) — `server/config/models/_helpers.py`
-- **security_logging.py** (7 connections) — `server/config/models/security_logging.py`
-- **SecurityConfig** (7 connections) — `server/config/models/security_logging.py`
-- **is_player_attack_blocked_by_login_grace_period()** (7 connections) — `server/services/npc_combat_grace.py`
-- **is_npc_attack_on_player_blocked_by_login_grace_period()** (7 connections) — `server/services/npc_combat_grace.py`
-- **get_app_instance()** (5 connections) — `server/config/__init__.py`
-- **_apply_url_fallback()** (5 connections) — `server/config/models/_helpers.py`
-- **_validate_tls_files_and_maybe_update_url()** (5 connections) — `server/config/models/_helpers.py`
-- **chat_time.py** (5 connections) — `server/config/models/chat_time.py`
-- *... and 94 more nodes in this community*
+- **get_global_tracked_manager()** (18 connections) — `server/app/tracked_task_manager.py`
+- **PerformanceTracker** (18 connections) — `server/realtime/monitoring/performance_tracker.py`
+- **NPCOccupantProcessor** (18 connections) — `server/realtime/npc_occupant_processor.py`
+- **log_with_context()** (18 connections) — `server/structured_logging/logging_context.py`
+- **set_global_player_service()** (17 connections) — `server/structured_logging/logging_processors.py`
+- **enhance_player_ids()** (17 connections) — `server/structured_logging/logging_processors.py`
+- **detect_environment()** (16 connections) — `server/structured_logging/logging_utilities.py`
+- **.create_equip_command()** (16 connections) — `server/utils/command_factories_inventory.py`
+- **player_occupant_processor.py** (15 connections) — `server/realtime/player_occupant_processor.py`
+- **npc_combat_handlers.py** (15 connections) — `server/services/npc_combat_handlers.py`
+- **command_factories_inventory.py** (15 connections) — `server/utils/command_factories_inventory.py`
+- *... and 595 more nodes in this community*
 
 ## Relationships
 
-- [. init ()](_init_%28%29.md) (17 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (16 shared connections)
-- [process dead players()](process_dead_players%28%29.md) (4 shared connections)
-- [MapZoneContext](MapZoneContext.md) (4 shared connections)
-- [login grace period](login_grace_period.md) (4 shared connections)
-- [Player](Player.md) (3 shared connections)
-- [.get lucidity service()](get_lucidity_service%28%29.md) (2 shared connections)
-- [get health status()](get_health_status%28%29.md) (2 shared connections)
-- [combat](combat.md) (2 shared connections)
-- [.state()](state%28%29.md) (1 shared connections)
-- [Any](Any.md) (1 shared connections)
+- [Any](Any.md) (76 shared connections)
+- [real time](real_time.md) (74 shared connections)
+- [. init ()](_init_%28%29.md) (69 shared connections)
+- [close db()](close_db%28%29.md) (55 shared connections)
+- [Spell Targeting](Spell_Targeting.md) (45 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (44 shared connections)
+- [Player](Player.md) (42 shared connections)
+- [circuit breaker](circuit_breaker.md) (29 shared connections)
+- [get current tick()](get_current_tick%28%29.md) (28 shared connections)
+- [main()](main%28%29.md) (27 shared connections)
+- [test statistics aggregator](test_statistics_aggregator.md) (25 shared connections)
+- [ChatMessage](ChatMessage.md) (22 shared connections)
 
 ## Source Files
 
-- `server/config/__init__.py`
+- `server/api/base.py`
+- `server/app/memory_cleanup_service.py`
+- `server/app/memory_lifespan_coordinator.py`
+- `server/app/task_registry.py`
+- `server/app/tracked_task_manager.py`
+- `server/auth/email_utils.py`
+- `server/caching/__init__.py`
+- `server/caching/cache_service.py`
+- `server/caching/lru_cache.py`
+- `server/commands/container_helpers_inventory_logging.py`
 - `server/config/models/__init__.py`
 - `server/config/models/_helpers.py`
 - `server/config/models/app.py`
 - `server/config/models/chat_time.py`
+- `server/config/models/cors.py`
 - `server/config/models/game.py`
 - `server/config/models/nats.py`
 - `server/config/models/player_stats.py`
 - `server/config/models/security_logging.py`
 - `server/config/models/server_db.py`
-- `server/services/npc_combat_grace.py`
-- `server/tests/unit/config/test_config_models.py`
 
 ## Audit Trail
 
-- EXTRACTED: 395 (98%)
-- INFERRED: 9 (2%)
+- EXTRACTED: 3272 (98%)
+- INFERRED: 58 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

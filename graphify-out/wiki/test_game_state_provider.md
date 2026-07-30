@@ -34,7 +34,7 @@
 ## Relationships
 
 - [.state()](state%28%29.md) (2 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
+- [world](world.md) (1 shared connections)
 
 ## Source Files
 

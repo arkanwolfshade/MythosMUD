@@ -20,7 +20,7 @@
 
 - [CombatAuditLogger](CombatAuditLogger.md) (5 shared connections)
 - [.get combat audit summary()](get_combat_audit_summary%28%29.md) (3 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
+- [world](world.md) (1 shared connections)
 
 ## Source Files
 

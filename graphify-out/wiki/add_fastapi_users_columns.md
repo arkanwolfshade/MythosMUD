@@ -28,7 +28,7 @@
 - [test inventory mutation guard internal](test_inventory_mutation_guard_internal.md) (3 shared connections)
 - [admin summon command](admin_summon_command.md) (2 shared connections)
 - [BehaviorEngine](BehaviorEngine.md) (2 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
+- [world](world.md) (2 shared connections)
 - [equipment helpers](equipment_helpers.md) (2 shared connections)
 
 ## Source Files

@@ -1,24 +1,27 @@
 # Test process combined rows processes
 
-> 2 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **test_occupant_formatter_init()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter.__init__() initializes formatter.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **Implementation Approach Decision** (6 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Recommended: **PHASED UPLIFT**** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Pros** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Cons** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Alternative: **GREENFIELD REWRITE**** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Would Choose If** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
 
 ## Relationships
 
-- [command parser()](command_parser%28%29.md) (1 shared connections)
-- [occupant formatter](occupant_formatter.md) (1 shared connections)
+- [get mythos time()](get_mythos_time%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_occupant_formatter.py`
+- `docs/archive/TEST_MODERNIZATION_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

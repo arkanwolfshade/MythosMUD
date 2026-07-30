@@ -1,54 +1,49 @@
 # Test get room environment() treats
 
-> 32 nodes
+> 37 nodes
 
 ## Key Concepts
 
-- **test_player_related_models.py** (19 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **PlayerExploration** (18 connections) — `server/models/player.py`
-- **test_player_channel_preferences_creation()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_channel_preferences_defaults()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_channel_preferences_with_muted_channels()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_channel_preferences_repr()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_inventory_creation()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_inventory_defaults()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_inventory_with_data()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_inventory_repr()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_exploration_creation()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_exploration_repr()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_exploration_multiple_rooms()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_channel_preferences_table_name()** (2 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_inventory_table_name()** (2 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_exploration_table_name()** (2 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **Junction table tracking which rooms each player has explored.** (1 connections) — `server/models/player.py`
-- **Unit tests for Player-related SQLAlchemy models.  Tests PlayerChannelPreferences** (1 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **Test PlayerChannelPreferences can be instantiated with required fields.** (1 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **Test PlayerChannelPreferences has correct default values.** (1 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **Test PlayerChannelPreferences can have muted channels.** (1 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **Test PlayerChannelPreferences has correct table name.** (1 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **Test PlayerChannelPreferences __repr__ method.** (1 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **Test PlayerInventory can be instantiated with required fields.** (1 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **Test PlayerInventory has correct default values.** (1 connections) — `server/tests/unit/models/test_player_related_models.py`
-- *... and 7 more nodes in this community*
+- **test_combat_persistence_handler_persistence.py** (21 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **persistence_handler()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **test_persist_player_dp_sync_get_stats_error()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **test_persist_player_dp_sync_get_stats_error_new()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **mock_combat_service()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **test_verify_player_save_success()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **test_verify_player_save_player_not_found()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **test_persist_player_dp_sync_success()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **test_persist_player_dp_sync_no_persistence()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **test_persist_player_dp_sync_player_not_found()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **test_persist_player_dp_sync_error()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **test_persist_player_dp_sync_verify_player_save_called()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **test_persist_player_dp_sync_save_error()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **test_persist_player_dp_sync_complete_flow()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **test_persist_player_dp_sync_complete_flow_with_verification_new()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **test_persist_player_dp_background()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **test_persist_player_dp_background_task_error()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **test_persist_player_dp_background_persistence_failure()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **mock_player()** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **Unit tests for combat persistence handler - persistence operations.  Tests playe** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **Create mock combat service.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **Create CombatPersistenceHandler instance.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **Test _verify_player_save verifies player save successfully.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **Test _verify_player_save handles player not found.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **Test _persist_player_dp_sync persists DP successfully.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- *... and 12 more nodes in this community*
 
 ## Relationships
 
-- [. init ()](_init_%28%29.md) (10 shared connections)
-- [test player preferences service](test_player_preferences_service.md) (5 shared connections)
-- [main()](main%28%29.md) (4 shared connections)
-- [test rate limiter utils](test_rate_limiter_utils.md) (3 shared connections)
-- [UUID](UUID.md) (1 shared connections)
-- [metrics](metrics.md) (1 shared connections)
+- [test combat persistence handler persistence](test_combat_persistence_handler_persistence.md) (3 shared connections)
+- [create access token()](create_access_token%28%29.md) (2 shared connections)
 
 ## Source Files
 
-- `server/models/player.py`
-- `server/tests/unit/models/test_player_related_models.py`
+- `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
 
 ## Audit Trail
 
-- EXTRACTED: 82 (89%)
-- INFERRED: 10 (11%)
+- EXTRACTED: 75 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

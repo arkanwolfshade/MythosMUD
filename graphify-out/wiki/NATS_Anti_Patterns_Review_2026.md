@@ -1,31 +1,37 @@
 # NATS Anti Patterns Review 2026
 
-> 7 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **NATS Code Review** (3 connections) — `docs/NATS_CODE_REVIEW.md`
-- **NATS Complete Remediation Summary** (3 connections) — `docs/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
-- **NATS Anti-Patterns Review 2026-01-13** (2 connections) — `docs/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **NATS Sync Ops in Async Handlers** (2 connections) — `docs/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **NATS Manual Acknowledgment** (2 connections) — `docs/NATS_CODE_REVIEW.md`
-- **NATS Connection Pooling** (2 connections) — `docs/NATS_CODE_REVIEW.md`
-- **NATS Remediation Complete** (2 connections) — `docs/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
+- **migrate_combat_data.py** (15 connections) — `server/scripts/migrate_combat_data.py`
+- **migrate_npc_combat_data()** (10 connections) — `server/scripts/migrate_combat_data.py`
+- **validate_migration_results()** (8 connections) — `server/scripts/migrate_combat_data.py`
+- **rollback_migration()** (7 connections) — `server/scripts/migrate_combat_data.py`
+- **main()** (6 connections) — `server/scripts/migrate_combat_data.py`
+- **AsyncSession** (3 connections)
+- **Any** (3 connections)
+- **Combat data migration script.  This script adds default combat data to existing** (1 connections) — `server/scripts/migrate_combat_data.py`
+- **Migrate combat data for all NPC definitions.      Args:         session: Databas** (1 connections) — `server/scripts/migrate_combat_data.py`
+- **Validate that migration was successful.      Args:         session: Database ses** (1 connections) — `server/scripts/migrate_combat_data.py`
+- **Rollback combat data migration by removing combat fields.      Args:         ses** (1 connections) — `server/scripts/migrate_combat_data.py`
+- **Main migration function.** (1 connections) — `server/scripts/migrate_combat_data.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Any](Any.md) (11 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (5 shared connections)
+- [test admin commands](test_admin_commands.md) (3 shared connections)
+- [world](world.md) (2 shared connections)
 
 ## Source Files
 
-- `docs/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- `docs/NATS_CODE_REVIEW.md`
-- `docs/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
+- `server/scripts/migrate_combat_data.py`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (62%)
-- INFERRED: 6 (38%)
+- EXTRACTED: 51 (89%)
+- INFERRED: 6 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

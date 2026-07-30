@@ -15,8 +15,8 @@
 
 ## Relationships
 
-- [status commands](status_commands.md) (3 shared connections)
-- [Any](Any.md) (1 shared connections)
+- [logging utilities](logging_utilities.md) (3 shared connections)
+- [disconnect player connections()](disconnect_player_connections%28%29.md) (1 shared connections)
 
 ## Source Files
 

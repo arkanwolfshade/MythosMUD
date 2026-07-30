@@ -1,37 +1,47 @@
 # Test prepare command for processing
 
-> 16 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **test_inventory_mutation_guard_error_handling.py** (10 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
-- **guard()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
-- **test_cleanup_async_state_lock_attribute_error()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
-- **test_cleanup_async_state_lock_runtime_error()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
-- **test_acquire_record_custom_alert_with_message_param()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
-- **test_acquire_async_record_custom_alert_with_message_param()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
-- **test_acquire_record_custom_alert_type_error_fallback()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
-- **test_acquire_async_record_custom_alert_type_error_fallback()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
-- **Unit tests for inventory mutation guard - error handling and monitoring.  Tests** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
-- **Create an InventoryMutationGuard instance.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
-- **Test _cleanup_async_state handles AttributeError from lock.locked().** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
-- **Test _cleanup_async_state handles RuntimeError from lock.locked().** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
-- **Test acquire handles record_custom_alert with message parameter.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
-- **Test acquire_async handles record_custom_alert with message parameter.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
-- **Test acquire handles TypeError from record_custom_alert and uses fallback.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
-- **Test acquire_async handles TypeError from record_custom_alert and uses fallback.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
+- **_parse_stat_datetime()** (16 connections) — `server/commands/look_npc.py`
+- **test_parse_stat_datetime_from_timestamp()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_parse_stat_datetime_from_datetime()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_parse_stat_datetime_from_iso_string()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_parse_stat_datetime_invalid()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_parse_stat_datetime_none()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_parse_stat_datetime_from_datetime()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_parse_stat_datetime_from_timestamp()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_parse_stat_datetime_from_iso_string()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_parse_stat_datetime_none()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_parse_stat_datetime_invalid()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **Parse datetime value from various formats and return formatted string.** (1 connections) — `server/commands/look_npc.py`
+- **Test parsing datetime from timestamp.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test parsing datetime from datetime object.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test parsing datetime from ISO string.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test parsing datetime with invalid value.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test parsing datetime with None.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test _parse_stat_datetime() handles datetime object.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **Test _parse_stat_datetime() handles timestamp.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **Test _parse_stat_datetime() handles ISO string.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **Test _parse_stat_datetime() returns 'Unknown' for None.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **Test _parse_stat_datetime() returns string representation for invalid input.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
 
 ## Relationships
 
-- [Lock](Lock.md) (3 shared connections)
+- [look npc](look_npc.md) (6 shared connections)
+- [ChatHistoryToggle()](ChatHistoryToggle%28%29.md) (6 shared connections)
+- [AttributeError](AttributeError.md) (3 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
+- `server/commands/look_npc.py`
+- `server/tests/unit/commands/test_look_npc.py`
+- `server/tests/unit/commands/test_look_npc_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 33 (100%)
+- EXTRACTED: 57 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

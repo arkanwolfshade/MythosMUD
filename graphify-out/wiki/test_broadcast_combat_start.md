@@ -9,7 +9,7 @@
 
 ## Relationships
 
-- [.validate player name field()](validate_player_name_field%28%29.md) (1 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (1 shared connections)
 - [test combat messaging integration](test_combat_messaging_integration.md) (1 shared connections)
 
 ## Source Files

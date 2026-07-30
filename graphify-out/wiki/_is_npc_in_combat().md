@@ -1,6 +1,6 @@
 # . is npc in combat()
 
-> 29 nodes
+> 31 nodes
 
 ## Key Concepts
 
@@ -10,6 +10,7 @@
 - **get_performance_stats()** (7 connections) — `server/monitoring/performance_monitor.py`
 - **Any** (6 connections)
 - **.get_operation_stats()** (6 connections) — `server/monitoring/performance_monitor.py`
+- **record_performance_metric()** (6 connections) — `server/monitoring/performance_monitor.py`
 - **.get_all_stats()** (5 connections) — `server/monitoring/performance_monitor.py`
 - **._trigger_alert()** (5 connections) — `server/monitoring/performance_monitor.py`
 - **.export_metrics()** (5 connections) — `server/monitoring/performance_monitor.py`
@@ -28,16 +29,17 @@
 - **Get the most recent performance metrics.          Args:             count: Numbe** (1 connections) — `server/monitoring/performance_monitor.py`
 - **Get operations that exceeded the performance threshold.          Args:** (1 connections) — `server/monitoring/performance_monitor.py`
 - **Get operations that failed.          Returns:             List of failed operati** (1 connections) — `server/monitoring/performance_monitor.py`
-- **Add an alert callback function.          Args:             callback: Function to** (1 connections) — `server/monitoring/performance_monitor.py`
-- *... and 4 more nodes in this community*
+- *... and 6 more nodes in this community*
 
 ## Relationships
 
-- [.shutdown()](shutdown%28%29.md) (12 shared connections)
-- [test command parser](test_command_parser.md) (3 shared connections)
-- [websocket integration](websocket_integration.md) (3 shared connections)
-- [config](config.md) (3 shared connections)
-- [fastapi integration](fastapi_integration.md) (2 shared connections)
+- [PerformanceStats](PerformanceStats.md) (11 shared connections)
+- [Send a system message to](Send_a_system_message_to.md) (3 shared connections)
+- [test command parser](test_command_parser.md) (2 shared connections)
+- [main()](main%28%29.md) (2 shared connections)
+- [world](world.md) (2 shared connections)
+- [nats retry handler](nats_retry_handler.md) (1 shared connections)
+- [config](config.md) (1 shared connections)
 - [Coord](Coord.md) (1 shared connections)
 
 ## Source Files
@@ -46,7 +48,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 103 (94%)
+- EXTRACTED: 110 (94%)
 - INFERRED: 7 (6%)
 - AMBIGUOUS: 0 (0%)
 

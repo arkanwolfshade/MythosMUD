@@ -1,23 +1,25 @@
 # test_soft_delete_character_wrong_user
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_send_room_updates_to_entering_player_success()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **Test send_room_updates_to_entering_player() sends updates.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **💰 ROI Analysis** (4 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **Investment** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **Return** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **Break-Even** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
 
 ## Relationships
 
-- [. call ()](_call_%28%29.md) (1 shared connections)
+- [get alias validator()](get_alias_validator%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

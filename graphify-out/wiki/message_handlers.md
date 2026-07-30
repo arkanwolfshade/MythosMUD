@@ -1,52 +1,48 @@
 # message handlers
 
-> 20 nodes
+> 29 nodes
 
 ## Key Concepts
 
-- **definition.py** (16 connections) — `server/commands/npc_admin/definition.py`
-- **handle_npc_create_command()** (12 connections) — `server/commands/npc_admin/definition.py`
-- **NPCDefinitionUpdateParams** (11 connections) — `server/services/npc_service_models.py`
-- **handle_npc_edit_command()** (10 connections) — `server/commands/npc_admin/definition.py`
-- **NPCDefinitionType** (10 connections) — `server/models/npc.py`
-- **handle_npc_delete_command()** (9 connections) — `server/commands/npc_admin/definition.py`
-- **Any** (7 connections)
-- **_parse_npc_edit_args()** (5 connections) — `server/commands/npc_admin/definition.py`
-- **_build_npc_edit_params()** (5 connections) — `server/commands/npc_admin/definition.py`
-- **_execute_npc_edit()** (5 connections) — `server/commands/npc_admin/definition.py`
-- **NPC definition management commands (create, edit, delete, list).** (1 connections) — `server/commands/npc_admin/definition.py`
-- **Parse and validate NPC edit command args.      Returns:         (npc_id, field,** (1 connections) — `server/commands/npc_admin/definition.py`
-- **Map a single NPC field/value into NPCDefinitionUpdateParams, or return an error** (1 connections) — `server/commands/npc_admin/definition.py`
-- **Run NPC definition update in DB session. Returns result or error dict.** (1 connections) — `server/commands/npc_admin/definition.py`
-- **Handle NPC creation command.** (1 connections) — `server/commands/npc_admin/definition.py`
-- **Handle NPC editing command.** (1 connections) — `server/commands/npc_admin/definition.py`
-- **Handle NPC deletion command.** (1 connections) — `server/commands/npc_admin/definition.py`
-- **StrEnum** (1 connections)
-- **Enumeration of valid NPC definition types.** (1 connections) — `server/models/npc.py`
-- **Internal params for NPC definition update data builder.** (1 connections) — `server/services/npc_service_models.py`
+- **AnyIO Code Review - Anti-Patterns and Issues** (7 connections) — `docs/archive/anyio_code_review.md`
+- **Critical Issues** (6 connections) — `docs/archive/anyio_code_review.md`
+- **2. Primitive Anti-Patterns: Direct `asyncio` Primitive Usage** (6 connections) — `docs/archive/anyio_code_review.md`
+- **5. Special Cases Requiring Attention** (5 connections) — `docs/archive/anyio_code_review.md`
+- **Migration Priority** (4 connections) — `docs/archive/anyio_code_review.md`
+- **1. Entry Point Anti-Pattern: `asyncio.run()` Usage** (3 connections) — `docs/archive/anyio_code_review.md`
+- **3. Task Management Anti-Patterns** (3 connections) — `docs/archive/anyio_code_review.md`
+- **anyio_code_review.md** (1 connections) — `docs/archive/anyio_code_review.md`
+- **Executive Summary** (1 connections) — `docs/archive/anyio_code_review.md`
+- **Server Scripts** (1 connections) — `docs/archive/anyio_code_review.md`
+- **Root Scripts** (1 connections) — `docs/archive/anyio_code_review.md`
+- **2.1 `asyncio.sleep()` Usage** (1 connections) — `docs/archive/anyio_code_review.md`
+- **2.2 `asyncio.Lock()` Usage** (1 connections) — `docs/archive/anyio_code_review.md`
+- **2.3 `asyncio.Event()` Usage** (1 connections) — `docs/archive/anyio_code_review.md`
+- **2.4 `asyncio.Queue()` Usage** (1 connections) — `docs/archive/anyio_code_review.md`
+- **2.5 `asyncio.wait_for()` Usage** (1 connections) — `docs/archive/anyio_code_review.md`
+- **3.1 `asyncio.create_task()` Usage** (1 connections) — `docs/archive/anyio_code_review.md`
+- **3.2 `asyncio.gather()` Usage** (1 connections) — `docs/archive/anyio_code_review.md`
+- **4. Missing Explicit Dependency** (1 connections) — `docs/archive/anyio_code_review.md`
+- **5.1 Uvicorn Integration** (1 connections) — `docs/archive/anyio_code_review.md`
+- **5.2 Test Files** (1 connections) — `docs/archive/anyio_code_review.md`
+- **5.3 Event Bus Queue Migration** (1 connections) — `docs/archive/anyio_code_review.md`
+- **5.4 Tracked Task Manager** (1 connections) — `docs/archive/anyio_code_review.md`
+- **High Priority (Entry Points)** (1 connections) — `docs/archive/anyio_code_review.md`
+- **Medium Priority (Core Primitives)** (1 connections) — `docs/archive/anyio_code_review.md`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
-- [Any](Any.md) (15 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (9 shared connections)
-- [test magic commands](test_magic_commands.md) (4 shared connections)
-- [NATSMetrics](NATSMetrics.md) (4 shared connections)
-- [metrics](metrics.md) (3 shared connections)
-- [test mp regeneration service](test_mp_regeneration_service.md) (2 shared connections)
-- [AuthSlice](AuthSlice.md) (1 shared connections)
-- [main()](main%28%29.md) (1 shared connections)
-- [. repr ()](_repr_%28%29.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/commands/npc_admin/definition.py`
-- `server/models/npc.py`
-- `server/services/npc_service_models.py`
+- `docs/archive/anyio_code_review.md`
 
 ## Audit Trail
 
-- EXTRACTED: 93 (93%)
-- INFERRED: 7 (7%)
+- EXTRACTED: 56 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

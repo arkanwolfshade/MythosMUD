@@ -1,54 +1,55 @@
 # PlayerRespawnEventHandler
 
-> 37 nodes
+> 39 nodes
 
 ## Key Concepts
 
-- **Player** (22 connections)
-- **._ensure_room_cache_loaded()** (13 connections) — `server/async_persistence.py`
-- **.get_player_by_id()** (5 connections) — `server/async_persistence.py`
-- **.get_players_batch()** (5 connections) — `server/async_persistence.py`
-- **.get_player_by_name()** (4 connections) — `server/async_persistence.py`
-- **.get_players_by_user_id()** (4 connections) — `server/async_persistence.py`
-- **.get_active_players_by_user_id()** (4 connections) — `server/async_persistence.py`
-- **.get_player_by_user_id()** (4 connections) — `server/async_persistence.py`
-- **.list_players()** (4 connections) — `server/async_persistence.py`
-- **.get_players_in_room()** (4 connections) — `server/async_persistence.py`
-- **.apply_lucidity_loss()** (4 connections) — `server/async_persistence.py`
-- **.apply_fear()** (4 connections) — `server/async_persistence.py`
-- **.apply_corruption()** (4 connections) — `server/async_persistence.py`
-- **._load_room_cache_async()** (3 connections) — `server/async_persistence.py`
-- **.save_player()** (3 connections) — `server/async_persistence.py`
-- **.warmup_room_cache()** (3 connections) — `server/async_persistence.py`
-- **.save_players()** (3 connections) — `server/async_persistence.py`
-- **.validate_and_fix_player_room()** (3 connections) — `server/async_persistence.py`
-- **.gain_experience()** (3 connections) — `server/async_persistence.py`
-- **Ensure room cache is loaded (lazy loading with lock).          This method uses** (1 connections) — `server/async_persistence.py`
-- **Load rooms from PostgreSQL via RoomCacheLoader.** (1 connections) — `server/async_persistence.py`
-- **Get a player by name. Delegates to PlayerRepository.** (1 connections) — `server/async_persistence.py`
-- **Get a player by ID. Delegates to PlayerRepository.** (1 connections) — `server/async_persistence.py`
-- **Get all players (including deleted) for a user ID. Delegates to PlayerRepository** (1 connections) — `server/async_persistence.py`
-- **Get active (non-deleted) players for a user ID. Delegates to PlayerRepository.** (1 connections) — `server/async_persistence.py`
-- *... and 12 more nodes in this community*
+- **CorpseLifecycleService** (23 connections) — `server/services/corpse_lifecycle_service.py`
+- **_CombatServiceDeps** (10 connections) — `server/services/combat_death_handler.py`
+- **_ConnectionManagerLike** (9 connections) — `server/services/combat_death_handler.py`
+- **_NPCCombatIntegrationLike** (9 connections) — `server/services/combat_death_handler.py`
+- **.get_decayed_corpses_in_room()** (6 connections) — `server/services/corpse_lifecycle_service.py`
+- **ContainerComponent** (5 connections)
+- **.get_all_decayed_corpses()** (5 connections) — `server/services/corpse_lifecycle_service.py`
+- **.get_original_string_id()** (4 connections) — `server/services/combat_death_handler.py`
+- **.can_access_corpse()** (4 connections) — `server/services/corpse_lifecycle_service.py`
+- **.is_corpse_decayed()** (4 connections) — `server/services/corpse_lifecycle_service.py`
+- **.cleanup_decayed_corpses_in_room()** (4 connections) — `server/services/corpse_lifecycle_service.py`
+- **.cleanup_all_decayed_corpses()** (4 connections) — `server/services/corpse_lifecycle_service.py`
+- **Protocol** (3 connections)
+- **.canonical_room_id()** (3 connections) — `server/services/combat_death_handler.py`
+- **UUID** (3 connections)
+- **.get_npc_combat_integration_service()** (3 connections) — `server/services/combat_death_handler.py`
+- **.publish_npc_died_event_to_nats()** (3 connections) — `server/services/combat_death_handler.py`
+- **.__init__()** (3 connections) — `server/services/combat_death_handler.py`
+- **.__init__()** (3 connections) — `server/services/corpse_lifecycle_service.py`
+- **corpse_service()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **test_corpse_lifecycle_service_init_no_persistence()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **Connection manager surface used for room subscriber diagnostics.** (1 connections) — `server/services/combat_death_handler.py`
+- **Return canonical room id when available.** (1 connections) — `server/services/combat_death_handler.py`
+- **UUID mapping surface used to resolve NPC string ids.** (1 connections) — `server/services/combat_death_handler.py`
+- **Return original NPC id when mapping exists.** (1 connections) — `server/services/combat_death_handler.py`
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
-- [chat nats publisher](chat_nats_publisher.md) (18 shared connections)
-- [init](init.md) (5 shared connections)
-- [real time](real_time.md) (2 shared connections)
-- [get item prototype count()](get_item_prototype_count%28%29.md) (2 shared connections)
-- [get app instance()](get_app_instance%28%29.md) (2 shared connections)
-- [time commands](time_commands.md) (1 shared connections)
-- [Protocol](Protocol.md) (1 shared connections)
+- [close db()](close_db%28%29.md) (14 shared connections)
+- [Room](Room.md) (13 shared connections)
+- [Any](Any.md) (6 shared connections)
+- [chat nats publisher](chat_nats_publisher.md) (4 shared connections)
+- [Protocol](Protocol.md) (2 shared connections)
+- [test container persistence sql injection](test_container_persistence_sql_injection.md) (1 shared connections)
 
 ## Source Files
 
-- `server/async_persistence.py`
+- `server/services/combat_death_handler.py`
+- `server/services/corpse_lifecycle_service.py`
+- `server/tests/unit/services/test_corpse_lifecycle_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 113 (97%)
-- INFERRED: 4 (3%)
+- EXTRACTED: 112 (85%)
+- INFERRED: 20 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -37,7 +37,7 @@
 - [postgres adapter](postgres_adapter.md) (3 shared connections)
 - [PostgresConnection](PostgresConnection.md) (2 shared connections)
 - [.get connection()](get_connection%28%29.md) (2 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
+- [world](world.md) (1 shared connections)
 
 ## Source Files
 

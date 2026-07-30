@@ -33,10 +33,9 @@
 
 ## Relationships
 
-- [QuestCompleted](QuestCompleted.md) (6 shared connections)
+- [QuestCompleted](QuestCompleted.md) (7 shared connections)
 - [. init ()](_init_%28%29.md) (3 shared connections)
-- [UUID](UUID.md) (1 shared connections)
-- [.model dump()](model_dump%28%29.md) (1 shared connections)
+- [close db()](close_db%28%29.md) (1 shared connections)
 
 ## Source Files
 

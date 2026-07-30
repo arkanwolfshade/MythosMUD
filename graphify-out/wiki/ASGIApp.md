@@ -1,35 +1,43 @@
 # ASGIApp
 
-> 7 nodes
+> 18 nodes
 
 ## Key Concepts
 
-- **add_correlation_id()** (8 connections) — `server/structured_logging/logging_processors.py`
-- **EventDict** (5 connections)
-- **test_add_correlation_id_missing()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_add_correlation_id_existing()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Add correlation ID to log entries if not already present.      This processor en** (1 connections) — `server/structured_logging/logging_processors.py`
-- **Test add_correlation_id() adds correlation_id when missing.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Test add_correlation_id() preserves existing correlation_id.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **run_flee_effect()** (18 connections) — `server/game/magic/spell_effect_flee.py`
+- **spell_effect_flee.py** (17 connections) — `server/game/magic/spell_effect_flee.py`
+- **Any** (10 connections)
+- **_flee_effect_validate_room_exits()** (5 connections) — `server/game/magic/spell_effect_flee.py`
+- **_flee_effect_services_available()** (4 connections) — `server/game/magic/spell_effect_flee.py`
+- **_flee_effect_not_in_combat_response()** (4 connections) — `server/game/magic/spell_effect_flee.py`
+- **_flee_effect_success_response()** (4 connections) — `server/game/magic/spell_effect_flee.py`
+- **_flee_effect_failure_response()** (4 connections) — `server/game/magic/spell_effect_flee.py`
+- **_flee_effect_invalid_target_type_response()** (3 connections) — `server/game/magic/spell_effect_flee.py`
+- **_flee_effect_services_unavailable_response()** (3 connections) — `server/game/magic/spell_effect_flee.py`
+- **_flee_effect_invalid_target_response()** (3 connections) — `server/game/magic/spell_effect_flee.py`
+- **_flee_effect_room_error_response()** (3 connections) — `server/game/magic/spell_effect_flee.py`
+- **.get_room_by_id()** (3 connections) — `server/game/magic/spell_effects.py`
+- **Flee spell effect: voluntary flee mechanics (success roll, lose-attack-on-fail,** (1 connections) — `server/game/magic/spell_effect_flee.py`
+- **True if combat, movement, and get_room_by_id are all configured for flee effect.** (1 connections) — `server/game/magic/spell_effect_flee.py`
+- **Return (room_id, None) if combat room has exits; else (None, error_message).** (1 connections) — `server/game/magic/spell_effect_flee.py`
+- **Apply flee effect: same mechanics as /flee (success roll, lose-attack-on-fail, e** (1 connections) — `server/game/magic/spell_effect_flee.py`
+- **Callable to resolve room by ID for flee effect.** (1 connections) — `server/game/magic/spell_effects.py`
 
 ## Relationships
 
-- [TerminalButtonProps](TerminalButtonProps.md) (3 shared connections)
-- [QueueListener](QueueListener.md) (3 shared connections)
-- [real time](real_time.md) (1 shared connections)
-- [CommandRequest](CommandRequest.md) (1 shared connections)
-- [enhance player ids()](enhance_player_ids%28%29.md) (1 shared connections)
-- [alias storage()](alias_storage%28%29.md) (1 shared connections)
+- [. init ()](_init_%28%29.md) (7 shared connections)
+- [CombatService](CombatService.md) (6 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (3 shared connections)
 
 ## Source Files
 
-- `server/structured_logging/logging_processors.py`
-- `server/tests/unit/structured_logging/test_logging_processors.py`
+- `server/game/magic/spell_effect_flee.py`
+- `server/game/magic/spell_effects.py`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (91%)
-- INFERRED: 2 (9%)
+- EXTRACTED: 84 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

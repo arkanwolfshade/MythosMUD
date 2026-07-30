@@ -1,12 +1,11 @@
 # CatatoniaRegistry
 
-> 66 nodes
+> 64 nodes
 
 ## Key Concepts
 
 - **CatatoniaRegistry** (43 connections) — `server/services/catatonia_registry.py`
 - **TestCatatoniaRegistry** (26 connections) — `server/tests/unit/services/test_catatonia_registry.py`
-- **catatonia_registry.py** (12 connections) — `server/services/catatonia_registry.py`
 - **UUID** (6 connections)
 - **datetime** (4 connections)
 - **.is_catatonic()** (4 connections) — `server/services/catatonia_registry.py`
@@ -29,16 +28,18 @@
 - **.test_on_sanitarium_failover_with_string()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
 - **.test_on_sanitarium_failover_with_sync_callback()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
 - **.test_on_sanitarium_failover_with_async_callback()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
-- *... and 41 more nodes in this community*
+- **.test_on_sanitarium_failover_without_callback()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
+- *... and 39 more nodes in this community*
 
 ## Relationships
 
-- [NPCLifecycleManager](NPCLifecycleManager.md) (3 shared connections)
-- [. init ()](_init_%28%29.md) (3 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (3 shared connections)
-- [test command parser](test_command_parser.md) (3 shared connections)
-- [test resolve state no app()](test_resolve_state_no_app%28%29.md) (2 shared connections)
-- [LiabilityStackEntry](LiabilityStackEntry.md) (2 shared connections)
+- [world](world.md) (4 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (2 shared connections)
+- [test command parser](test_command_parser.md) (2 shared connections)
+- [. init ()](_init_%28%29.md) (2 shared connections)
+- [ConnectionsComponent](ConnectionsComponent.md) (1 shared connections)
+- [Lock](Lock.md) (1 shared connections)
+- [main()](main%28%29.md) (1 shared connections)
 - [CommandExecutionRequest](CommandExecutionRequest.md) (1 shared connections)
 
 ## Source Files
@@ -48,7 +49,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 208 (98%)
+- EXTRACTED: 195 (98%)
 - INFERRED: 5 (2%)
 - AMBIGUOUS: 0 (0%)
 

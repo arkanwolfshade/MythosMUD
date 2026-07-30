@@ -35,7 +35,7 @@
 
 - [real time](real_time.md) (6 shared connections)
 - [Player](Player.md) (3 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
+- [world](world.md) (2 shared connections)
 
 ## Source Files
 

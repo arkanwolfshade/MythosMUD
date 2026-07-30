@@ -35,7 +35,7 @@
 
 - [fetchSpy](fetchSpy.md) (4 shared connections)
 - [AppCreationFlowViews](AppCreationFlowViews.md) (2 shared connections)
-- [SERVER UNAVAILABLE PATTERNS](SERVER_UNAVAILABLE_PATTERNS.md) (2 shared connections)
+- [init](init.md) (2 shared connections)
 - [handle reply command()](handle_reply_command%28%29.md) (2 shared connections)
 - [GameLogMessagesList](GameLogMessagesList.md) (1 shared connections)
 

@@ -1,23 +1,26 @@
 # Test ContainerLockState enum contains all
 
-> 2 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **test_send_room_update_to_player_success()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **Test send_room_update_to_player() successfully sends room update.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **HADS tooling (MythosMUD)** (4 connections) — `scripts/hads/README.md`
+- **README.md** (1 connections) — `scripts/hads/README.md`
+- **Source pin** (1 connections) — `scripts/hads/README.md`
+- **Usage** (1 connections) — `scripts/hads/README.md`
+- **Policy** (1 connections) — `scripts/hads/README.md`
 
 ## Relationships
 
-- [. call ()](_call_%28%29.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- `scripts/hads/README.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

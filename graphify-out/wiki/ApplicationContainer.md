@@ -1,18 +1,12 @@
 # ApplicationContainer
 
-> 9 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **Application Container Analysis** (4 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
-- **ApplicationContainer** (3 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
 - **Bounded Contexts and Service Boundaries** (2 connections) — `docs/BOUNDED_CONTEXTS_AND_SERVICE_BOUNDARIES.md`
-- **Complexity Refactoring Test Plan** (2 connections) — `docs/COMPLEXITY_REFACTORING_TEST_PLAN.md`
-- **Domain Container Bundles** (2 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
-- **Container Initialization Phases** (2 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
-- **Bounded Contexts** (2 connections) — `docs/BOUNDED_CONTEXTS_AND_SERVICE_BOUNDARIES.md`
-- **Service Boundaries** (2 connections) — `docs/BOUNDED_CONTEXTS_AND_SERVICE_BOUNDARIES.md`
-- **Complexity Refactoring Edge Cases** (1 connections) — `docs/COMPLEXITY_REFACTORING_TEST_PLAN.md`
+- **Bounded Contexts** (1 connections) — `docs/BOUNDED_CONTEXTS_AND_SERVICE_BOUNDARIES.md`
+- **Service Boundaries** (1 connections) — `docs/BOUNDED_CONTEXTS_AND_SERVICE_BOUNDARIES.md`
 
 ## Relationships
 
@@ -20,14 +14,12 @@
 
 ## Source Files
 
-- `docs/APPLICATION_CONTAINER_ANALYSIS.md`
 - `docs/BOUNDED_CONTEXTS_AND_SERVICE_BOUNDARIES.md`
-- `docs/COMPLEXITY_REFACTORING_TEST_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (70%)
-- INFERRED: 6 (30%)
+- EXTRACTED: 4 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

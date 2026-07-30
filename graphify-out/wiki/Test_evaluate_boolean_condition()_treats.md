@@ -1,23 +1,25 @@
 # Test evaluate boolean condition() treats
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_get_adjacent_rooms_no_exits()** (2 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_adjacent_rooms() handles room with no exits.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **id** (4 connections) — `schemas/alias_schema.json`
+- **type** (1 connections) — `schemas/alias_schema.json`
+- **description** (1 connections) — `schemas/alias_schema.json`
+- **pattern** (1 connections) — `schemas/alias_schema.json`
 
 ## Relationships
 
-- [test room service](test_room_service.md) (1 shared connections)
+- [description](description.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `schemas/alias_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

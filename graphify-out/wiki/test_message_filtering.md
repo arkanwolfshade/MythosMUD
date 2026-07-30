@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [Player](Player.md) (3 shared connections)
+- [circuit breaker](circuit_breaker.md) (3 shared connections)
 
 ## Source Files
 

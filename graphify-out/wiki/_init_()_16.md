@@ -1,58 +1,62 @@
 # . init ()
 
-> 42 nodes
+> 75 nodes
 
 ## Key Concepts
 
-- **WebSocketMessageValidator** (42 connections) — `server/realtime/message_validator.py`
-- **MessageValidationError** (36 connections) — `server/realtime/message_validator.py`
-- **test_message_validator.py** (28 connections) — `server/tests/unit/realtime/test_message_validator.py`
-- **message_validator.py** (9 connections) — `server/realtime/message_validator.py`
-- **get_message_validator()** (5 connections) — `server/realtime/message_validator.py`
-- **_deep_dict()** (5 connections) — `server/tests/unit/realtime/test_message_validator.py`
-- **test_parse_and_validate_inner_json_depth_exceeded()** (5 connections) — `server/tests/unit/realtime/test_message_validator.py`
-- **test_validate_size_counts_utf8_bytes()** (4 connections) — `server/tests/unit/realtime/test_message_validator.py`
-- **test_validate_json_structure_depth_exceeded()** (4 connections) — `server/tests/unit/realtime/test_message_validator.py`
-- **test_validate_json_structure_accepts_depth_equal_to_limit()** (4 connections) — `server/tests/unit/realtime/test_message_validator.py`
-- **test_validate_json_structure_list_nesting_counts_toward_depth()** (4 connections) — `server/tests/unit/realtime/test_message_validator.py`
-- **test_parse_and_validate_rejects_oversized_raw_payload()** (4 connections) — `server/tests/unit/realtime/test_message_validator.py`
-- **test_parse_and_validate_csrf_inner_token_must_match_expected_not_outer_wrapper()** (4 connections) — `server/tests/unit/realtime/test_message_validator.py`
-- **test_validate_size_exceeds_limit()** (3 connections) — `server/tests/unit/realtime/test_message_validator.py`
-- **test_validate_json_structure_string_length_exceeded()** (3 connections) — `server/tests/unit/realtime/test_message_validator.py`
-- **test_validate_json_structure_key_length_exceeded()** (3 connections) — `server/tests/unit/realtime/test_message_validator.py`
-- **test_extract_csrf_invalid_type_rejected()** (3 connections) — `server/tests/unit/realtime/test_message_validator.py`
-- **test_validate_csrf_missing_when_expected()** (3 connections) — `server/tests/unit/realtime/test_message_validator.py`
-- **test_validate_csrf_mismatch()** (3 connections) — `server/tests/unit/realtime/test_message_validator.py`
-- **test_validate_csrf_present_without_expected_token_rejected()** (3 connections) — `server/tests/unit/realtime/test_message_validator.py`
-- **test_parse_and_validate_rejects_invalid_json()** (3 connections) — `server/tests/unit/realtime/test_message_validator.py`
-- **test_parse_and_validate_rejects_non_object_json()** (3 connections) — `server/tests/unit/realtime/test_message_validator.py`
-- **validator()** (2 connections) — `server/tests/unit/realtime/test_message_validator.py`
-- **test_validate_size_within_limit()** (2 connections) — `server/tests/unit/realtime/test_message_validator.py`
-- **test_validate_csrf_matches_expected()** (2 connections) — `server/tests/unit/realtime/test_message_validator.py`
-- *... and 17 more nodes in this community*
+- **NPCCombatLucidity** (30 connections) — `server/services/npc_combat_lucidity.py`
+- **npc_combat_integration_validation_mixin.py** (19 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **_NPCCombatIntegrationValidationDeps** (19 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **TestNPCCombatLucidity** (17 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **NPCCombatIntegrationValidationMixin** (15 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **.store_npc_xp_mapping_for_mixin()** (10 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **.get_data_provider()** (6 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **.get_uuid_mapping()** (6 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **UUID** (6 connections)
+- **._setup_combat_uuids_and_mappings()** (6 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **.apply_encounter_lucidity_effect()** (6 connections) — `server/services/npc_combat_lucidity.py`
+- **._validate_and_get_npc_instance()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **._validate_combat_location()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **._end_combat_if_participant_in_combat()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **._setup_combat_uuids_npc_attacker()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **.get_combat_service()** (4 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **.get_lucidity_service()** (4 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **._resolve_lucidity_category()** (4 connections) — `server/services/npc_combat_lucidity.py`
+- **test_npc_combat_lucidity.py** (4 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **.test_resolve_lucidity_category_get_behavior_config_exception()** (4 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **.get_lucidity_service()** (3 connections) — `server/services/npc_combat_integration_service.py`
+- **_coerce_xp_mapping_value()** (3 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **_warn_attacked_dead_npc()** (3 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **.store_npc_xp_mapping_for_mixin()** (3 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **.test_init()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- *... and 50 more nodes in this community*
 
 ## Relationships
 
-- [nudgeStandBothPlayers()](nudgeStandBothPlayers%28%29.md) (18 shared connections)
-- [.is required()](is_required%28%29.md) (4 shared connections)
-- [websocket handler commands](websocket_handler_commands.md) (4 shared connections)
-- [convert pydantic error()](convert_pydantic_error%28%29.md) (3 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
-- [local channel isolation.spec](local_channel_isolation.spec.md) (2 shared connections)
-- [quest events](quest_events.md) (2 shared connections)
-- [test websocket handler helpers extended](test_websocket_handler_helpers_extended.md) (1 shared connections)
-- [test_parse_command_parts_empty_string](test_parse_command_parts_empty_string.md) (1 shared connections)
-- [test_command_parser_initialization](test_command_parser_initialization.md) (1 shared connections)
+- [get health service()](get_health_service%28%29.md) (7 shared connections)
+- [Path](Path.md) (5 shared connections)
+- [. initialize handlers()](_initialize_handlers%28%29.md) (4 shared connections)
+- [main()](main%28%29.md) (4 shared connections)
+- [Any](Any.md) (4 shared connections)
+- [combat](combat.md) (3 shared connections)
+- [close db()](close_db%28%29.md) (3 shared connections)
+- [world](world.md) (3 shared connections)
+- [CommandHandler](CommandHandler.md) (2 shared connections)
+- [test skill service](test_skill_service.md) (1 shared connections)
+- [Test despawn npc handles NPC](Test_despawn_npc_handles_NPC.md) (1 shared connections)
+- [create access token()](create_access_token%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/message_validator.py`
-- `server/tests/unit/realtime/test_message_validator.py`
+- `server/services/npc_combat_integration_service.py`
+- `server/services/npc_combat_integration_validation_mixin.py`
+- `server/services/npc_combat_lucidity.py`
+- `server/tests/unit/services/test_npc_combat_lucidity.py`
 
 ## Audit Trail
 
-- EXTRACTED: 178 (86%)
-- INFERRED: 30 (14%)
+- EXTRACTED: 250 (93%)
+- INFERRED: 20 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

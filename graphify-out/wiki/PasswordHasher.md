@@ -1,11 +1,12 @@
 # PasswordHasher
 
-> 54 nodes
+> 57 nodes
 
 ## Key Concepts
 
 - **AggressiveMobNPC** (32 connections) — `server/npc/aggressive_mob_npc.py`
 - **test_aggressive_mob_npc.py** (10 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
+- **_RoomPersistence** (8 connections) — `server/npc/aggressive_mob_npc.py`
 - **._compute_player_context()** (7 connections) — `server/npc/aggressive_mob_npc.py`
 - **._attack_target_impl()** (6 connections) — `server/npc/aggressive_mob_npc.py`
 - **._enrich_behavior_context()** (4 connections) — `server/npc/aggressive_mob_npc.py`
@@ -28,12 +29,13 @@
 - **test_enrich_behavior_context_handles_no_current_room()** (3 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
 - **test_get_attack_damage_from_behavior_config()** (3 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
 - **test_get_attack_damage_invalid_string_falls_back_to_one()** (3 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
-- **test_hunt_target_avoids_duplicate_ids()** (3 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
-- *... and 29 more nodes in this community*
+- *... and 32 more nodes in this community*
 
 ## Relationships
 
-- [TerminalButtonProps](TerminalButtonProps.md) (12 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (9 shared connections)
+- [get current tick()](get_current_tick%28%29.md) (3 shared connections)
+- [Test check all command blocks](Test_check_all_command_blocks.md) (2 shared connections)
 - [spawn defaults](spawn_defaults.md) (1 shared connections)
 
 ## Source Files
@@ -43,8 +45,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 147 (96%)
-- INFERRED: 6 (4%)
+- EXTRACTED: 153 (94%)
+- INFERRED: 10 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,34 +1,42 @@
 # . init ()
 
-> 10 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **schedule_end_combat_if_npc_died_best_effort()** (8 connections) — `server/npc/npc_combat_schedule.py`
-- **test_npc_combat_schedule.py** (5 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
-- **._schedule_end_combat_if_npc_died()** (4 connections) — `server/npc/npc_base.py`
-- **test_schedule_end_combat_if_npc_died_no_service()** (3 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
-- **test_schedule_end_combat_if_npc_died_no_running_loop()** (3 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
-- **Schedule end_combat_if_npc_died so the slain NPC no longer gets combat turns (be** (1 connections) — `server/npc/npc_base.py`
-- **Schedule end_combat_if_npc_died so the slain NPC no longer gets combat turns (be** (1 connections) — `server/npc/npc_combat_schedule.py`
-- **Unit tests for best-effort NPC combat cleanup scheduling.** (1 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
-- **When combat service is missing, scheduling is a no-op.** (1 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
-- **Without a running asyncio loop, scheduling fails quietly (RuntimeError path).** (1 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
+- **MessageHandler** (14 connections) — `server/realtime/message_handler_factory.py`
+- **.__init__()** (8 connections) — `server/realtime/message_handler_factory.py`
+- **PingMessageHandler** (7 connections) — `server/realtime/message_handler_factory.py`
+- **ClientErrorReportMessageHandler** (7 connections) — `server/realtime/message_handler_factory.py`
+- **FollowResponseMessageHandler** (5 connections) — `server/realtime/message_handler_factory.py`
+- **PartyInviteResponseMessageHandler** (5 connections) — `server/realtime/message_handler_factory.py`
+- **test_client_error_report_handler_logs()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **ABC** (2 connections)
+- **Abstract base class for message handlers.** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Handler for ping messages.** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Handler for follow_response messages (accept/decline follow request).** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Handler for party_invite_response messages (accept/decline party invite).** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Handler for client_error_report messages (client-reported errors for server logg** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Initialize the factory with registered handlers.** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Test ClientErrorReportMessageHandler logs via logger.error.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
 
 ## Relationships
 
-- [TerminalButtonProps](TerminalButtonProps.md) (5 shared connections)
-- [. initialize handlers()](_initialize_handlers%28%29.md) (1 shared connections)
+- [MessageHandlerFactory](MessageHandlerFactory.md) (9 shared connections)
+- [convert pydantic error()](convert_pydantic_error%28%29.md) (6 shared connections)
+- [processing](processing.md) (5 shared connections)
+- [Test handle player movement handles](Test_handle_player_movement_handles.md) (2 shared connections)
+- [init](init.md) (1 shared connections)
+- [Any](Any.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/npc_base.py`
-- `server/npc/npc_combat_schedule.py`
-- `server/tests/unit/npc/test_npc_combat_schedule.py`
+- `server/realtime/message_handler_factory.py`
+- `server/tests/unit/realtime/test_message_handler_factory.py`
 
 ## Audit Trail
 
-- EXTRACTED: 28 (100%)
+- EXTRACTED: 58 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,35 +1,41 @@
 # Profession
 
-> 10 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **NPCQueryMixin** (7 connections) — `server/services/npc_service/queries.py`
-- **.get_npc_definitions_by_type()** (5 connections) — `server/services/npc_service/queries.py`
-- **.get_npc_definitions_by_sub_zone()** (5 connections) — `server/services/npc_service/queries.py`
-- **.get_system_statistics()** (5 connections) — `server/services/npc_service/queries.py`
-- **AsyncSession** (3 connections)
-- **Any** (1 connections)
-- **Mixin providing NPC query operations.** (1 connections) — `server/services/npc_service/queries.py`
-- **Get NPC definitions by type.** (1 connections) — `server/services/npc_service/queries.py`
-- **Get NPC definitions by sub-zone.** (1 connections) — `server/services/npc_service/queries.py`
-- **Get system-wide NPC statistics.** (1 connections) — `server/services/npc_service/queries.py`
+- **Transaction Boundaries Audit** (10 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
+- **Transaction Management Patterns** (4 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
+- **Audited Operations** (3 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
+- **Recommendations** (3 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
+- **Multi-Step Operations** (2 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
+- **TRANSACTION_BOUNDARIES_AUDIT.md** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
+- **Audit Date** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
+- **Summary** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
+- **Pattern 1: Connection Context Manager (PersistenceLayer)** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
+- **Pattern 2: Explicit Transaction (AsyncPersistenceLayer)** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
+- **Pattern 3: SQLAlchemy Session (ORM)** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
+- **✅ PersistenceLayer (Sync)** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
+- **✅ AsyncPersistenceLayer (Async)** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
+- **Player Save with Inventory** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
+- **Verification Checklist** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
+- **Current State: ✅ GOOD** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
+- **Future Improvements** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
+- **Notes** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
+- **References** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
 
 ## Relationships
 
-- [TerminalButtonProps](TerminalButtonProps.md) (4 shared connections)
-- [test mp regeneration service](test_mp_regeneration_service.md) (2 shared connections)
-- [def row()](def_row%28%29.md) (1 shared connections)
-- [real time](real_time.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/services/npc_service/queries.py`
+- `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 29 (97%)
-- INFERRED: 1 (3%)
+- EXTRACTED: 36 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

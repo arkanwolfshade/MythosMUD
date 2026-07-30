@@ -1,23 +1,32 @@
 # Tests for get stats generator
 
-> 2 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **test_process_combined_rows_with_exits()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **Test _process_combined_rows processes rows with exits JSON.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **.save_player_mutes()** (14 connections) — `server/services/user_manager.py`
+- **._serialize_mute_info_for_json()** (5 connections) — `server/services/user_manager.py`
+- **._save_player_mutes_to_data()** (5 connections) — `server/services/user_manager.py`
+- **._save_channel_mutes_to_data()** (5 connections) — `server/services/user_manager.py`
+- **._save_global_mutes_to_data()** (5 connections) — `server/services/user_manager.py`
+- **Convert mute_info datetime and UUID objects to JSON-serializable formats.** (1 connections) — `server/services/user_manager.py`
+- **Save player mutes to data dictionary for JSON serialization.** (1 connections) — `server/services/user_manager.py`
+- **Save channel mutes to data dictionary for JSON serialization.** (1 connections) — `server/services/user_manager.py`
+- **Save global mutes applied by this player to data dictionary for JSON serializati** (1 connections) — `server/services/user_manager.py`
+- **Save mute data for a specific player to JSON file.          Args:** (1 connections) — `server/services/user_manager.py`
 
 ## Relationships
 
-- [test async persistence room cache](test_async_persistence_room_cache.md) (1 shared connections)
+- [UUID](UUID.md) (16 shared connections)
+- [MythosValidationError](MythosValidationError.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- `server/services/user_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 39 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

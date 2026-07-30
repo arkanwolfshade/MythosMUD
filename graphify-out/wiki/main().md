@@ -39,7 +39,7 @@
 - [compare linting results](compare_linting_results.md) (1 shared connections)
 - [main()](main%28%29.md) (1 shared connections)
 - [grype](grype.md) (1 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
+- [get current tick()](get_current_tick%28%29.md) (1 shared connections)
 - [git show file()](git_show_file%28%29.md) (1 shared connections)
 
 ## Source Files

@@ -1,24 +1,31 @@
 # Test ensure room cache loaded
 
-> 2 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **test_ensure_room_cache_loaded_database_error()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _ensure_room_cache_loaded handles DatabaseError gracefully.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **MythosMUD Testing Strategy (Greenfield Suite)** (9 connections) — `docs/archive/TESTING_GREENFIELD.md`
+- **TESTING_GREENFIELD.md** (1 connections) — `docs/archive/TESTING_GREENFIELD.md`
+- **Tiers and commands** (1 connections) — `docs/archive/TESTING_GREENFIELD.md`
+- **Isolation rules** (1 connections) — `docs/archive/TESTING_GREENFIELD.md`
+- **Markers** (1 connections) — `docs/archive/TESTING_GREENFIELD.md`
+- **Coverage policy** (1 connections) — `docs/archive/TESTING_GREENFIELD.md`
+- **Fixtures/layout** (1 connections) — `docs/archive/TESTING_GREENFIELD.md`
+- **Mocking standards** (1 connections) — `docs/archive/TESTING_GREENFIELD.md`
+- **What to run when** (1 connections) — `docs/archive/TESTING_GREENFIELD.md`
+- **Logging and diagnostics** (1 connections) — `docs/archive/TESTING_GREENFIELD.md`
 
 ## Relationships
 
-- [real time](real_time.md) (1 shared connections)
-- [test async persistence room loading](test_async_persistence_room_loading.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- `docs/archive/TESTING_GREENFIELD.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

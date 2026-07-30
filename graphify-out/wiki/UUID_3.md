@@ -1,43 +1,48 @@
 # UUID
 
-> 16 nodes
+> 18 nodes
 
 ## Key Concepts
 
-- **MagicServiceHealingMixin** (15 connections) — `server/game/magic/magic_healing_events.py`
-- **._send_healing_update_event()** (7 connections) — `server/game/magic/magic_healing_events.py`
-- **._publish_dp_event()** (7 connections) — `server/game/magic/magic_healing_events.py`
-- **UUID** (6 connections)
-- **._publish_or_send_dp_update()** (6 connections) — `server/game/magic/magic_healing_events.py`
-- **._is_heal_other_target()** (5 connections) — `server/game/magic/magic_healing_events.py`
-- **Any** (5 connections)
-- **._send_instant_heal_event_if_applied()** (5 connections) — `server/game/magic/magic_healing_events.py`
-- **._effect_result_has_healing()** (4 connections) — `server/game/magic/magic_healing_events.py`
-- **Mixin for MagicService: send DP update events when spells apply healing.** (1 connections) — `server/game/magic/magic_healing_events.py`
-- **True when healing was applied to another player (heal-other, not steal-life or s** (1 connections) — `server/game/magic/magic_healing_events.py`
-- **True if effect result indicates healing was applied (success, effect_applied, he** (1 connections) — `server/game/magic/magic_healing_events.py`
-- **Send player_dp_updated event for the healed player (target for heal other, caste** (1 connections) — `server/game/magic/magic_healing_events.py`
-- **Load player stats and delegate DP event publishing.** (1 connections) — `server/game/magic/magic_healing_events.py`
-- **Publish DP update via event bus, or send fallback game event.** (1 connections) — `server/game/magic/magic_healing_events.py`
-- **If instant cast applied healing, send DP update event to the healed player.** (1 connections) — `server/game/magic/magic_healing_events.py`
+- **personal_message_sender.py** (12 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **PersonalMessageSender** (11 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **.send_message()** (8 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **UUID** (7 connections)
+- **._prepare_payload()** (7 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **Any** (6 connections)
+- **._queue_message_if_needed()** (6 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **._send_to_websocket()** (5 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **.__init__()** (4 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **.get_delivery_stats()** (4 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **Personal message delivery for connection management.  This module provides direc** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **Sends personal messages to individual players.      This class provides:     - P** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **Initialize the personal message sender.          Args:             message_queue** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **Prepare and optimize the payload for sending.** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **Send message to a single WebSocket connection. Returns True if successful.** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **Queue message if no active connections.** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **Send a personal message to a player via WebSocket.          Args:             pl** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **Get message delivery statistics for a player.** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
 
 ## Relationships
 
-- [TerminalButtonProps](TerminalButtonProps.md) (4 shared connections)
-- [message handler factory](message_handler_factory.md) (3 shared connections)
-- [. init ()](_init_%28%29.md) (2 shared connections)
-- [Any](Any.md) (2 shared connections)
-- [append unique valid occupant()](append_unique_valid_occupant%28%29.md) (1 shared connections)
-- [command execution request](command_execution_request.md) (1 shared connections)
+- [real time](real_time.md) (4 shared connections)
+- [test statistics aggregator](test_statistics_aggregator.md) (2 shared connections)
+- [SendPersonalMessage](SendPersonalMessage.md) (2 shared connections)
+- [test command factories exploration](test_command_factories_exploration.md) (2 shared connections)
+- [world](world.md) (2 shared connections)
+- [connection disconnection](connection_disconnection.md) (1 shared connections)
+- [nats config()](nats_config%28%29.md) (1 shared connections)
+- [test connection cleaner](test_connection_cleaner.md) (1 shared connections)
+- [Coord](Coord.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/magic/magic_healing_events.py`
+- `server/realtime/messaging/personal_message_sender.py`
 
 ## Audit Trail
 
-- EXTRACTED: 61 (91%)
-- INFERRED: 6 (9%)
+- EXTRACTED: 75 (96%)
+- INFERRED: 3 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,34 +1,46 @@
 # look command
 
-> 12 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **.load_player_mutes()** (12 connections) — `server/services/user_manager.py`
-- **._load_player_mutes_from_data()** (6 connections) — `server/services/user_manager.py`
-- **._load_global_mutes_from_data()** (6 connections) — `server/services/user_manager.py`
-- **._convert_mute_info_timestamps()** (5 connections) — `server/services/user_manager.py`
-- **._convert_mute_info_uuids()** (5 connections) — `server/services/user_manager.py`
-- **._load_channel_mutes_from_data()** (5 connections) — `server/services/user_manager.py`
-- **Convert timestamp strings in mute_info to datetime objects.** (1 connections) — `server/services/user_manager.py`
-- **Convert UUID strings in mute_info to UUID objects.** (1 connections) — `server/services/user_manager.py`
-- **Load player mutes from JSON data into memory.** (1 connections) — `server/services/user_manager.py`
-- **Load channel mutes from JSON data into memory.** (1 connections) — `server/services/user_manager.py`
-- **Load global mutes from JSON data into memory.** (1 connections) — `server/services/user_manager.py`
-- **Load mute data for a specific player from JSON file.          Args:** (1 connections) — `server/services/user_manager.py`
+- **Phase 4: Recommendations** (17 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **4.1 Pruning Candidates (750 tests, ~5 minutes savings)** (2 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Specific Files to Remove/Drastically Reduce** (2 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Specific Files to Review** (2 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **4.2 Consolidation Opportunities** (2 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **4.3 Coverage Gap Identification** (2 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **4.4 Optimization Recommendations** (2 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **3. Parametrize Repetitive Tests (Save ~1 minute, Reduce ~300 tests)** (2 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **5. Add Critical Integration Tests for New Architecture** (2 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **HIGH-PRIORITY PRUNE (454 tests, ~3 minutes)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **MEDIUM-PRIORITY PRUNE (88 tests, ~1 minute)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **LOW-PRIORITY PRUNE (100+ tests, ~1 minute)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Specific Patterns to Remove** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Example Low-Value Pattern** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Parametrization Opportunities** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Example Consolidation** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Critical Code Lacking Tests** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Immediate Actions (High ROI)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **1. Prune Infrastructure Tests (Save ~3 minutes, Remove ~350 tests)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **2. Consolidate Coverage Tests (Save ~1 minute, Reduce ~60 tests)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Medium-Term Actions** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **4. Migrate Model Tests to Property-Based Testing** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Long-Term Actions** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **6. Continuous Test Quality Review** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **7. Test Performance Optimization** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
 
 ## Relationships
 
-- [UUID](UUID.md) (16 shared connections)
-- [MythosValidationError](MythosValidationError.md) (1 shared connections)
+- [. error callback()](_error_callback%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/user_manager.py`
+- `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 45 (100%)
+- EXTRACTED: 49 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

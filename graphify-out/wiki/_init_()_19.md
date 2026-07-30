@@ -1,56 +1,50 @@
 # . init ()
 
-> 78 nodes
+> 106 nodes
 
 ## Key Concepts
 
-- **logging_file_setup.py** (35 connections) — `server/structured_logging/logging_file_setup.py`
-- **setup_enhanced_file_logging()** (20 connections) — `server/structured_logging/logging_file_setup.py`
-- **rotate_log_files()** (18 connections) — `server/structured_logging/logging_utilities.py`
-- **test_logging_file_setup.py** (14 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **load_player_guid_formatter_class()** (11 connections) — `server/structured_logging/logging_utilities.py`
-- **_setup_aggregator_handlers()** (9 connections) — `server/structured_logging/logging_file_setup.py`
-- **_setup_console_handler()** (9 connections) — `server/structured_logging/logging_file_setup.py`
-- **_prepare_log_environment()** (9 connections) — `server/structured_logging/logging_file_setup.py`
-- **_setup_category_handlers()** (8 connections) — `server/structured_logging/logging_file_setup.py`
-- **LoggerNameFilter** (8 connections) — `server/structured_logging/logging_file_setup.py`
-- **_create_handler_for_category()** (8 connections) — `server/structured_logging/logging_file_setup.py`
-- **Queue** (7 connections)
-- **test_queue_listener_has_aggregator_handlers()** (7 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **test_warning_and_error_reach_aggregator_files()** (7 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **get_queue_listener()** (6 connections) — `server/structured_logging/logging_file_setup.py`
-- **stop_queue_listener()** (6 connections) — `server/structured_logging/logging_file_setup.py`
-- **_CategoryHandlerConfig** (6 connections) — `server/structured_logging/logging_file_setup.py`
-- **Handler** (6 connections)
-- **_ConsoleHandlerConfig** (6 connections) — `server/structured_logging/logging_file_setup.py`
-- **_setup_async_logging_queue()** (6 connections) — `server/structured_logging/logging_file_setup.py`
-- **_create_formatter()** (6 connections) — `server/structured_logging/logging_file_setup.py`
-- **_root_handlers_snapshot()** (6 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **_restore_root_handlers()** (6 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **test_aggregator_handlers_on_root_when_async()** (6 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **_get_or_create_log_queue()** (5 connections) — `server/structured_logging/logging_file_setup.py`
-- *... and 53 more nodes in this community*
+- **test_player_preferences_service.py** (59 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **sample_preferences()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_create_player_preferences_success()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_create_player_preferences_with_string_id()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_create_player_preferences_already_exists()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_get_player_preferences_success()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_get_player_preferences_not_found()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_update_default_channel_success()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_update_default_channel_not_found()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_mute_channel_success()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_mute_channel_already_muted()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_unmute_channel_success()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_unmute_channel_not_muted()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_get_muted_channels_success()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_get_muted_channels_not_found()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_is_channel_muted_true()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_is_channel_muted_false()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_delete_player_preferences_success()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_delete_player_preferences_not_found()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_delete_player_preferences_database_error()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_update_default_channel_database_error()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_mute_channel_not_found()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_unmute_channel_not_found()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_unmute_channel_database_error()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_mute_channel_database_error()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- *... and 81 more nodes in this community*
 
 ## Relationships
 
-- [logging handlers](logging_handlers.md) (15 shared connections)
-- [Path](Path.md) (14 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (9 shared connections)
-- [PlayerGuidFormatter](PlayerGuidFormatter.md) (7 shared connections)
-- [windows safe rotation](windows_safe_rotation.md) (4 shared connections)
-- [aggregate log entry()](aggregate_log_entry%28%29.md) (1 shared connections)
-- [.shutdown()](shutdown%28%29.md) (1 shared connections)
+- [Connection Manager](Connection_Manager.md) (25 shared connections)
+- [main()](main%28%29.md) (4 shared connections)
+- [test player preferences service](test_player_preferences_service.md) (2 shared connections)
 
 ## Source Files
 
-- `server/structured_logging/logging_file_setup.py`
-- `server/structured_logging/logging_utilities.py`
-- `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- `server/tests/unit/services/test_player_preferences_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 313 (97%)
-- INFERRED: 10 (3%)
+- EXTRACTED: 216 (90%)
+- INFERRED: 25 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

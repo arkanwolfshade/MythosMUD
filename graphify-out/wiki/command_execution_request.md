@@ -33,13 +33,11 @@
 
 ## Relationships
 
-- [message handler factory](message_handler_factory.md) (12 shared connections)
+- [message handler factory](message_handler_factory.md) (13 shared connections)
 - [. init ()](_init_%28%29.md) (8 shared connections)
-- [UUID](UUID.md) (1 shared connections)
-- [append unique valid occupant()](append_unique_valid_occupant%28%29.md) (1 shared connections)
+- [Any](Any.md) (2 shared connections)
 - [. initialize handlers()](_initialize_handlers%28%29.md) (1 shared connections)
-- [process all status effects()](process_all_status_effects%28%29.md) (1 shared connections)
-- [Any](Any.md) (1 shared connections)
+- [close db()](close_db%28%29.md) (1 shared connections)
 
 ## Source Files
 

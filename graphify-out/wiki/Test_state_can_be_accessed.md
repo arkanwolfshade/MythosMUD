@@ -1,23 +1,25 @@
 # Test state can be accessed
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_get_room_by_name()** (2 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_room_by_name() returns None (not implemented).** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Appendix: Quick Reference Commands** (3 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Test Removal Workflow** (2 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Test Analysis Commands** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **"The optimization of tests is not destruction, but refinement — removing the dross to reveal the gold beneath."** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
 
 ## Relationships
 
-- [test room service](test_room_service.md) (1 shared connections)
+- [. is uuid string()](_is_uuid_string%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `docs/archive/TEST_VALUE_DISTRIBUTION.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

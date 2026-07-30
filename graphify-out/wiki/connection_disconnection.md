@@ -1,6 +1,6 @@
 # connection disconnection
 
-> 96 nodes
+> 94 nodes
 
 ## Key Concepts
 
@@ -12,7 +12,6 @@
 - **cleanup_websocket_disconnect()** (15 connections) — `server/realtime/connection_disconnection.py`
 - **test_connection_disconnection_websockets.py** (15 connections) — `server/tests/unit/realtime/test_connection_disconnection_websockets.py`
 - **message_queue.py** (14 connections) — `server/realtime/message_queue.py`
-- **rate_limiter.py** (14 connections) — `server/realtime/rate_limiter.py`
 - **disconnect_all_websockets_impl()** (13 connections) — `server/realtime/connection_disconnection.py`
 - **disconnect_connection_by_id_impl()** (13 connections) — `server/realtime/connection_disconnection.py`
 - **_cleanup_player_data()** (12 connections) — `server/realtime/connection_disconnection.py`
@@ -29,19 +28,20 @@
 - **.disconnect_connection_by_id()** (3 connections) — `server/realtime/connection_manager.py`
 - **test_track_disconnect_if_needed_new()** (3 connections) — `server/tests/unit/realtime/test_connection_disconnection.py`
 - **test_track_disconnect_if_needed_already_processed()** (3 connections) — `server/tests/unit/realtime/test_connection_disconnection.py`
-- *... and 71 more nodes in this community*
+- **test_track_disconnect_if_needed_force_disconnect()** (3 connections) — `server/tests/unit/realtime/test_connection_disconnection.py`
+- *... and 69 more nodes in this community*
 
 ## Relationships
 
-- [Player](Player.md) (19 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (15 shared connections)
-- [nats config()](nats_config%28%29.md) (8 shared connections)
-- [Custom user manager for MythosMUD.](Custom_user_manager_for_MythosMUD.md) (8 shared connections)
+- [Player](Player.md) (21 shared connections)
+- [test statistics aggregator](test_statistics_aggregator.md) (8 shared connections)
+- [nats config()](nats_config%28%29.md) (7 shared connections)
+- [Custom user manager for MythosMUD.](Custom_user_manager_for_MythosMUD.md) (6 shared connections)
 - [real time](real_time.md) (5 shared connections)
-- [AttributeError](AttributeError.md) (3 shared connections)
-- [Any](Any.md) (3 shared connections)
-- [test statistics aggregator](test_statistics_aggregator.md) (2 shared connections)
-- [connection delegates](connection_delegates.md) (1 shared connections)
+- [Any](Any.md) (4 shared connections)
+- [world](world.md) (4 shared connections)
+- [get current tick()](get_current_tick%28%29.md) (1 shared connections)
+- [UUID](UUID.md) (1 shared connections)
 
 ## Source Files
 
@@ -49,13 +49,12 @@
 - `server/realtime/connection_manager.py`
 - `server/realtime/connection_manager_methods.py`
 - `server/realtime/message_queue.py`
-- `server/realtime/rate_limiter.py`
 - `server/tests/unit/realtime/test_connection_disconnection.py`
 - `server/tests/unit/realtime/test_connection_disconnection_websockets.py`
 
 ## Audit Trail
 
-- EXTRACTED: 395 (98%)
+- EXTRACTED: 380 (98%)
 - INFERRED: 9 (2%)
 - AMBIGUOUS: 0 (0%)
 

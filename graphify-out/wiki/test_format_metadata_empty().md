@@ -1,57 +1,54 @@
 # test format metadata empty()
 
-> 107 nodes
+> 32 nodes
 
 ## Key Concepts
 
 - **test_inventory_helpers.py** (38 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **equipment_helpers.py** (28 connections) — `server/commands/equipment_helpers.py`
-- **inventory_item_matching.py** (22 connections) — `server/commands/inventory_item_matching.py`
 - **match_room_drop_by_name()** (19 connections) — `server/commands/inventory_item_matching.py`
-- **normalize_slot_name()** (19 connections) — `server/commands/inventory_item_matching.py`
-- **match_equipped_item_by_name()** (18 connections) — `server/commands/inventory_item_matching.py`
-- **match_inventory_item_by_name()** (16 connections) — `server/commands/inventory_item_matching.py`
-- **test_inventory_commands_helpers.py** (13 connections) — `server/tests/unit/commands/test_inventory_commands_helpers.py`
-- **resolve_unequip_slot()** (8 connections) — `server/commands/equipment_helpers.py`
-- **build_equipped_candidates()** (5 connections) — `server/commands/inventory_item_matching.py`
-- **_equip_stack_from_inventory_index()** (4 connections) — `server/commands/equipment_helpers.py`
-- **extract_item_identifier()** (4 connections) — `server/commands/inventory_item_matching.py`
-- **build_drop_candidates()** (4 connections) — `server/commands/inventory_item_matching.py`
-- **match_exact_drop()** (4 connections) — `server/commands/inventory_item_matching.py`
-- **match_prefix_drop()** (4 connections) — `server/commands/inventory_item_matching.py`
-- **match_substring_drop()** (4 connections) — `server/commands/inventory_item_matching.py`
-- **build_inventory_candidates()** (4 connections) — `server/commands/inventory_item_matching.py`
-- **_try_resolve_unequip_by_search()** (3 connections) — `server/commands/equipment_helpers.py`
-- **clean_item_value()** (3 connections) — `server/commands/inventory_item_matching.py`
-- **search_exact_match()** (3 connections) — `server/commands/inventory_item_matching.py`
-- **search_prefix_match()** (3 connections) — `server/commands/inventory_item_matching.py`
-- **search_substring_match()** (3 connections) — `server/commands/inventory_item_matching.py`
-- **test_match_room_drop_by_name_exact()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_helpers.py`
-- **test_match_room_drop_by_name_not_found()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_helpers.py`
-- **test_match_inventory_item_by_name_exact()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_helpers.py`
-- *... and 82 more nodes in this community*
+- **test_match_room_drop_by_name_empty_search()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_match_room_drop_by_name_exact_match()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_match_room_drop_by_name_prefix_match()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_match_room_drop_by_name_substring_match()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_match_room_drop_by_name_item_id_match()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_match_room_drop_by_name_prototype_id_match()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_match_room_drop_by_name_no_match()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_format_metadata_none()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_format_metadata_empty()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_format_metadata_simple()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_format_metadata_complex()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_resolve_state_no_app()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_resolve_state_no_state()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_resolve_state_success()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **Resolve a room drop index using Lovecraftian-grade fuzzy matching heuristics.** (1 connections) — `server/commands/inventory_item_matching.py`
+- **Unit tests for inventory command helper functions.  Tests helper functions used** (1 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **Test _match_room_drop_by_name with empty search term.** (1 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **Test _match_room_drop_by_name with exact match.** (1 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **Test _match_room_drop_by_name with prefix match.** (1 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **Test _match_room_drop_by_name with substring match.** (1 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **Test _match_room_drop_by_name with item_id match.** (1 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **Test _match_room_drop_by_name with prototype_id match.** (1 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **Test _match_room_drop_by_name with no match.** (1 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [test resolve state no app()](test_resolve_state_no_app%28%29.md) (20 shared connections)
+- [Any](Any.md) (7 shared connections)
+- [Test process alias expansion function.](Test_process_alias_expansion_function.md) (7 shared connections)
+- [Test check grace period block](Test_check_grace_period_block.md) (7 shared connections)
 - [Base](Base.md) (6 shared connections)
-- [Any](Any.md) (5 shared connections)
-- [DropResolved](DropResolved.md) (4 shared connections)
-- [.add message()](add_message%28%29.md) (3 shared connections)
-- [. init ()](_init_%28%29.md) (2 shared connections)
-- [Lock](Lock.md) (2 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
+- [Update player's connection list to](Update_player%27s_connection_list_to.md) (5 shared connections)
+- [chat pose helpers](chat_pose_helpers.md) (4 shared connections)
+- [populate test npc databases](populate_test_npc_databases.md) (3 shared connections)
 
 ## Source Files
 
-- `server/commands/equipment_helpers.py`
 - `server/commands/inventory_item_matching.py`
-- `server/tests/unit/commands/test_inventory_commands_helpers.py`
 - `server/tests/unit/commands/test_inventory_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 378 (100%)
+- EXTRACTED: 115 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

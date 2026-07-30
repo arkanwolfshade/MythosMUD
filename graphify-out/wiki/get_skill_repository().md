@@ -1,59 +1,48 @@
 # get skill repository()
 
-> 40 nodes
+> 41 nodes
 
 ## Key Concepts
 
-- **admin_shutdown_command.py** (35 connections) — `server/commands/admin_shutdown_command.py`
-- **Any** (20 connections)
-- **handle_shutdown_command()** (14 connections) — `server/commands/admin_shutdown_command.py`
-- **initiate_shutdown_countdown()** (13 connections) — `server/commands/admin_shutdown_command.py`
-- **cancel_shutdown_countdown()** (11 connections) — `server/commands/admin_shutdown_command.py`
-- **parse_shutdown_parameters()** (11 connections) — `server/commands/admin_shutdown_command.py`
-- **broadcast_shutdown_notification()** (7 connections) — `server/commands/admin_shutdown_command.py`
-- **countdown_loop()** (7 connections) — `server/commands/admin_shutdown_command.py`
-- **_create_countdown_task()** (5 connections) — `server/commands/admin_shutdown_command.py`
-- **_store_shutdown_data()** (5 connections) — `server/commands/admin_shutdown_command.py`
-- **_clear_shutdown_state()** (5 connections) — `server/commands/admin_shutdown_command.py`
-- **_validate_shutdown_context()** (5 connections) — `server/commands/admin_shutdown_command.py`
-- **_handle_shutdown_cancel()** (5 connections) — `server/commands/admin_shutdown_command.py`
-- **_handle_shutdown_initiate()** (5 connections) — `server/commands/admin_shutdown_command.py`
-- **_cancel_existing_shutdown_task()** (4 connections) — `server/commands/admin_shutdown_command.py`
-- **_set_shutdown_pending_flag()** (4 connections) — `server/commands/admin_shutdown_command.py`
-- **_get_shutdown_state()** (4 connections) — `server/commands/admin_shutdown_command.py`
-- **_cancel_countdown_task()** (4 connections) — `server/commands/admin_shutdown_command.py`
-- **_broadcast_shutdown_cancellation()** (4 connections) — `server/commands/admin_shutdown_command.py`
-- **_get_shutdown_services()** (4 connections) — `server/commands/admin_shutdown_command.py`
-- **Task** (2 connections)
-- **Admin shutdown command for MythosMUD.  This module provides the /shutdown comman** (1 connections) — `server/commands/admin_shutdown_command.py`
-- **Broadcast shutdown notification to all players.      Args:         connection_ma** (1 connections) — `server/commands/admin_shutdown_command.py`
-- **Cancel existing shutdown task if present.      Args:         app: FastAPI applic** (1 connections) — `server/commands/admin_shutdown_command.py`
-- **Set shutdown pending flag in container and app.state.      Args:         app: Fa** (1 connections) — `server/commands/admin_shutdown_command.py`
-- *... and 15 more nodes in this community*
+- **FastAPI Code Review - Anti-Patterns and Best Practices** (9 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **Medium Priority Issues** (9 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **Work Completed** (8 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **Final Summary** (7 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **Low Priority Issues** (5 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **Critical Issues** (4 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **Summary of Recommendations** (4 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **FASTAPI_CODE_REVIEW.md** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **Executive Summary** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **1. ✅ **Inconsistent Response Models** - **RESOLVED**** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **2. 🟡 **Fat Endpoints with Business Logic** - **IN PROGRESS**** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **3. ✅ **Direct app.state Access Instead of Dependency Injection** - **RESOLVED**** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **4. ⚠️ **Inconsistent Router Prefix Patterns**** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **Routers with `/api/` prefix defined in router** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **Routers without `/api/` prefix (added in factory)** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **Routers without `/api/` prefix (root-level or special)** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **Other routers** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **5. ✅ **Monitoring Endpoints in main.py Instead of Router** - **RESOLVED**** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **6. ✅ **Missing Type Hints in Some Endpoints** - **RESOLVED**** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **7. ✅ **Inconsistent Error Handling** - **RESOLVED**** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **8. ℹ️ **Service Layer Organization**** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **9. ℹ️ **Configuration Management**** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **10. ℹ️ **Dependency Injection Pattern**** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **11. ℹ️ **API Versioning** (OPTIONAL - NOT REQUIRED FOR WEBAPP)** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **Immediate Actions (Critical)** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- *... and 16 more nodes in this community*
 
 ## Relationships
 
-- [Any](Any.md) (17 shared connections)
-- [test npc combat integration service](test_npc_combat_integration_service.md) (4 shared connections)
-- [test format player location invalid()](test_format_player_location_invalid%28%29.md) (3 shared connections)
-- [Schedule a best effort graceful](Schedule_a_best_effort_graceful.md) (3 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (3 shared connections)
-- [test magic commands](test_magic_commands.md) (2 shared connections)
-- [websocket handler app state](websocket_handler_app_state.md) (2 shared connections)
-- [get item description from prototype()](get_item_description_from_prototype%28%29.md) (2 shared connections)
-- [DropResolved](DropResolved.md) (2 shared connections)
-- [AuthSlice](AuthSlice.md) (1 shared connections)
-- [admin shutdown command](admin_shutdown_command.md) (1 shared connections)
-- [test command factories inventory](test_command_factories_inventory.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/commands/admin_shutdown_command.py`
+- `docs/archive/FASTAPI_CODE_REVIEW.md`
 
 ## Audit Trail
 
-- EXTRACTED: 192 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 80 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

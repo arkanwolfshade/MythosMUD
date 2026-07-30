@@ -1,22 +1,24 @@
 # Async Code Review Post Migration
 
-> 1 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Async Code Review Post Migration** (0 connections) — `docs/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **test_connected_successfully_from_connecting()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **Test connected_successfully() transition from connecting to connected.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [connection state machine](connection_state_machine.md) (1 shared connections)
+- [enhance player ids()](enhance_player_ids%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- `server/tests/unit/realtime/test_connection_state_machine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,37 +1,43 @@
 # connection manager api
 
-> 15 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **Any** (7 connections)
-- **.process_dict_occupant()** (5 connections) — `server/realtime/player_event_handlers_utils.py`
-- **.__init__()** (4 connections) — `server/realtime/player_event_handlers_utils.py`
-- **._extract_name_from_occupant()** (4 connections) — `server/realtime/player_event_handlers_utils.py`
-- **.extract_occupant_names()** (4 connections) — `server/realtime/player_event_handlers_utils.py`
-- **.build_occupants_snapshot_data()** (4 connections) — `server/realtime/player_event_handlers_utils.py`
-- **.add_valid_name_to_lists()** (3 connections) — `server/realtime/player_event_handlers_utils.py`
-- **.count_occupants_by_type()** (3 connections) — `server/realtime/player_event_handlers_utils.py`
-- **Initialize utility functions.          Args:             connection_manager: Con** (1 connections) — `server/realtime/player_event_handlers_utils.py`
-- **Extract name from a single occupant entry.          Args:             occ: Occup** (1 connections) — `server/realtime/player_event_handlers_utils.py`
-- **Extract occupant names from occupant information.          Args:             occ** (1 connections) — `server/realtime/player_event_handlers_utils.py`
-- **Add a valid name to the appropriate lists.          Args:             name: The** (1 connections) — `server/realtime/player_event_handlers_utils.py`
-- **Process a dictionary occupant and add to appropriate lists.          Args:** (1 connections) — `server/realtime/player_event_handlers_utils.py`
-- **Build structured occupants data from snapshot.          Args:             occupa** (1 connections) — `server/realtime/player_event_handlers_utils.py`
-- **Count NPCs and players in occupants snapshot.          Args:             occupan** (1 connections) — `server/realtime/player_event_handlers_utils.py`
+- **SQLAlchemy Code Review - feature/sqlite-to-postgresql Branch** (9 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
+- **🟢 MEDIUM PRIORITY ISSUES** (6 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
+- **🟡 HIGH PRIORITY ISSUES** (4 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
+- **Recommendations Summary** (4 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
+- **🔴 CRITICAL ISSUES** (2 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
+- **SQLALCHEMY_CODE_REVIEW.md** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
+- **Executive Summary** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
+- **1. SQL Injection Vulnerability in `update_player_stat_field()` - ✅ FIXED** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
+- **2. Missing Eager Loading for Relationships** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
+- **3. Mixed Database Access Patterns** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
+- **4. F-String SQL Construction (Even with Constants)** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
+- **5. Missing Indexes on Foreign Keys** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
+- **6. Long-Lived Sessions** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
+- **7. Connection Pool Configuration** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
+- **8. Transaction Boundaries** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
+- **9. Error Handling in Database Operations** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
+- **✅ GOOD PRACTICES OBSERVED** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
+- **Immediate Actions (This Sprint)** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
+- **Short-term (Next Sprint)** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
+- **Long-term (Future)** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
+- **Testing Recommendations** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
+- **References** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
 
 ## Relationships
 
-- [NPCCombatIntegrationBase](NPCCombatIntegrationBase.md) (8 shared connections)
-- [container websocket events](container_websocket_events.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/realtime/player_event_handlers_utils.py`
+- `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
 
 ## Audit Trail
 
-- EXTRACTED: 41 (100%)
+- EXTRACTED: 42 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

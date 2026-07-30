@@ -1,50 +1,48 @@
 # Cancel lifecycle/critical tasks first (Phase
 
-> 18 nodes
+> 26 nodes
 
 ## Key Concepts
 
-- **stateUpdateUtils.ts** (41 connections) — `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
-- **stateUpdateUtils.test.ts** (14 connections) — `client/src/components/ui-v2/utils/__tests__/stateUpdateUtils.test.ts`
-- **roomMergeUtils.ts** (10 connections) — `client/src/components/ui-v2/utils/roomMergeUtils.ts`
-- **mergeRoomState()** (7 connections) — `client/src/components/ui-v2/utils/roomMergeUtils.ts`
-- **applyEventUpdates()** (7 connections) — `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
-- **roomMergeUtils.test.ts** (4 connections) — `client/src/components/ui-v2/utils/__tests__/roomMergeUtils.test.ts`
-- **mergeOccupantData()** (4 connections) — `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
-- **mergeRoomUpdate()** (4 connections) — `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
-- **sanitizeAndApplyUpdates()** (4 connections) — `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
-- **selectPlayersArray()** (3 connections) — `client/src/components/ui-v2/utils/roomMergeUtils.ts`
-- **selectNpcsArray()** (3 connections) — `client/src/components/ui-v2/utils/roomMergeUtils.ts`
-- **applyPlayerUpdate()** (3 connections) — `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
-- **applyRoomUpdate()** (3 connections) — `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
-- **getPlayersArray()** (2 connections) — `client/src/components/ui-v2/utils/roomMergeUtils.ts`
-- **getNpcsArray()** (2 connections) — `client/src/components/ui-v2/utils/roomMergeUtils.ts`
-- **hasOccupantData()** (2 connections) — `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
-- **applyMessageUpdates()** (2 connections) — `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
-- **applyGracePeriodUpdate()** (2 connections) — `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
+- **Migration 019: Complete Implementation Summary** (10 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **What Was Done** (5 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Tables Affected** (4 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Risk Assessment** (4 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Files Summary** (4 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Next Steps** (3 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **MIGRATION_019_COMPLETE_SUMMARY.md** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Executive Summary** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **1. Database Schema Updates ✅** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **2. Python Model Updates ✅** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **3. Migration Script Created ✅** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **4. Testing Infrastructure ✅** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Verification Status** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Primary Key Conversions (serial → bigint identity)** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Foreign Key Type Updates (integer → bigint)** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Text Column Conversions (varchar → text)** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Immediate (Testing Phase)** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Before Production** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Low Risk ✅** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Medium Risk ⚠️** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Mitigation ✅** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Modified Files (10)** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Created Files (5)** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Documentation Files (4)** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Success Metrics** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [monitoring models](monitoring_models.md) (13 shared connections)
-- [player respawn](player_respawn.md) (8 shared connections)
-- [HealthMeter](HealthMeter.md) (6 shared connections)
-- [.append()](append%28%29.md) (6 shared connections)
-- [Instance](Instance.md) (3 shared connections)
-- [MythosTimeHud](MythosTimeHud.md) (3 shared connections)
-- [ConnectionCleaner](ConnectionCleaner.md) (3 shared connections)
-- [useConnectionStateMachine.test](useConnectionStateMachine.test.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `client/src/components/ui-v2/utils/__tests__/roomMergeUtils.test.ts`
-- `client/src/components/ui-v2/utils/__tests__/stateUpdateUtils.test.ts`
-- `client/src/components/ui-v2/utils/roomMergeUtils.ts`
-- `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
+- `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 114 (97%)
-- INFERRED: 3 (3%)
+- EXTRACTED: 50 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

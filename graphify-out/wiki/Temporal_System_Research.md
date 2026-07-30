@@ -1,23 +1,27 @@
 # Temporal System Research
 
-> 2 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **Temporal System Research** (1 connections) — `docs/TEMPORAL_SYSTEM_RESEARCH.md`
-- **Mythos Time Model** (1 connections) — `docs/TEMPORAL_SYSTEM_RESEARCH.md`
+- **Common Mistakes and How to Fix Them** (6 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Mistake 1: Forgetting to Update Imports** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Mistake 2: Using Deprecated Context Parameter** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Mistake 3: String Formatting in Log Messages** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Mistake 4: Missing Context in Error Logs** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Mistake 5: Wrong Log Levels** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [get user db()](get_user_db%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/TEMPORAL_SYSTEM_RESEARCH.md`
+- `docs/archive/LOGGING_BEST_PRACTICES.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

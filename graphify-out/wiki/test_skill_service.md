@@ -1,34 +1,44 @@
 # test skill service
 
-> 9 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **handle_explore_command()** (8 connections) — `server/commands/exploration_commands.py`
-- **test_exploration_commands.py** (5 connections) — `server/tests/unit/commands/test_exploration_commands.py`
-- **test_handle_explore_command()** (3 connections) — `server/tests/unit/commands/test_exploration_commands.py`
-- **test_handle_explore_command_no_persistence()** (3 connections) — `server/tests/unit/commands/test_exploration_commands.py`
-- **Any** (1 connections)
-- **Handle exploration requests by returning a simple message.      This lightweight** (1 connections) — `server/commands/exploration_commands.py`
-- **Unit tests for exploration command handlers.  Tests the exploration command func** (1 connections) — `server/tests/unit/commands/test_exploration_commands.py`
-- **Test handle_explore_command() explores area.** (1 connections) — `server/tests/unit/commands/test_exploration_commands.py`
-- **Test handle_explore_command() handles missing persistence.** (1 connections) — `server/tests/unit/commands/test_exploration_commands.py`
+- **_JSONDict** (10 connections)
+- **_loads_json_dict()** (7 connections) — `server/models/npc.py`
+- **.get_base_stats()** (6 connections) — `server/models/npc.py`
+- **.get_spawn_conditions()** (5 connections) — `server/models/npc.py`
+- **.get_behavior_config()** (4 connections) — `server/models/npc.py`
+- **.get_ai_integration_stub()** (4 connections) — `server/models/npc.py`
+- **.set_base_stats()** (3 connections) — `server/models/npc.py`
+- **.set_behavior_config()** (3 connections) — `server/models/npc.py`
+- **.set_ai_integration_stub()** (3 connections) — `server/models/npc.py`
+- **.set_spawn_conditions()** (3 connections) — `server/models/npc.py`
+- **Parse JSON object from string; empty dict on failure or non-object root.** (1 connections) — `server/models/npc.py`
+- **Get base stats as dictionary.** (1 connections) — `server/models/npc.py`
+- **Set base stats from dictionary.** (1 connections) — `server/models/npc.py`
+- **Get behavior configuration as dictionary.** (1 connections) — `server/models/npc.py`
+- **Set behavior configuration from dictionary.** (1 connections) — `server/models/npc.py`
+- **Get AI integration stub configuration as dictionary.** (1 connections) — `server/models/npc.py`
+- **Set AI integration stub configuration from dictionary.** (1 connections) — `server/models/npc.py`
+- **Get spawn conditions as dictionary.** (1 connections) — `server/models/npc.py`
+- **Set spawn conditions from dictionary.** (1 connections) — `server/models/npc.py`
 
 ## Relationships
 
-- [AuthSlice](AuthSlice.md) (2 shared connections)
-- [test magic commands](test_magic_commands.md) (1 shared connections)
-- [.state()](state%28%29.md) (1 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (7 shared connections)
+- [. repr ()](_repr_%28%29.md) (4 shared connections)
+- [. init ()](_init_%28%29.md) (1 shared connections)
+- [CombatService](CombatService.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/exploration_commands.py`
-- `server/tests/unit/commands/test_exploration_commands.py`
+- `server/models/npc.py`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (96%)
-- INFERRED: 1 (4%)
+- EXTRACTED: 55 (96%)
+- INFERRED: 2 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,22 +4,23 @@
 
 ## Key Concepts
 
-- **.test_is_valid_name_for_occupant_invalid()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **Test is_valid_name_for_occupant with invalid inputs.** (1 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **mp_regeneration_service()** (4 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Create an MPRegenerationService instance.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Relationships
 
-- [container websocket events](container_websocket_events.md) (1 shared connections)
-- [PlayerNameExtractor](PlayerNameExtractor.md) (1 shared connections)
+- [CommandHandler](CommandHandler.md) (1 shared connections)
+- [Any](Any.md) (1 shared connections)
+- [MPRegenerationService](MPRegenerationService.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_name_utils.py`
+- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 4 (80%)
+- INFERRED: 1 (20%)
 - AMBIGUOUS: 0 (0%)
 
 ---

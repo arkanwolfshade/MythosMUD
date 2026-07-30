@@ -1,23 +1,25 @@
 # test_get_user_characters
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_send_occupants_snapshot_to_player_success()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **Test send_occupants_snapshot_to_player() successfully sends snapshot.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **🏆 Achievement Highlights** (4 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **Critical Fixes (Phase 1)** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **Performance Optimizations** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **Code Quality** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
 
 ## Relationships
 
-- [. call ()](_call_%28%29.md) (1 shared connections)
+- [get alias validator()](get_alias_validator%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

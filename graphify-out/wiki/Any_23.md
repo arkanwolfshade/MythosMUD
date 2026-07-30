@@ -1,52 +1,52 @@
 # Any
 
-> 54 nodes
+> 53 nodes
 
 ## Key Concepts
 
-- **test_health_service.py** (43 connections) — `server/tests/unit/services/test_health_service.py`
-- **get_health_service()** (9 connections) — `server/services/health_service.py`
-- **test_get_health_service_creates_instance()** (4 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_get_health_service_returns_singleton()** (3 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_get_health_service_updates_connection_manager()** (3 connections) — `server/tests/unit/services/test_health_service.py`
-- **mock_connection_manager()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_health_service_initialization()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_get_server_uptime()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_get_memory_usage_success()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_get_memory_usage_error()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_get_cpu_usage_success()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_get_cpu_usage_error()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_check_database_health_healthy()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_check_database_health_degraded()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_check_database_health_unhealthy()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_check_database_health_error()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_check_connections_health_healthy()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_check_connections_health_degraded()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_check_connections_health_unhealthy()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_check_connections_health_no_manager()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_check_connections_health_error()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_get_server_component_health_healthy()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_get_server_component_health_degraded()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_get_server_component_health_unhealthy()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_get_database_component_health()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- *... and 29 more nodes in this community*
+- **TestRoomDataFixer** (20 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **RoomDataFixer** (14 connections) — `server/services/room_data_fixer.py`
+- **.apply_room_data_fixes()** (13 connections) — `server/services/room_data_fixer.py`
+- **.fix_missing_name()** (7 connections) — `server/services/room_data_fixer.py`
+- **.fix_occupant_count_mismatch()** (7 connections) — `server/services/room_data_fixer.py`
+- **.fix_missing_description()** (6 connections) — `server/services/room_data_fixer.py`
+- **.fix_missing_timestamp()** (6 connections) — `server/services/room_data_fixer.py`
+- **Any** (5 connections)
+- **.count_applied_fixes()** (5 connections) — `server/services/room_data_fixer.py`
+- **.test_apply_room_data_fixes_exception_handling()** (5 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **test_room_data_fixer.py** (4 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_missing_name()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_missing_name_no_error()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_missing_name_unknown_id()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_missing_description()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_missing_description_no_error()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_occupant_count_mismatch()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_occupant_count_mismatch_no_error()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_occupant_count_mismatch_no_occupants()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_missing_timestamp()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_missing_timestamp_existing()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_count_applied_fixes()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_count_applied_fixes_no_fixable()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_apply_room_data_fixes_all_fixes()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_apply_room_data_fixes_no_errors()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- *... and 28 more nodes in this community*
 
 ## Relationships
 
-- [alias](alias.md) (14 shared connections)
-- [SafeHtml](SafeHtml.md) (4 shared connections)
-- [fetch container items()](fetch_container_items%28%29.md) (2 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
+- [world](world.md) (2 shared connections)
+- [combat taunt](combat_taunt.md) (2 shared connections)
+- [Any](Any.md) (1 shared connections)
+- [create access token()](create_access_token%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/health_service.py`
-- `server/tests/unit/services/test_health_service.py`
+- `server/services/room_data_fixer.py`
+- `server/tests/unit/services/test_room_data_fixer.py`
 
 ## Audit Trail
 
-- EXTRACTED: 132 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 160 (96%)
+- INFERRED: 6 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

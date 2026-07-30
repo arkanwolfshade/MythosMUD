@@ -1,48 +1,51 @@
 # Any
 
-> 24 nodes
+> 87 nodes
 
 ## Key Concepts
 
-- **test_look_item_helpers.py** (28 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_equipped_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_equipped_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_room_drops_empty()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_room_drops_no_match()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_room_drops_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_room_drops_instance_number_zero()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_equipped_empty()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_equipped_no_match()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_equipped_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_equipped_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_equipped_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Unit tests for look item helper functions.  Tests the helper functions in look_i** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_equipped() finds item by name.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_equipped() returns None when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_room_drops() with empty list.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_room_drops() with no matching items.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_room_drops() with instance number out of range.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_room_drops() with instance number zero.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_equipped() with empty dict.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_equipped() with no matching items.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_equipped() with multiple matches (ambiguous).** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_equipped() with instance number.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_equipped() with instance number out of range.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Reporter** (55 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
+- **TestReporter** (27 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
+- **.print_error()** (5 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
+- **.print_bidirectional_errors()** (5 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
+- **.print_room_header()** (4 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
+- **.print_parsing_errors()** (4 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
+- **.print_validation_errors()** (4 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
+- **.print_summary()** (4 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
+- **.print_warning()** (3 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
+- **.print_success()** (3 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
+- **.print_validation_warnings()** (3 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
+- **.format_error()** (3 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
+- **.generate_json_output()** (3 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
+- **.test_init_with_colors()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
+- **.test_init_without_colors()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
+- **.test_format_error_with_suggestion()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
+- **.test_format_error_without_suggestion()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
+- **.test_format_warning()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
+- **.test_generate_json_output()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
+- **.test_colorize_output_with_colors()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
+- **.test_colorize_output_without_colors()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
+- **.test_colorize_output_unknown_color()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
+- **.test_print_header_default()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
+- **.test_print_header_custom_title()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
+- **.test_print_progress()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
+- *... and 62 more nodes in this community*
 
 ## Relationships
 
-- [game tick processing](game_tick_processing.md) (10 shared connections)
-- [DeathInterstitial](DeathInterstitial.md) (9 shared connections)
-- [ExitEdge](ExitEdge.md) (8 shared connections)
+- [fixer](fixer.md) (7 shared connections)
+- [PathValidator](PathValidator.md) (3 shared connections)
+- [Path](Path.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_item_helpers.py`
+- `tools/room_toolkit/room_validator/core/reporter.py`
+- `tools/room_toolkit/room_validator/tests/test_reporter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 73 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 197 (78%)
+- INFERRED: 55 (22%)
 - AMBIGUOUS: 0 (0%)
 
 ---

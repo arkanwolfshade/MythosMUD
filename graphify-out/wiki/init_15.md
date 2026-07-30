@@ -1,11 +1,10 @@
 # init
 
-> 2 nodes
+> 1 nodes
 
 ## Key Concepts
 
-- **__init__.py** (1 connections) — `server/game/magic/__init__.py`
-- **Magic and spellcasting system for MythosMUD.  This package contains the core mag** (1 connections) — `server/game/magic/__init__.py`
+- **__init__.py** (0 connections) — `server/game/__init__.py`
 
 ## Relationships
 
@@ -13,11 +12,11 @@
 
 ## Source Files
 
-- `server/game/magic/__init__.py`
+- `server/game/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,24 +1,25 @@
 # Test get applicable rules() returns
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **.test_try_player_username_valid()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **Test _try_player_username with valid username.** (1 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **✅ Verification Results** (4 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **Linting** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **Result**: ✅**ALL CHECKS PASSED** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **Test Results** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
 
 ## Relationships
 
-- [container websocket events](container_websocket_events.md) (1 shared connections)
-- [PlayerNameExtractor](PlayerNameExtractor.md) (1 shared connections)
+- [Test handle nats message handles](Test_handle_nats_message_handles.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_name_utils.py`
+- `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

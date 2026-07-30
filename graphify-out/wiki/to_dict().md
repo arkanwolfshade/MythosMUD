@@ -35,9 +35,10 @@
 
 - [test combat monitoring service](test_combat_monitoring_service.md) (9 shared connections)
 - [CombatMetrics](CombatMetrics.md) (8 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (3 shared connections)
-- [process dead players()](process_dead_players%28%29.md) (2 shared connections)
+- [close db()](close_db%28%29.md) (2 shared connections)
 - [FeatureFlagService](FeatureFlagService.md) (2 shared connections)
+- [world](world.md) (2 shared connections)
+- [get current tick()](get_current_tick%28%29.md) (1 shared connections)
 - [CombatConfiguration](CombatConfiguration.md) (1 shared connections)
 
 ## Source Files

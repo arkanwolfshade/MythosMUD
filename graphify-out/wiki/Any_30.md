@@ -1,55 +1,48 @@
 # Any
 
-> 52 nodes
+> 60 nodes
 
 ## Key Concepts
 
-- **test_admin_shutdown_command.py** (57 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **_await_shutdown_result()** (14 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_initiate_shutdown_countdown_success()** (5 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_initiate_shutdown_countdown_supersedes()** (5 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **_InitiateStateStub** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **_InitiateAppStub** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_handle_shutdown_command_no_player_service()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_handle_shutdown_command_player_not_found()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_handle_shutdown_command_no_permission()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_handle_shutdown_command_invalid_parameters()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_handle_shutdown_command_cancel()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_handle_shutdown_command_cancel_no_active()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_handle_shutdown_command_initiate()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_handle_shutdown_command_initiate_superseding()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_handle_shutdown_command_initiate_no_seconds()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_handle_shutdown_command_initiate_failure()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_get_shutdown_blocking_message_login()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_get_shutdown_blocking_message_character_creation()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_get_shutdown_blocking_message_default()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_broadcast_shutdown_notification_success()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_broadcast_shutdown_notification_failure()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_parse_shutdown_parameters_no_args()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_parse_shutdown_parameters_cancel()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_parse_shutdown_parameters_seconds()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_parse_shutdown_parameters_invalid_negative()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- *... and 27 more nodes in this community*
+- **test_combat_attack_handler.py** (37 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **attack_handler()** (3 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **mock_combat()** (3 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **mock_attacker()** (3 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **mock_target_player()** (3 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **mock_target_npc()** (3 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_apply_damage_player_no_death_room_caps_damage()** (3 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_apply_damage_player_no_death_room_zero_damage_when_at_zero()** (3 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **mock_combat_service()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_attack_handler_init()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_validate_attack_active()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_validate_attack_inactive()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_apply_damage_player()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_apply_damage_player_kills()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_apply_damage_player_mortally_wounded()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_apply_damage_player_negative_cap()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_apply_damage_npc()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_apply_damage_npc_kills()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_apply_damage_npc_zero_cap()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_apply_damage_player_grace_period()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_apply_damage_player_grace_period_no_app()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_apply_damage_player_grace_period_no_connection_manager()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_apply_damage_player_grace_period_error()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_apply_attack_damage()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_validate_and_get_combat_participants_success()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- *... and 35 more nodes in this community*
 
 ## Relationships
 
-- [get skill repository()](get_skill_repository%28%29.md) (17 shared connections)
-- [test npc combat integration service](test_npc_combat_integration_service.md) (12 shared connections)
-- [admin shutdown command](admin_shutdown_command.md) (4 shared connections)
-- [test format player location invalid()](test_format_player_location_invalid%28%29.md) (4 shared connections)
-- [get item description from prototype()](get_item_description_from_prototype%28%29.md) (4 shared connections)
-- [test magic commands](test_magic_commands.md) (2 shared connections)
-- [AuthSlice](AuthSlice.md) (1 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
+- [close db()](close_db%28%29.md) (14 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_admin_shutdown_command.py`
+- `server/tests/unit/services/test_combat_attack_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 175 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 128 (97%)
+- INFERRED: 4 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

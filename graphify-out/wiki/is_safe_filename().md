@@ -24,7 +24,7 @@
 ## Relationships
 
 - [get secure file path()](get_secure_file_path%28%29.md) (8 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
+- [world](world.md) (1 shared connections)
 
 ## Source Files
 

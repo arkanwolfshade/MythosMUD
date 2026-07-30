@@ -1,41 +1,46 @@
 # . apply player info()
 
-> 17 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **test_players_quests.py** (13 connections) — `server/tests/unit/api/test_players_quests.py`
-- **test_get_player_quests_403_when_not_owner()** (4 connections) — `server/tests/unit/api/test_players_quests.py`
-- **test_get_player_quests_returns_quest_log()** (3 connections) — `server/tests/unit/api/test_players_quests.py`
-- **test_get_player_quests_include_completed_false()** (3 connections) — `server/tests/unit/api/test_players_quests.py`
-- **mock_request()** (2 connections) — `server/tests/unit/api/test_players_quests.py`
-- **mock_user()** (2 connections) — `server/tests/unit/api/test_players_quests.py`
-- **player_id()** (2 connections) — `server/tests/unit/api/test_players_quests.py`
-- **mock_player_service()** (2 connections) — `server/tests/unit/api/test_players_quests.py`
-- **mock_quest_service()** (2 connections) — `server/tests/unit/api/test_players_quests.py`
-- **Unit tests for GET /api/players/{player_id}/quests (quest log).  Tests get_playe** (1 connections) — `server/tests/unit/api/test_players_quests.py`
-- **Minimal request for endpoint (not used for quest logic).** (1 connections) — `server/tests/unit/api/test_players_quests.py`
-- **Character (player) UUID.** (1 connections) — `server/tests/unit/api/test_players_quests.py`
-- **PlayerService that validates character access.** (1 connections) — `server/tests/unit/api/test_players_quests.py`
-- **QuestService that returns quest log entries.** (1 connections) — `server/tests/unit/api/test_players_quests.py`
-- **GET quests returns QuestLogResponse with entries when access allowed.** (1 connections) — `server/tests/unit/api/test_players_quests.py`
-- **GET quests with include_completed=False passes to get_quest_log.** (1 connections) — `server/tests/unit/api/test_players_quests.py`
-- **GET quests raises 403 when validate_character_access returns not ok.** (1 connections) — `server/tests/unit/api/test_players_quests.py`
+- **Documentation Updates - ConnectionManager Refactoring** (9 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **Documents Updated** (7 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **Benefits of Documentation Updates** (5 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **Files NOT Requiring Updates** (4 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **Next Steps** (2 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **DOCUMENTATION_UPDATES.md** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **Summary** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **✅ 1. `REAL_TIME_ARCHITECTURE.md`** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **✅ 2. `CONNECTION_MANAGER_ARCHITECTURE.md` (NEW)** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **✅ 3. `WEBSOCKET_CODE_REVIEW.md`** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **✅ 4. `DEVELOPMENT_AI.md`** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **✅ 5. `REFACTORING_SUMMARY.md` (Created Earlier)** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **✅ 6. `.cursor/plans/connection-manager-refactor_b94299a2.plan.md`** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **ℹ️ Archive Documents** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **ℹ️ Test Documentation** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **ℹ️ Other Architecture Docs** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **Documentation Structure** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **1. **Accurate Reference Material**** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **2. **Reduced Confusion**** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **3. **Better Onboarding**** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **4. **Historical Record**** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **Validation** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **Optional Future Documentation Work** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **References** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
 
 ## Relationships
 
-- [append unique valid occupant()](append_unique_valid_occupant%28%29.md) (5 shared connections)
-- [AbstractContextManager](AbstractContextManager.md) (2 shared connections)
-- [metrics](metrics.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/api/test_players_quests.py`
+- `docs/archive/DOCUMENTATION_UPDATES.md`
 
 ## Audit Trail
 
-- EXTRACTED: 40 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 46 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

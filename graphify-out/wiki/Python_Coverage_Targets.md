@@ -1,23 +1,27 @@
 # Python Coverage Targets
 
-> 2 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **Python Coverage Status** (1 connections) — `docs/PYTHON_COVERAGE_STATUS.md`
-- **Python Coverage Targets** (1 connections) — `docs/PYTHON_COVERAGE_STATUS.md`
+- **Core Logging Principles** (6 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **1. **Structured Logging**** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **2. **Context is Everything**** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **3. **Security First**** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **4. **Performance Aware**** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **5. **Actionable Information**** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [minLength](minLength.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/PYTHON_COVERAGE_STATUS.md`
+- `docs/archive/LOGGING_BEST_PRACTICES.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

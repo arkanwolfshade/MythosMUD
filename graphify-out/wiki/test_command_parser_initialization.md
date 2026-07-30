@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_validate_message_failure()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **Test _validate_message() returns None when validation fails.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
+- **test_profession_meets_stat_requirements_exact_match()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **Test meets_stat_requirements returns True when stats exactly match requirements.** (1 connections) — `server/tests/unit/models/test_profession.py`
 
 ## Relationships
 
-- [. init ()](_init_%28%29.md) (1 shared connections)
-- [test websocket handler helpers extended](test_websocket_handler_helpers_extended.md) (1 shared connections)
+- [Integration tests for the main](Integration_tests_for_the_main.md) (1 shared connections)
+- [test profession](test_profession.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
+- `server/tests/unit/models/test_profession.py`
 
 ## Audit Trail
 

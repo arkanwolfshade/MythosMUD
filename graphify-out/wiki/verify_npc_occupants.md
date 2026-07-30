@@ -1,28 +1,38 @@
 # verify npc occupants
 
-> 6 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **.unsubscribe_from_subzone()** (4 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **.cleanup_empty_subzone_subscriptions()** (4 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **.get_players_in_subzone()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **Unsubscribe from local channel messages for a specific sub-zone.          Args:** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **Get list of players currently in a specific sub-zone.          Args:** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **Clean up sub-zone subscriptions that have no active players.** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **Phase 2 Async Persistence Migration - Status Update** (7 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
+- **🎯 Decision Point** (4 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
+- **✅ Completed Today** (3 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
+- **📊 Effort Analysis** (3 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
+- **🚦 Current Status** (2 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
+- **Awaiting Your Direction, Professor Wolfshade** (2 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
+- **PHASE2_MIGRATION_STATUS.md** (1 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
+- **Critical Phase 1 Fixes (100% Complete)** (1 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
+- **Phase 2 Migration Progress (17% Complete - 2/12 files)** (1 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
+- **Time Invested** (1 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
+- **Remaining Estimate** (1 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
+- **Option A: Deploy Critical Fixes Now (RECOMMENDED)** (1 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
+- **Option B: Complete Full Migration First** (1 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
+- **Option C: Hybrid Approach** (1 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
+- **My Recommendation** (1 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
+- **📝 What Needs Your Decision** (1 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
+- **adjusts spectacles and awaits instruction** (1 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
 
 ## Relationships
 
-- [NATSMessageSubscriptionMixin](NATSMessageSubscriptionMixin.md) (3 shared connections)
-- [EnvironmentalContainerLoader](EnvironmentalContainerLoader.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/realtime/nats_message_handler_subscriptions.py`
+- `docs/archive/PHASE2_MIGRATION_STATUS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
+- EXTRACTED: 32 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -35,8 +35,8 @@
 
 - [.initialize()](initialize%28%29.md) (4 shared connections)
 - [follow commands](follow_commands.md) (2 shared connections)
-- [message broker](message_broker.md) (2 shared connections)
-- [Player](Player.md) (2 shared connections)
+- [Any](Any.md) (2 shared connections)
+- [circuit breaker](circuit_breaker.md) (2 shared connections)
 
 ## Source Files
 

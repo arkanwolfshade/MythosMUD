@@ -33,11 +33,10 @@
 
 ## Relationships
 
-- [alias](alias.md) (8 shared connections)
-- [Any](Any.md) (6 shared connections)
-- [Player](Player.md) (1 shared connections)
+- [alias](alias.md) (13 shared connections)
+- [NATSMessageSubscriptionMixin](NATSMessageSubscriptionMixin.md) (2 shared connections)
 - [fetch container items()](fetch_container_items%28%29.md) (1 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (1 shared connections)
+- [ExitStack](ExitStack.md) (1 shared connections)
 - [test room service](test_room_service.md) (1 shared connections)
 
 ## Source Files

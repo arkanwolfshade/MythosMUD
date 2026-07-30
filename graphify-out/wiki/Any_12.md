@@ -1,37 +1,72 @@
 # Any
 
-> 10 nodes
+> 251 nodes
 
 ## Key Concepts
 
-- **Party** (12 connections) — `server/game/party_service.py`
-- **.get_party()** (3 connections) — `server/game/party_service.py`
-- **test_party_post_init_includes_leader_in_members()** (3 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_party_post_init_preserves_other_members()** (3 connections) — `server/tests/unit/game/test_party_service.py`
-- **.__post_init__()** (2 connections) — `server/game/party_service.py`
-- **In-memory party model.      Ephemeral: not persisted. party_id and member_ids ar** (1 connections) — `server/game/party_service.py`
-- **Ensure leader is in member set.** (1 connections) — `server/game/party_service.py`
-- **Return the party by id, or None.** (1 connections) — `server/game/party_service.py`
-- **Party __post_init__ ensures leader is in member_ids.** (1 connections) — `server/tests/unit/game/test_party_service.py`
-- **Party __post_init__ keeps existing members and adds leader.** (1 connections) — `server/tests/unit/game/test_party_service.py`
+- **NATSError** (101 connections) — `server/services/nats_exceptions.py`
+- **test_combat_event_publisher.py** (37 connections) — `server/tests/unit/services/test_combat_event_publisher.py`
+- **nats_exceptions.py** (33 connections) — `server/services/nats_exceptions.py`
+- **NATSPublishError** (32 connections) — `server/services/nats_exceptions.py`
+- **CombatEventPublisher** (27 connections) — `server/services/combat_event_publisher.py`
+- **NATSSubscribeError** (27 connections) — `server/services/nats_exceptions.py`
+- **nats_service.py** (23 connections) — `server/services/nats_service.py`
+- **combat_event_publisher.py** (21 connections) — `server/services/combat_event_publisher.py`
+- **combat_events.py** (20 connections) — `server/events/combat_events.py`
+- **NPCDiedEvent** (18 connections) — `server/events/combat_events.py`
+- **NATSConnectionError** (18 connections) — `server/services/nats_exceptions.py`
+- **combat_event_handler.py** (17 connections) — `server/services/combat_event_handler.py`
+- **CombatEventHandler** (17 connections) — `server/services/combat_event_handler.py`
+- **NATSHealthCheckError** (17 connections) — `server/services/nats_exceptions.py`
+- **test_message_formatters.py** (16 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **CombatStartedEvent** (15 connections) — `server/events/combat_events.py`
+- **PlayerAttackedEvent** (15 connections) — `server/events/combat_events.py`
+- **NPCTookDamageEvent** (15 connections) — `server/events/combat_events.py`
+- **combat_service_events.py** (14 connections) — `server/services/combat_service_events.py`
+- **test_nats_exceptions.py** (13 connections) — `server/tests/unit/services/test_nats_exceptions.py`
+- **CombatEndedEvent** (12 connections) — `server/events/combat_events.py`
+- **NATSUnsubscribeError** (12 connections) — `server/services/nats_exceptions.py`
+- **combat_cleanup_handler.py** (11 connections) — `server/services/combat_cleanup_handler.py`
+- **._create_event_message()** (11 connections) — `server/services/combat_event_publisher.py`
+- **NATSRequestError** (11 connections) — `server/services/nats_exceptions.py`
+- *... and 226 more nodes in this community*
 
 ## Relationships
 
-- [TerminalButtonProps](TerminalButtonProps.md) (3 shared connections)
-- [test party service](test_party_service.md) (3 shared connections)
-- [test command factories player state](test_command_factories_player_state.md) (2 shared connections)
-- [Player](Player.md) (1 shared connections)
-- [.get mechanical effects()](get_mechanical_effects%28%29.md) (1 shared connections)
+- [close db()](close_db%28%29.md) (51 shared connections)
+- [circuit breaker](circuit_breaker.md) (44 shared connections)
+- [BaseUserManager](BaseUserManager.md) (18 shared connections)
+- [initialize nats and combat services()](initialize_nats_and_combat_services%28%29.md) (15 shared connections)
+- [FollowTargetValue](FollowTargetValue.md) (14 shared connections)
+- [. initialize handlers()](_initialize_handlers%28%29.md) (12 shared connections)
+- [world](world.md) (12 shared connections)
+- [combat initialization](combat_initialization.md) (11 shared connections)
+- [test combat persistence handler persistence](test_combat_persistence_handler_persistence.md) (10 shared connections)
+- [test nats message handler subzone](test_nats_message_handler_subzone.md) (8 shared connections)
+- [PlayerRespawnEventHandler](PlayerRespawnEventHandler.md) (6 shared connections)
+- [NATSMessageSubscriptionMixin](NATSMessageSubscriptionMixin.md) (6 shared connections)
 
 ## Source Files
 
-- `server/game/party_service.py`
-- `server/tests/unit/game/test_party_service.py`
+- `server/events/combat_events.py`
+- `server/npc/combat_integration_protocols.py`
+- `server/realtime/message_filtering.py`
+- `server/realtime/message_formatters.py`
+- `server/realtime/nats_message_handler.py`
+- `server/services/combat_cleanup_handler.py`
+- `server/services/combat_event_handler.py`
+- `server/services/combat_event_publisher.py`
+- `server/services/combat_service_events.py`
+- `server/services/nats_exceptions.py`
+- `server/services/nats_service.py`
+- `server/tests/unit/realtime/test_message_formatters.py`
+- `server/tests/unit/services/test_combat_event_publisher.py`
+- `server/tests/unit/services/test_nats_exceptions.py`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (89%)
-- INFERRED: 3 (11%)
+- EXTRACTED: 945 (85%)
+- INFERRED: 168 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

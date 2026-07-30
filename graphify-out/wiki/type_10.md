@@ -5,24 +5,25 @@
 ## Key Concepts
 
 - **properties** (10 connections) — `schemas/calendar/schedule.schema.json`
-- **end_hour** (4 connections) — `schemas/calendar/schedule.schema.json`
+- **id** (4 connections) — `schemas/calendar/schedule.schema.json`
 - **name** (3 connections) — `schemas/calendar/schedule.schema.json`
 - **category** (3 connections) — `schemas/calendar/schedule.schema.json`
 - **notes** (2 connections) — `schemas/calendar/schedule.schema.json`
 - **type** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **pattern** (1 connections) — `schemas/calendar/schedule.schema.json`
 - **minLength** (1 connections) — `schemas/calendar/schedule.schema.json`
 - **type** (1 connections) — `schemas/calendar/schedule.schema.json`
 - **minLength** (1 connections) — `schemas/calendar/schedule.schema.json`
 - **type** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **minimum** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **maximum** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **minLength** (1 connections) — `schemas/calendar/schedule.schema.json`
 - **type** (1 connections) — `schemas/calendar/schedule.schema.json`
 
 ## Relationships
 
-- [type](type.md) (3 shared connections)
+- [type](type.md) (2 shared connections)
 - [$defs](%24defs.md) (1 shared connections)
-- [Initialize system/admin channel strategy. Args:](Initialize_system-admin_channel_strategy._Args-.md) (1 shared connections)
+- [test_get_rooms_in_zone](test_get_rooms_in_zone.md) (1 shared connections)
+- [Test add rule() replaces existing](Test_add_rule%28%29_replaces_existing.md) (1 shared connections)
 - [Any](Any.md) (1 shared connections)
 
 ## Source Files

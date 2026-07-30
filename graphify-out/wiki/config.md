@@ -1,64 +1,50 @@
 # config
 
-> 68 nodes
+> 17 nodes
 
 ## Key Concepts
 
 - **PassiveLucidityFluxService** (34 connections) — `server/services/passive_lucidity_flux/service.py`
-- **service.py** (30 connections) — `server/services/passive_lucidity_flux/service.py`
 - **.process_tick()** (14 connections) — `server/services/passive_lucidity_flux/service.py`
 - **._process_single_player()** (12 connections) — `server/services/passive_lucidity_flux/service.py`
-- **config.py** (11 connections) — `server/services/passive_lucidity_flux/config.py`
-- **._resolve_context_async()** (10 connections) — `server/services/passive_lucidity_flux/service.py`
-- **PassiveFluxContext** (9 connections) — `server/services/passive_lucidity_flux/models.py`
-- **datetime** (9 connections)
-- **._resolve_context()** (9 connections) — `server/services/passive_lucidity_flux/service.py`
-- **Any** (8 connections)
-- **Player** (8 connections)
-- **._filter_active_players()** (8 connections) — `server/services/passive_lucidity_flux/service.py`
-- **.__init__()** (7 connections) — `server/services/passive_lucidity_flux/service.py`
-- **__init__.py** (6 connections) — `server/services/passive_lucidity_flux/__init__.py`
-- **FluxServiceConfig** (6 connections) — `server/services/passive_lucidity_flux/config.py`
-- **period_label()** (6 connections) — `server/services/passive_lucidity_flux/config.py`
-- **models.py** (6 connections) — `server/services/passive_lucidity_flux/models.py`
-- **CachedRoom** (6 connections) — `server/services/passive_lucidity_flux/models.py`
-- **._get_room_cached()** (6 connections) — `server/services/passive_lucidity_flux/service.py`
 - **._load_players()** (6 connections) — `server/services/passive_lucidity_flux/service.py`
-- **._is_player_active()** (6 connections) — `server/services/passive_lucidity_flux/service.py`
-- **._lookup_base_flux_for_room()** (6 connections) — `server/services/passive_lucidity_flux/service.py`
-- **._get_room_for_context()** (6 connections) — `server/services/passive_lucidity_flux/service.py`
-- **normalize_environment_config()** (5 connections) — `server/services/passive_lucidity_flux/config.py`
-- **build_override_key()** (5 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
-- *... and 43 more nodes in this community*
+- **AsyncSession** (4 connections)
+- **._load_lucidity_records()** (4 connections) — `server/services/passive_lucidity_flux/service.py`
+- **passive_lucidity_flux_service.py** (3 connections) — `server/services/passive_lucidity_flux_service.py`
+- **._should_process_tick()** (2 connections) — `server/services/passive_lucidity_flux/service.py`
+- **._apply_adaptive_resistance()** (2 connections) — `server/services/passive_lucidity_flux/service.py`
+- **._apply_residual()** (2 connections) — `server/services/passive_lucidity_flux/service.py`
+- **._prune_trackers()** (2 connections) — `server/services/passive_lucidity_flux/service.py`
+- **._emit_telemetry()** (2 connections) — `server/services/passive_lucidity_flux/service.py`
+- **Applies passive LCD flux each in-game minute with structured telemetry.** (1 connections) — `server/services/passive_lucidity_flux/service.py`
+- **Process a single player's passive flux.** (1 connections) — `server/services/passive_lucidity_flux/service.py`
+- **Evaluate passive LCD flux for the current tick.** (1 connections) — `server/services/passive_lucidity_flux/service.py`
+- **Load players from database.** (1 connections) — `server/services/passive_lucidity_flux/service.py`
+- **Backward-compatible re-export of passive lucidity flux service.** (1 connections) — `server/services/passive_lucidity_flux_service.py`
 
 ## Relationships
 
-- [test rate limiter utils](test_rate_limiter_utils.md) (7 shared connections)
-- [. init ()](_init_%28%29.md) (6 shared connections)
-- [UUID](UUID.md) (5 shared connections)
-- [rate overrides](rate_overrides.md) (4 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (4 shared connections)
-- [. is npc in combat()](_is_npc_in_combat%28%29.md) (3 shared connections)
-- [LiabilityStackEntry](LiabilityStackEntry.md) (3 shared connections)
-- [chat nats publisher](chat_nats_publisher.md) (2 shared connections)
-- [real time](real_time.md) (2 shared connections)
-- [map helpers](map_helpers.md) (1 shared connections)
-- [.shutdown()](shutdown%28%29.md) (1 shared connections)
+- [EventDict](EventDict.md) (9 shared connections)
+- [MonkeyPatch](MonkeyPatch.md) (7 shared connections)
+- [main()](main%28%29.md) (6 shared connections)
+- [test rate limiter utils](test_rate_limiter_utils.md) (6 shared connections)
+- [Test broadcast combat ended broadcasts](Test_broadcast_combat_ended_broadcasts.md) (3 shared connections)
+- [. init ()](_init_%28%29.md) (2 shared connections)
 - [NPCLifecycleManager](NPCLifecycleManager.md) (1 shared connections)
+- [ConnectionsComponent](ConnectionsComponent.md) (1 shared connections)
+- [. is npc in combat()](_is_npc_in_combat%28%29.md) (1 shared connections)
+- [UUID](UUID.md) (1 shared connections)
+- [Lock](Lock.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/passive_lucidity_flux/__init__.py`
-- `server/services/passive_lucidity_flux/config.py`
-- `server/services/passive_lucidity_flux/models.py`
-- `server/services/passive_lucidity_flux/rate_overrides.py`
 - `server/services/passive_lucidity_flux/service.py`
 - `server/services/passive_lucidity_flux_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 302 (95%)
-- INFERRED: 15 (5%)
+- EXTRACTED: 84 (91%)
+- INFERRED: 8 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

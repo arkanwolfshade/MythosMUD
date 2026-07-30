@@ -33,10 +33,9 @@
 
 ## Relationships
 
+- [Connection Manager](Connection_Manager.md) (2 shared connections)
 - [fastapi integration](fastapi_integration.md) (1 shared connections)
-- [websocket integration](websocket_integration.md) (1 shared connections)
-- [Connection Manager](Connection_Manager.md) (1 shared connections)
-- [metrics](metrics.md) (1 shared connections)
+- [Send a system message to](Send_a_system_message_to.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,60 +1,48 @@
 # container websocket events
 
-> 32 nodes
+> 35 nodes
 
 ## Key Concepts
 
-- **PlayerNameExtractor** (104 connections) — `server/realtime/player_name_utils.py`
-- **test_player_name_utils.py** (4 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **.test_extract_player_name_user_exception()** (4 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **.__init__()** (3 connections) — `server/realtime/player_name_utils.py`
-- **.test_is_uuid_string_invalid_length()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **.test_is_uuid_string_valid_format()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **.test_is_valid_name_valid_string()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **.test_is_valid_name_empty_string()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **.test_is_valid_name_none()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **.test_extract_initial_player_name_with_getattr()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **.test_try_user_object_name_with_user()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **.test_validate_name_basic_whitespace_only()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **.test_check_uuid_string_matches_lowercase()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **.test_validate_name_not_uuid_uuid_pattern()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **.test_extract_and_validate_player_name_invalid_uuid()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **.test_validate_player_name_not_uuid_valid()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **Utility class for extracting and validating player names.      CRITICAL: NEVER u** (1 connections) — `server/realtime/player_name_utils.py`
-- **Initialize the player name extractor.** (1 connections) — `server/realtime/player_name_utils.py`
-- **Tests for player name extraction and validation utilities.  As documented in "Id** (1 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **Test _is_uuid_string with invalid length.** (1 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **Test _is_uuid_string with valid format variations.** (1 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **Test _is_valid_name with valid string.** (1 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **Test _is_valid_name with empty string.** (1 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **Test _is_valid_name with None.** (1 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **Test _extract_initial_player_name with getattr fallback.** (1 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- *... and 7 more nodes in this community*
+- **Memory Leak Audit Report** (9 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
+- **Findings by Category** (8 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
+- **1. Connection Management Leaks** (4 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
+- **Recommendations** (4 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
+- **2. Event System Leaks** (3 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
+- **3. Async Task and Background Task Leaks** (3 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
+- **4. Cache and In-Memory Data Structure Leaks** (3 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
+- **5. Client-Side Memory Leaks** (3 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
+- **Common Patterns Identified** (3 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
+- **6. File Handle and I/O Leaks** (2 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
+- **7. Circular Reference Leaks** (2 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
+- **MEMORY_LEAK_AUDIT_REPORT.md** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
+- **Executive Summary** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
+- **Audit Methodology** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
+- **1.1 Database Connection Pools** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
+- **1.2 WebSocket Connection Leaks** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
+- **1.3 NATS Connection and Subscription Leaks** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
+- **2.1 EventBus Subscriber Leaks** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
+- **2.2 Client-Side Event Handler Leaks** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
+- **3.1 Task Registry Leaks** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
+- **3.2 Background Service Task Leaks** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
+- **4.1 LRU Cache Growth** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
+- **4.2 Dictionary and Set Growth** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
+- **5.1 React Hook Leaks** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
+- **5.2 Zustand Store Leaks** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
+- *... and 10 more nodes in this community*
 
 ## Relationships
 
-- [PlayerNameExtractor](PlayerNameExtractor.md) (34 shared connections)
-- [connection statistics](connection_statistics.md) (17 shared connections)
-- [NPCCombatIntegrationBase](NPCCombatIntegrationBase.md) (10 shared connections)
-- [login grace period](login_grace_period.md) (8 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (5 shared connections)
-- [Test should echo to sender](Test_should_echo_to_sender.md) (5 shared connections)
-- [Test send messages to players](Test_send_messages_to_players.md) (4 shared connections)
-- [Test get applicable rules() returns](Test_get_applicable_rules%28%29_returns.md) (3 shared connections)
-- [UUID](UUID.md) (2 shared connections)
-- [connection manager api](connection_manager_api.md) (1 shared connections)
-- [NPCOccupantProcessor](NPCOccupantProcessor.md) (1 shared connections)
-- [test_alias_hash_different_name](test_alias_hash_different_name.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/realtime/player_name_utils.py`
-- `server/tests/unit/realtime/test_player_name_utils.py`
+- `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 159 (95%)
-- INFERRED: 8 (5%)
+- EXTRACTED: 68 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

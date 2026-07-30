@@ -1,11 +1,10 @@
 # test user manager
 
-> 110 nodes
+> 108 nodes
 
 ## Key Concepts
 
 - **test_user_manager.py** (71 connections) — `server/tests/unit/services/test_user_manager.py`
-- **user_manager()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
 - **mock_data_dir()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
 - **test_user_manager_init()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
 - **test_normalize_to_uuid_uuid()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
@@ -29,12 +28,13 @@
 - **test_is_globally_muted_false()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
 - **test_can_send_message_channel_muted()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
 - **test_can_send_message_globally_muted()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
-- *... and 85 more nodes in this community*
+- **test_is_player_muted_by_others_true()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
+- *... and 83 more nodes in this community*
 
 ## Relationships
 
 - [UUID](UUID.md) (2 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
+- [world](world.md) (1 shared connections)
 - [test_add_admin_success](test_add_admin_success.md) (1 shared connections)
 - [test_can_send_message_player_muted](test_can_send_message_player_muted.md) (1 shared connections)
 - [test_can_send_message_true](test_can_send_message_true.md) (1 shared connections)
@@ -52,7 +52,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 235 (100%)
+- EXTRACTED: 231 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

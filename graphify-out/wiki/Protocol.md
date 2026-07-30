@@ -1,55 +1,57 @@
 # Protocol
 
-> 23 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **RoomCacheLoader** (29 connections) — `server/async_persistence_room_loader.py`
-- **Any** (12 connections)
-- **.load()** (10 connections) — `server/async_persistence_room_loader.py`
-- **._generate_room_id_from_zone_data()** (7 connections) — `server/async_persistence_room_loader.py`
-- **._process_combined_rows()** (6 connections) — `server/async_persistence_room_loader.py`
-- **._build_room_data_from_row()** (5 connections) — `server/async_persistence_room_loader.py`
-- **._process_exit_rows()** (5 connections) — `server/async_persistence_room_loader.py`
-- **._parse_zone_parts()** (4 connections) — `server/async_persistence_room_loader.py`
-- **._process_exits_for_room()** (4 connections) — `server/async_persistence_room_loader.py`
-- **._build_room_objects()** (4 connections) — `server/async_persistence_room_loader.py`
-- **._apply_rooms_to_cache()** (3 connections) — `server/async_persistence_room_loader.py`
-- **._handle_room_load_error()** (3 connections) — `server/async_persistence_room_loader.py`
-- **._query_rooms_with_exits_async()** (3 connections) — `server/async_persistence_room_loader.py`
-- **._parse_exits_json()** (3 connections) — `server/async_persistence_room_loader.py`
-- **._process_room_rows()** (3 connections) — `server/async_persistence_room_loader.py`
-- **._extract_exit_fields()** (3 connections) — `server/async_persistence_room_loader.py`
-- **._resolve_exit_room_ids()** (3 connections) — `server/async_persistence_room_loader.py`
-- **._log_exit_debug()** (3 connections) — `server/async_persistence_room_loader.py`
-- **.__init__()** (2 connections) — `server/async_persistence_room_loader.py`
-- **._log_room_cache_after_load()** (2 connections) — `server/async_persistence_room_loader.py`
-- **BaseException** (2 connections)
-- **Loads room data from the database and populates a room cache dict.      Used by** (1 connections) — `server/async_persistence_room_loader.py`
-- **Load rooms from PostgreSQL and update the room cache.** (1 connections) — `server/async_persistence_room_loader.py`
+- **game_tick_processing.py** (68 connections) — `server/app/game_tick_processing.py`
+- **FastAPI** (16 connections)
+- **game_tick_loop()** (14 connections) — `server/app/game_tick_processing.py`
+- **broadcast_tick_event()** (9 connections) — `server/app/game_tick_processing.py`
+- **process_player_effects_expiration()** (7 connections) — `server/app/game_tick_processing.py`
+- **process_combat_tick()** (7 connections) — `server/app/game_tick_processing.py`
+- **cleanup_decayed_corpses()** (7 connections) — `server/app/game_tick_processing.py`
+- **process_dp_decay_and_death()** (6 connections) — `server/app/game_tick_processing.py`
+- **_create_corpse_lifecycle_service()** (6 connections) — `server/app/game_tick_processing.py`
+- **process_npc_maintenance()** (5 connections) — `server/app/game_tick_processing.py`
+- **process_casting_progress()** (4 connections) — `server/app/game_tick_processing.py`
+- **_log_cleanup_results()** (3 connections) — `server/app/game_tick_processing.py`
+- **Game tick processing functions.  This module handles all game tick processing lo** (1 connections) — `server/app/game_tick_processing.py`
+- **Expire player_effects for this tick; for LOGIN_WARDED clear in-memory state and** (1 connections) — `server/app/game_tick_processing.py`
+- **Process combat auto-progression.** (1 connections) — `server/app/game_tick_processing.py`
+- **Process casting progress for all active spell castings.** (1 connections) — `server/app/game_tick_processing.py`
+- **Process DP decay for mortally wounded players and handle deaths.** (1 connections) — `server/app/game_tick_processing.py`
+- **Process NPC lifecycle maintenance (every 60 ticks = 1 minute).** (1 connections) — `server/app/game_tick_processing.py`
+- **Create and initialize CorpseLifecycleService.      Args:         app: FastAPI ap** (1 connections) — `server/app/game_tick_processing.py`
+- **Log the results of corpse cleanup.      Args:         tick_count: Current game t** (1 connections) — `server/app/game_tick_processing.py`
+- **Cleanup decayed corpse containers (every 60 ticks = 1 minute).** (1 connections) — `server/app/game_tick_processing.py`
+- **Broadcast game tick event to all connected players.** (1 connections) — `server/app/game_tick_processing.py`
+- **Main game tick loop.      This function runs continuously and handles periodic g** (1 connections) — `server/app/game_tick_processing.py`
+- **# NOTE: This remains global for now as it's shared state needed by combat system** (1 connections) — `server/app/game_tick_processing.py`
 
 ## Relationships
 
-- [real time](real_time.md) (5 shared connections)
-- [chat nats publisher](chat_nats_publisher.md) (2 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
-- [PlayerChannelPreferences](PlayerChannelPreferences.md) (1 shared connections)
-- [PlayerRespawnEventHandler](PlayerRespawnEventHandler.md) (1 shared connections)
-- [init](init.md) (1 shared connections)
-- [find dead connections()](find_dead_connections%28%29.md) (1 shared connections)
-- [time commands](time_commands.md) (1 shared connections)
-- [test player preferences service](test_player_preferences_service.md) (1 shared connections)
-- [AuthSlice](AuthSlice.md) (1 shared connections)
-- [spawn defaults](spawn_defaults.md) (1 shared connections)
+- [test container persistence sql injection](test_container_persistence_sql_injection.md) (11 shared connections)
+- [process all status effects()](process_all_status_effects%28%29.md) (9 shared connections)
+- [Calculate max magic points (MP)](Calculate_max_magic_points_%28MP%29.md) (8 shared connections)
+- [close db()](close_db%28%29.md) (7 shared connections)
+- [login grace period](login_grace_period.md) (7 shared connections)
+- [calendar](calendar.md) (5 shared connections)
+- [AsyncSessionFactory](AsyncSessionFactory.md) (4 shared connections)
+- [append unique valid occupant()](append_unique_valid_occupant%28%29.md) (3 shared connections)
+- [Test process exit rows with](Test_process_exit_rows_with.md) (3 shared connections)
+- [rename invites columns](rename_invites_columns.md) (3 shared connections)
+- [Any](Any.md) (3 shared connections)
+- [.shutdown()](shutdown%28%29.md) (3 shared connections)
 
 ## Source Files
 
-- `server/async_persistence_room_loader.py`
+- `server/app/game_tick_processing.py`
 
 ## Audit Trail
 
-- EXTRACTED: 108 (92%)
-- INFERRED: 10 (8%)
+- EXTRACTED: 164 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

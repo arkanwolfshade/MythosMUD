@@ -1,57 +1,49 @@
 # message broker
 
-> 131 nodes
+> 78 nodes
 
 ## Key Concepts
 
 - **test_nats_broker.py** (49 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **NATSMessageBroker** (30 connections) — `server/infrastructure/nats_broker.py`
-- **nats_broker.py** (17 connections) — `server/infrastructure/nats_broker.py`
-- **MessageBrokerError** (13 connections) — `server/infrastructure/message_broker.py`
-- **message_broker.py** (11 connections) — `server/infrastructure/message_broker.py`
-- **PublishError** (9 connections) — `server/infrastructure/message_broker.py`
-- **SubscribeError** (9 connections) — `server/infrastructure/message_broker.py`
-- **RequestError** (9 connections) — `server/infrastructure/message_broker.py`
-- **MessageBrokerConnectionError** (8 connections) — `server/infrastructure/message_broker.py`
-- **UnsubscribeError** (8 connections) — `server/infrastructure/message_broker.py`
-- **.publish()** (6 connections) — `server/infrastructure/nats_broker.py`
-- **.connect()** (5 connections) — `server/infrastructure/nats_broker.py`
-- **.disconnect()** (5 connections) — `server/infrastructure/nats_broker.py`
-- **.is_connected()** (5 connections) — `server/infrastructure/nats_broker.py`
-- **.subscribe()** (5 connections) — `server/infrastructure/nats_broker.py`
-- **.request()** (5 connections) — `server/infrastructure/nats_broker.py`
-- **._start_health_monitoring()** (5 connections) — `server/infrastructure/nats_broker.py`
-- **._configure_tls()** (4 connections) — `server/infrastructure/nats_broker.py`
-- **.unsubscribe()** (4 connections) — `server/infrastructure/nats_broker.py`
-- **._error_callback()** (4 connections) — `server/infrastructure/nats_broker.py`
-- **._handle_error_async()** (4 connections) — `server/infrastructure/nats_broker.py`
-- **._handle_reconnect_async()** (4 connections) — `server/infrastructure/nats_broker.py`
-- **._health_check_loop()** (4 connections) — `server/infrastructure/nats_broker.py`
-- **Any** (3 connections)
-- **._disconnected_callback()** (3 connections) — `server/infrastructure/nats_broker.py`
-- *... and 106 more nodes in this community*
+- **test_connect_with_tls_enabled_passes_tls_options()** (4 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **nats_config()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **nats_broker()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_connect_failure()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_disconnect_error_handling()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_publish_not_connected()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_publish_failure()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_subscribe_not_connected()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_subscribe_failure()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_unsubscribe_failure()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_request_not_connected()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_request_failure()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_nats_message_broker_init()** (2 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_connect_success()** (2 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_connect_already_connected()** (2 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_connect_sets_callbacks()** (2 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_disconnect_no_client()** (2 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_disconnect_success()** (2 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_disconnect_unsubscribes_all()** (2 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_disconnect_handles_unsubscribe_error()** (2 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_is_connected_true()** (2 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_is_connected_false_no_client()** (2 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_is_connected_false_not_connected()** (2 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_publish_success()** (2 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- *... and 53 more nodes in this community*
 
 ## Relationships
 
-- [MapZoneContext](MapZoneContext.md) (6 shared connections)
-- [init](init.md) (2 shared connections)
-- [BaseModel](BaseModel.md) (2 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
-- [FollowTargetValue](FollowTargetValue.md) (1 shared connections)
-- [Any](Any.md) (1 shared connections)
-- [get subject manager dependency()](get_subject_manager_dependency%28%29.md) (1 shared connections)
-- [. init ()](_init_%28%29.md) (1 shared connections)
+- [Any](Any.md) (20 shared connections)
+- [BaseUserManager](BaseUserManager.md) (3 shared connections)
 
 ## Source Files
 
-- `server/infrastructure/message_broker.py`
-- `server/infrastructure/nats_broker.py`
 - `server/tests/unit/infrastructure/test_nats_broker.py`
 
 ## Audit Trail
 
-- EXTRACTED: 360 (92%)
-- INFERRED: 30 (8%)
+- EXTRACTED: 168 (95%)
+- INFERRED: 9 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

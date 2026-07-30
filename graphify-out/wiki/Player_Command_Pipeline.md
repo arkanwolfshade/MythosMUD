@@ -1,15 +1,11 @@
 # Player Command Pipeline
 
-> 6 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Player Command Developer Guide** (2 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **Pydantic Code Review** (2 connections) — `docs/PYDANTIC_CODE_REVIEW.md`
-- **Python Model Updates Required** (2 connections) — `docs/PYTHON_MODEL_UPDATES_REQUIRED.md`
-- **Pydantic Model Validation Patterns** (2 connections) — `docs/PYDANTIC_CODE_REVIEW.md`
+- **Player Command Developer Guide** (1 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
 - **Player Command Pipeline** (1 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- **Python Model Sync Requirements** (1 connections) — `docs/PYTHON_MODEL_UPDATES_REQUIRED.md`
 
 ## Relationships
 
@@ -18,13 +14,11 @@
 ## Source Files
 
 - `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
-- `docs/PYDANTIC_CODE_REVIEW.md`
-- `docs/PYTHON_MODEL_UPDATES_REQUIRED.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (60%)
-- INFERRED: 4 (40%)
+- EXTRACTED: 2 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

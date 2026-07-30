@@ -34,7 +34,7 @@
 
 - [postgres adapter](postgres_adapter.md) (4 shared connections)
 - [PostgresConnection](PostgresConnection.md) (4 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
+- [world](world.md) (2 shared connections)
 - [.mock cursor()](mock_cursor%28%29.md) (2 shared connections)
 - [PostgresRow](PostgresRow.md) (2 shared connections)
 

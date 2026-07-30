@@ -1,61 +1,59 @@
 # Send a system message to
 
-> 53 nodes
+> 54 nodes
 
 ## Key Concepts
 
-- **handle_ground_command()** (32 connections) — `server/commands/rescue_commands.py`
-- **test_rescue_commands.py** (23 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- **handle_rescue_command()** (14 connections) — `server/commands/rescue_commands.py`
-- **Any** (7 connections)
-- **_apply_grounding_adjustment()** (7 connections) — `server/commands/rescue_commands.py`
-- **_get_ground_services()** (5 connections) — `server/commands/rescue_commands.py`
-- **_validate_ground_context()** (5 connections) — `server/commands/rescue_commands.py`
-- **_normalize_player_ids()** (5 connections) — `server/commands/rescue_commands.py`
-- **_validate_ground_target()** (4 connections) — `server/commands/rescue_commands.py`
-- **test_handle_ground_command_not_catatonic()** (4 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- **test_handle_ground_command_success()** (4 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- **test_handle_ground_command_target_player_key()** (4 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- **test_handle_ground_command_apply_lucidity_error()** (4 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- **test_handle_ground_command()** (3 connections) — `server/tests/unit/commands/test_position_commands.py`
-- **test_handle_rescue_command()** (3 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- **test_handle_rescue_command_no_target()** (3 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- **test_handle_rescue_command_no_persistence()** (3 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- **test_handle_rescue_command_target_player_key()** (3 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- **test_handle_rescue_command_no_app()** (3 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- **test_handle_rescue_command_no_state()** (3 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- **test_handle_ground_command_no_persistence()** (3 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- **test_handle_ground_command_no_target()** (3 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- **test_handle_ground_command_rescuer_not_found()** (3 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- **test_handle_ground_command_target_not_found()** (3 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- **test_handle_ground_command_different_rooms()** (3 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- *... and 28 more nodes in this community*
+- **fastapi_integration.py** (27 connections) — `docs/examples/logging/fastapi_integration.py`
+- **measure_performance()** (20 connections) — `server/monitoring/performance_monitor.py`
+- **websocket_endpoint()** (9 connections) — `docs/examples/logging/fastapi_integration.py`
+- **update_player_background_task()** (8 connections) — `docs/examples/logging/fastapi_integration.py`
+- **HTTPException** (6 connections)
+- **upload_avatar()** (6 connections) — `docs/examples/logging/fastapi_integration.py`
+- **add_request_context()** (5 connections) — `docs/examples/logging/fastapi_integration.py`
+- **create_player()** (5 connections) — `docs/examples/logging/fastapi_integration.py`
+- **http_exception_handler()** (5 connections) — `docs/examples/logging/fastapi_integration.py`
+- **general_exception_handler()** (5 connections) — `docs/examples/logging/fastapi_integration.py`
+- **update_player_background()** (5 connections) — `docs/examples/logging/fastapi_integration.py`
+- **list_players()** (5 connections) — `docs/examples/logging/fastapi_integration.py`
+- **WebSocket** (5 connections) — `docs/examples/logging/fastapi_integration.py`
+- **Request** (4 connections)
+- **get_player()** (4 connections) — `docs/examples/logging/fastapi_integration.py`
+- **get_current_user()** (4 connections) — `docs/examples/logging/fastapi_integration.py`
+- **log_api_requests()** (3 connections) — `docs/examples/logging/fastapi_integration.py`
+- **auth_service()** (3 connections) — `docs/examples/logging/fastapi_integration.py`
+- **process_websocket_message()** (3 connections) — `docs/examples/logging/fastapi_integration.py`
+- **.verify_token()** (3 connections) — `docs/examples/logging/fastapi_integration.py`
+- **BackgroundTasks** (3 connections) — `docs/examples/logging/fastapi_integration.py`
+- **UploadFile** (3 connections) — `docs/examples/logging/fastapi_integration.py`
+- **Exception** (2 connections)
+- **.create_player()** (2 connections) — `docs/examples/logging/fastapi_integration.py`
+- **.get_player()** (2 connections) — `docs/examples/logging/fastapi_integration.py`
+- *... and 29 more nodes in this community*
 
 ## Relationships
 
-- [LiabilityStackEntry](LiabilityStackEntry.md) (13 shared connections)
-- [test rate limiter utils](test_rate_limiter_utils.md) (7 shared connections)
-- [websocket handler app state](websocket_handler_app_state.md) (3 shared connections)
-- [.state()](state%28%29.md) (2 shared connections)
-- [. get persistence from app()](_get_persistence_from_app%28%29.md) (2 shared connections)
-- [test magic commands](test_magic_commands.md) (2 shared connections)
-- [test player preferences service](test_player_preferences_service.md) (2 shared connections)
-- [UUID](UUID.md) (1 shared connections)
-- [test command factories communication](test_command_factories_communication.md) (1 shared connections)
-- [DropResolved](DropResolved.md) (1 shared connections)
-- [Player Position Service](Player_Position_Service.md) (1 shared connections)
-- [map helpers](map_helpers.md) (1 shared connections)
+- [. init ()](_init_%28%29.md) (9 shared connections)
+- [fastapi integration](fastapi_integration.md) (6 shared connections)
+- [PerformanceStats](PerformanceStats.md) (4 shared connections)
+- [testing examples](testing_examples.md) (3 shared connections)
+- [websocket integration](websocket_integration.md) (3 shared connections)
+- [. is npc in combat()](_is_npc_in_combat%28%29.md) (3 shared connections)
+- [nats retry handler](nats_retry_handler.md) (2 shared connections)
+- [item](item.md) (2 shared connections)
+- [get current tick()](get_current_tick%28%29.md) (1 shared connections)
+- [Connection Manager](Connection_Manager.md) (1 shared connections)
+- [migration examples](migration_examples.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/rescue_commands.py`
-- `server/tests/unit/commands/test_position_commands.py`
-- `server/tests/unit/commands/test_rescue_commands.py`
+- `docs/examples/logging/fastapi_integration.py`
+- `server/monitoring/performance_monitor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 175 (94%)
-- INFERRED: 11 (6%)
+- EXTRACTED: 175 (95%)
+- INFERRED: 10 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

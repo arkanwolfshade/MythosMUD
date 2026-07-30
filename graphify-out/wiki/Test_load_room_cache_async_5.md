@@ -1,24 +1,27 @@
 # Test load room cache async
 
-> 2 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **test_occupant_formatter_separate_occupants_by_type_none()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter.separate_occupants_by_type() handles None input.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **Test Modernization Checklist** (6 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Phase 0: Foundation** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Phase 1: Fix Failures** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Phase 2: Modernize Units** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Phase 3: Pattern Updates** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Phase 4: New Coverage** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
 
 ## Relationships
 
-- [command parser()](command_parser%28%29.md) (1 shared connections)
-- [occupant formatter](occupant_formatter.md) (1 shared connections)
+- [get mythos time()](get_mythos_time%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_occupant_formatter.py`
+- `docs/archive/TEST_MODERNIZATION_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

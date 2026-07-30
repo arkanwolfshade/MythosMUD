@@ -29,9 +29,10 @@
 
 ## Relationships
 
-- [TerminalButtonProps](TerminalButtonProps.md) (6 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (4 shared connections)
 - [real time](real_time.md) (3 shared connections)
-- [Any](Any.md) (1 shared connections)
+- [NPCCombatIntegrationBase](NPCCombatIntegrationBase.md) (2 shared connections)
+- [NATSMessageSubscriptionMixin](NATSMessageSubscriptionMixin.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,63 +1,49 @@
 # fetch schedule entries()
 
-> 138 nodes
+> 35 nodes
 
 ## Key Concepts
 
-- **ErrorContext** (54 connections) — `server/exceptions.py`
-- **test_exceptions.py** (43 connections) — `server/tests/unit/test_exceptions.py`
-- **test_exceptions_comprehensive.py** (35 connections) — `server/tests/unit/test_exceptions_comprehensive.py`
-- **create_error_context()** (33 connections) — `server/exceptions.py`
-- **LoggedException** (23 connections) — `server/exceptions.py`
-- **.__init__()** (16 connections) — `server/exceptions.py`
-- **Any** (14 connections)
-- **handle_exception()** (13 connections) — `server/exceptions.py`
-- **.__init__()** (8 connections) — `server/exceptions.py`
-- **.mark_logged()** (5 connections) — `server/exceptions.py`
-- **test_logged_http_exception_initialization()** (5 connections) — `server/tests/unit/test_exceptions.py`
-- **test_handle_exception_standard_exception()** (5 connections) — `server/tests/unit/test_exceptions_comprehensive.py`
-- **require_admin_user()** (4 connections) — `server/api/admin/subject_controller.py`
-- **.__init__()** (4 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **.__init__()** (4 connections) — `server/exceptions.py`
-- **.to_dict()** (4 connections) — `server/exceptions.py`
-- **.__init__()** (4 connections) — `server/exceptions.py`
-- **.__init__()** (4 connections) — `server/exceptions.py`
-- **.__init__()** (4 connections) — `server/exceptions.py`
-- **.__init__()** (4 connections) — `server/exceptions.py`
-- **.__init__()** (4 connections) — `server/exceptions.py`
-- **.__init__()** (4 connections) — `server/exceptions.py`
-- **.__init__()** (4 connections) — `server/exceptions.py`
-- **.__init__()** (4 connections) — `server/exceptions.py`
-- **test_mythos_mud_error_initialization()** (4 connections) — `server/tests/unit/test_exceptions.py`
-- *... and 113 more nodes in this community*
+- **.get_room()** (11 connections) — `server/game/room_service.py`
+- **Any** (10 connections)
+- **.get_room_info()** (7 connections) — `server/game/room_service.py`
+- **.get_adjacent_rooms()** (6 connections) — `server/game/room_service.py`
+- **.filter_rooms_by_exploration()** (5 connections) — `server/game/room_service.py`
+- **.get_local_chat_scope()** (4 connections) — `server/game/room_service.py`
+- **.get_room_occupants()** (4 connections) — `server/game/room_service.py`
+- **.get_room_exits()** (4 connections) — `server/game/room_service.py`
+- **.get_room_by_name()** (3 connections) — `server/game/room_service.py`
+- **.list_rooms_in_zone()** (3 connections) — `server/game/room_service.py`
+- **.validate_room_exists()** (3 connections) — `server/game/room_service.py`
+- **.validate_exit_exists()** (3 connections) — `server/game/room_service.py`
+- **.validate_player_in_room()** (3 connections) — `server/game/room_service.py`
+- **.list_rooms()** (3 connections) — `server/game/room_service.py`
+- **.get_environment_state()** (3 connections) — `server/game/room_service.py`
+- **.search_rooms_by_name()** (3 connections) — `server/game/room_service.py`
+- **.get_rooms_in_zone()** (3 connections) — `server/game/room_service.py`
+- **UUID** (2 connections)
+- **AsyncSession** (1 connections)
+- **Get room information by room ID with caching.          Args:             room_id** (1 connections) — `server/game/room_service.py`
+- **Get room information by room name.          Args:             room_name: The roo** (1 connections) — `server/game/room_service.py`
+- **Get a list of all rooms in a specific zone.          Args:             zone_id:** (1 connections) — `server/game/room_service.py`
+- **Get a list of rooms adjacent to the specified room.          Args:             r** (1 connections) — `server/game/room_service.py`
+- **Get the scope of rooms for local chat (current room + adjacent rooms).** (1 connections) — `server/game/room_service.py`
+- **Validate that a room exists using cached data.          Args:             room_i** (1 connections) — `server/game/room_service.py`
+- *... and 10 more nodes in this community*
 
 ## Relationships
 
-- [. init ()](_init_%28%29.md) (63 shared connections)
-- [real time](real_time.md) (14 shared connections)
-- [convert pydantic error()](convert_pydantic_error%28%29.md) (10 shared connections)
-- [AbstractContextManager](AbstractContextManager.md) (9 shared connections)
-- [.initialize()](initialize%28%29.md) (9 shared connections)
-- [Any](Any.md) (5 shared connections)
-- [create access token()](create_access_token%28%29.md) (5 shared connections)
-- [cfg bool()](cfg_bool%28%29.md) (4 shared connections)
-- [metrics](metrics.md) (3 shared connections)
-- [nats retry handler](nats_retry_handler.md) (3 shared connections)
-- [test clear corrupted cache entry](test_clear_corrupted_cache_entry.md) (3 shared connections)
-- [Request](Request.md) (2 shared connections)
+- [ExitStack](ExitStack.md) (16 shared connections)
+- [chat nats publisher](chat_nats_publisher.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/admin/subject_controller.py`
-- `server/error_handlers/pydantic_error_handler.py`
-- `server/exceptions.py`
-- `server/tests/unit/test_exceptions.py`
-- `server/tests/unit/test_exceptions_comprehensive.py`
+- `server/game/room_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 500 (96%)
-- INFERRED: 22 (4%)
+- EXTRACTED: 97 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,45 +1,48 @@
 # async sessionmaker
 
-> 13 nodes
+> 32 nodes
 
 ## Key Concepts
 
-- **ChatPanel.tsx** (9 connections) — `client/src/components/panels/ChatPanel.tsx`
-- **ChatPanel.test.tsx** (7 connections) — `client/src/components/__tests__/ChatPanel.test.tsx`
-- **chat-panel.test.tsx** (7 connections) — `client/src/components/panels/__tests__/chat-panel.test.tsx`
-- **ChatPanel.edgeCases.test.tsx** (6 connections) — `client/src/components/__tests__/ChatPanel.edgeCases.test.tsx`
-- **chatPanelTestHelpers.ts** (5 connections) — `client/src/components/__tests__/chatPanelTestHelpers.ts`
-- **createChatPanelDefaultProps()** (3 connections) — `client/src/components/__tests__/chatPanelTestHelpers.ts`
-- **chatPanelTestSetup.tsx** (3 connections) — `client/src/components/__tests__/chatPanelTestSetup.tsx`
-- **mockConsoleLog** (3 connections) — `client/src/components/__tests__/chatPanelTestSetup.tsx`
-- **mockMessages** (2 connections) — `client/src/components/__tests__/chatPanelTestHelpers.ts`
-- **ChatPanelTestMessage** (1 connections) — `client/src/components/__tests__/chatPanelTestHelpers.ts`
-- **TerminalButtonProps** (1 connections) — `client/src/components/panels/__tests__/chat-panel.test.tsx`
-- **Channel** (1 connections) — `client/src/components/panels/__tests__/chat-panel.test.tsx`
-- **ChannelSelectorProps** (1 connections) — `client/src/components/panels/__tests__/chat-panel.test.tsx`
+- **Critical Coverage Gaps** (33 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Gap 1: Domain Layer (NEW ARCHITECTURE)** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Gap Description** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Missing Tests** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Gap 2: Message Broker Abstraction** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Gap Description** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Missing Tests** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Specific Test Cases Needed** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Gap 3: ApplicationContainer Lifecycle** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Gap Description** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Missing Tests** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Specific Test Cases Needed** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Gap 4: Error Recovery Paths** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Gap Description** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Gap 5: Async/Await Pattern Verification** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Gap Description** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Missing Tests** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Gap 6: Rate Limiting and Throttling** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Gap Description** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Missing Tests** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Gap 7: WebSocket Connection Edge Cases** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Gap Description** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Missing Tests** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Gap 8: Combat System Integration** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Gap Description** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [chatPanelChannelFilter](chatPanelChannelFilter.md) (4 shared connections)
-- [GameLogMessagesList](GameLogMessagesList.md) (2 shared connections)
-- [ChatPanelTest](ChatPanelTest.md) (1 shared connections)
-- [Any](Any.md) (1 shared connections)
-- [.create corpse()](create_corpse%28%29.md) (1 shared connections)
-- [Channel](Channel.md) (1 shared connections)
-- [createInitialState()](createInitialState%28%29.md) (1 shared connections)
+- [TypedDict](TypedDict.md) (1 shared connections)
+- [Test get applicable rules() returns](Test_get_applicable_rules%28%29_returns.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/__tests__/ChatPanel.edgeCases.test.tsx`
-- `client/src/components/__tests__/ChatPanel.test.tsx`
-- `client/src/components/__tests__/chatPanelTestHelpers.ts`
-- `client/src/components/__tests__/chatPanelTestSetup.tsx`
-- `client/src/components/panels/ChatPanel.tsx`
-- `client/src/components/panels/__tests__/chat-panel.test.tsx`
+- `docs/archive/TEST_COVERAGE_GAPS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 49 (100%)
+- EXTRACTED: 64 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

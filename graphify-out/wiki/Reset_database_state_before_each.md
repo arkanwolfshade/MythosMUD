@@ -1,36 +1,41 @@
 # Reset database state before each
 
-> 11 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **UUID** (12 connections)
-- **.cleanup_dead_connections()** (7 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._cleanup_dead_connections_for_player()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **.__init__()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._get_players_to_check()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._is_websocket_dead()** (3 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **Initialize the connection cleaner.          Args:             memory_monitor: Me** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **Return True if websocket appears dead (should be cleaned up).** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **Return list of player IDs to check (single player or all).** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **Clean up dead connections for a single player.** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **Clean up dead connections for a specific player or all players.          Args:** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Enhanced Logging Quick Reference** (10 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **Common Patterns** (6 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **Context Binding** (3 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **Validation Checklist** (2 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **LOGGING_QUICK_REFERENCE.md** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **One-page cheat sheet for MythosMUD enhanced logging patterns** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **🚨 CRITICAL: DO NOT USE** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **✅ MANDATORY: ALWAYS USE** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **Log Levels** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **User Actions** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **API Requests** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **Database Operations** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **Errors with Context** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **Performance Monitoring** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **Request Context** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **Clear Context** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **Security Features** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **Quick Fixes** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **For complete documentation, see [ENHANCED_LOGGING_GUIDE.md](ENHANCED_LOGGING_GUIDE.md)** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
 
 ## Relationships
 
-- [NPCDefinitionCRUDMixin](NPCDefinitionCRUDMixin.md) (11 shared connections)
-- [occupation slots 9()](occupation_slots_9%28%29.md) (3 shared connections)
-- [real time](real_time.md) (2 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/realtime/maintenance/connection_cleaner.py`
+- `docs/archive/LOGGING_QUICK_REFERENCE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 39 (95%)
-- INFERRED: 2 (5%)
+- EXTRACTED: 36 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

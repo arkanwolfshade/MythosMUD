@@ -1,71 +1,57 @@
 # Any
 
-> 153 nodes
+> 57 nodes
 
 ## Key Concepts
 
-- **combat.py** (51 connections) — `server/models/combat.py`
-- **test_combat_attack_handler.py** (37 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **CombatParticipantType** (36 connections) — `server/models/combat.py`
-- **NPCCombatDataProvider** (29 connections) — `server/services/npc_combat_data_provider.py`
-- **test_damage_grace_period.py** (26 connections) — `server/tests/unit/services/test_damage_grace_period.py`
-- **combat_turn_processor.py** (19 connections) — `server/services/combat_turn_processor.py`
-- **npc_combat_data_provider.py** (18 connections) — `server/services/npc_combat_data_provider.py`
-- **test_combat_cleanup_handler.py** (18 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
-- **combat_attack_handler.py** (17 connections) — `server/services/combat_attack_handler.py`
-- **CombatAttackHandler** (17 connections) — `server/services/combat_attack_handler.py`
-- **npc_combat_integration_combat_mixin.py** (15 connections) — `server/services/npc_combat_integration_combat_mixin.py`
-- **NPCCombatIntegrationValidationMixin** (15 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **test_npc_combat_data_provider.py** (14 connections) — `server/tests/unit/services/test_npc_combat_data_provider.py`
-- **test_combat_turn_participant_actions.py** (12 connections) — `server/tests/unit/services/test_combat_turn_participant_actions.py`
-- **CombatStatus** (11 connections) — `server/models/combat.py`
-- **combat_types.py** (11 connections) — `server/services/combat_types.py`
-- **NPCCombatIntegrationCombatMixin** (11 connections) — `server/services/npc_combat_integration_combat_mixin.py`
-- **._apply_damage()** (9 connections) — `server/services/combat_attack_handler.py`
-- **.validate_and_get_combat_participants()** (6 connections) — `server/services/combat_attack_handler.py`
-- **test_combat_types.py** (6 connections) — `server/tests/unit/services/test_combat_types.py`
-- **.apply_attack_damage()** (5 connections) — `server/services/combat_attack_handler.py`
-- **UUID** (5 connections)
-- **.get_npc_combat_data()** (5 connections) — `server/services/npc_combat_data_provider.py`
-- **._validate_attack()** (4 connections) — `server/services/combat_attack_handler.py`
-- **._room_has_no_death()** (4 connections) — `server/services/combat_attack_handler.py`
-- *... and 128 more nodes in this community*
+- **NATSMessageBroker** (30 connections) — `server/infrastructure/nats_broker.py`
+- **nats_broker.py** (17 connections) — `server/infrastructure/nats_broker.py`
+- **MessageBrokerError** (13 connections) — `server/infrastructure/message_broker.py`
+- **message_broker.py** (11 connections) — `server/infrastructure/message_broker.py`
+- **PublishError** (9 connections) — `server/infrastructure/message_broker.py`
+- **SubscribeError** (9 connections) — `server/infrastructure/message_broker.py`
+- **RequestError** (9 connections) — `server/infrastructure/message_broker.py`
+- **MessageBrokerConnectionError** (8 connections) — `server/infrastructure/message_broker.py`
+- **UnsubscribeError** (8 connections) — `server/infrastructure/message_broker.py`
+- **.publish()** (6 connections) — `server/infrastructure/nats_broker.py`
+- **.connect()** (5 connections) — `server/infrastructure/nats_broker.py`
+- **.disconnect()** (5 connections) — `server/infrastructure/nats_broker.py`
+- **.is_connected()** (5 connections) — `server/infrastructure/nats_broker.py`
+- **.subscribe()** (5 connections) — `server/infrastructure/nats_broker.py`
+- **.request()** (5 connections) — `server/infrastructure/nats_broker.py`
+- **._start_health_monitoring()** (5 connections) — `server/infrastructure/nats_broker.py`
+- **._configure_tls()** (4 connections) — `server/infrastructure/nats_broker.py`
+- **.unsubscribe()** (4 connections) — `server/infrastructure/nats_broker.py`
+- **._error_callback()** (4 connections) — `server/infrastructure/nats_broker.py`
+- **._handle_error_async()** (4 connections) — `server/infrastructure/nats_broker.py`
+- **._handle_reconnect_async()** (4 connections) — `server/infrastructure/nats_broker.py`
+- **._health_check_loop()** (4 connections) — `server/infrastructure/nats_broker.py`
+- **Any** (3 connections)
+- **._disconnected_callback()** (3 connections) — `server/infrastructure/nats_broker.py`
+- **._handle_disconnect_async()** (3 connections) — `server/infrastructure/nats_broker.py`
+- *... and 32 more nodes in this community*
 
 ## Relationships
 
-- [TerminalButtonProps](TerminalButtonProps.md) (30 shared connections)
-- [test combat attack handler](test_combat_attack_handler.md) (26 shared connections)
-- [Any](Any.md) (23 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (22 shared connections)
-- [test exploration service](test_exploration_service.md) (15 shared connections)
-- [get health service()](get_health_service%28%29.md) (14 shared connections)
-- [close db()](close_db%28%29.md) (10 shared connections)
-- [.model dump()](model_dump%28%29.md) (10 shared connections)
-- [login grace period](login_grace_period.md) (9 shared connections)
-- [. initialize handlers()](_initialize_handlers%28%29.md) (8 shared connections)
-- [Return stats\[key\] as int, or](Return_stats%5Bkey%5D_as_int%2C_or.md) (8 shared connections)
-- [. init ()](_init_%28%29.md) (5 shared connections)
+- [message broker](message_broker.md) (20 shared connections)
+- [init](init.md) (2 shared connections)
+- [BaseModel](BaseModel.md) (2 shared connections)
+- [get subject manager dependency()](get_subject_manager_dependency%28%29.md) (2 shared connections)
+- [world](world.md) (2 shared connections)
+- [BaseUserManager](BaseUserManager.md) (1 shared connections)
+- [FollowTargetValue](FollowTargetValue.md) (1 shared connections)
+- [Any](Any.md) (1 shared connections)
+- [. init ()](_init_%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/combat.py`
-- `server/services/combat_attack_handler.py`
-- `server/services/combat_turn_processor.py`
-- `server/services/combat_types.py`
-- `server/services/npc_combat_data_provider.py`
-- `server/services/npc_combat_integration_combat_mixin.py`
-- `server/services/npc_combat_integration_validation_mixin.py`
-- `server/tests/unit/services/test_combat_attack_handler.py`
-- `server/tests/unit/services/test_combat_cleanup_handler.py`
-- `server/tests/unit/services/test_combat_turn_participant_actions.py`
-- `server/tests/unit/services/test_combat_types.py`
-- `server/tests/unit/services/test_damage_grace_period.py`
-- `server/tests/unit/services/test_npc_combat_data_provider.py`
+- `server/infrastructure/message_broker.py`
+- `server/infrastructure/nats_broker.py`
 
 ## Audit Trail
 
-- EXTRACTED: 584 (97%)
-- INFERRED: 20 (3%)
+- EXTRACTED: 201 (91%)
+- INFERRED: 21 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

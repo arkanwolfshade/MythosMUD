@@ -16,7 +16,7 @@
 
 ## Relationships
 
-- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
+- [world](world.md) (2 shared connections)
 
 ## Source Files
 

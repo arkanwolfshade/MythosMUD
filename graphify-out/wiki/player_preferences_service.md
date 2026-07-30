@@ -34,7 +34,7 @@
 ## Relationships
 
 - [chat moderation](chat_moderation.md) (5 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
+- [world](world.md) (2 shared connections)
 - [ChatMessage](ChatMessage.md) (2 shared connections)
 - [ChatService](ChatService.md) (1 shared connections)
 - [. init ()](_init_%28%29.md) (1 shared connections)

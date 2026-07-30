@@ -1,43 +1,44 @@
 # time commands
 
-> 12 nodes
+> 21 nodes
 
 ## Key Concepts
 
-- **CreateItemInstanceInput** (11 connections) — `server/async_persistence_constants.py`
-- **Profession** (5 connections)
-- **.get_professions()** (4 connections) — `server/async_persistence.py`
-- **.get_profession_by_id()** (3 connections) — `server/async_persistence.py`
-- **.create_item_instance()** (3 connections) — `server/async_persistence.py`
-- **async_persistence_constants.py** (3 connections) — `server/async_persistence_constants.py`
-- **Get all available professions using SQLAlchemy ORM.** (1 connections) — `server/async_persistence.py`
-- **Get a profession by ID. Delegates to ProfessionRepository.** (1 connections) — `server/async_persistence.py`
-- **Create a new item instance. Delegates to ItemRepository.** (1 connections) — `server/async_persistence.py`
-- **TypedDict** (1 connections)
-- **Constants and shared types for async persistence layer.  Extracted to keep async** (1 connections) — `server/async_persistence_constants.py`
-- **Optional fields for create_item_instance. owner_type, owner_id, etc. with defaul** (1 connections) — `server/async_persistence_constants.py`
+- **Any** (7 connections)
+- **.broadcast_combat_attack()** (6 connections) — `server/services/combat_messaging/combat_broadcasts.py`
+- **._build_combat_attack_event()** (5 connections) — `server/services/combat_messaging/combat_broadcasts.py`
+- **._send_attacker_personal_combat_message()** (4 connections) — `server/services/combat_messaging/combat_broadcasts.py`
+- **._send_attacker_personal_message_if_needed()** (4 connections) — `server/services/combat_messaging/combat_broadcasts.py`
+- **.broadcast_combat_start()** (4 connections) — `server/services/combat_messaging/combat_broadcasts.py`
+- **.broadcast_combat_death()** (4 connections) — `server/services/combat_messaging/combat_broadcasts.py`
+- **.broadcast_combat_end()** (4 connections) — `server/services/combat_messaging/combat_broadcasts.py`
+- **.broadcast_combat_error()** (4 connections) — `server/services/combat_messaging/combat_broadcasts.py`
+- **.broadcast_combat_target_switch()** (4 connections) — `server/services/combat_messaging/combat_broadcasts.py`
+- **._build_combat_attack_messages()** (3 connections) — `server/services/combat_messaging/combat_broadcasts.py`
+- **Build perspective-specific attack messages.** (1 connections) — `server/services/combat_messaging/combat_broadcasts.py`
+- **Build combat_attack event payload.** (1 connections) — `server/services/combat_messaging/combat_broadcasts.py`
+- **Send personal combat message to attacker. Logs warning on failure.** (1 connections) — `server/services/combat_messaging/combat_broadcasts.py`
+- **Send personal combat message to attacker when attacker_id is present.** (1 connections) — `server/services/combat_messaging/combat_broadcasts.py`
+- **Broadcast combat start message to all players in the room.** (1 connections) — `server/services/combat_messaging/combat_broadcasts.py`
+- **Broadcast combat attack to room. Excludes attacker from broadcast; sends them a** (1 connections) — `server/services/combat_messaging/combat_broadcasts.py`
+- **Broadcast NPC death message to all players in the room.** (1 connections) — `server/services/combat_messaging/combat_broadcasts.py`
+- **Broadcast combat end message to all players in the room.** (1 connections) — `server/services/combat_messaging/combat_broadcasts.py`
+- **Broadcast combat error message to a specific player.** (1 connections) — `server/services/combat_messaging/combat_broadcasts.py`
+- **Broadcast one short room message when an NPC switches aggro target (ADR-016).** (1 connections) — `server/services/combat_messaging/combat_broadcasts.py`
 
 ## Relationships
 
-- [chat nats publisher](chat_nats_publisher.md) (4 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
-- [test player preferences service](test_player_preferences_service.md) (1 shared connections)
-- [Protocol](Protocol.md) (1 shared connections)
-- [real time](real_time.md) (1 shared connections)
-- [PlayerChannelPreferences](PlayerChannelPreferences.md) (1 shared connections)
-- [PlayerRespawnEventHandler](PlayerRespawnEventHandler.md) (1 shared connections)
-- [init](init.md) (1 shared connections)
-- [find dead connections()](find_dead_connections%28%29.md) (1 shared connections)
+- [. init ()](_init_%28%29.md) (10 shared connections)
+- [circuit breaker](circuit_breaker.md) (7 shared connections)
 
 ## Source Files
 
-- `server/async_persistence.py`
-- `server/async_persistence_constants.py`
+- `server/services/combat_messaging/combat_broadcasts.py`
 
 ## Audit Trail
 
-- EXTRACTED: 26 (74%)
-- INFERRED: 9 (26%)
+- EXTRACTED: 59 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,6 +1,6 @@
 # Coord
 
-> 51 nodes
+> 49 nodes
 
 ## Key Concepts
 
@@ -29,30 +29,29 @@
 - **run_validator_on_rooms()** (5 connections) — `data/local/mythos_mud_mapbuilder.py`
 - **_load_tileset()** (4 connections) — `data/local/mythos_mud_mapbuilder.py`
 - **example_validator()** (4 connections) — `data/local/mythos_mud_mapbuilder.py`
-- *... and 26 more nodes in this community*
+- *... and 24 more nodes in this community*
 
 ## Relationships
 
 - [nats config()](nats_config%28%29.md) (10 shared connections)
-- [test connection cleaner](test_connection_cleaner.md) (3 shared connections)
+- [Any](Any.md) (2 shared connections)
+- [test connection cleaner](test_connection_cleaner.md) (2 shared connections)
 - [error monitoring](error_monitoring.md) (1 shared connections)
 - [. is npc in combat()](_is_npc_in_combat%28%29.md) (1 shared connections)
+- [UUID](UUID.md) (1 shared connections)
 - [CombatMetrics](CombatMetrics.md) (1 shared connections)
 - [CoordinateGenerator](CoordinateGenerator.md) (1 shared connections)
-- [Any](Any.md) (1 shared connections)
-- [.shutdown()](shutdown%28%29.md) (1 shared connections)
 - [BaseUserManager](BaseUserManager.md) (1 shared connections)
 
 ## Source Files
 
 - `data/local/mythos_mud_mapbuilder.py`
-- `server/monitoring/memory_leak_metrics.py`
 - `server/services/nats_metrics.py`
 
 ## Audit Trail
 
-- EXTRACTED: 222 (90%)
-- INFERRED: 24 (10%)
+- EXTRACTED: 219 (90%)
+- INFERRED: 23 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

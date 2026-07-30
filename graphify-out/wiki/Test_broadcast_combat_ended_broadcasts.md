@@ -1,24 +1,34 @@
 # Test broadcast combat ended broadcasts
 
-> 2 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **test_load_room_cache_async_other_error_raises()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **Test _load_room_cache_async raises other errors.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **PassiveFluxContext** (9 connections) — `server/services/passive_lucidity_flux/models.py`
+- **__init__.py** (6 connections) — `server/services/passive_lucidity_flux/__init__.py`
+- **models.py** (6 connections) — `server/services/passive_lucidity_flux/models.py`
+- **CachedRoom** (6 connections) — `server/services/passive_lucidity_flux/models.py`
+- **Passive lucidity flux service package.** (1 connections) — `server/services/passive_lucidity_flux/__init__.py`
+- **Data models for passive lucidity flux.** (1 connections) — `server/services/passive_lucidity_flux/models.py`
+- **Cached room entry with timestamp for TTL management.** (1 connections) — `server/services/passive_lucidity_flux/models.py`
+- **Resolved environmental context for passive flux evaluation.** (1 connections) — `server/services/passive_lucidity_flux/models.py`
 
 ## Relationships
 
-- [test async persistence room cache](test_async_persistence_room_cache.md) (1 shared connections)
+- [main()](main%28%29.md) (7 shared connections)
+- [config](config.md) (3 shared connections)
+- [EventDict](EventDict.md) (2 shared connections)
+- [test rate limiter utils](test_rate_limiter_utils.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- `server/services/passive_lucidity_flux/__init__.py`
+- `server/services/passive_lucidity_flux/models.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 28 (90%)
+- INFERRED: 3 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

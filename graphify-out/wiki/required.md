@@ -16,7 +16,7 @@
 
 ## Relationships
 
-- [test inventory service helpers](test_inventory_service_helpers.md) (1 shared connections)
+- [items](items.md) (1 shared connections)
 
 ## Source Files
 

@@ -28,7 +28,7 @@
 
 ## Relationships
 
-- [StatusPanel](StatusPanel.md) (2 shared connections)
+- [ChatPanelTest](ChatPanelTest.md) (2 shared connections)
 
 ## Source Files
 

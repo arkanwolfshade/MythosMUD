@@ -1,51 +1,52 @@
 # connection helpers
 
-> 72 nodes
+> 63 nodes
 
 ## Key Concepts
 
-- **test_command_admin.py** (42 connections) — `server/tests/unit/models/test_command_admin.py`
-- **SummonCommand** (21 connections) — `server/models/command_admin.py`
-- **test_npc_command_subcommand_min_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_npc_command_subcommand_max_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_summon_command_validate_prototype_id_invalid_characters()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_summon_command_quantity_validation_min()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_summon_command_quantity_validation_max()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_summon_command_prototype_id_min_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_summon_command_prototype_id_max_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_teleport_command_validate_direction_invalid()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_teleport_command_player_name_min_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_teleport_command_player_name_max_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_goto_command_player_name_min_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_goto_command_player_name_max_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_npc_command_default_values()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_npc_command_with_subcommand()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_npc_command_with_args()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_summon_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_summon_command_validate_prototype_id_valid()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_summon_command_validate_prototype_id_strips()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_summon_command_quantity_default()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_summon_command_quantity_valid_range()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_summon_command_target_type_default()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_summon_command_target_type_npc()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_teleport_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
-- *... and 47 more nodes in this community*
+- **test_npc_models.py** (33 connections) — `server/tests/unit/models/test_npc_models.py`
+- **NPCRelationship** (9 connections) — `server/models/npc.py`
+- **Base** (6 connections) — `server/models/npc.py`
+- **test_npc_definition_creation()** (3 connections) — `server/tests/unit/models/test_npc_models.py`
+- **test_npc_definition_defaults()** (3 connections) — `server/tests/unit/models/test_npc_models.py`
+- **test_npc_definition_get_base_stats()** (3 connections) — `server/tests/unit/models/test_npc_models.py`
+- **test_npc_definition_get_base_stats_empty()** (3 connections) — `server/tests/unit/models/test_npc_models.py`
+- **test_npc_definition_set_base_stats()** (3 connections) — `server/tests/unit/models/test_npc_models.py`
+- **test_npc_definition_get_behavior_config()** (3 connections) — `server/tests/unit/models/test_npc_models.py`
+- **test_npc_definition_set_behavior_config()** (3 connections) — `server/tests/unit/models/test_npc_models.py`
+- **test_npc_definition_get_ai_integration_stub()** (3 connections) — `server/tests/unit/models/test_npc_models.py`
+- **test_npc_definition_set_ai_integration_stub()** (3 connections) — `server/tests/unit/models/test_npc_models.py`
+- **test_npc_definition_is_required()** (3 connections) — `server/tests/unit/models/test_npc_models.py`
+- **test_npc_definition_can_spawn()** (3 connections) — `server/tests/unit/models/test_npc_models.py`
+- **test_npc_definition_repr()** (3 connections) — `server/tests/unit/models/test_npc_models.py`
+- **test_npc_spawn_rule_creation()** (3 connections) — `server/tests/unit/models/test_npc_models.py`
+- **test_npc_spawn_rule_get_spawn_conditions()** (3 connections) — `server/tests/unit/models/test_npc_models.py`
+- **test_npc_spawn_rule_set_spawn_conditions()** (3 connections) — `server/tests/unit/models/test_npc_models.py`
+- **test_npc_spawn_rule_can_spawn_with_population()** (3 connections) — `server/tests/unit/models/test_npc_models.py`
+- **test_npc_spawn_rule_check_spawn_conditions()** (3 connections) — `server/tests/unit/models/test_npc_models.py`
+- **test_npc_spawn_rule_check_spawn_conditions_multiple()** (3 connections) — `server/tests/unit/models/test_npc_models.py`
+- **test_npc_spawn_rule_repr()** (3 connections) — `server/tests/unit/models/test_npc_models.py`
+- **test_npc_relationship_creation()** (3 connections) — `server/tests/unit/models/test_npc_models.py`
+- **test_npc_relationship_repr()** (3 connections) — `server/tests/unit/models/test_npc_models.py`
+- **test_npc_relationship_different_types()** (3 connections) — `server/tests/unit/models/test_npc_models.py`
+- *... and 38 more nodes in this community*
 
 ## Relationships
 
-- [Spell Targeting](Spell_Targeting.md) (33 shared connections)
-- [.initialize()](initialize%28%29.md) (12 shared connections)
-- [test command factories utility](test_command_factories_utility.md) (1 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (17 shared connections)
+- [. repr ()](_repr_%28%29.md) (9 shared connections)
+- [main()](main%28%29.md) (1 shared connections)
+- [Any](Any.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/command_admin.py`
-- `server/tests/unit/models/test_command_admin.py`
+- `server/models/npc.py`
+- `server/tests/unit/models/test_npc_models.py`
 
 ## Audit Trail
 
-- EXTRACTED: 197 (93%)
-- INFERRED: 15 (7%)
+- EXTRACTED: 158 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

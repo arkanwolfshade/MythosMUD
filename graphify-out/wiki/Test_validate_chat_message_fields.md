@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **.test_log_uuid_validation_failure_warning_string()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **Test _log_uuid_validation_failure with UUID string warning.** (1 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **.__hash__()** (2 connections) — `server/models/alias.py`
+- **Hash based on name and command for use in sets/dicts.** (1 connections) — `server/models/alias.py`
 
 ## Relationships
 
-- [container websocket events](container_websocket_events.md) (1 shared connections)
-- [PlayerNameExtractor](PlayerNameExtractor.md) (1 shared connections)
+- [command parser()](command_parser%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_name_utils.py`
+- `server/models/alias.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

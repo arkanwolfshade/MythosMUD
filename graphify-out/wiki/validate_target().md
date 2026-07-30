@@ -1,49 +1,49 @@
 # .validate target()
 
-> 52 nodes
+> 94 nodes
 
 ## Key Concepts
 
-- **test_command_combat.py** (31 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_attack_command_target_min_length()** (4 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_attack_command_target_max_length()** (4 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_punch_command_target_min_length()** (4 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_punch_command_target_max_length()** (4 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_kick_command_target_min_length()** (4 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_kick_command_target_max_length()** (4 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_strike_command_target_min_length()** (4 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_strike_command_target_max_length()** (4 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_attack_command_default_values()** (3 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_attack_command_with_target()** (3 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_attack_command_validate_target_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_attack_command_validate_target_none()** (3 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_attack_command_accepts_long_instance_id()** (3 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_punch_command_default_values()** (3 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_punch_command_with_target()** (3 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_punch_command_validate_target_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_punch_command_validate_target_none()** (3 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_kick_command_default_values()** (3 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_kick_command_with_target()** (3 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_kick_command_validate_target_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_kick_command_validate_target_none()** (3 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_strike_command_default_values()** (3 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_strike_command_with_target()** (3 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_strike_command_validate_target_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_combat.py`
-- *... and 27 more nodes in this community*
+- **test_combat.py** (60 connections) — `server/tests/unit/models/test_combat.py`
+- **test_combat_instance_get_queued_actions()** (4 connections) — `server/tests/unit/models/test_combat.py`
+- **test_combat_instance_clear_queued_actions()** (4 connections) — `server/tests/unit/models/test_combat.py`
+- **test_combat_instance_clear_queued_actions_specific_round()** (4 connections) — `server/tests/unit/models/test_combat.py`
+- **test_get_default_damage_from_config()** (3 connections) — `server/tests/unit/models/test_combat.py`
+- **test_get_default_damage_fallback_on_error()** (3 connections) — `server/tests/unit/models/test_combat.py`
+- **test_combat_participant_is_alive_player_positive_dp()** (3 connections) — `server/tests/unit/models/test_combat.py`
+- **test_combat_participant_is_alive_player_zero_dp()** (3 connections) — `server/tests/unit/models/test_combat.py`
+- **test_combat_participant_is_alive_player_negative_dp_above_threshold()** (3 connections) — `server/tests/unit/models/test_combat.py`
+- **test_combat_participant_is_alive_player_negative_dp_at_threshold()** (3 connections) — `server/tests/unit/models/test_combat.py`
+- **test_combat_participant_is_alive_player_negative_dp_below_threshold()** (3 connections) — `server/tests/unit/models/test_combat.py`
+- **test_combat_participant_is_alive_player_inactive()** (3 connections) — `server/tests/unit/models/test_combat.py`
+- **test_combat_participant_is_alive_npc_positive_dp()** (3 connections) — `server/tests/unit/models/test_combat.py`
+- **test_combat_participant_is_alive_npc_zero_dp()** (3 connections) — `server/tests/unit/models/test_combat.py`
+- **test_combat_participant_is_alive_npc_negative_dp()** (3 connections) — `server/tests/unit/models/test_combat.py`
+- **test_combat_participant_is_alive_npc_inactive()** (3 connections) — `server/tests/unit/models/test_combat.py`
+- **test_combat_participant_is_dead_player_positive_dp()** (3 connections) — `server/tests/unit/models/test_combat.py`
+- **test_combat_participant_is_dead_player_at_zero()** (3 connections) — `server/tests/unit/models/test_combat.py`
+- **test_combat_participant_is_dead_player_at_negative_10()** (3 connections) — `server/tests/unit/models/test_combat.py`
+- **test_combat_participant_is_mortally_wounded_player_at_zero()** (3 connections) — `server/tests/unit/models/test_combat.py`
+- **test_combat_participant_is_mortally_wounded_player_npc_always_false()** (3 connections) — `server/tests/unit/models/test_combat.py`
+- **test_combat_participant_apply_damage_player_reduces_dp()** (3 connections) — `server/tests/unit/models/test_combat.py`
+- **test_combat_participant_apply_damage_player_mortally_wounded()** (3 connections) — `server/tests/unit/models/test_combat.py`
+- **test_combat_participant_apply_damage_player_dies()** (3 connections) — `server/tests/unit/models/test_combat.py`
+- **test_combat_participant_apply_damage_player_caps_at_negative_10()** (3 connections) — `server/tests/unit/models/test_combat.py`
+- *... and 69 more nodes in this community*
 
 ## Relationships
 
-- [Spell Targeting](Spell_Targeting.md) (30 shared connections)
-- [.initialize()](initialize%28%29.md) (8 shared connections)
+- [close db()](close_db%28%29.md) (54 shared connections)
+- [test combat attack handler](test_combat_attack_handler.md) (4 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/models/test_command_combat.py`
+- `server/tests/unit/models/test_combat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 132 (94%)
-- INFERRED: 8 (6%)
+- EXTRACTED: 244 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

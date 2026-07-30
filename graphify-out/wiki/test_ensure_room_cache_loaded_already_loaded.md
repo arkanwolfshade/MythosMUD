@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_ensure_room_cache_loaded_already_loaded()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _ensure_room_cache_loaded returns early when cache is already loaded.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_profession_meets_stat_requirements_one_not_met()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **Test meets_stat_requirements returns False when one requirement is not met.** (1 connections) — `server/tests/unit/models/test_profession.py`
 
 ## Relationships
 
-- [test async persistence room loading](test_async_persistence_room_loading.md) (1 shared connections)
+- [Integration tests for the main](Integration_tests_for_the_main.md) (1 shared connections)
+- [test profession](test_profession.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- `server/tests/unit/models/test_profession.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,25 +1,39 @@
 # populate test npc databases
 
-> 4 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **_set_default_if_missing()** (3 connections) — `server/models/npc.py`
-- **.__init__()** (3 connections) — `server/models/npc.py`
-- **Apply a default attribute value when SQLAlchemy leaves it unset or None.** (1 connections) — `server/models/npc.py`
-- **Initialize NPCDefinition with defaults.** (1 connections) — `server/models/npc.py`
+- **test_inventory_commands_helpers.py** (13 connections) — `server/tests/unit/commands/test_inventory_commands_helpers.py`
+- **test_match_room_drop_by_name_exact()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_helpers.py`
+- **test_match_room_drop_by_name_not_found()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_helpers.py`
+- **test_match_inventory_item_by_name_exact()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_helpers.py`
+- **test_match_inventory_item_by_name_not_found()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_helpers.py`
+- **test_match_equipped_item_by_name()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_helpers.py`
+- **test_match_equipped_item_by_name_not_found()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_helpers.py`
+- **Unit tests for inventory command helper functions.  Tests the helper functions i** (1 connections) — `server/tests/unit/commands/test_inventory_commands_helpers.py`
+- **Test match_room_drop_by_name() finds exact match.** (1 connections) — `server/tests/unit/commands/test_inventory_commands_helpers.py`
+- **Test match_room_drop_by_name() returns None when not found.** (1 connections) — `server/tests/unit/commands/test_inventory_commands_helpers.py`
+- **Test match_inventory_item_by_name() finds exact match.** (1 connections) — `server/tests/unit/commands/test_inventory_commands_helpers.py`
+- **Test match_inventory_item_by_name() returns None when not found.** (1 connections) — `server/tests/unit/commands/test_inventory_commands_helpers.py`
+- **Test match_equipped_item_by_name() finds equipped item.** (1 connections) — `server/tests/unit/commands/test_inventory_commands_helpers.py`
+- **Test match_equipped_item_by_name() returns None when not found.** (1 connections) — `server/tests/unit/commands/test_inventory_commands_helpers.py`
 
 ## Relationships
 
-- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
+- [test format metadata empty()](test_format_metadata_empty%28%29.md) (3 shared connections)
+- [Test process alias expansion function.](Test_process_alias_expansion_function.md) (3 shared connections)
+- [Test check grace period block](Test_check_grace_period_block.md) (3 shared connections)
+- [Update player's connection list to](Update_player%27s_connection_list_to.md) (2 shared connections)
+- [chat pose helpers](chat_pose_helpers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/npc.py`
+- `server/tests/unit/commands/test_inventory_commands_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 38 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

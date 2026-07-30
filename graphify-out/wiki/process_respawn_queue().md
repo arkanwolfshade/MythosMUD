@@ -20,7 +20,9 @@
 
 ## Relationships
 
-- [TerminalButtonProps](TerminalButtonProps.md) (6 shared connections)
+- [parse jsonb column()](parse_jsonb_column%28%29.md) (3 shared connections)
+- [world](world.md) (2 shared connections)
+- [get current tick()](get_current_tick%28%29.md) (1 shared connections)
 
 ## Source Files
 

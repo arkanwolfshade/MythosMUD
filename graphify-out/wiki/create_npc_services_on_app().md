@@ -1,13 +1,12 @@
 # create npc services on app()
 
-> 32 nodes
+> 31 nodes
 
 ## Key Concepts
 
 - **EdgeCreationModal.tsx** (39 connections) — `client/src/components/map/EdgeCreationModal.tsx`
 - **useEdgeCreationModal()** (13 connections) — `client/src/components/map/EdgeCreationModal.tsx`
 - **getInitialEdgeFormState()** (4 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **EdgeCreationModal()** (4 connections) — `client/src/components/map/EdgeCreationModal.tsx`
 - **isStandardExitDirection()** (3 connections) — `client/src/components/map/EdgeCreationModal.tsx`
 - **filterNodesForTargetSelection()** (3 connections) — `client/src/components/map/EdgeCreationModal.tsx`
 - **edgeFormStateFromExisting()** (3 connections) — `client/src/components/map/EdgeCreationModal.tsx`
@@ -29,7 +28,8 @@
 - **EdgeFormFields** (1 connections) — `client/src/components/map/EdgeCreationModal.tsx`
 - **EdgeModalValidationMessages()** (1 connections) — `client/src/components/map/EdgeCreationModal.tsx`
 - **EDGE_MODAL_MESSAGE_TONE_CLASSES** (1 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- *... and 7 more nodes in this community*
+- **EdgeModalMessageList()** (1 connections) — `client/src/components/map/EdgeCreationModal.tsx`
+- *... and 6 more nodes in this community*
 
 ## Relationships
 
@@ -41,7 +41,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 109 (100%)
+- EXTRACTED: 105 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

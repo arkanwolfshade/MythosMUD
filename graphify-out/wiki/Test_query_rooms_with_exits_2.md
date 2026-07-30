@@ -1,23 +1,27 @@
 # Test query rooms with exits
 
-> 2 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **test_broadcast_player_entered_message_no_room_id()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **Test broadcast_player_entered_message() skips when room_id is None.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **Phase 5: Strategic Additions (Week 5)** (6 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Task 5.1: Add MessageBroker Integration Tests (3 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Task 5.2: Add ApplicationContainer Lifecycle Tests (2 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Task 5.3: Add Database Migration Tests (3 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Task 5.4: Add WebSocket Edge Case Tests (4 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Task 5.5: Add Error Recovery Tests (3 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
 
 ## Relationships
 
-- [. call ()](_call_%28%29.md) (1 shared connections)
+- [Test query rooms with exits](Test_query_rooms_with_exits.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

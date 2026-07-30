@@ -1,6 +1,6 @@
 # aggregate log entry()
 
-> 43 nodes
+> 45 nodes
 
 ## Key Concepts
 
@@ -8,6 +8,7 @@
 - **log_aggregator.py** (13 connections) — `server/structured_logging/log_aggregator.py`
 - **LogEntry** (13 connections) — `server/structured_logging/log_aggregator.py`
 - **.get_logs()** (9 connections) — `server/structured_logging/log_aggregator.py`
+- **get_log_aggregator()** (8 connections) — `server/structured_logging/log_aggregator.py`
 - **.export_logs()** (7 connections) — `server/structured_logging/log_aggregator.py`
 - **.__init__()** (6 connections) — `server/structured_logging/log_aggregator.py`
 - **.add_log_entry()** (6 connections) — `server/structured_logging/log_aggregator.py`
@@ -28,16 +29,17 @@
 - **.shutdown()** (2 connections) — `server/structured_logging/log_aggregator.py`
 - **._process_logs()** (2 connections) — `server/structured_logging/log_aggregator.py`
 - **Log aggregation and centralized collection system for MythosMUD server.  This mo** (1 connections) — `server/structured_logging/log_aggregator.py`
-- **Represents a single log entry.** (1 connections) — `server/structured_logging/log_aggregator.py`
-- *... and 18 more nodes in this community*
+- *... and 20 more nodes in this community*
 
 ## Relationships
 
-- [.shutdown()](shutdown%28%29.md) (5 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (3 shared connections)
-- [PerformanceStats](PerformanceStats.md) (3 shared connections)
-- [test command parser](test_command_parser.md) (3 shared connections)
+- [PerformanceStats](PerformanceStats.md) (6 shared connections)
+- [.shutdown()](shutdown%28%29.md) (3 shared connections)
+- [world](world.md) (2 shared connections)
+- [test command parser](test_command_parser.md) (2 shared connections)
+- [get current tick()](get_current_tick%28%29.md) (1 shared connections)
 - [. init ()](_init_%28%29.md) (1 shared connections)
+- [nats retry handler](nats_retry_handler.md) (1 shared connections)
 
 ## Source Files
 
@@ -45,7 +47,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 152 (98%)
+- EXTRACTED: 161 (98%)
 - INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,24 +1,28 @@
 # Test is valid target name
 
-> 2 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **test_coerce_row_quantity()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
-- **Row quantity/position coercion matches item quantity rules (PR #461 / int_coerci** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
+- **Phase 3: Test Value Scoring** (4 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **3.3 Value Distribution Calculation** (4 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **3.1 Scoring Criteria Matrix** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **3.2 Category Scores** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **🔴 CRITICAL VALUE TESTS (Score ≥75): **1,272 tests (25.6%)**** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **🟡 IMPORTANT VALUE TESTS (Score 50-74): **2,943 tests (59.3%)**** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **🟢 LOW VALUE TESTS (Score <50): **750 tests (15.1%)**** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
 
 ## Relationships
 
-- [datetime](datetime.md) (1 shared connections)
-- [disconnect grace period](disconnect_grace_period.md) (1 shared connections)
+- [. error callback()](_error_callback%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
+- `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

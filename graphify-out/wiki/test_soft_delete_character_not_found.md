@@ -1,23 +1,25 @@
 # test_soft_delete_character_not_found
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_send_occupants_snapshot_to_player_error_handling()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **Test send_occupants_snapshot_to_player() handles errors.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **🎯 Performance Improvements** (4 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **Before Fixes** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **After Fixes** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **Room Cache Performance** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
 
 ## Relationships
 
-- [. call ()](_call_%28%29.md) (1 shared connections)
+- [get alias validator()](get_alias_validator%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

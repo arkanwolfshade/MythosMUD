@@ -1,36 +1,45 @@
 # AttributeType
 
-> 14 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **test_game_enums.py** (11 connections) — `server/tests/unit/models/test_game_enums.py`
-- **test_attribute_type_enum_values()** (2 connections) — `server/tests/unit/models/test_game_enums.py`
-- **test_attribute_type_enum_all_types()** (2 connections) — `server/tests/unit/models/test_game_enums.py`
-- **test_status_effect_type_enum_values()** (2 connections) — `server/tests/unit/models/test_game_enums.py`
-- **test_status_effect_type_enum_all_types()** (2 connections) — `server/tests/unit/models/test_game_enums.py`
-- **test_position_state_enum_values()** (2 connections) — `server/tests/unit/models/test_game_enums.py`
-- **test_position_state_enum_all_states()** (2 connections) — `server/tests/unit/models/test_game_enums.py`
-- **Unit tests for game model enums.  Tests AttributeType, StatusEffectType, and Pos** (1 connections) — `server/tests/unit/models/test_game_enums.py`
-- **Test AttributeType enum contains expected values.** (1 connections) — `server/tests/unit/models/test_game_enums.py`
-- **Test AttributeType enum contains all expected types.** (1 connections) — `server/tests/unit/models/test_game_enums.py`
-- **Test StatusEffectType enum contains expected values.** (1 connections) — `server/tests/unit/models/test_game_enums.py`
-- **Test StatusEffectType enum contains all expected types.** (1 connections) — `server/tests/unit/models/test_game_enums.py`
-- **Test PositionState enum contains expected values.** (1 connections) — `server/tests/unit/models/test_game_enums.py`
-- **Test PositionState enum contains all expected states.** (1 connections) — `server/tests/unit/models/test_game_enums.py`
+- **_format_npc_description()** (15 connections) — `server/commands/look_npc.py`
+- **test_format_npc_description_success()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_format_npc_description_fallback_long_description()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_format_npc_description_fallback_short_description()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_format_npc_description_fallback_desc()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_format_npc_description_no_description()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_format_npc_description_empty_string()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_format_npc_description()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_format_npc_description_fallback()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_format_npc_description_no_description()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **Format NPC description with fallback.** (1 connections) — `server/commands/look_npc.py`
+- **Test formatting NPC description successfully.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test formatting NPC description with long_description fallback.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test formatting NPC description with short_description fallback.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test formatting NPC description with desc fallback.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test formatting NPC description when no description available.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test formatting NPC description when description is empty string.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test _format_npc_description() returns description from definition.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **Test _format_npc_description() uses fallback when description is empty.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **Test _format_npc_description() uses alternative attributes.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
 
 ## Relationships
 
-- [Player](Player.md) (2 shared connections)
-- [. init ()](_init_%28%29.md) (2 shared connections)
+- [look npc](look_npc.md) (7 shared connections)
+- [ChatHistoryToggle()](ChatHistoryToggle%28%29.md) (4 shared connections)
+- [AttributeError](AttributeError.md) (3 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/models/test_game_enums.py`
+- `server/commands/look_npc.py`
+- `server/tests/unit/commands/test_look_npc.py`
+- `server/tests/unit/commands/test_look_npc_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 30 (100%)
+- EXTRACTED: 52 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

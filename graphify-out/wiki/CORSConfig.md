@@ -34,8 +34,10 @@
 ## Relationships
 
 - [fetch container items()](fetch_container_items%28%29.md) (11 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (5 shared connections)
 - [connection models](connection_models.md) (5 shared connections)
+- [world](world.md) (3 shared connections)
+- [get current tick()](get_current_tick%28%29.md) (1 shared connections)
+- [chat nats publisher](chat_nats_publisher.md) (1 shared connections)
 
 ## Source Files
 

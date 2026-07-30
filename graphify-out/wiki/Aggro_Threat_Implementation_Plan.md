@@ -1,11 +1,10 @@
 # Aggro Threat Implementation Plan
 
-> 5 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **Aggro and Threat System Design** (4 connections) — `docs/architecture/aggro-threat-system.md`
-- **Aggro Threat Implementation Plan** (1 connections) — `docs/architecture/aggro-threat-implementation-plan.md`
+- **Aggro and Threat System Design** (3 connections) — `docs/architecture/aggro-threat-system.md`
 - **Hate List** (1 connections) — `docs/architecture/aggro-threat-system.md`
 - **UpdateAggro** (1 connections) — `docs/architecture/aggro-threat-system.md`
 - **Aggro Stability Margin** (1 connections) — `docs/architecture/aggro-threat-system.md`
@@ -16,12 +15,11 @@
 
 ## Source Files
 
-- `docs/architecture/aggro-threat-implementation-plan.md`
 - `docs/architecture/aggro-threat-system.md`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

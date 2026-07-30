@@ -1,23 +1,25 @@
 # Test add rule() replaces existing
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_get_adjacent_rooms_null_exit()** (2 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_adjacent_rooms() skips null exits.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **end_hour** (4 connections) — `schemas/calendar/schedule.schema.json`
+- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **minimum** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **maximum** (1 connections) — `schemas/calendar/schedule.schema.json`
 
 ## Relationships
 
-- [test room service](test_room_service.md) (1 shared connections)
+- [type](type.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `schemas/calendar/schedule.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

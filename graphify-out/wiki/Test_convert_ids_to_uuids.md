@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **.test_get_name_from_user_object_getattr_fallback()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **Test _get_name_from_user_object with getattr fallback.** (1 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **Phase 1: Fix Failing Integration Tests (Week 1-2) 🚧 **IN PROGRESS**** (2 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **1.1 Identify All Failing Tests ✅** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
 
 ## Relationships
 
-- [container websocket events](container_websocket_events.md) (1 shared connections)
-- [PlayerNameExtractor](PlayerNameExtractor.md) (1 shared connections)
+- [Any](Any.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_name_utils.py`
+- `docs/archive/TEST_MODERNIZATION_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

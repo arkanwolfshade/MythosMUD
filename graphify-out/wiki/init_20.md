@@ -35,7 +35,7 @@
 
 - [NPCInstanceService](NPCInstanceService.md) (8 shared connections)
 - [Connection Manager](Connection_Manager.md) (4 shared connections)
-- [test player event handlers state](test_player_event_handlers_state.md) (2 shared connections)
+- [close db()](close_db%28%29.md) (2 shared connections)
 - [.initialize()](initialize%28%29.md) (2 shared connections)
 
 ## Source Files

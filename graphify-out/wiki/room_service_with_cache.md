@@ -1,24 +1,24 @@
 # room_service_with_cache
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **room_service_with_cache()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **Create a RoomService instance with cache.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **📊 Final Results** (3 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **Files Migrated (12 of 12 - 100%)** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **Additional Files Updated** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
 
 ## Relationships
 
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (1 shared connections)
-- [test room service](test_room_service.md) (1 shared connections)
+- [Test handle nats message handles](Test_handle_nats_message_handles.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

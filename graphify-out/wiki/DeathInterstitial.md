@@ -37,7 +37,7 @@
 - [look helpers](look_helpers.md) (5 shared connections)
 - [ExitEdge](ExitEdge.md) (4 shared connections)
 - [game tick processing](game_tick_processing.md) (4 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
+- [world](world.md) (2 shared connections)
 - [get player skills for owned](get_player_skills_for_owned.md) (1 shared connections)
 - [get skills used this level](get_skills_used_this_level.md) (1 shared connections)
 - [get player skills for another](get_player_skills_for_another.md) (1 shared connections)

@@ -1,40 +1,52 @@
 # get asyncpg server settings for
 
-> 10 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **._handle_npc_attack_core()** (6 connections) — `server/npc/combat_integration_base.py`
-- **_resolve_npc_combat_service_raw()** (5 connections) — `server/npc/combat_integration_base.py`
-- **._try_delegate_npc_attack_to_combat_service()** (5 connections) — `server/npc/combat_integration_base.py`
-- **.get_handler()** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.handle_npc_attack()** (4 connections) — `server/npc/combat_integration_base.py`
-- **Return the live NPC combat integration service for delegation.      Prefer ``C** (1 connections) — `server/npc/combat_integration_base.py`
-- **Handle an NPC attack on a target.          This is a thin wrapper around _hand** (1 connections) — `server/npc/combat_integration_base.py`
-- **Core implementation for handling an NPC attack on a target.          When the** (1 connections) — `server/npc/combat_integration_base.py`
-- **Prefer full combat codepath (same as player-initiated combat) when available.** (1 connections) — `server/npc/combat_integration_base.py`
-- **Get a handler for the specified message type.          Args:             message** (1 connections) — `server/realtime/message_handler_factory.py`
+- **test_player_presence_tracker.py** (38 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **test_broadcast_connection_message_impl_error()** (4 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **test_build_player_info_new_connection()** (3 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **test_build_player_info_existing_connection()** (3 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **test_build_player_info_no_level()** (3 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **test_track_player_connected_impl_reconnect_during_grace()** (3 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **test_track_player_connected_impl_error()** (3 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **test_broadcast_connection_message_impl()** (3 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **test_broadcast_connection_message_impl_no_room()** (3 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **test_track_player_disconnected_impl_no_player()** (3 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **Unit tests for player presence tracker.  Tests the player_presence_tracker modul** (1 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **Test _build_player_info() creates new player info.** (1 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **Test _build_player_info() updates existing player info.** (1 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **Test _build_player_info() handles player without level.** (1 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **Reconnect during disconnect grace must run enter setup (player_entered_game).** (1 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **Test track_player_connected_impl() handles errors.** (1 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **Test broadcast_connection_message_impl() handles broadcast.** (1 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **Test broadcast_connection_message_impl() handles no room.** (1 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **Test broadcast_connection_message_impl() handles errors.** (1 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **Test track_player_disconnected_impl() handles player not found.** (1 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
 
 ## Relationships
 
-- [PanelManager](PanelManager.md) (5 shared connections)
-- [.state()](state%28%29.md) (1 shared connections)
-- [.initialize()](initialize%28%29.md) (1 shared connections)
-- [init](init.md) (1 shared connections)
-- [process dead players()](process_dead_players%28%29.md) (1 shared connections)
-- [. init ()](_init_%28%29.md) (1 shared connections)
-- [MessageHandlerFactory](MessageHandlerFactory.md) (1 shared connections)
-- [processing](processing.md) (1 shared connections)
+- [player presence tracker](player_presence_tracker.md) (11 shared connections)
+- [Any](Any.md) (9 shared connections)
+- [player disconnect handlers](player_disconnect_handlers.md) (5 shared connections)
+- [Player](Player.md) (4 shared connections)
+- [real time](real_time.md) (3 shared connections)
+- [test_acquire_disconnect_lock_stuck_player](test_acquire_disconnect_lock_stuck_player.md) (1 shared connections)
+- [Enhanced Logging Migration Report](Enhanced_Logging_Migration_Report.md) (1 shared connections)
+- [test_resolve_room_id_room_no_id](test_resolve_room_id_room_no_id.md) (1 shared connections)
+- [test_should_skip_disconnect_no_websocket](test_should_skip_disconnect_no_websocket.md) (1 shared connections)
+- [test_track_player_disconnected_impl_error](test_track_player_disconnected_impl_error.md) (1 shared connections)
+- [test_track_player_disconnected_impl_success](test_track_player_disconnected_impl_success.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/combat_integration_base.py`
-- `server/realtime/message_handler_factory.py`
+- `server/tests/unit/realtime/test_player_presence_tracker.py`
 
 ## Audit Trail
 
-- EXTRACTED: 26 (87%)
-- INFERRED: 4 (13%)
+- EXTRACTED: 76 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

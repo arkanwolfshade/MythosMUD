@@ -34,7 +34,7 @@
 ## Relationships
 
 - [ChatLogger](ChatLogger.md) (2 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
+- [world](world.md) (1 shared connections)
 - [CorpseNotFoundError](CorpseNotFoundError.md) (1 shared connections)
 
 ## Source Files

@@ -1,6 +1,6 @@
 # .validate direction()
 
-> 24 nodes
+> 25 nodes
 
 ## Key Concepts
 
@@ -22,6 +22,7 @@
 - **applyChargeForces()** (3 connections) — `client/src/components/map/utils/layout.ts`
 - **doLineSegmentsIntersect()** (3 connections) — `client/src/components/map/utils/layout.ts`
 - **doesEdgeCrossNode()** (3 connections) — `client/src/components/map/utils/layout.ts`
+- **UseMapLayoutResult** (2 connections) — `client/src/components/map/hooks/useMapLayout.ts`
 - **initializeNodePositions()** (2 connections) — `client/src/components/map/utils/layout.ts`
 - **applyLinkForces()** (2 connections) — `client/src/components/map/utils/layout.ts`
 - **applyCollisionForces()** (2 connections) — `client/src/components/map/utils/layout.ts`
@@ -46,7 +47,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 136 (100%)
+- EXTRACTED: 138 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

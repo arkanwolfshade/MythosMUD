@@ -1,23 +1,24 @@
 # test_get_rooms_in_zone
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_get_rooms_in_zone()** (2 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_rooms_in_zone() returns empty list (not implemented).** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **applies_to** (4 connections) — `schemas/calendar/schedule.schema.json`
+- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **minItems** (1 connections) — `schemas/calendar/schedule.schema.json`
 
 ## Relationships
 
-- [test room service](test_room_service.md) (1 shared connections)
+- [type](type.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `schemas/calendar/schedule.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

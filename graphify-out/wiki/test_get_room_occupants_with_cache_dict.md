@@ -1,23 +1,24 @@
 # test_get_room_occupants_with_cache_dict
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_get_room_occupants_with_cache_dict()** (2 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_room_occupants() handles room dict.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **🎯 Success Criteria - Status** (3 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **Phase 1 (Critical) - ✅ COMPLETE** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **Phase 2 (Performance) - 📋 PLANNED** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
 
 ## Relationships
 
-- [test room service](test_room_service.md) (1 shared connections)
+- [get alias validator()](get_alias_validator%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

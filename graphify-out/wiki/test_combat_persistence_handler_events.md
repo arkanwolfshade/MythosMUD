@@ -1,62 +1,48 @@
 # test combat persistence handler events
 
-> 81 nodes
+> 32 nodes
 
 ## Key Concepts
 
-- **nats_exceptions.py** (33 connections) — `server/services/nats_exceptions.py`
-- **NATSPublishError** (32 connections) — `server/services/nats_exceptions.py`
-- **NATSSubscribeError** (27 connections) — `server/services/nats_exceptions.py`
-- **NATSConnectionError** (18 connections) — `server/services/nats_exceptions.py`
-- **NATSHealthCheckError** (17 connections) — `server/services/nats_exceptions.py`
-- **test_nats_exceptions.py** (13 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **TestNATSConnectionError** (11 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **TestNATSPublishError** (11 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **TestNATSSubscribeError** (11 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **TestNATSHealthCheckError** (11 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **TestExceptionHierarchy** (11 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **TestNATSError** (9 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **.test_all_errors_inherit_from_nats_error()** (7 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **.test_all_errors_inherit_from_exception()** (6 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **.test_connection_error_creation()** (4 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **.test_publish_error_creation()** (4 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **.test_subscribe_error_creation()** (4 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **.test_health_check_error_creation()** (4 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **.test_exception_can_be_caught_by_base()** (4 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **test_subscribe_to_subject_failure()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_subscribe_to_standardized_chat_subjects_nats_subscribe_error_handled()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **.test_nats_error_creation()** (3 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **.test_nats_error_inheritance()** (3 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **.test_connection_error_with_url()** (3 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **.test_connection_error_with_original_error()** (3 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- *... and 56 more nodes in this community*
+- **PARALLEL EXECUTION RESULTS (2025-11-05)** (15 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **Top Time Consumers (>10 seconds)** (8 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **Test Timing Analysis - Optimization Targets** (6 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **Recommendations** (5 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **TEST_TIMING_ANALYSIS.md** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **SSE Handler Tests (60 seconds total)** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **Auth & Security Tests (21+ seconds setup each)** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **Performance Tests (still running despite slow marker)** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **Infrastructure Tests (3.5+ seconds)** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **Rate Limiter Timing Tests (still running)** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **NATS Message Handler Tests (2-3 seconds)** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **Argon2 Password Tests (1.4+ seconds)** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **Critical Finding: Tests Still Running Despite Markers** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **1. **Mark Additional Slow Tests**** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **2. **Investigate Heavy Setup Tests**** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **3. **Verify Marker Application**** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **4. **Target Time Budget (5-7 min = 300-420 seconds)**** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **Next Actions** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **✅ **IMPLEMENTATION COMPLETE**** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **FINAL METRICS** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **Tests: 2,065 pure unit tests passing** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **Workers: 8 (auto-detected)** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **Changes Implemented** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **Test Categorization Strategy** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **Daily Development Tests (Parallel)** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [Any](Any.md) (30 shared connections)
-- [Player](Player.md) (9 shared connections)
-- [BaseUserManager](BaseUserManager.md) (7 shared connections)
-- [correct patterns](correct_patterns.md) (6 shared connections)
-- [FollowTargetValue](FollowTargetValue.md) (6 shared connections)
-- [initialize nats and combat services()](initialize_nats_and_combat_services%28%29.md) (4 shared connections)
-- [. init ()](_init_%28%29.md) (3 shared connections)
-- [connection state machine](connection_state_machine.md) (3 shared connections)
-- [test combat persistence handler persistence](test_combat_persistence_handler_persistence.md) (1 shared connections)
-- [test combat attack handler](test_combat_attack_handler.md) (1 shared connections)
-- [.model dump()](model_dump%28%29.md) (1 shared connections)
-- [test nats message handler chat](test_nats_message_handler_chat.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/services/nats_exceptions.py`
-- `server/tests/unit/realtime/test_nats_message_handler.py`
-- `server/tests/unit/services/test_nats_exceptions.py`
-- `server/tests/unit/services/test_nats_service.py`
+- `docs/archive/TEST_TIMING_ANALYSIS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 267 (78%)
-- INFERRED: 75 (22%)
+- EXTRACTED: 62 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

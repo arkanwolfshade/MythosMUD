@@ -1,14 +1,11 @@
 # init
 
-> 5 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **DomainError** (3 connections) — `server/domain/exceptions/__init__.py`
-- **__init__.py** (2 connections) — `server/domain/exceptions/__init__.py`
-- **Exception** (1 connections)
-- **Domain-specific exceptions for MythosMUD.  These exceptions represent business r** (1 connections) — `server/domain/exceptions/__init__.py`
-- **Base exception for all domain errors.** (1 connections) — `server/domain/exceptions/__init__.py`
+- **__init__.py** (1 connections) — `server/domain/events/__init__.py`
+- **Domain events for MythosMUD.  Domain events represent significant state changes** (1 connections) — `server/domain/events/__init__.py`
 
 ## Relationships
 
@@ -16,11 +13,11 @@
 
 ## Source Files
 
-- `server/domain/exceptions/__init__.py`
+- `server/domain/events/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

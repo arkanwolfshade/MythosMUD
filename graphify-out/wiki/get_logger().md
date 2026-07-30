@@ -2,7 +2,7 @@
 
 > God node · 511 connections · `server/structured_logging/enhanced_logging_config.py`
 
-**Community:** [TerminalButtonProps](TerminalButtonProps.md)
+**Community:** [world](world.md)
 
 ## Connections by Relation
 

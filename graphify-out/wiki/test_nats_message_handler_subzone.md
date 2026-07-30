@@ -33,8 +33,7 @@
 
 ## Relationships
 
-- [Any](Any.md) (7 shared connections)
-- [test combat persistence handler events](test_combat_persistence_handler_events.md) (1 shared connections)
+- [Any](Any.md) (8 shared connections)
 
 ## Source Files
 

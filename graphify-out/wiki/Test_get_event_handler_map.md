@@ -4,21 +4,23 @@
 
 ## Key Concepts
 
-- **test_ensure_room_cache_loaded_concurrent_load()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _ensure_room_cache_loaded handles concurrent load scenario (double-check pa** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_alias_rejects_extra_fields()** (4 connections) — `server/tests/unit/models/test_alias.py`
+- **Test Alias rejects unknown fields (extra='forbid').** (1 connections) — `server/tests/unit/models/test_alias.py`
 
 ## Relationships
 
-- [test async persistence room loading](test_async_persistence_room_loading.md) (1 shared connections)
+- [.initialize()](initialize%28%29.md) (1 shared connections)
+- [command parser()](command_parser%28%29.md) (1 shared connections)
+- [test npc instance service](test_npc_instance_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- `server/tests/unit/models/test_alias.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 4 (80%)
+- INFERRED: 1 (20%)
 - AMBIGUOUS: 0 (0%)
 
 ---

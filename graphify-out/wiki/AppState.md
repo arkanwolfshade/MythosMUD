@@ -1,47 +1,26 @@
 # AppState
 
-> 16 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **skills_commands.py** (15 connections) — `server/commands/skills_commands.py`
-- **handle_skills_command()** (11 connections) — `server/commands/skills_commands.py`
-- **_get_container_services()** (6 connections) — `server/commands/skills_commands.py`
-- **Any** (5 connections)
-- **_resolve_player_id()** (5 connections) — `server/commands/skills_commands.py`
-- **_resolve_user_id()** (4 connections) — `server/commands/skills_commands.py`
-- **_format_skills_output()** (4 connections) — `server/commands/skills_commands.py`
 - **skill_service()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
-- **UUID** (2 connections)
-- **Skills command handler (plan 10.7 V4).  Returns the active character's skills as** (1 connections) — `server/commands/skills_commands.py`
-- **Get container, persistence, and skill_service from request, or None if unavailab** (1 connections) — `server/commands/skills_commands.py`
-- **Extract and validate player_id from player object, returning UUID or None.** (1 connections) — `server/commands/skills_commands.py`
-- **Resolve user_id from current_user (auth user) or fallback to player.user_id.** (1 connections) — `server/commands/skills_commands.py`
-- **Format skills list as text output lines.** (1 connections) — `server/commands/skills_commands.py`
-- **Handle the /skills command: return the active character's skills as text.      R** (1 connections) — `server/commands/skills_commands.py`
 - **SkillService with mocks.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
 
 ## Relationships
 
-- [emit close container event()](emit_close_container_event%28%29.md) (4 shared connections)
-- [test magic commands](test_magic_commands.md) (2 shared connections)
-- [DropResolved](DropResolved.md) (2 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
-- [AuthSlice](AuthSlice.md) (1 shared connections)
-- [Spell Targeting](Spell_Targeting.md) (1 shared connections)
 - [Player Position Service](Player_Position_Service.md) (1 shared connections)
-- [. get persistence from app()](_get_persistence_from_app%28%29.md) (1 shared connections)
+- [test quest definition repository](test_quest_definition_repository.md) (1 shared connections)
 - [test player service](test_player_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/skills_commands.py`
 - `server/tests/unit/game/test_skill_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 59 (94%)
-- INFERRED: 4 (6%)
+- EXTRACTED: 4 (80%)
+- INFERRED: 1 (20%)
 - AMBIGUOUS: 0 (0%)
 
 ---

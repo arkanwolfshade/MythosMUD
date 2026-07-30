@@ -1,35 +1,42 @@
 # ComprehensiveLoggingMiddleware
 
-> 13 nodes
+> 21 nodes
 
 ## Key Concepts
 
-- **SessionManager** (12 connections) — `client/src/utils/security.ts`
-- **sessionManager.test.ts** (3 connections) — `client/src/utils/__tests__/sessionManager.test.ts`
-- **.cleanupExpiredSessions()** (3 connections) — `client/src/utils/security.ts`
-- **.startCleanupInterval()** (3 connections) — `client/src/utils/security.ts`
-- **.constructor()** (2 connections) — `client/src/utils/security.ts`
-- **.createSession()** (2 connections) — `client/src/utils/security.ts`
-- **.expireSession()** (2 connections) — `client/src/utils/security.ts`
-- **.generateSessionId()** (2 connections) — `client/src/utils/security.ts`
-- **SessionManagerTestHooks** (1 connections) — `client/src/utils/__tests__/sessionManager.test.ts`
-- **.isSessionValid()** (1 connections) — `client/src/utils/security.ts`
-- **.refreshSession()** (1 connections) — `client/src/utils/security.ts`
-- **.removeSession()** (1 connections) — `client/src/utils/security.ts`
-- **.destroy()** (1 connections) — `client/src/utils/security.ts`
+- **NATS Medium-Priority Remediation Summary** (9 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **Completed Medium-Priority Fixes ✅** (4 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **Implementation Details** (4 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **Configuration Options** (4 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **Impact Assessment** (3 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **Executive Summary** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **1. Integrated Subject Manager into NATSMessageBroker** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **2. Added Health Monitoring to NATSMessageBroker** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **3. Documented Manual Acknowledgment Strategy** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **Subject Manager Integration** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **Health Monitoring** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **Event Callback Improvements** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **Subject Manager** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **Health Monitoring** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **Manual Acknowledgment** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **Testing Status** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **Before Medium-Priority Fixes** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **After Medium-Priority Fixes** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **Remaining Low-Priority Items** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **Summary** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
 
 ## Relationships
 
-- [fetchSpy](fetchSpy.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `client/src/utils/__tests__/sessionManager.test.ts`
-- `client/src/utils/security.ts`
+- `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
 
 ## Audit Trail
 
-- EXTRACTED: 34 (100%)
+- EXTRACTED: 40 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

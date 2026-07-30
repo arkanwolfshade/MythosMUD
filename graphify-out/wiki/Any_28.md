@@ -1,52 +1,36 @@
 # Any
 
-> 49 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **RoomDataValidator** (18 connections) — `server/services/room_data_validator.py`
-- **test_room_data_validator.py** (16 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **.validate_room_data()** (10 connections) — `server/services/room_data_validator.py`
-- **Any** (8 connections)
-- **.validate_room_consistency()** (7 connections) — `server/services/room_data_validator.py`
-- **.validate_required_fields()** (6 connections) — `server/services/room_data_validator.py`
-- **.validate_field_types()** (6 connections) — `server/services/room_data_validator.py`
-- **.check_duplicate_occupants()** (6 connections) — `server/services/room_data_validator.py`
-- **.is_valid_room_id()** (5 connections) — `server/services/room_data_validator.py`
-- **.check_occupant_count_consistency()** (5 connections) — `server/services/room_data_validator.py`
-- **.check_empty_room_with_occupants()** (5 connections) — `server/services/room_data_validator.py`
-- **.validate_occupant_consistency()** (4 connections) — `server/services/room_data_validator.py`
-- **test_validate_required_fields()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_validate_required_fields_all_present()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_validate_field_types()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_validate_field_types_valid()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_validate_room_data_valid()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_validate_room_data_invalid()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_validate_room_data_room_id()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_is_valid_room_id()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_check_occupant_count_consistency()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_check_duplicate_occupants()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_check_duplicate_occupants_no_duplicates()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_check_empty_room_with_occupants()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_validate_room_consistency()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- *... and 24 more nodes in this community*
+- **test_who_commands_helpers.py** (12 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
+- **test_filter_players_by_name_found()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
+- **test_filter_players_by_name_not_found()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
+- **test_filter_players_by_name_empty_filter()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
+- **test_format_player_location_valid()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
+- **test_format_player_entry_admin()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
+- **Unit tests for who command helper functions.  Tests the helper functions in who_** (1 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
+- **Test filter_players_by_name() filters players by name.** (1 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
+- **Test filter_players_by_name() returns empty list when no matches.** (1 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
+- **Test filter_players_by_name() returns all players when filter is empty.** (1 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
+- **Test format_player_location() formats valid room ID.** (1 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
+- **Test format_player_entry() includes admin indicator.** (1 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
 
 ## Relationships
 
-- [TerminalButtonProps](TerminalButtonProps.md) (4 shared connections)
-- [Return stats\[key\] as int, or](Return_stats%5Bkey%5D_as_int%2C_or.md) (2 shared connections)
-- [Any](Any.md) (2 shared connections)
-- [combat taunt](combat_taunt.md) (1 shared connections)
+- [GameConfig](GameConfig.md) (5 shared connections)
+- [CharacterNameScreen](CharacterNameScreen.md) (3 shared connections)
+- [test utility commands whoami](test_utility_commands_whoami.md) (3 shared connections)
 
 ## Source Files
 
-- `server/services/room_data_validator.py`
-- `server/tests/unit/services/test_room_data_validator.py`
+- `server/tests/unit/commands/test_who_commands_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 156 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 33 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

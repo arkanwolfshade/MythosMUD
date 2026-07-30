@@ -1,55 +1,62 @@
 # . init ()
 
-> 36 nodes
+> 267 nodes
 
 ## Key Concepts
 
-- **chat_nats_publisher.py** (29 connections) — `server/game/chat_nats_publisher.py`
-- **_build_standardized_subject()** (9 connections) — `server/game/chat_nats_publisher.py`
-- **chat_validator.py** (9 connections) — `server/game/chat_validator.py`
-- **Any** (8 connections)
-- **build_nats_subject()** (6 connections) — `server/game/chat_nats_publisher.py`
-- **_extract_subzone_from_room()** (5 connections) — `server/game/chat_nats_publisher.py`
-- **_subject_whisper_standardized()** (5 connections) — `server/game/chat_nats_publisher.py`
-- **_subject_system_standardized()** (5 connections) — `server/game/chat_nats_publisher.py`
-- **_chat_passes_nats_validation()** (5 connections) — `server/game/chat_nats_publisher.py`
-- **validate_chat_message()** (5 connections) — `server/game/chat_validator.py`
-- **_subject_party_standardized()** (4 connections) — `server/game/chat_nats_publisher.py`
-- **_build_legacy_subject()** (4 connections) — `server/game/chat_nats_publisher.py`
-- **_nats_service_ready()** (4 connections) — `server/game/chat_nats_publisher.py`
-- **_build_nats_message_data()** (4 connections) — `server/game/chat_nats_publisher.py`
-- **_log_nats_publish_error()** (4 connections) — `server/game/chat_nats_publisher.py`
-- **_log_nats_unexpected_error()** (4 connections) — `server/game/chat_nats_publisher.py`
-- **validate_room_access()** (4 connections) — `server/game/chat_validator.py`
-- **contains_malicious_content()** (3 connections) — `server/game/chat_validator.py`
-- **Exception** (1 connections)
-- **Chat NATS publishing utilities.  This module provides NATS subject building and** (1 connections) — `server/game/chat_nats_publisher.py`
-- **Extract subzone from room_id, returning 'unknown' if extraction fails.** (1 connections) — `server/game/chat_nats_publisher.py`
-- **Build whisper subject; returns fallback 'chat.whisper' if no target_id.** (1 connections) — `server/game/chat_nats_publisher.py`
-- **Build party subject; returns None if no party_id.** (1 connections) — `server/game/chat_nats_publisher.py`
-- **System subject; personal system (quest lifecycle) routes like whisper when targe** (1 connections) — `server/game/chat_nats_publisher.py`
-- **Build NATS subject using standardized patterns via subject_manager.** (1 connections) — `server/game/chat_nats_publisher.py`
-- *... and 11 more nodes in this community*
+- **dependencies.py** (104 connections) — `server/dependencies.py`
+- **test_dependencies.py** (60 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **get_container()** (41 connections) — `server/dependencies.py`
+- **RuntimeError** (37 connections)
+- **Request** (29 connections)
+- **test_dependency_injection.py** (18 connections) — `server/tests/unit/test_dependency_injection.py`
+- **get_player_service()** (12 connections) — `server/dependencies.py`
+- **get_room_service()** (12 connections) — `server/dependencies.py`
+- **get_combat_service()** (10 connections) — `server/dependencies.py`
+- **get_player_service_for_testing()** (9 connections) — `server/dependencies.py`
+- **get_connection_manager()** (9 connections) — `server/dependencies.py`
+- **get_async_persistence()** (9 connections) — `server/dependencies.py`
+- **get_player_respawn_service()** (9 connections) — `server/dependencies.py`
+- **get_player_combat_service()** (9 connections) — `server/dependencies.py`
+- **get_player_death_service()** (9 connections) — `server/dependencies.py`
+- **get_magic_service()** (9 connections) — `server/dependencies.py`
+- **get_spell_registry()** (9 connections) — `server/dependencies.py`
+- **get_spell_targeting_service()** (9 connections) — `server/dependencies.py`
+- **get_spell_effects()** (9 connections) — `server/dependencies.py`
+- **get_spell_learning_service()** (9 connections) — `server/dependencies.py`
+- **get_mp_regeneration_service()** (9 connections) — `server/dependencies.py`
+- **get_npc_lifecycle_manager()** (9 connections) — `server/dependencies.py`
+- **get_npc_spawning_service()** (9 connections) — `server/dependencies.py`
+- **get_npc_population_controller()** (9 connections) — `server/dependencies.py`
+- **get_catatonia_registry()** (9 connections) — `server/dependencies.py`
+- *... and 242 more nodes in this community*
 
 ## Relationships
 
-- [ChatMessage](ChatMessage.md) (14 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (4 shared connections)
-- [test combat persistence handler events](test_combat_persistence_handler_events.md) (3 shared connections)
-- [Any](Any.md) (2 shared connections)
-- [PartyUpdated](PartyUpdated.md) (2 shared connections)
-- [.initialize()](initialize%28%29.md) (1 shared connections)
-- [get mythos time()](get_mythos_time%28%29.md) (1 shared connections)
+- [message handler factory](message_handler_factory.md) (52 shared connections)
+- [ExitStack](ExitStack.md) (11 shared connections)
+- [character creation](character_creation.md) (10 shared connections)
+- [real time](real_time.md) (6 shared connections)
+- [chat nats publisher](chat_nats_publisher.md) (6 shared connections)
+- [. init ()](_init_%28%29.md) (6 shared connections)
+- [Player](Player.md) (6 shared connections)
+- [parse jsonb column()](parse_jsonb_column%28%29.md) (6 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (6 shared connections)
+- [admin shutdown command](admin_shutdown_command.md) (5 shared connections)
+- [.initialize()](initialize%28%29.md) (4 shared connections)
+- [close db()](close_db%28%29.md) (4 shared connections)
 
 ## Source Files
 
-- `server/game/chat_nats_publisher.py`
-- `server/game/chat_validator.py`
+- `server/database.py`
+- `server/dependencies.py`
+- `server/tests/unit/infrastructure/test_dependencies.py`
+- `server/tests/unit/test_dependency_injection.py`
 
 ## Audit Trail
 
-- EXTRACTED: 134 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 922 (87%)
+- INFERRED: 132 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

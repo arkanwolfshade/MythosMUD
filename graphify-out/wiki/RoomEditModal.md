@@ -24,8 +24,7 @@
 ## Relationships
 
 - [EdgeCreationModal](EdgeCreationModal.md) (5 shared connections)
-- [EdgeDetailsPanel](EdgeDetailsPanel.md) (3 shared connections)
-- [createInitialState()](createInitialState%28%29.md) (2 shared connections)
+- [EdgeDetailsPanel](EdgeDetailsPanel.md) (5 shared connections)
 
 ## Source Files
 

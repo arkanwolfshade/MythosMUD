@@ -18,9 +18,9 @@
 
 ## Relationships
 
-- [DropResolved](DropResolved.md) (3 shared connections)
+- [Player Position Service](Player_Position_Service.md) (3 shared connections)
 - [websocket integration](websocket_integration.md) (1 shared connections)
-- [test magic commands](test_magic_commands.md) (1 shared connections)
+- [Any](Any.md) (1 shared connections)
 - [.state()](state%28%29.md) (1 shared connections)
 
 ## Source Files

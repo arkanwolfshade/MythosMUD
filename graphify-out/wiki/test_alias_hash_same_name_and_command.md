@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **.test_extract_and_validate_player_name_fallback_username()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **Test extract_and_validate_player_name with username fallback.** (1 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **test_format_who_result_no_players()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **Test format_who_result with no players.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
 
 ## Relationships
 
-- [container websocket events](container_websocket_events.md) (1 shared connections)
-- [PlayerNameExtractor](PlayerNameExtractor.md) (1 shared connections)
+- [GameConfig](GameConfig.md) (1 shared connections)
+- [utility commands](utility_commands.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_name_utils.py`
+- `server/tests/unit/commands/test_who_commands.py`
 
 ## Audit Trail
 

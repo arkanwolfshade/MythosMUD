@@ -1,23 +1,24 @@
 # Test remove rule() handles exceptions
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_validate_room_exists_with_cache()** (2 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test validate_room_exists() uses cache.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **🎯 Code Quality Assessment** (3 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **Strengths** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **Areas for Future Enhancement (Not Blocking)** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
 
 ## Relationships
 
-- [test room service](test_room_service.md) (1 shared connections)
+- [.get stats()](get_stats%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,55 +1,72 @@
 # parse jsonb column()
 
-> 42 nodes
+> 247 nodes
 
 ## Key Concepts
 
+- **NPCLifecycleManager** (76 connections) — `server/npc/lifecycle_manager.py`
+- **lifecycle_manager.py** (48 connections) — `server/npc/lifecycle_manager.py`
+- **ScheduleEntry** (28 connections) — `server/schemas/calendar/calendar.py`
 - **ScheduleService** (28 connections) — `server/services/schedule_service.py`
+- **NPCDied** (25 connections) — `server/events/event_types.py`
+- **schedule_service.py** (25 connections) — `server/services/schedule_service.py`
+- **time_event_consumer.py** (24 connections) — `server/time/time_event_consumer.py`
+- **lifecycle_death.py** (23 connections) — `server/npc/lifecycle_death.py`
+- **NPCThreadManager** (22 connections) — `server/npc/threading.py`
+- **MythosTimeEventConsumer** (21 connections) — `server/time/time_event_consumer.py`
+- **player_combat_service_support.py** (19 connections) — `server/services/player_combat_service_support.py`
+- **_SpawnTrackedNPC** (17 connections) — `server/npc/lifecycle_manager.py`
+- **NPCLifecycleRecord** (17 connections) — `server/npc/lifecycle_types.py`
+- **_LifecycleManagerForDeath** (16 connections) — `server/npc/lifecycle_death.py`
+- **_SpawningServiceProtocol** (16 connections) — `server/npc/lifecycle_manager.py`
+- **RoomOccupantsRefreshRequested** (14 connections) — `server/events/event_types.py`
+- **._spawn_npc_impl()** (14 connections) — `server/npc/lifecycle_manager.py`
 - **TestScheduleService** (14 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **._async_load_from_database()** (7 connections) — `server/services/schedule_service.py`
-- **_fetch_schedule_entries()** (6 connections) — `server/services/schedule_service.py`
-- **.test_async_load_from_database_passes_search_path_for_mythos_e2e()** (5 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **._load_from_database()** (4 connections) — `server/services/schedule_service.py`
-- **.get_active_entries()** (4 connections) — `server/services/schedule_service.py`
-- **.test_init_loads_from_database()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_get_active_entries_with_matches()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_get_active_entries_boundary_conditions()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_get_active_entries_wrong_day()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_entries_property()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_normalize_weekday_names_latin_to_standard()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_entry_count_property()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **_resolve_asyncpg_database_url()** (3 connections) — `server/services/schedule_service.py`
-- **.entries()** (3 connections) — `server/services/schedule_service.py`
-- **.test_init_with_collections()** (3 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_init_without_persistence_raises()** (3 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_get_active_entries_no_matches()** (3 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **Connection** (2 connections)
-- **.entry_count()** (2 connections) — `server/services/schedule_service.py`
-- **Return asyncpg-compatible DATABASE_URL from the environment.** (1 connections) — `server/services/schedule_service.py`
-- **Load and normalize schedule rows from PostgreSQL.** (1 connections) — `server/services/schedule_service.py`
-- **Provides schedule lookups for NPCs and environmental consumers.** (1 connections) — `server/services/schedule_service.py`
-- **Load schedules from PostgreSQL database.** (1 connections) — `server/services/schedule_service.py`
-- *... and 17 more nodes in this community*
+- **ChronicleLike** (13 connections) — `server/time/time_service.py`
+- **MythosHourTickEvent** (12 connections) — `server/events/event_types.py`
+- **lifecycle_types.py** (12 connections) — `server/npc/lifecycle_types.py`
+- **NPCLifecycleState** (12 connections) — `server/npc/lifecycle_types.py`
+- **NPCLifecycleEvent** (11 connections) — `server/npc/lifecycle_types.py`
+- **lifecycle_despawn.py** (10 connections) — `server/npc/lifecycle_despawn.py`
+- **handle_npc_died_impl()** (8 connections) — `server/npc/lifecycle_death.py`
+- *... and 222 more nodes in this community*
 
 ## Relationships
 
-- [chat nats publisher](chat_nats_publisher.md) (11 shared connections)
-- [hash password()](hash_password%28%29.md) (11 shared connections)
-- [emit close container event()](emit_close_container_event%28%29.md) (3 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (3 shared connections)
-- [Formatter](Formatter.md) (2 shared connections)
-- [test resolve state no app()](test_resolve_state_no_app%28%29.md) (1 shared connections)
-- [rate overrides](rate_overrides.md) (1 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (82 shared connections)
+- [get current tick()](get_current_tick%28%29.md) (18 shared connections)
+- [CombatService](CombatService.md) (17 shared connections)
+- [HolidayCollection](HolidayCollection.md) (17 shared connections)
+- [chat nats publisher](chat_nats_publisher.md) (14 shared connections)
+- [world](world.md) (14 shared connections)
+- [test command parser](test_command_parser.md) (11 shared connections)
+- [. init ()](_init_%28%29.md) (9 shared connections)
+- [Test check all command blocks](Test_check_all_command_blocks.md) (9 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (9 shared connections)
+- [movement monitor](movement_monitor.md) (6 shared connections)
+- [Any](Any.md) (5 shared connections)
 
 ## Source Files
 
+- `server/events/event_types.py`
+- `server/models/room.py`
+- `server/npc/lifecycle_death.py`
+- `server/npc/lifecycle_despawn.py`
+- `server/npc/lifecycle_manager.py`
+- `server/npc/lifecycle_types.py`
+- `server/npc/threading.py`
+- `server/schemas/calendar/calendar.py`
+- `server/services/player_combat_service_support.py`
 - `server/services/schedule_service.py`
+- `server/tests/unit/services/test_npc_instance_service.py`
 - `server/tests/unit/services/test_schedule_service.py`
+- `server/time/time_event_consumer.py`
+- `server/time/time_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 126 (93%)
-- INFERRED: 10 (7%)
+- EXTRACTED: 924 (88%)
+- INFERRED: 132 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,23 +1,31 @@
 # Test process room rows with
 
-> 2 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **test_process_room_rows_with_full_room_id()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _process_room_rows with stable_id that already contains full hierarchical p** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **connection_state_machine.py** (10 connections) — `server/realtime/connection_state_machine.py`
+- **ConnectionEvent** (4 connections) — `server/realtime/connection_state_machine.py`
+- **Enum** (2 connections)
+- **StateMachine** (2 connections)
+- **Connection state machine for NATS messaging.  Implements a robust state machine** (1 connections) — `server/realtime/connection_state_machine.py`
+- **Events that trigger state transitions.      AI: Explicit events make the FSM det** (1 connections) — `server/realtime/connection_state_machine.py`
 
 ## Relationships
 
-- [test async persistence room loading](test_async_persistence_room_loading.md) (1 shared connections)
+- [connection state machine](connection_state_machine.md) (2 shared connections)
+- [world](world.md) (2 shared connections)
+- [enhance player ids()](enhance_player_ids%28%29.md) (2 shared connections)
+- [Any](Any.md) (1 shared connections)
+- [BaseUserManager](BaseUserManager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- `server/realtime/connection_state_machine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 20 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

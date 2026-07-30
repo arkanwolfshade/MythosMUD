@@ -1,23 +1,28 @@
 # AsyncPersistenceLayer
 
-> 2 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **AsyncPersistenceLayer** (1 connections) — `docs/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **PersistenceLayer Sync Shim** (1 connections) — `docs/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
+- **Projected Optimization Impact** (7 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Current State (Baseline)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **After Phase 1-3: Pruning (Month 1)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **After Phase 4: Consolidation (Month 2)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **After Phase 5: Gap Filling (Month 2)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Final State Comparison** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Net Benefit** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [. is uuid string()](_is_uuid_string%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
+- `docs/archive/TEST_VALUE_DISTRIBUTION.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

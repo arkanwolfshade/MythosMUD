@@ -1,12 +1,11 @@
 # Core character statistics with Lovecraftian
 
-> 51 nodes
+> 49 nodes
 
 ## Key Concepts
 
 - **test_rate_limiter_utils.py** (22 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
 - **RateLimiter** (10 connections) — `server/utils/rate_limiter.py`
-- **rate_limiter.py** (9 connections) — `server/utils/rate_limiter.py`
 - **.enforce_rate_limit()** (5 connections) — `server/utils/rate_limiter.py`
 - **.get_rate_limit_info()** (4 connections) — `server/utils/rate_limiter.py`
 - **rate_limiter()** (3 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
@@ -29,15 +28,14 @@
 - **test_stats_roll_limiter_initialized()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
 - **test_character_creation_limiter_initialized()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
 - **.__init__()** (2 connections) — `server/utils/rate_limiter.py`
-- *... and 26 more nodes in this community*
+- **Unit tests for rate limiting utilities.  Tests the simple in-memory rate limiter** (1 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- *... and 24 more nodes in this community*
 
 ## Relationships
 
-- [. init ()](_init_%28%29.md) (5 shared connections)
-- [real time](real_time.md) (2 shared connections)
-- [BaseCommand](BaseCommand.md) (2 shared connections)
-- [admin shutdown command](admin_shutdown_command.md) (1 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
+- [. init ()](_init_%28%29.md) (7 shared connections)
+- [real time](real_time.md) (1 shared connections)
+- [APIRouter](APIRouter.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,7 +45,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 119 (98%)
+- EXTRACTED: 109 (98%)
 - INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 

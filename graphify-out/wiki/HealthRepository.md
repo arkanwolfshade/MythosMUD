@@ -32,11 +32,11 @@
 
 ## Relationships
 
-- [real time](real_time.md) (11 shared connections)
+- [real time](real_time.md) (12 shared connections)
 - [. init ()](_init_%28%29.md) (4 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
 - [chat nats publisher](chat_nats_publisher.md) (1 shared connections)
-- [disconnect grace period](disconnect_grace_period.md) (1 shared connections)
+- [spell registry](spell_registry.md) (1 shared connections)
+- [world](world.md) (1 shared connections)
 
 ## Source Files
 

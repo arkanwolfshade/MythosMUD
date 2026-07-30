@@ -1,51 +1,48 @@
 # correct patterns
 
-> 22 nodes
+> 31 nodes
 
 ## Key Concepts
 
-- **NATSUnsubscribeError** (12 connections) — `server/services/nats_exceptions.py`
-- **NATSRequestError** (11 connections) — `server/services/nats_exceptions.py`
-- **.__init__()** (7 connections) — `server/services/nats_exceptions.py`
-- **Exception** (6 connections)
-- **.__init__()** (3 connections) — `server/services/nats_exceptions.py`
-- **.__init__()** (3 connections) — `server/services/nats_exceptions.py`
-- **.__init__()** (3 connections) — `server/services/nats_exceptions.py`
-- **.__init__()** (3 connections) — `server/services/nats_exceptions.py`
-- **test_unsubscribe_from_subject_not_found()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_unsubscribe_not_found()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_unsubscribe_error()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_request_not_connected()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_request_timeout()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_request_error()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **Raised when unsubscribe operations fail.** (1 connections) — `server/services/nats_exceptions.py`
-- **Raised when request/response operations fail.** (1 connections) — `server/services/nats_exceptions.py`
-- **Test _unsubscribe_from_subject() handles subscription not found.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test unsubscribe() raises NATSUnsubscribeError when subscription not found.** (1 connections) — `server/tests/unit/services/test_nats_service.py`
-- **Test unsubscribe() raises NATSUnsubscribeError on unsubscribe errors.** (1 connections) — `server/tests/unit/services/test_nats_service.py`
-- **Test request() raises NATSRequestError when not connected.** (1 connections) — `server/tests/unit/services/test_nats_service.py`
-- **Test request() raises NATSRequestError on timeout.** (1 connections) — `server/tests/unit/services/test_nats_service.py`
-- **Test request() raises NATSRequestError on errors.** (1 connections) — `server/tests/unit/services/test_nats_service.py`
+- **Pydantic Code Review - feature/sqlite-to-postgresql Branch** (11 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **Specific File Reviews** (9 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **Medium Priority Issues** (4 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **Recommendations Summary** (4 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **High Priority Issues** (3 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **Code Quality Observations** (3 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **Critical Issues** (2 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **PYDANTIC_CODE_REVIEW.md** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **Executive Summary** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **🔴 CRITICAL: Security Vulnerability - `extra="allow"` in Stats Model** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **🟡 Performance: Missing `__slots__` in Frequently Used Models** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **🟡 Business Logic in Models - Stats.**init**** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **🟢 Optional Fields Without Explicit Defaults** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **🟢 Field Validator Organization** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **🟢 Missing `model_rebuild()` Usage** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **✅ Good Practices Found** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **⚠️ Areas for Improvement** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **`server/config/models.py`** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **`server/schemas/invite.py`** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **`server/schemas/player.py`** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **`server/schemas/user.py`** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **`server/api/players.py`** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **`server/auth/endpoints.py`** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **`server/models/command.py`** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **`server/models/game.py`** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- *... and 6 more nodes in this community*
 
 ## Relationships
 
-- [BaseUserManager](BaseUserManager.md) (7 shared connections)
-- [test combat persistence handler events](test_combat_persistence_handler_events.md) (6 shared connections)
-- [FollowTargetValue](FollowTargetValue.md) (4 shared connections)
-- [Any](Any.md) (3 shared connections)
-- [connection state machine](connection_state_machine.md) (2 shared connections)
-- [initialize nats and combat services()](initialize_nats_and_combat_services%28%29.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/services/nats_exceptions.py`
-- `server/tests/unit/realtime/test_nats_message_handler.py`
-- `server/tests/unit/services/test_nats_service.py`
+- `docs/archive/PYDANTIC_CODE_REVIEW.md`
 
 ## Audit Trail
 
-- EXTRACTED: 62 (84%)
-- INFERRED: 12 (16%)
+- EXTRACTED: 60 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

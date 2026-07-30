@@ -4,32 +4,31 @@
 
 ## Key Concepts
 
-- **._run()** (5 connections) — `server/time/tick_scheduler.py`
-- **._emit_pending_ticks()** (5 connections) — `server/time/tick_scheduler.py`
-- **._publish_tick()** (5 connections) — `server/time/tick_scheduler.py`
-- **._truncate_to_hour()** (4 connections) — `server/time/tick_scheduler.py`
-- **.start()** (3 connections) — `server/time/tick_scheduler.py`
-- **._sleep_until_next_hour()** (3 connections) — `server/time/tick_scheduler.py`
-- **datetime** (3 connections)
-- **Register the scheduler loop with the task registry.** (1 connections) — `server/time/tick_scheduler.py`
-- **Background coroutine that emits ticks and waits for the next hour boundary.** (1 connections) — `server/time/tick_scheduler.py`
-- **Emit one or more hour tick events if we've crossed boundaries.** (1 connections) — `server/time/tick_scheduler.py`
-- **Sleep until the next Mythos hour boundary, respecting compression ratio.** (1 connections) — `server/time/tick_scheduler.py`
-- **Publish the hourly tick event to the EventBus.** (1 connections) — `server/time/tick_scheduler.py`
-- **Return the same datetime truncated down to the closest hour.** (1 connections) — `server/time/tick_scheduler.py`
+- **Execution Timeline** (13 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Month 1: Pruning Phase** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Week 1: Quick Wins** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Week 2: Infrastructure Reduction** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Week 3: Coverage Test Optimization** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Week 4: Verification and Validation** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Month 2: Consolidation + Gap Filling** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Week 5: Parametrization (Part 1)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Week 6: Parametrization (Part 2)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Week 7: Critical Gap Tests (Part 1)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Week 8: Critical Gap Tests (Part 2)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Month 3+: Continuous Improvement** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Ongoing Tasks** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
 
 ## Relationships
 
-- [emit close container event()](emit_close_container_event%28%29.md) (6 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
+- [. is uuid string()](_is_uuid_string%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/time/tick_scheduler.py`
+- `docs/archive/TEST_VALUE_DISTRIBUTION.md`
 
 ## Audit Trail
 
-- EXTRACTED: 34 (100%)
+- EXTRACTED: 25 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

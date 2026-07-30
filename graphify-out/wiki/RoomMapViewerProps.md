@@ -29,9 +29,12 @@
 ## Relationships
 
 - [EdgeDetailsPanel](EdgeDetailsPanel.md) (4 shared connections)
-- [fetchSpy](fetchSpy.md) (4 shared connections)
-- [EdgeCreationModal](EdgeCreationModal.md) (2 shared connections)
+- [AppCreationFlowViews](AppCreationFlowViews.md) (2 shared connections)
 - [useConnectionStateMachine.test](useConnectionStateMachine.test.md) (2 shared connections)
+- [Tests for get spell targeting](Tests_for_get_spell_targeting.md) (1 shared connections)
+- [EdgeCreationModal](EdgeCreationModal.md) (1 shared connections)
+- [domPurifyTestWindow](domPurifyTestWindow.md) (1 shared connections)
+- [fetchSpy](fetchSpy.md) (1 shared connections)
 
 ## Source Files
 

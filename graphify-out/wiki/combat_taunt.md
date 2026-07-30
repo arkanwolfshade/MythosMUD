@@ -1,11 +1,13 @@
 # combat taunt
 
-> 75 nodes
+> 79 nodes
 
 ## Key Concepts
 
 - **test_room_sync_service.py** (40 connections) — `server/tests/unit/services/test_room_sync_service.py`
 - **RoomSyncService** (19 connections) — `server/services/room_sync_service.py`
+- **room_sync_service.py** (16 connections) — `server/services/room_sync_service.py`
+- **get_room_sync_service()** (8 connections) — `server/services/room_sync_service.py`
 - **room_sync_service()** (4 connections) — `server/tests/unit/services/test_room_sync_service.py`
 - **.process_event_with_ordering()** (3 connections) — `server/services/room_sync_service.py`
 - **room_sync_service_with_room_service()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
@@ -27,16 +29,18 @@
 - **test_process_room_update_with_validation_invalid_data()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
 - **test_process_room_update_with_validation_stale_data()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
 - **test_invalidate_stale_cache_success()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_invalidate_stale_cache_no_room_service()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_fetch_fresh_room_data_success()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- *... and 50 more nodes in this community*
+- *... and 54 more nodes in this community*
 
 ## Relationships
 
-- [Any](Any.md) (10 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (10 shared connections)
-- [UUID](UUID.md) (3 shared connections)
-- [Manages room data caching and](Manages_room_data_caching_and.md) (1 shared connections)
+- [Any](Any.md) (12 shared connections)
+- [world](world.md) (5 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (4 shared connections)
+- [combat initialization](combat_initialization.md) (3 shared connections)
+- [create access token()](create_access_token%28%29.md) (3 shared connections)
+- [get current tick()](get_current_tick%28%29.md) (2 shared connections)
+- [Manages room data caching and](Manages_room_data_caching_and.md) (2 shared connections)
+- [NPCEventHandler](NPCEventHandler.md) (1 shared connections)
 
 ## Source Files
 
@@ -45,8 +49,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 168 (95%)
-- INFERRED: 8 (5%)
+- EXTRACTED: 193 (96%)
+- INFERRED: 9 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

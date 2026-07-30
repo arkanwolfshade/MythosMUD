@@ -1,23 +1,26 @@
 # Test ContainerSourceType enum contains expected
 
-> 2 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **test_send_room_name_message()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **Test _send_room_name_message() sends room name.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **Risk Assessment and Mitigation** (5 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Risks by Phase** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Rollback Triggers** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Automatic Rollback If** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Review and Reconsider If** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
 
 ## Relationships
 
-- [. call ()](_call_%28%29.md) (1 shared connections)
+- [. is uuid string()](_is_uuid_string%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- `docs/archive/TEST_VALUE_DISTRIBUTION.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

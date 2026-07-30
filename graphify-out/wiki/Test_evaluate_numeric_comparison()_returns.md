@@ -1,23 +1,25 @@
 # Test evaluate numeric comparison() returns
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_log_player_movement_error_handling()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **Test log_player_movement() handles errors.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **🎓 Lessons Learned** (4 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **What Worked Well** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **Challenges Encountered** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **Best Practices Reinforced** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
 
 ## Relationships
 
-- [. call ()](_call_%28%29.md) (1 shared connections)
+- [Test handle nats message handles](Test_handle_nats_message_handles.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

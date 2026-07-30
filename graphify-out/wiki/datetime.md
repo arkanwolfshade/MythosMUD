@@ -1,54 +1,52 @@
 # datetime
 
-> 30 nodes
+> 18 nodes
 
 ## Key Concepts
 
-- **ContainerLockState** (14 connections) — `server/models/container.py`
-- **Any** (8 connections)
-- **.create_corpse()** (7 connections) — `server/models/container.py`
-- **.create_environment()** (6 connections) — `server/models/container.py`
-- **.create_equipment()** (6 connections) — `server/models/container.py`
-- **UUID** (5 connections)
-- **.validate_lock_state()** (4 connections) — `server/models/container.py`
-- **.validate_entity_id()** (4 connections) — `server/models/container.py`
-- **.would_exceed_capacity()** (4 connections) — `server/models/container.py`
-- **.validate_metadata_no_personal_data()** (3 connections) — `server/models/container.py`
-- **.validate_room_id()** (3 connections) — `server/models/container.py`
-- **.has_room_for()** (3 connections) — `server/models/container.py`
-- **.is_decayed()** (3 connections) — `server/models/container.py`
-- **datetime** (3 connections)
-- **InventoryStack** (3 connections)
-- **.to_dict()** (3 connections) — `server/models/container.py`
-- **StrEnum** (2 connections)
-- **ValidationInfo** (2 connections)
-- **Lock state for container instances.** (1 connections) — `server/models/container.py`
-- **Validate that metadata does not contain personal information (COPPA compliance).** (1 connections) — `server/models/container.py`
-- **Validate and convert lock_state to enum.** (1 connections) — `server/models/container.py`
-- **Validate that room_id is provided for environment and corpse containers.** (1 connections) — `server/models/container.py`
-- **Validate that entity_id is provided for equipment containers.** (1 connections) — `server/models/container.py`
-- **Check if container has room for additional items.** (1 connections) — `server/models/container.py`
-- **Check if adding the given items would exceed container capacity.** (1 connections) — `server/models/container.py`
-- *... and 5 more nodes in this community*
+- **IdleMovementHandler** (60 connections) — `server/npc/idle_movement.py`
+- **test_idle_movement_handler_init_no_persistence()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_should_idle_move_not_alive()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_is_npc_in_combat_no_attribute()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_get_valid_exits_all_exits_invalid_subzone_returns_empty()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_select_exit_single_exit()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_calculate_distance_to_room_same_subzone()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_execute_idle_movement_no_valid_exits()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_execute_idle_movement_no_exit_selected()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **Handler for NPC idle movement logic.      This class manages the decision-maki** (1 connections) — `server/npc/idle_movement.py`
+- **Test IdleMovementHandler initialization fails without persistence.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **Test should_idle_move() returns False when NPC is not alive.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **Test _is_npc_in_combat() handles missing in_combat attribute.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **When every target fails boundary validation, valid exits dict is empty.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **Test select_exit() with single exit.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **Test _calculate_distance_to_room() with rooms in same subzone.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **Test execute_idle_movement() when no valid exits.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **Test execute_idle_movement() when no exit is selected.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
 
 ## Relationships
 
-- [APIRouter](APIRouter.md) (14 shared connections)
-- [.get population stats()](get_population_stats%28%29.md) (3 shared connections)
-- [Room](Room.md) (2 shared connections)
-- [main()](main%28%29.md) (1 shared connections)
-- [AbstractContextManager](AbstractContextManager.md) (1 shared connections)
-- [real time](real_time.md) (1 shared connections)
-- [datetime](datetime.md) (1 shared connections)
+- [cfg float()](cfg_float%28%29.md) (19 shared connections)
+- [.get explored rooms()](get_explored_rooms%28%29.md) (9 shared connections)
+- [get current tick()](get_current_tick%28%29.md) (9 shared connections)
+- [Code Review Import Analysis](Code_Review_Import_Analysis.md) (4 shared connections)
+- [.get active status effects()](get_active_status_effects%28%29.md) (3 shared connections)
+- [ensure database directory()](ensure_database_directory%28%29.md) (2 shared connections)
+- [parse jsonb column()](parse_jsonb_column%28%29.md) (1 shared connections)
+- [test_calculate_distance_to_room_different_rooms](test_calculate_distance_to_room_different_rooms.md) (1 shared connections)
+- [test_calculate_distance_to_room_same_room](test_calculate_distance_to_room_same_room.md) (1 shared connections)
+- [test_execute_idle_movement_no_current_room](test_execute_idle_movement_no_current_room.md) (1 shared connections)
+- [test_get_valid_exits_empty_room](test_get_valid_exits_empty_room.md) (1 shared connections)
+- [test_get_valid_exits_filters_exits_outside_subzone](test_get_valid_exits_filters_exits_outside_subzone.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/container.py`
+- `server/npc/idle_movement.py`
+- `server/tests/unit/npc/test_idle_movement.py`
 
 ## Audit Trail
 
-- EXTRACTED: 95 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 86 (92%)
+- INFERRED: 7 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

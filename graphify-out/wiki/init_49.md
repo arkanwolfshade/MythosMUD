@@ -1,22 +1,23 @@
 # init
 
-> 1 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **__init__.py** (0 connections) — `server/tests/unit/schemas/__init__.py`
+- **test_send_messages_to_players_invalid_player_id()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _send_messages_to_players handles invalid player_id.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test nats message handler chat](test_nats_message_handler_chat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/schemas/__init__.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,23 +1,24 @@
 # Test get rules() returns copy
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_validate_room_exists_without_cache()** (2 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test validate_room_exists() falls back to persistence.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **🎯 Final Verdict** (3 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **Code Quality: ✅ EXCELLENT (A)** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **Recommendations for Deployment** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
 
 ## Relationships
 
-- [test room service](test_room_service.md) (1 shared connections)
+- [.get stats()](get_stats%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

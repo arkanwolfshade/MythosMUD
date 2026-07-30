@@ -1,70 +1,71 @@
 # Any
 
-> 57 nodes
+> 80 nodes
 
 ## Key Concepts
 
 - **GameTerminal.tsx** (46 connections) — `client/src/components/GameTerminal.tsx`
-- **lucidityEventUtils.ts** (19 connections) — `client/src/utils/lucidityEventUtils.ts`
+- **debugLogger** (25 connections) — `client/src/utils/debugLogger.ts`
+- **GameTerminalPresentation.tsx** (16 connections) — `client/src/components/GameTerminalPresentation.tsx`
 - **RoomInfoPanel.tsx** (10 connections) — `client/src/components/RoomInfoPanel.tsx`
-- **HallucinationMessage** (10 connections) — `client/src/types/lucidity.ts`
-- **buildLucidityStatus()** (10 connections) — `client/src/utils/lucidityEventUtils.ts`
 - **HallucinationTicker.tsx** (9 connections) — `client/src/components/lucidity/HallucinationTicker.tsx`
+- **RescueStatusBanner.tsx** (9 connections) — `client/src/components/lucidity/RescueStatusBanner.tsx`
+- **.log()** (9 connections) — `client/src/utils/debugLogger.ts`
 - **GameTerminal()** (8 connections) — `client/src/components/GameTerminal.tsx`
 - **game-terminal-integration.spec.tsx** (7 connections) — `client/src/components/__tests__/game-terminal-integration.spec.tsx`
 - **game-terminal-integration.test.tsx** (7 connections) — `client/src/components/__tests__/game-terminal-integration.test.tsx`
+- **debugLogger.ts** (7 connections) — `client/src/utils/debugLogger.ts`
 - **RoomInfoPanel()** (6 connections) — `client/src/components/RoomInfoPanel.tsx`
+- **.logToConsole()** (6 connections) — `client/src/utils/debugLogger.ts`
+- **GameTerminalPresentation.test.tsx** (5 connections) — `client/src/components/__tests__/GameTerminalPresentation.test.tsx`
 - **IncapacitatedBanner.tsx** (5 connections) — `client/src/components/health/IncapacitatedBanner.tsx`
 - **HallucinationTicker.test.tsx** (5 connections) — `client/src/components/lucidity/__tests__/HallucinationTicker.test.tsx`
+- **RescueStatusBanner.test.tsx** (5 connections) — `client/src/components/lucidity/__tests__/RescueStatusBanner.test.tsx`
 - **DismissButton.tsx** (5 connections) — `client/src/components/ui/DismissButton.tsx`
-- **lucidityEventUtils.test.ts** (5 connections) — `client/src/utils/__tests__/lucidityEventUtils.test.ts`
-- **parseNumber()** (5 connections) — `client/src/utils/lucidityEventUtils.ts`
+- **.downloadLogs()** (5 connections) — `client/src/utils/debugLogger.ts`
+- **GameTerminalPresentation()** (4 connections) — `client/src/components/GameTerminalPresentation.tsx`
+- **GameTerminal.test.tsx** (4 connections) — `client/src/components/__tests__/GameTerminal.test.tsx`
 - **RoomInfoPanel.test.tsx** (4 connections) — `client/src/components/__tests__/RoomInfoPanel.test.tsx`
 - **DismissButton()** (4 connections) — `client/src/components/ui/DismissButton.tsx`
-- **resolveCurrentLucidity()** (4 connections) — `client/src/utils/lucidityEventUtils.ts`
-- **buildHealthStatus()** (3 connections) — `client/src/components/GameTerminal.tsx`
-- **RoomInfoPanel.test.tsx** (3 connections) — `client/src/components/RoomInfoPanel.test.tsx`
-- **HallucinationTicker** (3 connections) — `client/src/components/lucidity/HallucinationTicker.tsx`
-- **resolveMaxLucidity()** (3 connections) — `client/src/utils/lucidityEventUtils.ts`
-- **createHallucinationEntry()** (3 connections) — `client/src/utils/lucidityEventUtils.ts`
-- **createRescueState()** (3 connections) — `client/src/utils/lucidityEventUtils.ts`
-- **GameTerminal.test.tsx** (2 connections) — `client/src/components/GameTerminal.test.tsx`
-- *... and 32 more nodes in this community*
+- **debugLogger.test.ts** (4 connections) — `client/src/utils/__tests__/debugLogger.test.ts`
+- **.warn()** (4 connections) — `client/src/utils/debugLogger.ts`
+- *... and 55 more nodes in this community*
 
 ## Relationships
 
-- [monitoring models](monitoring_models.md) (21 shared connections)
-- [MythosTimeHud](MythosTimeHud.md) (8 shared connections)
-- [look item](look_item.md) (5 shared connections)
-- [.create corpse()](create_corpse%28%29.md) (5 shared connections)
-- [GameLogMessagesList](GameLogMessagesList.md) (4 shared connections)
-- [ChatPanelTest](ChatPanelTest.md) (3 shared connections)
-- [player repository save](player_repository_save.md) (2 shared connections)
+- [monitoring models](monitoring_models.md) (24 shared connections)
+- [ChatPanelTest](ChatPanelTest.md) (9 shared connections)
+- [GameLogMessagesList](GameLogMessagesList.md) (6 shared connections)
+- [MythosTimeHud](MythosTimeHud.md) (4 shared connections)
+- [chatPanelChannelFilter](chatPanelChannelFilter.md) (4 shared connections)
+- [createInitialState()](createInitialState%28%29.md) (2 shared connections)
 - [useConnectionStateMachine.test](useConnectionStateMachine.test.md) (2 shared connections)
-- [async sessionmaker](async_sessionmaker.md) (1 shared connections)
-- [chatPanelChannelFilter](chatPanelChannelFilter.md) (1 shared connections)
-- [.append()](append%28%29.md) (1 shared connections)
+- [EdgeDetailsPanel](EdgeDetailsPanel.md) (2 shared connections)
 
 ## Source Files
 
 - `client/src/components/GameTerminal.test.tsx`
 - `client/src/components/GameTerminal.tsx`
+- `client/src/components/GameTerminalPresentation.tsx`
 - `client/src/components/RoomInfoPanel.test.tsx`
 - `client/src/components/RoomInfoPanel.tsx`
+- `client/src/components/__tests__/GameTerminal.test.tsx`
+- `client/src/components/__tests__/GameTerminalPresentation.test.tsx`
 - `client/src/components/__tests__/RoomInfoPanel.test.tsx`
 - `client/src/components/__tests__/game-terminal-integration.spec.tsx`
 - `client/src/components/__tests__/game-terminal-integration.test.tsx`
 - `client/src/components/health/IncapacitatedBanner.tsx`
 - `client/src/components/lucidity/HallucinationTicker.tsx`
+- `client/src/components/lucidity/RescueStatusBanner.tsx`
 - `client/src/components/lucidity/__tests__/HallucinationTicker.test.tsx`
+- `client/src/components/lucidity/__tests__/RescueStatusBanner.test.tsx`
 - `client/src/components/ui/DismissButton.tsx`
-- `client/src/types/lucidity.ts`
-- `client/src/utils/__tests__/lucidityEventUtils.test.ts`
-- `client/src/utils/lucidityEventUtils.ts`
+- `client/src/utils/__tests__/debugLogger.test.ts`
+- `client/src/utils/debugLogger.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 231 (100%)
+- EXTRACTED: 305 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

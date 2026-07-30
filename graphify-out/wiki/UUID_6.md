@@ -1,59 +1,48 @@
 # UUID
 
-> 57 nodes
+> 29 nodes
 
 ## Key Concepts
 
-- **UserManager** (59 connections) — `server/services/user_manager.py`
-- **UUID** (39 connections)
-- **._normalize_to_uuid()** (26 connections) — `server/services/user_manager.py`
-- **.save_player_mutes()** (14 connections) — `server/services/user_manager.py`
-- **.is_admin_sync()** (7 connections) — `server/services/user_manager.py`
-- **.load_player_mutes_async()** (7 connections) — `server/services/user_manager.py`
-- **.add_admin()** (6 connections) — `server/services/user_manager.py`
-- **.remove_admin()** (6 connections) — `server/services/user_manager.py`
-- **.mute_player()** (6 connections) — `server/services/user_manager.py`
-- **.unmute_player()** (6 connections) — `server/services/user_manager.py`
-- **.mute_global()** (6 connections) — `server/services/user_manager.py`
-- **.unmute_global()** (6 connections) — `server/services/user_manager.py`
-- **.is_player_muted()** (6 connections) — `server/services/user_manager.py`
-- **.can_send_message()** (6 connections) — `server/services/user_manager.py`
-- **.load_player_mutes_batch()** (6 connections) — `server/services/user_manager.py`
-- **.mute_channel()** (5 connections) — `server/services/user_manager.py`
-- **.unmute_channel()** (5 connections) — `server/services/user_manager.py`
-- **.is_player_muted_async()** (5 connections) — `server/services/user_manager.py`
-- **.is_channel_muted()** (5 connections) — `server/services/user_manager.py`
-- **.is_globally_muted()** (5 connections) — `server/services/user_manager.py`
-- **._update_cache_on_error()** (5 connections) — `server/services/user_manager.py`
-- **._serialize_mute_info_for_json()** (5 connections) — `server/services/user_manager.py`
-- **._save_player_mutes_to_data()** (5 connections) — `server/services/user_manager.py`
-- **._save_channel_mutes_to_data()** (5 connections) — `server/services/user_manager.py`
-- **._save_global_mutes_to_data()** (5 connections) — `server/services/user_manager.py`
-- *... and 32 more nodes in this community*
+- **NATS Code Review - Branch: feature/sqlite-to-postgresql** (10 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **Positive Findings ✅** (5 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **Critical Issues 🔴** (4 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **High Priority Issues 🟡** (4 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **Medium Priority Issues 🟢** (4 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **Recommendations Summary** (4 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **Code Quality Issues** (3 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **NATS_CODE_REVIEW.md** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **Executive Summary** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **1. **Blocking Operations in Message Handlers** (Anti-pattern violation)** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **2. **Missing Message Acknowledgment** (Anti-pattern violation)** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **3. **Connection Pool Not Used by Default** (Inefficiency)** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **4. **Subject Naming Inconsistency** (Anti-pattern risk)** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **5. **No TLS Configuration** (Security concern)** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **6. **Error Handler May Block** (Anti-pattern risk)** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **7. **Batch Flush Uses Deprecated Event Loop Method**** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **8. **No Connection Health Monitoring**** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **9. **Memory Leak Risk in Metrics**** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **10. **Inconsistent Error Handling**** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **11. **Missing Input Validation**** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **1. **Excellent Error Boundary Implementation**** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **2. **Good Connection State Management**** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **3. **Proper Async/Await Usage**** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **4. **Subject Manager Pattern**** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **Immediate Actions (Critical)** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
-- [message filtering](message_filtering.md) (16 shared connections)
-- [look command](look_command.md) (16 shared connections)
-- [Player](Player.md) (4 shared connections)
-- [MythosValidationError](MythosValidationError.md) (4 shared connections)
-- [emit close container event()](emit_close_container_event%28%29.md) (3 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (3 shared connections)
-- [DeadLetterMessage](DeadLetterMessage.md) (3 shared connections)
-- [test user manager](test_user_manager.md) (2 shared connections)
-- [chat nats publisher](chat_nats_publisher.md) (2 shared connections)
-- [Any](Any.md) (2 shared connections)
-- [. init ()](_init_%28%29.md) (1 shared connections)
-- [ChatLogger](ChatLogger.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/services/user_manager.py`
+- `docs/archive/NATS_CODE_REVIEW.md`
 
 ## Audit Trail
 
-- EXTRACTED: 296 (98%)
-- INFERRED: 5 (2%)
+- EXTRACTED: 56 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

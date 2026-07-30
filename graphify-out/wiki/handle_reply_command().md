@@ -1,6 +1,6 @@
 # handle reply command()
 
-> 19 nodes
+> 20 nodes
 
 ## Key Concepts
 
@@ -8,6 +8,7 @@
 - **SkillAssignmentScreen.tsx** (15 connections) — `client/src/components/SkillAssignmentScreen.tsx`
 - **SkillAssignmentScreen.helpers.tsx** (12 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
 - **SkillAssignmentScreen()** (5 connections) — `client/src/components/SkillAssignmentScreen.tsx`
+- **getCreateCharacterErrorMessage()** (4 connections) — `client/src/components/CharacterNameScreen.tsx`
 - **CharacterNameScreen()** (4 connections) — `client/src/components/CharacterNameScreen.tsx`
 - **SkillsPayload** (3 connections) — `client/src/components/CharacterNameScreen.tsx`
 - **SkillAssignmentScreenProps** (3 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
@@ -40,7 +41,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 89 (100%)
+- EXTRACTED: 93 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

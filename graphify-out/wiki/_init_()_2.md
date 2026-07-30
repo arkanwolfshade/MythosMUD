@@ -1,58 +1,75 @@
 # . init ()
 
-> 81 nodes
+> 401 nodes
 
 ## Key Concepts
 
-- **RoomCacheService** (17 connections) — `server/caching/cache_service.py`
-- **ProfessionCacheService** (15 connections) — `server/caching/cache_service.py`
-- **NPCCacheService** (14 connections) — `server/caching/cache_service.py`
-- **Any** (13 connections)
-- **__init__.py** (12 connections) — `server/caching/__init__.py`
-- **CacheService** (8 connections) — `server/caching/cache_service.py`
-- **_FakeNPCService** (7 connections) — `scripts/bench_cache_npc.py`
-- **bench_npc_cache()** (7 connections) — `scripts/bench_cache_npc.py`
-- **bench_cache_professions.py** (7 connections) — `scripts/bench_cache_professions.py`
-- **.__init__()** (7 connections) — `server/caching/cache_service.py`
-- **bench_cache.py** (6 connections) — `scripts/bench_cache.py`
-- **_FakePersistence** (6 connections) — `scripts/bench_cache.py`
-- **bench_cache_npc.py** (6 connections) — `scripts/bench_cache_npc.py`
-- **bench_profession_cache()** (6 connections) — `scripts/bench_cache_professions.py`
-- **bench_room_cache()** (5 connections) — `scripts/bench_cache.py`
-- **_FakePersistence** (5 connections) — `scripts/bench_cache_professions.py`
-- **.get_all_professions()** (5 connections) — `scripts/bench_cache_professions.py`
-- **cached()** (5 connections) — `server/caching/cache_service.py`
-- **.get_all_professions()** (5 connections) — `server/caching/cache_service.py`
-- **.get_npc_definitions()** (4 connections) — `scripts/bench_cache_npc.py`
-- **Any** (4 connections)
-- **.get_spawn_rules()** (4 connections) — `scripts/bench_cache_npc.py`
-- **_get_empty_dict()** (4 connections) — `scripts/bench_cache_professions.py`
-- **.__init__()** (4 connections) — `server/caching/cache_service.py`
-- **.get_room_sync()** (4 connections) — `server/caching/cache_service.py`
-- *... and 56 more nodes in this community*
+- **MythosMUDError** (79 connections) — `server/exceptions.py`
+- **RateLimitError** (76 connections) — `server/exceptions.py`
+- **ErrorContext** (54 connections) — `server/exceptions.py`
+- **legacy_error_handlers.py** (48 connections) — `server/legacy_error_handlers.py`
+- **ErrorType** (47 connections) — `server/error_types.py`
+- **ErrorMessages** (47 connections) — `server/error_types.py`
+- **test_exceptions.py** (43 connections) — `server/tests/unit/test_exceptions.py`
+- **test_legacy_error_handlers.py** (41 connections) — `server/tests/unit/test_legacy_error_handlers.py`
+- **CircuitBreaker** (38 connections) — `server/legacy_error_handlers.py`
+- **NetworkError** (37 connections) — `server/exceptions.py`
+- **ErrorResponse** (37 connections) — `server/legacy_error_handlers.py`
+- **test_exceptions_comprehensive.py** (35 connections) — `server/tests/unit/test_exceptions_comprehensive.py`
+- **TestErrorMapping** (35 connections) — `server/tests/unit/test_legacy_error_handlers.py`
+- **ResourceNotFoundError** (34 connections) — `server/exceptions.py`
+- **create_error_context()** (33 connections) — `server/exceptions.py`
+- **standardized_responses.py** (32 connections) — `server/error_handlers/standardized_responses.py`
+- **ConfigurationError** (32 connections) — `server/exceptions.py`
+- **GameLogicError** (31 connections) — `server/exceptions.py`
+- **TestSanitization** (31 connections) — `server/tests/unit/test_legacy_error_handlers.py`
+- **JSONResponse** (30 connections) — `docs/examples/logging/fastapi_integration.py`
+- **ErrorSeverity** (30 connections) — `server/error_types.py`
+- **TestErrorHandlers** (27 connections) — `server/tests/unit/test_legacy_error_handlers.py`
+- **LoggedException** (23 connections) — `server/exceptions.py`
+- **TestCircuitBreaker** (22 connections) — `server/tests/unit/test_legacy_error_handlers.py`
+- **Request** (21 connections)
+- *... and 376 more nodes in this community*
 
 ## Relationships
 
-- [TerminalButtonProps](TerminalButtonProps.md) (11 shared connections)
-- [init](init.md) (6 shared connections)
-- [.shutdown()](shutdown%28%29.md) (6 shared connections)
-- [emit close container event()](emit_close_container_event%28%29.md) (6 shared connections)
-- [chat send with room bundle()](chat_send_with_room_bundle%28%29.md) (4 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (1 shared connections)
+- [convert pydantic error()](convert_pydantic_error%28%29.md) (76 shared connections)
+- [real time](real_time.md) (60 shared connections)
+- [AbstractContextManager](AbstractContextManager.md) (49 shared connections)
+- [.initialize()](initialize%28%29.md) (40 shared connections)
+- [create access token()](create_access_token%28%29.md) (31 shared connections)
+- [BaseCommand](BaseCommand.md) (26 shared connections)
+- [world](world.md) (14 shared connections)
+- [admin shutdown command](admin_shutdown_command.md) (10 shared connections)
+- [. init ()](_init_%28%29.md) (7 shared connections)
+- [Core character statistics with Lovecraftian](Core_character_statistics_with_Lovecraftian.md) (7 shared connections)
+- [Response](Response.md) (6 shared connections)
+- [.reset instance()](reset_instance%28%29.md) (6 shared connections)
 
 ## Source Files
 
-- `scripts/bench_cache.py`
-- `scripts/bench_cache_npc.py`
-- `scripts/bench_cache_professions.py`
-- `server/caching/__init__.py`
-- `server/caching/cache_service.py`
-- `server/caching/lru_cache.py`
+- `docs/examples/logging/fastapi_integration.py`
+- `server/api/player_helpers.py`
+- `server/error_handlers/pydantic_error_handler.py`
+- `server/error_handlers/standardized_responses.py`
+- `server/error_types.py`
+- `server/exceptions.py`
+- `server/legacy_error_handlers.py`
+- `server/legacy_error_sanitization.py`
+- `server/middleware/error_handling_middleware.py`
+- `server/services/combat_messaging_service.py`
+- `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- `server/tests/unit/test_exceptions.py`
+- `server/tests/unit/test_exceptions_comprehensive.py`
+- `server/tests/unit/test_legacy_error_handlers.py`
+- `server/utils/enhanced_error_logging.py`
+- `server/utils/error_logging.py`
+- `server/utils/rate_limiter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 252 (92%)
-- INFERRED: 22 (8%)
+- EXTRACTED: 1639 (74%)
+- INFERRED: 587 (26%)
 - AMBIGUOUS: 0 (0%)
 
 ---

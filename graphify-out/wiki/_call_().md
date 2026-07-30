@@ -32,7 +32,7 @@
 ## Relationships
 
 - [NPCInstanceService](NPCInstanceService.md) (10 shared connections)
-- [test player event handlers state](test_player_event_handlers_state.md) (2 shared connections)
+- [close db()](close_db%28%29.md) (2 shared connections)
 - [.initialize()](initialize%28%29.md) (2 shared connections)
 
 ## Source Files

@@ -1,49 +1,57 @@
 # command parser()
 
-> 16 nodes
+> 23 nodes
 
 ## Key Concepts
 
-- **OccupantFormatter** (37 connections) — `server/realtime/occupant_formatter.py`
-- **.__init__()** (3 connections) — `server/realtime/occupant_formatter.py`
-- **test_occupant_formatter_is_valid_name_for_occupant_empty()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_add_valid_name_to_lists()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_process_player_name_for_update_uuid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_process_npc_name_for_update_uuid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_process_dict_occupant_for_update_npc()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_separate_occupants_by_type_dict_players()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Formats and separates occupants by type.** (1 connections) — `server/realtime/occupant_formatter.py`
-- **Initialize occupant formatter.** (1 connections) — `server/realtime/occupant_formatter.py`
-- **Test OccupantFormatter._is_valid_name_for_occupant() returns False for empty str** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter._add_valid_name_to_lists() adds name to both lists.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter._process_player_name_for_update() skips UUID player name.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter._process_npc_name_for_update() skips UUID NPC name.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter._process_dict_occupant_for_update() processes NPC dict.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter.separate_occupants_by_type() separates dict players.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **Alias** (52 connections) — `server/models/alias.py`
+- **sample_alias()** (3 connections) — `server/tests/unit/test_alias_storage.py`
+- **sample_alias2()** (3 connections) — `server/tests/unit/test_alias_storage.py`
+- **test_add_alias_updates_existing()** (3 connections) — `server/tests/unit/test_alias_storage.py`
+- **test_add_alias_case_insensitive()** (3 connections) — `server/tests/unit/test_alias_storage.py`
+- **.__repr__()** (2 connections) — `server/models/alias.py`
+- **.__eq__()** (2 connections) — `server/models/alias.py`
+- **.update_timestamp()** (2 connections) — `server/models/alias.py`
+- **.is_reserved_command()** (2 connections) — `server/models/alias.py`
+- **.validate_name()** (2 connections) — `server/models/alias.py`
+- **.get_expanded_command()** (2 connections) — `server/models/alias.py`
+- **BaseModel** (1 connections)
+- **Alias model for command aliases.      Stores player command aliases for quick ac** (1 connections) — `server/models/alias.py`
+- **String representation of the alias.** (1 connections) — `server/models/alias.py`
+- **Check equality based on name and command.** (1 connections) — `server/models/alias.py`
+- **Update the updated_at timestamp to current time.** (1 connections) — `server/models/alias.py`
+- **Check if the alias name conflicts with a reserved command.** (1 connections) — `server/models/alias.py`
+- **Validate the alias name is not empty.** (1 connections) — `server/models/alias.py`
+- **Get the expanded command with optional arguments appended.** (1 connections) — `server/models/alias.py`
+- **Create a sample alias for testing.** (1 connections) — `server/tests/unit/test_alias_storage.py`
+- **Create another sample alias for testing.** (1 connections) — `server/tests/unit/test_alias_storage.py`
+- **Test add_alias updates existing alias.** (1 connections) — `server/tests/unit/test_alias_storage.py`
+- **Test add_alias is case-insensitive for alias names.** (1 connections) — `server/tests/unit/test_alias_storage.py`
 
 ## Relationships
 
-- [occupant formatter](occupant_formatter.md) (15 shared connections)
-- [. add valid name to](_add_valid_name_to.md) (6 shared connections)
-- [Test load room cache async](Test_load_room_cache_async.md) (4 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (3 shared connections)
-- [metadata](metadata.md) (2 shared connections)
-- [NPCCombatIntegrationBase](NPCCombatIntegrationBase.md) (1 shared connections)
-- [NPCOccupantProcessor](NPCOccupantProcessor.md) (1 shared connections)
-- [Test process combined rows processes](Test_process_combined_rows_processes.md) (1 shared connections)
-- [Test query rooms with exits](Test_query_rooms_with_exits.md) (1 shared connections)
-- [Test process exits for room](Test_process_exits_for_room.md) (1 shared connections)
-- [Test warmup room cache calls](Test_warmup_room_cache_calls.md) (1 shared connections)
+- [test npc instance service](test_npc_instance_service.md) (10 shared connections)
+- [test alias storage](test_alias_storage.md) (6 shared connections)
+- [Any](Any.md) (5 shared connections)
+- [Player](Player.md) (2 shared connections)
+- [main()](main%28%29.md) (1 shared connections)
+- [Test validate chat message fields](Test_validate_chat_message_fields.md) (1 shared connections)
+- [test_room_service_init](test_room_service_init.md) (1 shared connections)
+- [test_load_player_mutes_file_not_exists](test_load_player_mutes_file_not_exists.md) (1 shared connections)
+- [Test handle npc died event](Test_handle_npc_died_event.md) (1 shared connections)
+- [test_unmute_player_not_found](test_unmute_player_not_found.md) (1 shared connections)
+- [test_normalize_to_uuid_invalid](test_normalize_to_uuid_invalid.md) (1 shared connections)
+- [Test unsubscribe from subzone handles](Test_unsubscribe_from_subzone_handles.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/occupant_formatter.py`
-- `server/tests/unit/realtime/test_occupant_formatter.py`
+- `server/models/alias.py`
+- `server/tests/unit/test_alias_storage.py`
 
 ## Audit Trail
 
-- EXTRACTED: 65 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 84 (95%)
+- INFERRED: 4 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

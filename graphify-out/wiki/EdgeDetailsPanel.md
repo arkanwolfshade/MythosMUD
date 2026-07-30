@@ -1,9 +1,10 @@
 # EdgeDetailsPanel
 
-> 41 nodes
+> 50 nodes
 
 ## Key Concepts
 
+- **gameStore.ts** (35 connections) — `client/src/stores/gameStore.ts`
 - **mapUtils.ts** (27 connections) — `client/src/components/map/utils/mapUtils.ts`
 - **RoomMapViewer.tsx** (25 connections) — `client/src/components/map/RoomMapViewer.tsx`
 - **useRoomMapData.ts** (18 connections) — `client/src/components/map/hooks/useRoomMapData.ts`
@@ -28,22 +29,22 @@
 - **useRoomMapData.test.ts** (5 connections) — `client/src/components/map/hooks/__tests__/useRoomMapData.test.ts`
 - **isApiErrorWithDetail()** (5 connections) — `client/src/utils/apiTypeGuards.ts`
 - **RoomDetailsPanel.test.tsx** (4 connections) — `client/src/components/map/__tests__/RoomDetailsPanel.test.tsx`
-- **transformRoomsToMapData()** (4 connections) — `client/src/components/map/utils/mapUtils.ts`
-- *... and 16 more nodes in this community*
+- *... and 25 more nodes in this community*
 
 ## Relationships
 
-- [EdgeCreationModal](EdgeCreationModal.md) (26 shared connections)
+- [EdgeCreationModal](EdgeCreationModal.md) (24 shared connections)
 - [.validate direction()](validate_direction%28%29.md) (13 shared connections)
-- [createInitialState()](createInitialState%28%29.md) (11 shared connections)
+- [mockOpenContainers](mockOpenContainers.md) (5 shared connections)
+- [createInitialState()](createInitialState%28%29.md) (5 shared connections)
+- [RoomEditModal](RoomEditModal.md) (5 shared connections)
 - [RoomMapViewerProps](RoomMapViewerProps.md) (4 shared connections)
+- [GameLogMessagesList](GameLogMessagesList.md) (4 shared connections)
 - [Schedule end combat if npc](Schedule_end_combat_if_npc.md) (3 shared connections)
 - [LoginResponse](LoginResponse.md) (3 shared connections)
-- [RoomEditModal](RoomEditModal.md) (3 shared connections)
 - [maps](maps.md) (2 shared connections)
-- [player respawn](player_respawn.md) (2 shared connections)
-- [performance.test](performance.test.md) (1 shared connections)
-- [fetchSpy](fetchSpy.md) (1 shared connections)
+- [Tests for get spell targeting](Tests_for_get_spell_targeting.md) (2 shared connections)
+- [Any](Any.md) (2 shared connections)
 
 ## Source Files
 
@@ -63,12 +64,13 @@
 - `client/src/components/map/hooks/useRoomMapData.ts`
 - `client/src/components/map/utils/__tests__/mapUtils.test.ts`
 - `client/src/components/map/utils/mapUtils.ts`
+- `client/src/stores/__tests__/gameStore.test.ts`
 - `client/src/stores/gameStore.ts`
 - `client/src/utils/apiTypeGuards.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 319 (98%)
+- EXTRACTED: 364 (98%)
 - INFERRED: 8 (2%)
 - AMBIGUOUS: 0 (0%)
 

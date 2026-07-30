@@ -1,37 +1,40 @@
 # PartyUpdated
 
-> 10 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **extract_subzone_from_room_id()** (15 connections) — `server/utils/room_utils.py`
-- **room_utils.py** (9 connections) — `server/utils/room_utils.py`
-- **get_subzone_local_channel_subject()** (6 connections) — `server/utils/room_utils.py`
-- **._get_destination_subzone()** (4 connections) — `server/npc/movement_integration.py`
-- **.validate_subzone_boundary()** (3 connections) — `server/npc/movement_integration.py`
-- **Resolve the subzone ID for a destination room (from room attribute or room_id).** (1 connections) — `server/npc/movement_integration.py`
-- **Validate that a destination room is within the NPC's allowed subzone.** (1 connections) — `server/npc/movement_integration.py`
-- **Room utility functions for MythosMUD.  This module provides utility functions fo** (1 connections) — `server/utils/room_utils.py`
-- **Extract sub-zone from room ID.      Room ID format: {plane}_{zone}_{sub_zone}_{r** (1 connections) — `server/utils/room_utils.py`
-- **Generate NATS subject for sub-zone local channel messages.      This creates a s** (1 connections) — `server/utils/room_utils.py`
+- **NumPy Code Review - MythosMUD Codebase** (6 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **Findings** (5 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **Summary of Recommendations** (4 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **🟡 HIGH PRIORITY: Manual Statistical Calculations** (3 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **🟢 MEDIUM PRIORITY: Dice Rolling and Stat Generation** (3 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **🔵 LOW PRIORITY: Type Hints and Documentation** (2 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **NUMPY_CODE_REVIEW.md** (1 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **Executive Summary** (1 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **✅ RESOLVED: NumPy Dependency and Usage** (1 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **Issue 1: Performance Monitor - Manual Statistics** (1 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **Issue 2: Performance Tracker - Repeated Statistical Operations** (1 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **Issue 3: Stats Generator - Manual Dice Rolling** (1 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **Issue 4: Stats Summary - Manual Summation** (1 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **Issue 5: Missing NumPy Type Hints** (1 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **✅ Implementation Status** (1 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **Completed Actions** (1 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **Code Quality Improvements Achieved** (1 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **Testing Considerations** (1 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **Conclusion** (1 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
 
 ## Relationships
 
-- [. get destination subzone()](_get_destination_subzone%28%29.md) (12 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (5 shared connections)
-- [. init ()](_init_%28%29.md) (2 shared connections)
-- [Player](Player.md) (1 shared connections)
-- [EnvironmentalContainerLoader](EnvironmentalContainerLoader.md) (1 shared connections)
-- [AsyncSession](AsyncSession.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/npc/movement_integration.py`
-- `server/utils/room_utils.py`
+- `docs/archive/NUMPY_CODE_REVIEW.md`
 
 ## Audit Trail
 
-- EXTRACTED: 42 (100%)
+- EXTRACTED: 36 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

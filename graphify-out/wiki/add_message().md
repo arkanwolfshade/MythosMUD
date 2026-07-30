@@ -18,10 +18,12 @@
 
 ## Relationships
 
-- [test format metadata empty()](test_format_metadata_empty%28%29.md) (3 shared connections)
-- [emit close container event()](emit_close_container_event%28%29.md) (3 shared connections)
-- [test resolve state no app()](test_resolve_state_no_app%28%29.md) (3 shared connections)
+- [Any](Any.md) (3 shared connections)
+- [Update player's connection list to](Update_player%27s_connection_list_to.md) (2 shared connections)
+- [Player](Player.md) (2 shared connections)
+- [chat pose helpers](chat_pose_helpers.md) (1 shared connections)
 - [.state()](state%28%29.md) (1 shared connections)
+- [emit close container event()](emit_close_container_event%28%29.md) (1 shared connections)
 
 ## Source Files
 

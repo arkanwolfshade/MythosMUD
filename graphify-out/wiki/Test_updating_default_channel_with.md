@@ -1,25 +1,29 @@
 # Test updating default channel with
 
-> 2 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **test_fetch_container_items_non_dict_row()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **Test _fetch_container_items handles non-dictionary rows.** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **🔴 CRITICAL ISSUES** (7 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **1. Synchronous Blocking Operations in Async Context (CONFIRMED PERFORMANCE ISSUE)** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **2. asyncio.run() Called from Existing Event Loop Context** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **3. Connection Pool Resource Leak Risk** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **4. Missing Exception Handling in Pool Creation** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **5. Blocking Operations in NATS Message Handlers** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **6. F-String Logging Destroying Structured Logging** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Relationships
 
-- [container persistence](container_persistence.md) (1 shared connections)
-- [disconnect grace period](disconnect_grace_period.md) (1 shared connections)
+- [broadcast message()](broadcast_message%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 13 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

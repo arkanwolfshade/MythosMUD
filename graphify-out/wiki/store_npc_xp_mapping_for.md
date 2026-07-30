@@ -1,50 +1,48 @@
 # .store npc xp mapping for
 
-> 21 nodes
+> 30 nodes
 
 ## Key Concepts
 
-- **validate_token_impl()** (15 connections) — `server/realtime/connection_delegates.py`
-- **_PlayerIdCarrier** (6 connections) — `server/realtime/connection_delegates.py`
-- **_TokenPersistence** (6 connections) — `server/realtime/connection_delegates.py`
-- **_TokenValidateManager** (6 connections) — `server/realtime/connection_delegates.py`
-- **Protocol** (4 connections)
-- **.get_player_by_user_id()** (4 connections) — `server/realtime/connection_delegates.py`
-- **test_validate_token_impl_database_error()** (4 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
-- **test_validate_token_impl_success()** (3 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
-- **test_validate_token_impl_invalid_payload()** (3 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
-- **test_validate_token_impl_no_persistence()** (3 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
-- **test_validate_token_impl_player_mismatch()** (3 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
-- **Minimal player shape for token validation.** (1 connections) — `server/realtime/connection_delegates.py`
-- **Persistence surface used by validate_token_impl.** (1 connections) — `server/realtime/connection_delegates.py`
-- **Look up a player by auth user id.** (1 connections) — `server/realtime/connection_delegates.py`
-- **ConnectionManager surface used by validate_token_impl.** (1 connections) — `server/realtime/connection_delegates.py`
-- **Validate a JWT token for a connection.      Args:         token: JWT token to va** (1 connections) — `server/realtime/connection_delegates.py`
-- **Test validate_token_impl() successfully validates token.** (1 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
-- **Test validate_token_impl() returns False for invalid payload.** (1 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
-- **Test validate_token_impl() returns False when persistence not available.** (1 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
-- **Test validate_token_impl() returns False for player mismatch.** (1 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
-- **Test validate_token_impl() handles DatabaseError.** (1 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
+- **WebSocket Code Review - Branch: feature/sqlite-to-postgresql** (10 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- **✅ Positive Findings** (5 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- **🔴 Critical Issues** (5 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- **🟡 Anti-Patterns and Code Smells** (5 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- **📋 Recommendations Summary** (4 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- **🟢 Performance Concerns** (3 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- **🔵 Security Considerations** (3 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- **WEBSOCKET_CODE_REVIEW.md** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- **Executive Summary** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- **1. **Dependency Injection Pattern**** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- **2. **Modern Async Patterns**** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- **3. **Error Boundaries**** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- **4. **Security**** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- **1. **Event Loop Anti-Pattern in Connection Manager**** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- **2. **Missing Input Validation on Server Side**** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- **3. **Synchronous Blocking Operations in Async Context**** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- **4. **Large Payload Risk in Room Updates**** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- **5. **Complex Event Handlers**** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- **6. **Tight Coupling Between Components**** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- **7. **Missing Reconnection Logic on Server**** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- **8. **Error Handling Gaps**** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- **9. **Inefficient Room Occupant Lookups**** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- **10. **No Message Batching**** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- **11. **Missing Rate Limiting on WebSocket Messages**** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- **12. **Insufficient Authentication Validation**** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
-- [connection delegates](connection_delegates.md) (11 shared connections)
-- [AttributeError](AttributeError.md) (3 shared connections)
-- [Custom user manager for MythosMUD.](Custom_user_manager_for_MythosMUD.md) (3 shared connections)
-- [real time](real_time.md) (2 shared connections)
-- [Player](Player.md) (2 shared connections)
-- [command processor()](command_processor%28%29.md) (1 shared connections)
-- [create access token()](create_access_token%28%29.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/realtime/connection_delegates.py`
-- `server/tests/unit/realtime/test_connection_delegates.py`
+- `docs/archive/WEBSOCKET_CODE_REVIEW.md`
 
 ## Audit Trail
 
-- EXTRACTED: 60 (90%)
-- INFERRED: 7 (10%)
+- EXTRACTED: 58 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

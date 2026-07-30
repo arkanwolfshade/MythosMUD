@@ -1,25 +1,29 @@
 # Test process mortally wounded tick()
 
-> 2 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **test_fetch_container_items_empty()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **Test _fetch_container_items with no items.** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **Aggro and Threat System Implementation Plan** (6 connections) — `docs/archive/aggro-threat-implementation-plan.md`
+- **aggro-threat-implementation-plan.md** (1 connections) — `docs/archive/aggro-threat-implementation-plan.md`
+- **Status** (1 connections) — `docs/archive/aggro-threat-implementation-plan.md`
+- **Key Modules and Files** (1 connections) — `docs/archive/aggro-threat-implementation-plan.md`
+- **Constants (locked)** (1 connections) — `docs/archive/aggro-threat-implementation-plan.md`
+- **Integration with NPC static data (behavior_config / npc_type)** (1 connections) — `docs/archive/aggro-threat-implementation-plan.md`
+- **References** (1 connections) — `docs/archive/aggro-threat-implementation-plan.md`
 
 ## Relationships
 
-- [container persistence](container_persistence.md) (1 shared connections)
-- [disconnect grace period](disconnect_grace_period.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- `docs/archive/aggro-threat-implementation-plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 12 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

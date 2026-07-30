@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_remove_room_occupant_error_handling()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **Test remove_room_occupant() handles errors gracefully.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_alias_validate_name_valid()** (3 connections) — `server/tests/unit/models/test_alias.py`
+- **Test validate_name returns True for valid names.** (1 connections) — `server/tests/unit/models/test_alias.py`
 
 ## Relationships
 
-- [test room subscription manager](test_room_subscription_manager.md) (1 shared connections)
+- [command parser()](command_parser%28%29.md) (1 shared connections)
+- [test npc instance service](test_npc_instance_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager.py`
+- `server/tests/unit/models/test_alias.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

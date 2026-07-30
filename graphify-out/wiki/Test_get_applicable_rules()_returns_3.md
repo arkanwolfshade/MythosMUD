@@ -1,24 +1,25 @@
 # Test get applicable rules() returns
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **.test_try_player_username_getattr_fallback()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **Test _try_player_username with getattr fallback.** (1 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **Next Steps** (4 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Immediate (This Session)** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Short Term (Week 1)** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Medium Term (Weeks 2-6)** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
 
 ## Relationships
 
-- [container websocket events](container_websocket_events.md) (1 shared connections)
-- [PlayerNameExtractor](PlayerNameExtractor.md) (1 shared connections)
+- [get mythos time()](get_mythos_time%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_name_utils.py`
+- `docs/archive/TEST_MODERNIZATION_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

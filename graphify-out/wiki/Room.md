@@ -33,16 +33,17 @@
 
 ## Relationships
 
-- [test player event handlers state](test_player_event_handlers_state.md) (11 shared connections)
-- [admin shutdown command](admin_shutdown_command.md) (11 shared connections)
-- [append unique valid occupant()](append_unique_valid_occupant%28%29.md) (10 shared connections)
-- [.initialize()](initialize%28%29.md) (10 shared connections)
-- [metrics](metrics.md) (9 shared connections)
+- [admin shutdown command](admin_shutdown_command.md) (21 shared connections)
 - [AbstractContextManager](AbstractContextManager.md) (9 shared connections)
+- [.initialize()](initialize%28%29.md) (9 shared connections)
+- [message handler factory](message_handler_factory.md) (7 shared connections)
+- [Connection Manager](Connection_Manager.md) (7 shared connections)
+- [append unique valid occupant()](append_unique_valid_occupant%28%29.md) (3 shared connections)
+- [close db()](close_db%28%29.md) (3 shared connections)
 - [. init ()](_init_%28%29.md) (3 shared connections)
 - [convert pydantic error()](convert_pydantic_error%28%29.md) (2 shared connections)
 - [real time](real_time.md) (2 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
+- [world](world.md) (2 shared connections)
 - [Player](Player.md) (1 shared connections)
 
 ## Source Files
@@ -56,7 +57,7 @@
 ## Audit Trail
 
 - EXTRACTED: 420 (98%)
-- INFERRED: 8 (2%)
+- INFERRED: 7 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

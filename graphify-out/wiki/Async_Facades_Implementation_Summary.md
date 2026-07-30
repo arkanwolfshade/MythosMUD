@@ -1,23 +1,28 @@
 # Async Facades Implementation Summary
 
-> 2 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **Async Facades Implementation Summary** (1 connections) — `docs/FACADES_IMPLEMENTATION_SUMMARY.md`
-- **Async Repository Facades** (1 connections) — `docs/FACADES_IMPLEMENTATION_SUMMARY.md`
+- **generate_unique_codes()** (5 connections) — `tools/invite_tools/generate_invites.py`
+- **generate_invites.py** (4 connections) — `tools/invite_tools/generate_invites.py`
+- **generate_invite_code()** (3 connections) — `tools/invite_tools/generate_invites.py`
+- **main()** (3 connections) — `tools/invite_tools/generate_invites.py`
+- **Generate a unique Mythos-themed invite code.** (1 connections) — `tools/invite_tools/generate_invites.py`
+- **Generate a list of unique invite codes and store them in the database.** (1 connections) — `tools/invite_tools/generate_invites.py`
+- **Generate invite codes and store them in the database.** (1 connections) — `tools/invite_tools/generate_invites.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [close db()](close_db%28%29.md) (2 shared connections)
 
 ## Source Files
 
-- `docs/FACADES_IMPLEMENTATION_SUMMARY.md`
+- `tools/invite_tools/generate_invites.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

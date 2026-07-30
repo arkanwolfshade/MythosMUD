@@ -24,7 +24,7 @@
 
 - [PanelContext](PanelContext.md) (3 shared connections)
 - [dompurify](dompurify.md) (1 shared connections)
-- [domPurifyTestWindow](domPurifyTestWindow.md) (1 shared connections)
+- [ChatPanelTest](ChatPanelTest.md) (1 shared connections)
 
 ## Source Files
 

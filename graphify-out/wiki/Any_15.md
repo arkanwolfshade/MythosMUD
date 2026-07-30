@@ -1,50 +1,52 @@
 # Any
 
-> 25 nodes
+> 80 nodes
 
 ## Key Concepts
 
-- **Any** (10 connections)
-- **.collect_all_metrics()** (9 connections) — `server/monitoring/memory_leak_metrics.py`
-- **.check_alerts()** (9 connections) — `server/monitoring/memory_leak_metrics.py`
-- **.collect_connection_metrics()** (5 connections) — `server/monitoring/memory_leak_metrics.py`
-- **.collect_event_metrics()** (5 connections) — `server/monitoring/memory_leak_metrics.py`
-- **.collect_task_metrics()** (5 connections) — `server/monitoring/memory_leak_metrics.py`
-- **.collect_nats_metrics()** (5 connections) — `server/monitoring/memory_leak_metrics.py`
-- **._calculate_single_growth_rate()** (4 connections) — `server/monitoring/memory_leak_metrics.py`
-- **.calculate_growth_rates()** (4 connections) — `server/monitoring/memory_leak_metrics.py`
-- **._check_connection_alerts()** (4 connections) — `server/monitoring/memory_leak_metrics.py`
-- **._check_cache_alerts()** (4 connections) — `server/monitoring/memory_leak_metrics.py`
-- **._check_subscriber_alerts()** (3 connections) — `server/monitoring/memory_leak_metrics.py`
-- **._check_task_alerts()** (3 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Collect all metrics from all sources.          Returns:             Dictionary c** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Collect connection metrics from ConnectionManager.          Returns:** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Collect event metrics from EventBus.          Returns:             Dictionary wi** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Collect task metrics from TaskRegistry.          Returns:             Dictionary** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Collect NATS subscription metrics from NATSService.          Returns:** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Calculate growth rate for a single metric.          Args:             current: C** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Calculate growth rates for metrics over time.          Returns:             Dict** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Check connection-related alerts and append to alerts list.** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Check subscriber growth rate alerts and append to alerts list.** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Check cache-related alerts and append to alerts list.** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Check task growth rate alerts and append to alerts list.** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Check metrics against alert thresholds and return list of alerts.          Args:** (1 connections) — `server/monitoring/memory_leak_metrics.py`
+- **test_npc_utils.py** (30 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **get_zone_key_from_room_id()** (17 connections) — `server/npc/npc_utils.py`
+- **extract_npc_metadata()** (12 connections) — `server/npc/npc_utils.py`
+- **extract_definition_id_from_npc()** (12 connections) — `server/npc/npc_utils.py`
+- **extract_room_id_from_npc()** (11 connections) — `server/npc/npc_utils.py`
+- **npc_utils.py** (8 connections) — `server/npc/npc_utils.py`
+- **.despawn_npc()** (8 connections) — `server/npc/population_control.py`
+- **._get_active_npcs_from_lifecycle_manager()** (6 connections) — `server/npc/population_control.py`
+- **._get_zone_key_from_room_id()** (5 connections) — `server/npc/population_control.py`
+- **._should_remove_inactive_npc()** (5 connections) — `server/npc/population_control.py`
+- **.cleanup_inactive_npcs()** (5 connections) — `server/npc/population_control.py`
+- **.is_required()** (4 connections) — `server/models/npc.py`
+- **._update_population_stats_for_despawn()** (4 connections) — `server/npc/population_control.py`
+- **Any** (3 connections)
+- **_stable_room_id_for_zone()** (3 connections) — `server/npc/npc_utils.py`
+- **.get_zone_population_summary()** (3 connections) — `server/npc/population_control.py`
+- **test_extract_room_id_from_npc_current_room()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_room_id_from_npc_current_room_id()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_room_id_from_npc_room_id()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_room_id_from_npc_not_found()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_room_id_from_npc_non_string()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_npc_metadata_valid()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_npc_metadata_defaults()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_npc_metadata_non_string_type()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_npc_metadata_truthy_required()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- *... and 55 more nodes in this community*
 
 ## Relationships
 
-- [.shutdown()](shutdown%28%29.md) (14 shared connections)
-- [Any](Any.md) (2 shared connections)
-- [Player](Player.md) (1 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (16 shared connections)
+- [Test check all command blocks](Test_check_all_command_blocks.md) (2 shared connections)
 
 ## Source Files
 
-- `server/monitoring/memory_leak_metrics.py`
+- `server/models/npc.py`
+- `server/npc/npc_utils.py`
+- `server/npc/population_control.py`
+- `server/tests/unit/npc/test_npc_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 82 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 244 (98%)
+- INFERRED: 4 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

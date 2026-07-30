@@ -4,49 +4,52 @@
 
 ## Key Concepts
 
-- **test_websocket_handler_helpers_extended.py** (33 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **mock_websocket()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **mock_validator()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_check_rate_limit_no_connection_id()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_check_rate_limit_passed()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_check_rate_limit_exceeded()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_validate_message_success()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_send_error_response_success()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_send_error_response_websocket_disconnect()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_send_error_response_runtime_error_disconnected()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_send_error_response_runtime_error_close_message()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_send_error_response_other_error()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_handle_json_decode_error()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_handle_websocket_disconnect()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_handle_websocket_disconnect_no_connection_id()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_handle_runtime_error_disconnected()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_handle_runtime_error_other()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_process_message_rate_limit_exceeded()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_process_message_success()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_handle_message_loop_exception_json_decode_error()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_handle_message_loop_exception_websocket_disconnect()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_handle_message_loop_exception_runtime_error()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_handle_message_loop_exception_generic()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **Extended unit tests for websocket handler helper functions.  Tests additional he** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
+- **test_event_handler.py** (41 connections) — `server/tests/unit/realtime/test_event_handler.py`
+- **test_event_handler_handle_player_entered()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
+- **test_event_handler_handle_player_left()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
+- **test_event_handler_handle_npc_entered()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
+- **test_event_handler_handle_npc_left()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
+- **test_event_handler_handle_player_xp_awarded()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
+- **test_event_handler_handle_player_dp_updated()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
+- **test_event_handler_handle_player_died()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
+- **test_event_handler_handle_player_dp_decay()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
+- **test_event_handler_handle_player_respawned()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
+- **test_event_handler_handle_player_delirium_respawned()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
+- **test_event_handler_create_player_entered_message()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
+- **test_event_handler_create_player_left_message()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
+- **mock_event_bus()** (2 connections) — `server/tests/unit/realtime/test_event_handler.py`
+- **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_event_handler.py`
+- **mock_task_registry()** (2 connections) — `server/tests/unit/realtime/test_event_handler.py`
+- **test_event_handler_subscribe_to_events()** (2 connections) — `server/tests/unit/realtime/test_event_handler.py`
+- **test_event_handler_get_next_sequence()** (2 connections) — `server/tests/unit/realtime/test_event_handler.py`
+- **test_event_handler_send_room_occupants_update_internal_success()** (2 connections) — `server/tests/unit/realtime/test_event_handler.py`
+- **test_event_handler_send_room_occupants_update_internal_error()** (2 connections) — `server/tests/unit/realtime/test_event_handler.py`
+- **test_event_handler_send_room_occupants_update()** (2 connections) — `server/tests/unit/realtime/test_event_handler.py`
+- **test_event_handler_get_room_occupants()** (2 connections) — `server/tests/unit/realtime/test_event_handler.py`
+- **test_event_handler_send_occupants_snapshot_to_player()** (2 connections) — `server/tests/unit/realtime/test_event_handler.py`
+- **test_event_handler_shutdown()** (2 connections) — `server/tests/unit/realtime/test_event_handler.py`
+- **Unit tests for event handler.  Tests the event_handler module classes and functi** (1 connections) — `server/tests/unit/realtime/test_event_handler.py`
 - *... and 23 more nodes in this community*
 
 ## Relationships
 
-- [convert pydantic error()](convert_pydantic_error%28%29.md) (3 shared connections)
-- [. init ()](_init_%28%29.md) (3 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (13 shared connections)
+- [NPCCombatIntegrationBase](NPCCombatIntegrationBase.md) (4 shared connections)
+- [.validate player name field()](validate_player_name_field%28%29.md) (3 shared connections)
+- [UUID](UUID.md) (3 shared connections)
+- [combat initialization](combat_initialization.md) (2 shared connections)
+- [.set player combat service()](set_player_combat_service%28%29.md) (2 shared connections)
+- [CombatService](CombatService.md) (1 shared connections)
 - [.is required()](is_required%28%29.md) (1 shared connections)
-- [test_parse_command_parts_empty_string](test_parse_command_parts_empty_string.md) (1 shared connections)
-- [test_command_parser_initialization](test_command_parser_initialization.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
+- `server/tests/unit/realtime/test_event_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 103 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 111 (90%)
+- INFERRED: 12 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

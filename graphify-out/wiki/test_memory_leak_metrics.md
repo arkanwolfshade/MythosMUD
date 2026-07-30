@@ -33,8 +33,7 @@
 
 ## Relationships
 
-- [.shutdown()](shutdown%28%29.md) (2 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
+- [Any](Any.md) (3 shared connections)
 
 ## Source Files
 

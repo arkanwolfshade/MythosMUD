@@ -1,17 +1,12 @@
 # NATS Error Handling Strategy
 
-> 8 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **NATS Remediation Summary 2026-01-13** (4 connections) — `docs/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
-- **NATS Error Handling Strategy** (2 connections) — `docs/NATS_ERROR_HANDLING_STRATEGY.md`
-- **NATS Manual Acknowledgment Guide** (2 connections) — `docs/NATS_MANUAL_ACKNOWLEDGMENT_GUIDE.md`
 - **NATS Subject Patterns** (2 connections) — `docs/NATS_SUBJECT_PATTERNS.md`
-- **NATS Medium Priority Remediation** (1 connections) — `docs/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
-- **NATS Manual Ack Pattern** (1 connections) — `docs/NATS_MANUAL_ACKNOWLEDGMENT_GUIDE.md`
+- **NATS Error Handling Strategy** (1 connections) — `docs/NATS_ERROR_HANDLING_STRATEGY.md`
 - **NATS Subject Naming Patterns** (1 connections) — `docs/NATS_SUBJECT_PATTERNS.md`
-- **NATS Critical Fixes Summary** (1 connections) — `docs/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
 
 ## Relationships
 
@@ -20,15 +15,12 @@
 ## Source Files
 
 - `docs/NATS_ERROR_HANDLING_STRATEGY.md`
-- `docs/NATS_MANUAL_ACKNOWLEDGMENT_GUIDE.md`
-- `docs/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
-- `docs/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
 - `docs/NATS_SUBJECT_PATTERNS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (43%)
-- INFERRED: 8 (57%)
+- EXTRACTED: 2 (50%)
+- INFERRED: 2 (50%)
 - AMBIGUOUS: 0 (0%)
 
 ---

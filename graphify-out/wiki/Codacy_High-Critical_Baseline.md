@@ -1,24 +1,27 @@
 # Codacy High/Critical Baseline
 
-> 2 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **Codacy High/Critical Baseline** (1 connections) — `docs/investigations/codacy_high_critical_baseline.md`
-- **Codacy Remediation Campaign** (1 connections) — `docs/investigations/codacy_high_critical_progress.md`
+- **🔍 Anti-Pattern Check** (6 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **❌ Blocking Calls in Async Functions?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **❌ Missing `await` Keywords?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **❌ Long-Running Coroutines?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **❌ Ignoring Exceptions?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **❌ Unstructured Concurrency?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [.get stats()](get_stats%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/investigations/codacy_high_critical_baseline.md`
-- `docs/investigations/codacy_high_critical_progress.md`
+- `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

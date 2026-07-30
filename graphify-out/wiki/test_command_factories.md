@@ -26,7 +26,7 @@
 - [test_command_factory_create_existing_command](test_command_factory_create_existing_command.md) (1 shared connections)
 - [test_command_factory_has_create_methods](test_command_factory_has_create_methods.md) (1 shared connections)
 - [test_command_factory_init](test_command_factory_init.md) (1 shared connections)
-- [test_create_add_admin_command](test_create_add_admin_command_2.md) (1 shared connections)
+- [test_create_add_admin_command](test_create_add_admin_command.md) (1 shared connections)
 - [test_create_admin_command](test_create_admin_command.md) (1 shared connections)
 - [test_create_alias_command](test_create_alias_command.md) (1 shared connections)
 - [test_create_aliases_command](test_create_aliases_command.md) (1 shared connections)

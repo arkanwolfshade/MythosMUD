@@ -1,23 +1,25 @@
 # test_get_room_persistence_returns_dict
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_get_room_persistence_returns_dict()** (2 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_room() handles dict from persistence.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Executive Summary** (4 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Key Findings** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Test Value Distribution** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **🟡 IMPORTANT (Medium-Value):**~2,500-3,000 tests (50-60%) —**~15-18 minutes** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
 
 ## Relationships
 
-- [test room service](test_room_service.md) (1 shared connections)
+- [. error callback()](_error_callback%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

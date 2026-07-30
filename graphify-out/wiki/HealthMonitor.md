@@ -1,54 +1,48 @@
 # HealthMonitor
 
-> 33 nodes
+> 31 nodes
 
 ## Key Concepts
 
-- **test_zone_config_loader.py** (35 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **process_zone_rows()** (13 connections) — `server/npc/zone_config_loader.py`
-- **async_load_zone_configurations()** (13 connections) — `server/npc/zone_config_loader.py`
-- **_empty_zone_load_result()** (13 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **process_subzone_rows()** (9 connections) — `server/npc/zone_config_loader.py`
-- **test_process_zone_rows()** (5 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_process_subzone_rows()** (5 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_async_load_zone_configurations_converts_url()** (5 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_async_load_zone_configurations_passes_search_path_for_mythos_e2e()** (5 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_process_zone_rows_empty()** (4 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_process_zone_rows_json_strings()** (4 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_process_subzone_rows_empty()** (4 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_async_load_zone_configurations_success()** (4 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_async_load_zone_configurations_no_database_url()** (4 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_async_load_zone_configurations_error()** (4 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_async_load_zone_configurations_closes_connection()** (4 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **Connection** (2 connections)
-- **MonkeyPatch** (2 connections)
-- **Process zone rows from database and populate zone configurations.      Args:** (1 connections) — `server/npc/zone_config_loader.py`
-- **Process subzone rows from database and populate subzone configurations.      Arg** (1 connections) — `server/npc/zone_config_loader.py`
-- **Async helper to load zone configurations from PostgreSQL database.** (1 connections) — `server/npc/zone_config_loader.py`
-- **Unit tests for zone configuration loader.  Tests the zone_config_loader module f** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **Test process_zone_rows() processes zone rows.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **Test process_zone_rows() handles empty result.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **Test process_zone_rows() parses JSON string fields.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- *... and 8 more nodes in this community*
+- **Complexity Checking Alignment: Ruff C901 vs Pylint** (9 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **What They Measure** (6 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **Ruff C901: McCabe Cyclomatic Complexity** (5 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **Implementation Plan** (5 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **Recommended Strategy** (4 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **Pylint Complexity Metrics (R0911-R0915)** (3 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **Current State Analysis** (3 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **Key Differences** (2 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **LINTING_COMPLEXITY_ALIGNMENT.md** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **Executive Summary** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **What It Measures** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **Configuration** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **Example** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **Why It's Useful** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **R0911: Too Many Return Statements** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **R0912: Too Many Branches** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **R0913: Too Many Arguments** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **R0914: Too Many Local Variables** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **R0915: Too Many Statements** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **Configuration** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **Example Comparison** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **Ruff C901 Findings** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **Pylint R0911-R0915 Findings** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **1. Use Ruff for Cyclomatic Complexity ✅** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **2. Suppress Pylint Complexity Metrics ✅** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- *... and 6 more nodes in this community*
 
 ## Relationships
 
-- [memory lifespan coordinator](memory_lifespan_coordinator.md) (12 shared connections)
-- [.apply dp change()](apply_dp_change%28%29.md) (7 shared connections)
-- [src/**/*.spec](src-__-_.spec.md) (6 shared connections)
-- [Represents the configuration for a](Represents_the_configuration_for_a.md) (4 shared connections)
-- [MutableHeaders](MutableHeaders.md) (4 shared connections)
-- [rate overrides](rate_overrides.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/npc/zone_config_loader.py`
-- `server/tests/unit/npc/test_zone_config_loader.py`
+- `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 148 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 60 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,66 +1,70 @@
 # chat nats publisher
 
-> 116 nodes
+> 312 nodes
 
 ## Key Concepts
 
 - **AsyncPersistenceLayer** (183 connections) — `server/async_persistence.py`
+- **async_persistence.py** (73 connections) — `server/async_persistence.py`
+- **test_async_persistence_core.py** (40 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
 - **test_async_persistence_delegates.py** (35 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **schedule_service.py** (25 connections) — `server/services/schedule_service.py`
-- **.__init__()** (13 connections) — `server/async_persistence.py`
-- **RoomRepository** (12 connections) — `server/persistence/repositories/room_repository.py`
-- **ProfessionRepository** (11 connections) — `server/persistence/repositories/profession_repository.py`
-- **_schedule_entry_from_row()** (8 connections) — `server/services/schedule_service.py`
-- **test_schedule_service.py** (8 connections) — `server/tests/unit/services/test_schedule_service.py`
+- **room.py** (30 connections) — `server/models/room.py`
+- **RoomCacheLoader** (29 connections) — `server/async_persistence_room_loader.py`
+- **movement_service.py** (28 connections) — `server/game/movement_service.py`
+- **Player** (22 connections)
+- **UUID** (21 connections)
+- **room_service.py** (21 connections) — `server/game/room_service.py`
+- **PlayerRepositoryProtocol** (21 connections) — `server/persistence/protocols.py`
+- **Any** (19 connections)
+- **get_async_persistence()** (19 connections) — `server/async_persistence.py`
+- **movement_integration.py** (18 connections) — `server/npc/movement_integration.py`
+- **._ensure_room_cache_loaded()** (13 connections) — `server/async_persistence.py`
+- **Any** (12 connections)
+- **CreateItemInstanceInput** (11 connections) — `server/async_persistence_constants.py`
+- **protocols.py** (11 connections) — `server/persistence/protocols.py`
+- **Player** (11 connections)
+- **.load()** (10 connections) — `server/async_persistence_room_loader.py`
+- **RoomRepositoryProtocol** (9 connections) — `server/persistence/protocols.py`
+- **._generate_room_id_from_zone_data()** (7 connections) — `server/async_persistence_room_loader.py`
+- **datetime** (6 connections)
 - **reset_async_persistence()** (6 connections) — `server/async_persistence.py`
-- **.__init__()** (5 connections) — `server/npc/combat_integration_base.py`
-- **normalize_weekday_names()** (5 connections) — `server/services/schedule_service.py`
-- **_DatabaseLoadResult** (5 connections) — `server/services/schedule_service.py`
-- **conftest.py** (5 connections) — `server/tests/unit/infrastructure/conftest.py`
-- **_string_list_from_row()** (4 connections) — `server/services/schedule_service.py`
-- **_lower_string_list_from_row()** (4 connections) — `server/services/schedule_service.py`
-- **test_validate_and_fix_player_room_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_apply_lucidity_loss_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_apply_fear_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_apply_corruption_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_heal_player_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_async_heal_player_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_damage_player_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_async_damage_player_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_create_container_with_params()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_create_container_with_kwargs()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- *... and 91 more nodes in this community*
+- **._process_combined_rows()** (6 connections) — `server/async_persistence_room_loader.py`
+- *... and 287 more nodes in this community*
 
 ## Relationships
 
-- [TerminalButtonProps](TerminalButtonProps.md) (35 shared connections)
-- [PlayerRespawnEventHandler](PlayerRespawnEventHandler.md) (18 shared connections)
-- [. init ()](_init_%28%29.md) (14 shared connections)
-- [real time](real_time.md) (13 shared connections)
-- [PlayerChannelPreferences](PlayerChannelPreferences.md) (12 shared connections)
-- [parse jsonb column()](parse_jsonb_column%28%29.md) (11 shared connections)
-- [init](init.md) (10 shared connections)
+- [real time](real_time.md) (38 shared connections)
+- [. init ()](_init_%28%29.md) (31 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (23 shared connections)
+- [close db()](close_db%28%29.md) (21 shared connections)
+- [world](world.md) (15 shared connections)
+- [parse jsonb column()](parse_jsonb_column%28%29.md) (14 shared connections)
+- [spawn defaults](spawn_defaults.md) (12 shared connections)
+- [CombatService](CombatService.md) (11 shared connections)
+- [main()](main%28%29.md) (10 shared connections)
+- [APIRouter](APIRouter.md) (8 shared connections)
+- [HolidayCollection](HolidayCollection.md) (8 shared connections)
 - [UUID](UUID.md) (7 shared connections)
-- [Formatter](Formatter.md) (7 shared connections)
-- [CombatService](CombatService.md) (6 shared connections)
-- [Any](Any.md) (6 shared connections)
-- [.model dump()](model_dump%28%29.md) (6 shared connections)
 
 ## Source Files
 
 - `server/async_persistence.py`
+- `server/async_persistence_constants.py`
+- `server/async_persistence_room_loader.py`
+- `server/game/movement_service.py`
+- `server/game/room_service.py`
+- `server/models/room.py`
 - `server/npc/combat_integration_base.py`
-- `server/persistence/repositories/profession_repository.py`
-- `server/persistence/repositories/room_repository.py`
-- `server/services/schedule_service.py`
+- `server/npc/movement_integration.py`
+- `server/persistence/protocols.py`
 - `server/tests/unit/infrastructure/conftest.py`
+- `server/tests/unit/infrastructure/test_async_persistence_core.py`
 - `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- `server/tests/unit/services/test_schedule_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 464 (89%)
-- INFERRED: 55 (11%)
+- EXTRACTED: 1177 (93%)
+- INFERRED: 93 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

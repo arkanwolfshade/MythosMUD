@@ -33,8 +33,7 @@
 
 ## Relationships
 
-- [NPCOccupantProcessor](NPCOccupantProcessor.md) (10 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
+- [world](world.md) (11 shared connections)
 
 ## Source Files
 

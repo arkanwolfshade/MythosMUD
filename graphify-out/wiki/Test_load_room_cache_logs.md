@@ -1,23 +1,26 @@
 # Test load room cache logs
 
-> 2 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **test_subscribe_player_to_room_invalid_id()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **Test subscribe_player_to_room() handles invalid player_id.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **3. Systematic Investigation Approach** (5 connections) — `.cursor/commands/server-test-remediation.md`
+- **For Database-Related Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **For Authentication Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **For WebSocket Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **For Game Logic Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
 
 ## Relationships
 
-- [. call ()](_call_%28%29.md) (1 shared connections)
+- [10. Final Verification](10._Final_Verification.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- `.cursor/commands/server-test-remediation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

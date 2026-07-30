@@ -1,24 +1,27 @@
 # Test load room cache async
 
-> 2 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **test_occupant_formatter_process_dict_occupant_for_update_fallback_name()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter._process_dict_occupant_for_update() processes fallback na** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **Testing Requirements** (6 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Phase 0 Testing** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Phase 1 Testing** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Phase 2 Testing** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Phase 3 Testing** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Phase 4 Testing** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
 
 ## Relationships
 
-- [command parser()](command_parser%28%29.md) (1 shared connections)
-- [occupant formatter](occupant_formatter.md) (1 shared connections)
+- [get mythos time()](get_mythos_time%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_occupant_formatter.py`
+- `docs/archive/TEST_MODERNIZATION_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

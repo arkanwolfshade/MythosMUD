@@ -1,60 +1,59 @@
 # .model dump()
 
-> 50 nodes
+> 51 nodes
 
 ## Key Concepts
 
-- **combat_turn_participant_actions.py** (46 connections) — `server/services/combat_turn_participant_actions.py`
-- **_weapon_damage_from_equipped_player()** (11 connections) — `server/services/combat_turn_participant_actions.py`
-- **_resolve_npc_target()** (11 connections) — `server/services/combat_turn_participant_actions.py`
-- **process_npc_turn()** (10 connections) — `server/services/combat_turn_participant_actions.py`
-- **process_player_turn()** (10 connections) — `server/services/combat_turn_participant_actions.py`
-- **resolve_player_attack_damage()** (9 connections) — `server/services/combat_turn_participant_actions.py`
-- **_get_combat_container_services()** (8 connections) — `server/services/combat_turn_participant_actions.py`
-- **_select_npc_target()** (7 connections) — `server/services/combat_turn_participant_actions.py`
-- **_execute_player_attack()** (7 connections) — `server/services/combat_turn_participant_actions.py`
-- **_execute_npc_attack()** (6 connections) — `server/services/combat_turn_participant_actions.py`
-- **test_process_npc_turn_calls_process_attack_when_target_resolved()** (6 connections) — `server/tests/unit/services/test_combat_turn_participant_actions.py`
-- **_get_target_stats_for_damage()** (5 connections) — `server/services/combat_turn_participant_actions.py`
-- **_apply_physical_strength_bonus()** (5 connections) — `server/services/combat_turn_participant_actions.py`
-- **_should_continue_npc_turn()** (5 connections) — `server/services/combat_turn_participant_actions.py`
-- **_should_continue_player_turn()** (5 connections) — `server/services/combat_turn_participant_actions.py`
-- **_select_player_target()** (5 connections) — `server/services/combat_turn_participant_actions.py`
-- **_should_skip_for_casting()** (5 connections) — `server/services/combat_turn_participant_actions.py`
-- **test_select_npc_target_prefers_mortally_wounded_player_over_skipping()** (5 connections) — `server/tests/unit/services/test_combat_turn_participant_actions.py`
-- **test_resolve_npc_target_uses_aggro_current_target()** (5 connections) — `server/tests/unit/services/test_combat_turn_participant_actions.py`
-- **test_resolve_npc_target_broadcasts_when_aggro_switches()** (5 connections) — `server/tests/unit/services/test_combat_turn_participant_actions.py`
-- **_strength_modifier_from_attacker_stats()** (4 connections) — `server/services/combat_turn_participant_actions.py`
+- **test_websocket_handler_coverage_gaps.py** (24 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **handle_chat_message()** (18 connections) — `server/realtime/websocket_handler.py`
 - **UUID** (3 connections)
-- **_attacker_stats_dict_from_full_player()** (3 connections) — `server/services/combat_turn_participant_actions.py`
-- **test_strength_modifier_from_attacker_stats_defaults()** (3 connections) — `server/tests/unit/services/test_combat_turn_participant_actions.py`
-- **test_apply_physical_strength_bonus_adds_for_physical_only()** (3 connections) — `server/tests/unit/services/test_combat_turn_participant_actions.py`
-- *... and 25 more nodes in this community*
+- **test_handle_chat_message()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **test_handle_websocket_connection_full_flow()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_handle_game_command_resolve_connection_manager_from_app()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_handle_game_command_exception_handling()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_handle_game_command_runtime_error_handling()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_process_websocket_command_resolve_connection_manager_from_app()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_handle_chat_message_resolve_connection_manager_from_app()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_handle_chat_message_exception_handling()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_handle_chat_message_runtime_error_handling()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_handle_websocket_connection_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_handle_websocket_connection_connect_failed()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_handle_websocket_connection_setup_fails()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_handle_websocket_connection_welcome_fails()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_handle_chat_message_no_player()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_handle_chat_message_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_message_loop_should_raise_exception()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_process_exception_in_message_loop()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_setup_initial_connection_state_should_exit()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_setup_initial_connection_state_with_room()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_setup_initial_connection_state_websocket_disconnect()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_send_welcome_event_already_disconnected()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_send_welcome_event_close_message_sent()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- *... and 26 more nodes in this community*
 
 ## Relationships
 
-- [test combat attack handler](test_combat_attack_handler.md) (18 shared connections)
-- [Any](Any.md) (14 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (12 shared connections)
-- [. initialize handlers()](_initialize_handlers%28%29.md) (8 shared connections)
-- [emit close container event()](emit_close_container_event%28%29.md) (7 shared connections)
-- [chat nats publisher](chat_nats_publisher.md) (6 shared connections)
-- [close db()](close_db%28%29.md) (5 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (3 shared connections)
-- [process dead players()](process_dead_players%28%29.md) (3 shared connections)
-- [. init ()](_init_%28%29.md) (3 shared connections)
-- [test command parser](test_command_parser.md) (3 shared connections)
-- [append unique valid occupant()](append_unique_valid_occupant%28%29.md) (2 shared connections)
+- [follow commands](follow_commands.md) (7 shared connections)
+- [.is required()](is_required%28%29.md) (5 shared connections)
+- [.reset instance()](reset_instance%28%29.md) (3 shared connections)
+- [help content](help_content.md) (3 shared connections)
+- [websocket handler commands](websocket_handler_commands.md) (3 shared connections)
+- [convert pydantic error()](convert_pydantic_error%28%29.md) (1 shared connections)
+- [circuit breaker](circuit_breaker.md) (1 shared connections)
+- [world](world.md) (1 shared connections)
+- [nudgeStandBothPlayers()](nudgeStandBothPlayers%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/combat_turn_participant_actions.py`
-- `server/tests/unit/services/test_combat_turn_participant_actions.py`
+- `server/realtime/websocket_handler.py`
+- `server/tests/unit/realtime/test_websocket_handler_core.py`
+- `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
 
 ## Audit Trail
 
-- EXTRACTED: 207 (95%)
-- INFERRED: 10 (5%)
+- EXTRACTED: 127 (97%)
+- INFERRED: 4 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

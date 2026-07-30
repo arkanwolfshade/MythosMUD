@@ -1,17 +1,17 @@
 # convert pydantic error()
 
-> 180 nodes
+> 207 nodes
 
 ## Key Concepts
 
 - **error_types.py** (37 connections) — `server/error_types.py`
 - **StandardizedErrorResponse** (35 connections) — `server/error_handlers/standardized_responses.py`
-- **standardized_responses.py** (32 connections) — `server/error_handlers/standardized_responses.py`
+- **test_websocket_handler_helpers_extended.py** (33 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
 - **create_websocket_error_response()** (32 connections) — `server/error_types.py`
 - **create_standard_error_response()** (27 connections) — `server/error_types.py`
 - **pydantic_error_handler.py** (25 connections) — `server/error_handlers/pydantic_error_handler.py`
 - **PydanticErrorHandler** (23 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **websocket_handler_validation.py** (21 connections) — `server/realtime/websocket_handler_validation.py`
+- **message_handler_factory.py** (23 connections) — `server/realtime/message_handler_factory.py`
 - **test_error_types.py** (21 connections) — `server/tests/unit/test_error_types.py`
 - **create_sse_error_response()** (17 connections) — `server/error_types.py`
 - **.handle_validation_error()** (14 connections) — `server/error_handlers/pydantic_error_handler.py`
@@ -29,22 +29,22 @@
 - **._create_fallback_error_response()** (8 connections) — `server/error_handlers/pydantic_error_handler.py`
 - **.convert_to_mythos_error()** (8 connections) — `server/error_handlers/pydantic_error_handler.py`
 - **._extract_context_from_request()** (8 connections) — `server/error_handlers/standardized_responses.py`
-- *... and 155 more nodes in this community*
+- *... and 182 more nodes in this community*
 
 ## Relationships
 
-- [. init ()](_init_%28%29.md) (63 shared connections)
-- [.is required()](is_required%28%29.md) (14 shared connections)
-- [fetch schedule entries()](fetch_schedule_entries%28%29.md) (10 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (7 shared connections)
-- [.initialize()](initialize%28%29.md) (5 shared connections)
-- [Response](Response.md) (5 shared connections)
-- [real time](real_time.md) (4 shared connections)
-- [AbstractContextManager](AbstractContextManager.md) (4 shared connections)
-- [help content](help_content.md) (3 shared connections)
-- [test websocket handler helpers extended](test_websocket_handler_helpers_extended.md) (3 shared connections)
+- [. init ()](_init_%28%29.md) (89 shared connections)
+- [.reset instance()](reset_instance%28%29.md) (6 shared connections)
+- [nudgeStandBothPlayers()](nudgeStandBothPlayers%28%29.md) (6 shared connections)
+- [.initialize()](initialize%28%29.md) (4 shared connections)
+- [world](world.md) (4 shared connections)
+- [help content](help_content.md) (4 shared connections)
+- [.is required()](is_required%28%29.md) (4 shared connections)
+- [real time](real_time.md) (3 shared connections)
+- [AbstractContextManager](AbstractContextManager.md) (3 shared connections)
+- [MessageHandlerFactory](MessageHandlerFactory.md) (3 shared connections)
 - [NATS](NATS.md) (2 shared connections)
-- [BaseCommand](BaseCommand.md) (2 shared connections)
+- [generate invites db](generate_invites_db.md) (2 shared connections)
 
 ## Source Files
 
@@ -53,16 +53,15 @@
 - `server/error_handlers/standardized_responses.py`
 - `server/error_types.py`
 - `server/exceptions.py`
-- `server/realtime/websocket_handler_validation.py`
+- `server/realtime/message_handler_factory.py`
 - `server/tests/unit/error_handlers/test_standardized_responses_security.py`
-- `server/tests/unit/realtime/test_websocket_handler_core.py`
 - `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
 - `server/tests/unit/test_error_types.py`
 
 ## Audit Trail
 
-- EXTRACTED: 788 (97%)
-- INFERRED: 25 (3%)
+- EXTRACTED: 811 (97%)
+- INFERRED: 23 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

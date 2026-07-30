@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **__init__.py** (1 connections) — `server/tests/unit/infrastructure/__init__.py`
-- **Infrastructure unit tests.** (1 connections) — `server/tests/unit/infrastructure/__init__.py`
+- **__init__.py** (1 connections) — `server/tests/unit/game/magic/__init__.py`
+- **Game magic unit tests.** (1 connections) — `server/tests/unit/game/magic/__init__.py`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/__init__.py`
+- `server/tests/unit/game/magic/__init__.py`
 
 ## Audit Trail
 

@@ -1,43 +1,23 @@
 # init
 
-> 20 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **MessageBroker** (11 connections) — `server/infrastructure/message_broker.py`
-- **__init__.py** (3 connections) — `server/infrastructure/__init__.py`
-- **.publish()** (3 connections) — `server/infrastructure/message_broker.py`
-- **.subscribe()** (3 connections) — `server/infrastructure/message_broker.py`
-- **.request()** (3 connections) — `server/infrastructure/message_broker.py`
-- **.connect()** (2 connections) — `server/infrastructure/message_broker.py`
-- **.disconnect()** (2 connections) — `server/infrastructure/message_broker.py`
-- **.is_connected()** (2 connections) — `server/infrastructure/message_broker.py`
-- **Any** (2 connections)
-- **.unsubscribe()** (2 connections) — `server/infrastructure/message_broker.py`
-- **Infrastructure layer for MythosMUD.  This package contains abstractions for exte** (1 connections) — `server/infrastructure/__init__.py`
-- **Protocol** (1 connections)
-- **Protocol defining the message broker interface.      This abstract interface all** (1 connections) — `server/infrastructure/message_broker.py`
-- **Connect to the message broker.          Returns:             bool: True if conne** (1 connections) — `server/infrastructure/message_broker.py`
-- **Disconnect from the message broker.          Closes all subscriptions and releas** (1 connections) — `server/infrastructure/message_broker.py`
-- **Check if connected to the message broker.          Returns:             bool: Tr** (1 connections) — `server/infrastructure/message_broker.py`
-- **Publish a message to a subject/topic.          Args:             subject: Subjec** (1 connections) — `server/infrastructure/message_broker.py`
-- **Subscribe to a subject/topic with a message handler.          Args:** (1 connections) — `server/infrastructure/message_broker.py`
-- **Unsubscribe from a subject/topic.          Args:             subscription_id: ID** (1 connections) — `server/infrastructure/message_broker.py`
-- **Send a request and wait for a reply (request-reply pattern).          Args:** (1 connections) — `server/infrastructure/message_broker.py`
+- **__init__.py** (1 connections) — `server/game/magic/__init__.py`
+- **Magic and spellcasting system for MythosMUD.  This package contains the core mag** (1 connections) — `server/game/magic/__init__.py`
 
 ## Relationships
 
-- [message broker](message_broker.md) (2 shared connections)
-- [. init ()](_init_%28%29.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/infrastructure/__init__.py`
-- `server/infrastructure/message_broker.py`
+- `server/game/magic/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 43 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

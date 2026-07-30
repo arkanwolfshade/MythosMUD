@@ -1,53 +1,58 @@
 # . init ()
 
-> 37 nodes
+> 87 nodes
 
 ## Key Concepts
 
-- **Any** (11 connections)
-- **NPCMessageQueue** (11 connections) — `server/npc/threading.py`
-- **NPCCommunicationBridge** (10 connections) — `server/npc/threading.py`
-- **._process_wander_action()** (8 connections) — `server/npc/threading.py`
-- **._stop_npc_thread_internal()** (5 connections) — `server/npc/threading.py`
-- **._process_npc_message()** (5 connections) — `server/npc/threading.py`
-- **.get_messages()** (4 connections) — `server/npc/threading.py`
-- **.clear_messages()** (4 connections) — `server/npc/threading.py`
-- **.__init__()** (4 connections) — `server/npc/threading.py`
-- **.add_message()** (3 connections) — `server/npc/threading.py`
-- **.stop()** (3 connections) — `server/npc/threading.py`
-- **.send_message_to_npc()** (3 connections) — `server/npc/threading.py`
-- **.receive_message_from_npc()** (3 connections) — `server/npc/threading.py`
-- **.broadcast_to_all_npcs()** (3 connections) — `server/npc/threading.py`
-- **.get_pending_messages()** (3 connections) — `server/npc/threading.py`
-- **.get_messages_for_npc()** (3 connections) — `server/npc/threading.py`
-- **.__init__()** (2 connections) — `server/npc/threading.py`
-- **.get_queue_size()** (2 connections) — `server/npc/threading.py`
-- **.get_total_queue_size()** (2 connections) — `server/npc/threading.py`
-- **Thread-safe message queue for NPC actions.      This queue handles pending actio** (1 connections) — `server/npc/threading.py`
-- **Initialize the NPC message queue.          Args:             max_messages_per_np** (1 connections) — `server/npc/threading.py`
-- **Add a message to an NPC's pending message queue.          Args:             npc_** (1 connections) — `server/npc/threading.py`
-- **Get all pending messages for an NPC.          Args:             npc_id: The NPC'** (1 connections) — `server/npc/threading.py`
-- **Clear all pending messages for an NPC.          Args:             npc_id: The NP** (1 connections) — `server/npc/threading.py`
-- **Get the number of pending messages for an NPC.** (1 connections) — `server/npc/threading.py`
-- *... and 12 more nodes in this community*
+- **WebSocketMessageValidator** (42 connections) — `server/realtime/message_validator.py`
+- **MessageValidationError** (36 connections) — `server/realtime/message_validator.py`
+- **test_message_validator.py** (28 connections) — `server/tests/unit/realtime/test_message_validator.py`
+- **websocket_handler_validation.py** (21 connections) — `server/realtime/websocket_handler_validation.py`
+- **message_validator.py** (9 connections) — `server/realtime/message_validator.py`
+- **.validate_json_structure()** (7 connections) — `server/realtime/message_validator.py`
+- **._unwrap_string_inner_message_if_json()** (7 connections) — `server/realtime/message_validator.py`
+- **.parse_and_validate()** (7 connections) — `server/realtime/message_validator.py`
+- **._parse_outer_json_object()** (6 connections) — `server/realtime/message_validator.py`
+- **resolve_expected_csrf_token()** (6 connections) — `server/realtime/websocket_handler_validation.py`
+- **validate_websocket_message()** (6 connections) — `server/realtime/websocket_handler_validation.py`
+- **.validate_size()** (5 connections) — `server/realtime/message_validator.py`
+- **.validate_schema()** (5 connections) — `server/realtime/message_validator.py`
+- **._extract_csrf_token_string()** (5 connections) — `server/realtime/message_validator.py`
+- **.validate_csrf()** (5 connections) — `server/realtime/message_validator.py`
+- **get_message_validator()** (5 connections) — `server/realtime/message_validator.py`
+- **check_websocket_message_rate_limit()** (5 connections) — `server/realtime/websocket_handler_validation.py`
+- **validate_message_csrf_and_restore_metadata()** (5 connections) — `server/realtime/websocket_handler_validation.py`
+- **_deep_dict()** (5 connections) — `server/tests/unit/realtime/test_message_validator.py`
+- **test_parse_and_validate_inner_json_depth_exceeded()** (5 connections) — `server/tests/unit/realtime/test_message_validator.py`
+- **._validate_string_lengths()** (4 connections) — `server/realtime/message_validator.py`
+- **WebSocket** (4 connections)
+- **get_connection_csrf_context()** (4 connections) — `server/realtime/websocket_handler_validation.py`
+- **test_validate_size_counts_utf8_bytes()** (4 connections) — `server/tests/unit/realtime/test_message_validator.py`
+- **test_validate_json_structure_depth_exceeded()** (4 connections) — `server/tests/unit/realtime/test_message_validator.py`
+- *... and 62 more nodes in this community*
 
 ## Relationships
 
-- [TerminalButtonProps](TerminalButtonProps.md) (14 shared connections)
-- [cfg float()](cfg_float%28%29.md) (3 shared connections)
-- [Test validate command basics returns](Test_validate_command_basics_returns.md) (2 shared connections)
-- [Lock](Lock.md) (2 shared connections)
-- [Any](Any.md) (1 shared connections)
-- [.validate player name field()](validate_player_name_field%28%29.md) (1 shared connections)
+- [.reset instance()](reset_instance%28%29.md) (7 shared connections)
+- [convert pydantic error()](convert_pydantic_error%28%29.md) (7 shared connections)
+- [world](world.md) (4 shared connections)
+- [websocket handler commands](websocket_handler_commands.md) (4 shared connections)
+- [quest events](quest_events.md) (2 shared connections)
+- [. init ()](_init_%28%29.md) (2 shared connections)
+- [Player](Player.md) (2 shared connections)
+- [get current tick()](get_current_tick%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/threading.py`
+- `server/realtime/message_validator.py`
+- `server/realtime/websocket_handler_validation.py`
+- `server/tests/unit/realtime/test_message_validator.py`
+- `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
 
 ## Audit Trail
 
-- EXTRACTED: 103 (96%)
-- INFERRED: 4 (4%)
+- EXTRACTED: 323 (92%)
+- INFERRED: 30 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,26 +1,36 @@
 # get item prototype count()
 
-> 4 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **.damage_player()** (4 connections) — `server/async_persistence.py`
-- **.async_damage_player()** (4 connections) — `server/async_persistence.py`
-- **Damage a player. Delegates to HealthRepository.** (1 connections) — `server/async_persistence.py`
-- **Async alias for damage_player. Delegates to HealthRepository.** (1 connections) — `server/async_persistence.py`
+- **🟢 MEDIUM PRIORITY IMPROVEMENTS** (15 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **15. Hardcoded Connection Pool Sizes** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Priority**: 🟢**MEDIUM** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **16. Deprecated asyncio.get_event_loop() Usage** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Priority**: 🟢**MEDIUM** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **17. Inconsistent Error Handling Patterns** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Priority**: 🟢**MEDIUM** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **18. Memory Leak Risk in Metrics Collection** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Priority**: 🟢**MEDIUM** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **19. Missing Message Acknowledgment in NATS** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Priority**: 🟢**MEDIUM** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **20. Subject Naming Inconsistency** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Priority**: 🟢**MEDIUM** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **21. No Connection Health Monitoring** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Priority**: 🟢**MEDIUM** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Relationships
 
-- [chat nats publisher](chat_nats_publisher.md) (2 shared connections)
-- [PlayerRespawnEventHandler](PlayerRespawnEventHandler.md) (2 shared connections)
+- [broadcast message()](broadcast_message%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/async_persistence.py`
+- `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
+- EXTRACTED: 29 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

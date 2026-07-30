@@ -17,9 +17,9 @@
 - [UUID](UUID.md) (4 shared connections)
 - [CorpseNotFoundError](CorpseNotFoundError.md) (1 shared connections)
 - [message filtering](message_filtering.md) (1 shared connections)
-- [look command](look_command.md) (1 shared connections)
-- [process dead players()](process_dead_players%28%29.md) (1 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
+- [Tests for get stats generator](Tests_for_get_stats_generator.md) (1 shared connections)
+- [close db()](close_db%28%29.md) (1 shared connections)
+- [world](world.md) (1 shared connections)
 
 ## Source Files
 

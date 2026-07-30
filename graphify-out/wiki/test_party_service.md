@@ -5,6 +5,8 @@
 ## Key Concepts
 
 - **test_party_service.py** (38 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_party_post_init_includes_leader_in_members()** (3 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_party_post_init_preserves_other_members()** (3 connections) — `server/tests/unit/game/test_party_service.py`
 - **test_create_party_success()** (2 connections) — `server/tests/unit/game/test_party_service.py`
 - **test_create_party_already_in_party_rejected()** (2 connections) — `server/tests/unit/game/test_party_service.py`
 - **test_add_member_success()** (2 connections) — `server/tests/unit/game/test_party_service.py`
@@ -26,19 +28,16 @@
 - **test_get_party_members_empty_when_not_in_party()** (2 connections) — `server/tests/unit/game/test_party_service.py`
 - **test_get_party_members_includes_self()** (2 connections) — `server/tests/unit/game/test_party_service.py`
 - **test_is_leader_false_when_not_in_party()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_is_leader_false_when_member()** (2 connections) — `server/tests/unit/game/test_party_service.py`
 - **test_on_player_disconnect_member_removed()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_on_player_disconnect_leader_disbands_party()** (2 connections) — `server/tests/unit/game/test_party_service.py`
 - *... and 33 more nodes in this community*
 
 ## Relationships
 
-- [Any](Any.md) (3 shared connections)
-- [.validate player name field()](validate_player_name_field%28%29.md) (2 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
-- [test command factories player state](test_command_factories_player_state.md) (1 shared connections)
-- [get user db()](get_user_db%28%29.md) (1 shared connections)
-- [conftest](conftest.md) (1 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (4 shared connections)
+- [.get mechanical effects()](get_mechanical_effects%28%29.md) (3 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (2 shared connections)
+- [test_get_current_lucidity_found](test_get_current_lucidity_found.md) (1 shared connections)
+- [test_handle_player_respawned_success](test_handle_player_respawned_success.md) (1 shared connections)
 
 ## Source Files
 
@@ -46,7 +45,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 123 (100%)
+- EXTRACTED: 125 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

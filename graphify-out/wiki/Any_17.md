@@ -1,33 +1,58 @@
 # Any
 
-> 10 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **player_repository_room.py** (7 connections) — `server/persistence/repositories/player_repository_room.py`
-- **validate_and_fix_player_room()** (7 connections) — `server/persistence/repositories/player_repository_room.py`
-- **validate_and_fix_player_room_with_persistence()** (7 connections) — `server/persistence/repositories/player_repository_room.py`
-- **should_skip_room_validation()** (5 connections) — `server/persistence/repositories/player_repository_room.py`
-- **Any** (3 connections)
-- **Player** (3 connections)
-- **Player room validation helpers for PlayerRepository.  Validates and fixes invali** (1 connections) — `server/persistence/repositories/player_repository_room.py`
-- **Return True if room validation should be skipped (cache empty, instanced, or tut** (1 connections) — `server/persistence/repositories/player_repository_room.py`
-- **Validate player's current room and fix if invalid.      Args:         room_cache** (1 connections) — `server/persistence/repositories/player_repository_room.py`
-- **Validate and fix player room, persisting the fix if needed.      Args:         r** (1 connections) — `server/persistence/repositories/player_repository_room.py`
+- **player_connection_setup.py** (24 connections) — `server/realtime/player_connection_setup.py`
+- **handle_new_connection_setup()** (17 connections) — `server/realtime/player_connection_setup.py`
+- **_broadcast_player_entered_game()** (9 connections) — `server/realtime/player_connection_setup.py`
+- **_trigger_quests_for_room_on_spawn()** (8 connections) — `server/realtime/player_connection_setup.py`
+- **UUID** (7 connections)
+- **_send_room_occupants_update_after_connection()** (7 connections) — `server/realtime/player_connection_setup.py`
+- **_update_player_last_active()** (6 connections) — `server/realtime/player_connection_setup.py`
+- **Any** (6 connections)
+- **_add_player_to_room_silently()** (5 connections) — `server/realtime/player_connection_setup.py`
+- **test_player_connection_setup_grace_period.py** (5 connections) — `server/tests/unit/realtime/test_player_connection_setup_grace_period.py`
+- **_stable_room_id_for_quest()** (3 connections) — `server/realtime/player_connection_setup.py`
+- **test_reconnection_cancels_grace_period()** (3 connections) — `server/tests/unit/realtime/test_player_connection_setup_grace_period.py`
+- **test_reconnection_no_grace_period()** (3 connections) — `server/tests/unit/realtime/test_player_connection_setup_grace_period.py`
+- **Player** (2 connections)
+- **Player connection setup functions.  This module handles the setup tasks when a p** (1 connections) — `server/realtime/player_connection_setup.py`
+- **Update last_active timestamp in database when player connects.      Args:** (1 connections) — `server/realtime/player_connection_setup.py`
+- **Return stable room id for quest_offers lookup; strip instance_<uuid>_ prefix if** (1 connections) — `server/realtime/player_connection_setup.py`
+- **On spawn, explicitly start quests offered by this room (e.g. Leave the Tutorial)** (1 connections) — `server/realtime/player_connection_setup.py`
+- **Add player to the Room object without triggering PlayerEnteredRoom.      Movemen** (1 connections) — `server/realtime/player_connection_setup.py`
+- **Broadcast a structured entry event to other occupants (excluding the newcomer).** (1 connections) — `server/realtime/player_connection_setup.py`
+- **Send room_occupants update so other players see the new occupant.      Args:** (1 connections) — `server/realtime/player_connection_setup.py`
+- **Handle setup tasks for a new player connection.      Args:         player_id: Th** (1 connections) — `server/realtime/player_connection_setup.py`
+- **Unit tests for player connection setup grace period integration.  Tests that rec** (1 connections) — `server/tests/unit/realtime/test_player_connection_setup_grace_period.py`
+- **Test that reconnection cancels grace period.** (1 connections) — `server/tests/unit/realtime/test_player_connection_setup_grace_period.py`
+- **Test that reconnection does nothing if player not in grace period.** (1 connections) — `server/tests/unit/realtime/test_player_connection_setup_grace_period.py`
 
 ## Relationships
 
-- [real time](real_time.md) (4 shared connections)
-- [. init ()](_init_%28%29.md) (2 shared connections)
+- [player disconnect handlers](player_disconnect_handlers.md) (6 shared connections)
+- [real time](real_time.md) (5 shared connections)
+- [circuit breaker](circuit_breaker.md) (3 shared connections)
+- [login grace period](login_grace_period.md) (3 shared connections)
+- [command admin](command_admin.md) (2 shared connections)
+- [world](world.md) (2 shared connections)
+- [main()](main%28%29.md) (1 shared connections)
+- [.state()](state%28%29.md) (1 shared connections)
+- [test quest service](test_quest_service.md) (1 shared connections)
+- [.is required()](is_required%28%29.md) (1 shared connections)
+- [Any](Any.md) (1 shared connections)
 
 ## Source Files
 
-- `server/persistence/repositories/player_repository_room.py`
+- `server/realtime/player_connection_setup.py`
+- `server/tests/unit/realtime/test_player_connection_setup_grace_period.py`
 
 ## Audit Trail
 
-- EXTRACTED: 36 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 110 (95%)
+- INFERRED: 6 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

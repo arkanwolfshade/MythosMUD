@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [look container](look_container.md) (2 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
+- [src/**/*.spec](src-__-_.spec.md) (2 shared connections)
+- [world](world.md) (1 shared connections)
 
 ## Source Files
 

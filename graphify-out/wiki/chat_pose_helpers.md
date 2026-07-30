@@ -1,51 +1,47 @@
 # chat pose helpers
 
-> 23 nodes
+> 18 nodes
 
 ## Key Concepts
 
-- **panelLayoutBootstrap.ts** (12 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutBootstrap.ts`
-- **panelLayoutValidationTypeCheck.ts** (12 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutValidationTypeCheck.ts`
-- **panelLayoutValidation.ts** (11 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutValidation.ts`
-- **panelLayoutClamp.ts** (10 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutClamp.ts`
-- **resolveInitialPanelLayout()** (9 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutBootstrap.ts`
-- **panelLayoutBootstrap.test.ts** (7 connections) — `client/src/components/ui-v2/PanelSystem/__tests__/panelLayoutBootstrap.test.ts`
-- **isPanelState()** (6 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutValidationTypeCheck.ts`
-- **clampPanelLayoutToViewport()** (5 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutClamp.ts`
-- **isRecord()** (5 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutValidationTypeCheck.ts`
-- **isPanelStateRecord()** (5 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutValidationTypeCheck.ts`
-- **layoutFitsViewport()** (4 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutClamp.ts`
-- **clampSinglePanel()** (4 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutClamp.ts`
-- **loadPanelLayout()** (4 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutValidation.ts`
-- **isPanelPosition()** (4 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutValidationTypeCheck.ts`
-- **isPanelSize()** (4 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutValidationTypeCheck.ts`
-- **mergePanelMetadataFromDefault()** (3 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutBootstrap.ts`
-- **clampDimensionsToViewport()** (3 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutClamp.ts`
-- **hasRequiredPanelStateTypes()** (3 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutValidationTypeCheckImpl.ts`
-- **applyOptionalContentMinHeight()** (2 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutClamp.ts`
-- **clampTopLeftWithinBounds()** (2 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutClamp.ts`
-- **panelLayoutValidationTypeCheckImpl.ts** (2 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutValidationTypeCheckImpl.ts`
-- **hoisted** (1 connections) — `client/src/components/ui-v2/PanelSystem/__tests__/panelLayoutBootstrap.test.ts`
-- **basePanel()** (1 connections) — `client/src/components/ui-v2/PanelSystem/__tests__/panelLayoutBootstrap.test.ts`
+- **inventory_item_matching.py** (22 connections) — `server/commands/inventory_item_matching.py`
+- **build_equipped_candidates()** (5 connections) — `server/commands/inventory_item_matching.py`
+- **extract_item_identifier()** (4 connections) — `server/commands/inventory_item_matching.py`
+- **build_drop_candidates()** (4 connections) — `server/commands/inventory_item_matching.py`
+- **match_exact_drop()** (4 connections) — `server/commands/inventory_item_matching.py`
+- **build_inventory_candidates()** (4 connections) — `server/commands/inventory_item_matching.py`
+- **clean_item_value()** (3 connections) — `server/commands/inventory_item_matching.py`
+- **search_exact_match()** (3 connections) — `server/commands/inventory_item_matching.py`
+- **search_substring_match()** (3 connections) — `server/commands/inventory_item_matching.py`
+- **Item matching utilities for inventory commands.** (1 connections) — `server/commands/inventory_item_matching.py`
+- **Extract and normalize item identifier from stack.** (1 connections) — `server/commands/inventory_item_matching.py`
+- **Build list of candidate tuples (index, item_name, item_id, prototype_id).** (1 connections) — `server/commands/inventory_item_matching.py`
+- **Match by exact identifier (item_name, item_id, or prototype_id).** (1 connections) — `server/commands/inventory_item_matching.py`
+- **Build list of candidate tuples (index, item_name, item_id, prototype_id) from in** (1 connections) — `server/commands/inventory_item_matching.py`
+- **Clean item value for matching. Returns cleaned string or None.** (1 connections) — `server/commands/inventory_item_matching.py`
+- **Build list of candidates from equipped items. Returns list of (slot_key, item_na** (1 connections) — `server/commands/inventory_item_matching.py`
+- **Search for exact match. Returns slot_key if found, None otherwise.** (1 connections) — `server/commands/inventory_item_matching.py`
+- **Search for substring match. Returns slot_key if found, None otherwise.** (1 connections) — `server/commands/inventory_item_matching.py`
 
 ## Relationships
 
-- [HealthMeter](HealthMeter.md) (18 shared connections)
-- [AuthenticationBackend](AuthenticationBackend.md) (5 shared connections)
+- [Test check grace period block](Test_check_grace_period_block.md) (5 shared connections)
+- [Test process alias expansion function.](Test_process_alias_expansion_function.md) (5 shared connections)
+- [test format metadata empty()](test_format_metadata_empty%28%29.md) (4 shared connections)
+- [Any](Any.md) (2 shared connections)
+- [Update player's connection list to](Update_player%27s_connection_list_to.md) (2 shared connections)
+- [test resolve state no app()](test_resolve_state_no_app%28%29.md) (1 shared connections)
+- [.add message()](add_message%28%29.md) (1 shared connections)
+- [populate test npc databases](populate_test_npc_databases.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/ui-v2/PanelSystem/__tests__/panelLayoutBootstrap.test.ts`
-- `client/src/components/ui-v2/PanelSystem/panelLayoutBootstrap.ts`
-- `client/src/components/ui-v2/PanelSystem/panelLayoutClamp.ts`
-- `client/src/components/ui-v2/PanelSystem/panelLayoutValidation.ts`
-- `client/src/components/ui-v2/PanelSystem/panelLayoutValidationTypeCheck.ts`
-- `client/src/components/ui-v2/PanelSystem/panelLayoutValidationTypeCheckImpl.ts`
+- `server/commands/inventory_item_matching.py`
 
 ## Audit Trail
 
-- EXTRACTED: 117 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 61 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

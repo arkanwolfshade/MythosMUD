@@ -1,6 +1,6 @@
 # testing examples
 
-> 53 nodes
+> 51 nodes
 
 ## Key Concepts
 
@@ -10,7 +10,6 @@
 - **process_batch()** (4 connections) — `docs/examples/logging/testing_examples.py`
 - **WebSocket** (4 connections) — `docs/examples/logging/testing_examples.py`
 - **test_performance_logging()** (3 connections) — `docs/examples/logging/testing_examples.py`
-- **test_exception_tracking()** (3 connections) — `docs/examples/logging/testing_examples.py`
 - **test_api_request_logging()** (3 connections) — `docs/examples/logging/testing_examples.py`
 - **test_async_logging()** (3 connections) — `docs/examples/logging/testing_examples.py`
 - **test_database_logging()** (3 connections) — `docs/examples/logging/testing_examples.py`
@@ -29,13 +28,15 @@
 - **LoggingMiddleware** (3 connections) — `docs/examples/logging/testing_examples.py`
 - **.process_request()** (3 connections) — `docs/examples/logging/testing_examples.py`
 - **request** (3 connections) — `docs/examples/logging/testing_examples.py`
-- *... and 28 more nodes in this community*
+- **test_basic_logging()** (2 connections) — `docs/examples/logging/testing_examples.py`
+- *... and 26 more nodes in this community*
 
 ## Relationships
 
-- [websocket integration](websocket_integration.md) (5 shared connections)
+- [Send a system message to](Send_a_system_message_to.md) (3 shared connections)
 - [fastapi integration](fastapi_integration.md) (2 shared connections)
-- [.shutdown()](shutdown%28%29.md) (2 shared connections)
+- [nats retry handler](nats_retry_handler.md) (2 shared connections)
+- [PerformanceStats](PerformanceStats.md) (2 shared connections)
 - [deprecated patterns](deprecated_patterns.md) (1 shared connections)
 
 ## Source Files
@@ -44,7 +45,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 135 (98%)
+- EXTRACTED: 131 (98%)
 - INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 

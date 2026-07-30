@@ -1,45 +1,47 @@
 # test npc combat integration service
 
-> 19 nodes
+> 29 nodes
 
 ## Key Concepts
 
-- **is_shutdown_pending()** (14 connections) — `server/commands/admin_shutdown_command.py`
-- **test_is_shutdown_pending_true()** (6 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_is_shutdown_pending_false()** (6 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_cancel_shutdown_countdown_no_active()** (6 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_cancel_shutdown_countdown_success()** (6 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **_ShutdownContainerStub** (5 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_is_shutdown_pending_no_state()** (4 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **_PendingCheckStateStub** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **_PendingCheckAppStub** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **_AppWithoutState** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **_ShutdownCancelStateStub** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **_ShutdownCancelAppStub** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Check if server shutdown is currently pending.      Args:         app: FastAPI a** (1 connections) — `server/commands/admin_shutdown_command.py`
-- **App double with no state attribute (is_shutdown_pending must return False).** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Test is_shutdown_pending() returns True when shutdown is pending.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Test is_shutdown_pending() returns False when shutdown is not pending.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Test is_shutdown_pending() returns False when app has no state.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Test cancel_shutdown_countdown() when no shutdown is active.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Test cancel_shutdown_countdown() successfully cancels shutdown.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **PostgreSQL Anti-Patterns Code Review** (9 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- **🔴 CRITICAL ISSUES** (9 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- **🟡 HIGH PRIORITY ISSUES** (6 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- **🟢 MEDIUM PRIORITY ISSUES** (4 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- **📋 SUMMARY OF RECOMMENDATIONS** (4 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- **POSTGRESQL_ANTI_PATTERNS_REVIEW.md** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- **Executive Summary** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- **1. Use of `serial`/`SERIAL` Instead of `bigint generated always as identity`** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- **2. Use of `INTEGER` Instead of `bigint` for Primary Keys** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- **3. Inconsistent SQL Keyword Formatting** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- **4. Use of `varchar(n)` Where `text` Would Be Appropriate** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- **5. Missing Table and Column Comments** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- **6. Mixed Naming Conventions (snake_case vs UPPER_CASE)** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- **7. Use of Quoted Identifiers (Double Quotes)** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- **8. Missing Explicit `AS` Keywords in Aliases** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- **9. Inconsistent Primary Key Types (UUID vs varchar vs integer)** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- **10. Use of `BETWEEN` with Integer Ranges** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- **11. Missing Indexes on Foreign Keys** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- **12. Inconsistent Constraint Naming** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- **13. Mixed Case in Table/Column Names** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- **14. Missing `UNIQUE` Constraints Where Appropriate** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- **15. Inconsistent Use of `NOT NULL` Constraints** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- **16. Missing Documentation for Complex Constraints** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- **✅ GOOD PRACTICES FOUND** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- **Immediate Actions (CRITICAL)** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
-- [Any](Any.md) (12 shared connections)
-- [get skill repository()](get_skill_repository%28%29.md) (4 shared connections)
-- [admin shutdown command](admin_shutdown_command.md) (3 shared connections)
-- [Connection Manager](Connection_Manager.md) (2 shared connections)
-- [UUID](UUID.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/commands/admin_shutdown_command.py`
-- `server/tests/unit/commands/test_admin_shutdown_command.py`
+- `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
 
 ## Audit Trail
 
-- EXTRACTED: 69 (100%)
+- EXTRACTED: 56 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

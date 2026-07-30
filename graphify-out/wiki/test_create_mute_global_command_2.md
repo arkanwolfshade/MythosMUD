@@ -1,23 +1,28 @@
-# test_create_mute_global_command
+# Test create mute global command
 
-> 2 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **test_create_mute_global_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_mute_global_command delegates to moderation factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **🚫 Anti-Patterns NOT Found (Good!)** (7 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **❌ Using time.sleep() in async functions** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **❌ Calling async without await** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **❌ Creating tasks without tracking** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **❌ Not closing resources** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **❌ Nested event loops** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **❌ Global state issues** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
 
 ## Relationships
 
-- [test command factories](test_command_factories.md) (1 shared connections)
+- [.get stats()](get_stats%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

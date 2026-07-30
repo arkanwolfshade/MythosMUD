@@ -1,56 +1,64 @@
 # chat send with room bundle()
 
-> 50 nodes
+> 117 nodes
 
 ## Key Concepts
 
 - **test_communication_commands_flows.py** (41 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
 - **SimpleNamespace** (38 connections)
+- **communication_commands_flows.py** (33 connections) — `server/commands/communication_commands_flows.py`
+- **test_communication_commands_support.py** (21 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **ChatCommandsProtocol** (18 connections) — `server/commands/communication_commands_support.py`
+- **PlayerResolutionProtocol** (16 connections) — `server/commands/communication_commands_support.py`
+- **communication_commands_support.py** (15 connections) — `server/commands/communication_commands_support.py`
+- **get_services_from_container()** (15 connections) — `server/commands/communication_commands_support.py`
 - **_chat_send_with_room_bundle()** (14 connections) — `server/commands/communication_commands_flows.py`
+- **flow_global_command()** (12 connections) — `server/commands/communication_commands_flows.py`
 - **_message_from_command()** (11 connections) — `server/commands/communication_commands_flows.py`
 - **_RoomChannelOutcomeConfig** (11 connections) — `server/commands/communication_commands_flows.py`
+- **primary_id()** (11 connections) — `server/commands/communication_commands_support.py`
+- **chat_result_map()** (11 connections) — `server/commands/communication_commands_support.py`
+- **message_id_from_result()** (11 connections) — `server/commands/communication_commands_support.py`
+- **_require_chat_pair()** (10 connections) — `server/commands/communication_commands_flows.py`
 - **flow_say_command()** (10 connections) — `server/commands/communication_commands_flows.py`
+- **flow_reply_command()** (10 connections) — `server/commands/communication_commands_flows.py`
+- **app_from_request()** (10 connections) — `server/commands/communication_commands_support.py`
+- **_str_error_from_chat_result()** (9 connections) — `server/commands/communication_commands_flows.py`
 - **_room_player_bundle()** (9 connections) — `server/commands/communication_commands_flows.py`
+- **_system_send_if_admin()** (9 connections) — `server/commands/communication_commands_flows.py`
 - **flow_system_command()** (9 connections) — `server/commands/communication_commands_flows.py`
-- **_global_player_bundle()** (8 connections) — `server/commands/communication_commands_flows.py`
-- **flow_local_command()** (8 connections) — `server/commands/communication_commands_flows.py`
-- **_whisper_id_pair_or_error()** (8 connections) — `server/commands/communication_commands_flows.py`
-- **test_chat_send_with_room_bundle_exception_returns_generic_message()** (5 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
-- **test_chat_send_with_room_bundle_success()** (4 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
-- **test_chat_send_with_room_bundle_chat_failure()** (4 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
-- **test_flow_say_command_success_broadcasts_room_message()** (4 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
-- **test_flow_whisper_command_exception_returns_generic_message()** (4 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
-- **test_flow_whisper_command_success_sends_private_message()** (4 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
-- **test_flow_reply_command_success_uses_container_services()** (4 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
-- **test_flow_reply_command_no_last_sender_returns_user_message()** (4 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
-- **test_flow_global_command_blocks_low_level_user()** (4 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
-- **test_flow_system_command_blocks_non_admin_user()** (4 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
-- **test_whisper_id_pair_self_whisper()** (3 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
-- **test_whisper_id_pair_missing_id()** (3 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
-- **test_whisper_id_pair_ok()** (3 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
-- **test_room_player_bundle_no_primary_id()** (3 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
-- *... and 25 more nodes in this community*
+- **flow_whisper_command()** (9 connections) — `server/commands/communication_commands_flows.py`
+- **get_pose_persistence()** (9 connections) — `server/commands/communication_commands_support.py`
+- *... and 92 more nodes in this community*
 
 ## Relationships
 
-- [.validate alias name field()](validate_alias_name_field%28%29.md) (40 shared connections)
-- [ConnectionsComponent](ConnectionsComponent.md) (9 shared connections)
-- [. init ()](_init_%28%29.md) (6 shared connections)
-- [container helpers inventory find](container_helpers_inventory_find.md) (5 shared connections)
-- [.get instance()](get_instance%28%29.md) (4 shared connections)
-- [test quest service collect](test_quest_service_collect.md) (2 shared connections)
-- [container helpers inventory](container_helpers_inventory.md) (2 shared connections)
-- [test command parser](test_command_parser.md) (1 shared connections)
+- [handle global command()](handle_global_command%28%29.md) (16 shared connections)
+- [container helpers inventory find](container_helpers_inventory_find.md) (6 shared connections)
+- [. init ()](_init_%28%29.md) (5 shared connections)
+- [Player Position Service](Player_Position_Service.md) (3 shared connections)
+- [container helpers inventory](container_helpers_inventory.md) (3 shared connections)
+- [world](world.md) (2 shared connections)
+- [Any](Any.md) (2 shared connections)
+- [.state()](state%28%29.md) (2 shared connections)
+- [parse json field()](parse_json_field%28%29.md) (2 shared connections)
+- [admin setstat command](admin_setstat_command.md) (1 shared connections)
+- [websocket integration](websocket_integration.md) (1 shared connections)
+- [Test check casting state function.](Test_check_casting_state_function.md) (1 shared connections)
 
 ## Source Files
 
 - `server/commands/communication_commands_flows.py`
+- `server/commands/communication_commands_support.py`
 - `server/tests/unit/commands/test_communication_commands_flows.py`
+- `server/tests/unit/commands/test_communication_commands_support.py`
+- `server/tests/unit/commands/test_container_helpers_inventory_find.py`
+- `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
 
 ## Audit Trail
 
-- EXTRACTED: 204 (78%)
-- INFERRED: 59 (22%)
+- EXTRACTED: 535 (88%)
+- INFERRED: 75 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

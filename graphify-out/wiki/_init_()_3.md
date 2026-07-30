@@ -1,59 +1,55 @@
 # . init ()
 
-> 49 nodes
+> 53 nodes
 
 ## Key Concepts
 
-- **WebSocketRequestContext** (26 connections) — `server/realtime/request_context.py`
-- **test_request_context.py** (16 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **command_execution_request.py** (9 connections) — `server/command_handler/command_execution_request.py`
-- **test_command_execution_request.py** (8 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
-- **Any** (7 connections)
-- **.set_app_state_services()** (4 connections) — `server/realtime/request_context.py`
-- **.get_event_bus()** (4 connections) — `server/realtime/request_context.py`
-- **test_command_request_app_state_from_http_request_like_object()** (4 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
-- **test_command_request_app_state_from_websocket_request_context()** (4 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
-- **test_command_request_app_state_missing_app_or_state_returns_none()** (4 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
-- **test_create_websocket_request_context()** (4 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **test_create_websocket_request_context_no_user()** (4 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **.__init__()** (3 connections) — `server/realtime/request_context.py`
-- **.set_alias_storage()** (3 connections) — `server/realtime/request_context.py`
-- **.get_persistence()** (3 connections) — `server/realtime/request_context.py`
-- **test_websocket_request_context_init()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **test_websocket_request_context_init_no_user()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **test_websocket_request_context_set_alias_storage()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **test_websocket_request_context_set_app_state_services()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **test_websocket_request_context_set_app_state_services_none()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **test_websocket_request_context_get_persistence()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **test_websocket_request_context_get_event_bus()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **test_websocket_request_context_get_event_bus_none()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **test_websocket_request_context_get_alias_storage()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **test_websocket_request_context_get_alias_storage_not_set()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
-- *... and 24 more nodes in this community*
+- **ProfessionCacheService** (15 connections) — `server/caching/cache_service.py`
+- **NPCCacheService** (14 connections) — `server/caching/cache_service.py`
+- **Any** (13 connections)
+- **_FakeNPCService** (7 connections) — `scripts/bench_cache_npc.py`
+- **bench_npc_cache()** (7 connections) — `scripts/bench_cache_npc.py`
+- **bench_cache_professions.py** (7 connections) — `scripts/bench_cache_professions.py`
+- **.__init__()** (7 connections) — `server/caching/cache_service.py`
+- **bench_cache_npc.py** (6 connections) — `scripts/bench_cache_npc.py`
+- **bench_profession_cache()** (6 connections) — `scripts/bench_cache_professions.py`
+- **_FakePersistence** (5 connections) — `scripts/bench_cache_professions.py`
+- **.get_all_professions()** (5 connections) — `scripts/bench_cache_professions.py`
+- **.get_all_professions()** (5 connections) — `server/caching/cache_service.py`
+- **.get_npc_definitions()** (4 connections) — `scripts/bench_cache_npc.py`
+- **Any** (4 connections)
+- **.get_spawn_rules()** (4 connections) — `scripts/bench_cache_npc.py`
+- **_get_empty_dict()** (4 connections) — `scripts/bench_cache_professions.py`
+- **.get_room_sync()** (4 connections) — `server/caching/cache_service.py`
+- **.__init__()** (4 connections) — `server/caching/cache_service.py`
+- **.__init__()** (4 connections) — `server/caching/cache_service.py`
+- **.get_profession_by_id()** (4 connections) — `server/caching/cache_service.py`
+- **.preload_frequently_accessed_data()** (4 connections) — `server/caching/cache_service.py`
+- **.get_npc_definition()** (3 connections) — `scripts/bench_cache_npc.py`
+- **Any** (3 connections)
+- **.get_npc_definitions()** (3 connections) — `server/caching/cache_service.py`
+- **.get_npc_definition()** (3 connections) — `server/caching/cache_service.py`
+- *... and 28 more nodes in this community*
 
 ## Relationships
 
-- [.is required()](is_required%28%29.md) (10 shared connections)
-- [check alias safety()](check_alias_safety%28%29.md) (6 shared connections)
-- [test alias storage](test_alias_storage.md) (2 shared connections)
-- [chat send with room bundle()](chat_send_with_room_bundle%28%29.md) (2 shared connections)
-- [test alias graph](test_alias_graph.md) (1 shared connections)
-- [CommandExecutionRequest](CommandExecutionRequest.md) (1 shared connections)
-- [.validate topic()](validate_topic%28%29.md) (1 shared connections)
-- [ContainerData](ContainerData.md) (1 shared connections)
-- [.validate player name field()](validate_player_name_field%28%29.md) (1 shared connections)
+- [world](world.md) (10 shared connections)
+- [chat send with room bundle()](chat_send_with_room_bundle%28%29.md) (4 shared connections)
+- [conftest](conftest.md) (4 shared connections)
+- [init](init.md) (3 shared connections)
+- [test command parser](test_command_parser.md) (3 shared connections)
+- [get current tick()](get_current_tick%28%29.md) (2 shared connections)
 
 ## Source Files
 
-- `server/command_handler/command_execution_request.py`
-- `server/realtime/request_context.py`
-- `server/tests/unit/command_handler/test_command_execution_request.py`
-- `server/tests/unit/realtime/test_request_context.py`
+- `scripts/bench_cache_npc.py`
+- `scripts/bench_cache_professions.py`
+- `server/caching/cache_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 149 (95%)
-- INFERRED: 8 (5%)
+- EXTRACTED: 167 (92%)
+- INFERRED: 15 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---
