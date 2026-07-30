@@ -31,17 +31,17 @@ meet our academic standards.
 [Contributing to MythosMUD](#contributing-to-mythosmud)
 
 - [Contributing to MythosMUD](#contributing-to-mythosmud)
-  - [Table of Contents](#table-of-contents)
+  - [Table of Contents](#2-table-of-contents)
 
-  - [Code of Conduct](#code-of-conduct)
+  - [Code of Conduct](#3-code-of-conduct)
     - [Project-Specific Values](#project-specific-values)
 
-  - [Getting Started](#getting-started)
+  - [Getting Started](#4-getting-started)
     - [Prerequisites](#prerequisites)
     - [Development Environment Setup](#development-environment-setup)
     - [Understanding the Codebase](#understanding-the-codebase)
 
-  - [Development Workflow](#development-workflow)
+  - [Development Workflow](#5-development-workflow)
     - [Finding Tasks](#finding-tasks)
     - [Creating a Branch](#creating-a-branch)
     - [Making Changes](#making-changes)
@@ -59,35 +59,34 @@ meet our academic standards.
     - [Committing Your Work](#committing-your-work)
     - [Submitting a Pull Request](#submitting-a-pull-request)
 
-  - [Coding Standards](#coding-standards)
+  - [Coding Standards](#6-coding-standards)
     - [Python Guidelines](#python-guidelines)
     - [TypeScript/React Guidelines](#typescriptreact-guidelines)
     - [Logging Best Practices](#logging-best-practices)
       - [✅ CORRECT Usage](#-correct-usage)
-
       - [❌ WRONG Usage (Will Cause Failures)](#-wrong-usage-will-cause-failures)
 
     - [Security Requirements](#security-requirements)
 
-  - [Testing Requirements](#testing-requirements)
+  - [Testing Requirements](#7-testing-requirements)
     - [Writing Tests](#writing-tests)
     - [Test Coverage](#test-coverage)
     - [Running Tests](#running-tests)
-  - [Documentation](#documentation)
+  - [Documentation](#8-documentation)
     - [Code Documentation](#code-documentation)
     - [Project Documentation](#project-documentation)
     - [Mythos References](#mythos-references)
-  - [Community](#community)
+  - [Community](#9-community)
     - [Getting Help](#getting-help)
     - [Communication Guidelines](#communication-guidelines)
     - [Review Process](#review-process)
-  - [Recognition](#recognition)
-  - [Additional Resources](#additional-resources)
+  - [Recognition](#10-recognition)
+  - [Additional Resources](#11-additional-resources)
     - [Essential Reading](#essential-reading)
     - [Technical Documentation](#technical-documentation)
     - [Testing Resources](#testing-resources)
     - [Style Guides](#style-guides)
-  - [Questions?](#questions)
+  - [Questions?](#12-questions)
 
 ---
 
@@ -324,7 +323,7 @@ Python: Follow PEP 8 via ruff (120 char line limit)
 
 - TypeScript: Follow project ESLint/Prettier config
 - Use meaningful variable and function names
-- Add comments for complex logic (see [Coding Standards](#coding-standards))
+- Add comments for complex logic (see [Coding Standards](#6-coding-standards))
 
 #### 4. **Use Enhanced Logging**
 
@@ -389,7 +388,7 @@ make lint
 - All bug fixes must have regression tests
 - Tests must pass before PR submission
 
-See [Testing Requirements](#testing-requirements) for details.
+See [Testing Requirements](#7-testing-requirements) for details.
 
 ### Committing Your Work
 
@@ -1267,6 +1266,7 @@ If you have questions about contributing:
 ## 13. Changelog
 
 **[SPEC]**
-| Version | Date | Change |
-| --- | --- | --- |
-| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
+
+| Version | Date       | Change                             |
+| ------- | ---------- | ---------------------------------- |
+| 1.0.0   | 2026-07-30 | Initial HADS structural conversion |

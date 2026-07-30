@@ -1,4 +1,5 @@
 # NATS Manual Acknowledgment Guide
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -43,6 +44,7 @@ manual_ack: bool = Field(default=False, description="Enable manual message ackno
 ## 4. When to Use Manual Acknowledgment
 
 **[SPEC]**
+
 ### Use Manual Ack For
 
 1. **Critical Messages** - Messages that must not be lost if processing fails
@@ -91,6 +93,7 @@ manual_ack: bool = Field(default=False, description="Enable manual message ackno
 ## 5. Implementation Details
 
 **[NOTE]**
+
 ### Enabling Manual Acknowledgment
 
 ```python
@@ -156,6 +159,7 @@ async def message_handler(message_data: dict[str, Any]) -> None:
 ## 6. Performance Considerations
 
 **[SPEC]**
+
 ### Manual Acknowledgment
 
 **Pros**:
@@ -187,6 +191,7 @@ async def message_handler(message_data: dict[str, Any]) -> None:
 ## 7. Best Practices
 
 **[NOTE]**
+
 ### 1. Use Manual Ack for Critical Paths
 
 ```python
@@ -252,6 +257,7 @@ async def handle_idempotent_operation(msg: Any) -> None:
 ## 8. Configuration Recommendations
 
 **[NOTE]**
+
 ### Production (High Reliability)
 
 ```python
@@ -327,6 +333,7 @@ Consider enabling manual ack for:
 ## 12. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

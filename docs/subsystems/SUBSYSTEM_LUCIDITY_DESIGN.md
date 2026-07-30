@@ -1,4 +1,5 @@
 # Lucidity Subsystem Design
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -24,6 +25,7 @@ historical context.
 ## 2. Architecture
 
 **[NOTE]**
+
 ```mermaid
 flowchart LR
   subgraph commands [lucidity_recovery_commands]
@@ -76,6 +78,7 @@ flowchart LR
 ## 3. Key design decisions
 
 **[SPEC]**
+
 - **Recovery actions with cooldowns**: Each ritual has a cooldown; ActiveLucidityService enforces
   it and returns cooldown_expires_at for message ("Return in N minutes").
 - **Room required**: Commands validate player has current_room_id ("Without a locus in space...").
@@ -87,6 +90,7 @@ flowchart LR
 ## 4. Constraints
 
 **[NOTE]**
+
 - **Action codes**: meditate, pray, therapy, folk_tonic, group_solace (or as defined in
   ActiveLucidityService). Unknown action -> UnknownLucidityActionError.
 - **Dependencies**: Persistence, get_async_session, ActiveLucidityService, optional
@@ -95,6 +99,7 @@ flowchart LR
 ## 5. Component interactions
 
 **[NOTE]**
+
 1. **meditate / pray / therapy / folk_tonic / group_solace** – Validate persistence and player
    room; call ActiveLucidityService with action code; on cooldown return formatted message; on
    success optionally restore MP (meditate, pray) and return result.
@@ -106,6 +111,7 @@ flowchart LR
 ## 6. Developer guide
 
 **[SPEC]**
+
 - **New recovery action**: Add action code to ActiveLucidityService (cooldown and effect); add
   handle\_\*\_command in lucidity_recovery_commands and register in command_service.
 - **Changing cooldowns**: Cooldown logic lives in ActiveLucidityService; adjust per action code.
@@ -116,6 +122,7 @@ flowchart LR
 ## 7. Troubleshooting
 
 **[NOTE]**
+
 - **"The sigils are still cooling"**: Cooldown active; \_format_cooldown_message shows remaining
   time; ensure server and client time are consistent (UTC).
 - **"The ritual falters"**: Persistence or player validation failed; check persistence and
@@ -129,11 +136,13 @@ See also [SUBSYSTEM_RESCUE_DESIGN.md](SUBSYSTEM_RESCUE_DESIGN.md), [SUBSYSTEM_MA
 ## 8. Related docs
 
 **[SPEC]**
+
 - [COMMAND_MODELS_REFERENCE.md](../COMMAND_MODELS_REFERENCE.md)
 
 ## 9. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

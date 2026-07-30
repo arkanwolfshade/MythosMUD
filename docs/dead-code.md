@@ -1,4 +1,5 @@
 # Dead Code Definition and Tooling
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -19,6 +20,7 @@ This document describes how MythosMUD defines and manages dead code, and where a
 ## 2. Definition
 
 **[NOTE]**
+
 - **Truly dead**: Code unreachable from application entry points and not referenced by tests or
   tooling. Safe to remove.
 - **Unused exports / optional dead**: Symbols exported but never imported (including from tests).
@@ -30,12 +32,14 @@ default.
 ## 3. Entry Points
 
 **[SPEC]**
+
 - **Server:** `server/main.py` → `server/app/factory.py` `create_app` and registered routers/lifespan.
 - **Client:** `client/src/main.tsx` → AppRouter → App (and lazy Map/Skills).
 
 ## 4. Tooling
 
 **[NOTE]**
+
 - **Server (Python):** [vulture](https://github.com/jendrikseipp/vulture). Config and paths in
   `pyproject.toml` under `[tool.vulture]`. Allowlist file: **`vulture_allowlist.py`** at repo root
   (valid Python that references intentional "unused" names).
@@ -45,6 +49,7 @@ default.
 ## 5. Allowlist / Do Not Remove
 
 **[NOTE]**
+
 - **Server:** Side-effect imports (e.g. router registration, `server/models` re-exports), reserved
   stubs (`combat_service`, `command_parser`), FastAPI `_request` convention. See
   `vulture_allowlist.py` and `pyproject.toml` `[tool.vulture]`.
@@ -54,6 +59,7 @@ default.
 ## 6. Reports
 
 **[SPEC]**
+
 - **Server:** `dead-code-server.txt` (from `uv run vulture`).
 - **Client:** `dead-code-client.txt` (from `npm run knip` in client).
 
@@ -65,6 +71,7 @@ Full workflow and phases: `.cursor/plans/dead_code_analysis_and_removal_746bc5c1
 ## 8. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

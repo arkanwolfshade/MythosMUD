@@ -1,4 +1,5 @@
 # Event Ownership Matrix
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -32,6 +33,7 @@ This document maps the complete event publishing architecture in MythosMUD to id
 ## 3. Event Publishing Layers
 
 **[SPEC]**
+
 ### Layer 1: EventBus Events (Domain Events)
 
 These are domain events published through the EventBus system defined in `server/events/event_types.py`:
@@ -81,6 +83,7 @@ NATS subject-based messages for inter-service communication:
 ## 4. Duplicate Event Analysis
 
 **[SPEC]**
+
 ### 🔴 CRITICAL: Player Movement Duplication - CONFIRMED
 
 **Issue:** Players entering/leaving rooms trigger TWO separate message paths:
@@ -141,6 +144,7 @@ Direct WebSocket sends
 ## 5. Event Ownership Recommendations
 
 **[SPEC]**
+
 ### Canonical Event Sources
 
 Establish single authoritative source for each domain event:
@@ -176,6 +180,7 @@ Establish single authoritative source for each domain event:
 ## 6. Event Flow Diagram
 
 **[NOTE]**
+
 ```
 Domain Layer (Room, Combat, Player)
     ↓ publishes
@@ -205,6 +210,7 @@ React Client
 ## 7. Consolidation Strategy
 
 **[SPEC]**
+
 ### Phase 1: Audit Complete ✓
 
 This document represents the audit results.
@@ -261,6 +267,7 @@ This document represents the audit results.
 ## 10. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

@@ -1,4 +1,5 @@
 # Status Effects Subsystem Design
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -25,6 +26,7 @@ ADR-009 no_death rooms cap damage so DP does not go below 0.
 ## 2. Architecture
 
 **[NOTE]**
+
 ```mermaid
 flowchart LR
   subgraph sources [Effect sources]
@@ -81,6 +83,7 @@ flowchart LR
 ## 3. Key design decisions
 
 **[NOTE]**
+
 - **No central effect registry**: Effects are implicit in stat names and persistence methods;
   combat and magic call mechanics or persistence directly.
 - **Incapacitated band (0 to -9 DP)**: Player cannot attack or (via posture) move; must reach -10
@@ -96,6 +99,7 @@ flowchart LR
 ## 4. Constraints
 
 **[SPEC]**
+
 - **current_dp**: Source of truth in persistence; combat and magic should apply through
   mechanics.damage_player or persistence.damage_player so no_death and death logic apply.
 - **position**: Must be standing for movement and (typically) combat; follow and rest change it.
@@ -105,6 +109,7 @@ flowchart LR
 ## 5. Component interactions
 
 **[NOTE]**
+
 1. **Combat damage** – NPC combat integration computes damage; applies to NPC or player via
    persistence/mechanics; player current_dp updated; if <= 0 command layer blocks further attack;
    at -10 respawn triggered.
@@ -119,6 +124,7 @@ flowchart LR
 ## 6. Developer guide
 
 **[NOTE]**
+
 - **Adding a new stat effect**: Add persistence method (e.g. apply_foo) and optionally
   GameMechanicsService method; call from combat, magic, or commands. Document stat name and
   range in this doc.
@@ -132,6 +138,7 @@ flowchart LR
 ## 7. Troubleshooting
 
 **[NOTE]**
+
 - **Player can attack when incapacitated**: Ensure attack handler reads current_dp from
   get_stats() (or equivalent) and blocks when current_dp <= 0.
 - **Movement allowed when sitting**: MovementService.\_check_player_posture must use get_stats()
@@ -151,11 +158,13 @@ See also [SUBSYSTEM_COMBAT_DESIGN.md](SUBSYSTEM_COMBAT_DESIGN.md),
 ## 8. Related docs
 
 **[SPEC]**
+
 - [EVENT_OWNERSHIP_MATRIX.md](../EVENT_OWNERSHIP_MATRIX.md) (if death/effect events are emitted)
 
 ## 9. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

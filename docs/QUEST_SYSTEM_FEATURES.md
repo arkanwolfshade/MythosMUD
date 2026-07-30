@@ -1,4 +1,5 @@
 # Quest System Features: Common MUD Patterns
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -238,6 +239,7 @@ Decisions from this review will be recorded below and used in a follow-up implem
 ## 15. Review decisions
 
 **[SPEC]**
+
 | #   | Feature                         | Decision (include / defer / exclude) | Scope / how                                                                                                                     |
 | --- | ------------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------- |
 | 1   | Quest goal types                | include                              | Scope 1: complete activity (e.g. exit the tutorial room). Scope 2: kill N targets. Scope 3: collect N items (inventory-backed). |
@@ -257,6 +259,7 @@ Decisions from this review will be recorded below and used in a follow-up implem
 ## 16. Client integration
 
 **[NOTE]**
+
 - **Initial game state:** The WebSocket `game_state` event sent on connect includes a `quest_log`
   array (same shape as the GET quests API). The client can render the Journal from this payload.
 - **Refresh:** The client may refresh the quest log via
@@ -267,6 +270,7 @@ Decisions from this review will be recorded below and used in a follow-up implem
 ## 17. Collect N goals and NPC turn-in (implemented)
 
 **[NOTE]**
+
 - **Goal type `collect_n`:** Progress is derived from the player's current holdings of an item
   **prototype id** (`goal.target`), including stacks in nested `inner_container.items`. Progress
   is recounted when the quest starts and after inventory mutations (get, drop, put, and similar).
@@ -292,12 +296,14 @@ follow-up [#583](https://github.com/arkanwolfshade/MythosMUD/issues/583).
 ## 19. Related documentation
 
 **[SPEC]**
+
 - **Architecture:** [ADR-010: Quest Subsystem Architecture](architecture/decisions/ADR-010-quest-subsystem.md).
 - **Quest design (lysator principles):** [QUEST_DESIGN_GUIDELINES.md](QUEST_DESIGN_GUIDELINES.md).
 
 ## 20. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

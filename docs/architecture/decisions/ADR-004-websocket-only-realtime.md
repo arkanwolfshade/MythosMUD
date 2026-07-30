@@ -1,4 +1,5 @@
 # ADR-004: WebSocket-Only Real-Time Architecture
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -36,6 +37,7 @@ Clients establish one WebSocket connection per session. The connection carries b
 ## 4. Alternatives Considered
 
 **[SPEC]**
+
 1. **REST + SSE** - Rejected: SSE is server-to-client only; would require separate connection for client-to-server commands (e.g., chat)
 2. **REST + long polling** - Rejected: higher latency, more HTTP overhead, worse UX for real-time gameplay
 3. **Dual WebSocket + SSE** - Rejected: adds complexity; WebSocket alone is sufficient for bidirectional needs
@@ -44,6 +46,7 @@ Clients establish one WebSocket connection per session. The connection carries b
 ## 5. Consequences
 
 **[SPEC]**
+
 - **Positive**: Single connection type reduces complexity; bidirectional over one channel; lower overhead than polling; mature, well-supported protocol
 - **Negative**: WebSocket reconnection and state sync on reconnect require careful handling; no automatic HTTP retry semantics
 - **Neutral**: ConnectionManager and RealTimeEventHandler manage WebSocket lifecycle; client must implement reconnection and backoff
@@ -51,18 +54,21 @@ Clients establish one WebSocket connection per session. The connection carries b
 ## 6. Related ADRs
 
 **[SPEC]**
+
 - ADR-001: Layered Architecture with Event-Driven Components
 - ADR-003: Dual Event Systems (EventBus + NATS)
 
 ## 7. References
 
 **[SPEC]**
+
 - [Real-Time Architecture](../../REAL_TIME_ARCHITECTURE.md)
 - [Connection Manager Architecture](../../CONNECTION_MANAGER_ARCHITECTURE.md)
 
 ## 8. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

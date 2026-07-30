@@ -1,4 +1,5 @@
 # ADR-016: Aggro and Threat Management System
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -40,6 +41,7 @@ Detailed formulas, data structures, UpdateAggro() behaviour, and test scenarios 
 ## 4. Alternatives Considered
 
 **[SPEC]**
+
 1. **Coordinate or position-in-room** – Rejected for initial scope; room-based keeps implementation simple and matches "everyone in the room is in the fight."
 2. **Taunt as ranged pull** – Rejected; taunt is room-local so that kiting is explicitly "attack (or pull) from next room," not taunt-from-afar.
 3. **No stability threshold** – Rejected; immediate switch on any threat lead would cause target flicker and poor tank/healer experience.
@@ -48,6 +50,7 @@ Detailed formulas, data structures, UpdateAggro() behaviour, and test scenarios 
 ## 5. Consequences
 
 **[SPEC]**
+
 - **Positive:** Clear tank/healer/DPS roles; predictable aggro with minimal spam; design supports future kiting via attack-from-adjacent-room; sparse hate list scales to many players in room.
 - **Negative:** Per-mob state (hate list, current target) must be maintained and tick-driven; stealth/aggro shedding behaviour must be defined (TBD in design doc).
 - **Neutral:** Optional per-NPC target priority (healer/caster/weakest) can be added later without changing core model.
@@ -55,18 +58,21 @@ Detailed formulas, data structures, UpdateAggro() behaviour, and test scenarios 
 ## 6. Related ADRs
 
 **[SPEC]**
+
 - ADR-001: Layered Architecture with Event-Driven Components (combat tick / events)
 - (Future) Kiting / cross-room pull: to be detailed when that feature is implemented
 
 ## 7. References
 
 **[SPEC]**
+
 - [Aggro and Threat System Design](../aggro-threat-system.md) – Formulas, data structures, pseudocode, test scenarios
 - [Aggro and Threat Implementation Plan](../aggro-threat-implementation-plan.md) – Implementation summary and key files
 
 ## 8. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

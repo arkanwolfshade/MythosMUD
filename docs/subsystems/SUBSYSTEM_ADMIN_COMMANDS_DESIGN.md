@@ -1,4 +1,5 @@
 # Admin Commands Subsystem Design
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -25,6 +26,7 @@ dispatches subcommands.
 ## 2. Architecture
 
 **[NOTE]**
+
 ```mermaid
 flowchart LR
   subgraph entry [Entry]
@@ -81,6 +83,7 @@ flowchart LR
 ## 3. Key design decisions
 
 **[NOTE]**
+
 - **Single permission check**: player.is_admin (boolean on player model); no role hierarchy in
   code. validate_admin_permission centralizes check and audit log.
 - **Admin command routing**: "admin" command takes subcommand (e.g. admin teleport &lt;player&gt;
@@ -95,6 +98,7 @@ flowchart LR
 ## 4. Constraints
 
 **[NOTE]**
+
 - **Player must be admin**: validate_admin_permission returns False if not player or not
   player.is_admin; command returns error message.
 - **Dependencies**: Persistence (player, room), MovementService (teleport/goto), UserManager
@@ -103,6 +107,7 @@ flowchart LR
 ## 5. Component interactions
 
 **[SPEC]**
+
 1. **admin &lt;subcommand&gt; [args]** – Parse subcommand; validate*admin_permission(player);
    if not admin return error; dispatch to handle*\* for mute, teleport, goto, add_admin, etc.;
    each handler may log action.
@@ -116,6 +121,7 @@ flowchart LR
 ## 6. Developer guide
 
 **[NOTE]**
+
 - **Adding new admin command**: Create handler (or add to existing module); register in
   command_service and in handle_admin_command if using "admin &lt;subcommand&gt;" form; call
   validate_admin_permission at start; log action via admin_actions_logger.
@@ -129,6 +135,7 @@ flowchart LR
 ## 7. Troubleshooting
 
 **[NOTE]**
+
 - **"You do not have permission"**: validate_admin_permission failed; check player.is_admin in
   DB and that command uses same player object from persistence.
 - **Admin action not logged**: Ensure handler calls validate_admin_permission (which logs) and
@@ -145,6 +152,7 @@ security/COPPA requirements in project rules.
 ## 8. Related docs
 
 **[SPEC]**
+
 - [COMMAND_MODELS_REFERENCE.md](../COMMAND_MODELS_REFERENCE.md)
 - [SUBSYSTEM_MOVEMENT_DESIGN.md](SUBSYSTEM_MOVEMENT_DESIGN.md) (teleport/goto)
 - [SUBSYSTEM_NPC_DESIGN.md](SUBSYSTEM_NPC_DESIGN.md) (npc admin)
@@ -152,6 +160,7 @@ security/COPPA requirements in project rules.
 ## 9. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

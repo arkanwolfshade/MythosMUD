@@ -1,4 +1,5 @@
 # ADR-017: AST-Based Console Pruning in Client Production Build
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -45,6 +46,7 @@ The transform will:
 ## 4. Alternatives Considered
 
 **[NOTE]**
+
 1. **Regex replacement in built output**
    Rejected: unsafe and prone to false positives/negatives.
 2. **No pruning at all**
@@ -55,6 +57,7 @@ The transform will:
 ## 5. Consequences
 
 **[SPEC]**
+
 - **Positive:** Better production signal-to-noise, smaller output, and safer transformation behavior.
 - **Negative:** Adds one more build concern to maintain and test.
 - **Neutral:** Development and test behavior remain unchanged.
@@ -62,6 +65,7 @@ The transform will:
 ## 6. Acceptance Criteria
 
 **[SPEC]**
+
 - Production build removes `console.log/info/debug/trace` from app code.
 - `console.warn/error` remain present and functional.
 - `npm run build` passes with no new runtime regressions.
@@ -70,12 +74,14 @@ The transform will:
 ## 7. References
 
 **[SPEC]**
+
 - `client/vite.userConfig.ts`
 - Existing TODO comments near the `plugins` array in `createViteUserConfig()`
 
 ## 8. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

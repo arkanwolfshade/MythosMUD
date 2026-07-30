@@ -1,4 +1,5 @@
 # Game Subsystem Design Documents
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -21,6 +22,7 @@ troubleshooting. Code is the source of truth; these docs are derived from it.
 ## 2. Index
 
 **[SPEC]**
+
 | Subsystem      | Document                                                                 | Summary                                                                                                  |
 | -------------- | ------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- |
 | Movement       | [SUBSYSTEM_MOVEMENT_DESIGN.md](SUBSYSTEM_MOVEMENT_DESIGN.md)             | Atomic player movement between rooms; combat/posture checks; EventBus/NATS.                              |
@@ -42,6 +44,7 @@ troubleshooting. Code is the source of truth; these docs are derived from it.
 ## 3. Related documentation
 
 **[SPEC]**
+
 - [COMMAND_MODELS_REFERENCE.md](../COMMAND_MODELS_REFERENCE.md) – Command handler interface and routing.
 - [EVENT_OWNERSHIP_MATRIX.md](../EVENT_OWNERSHIP_MATRIX.md) – Event types and ownership.
 - [NATS_SUBJECT_PATTERNS.md](../NATS_SUBJECT_PATTERNS.md) – NATS subjects for real-time events.
@@ -51,6 +54,7 @@ troubleshooting. Code is the source of truth; these docs are derived from it.
 ## 4. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

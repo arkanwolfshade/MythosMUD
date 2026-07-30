@@ -1,4 +1,5 @@
 # Cursor Hooks
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -19,6 +20,7 @@ Cursor Hooks run at specific stages of the agent loop (e.g. after the agent edit
 ## 2. Configuration
 
 **[SPEC]**
+
 - **Config file:** [`.cursor/hooks.json`](../.cursor/hooks.json)
 - **Scripts:** [`.cursor/hooks/`](../.cursor/hooks/) (project hooks run from the project root)
 - **UI:** Cursor Settings → Hooks — view configured hooks and the Execution Log
@@ -26,6 +28,7 @@ Cursor Hooks run at specific stages of the agent loop (e.g. after the agent edit
 ## 3. Configured Hooks
 
 **[SPEC]**
+
 | Event             | Purpose                                                                       | Script                                                                          |
 | ----------------- | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
 | **afterFileEdit** | Record non-test source files for test-agent trigger                           | [`.cursor/hooks/record_edited_file.py`](../.cursor/hooks/record_edited_file.py) |
@@ -46,11 +49,13 @@ For manual edits, use "Format Document" or run pre-commit before commit (`uv run
 ## 5. References
 
 **[SPEC]**
+
 - [Cursor Docs: Hooks](https://cursor.com/docs/agent/hooks)
 
 ## 6. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

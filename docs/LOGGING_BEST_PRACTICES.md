@@ -27,6 +27,7 @@ Former `LOGGING_BEST_PRACTICES.md` content is under `archive/LOGGING_BEST_PRACTI
 ## 2. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | HADS pointer after logging consolidation |

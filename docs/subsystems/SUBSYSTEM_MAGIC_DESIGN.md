@@ -1,4 +1,5 @@
 # Magic Subsystem Design
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -24,6 +25,7 @@ cast checks and effect application.
 ## 2. Architecture
 
 **[NOTE]**
+
 ```mermaid
 flowchart LR
   subgraph commands [magic_commands]
@@ -84,6 +86,7 @@ flowchart LR
 ## 3. Key design decisions
 
 **[NOTE]**
+
 - **Server authority**: All validation (can_cast_spell) and effect application (SpellEffects) on
   server; client displays results from command_response and room/game state.
 - **Rest interrupt**: Cast command cancels rest (same pattern as combat/movement) so player can cast.
@@ -99,6 +102,7 @@ flowchart LR
 ## 4. Constraints
 
 **[NOTE]**
+
 - **Spell known**: cast_spell validates player knows spell (player_spell_repository or equivalent).
 - **Room/visibility**: Targeting and effect scope may depend on room (same room, line of sight) per
   spell_targeting and spell_effects.
@@ -109,6 +113,7 @@ flowchart LR
 ## 5. Component interactions
 
 **[SPEC]**
+
 1. **cast &lt;spell&gt; [target]** – Get player; incapacitated check; rest interrupt; magic_service
    .cast_spell(player_id, spell_name, target_name). cast_spell: can_cast_spell; resolve target;
    apply costs (MP, lucidity, materials); execute effect via SpellEffects; update mastery/learning;
@@ -120,6 +125,7 @@ flowchart LR
 ## 6. Developer guide
 
 **[SPEC]**
+
 - **New spell**: Add to Spell registry/data; implement effect in SpellEffects; set MP/lucidity cost
   and targeting rules; ensure can_cast_spell and cast_spell handle the spell.
 - **New effect type**: Extend SpellEffects; call from cast_spell with target and context.
@@ -131,6 +137,7 @@ flowchart LR
 ## 7. Troubleshooting
 
 **[NOTE]**
+
 - **"Not enough magic points"**: can_cast_spell checks current_mp >= spell.mp_cost; ensure stats
   (magic_points, max_magic_points) are set and normalized (e.g. full MP at creation).
 - **"You are incapacitated"**: current_dp <= 0; same as combat.
@@ -149,11 +156,13 @@ GAME_BUG_INVESTIGATION_PLAYBOOK.mdc). Archived: [docs/archive/MAGIC_SYSTEM_FEATU
 ## 8. Related docs
 
 **[SPEC]**
+
 - [COMMAND_MODELS_REFERENCE.md](../COMMAND_MODELS_REFERENCE.md)
 
 ## 9. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

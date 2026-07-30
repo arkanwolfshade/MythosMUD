@@ -1,4 +1,5 @@
 # ADR-003: Dual Event Systems (EventBus + NATS)
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -48,6 +49,7 @@ Domain events flow: Domain → EventBus → RealTimeEventHandler → (optionally
 ## 4. Alternatives Considered
 
 **[SPEC]**
+
 1. **EventBus only** - Rejected: cannot scale horizontally; single-instance limitation
 2. **NATS only** - Rejected: adds latency and complexity for in-process domain events; every domain event would require network round-trip
 3. **Redis Pub/Sub instead of NATS** - Rejected at time of decision: NATS chosen for operational reasons (streaming, durability, subject hierarchy)
@@ -56,6 +58,7 @@ Domain events flow: Domain → EventBus → RealTimeEventHandler → (optionally
 ## 5. Consequences
 
 **[SPEC]**
+
 - **Positive**: Clear separation of concerns; EventBus is fast for in-process events; NATS enables horizontal scaling for chat/combat
 - **Negative**: Two systems to understand and operate; risk of event duplication if developers publish to both incorrectly (documented in EVENT_OWNERSHIP_MATRIX.md)
 - **Neutral**: ~~EventBus is single-instance; horizontal scaling of game logic requires distributed EventBus (e.g., Redis) - deferred~~ **Implemented (2026-02):** Distributed EventBus via NATS. See DISTRIBUTED_EVENTBUS_NATS.md.
@@ -63,18 +66,21 @@ Domain events flow: Domain → EventBus → RealTimeEventHandler → (optionally
 ## 6. Related ADRs
 
 **[SPEC]**
+
 - ADR-001: Layered Architecture with Event-Driven Components
 - ADR-004: WebSocket-Only Real-Time Architecture
 
 ## 7. References
 
 **[SPEC]**
+
 - [Event Ownership Matrix](../../EVENT_OWNERSHIP_MATRIX.md)
 - [NATS Subject Patterns](../../NATS_SUBJECT_PATTERNS.md)
 
 ## 8. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

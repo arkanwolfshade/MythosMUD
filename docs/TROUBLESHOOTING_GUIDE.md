@@ -1,4 +1,5 @@
 # Troubleshooting Guide for MythosMUD
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -26,6 +27,7 @@ error logging and monitoring tools provide the foundation for effective problem 
 ## 3. Quick Diagnostic Commands
 
 **[NOTE]**
+
 ### System Health Check
 
 ```bash
@@ -61,6 +63,7 @@ python scripts/error_monitoring.py --log-dir logs/development --alerts
 ## 4. Common Issues and Solutions
 
 **[NOTE]**
+
 ### 1. Database Connection Issues
 
 #### Symptoms
@@ -393,6 +396,7 @@ grep -i "go.*command\|move.*command" logs/development/commands.log
 ## 5. Advanced Troubleshooting
 
 **[NOTE]**
+
 ### Log Analysis Techniques
 
 #### Pattern Recognition
@@ -504,6 +508,7 @@ python -c "import pstats; pstats.Stats('profile.stats').sort_stats('cumulative')
 ## 6. Emergency Procedures
 
 **[NOTE]**
+
 ### System Recovery
 
 #### Database Recovery
@@ -626,6 +631,7 @@ sqlite3 data/players/local_players.db "PRAGMA integrity_check;"
 ## 7. Prevention Strategies
 
 **[NOTE]**
+
 ### Monitoring Setup
 
 #### Automated Monitoring
@@ -706,6 +712,7 @@ grep -E "duration_ms.*[0-9]+" logs/development/server.log | awk '{print $NF}' | 
 ## 8. Getting Help
 
 **[SPEC]**
+
 ### Internal Resources
 
 1. **Log Analysis Tools**: Use our custom tools for detailed analysis
@@ -749,6 +756,7 @@ consult the restricted archives or contact the system administrators.*
 ## 10. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

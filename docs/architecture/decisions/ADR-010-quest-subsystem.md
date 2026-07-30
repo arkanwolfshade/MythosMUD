@@ -1,4 +1,5 @@
 # ADR-010: Quest Subsystem Architecture
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -30,6 +31,7 @@ provided by the server (game_state.quest_log or GET /api/players/{id}/quests).
 ## 3. Decision
 
 **[NOTE]**
+
 1. **Storage**: Quest definitions live in PostgreSQL: table `quest_definitions` (id, definition
    JSONB, timestamps). Per-character state in `quest_instances` (player_id, quest_id, state,
    progress JSONB, accepted_at, completed_at). Table `quest_offers` links quests to entities
@@ -63,6 +65,7 @@ provided by the server (game_state.quest_log or GET /api/players/{id}/quests).
 ## 4. Alternatives Considered
 
 **[NOTE]**
+
 - **YAML/JSON files on disk**: Rejected in favor of JSONB in PostgreSQL for consistency with
   ADR-006, single source of truth, and no file-path or reload concerns. Migrations can seed
   initial quests.
@@ -74,6 +77,7 @@ provided by the server (game_state.quest_log or GET /api/players/{id}/quests).
 ## 5. Consequences
 
 **[NOTE]**
+
 - **Positive**: Builders can add quests via migrations or future tooling; quest log and
   abandon are covered by API and commands; event-driven progression fits existing EventBus
   usage; prerequisites support linear chains.
@@ -85,6 +89,7 @@ provided by the server (game_state.quest_log or GET /api/players/{id}/quests).
 ## 6. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

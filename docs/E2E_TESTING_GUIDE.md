@@ -1,4 +1,5 @@
 # E2E Testing Guide
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -27,6 +28,7 @@ This guide explains when to use each approach, how to run tests locally, and how
 ## 2. Quick Start
 
 **[NOTE]**
+
 ### Running Automated E2E Tests Locally
 
 ```bash
@@ -65,6 +67,7 @@ For multiplayer scenarios that require AI Agent coordination:
 ## 3. Test Categories
 
 **[SPEC]**
+
 ### Automated Playwright CLI Tests (10 Scenarios)
 
 **Location**: `client/tests/e2e/runtime/`
@@ -158,6 +161,7 @@ These scenarios require multi-player coordination via Playwright MCP and AI Agen
 ## 4. When to Use Automated vs MCP Tests
 
 **[NOTE]**
+
 ### Use Automated Playwright CLI Tests When
 
 ✅ Testing **single-player functionality**
@@ -179,6 +183,7 @@ These scenarios require multi-player coordination via Playwright MCP and AI Agen
 ## 5. Test Database Management
 
 **[SPEC]**
+
 ### Test Database Location
 
 Automated tests use a separate test database:
@@ -285,6 +290,7 @@ procedures.
 ## 7. Adding New Automated Tests
 
 **[NOTE]**
+
 ### Step 1: Determine Test Category
 
 Choose the appropriate directory based on what you're testing:
@@ -374,6 +380,7 @@ npm run test:e2e:runtime
 ## 8. Troubleshooting
 
 **[SPEC]**
+
 ### Common Issues
 
 #### Issue: "Test database not found"
@@ -460,6 +467,7 @@ npx playwright show-report playwright-report/runtime/
 ## 9. CI/CD Integration
 
 **[SPEC]**
+
 ### GitHub Actions
 
 Automated E2E tests run automatically on:
@@ -484,6 +492,7 @@ On test failure, the following artifacts are uploaded:
 ## 10. Best Practices
 
 **[SPEC]**
+
 ### Writing Tests
 
 1. **One assertion per test** - Makes failures easier to debug
@@ -510,6 +519,7 @@ On test failure, the following artifacts are uploaded:
 ## 11. Test Data Management
 
 **[NOTE]**
+
 ### Using Test Constants
 
 ```typescript
@@ -546,6 +556,7 @@ export const ERROR_MESSAGES = {
 ## 12. FAQ
 
 **[SPEC]**
+
 ### Q: Should I write an automated test or an MCP scenario?
 
 **A**: Ask yourself: "Does this test require real-time verification of message broadcasting to multiple players?"
@@ -596,6 +607,7 @@ npm run test:e2e:runtime
 ## 13. Enhanced Logging in E2E Tests
 
 **[NOTE]**
+
 ### **CRITICAL: Enhanced Logging Requirements**
 
 All E2E tests MUST use the enhanced logging system for proper observability and debugging.
@@ -708,6 +720,7 @@ test("should log user actions correctly", async () => {
 ## 15. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

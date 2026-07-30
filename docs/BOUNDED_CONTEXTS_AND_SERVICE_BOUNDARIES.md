@@ -1,4 +1,5 @@
 # Bounded Contexts and Service Boundaries
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -33,6 +34,7 @@ Bounded contexts are logical boundaries within which a particular model and voca
 ## 3. Bounded Contexts
 
 **[SPEC]**
+
 | Context            | Description                                                                 | Container bundle(s) |
 | ------------------ | --------------------------------------------------------------------------- | ------------------- |
 | **Core**           | Configuration, database, task registry, event bus, persistence facade      | CoreBundle          |
@@ -48,6 +50,7 @@ Bounded contexts are logical boundaries within which a particular model and voca
 ## 4. Service Boundaries by Context
 
 **[SPEC]**
+
 ### 3.1 Core
 
 **Owns:** Application config, database manager, task registry, tracked task manager, EventBus, persistence facade (sync + async).
@@ -244,6 +247,7 @@ Bounded contexts are logical boundaries within which a particular model and voca
 ## 5. Cross-Context Dependencies (Summary)
 
 **[NOTE]**
+
 ```
 Core
  ├── Realtime (config, event_bus, task_registry, async_persistence)
@@ -259,6 +263,7 @@ Core
 ## 6. Service Boundary Rules
 
 **[SPEC]**
+
 1. **Single owner:** Each service belongs to exactly one bounded context.
 2. **Cross-context access:** Use published interfaces (e.g. PlayerService, RoomService) rather than reaching into another context’s internals.
 3. **Events:** Domain events are the preferred way to notify other contexts; see EVENT_OWNERSHIP_MATRIX.md for canonical ownership.
@@ -268,6 +273,7 @@ Core
 ## 7. References
 
 **[SPEC]**
+
 - **ApplicationContainer and bundles:** `docs/APPLICATION_CONTAINER_ANALYSIS.md`
 - **Event ownership and duplication:** `docs/EVENT_OWNERSHIP_MATRIX.md`
 - **Architecture Review Plan:** `.cursor/plans/architecture_review_plan_7bcbc812.plan.md`
@@ -276,6 +282,7 @@ Core
 ## 8. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

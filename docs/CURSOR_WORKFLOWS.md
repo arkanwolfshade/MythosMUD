@@ -1,4 +1,5 @@
 # Cursor Workflows Documentation
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -24,6 +25,7 @@ This document provides end-to-end workflow examples showing how to combine Curso
 ## 3. Workflow Components
 
 **[SPEC]**
+
 ### Rules
 
 - **Purpose**: Persistent guidance and best practices
@@ -54,6 +56,7 @@ This document provides end-to-end workflow examples showing how to combine Curso
 ## 4. Workflow Examples
 
 **[SPEC]**
+
 ### Workflow 1: Bug Investigation
 
 **Scenario**: Player reports they cannot log in
@@ -252,6 +255,7 @@ This document provides end-to-end workflow examples showing how to combine Curso
 ## 5. Combining Components
 
 **[SPEC]**
+
 ### Pattern 1: Command → Subagent
 
 ```
@@ -287,6 +291,7 @@ Rules provide guidance → Commands/Subagents/CLI follow rules → Consistent re
 ## 6. Decision Tree
 
 **[NOTE]**
+
 ```
 Need to perform a task?
 ├─ Simple, single-purpose?
@@ -302,6 +307,7 @@ Need to perform a task?
 ## 7. Best Practices
 
 **[SPEC]**
+
 ### When to Use Each Component
 
 **Use Rules For**:
@@ -342,6 +348,7 @@ Need to perform a task?
 ## 8. Integration Examples
 
 **[SPEC]**
+
 ### Example 1: Full Development Cycle
 
 1. **Planning**: Use Plan mode in CLI
@@ -404,6 +411,7 @@ Need to perform a task?
 ## 9. References
 
 **[SPEC]**
+
 - Subagents: `docs/CURSOR_SUBAGENTS.md`
 - CLI: `docs/CURSOR_CLI.md`
 - Cross-machine setup and portability: `docs/CURSOR_SETUP_GUIDE.md` ("Cross-Machine Portability (DRY Source of Truth)")
@@ -414,6 +422,7 @@ Need to perform a task?
 ## 10. Notes
 
 **[SPEC]**
+
 - All components work together seamlessly
 - Rules provide the foundation for all work
 - Commands provide quick access to common workflows
@@ -423,6 +432,7 @@ Need to perform a task?
 ## 11. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

@@ -1,4 +1,5 @@
 # Persistence Repository Architecture
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -27,6 +28,7 @@ no legacy sync code.
 ## 3. Architecture Diagram
 
 **[NOTE]**
+
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                    async_persistence.py                          │
@@ -63,6 +65,7 @@ no legacy sync code.
 ## 4. Repository Descriptions
 
 **[SPEC]**
+
 ### 1. PlayerRepository (400 lines)
 
 **Purpose**: Player CRUD and query operations
@@ -225,6 +228,7 @@ no legacy sync code.
 ## 5. Usage Examples
 
 **[NOTE]**
+
 ### Example 1: Direct Repository Usage
 
 ```python
@@ -311,6 +315,7 @@ class CombatService:
 ## 6. Design Patterns
 
 **[SPEC]**
+
 ### Repository Pattern
 
 Each repository encapsulates database access for a specific domain:
@@ -373,6 +378,7 @@ WHERE player_id = :player_id
 ## 7. Migration Status
 
 **[SPEC]**
+
 ### Completed ✅
 
 [x] PlayerRepository extracted
@@ -412,6 +418,7 @@ WHERE player_id = :player_id
 ## 9. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

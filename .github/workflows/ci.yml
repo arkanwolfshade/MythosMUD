@@ -485,3 +485,24 @@ jobs:
           fetch-depth: 1
       - name: Validate HADS manifest
         run: python scripts/hads/validate.py --manifest docs/hads.manifest
+
+  # Markdown style gate (living docs; archive/Obsidian/e2e reports ignored)
+  markdownlint:
+    name: Markdownlint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 1
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: client/package-lock.json
+      - name: Install client dependencies
+        working-directory: client
+        run: npm ci
+      - name: Run markdownlint
+        run: python scripts/markdownlint.py

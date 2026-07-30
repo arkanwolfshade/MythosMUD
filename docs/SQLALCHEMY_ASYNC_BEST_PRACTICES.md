@@ -1,4 +1,5 @@
 # SQLAlchemy Async Best Practices
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -30,6 +31,7 @@ sqlalchemy.exc.ObjectNotExecutableError: Not an executable object: 'PRAGMA forei
 ## 3. The Solution
 
 **[NOTE]**
+
 ### ✅ Correct Pattern
 
 ```python
@@ -123,6 +125,7 @@ async with aiosqlite.connect(db_path) as db:
 ## 6. Prevention Tools
 
 **[NOTE]**
+
 ### Custom Linter
 
 We have a custom linter to catch these issues:
@@ -151,6 +154,7 @@ Consider adding these patterns to your IDE's code inspection rules:
 ## 7. Common Patterns in MythosMUD
 
 **[NOTE]**
+
 ### Database Initialization
 
 ```python
@@ -194,6 +198,7 @@ async def cleanup_test_data():
 ## 8. Troubleshooting
 
 **[NOTE]**
+
 ### Error: `ObjectNotExecutableError`
 
 **Cause**: Raw SQL string passed to async `execute()` without `text()` wrapper.
@@ -248,6 +253,7 @@ execution, lest the ObjectNotExecutableError consume the unwary developer's code
 ## 10. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

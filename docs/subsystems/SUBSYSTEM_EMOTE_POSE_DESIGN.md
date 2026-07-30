@@ -1,4 +1,5 @@
 # Emote / Pose Subsystem Design
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -24,6 +25,7 @@ cleared via the pose command.
 ## 2. Architecture
 
 **[NOTE]**
+
 ```mermaid
 flowchart LR
   subgraph commands [Commands]
@@ -69,6 +71,7 @@ flowchart LR
 ## 3. Key design decisions
 
 **[NOTE]**
+
 - **Emote = room broadcast**: Emote goes to room via chat_service.send_emote_message; actor gets
   self_message in command result.
 - **Me = actor-only in current code**: handle_me_command returns the formatted string to the actor
@@ -83,6 +86,7 @@ flowchart LR
 ## 4. Constraints
 
 **[NOTE]**
+
 - **Player in room**: Emote and me require player to be resolved and have current_room_id (emote
   uses it via chat service).
 - **Pose**: Any string; stored as-is. No length limit documented in code; consider validation for
@@ -93,6 +97,7 @@ flowchart LR
 ## 5. Component interactions
 
 **[NOTE]**
+
 1. **emote &lt;action&gt;** – Resolve player and room; if action is predefined alias, format
    self_message and other_message; else custom. Call chat_service.send_emote_message(player_id,
    formatted_action); return self_message to actor.
@@ -103,6 +108,7 @@ flowchart LR
 ## 6. Developer guide
 
 **[NOTE]**
+
 - **Adding predefined emotes**: Insert into emotes table (stable_id, self_message, other_message)
   and emote_aliases; restart or reload EmoteService so \_load_emotes runs (init only).
 - **Making me broadcast**: Change handle_me_command to call chat_service.send_me_message (or
@@ -117,6 +123,7 @@ flowchart LR
 ## 7. Troubleshooting
 
 **[NOTE]**
+
 - **"Emote functionality is not available"**: Chat service or player service missing from
   container/app.state.
 - **"You are not in a room"**: current_room_id is None; resolve player and room before sending
@@ -131,12 +138,14 @@ See also [GAME_BUG_INVESTIGATION_PLAYBOOK](../../.cursor/rules/GAME_BUG_INVESTIG
 ## 8. Related docs
 
 **[SPEC]**
+
 - [COMMAND_MODELS_REFERENCE.md](../COMMAND_MODELS_REFERENCE.md)
 - Chat/NATS: [NATS_SUBJECT_PATTERNS.md](../NATS_SUBJECT_PATTERNS.md), [realtime.md](../realtime.md)
 
 ## 9. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

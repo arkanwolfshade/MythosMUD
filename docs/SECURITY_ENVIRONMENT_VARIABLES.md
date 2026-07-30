@@ -1,4 +1,5 @@
 # Security: Environment Variables
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -19,6 +20,7 @@ This document describes the environment variables used for secure configuration 
 ## 2. Database Configuration
 
 **[SPEC]**
+
 ### Required for Production
 
 `DATABASE_HOST`: Database hostname (default: `localhost`)
@@ -105,6 +107,7 @@ export ENVIRONMENT=production
 ## 3. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

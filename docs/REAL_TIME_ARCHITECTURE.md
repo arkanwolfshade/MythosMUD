@@ -1,4 +1,5 @@
 # 🚀 MythosMUD Real-Time Architecture
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -20,6 +21,7 @@ WebSocket-based real-time gameplay updates.
 ## 2. Rationale
 
 **[SPEC]**
+
 ### Recommended Architecture
 
 **Frontend**: React + TypeScript
@@ -42,6 +44,7 @@ WebSocket-based real-time gameplay updates.
 ## 3. Architecture Overview
 
 **[NOTE]**
+
 ### **Three-Tier Design**
 
 ```
@@ -61,6 +64,7 @@ WebSocket-based real-time gameplay updates.
 ## 4. Technology Stack
 
 **[SPEC]**
+
 ### **Frontend (React + TypeScript)**
 
 **Framework**: React 18+ with TypeScript
@@ -90,6 +94,7 @@ WebSocket-based real-time gameplay updates.
 ## 5. Implementation Details
 
 **[NOTE]**
+
 ### **1. Authentication Flow**
 
 ```typescript
@@ -155,6 +160,7 @@ All real-time messages follow this structure:
 ## 6. Connection Management
 
 **[NOTE]**
+
 ### **Modular Architecture (Refactored December 2025)**
 
 The ConnectionManager has been refactored into a modular architecture following the Facade pattern. This improves
@@ -237,6 +243,7 @@ const handleError = (error: string) => {
 ## 7. Game Event Types
 
 **[NOTE]**
+
 ### **Core Events**
 
 | Event Type         | Purpose               | Data Structure                    |
@@ -273,6 +280,7 @@ function handleGameEvent(event: GameEvent) {
 ## 8. Performance Considerations
 
 **[SPEC]**
+
 ### **Message Ordering**
 
 **Sequence numbers**: All messages include sequence numbers
@@ -302,6 +310,7 @@ function handleGameEvent(event: GameEvent) {
 ## 9. Security Considerations
 
 **[SPEC]**
+
 ### **Authentication**
 
 **JWT tokens**: Required for all real-time connections
@@ -329,6 +338,7 @@ function handleGameEvent(event: GameEvent) {
 ## 10. Development Workflow
 
 **[NOTE]**
+
 ### **Local Development**
 
 1. **Start server**:
@@ -364,6 +374,7 @@ ws.onmessage = (event) => {
 ## 11. Future Enhancements
 
 **[SPEC]**
+
 ### **Planned Features**
 
 1. **Redis Integration**: For guaranteed message delivery
@@ -382,6 +393,7 @@ ws.onmessage = (event) => {
 ## 12. Troubleshooting
 
 **[SPEC]**
+
 ### **Common Issues**
 
 1. **Connection refused**: Check server is running
@@ -412,6 +424,7 @@ a multiplayer game. Future enhancements can be added incrementally without disru
 ## 14. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

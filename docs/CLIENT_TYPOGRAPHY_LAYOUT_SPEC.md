@@ -1,4 +1,5 @@
 # Client Typography and Layout Enhancement Specification
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -20,6 +21,7 @@ increasing font sizes across all panels and ensuring proper panel sizing and pos
 ## 2. Current State Analysis
 
 **[SPEC]**
+
 ### Font Size Usage
 
 The client currently uses the following Tailwind CSS font size classes extensively:
@@ -52,6 +54,7 @@ The current panel system uses:
 ## 3. Requirements
 
 **[SPEC]**
+
 ### 1. Font Size Enhancement
 
 **Increase all font sizes by 2 points** across the entire game client
@@ -79,6 +82,7 @@ The current panel system uses:
 ## 4. Technical Specifications
 
 **[NOTE]**
+
 ### Font Size Mapping
 
 #### Current → New Font Sizes
@@ -267,6 +271,7 @@ function calculateVerticalLayout(
 ## 5. Implementation Plan
 
 **[SPEC]**
+
 ### Phase 1: Font Size Updates
 
 1. **Update CSS Variables** in `index.css` and theme files
@@ -298,6 +303,7 @@ function calculateVerticalLayout(
 ## 6. Files to Modify
 
 **[SPEC]**
+
 ### Primary Files
 
 `client/src/index.css` - Global font size definitions
@@ -317,6 +323,7 @@ function calculateVerticalLayout(
 ## 7. Testing Requirements
 
 **[SPEC]**
+
 ### Typography Testing
 
 [ ] Verify all text is readable on 1080p displays
@@ -344,6 +351,7 @@ function calculateVerticalLayout(
 ## 8. Success Criteria
 
 **[SPEC]**
+
 ### Typography
 
 [ ] All text is at least 2 points larger than current sizes
@@ -371,6 +379,7 @@ function calculateVerticalLayout(
 ## 9. Risk Assessment
 
 **[NOTE]**
+
 ### Low Risk
 
 Font size increases are straightforward CSS updates
@@ -392,6 +401,7 @@ Complex positioning logic could affect performance
 ## 10. Dependencies
 
 **[NOTE]**
+
 ### Required
 
 Access to all client component files
@@ -433,6 +443,7 @@ overlap prevention system ensures a professional and polished interface.
 ## 13. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

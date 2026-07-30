@@ -25,6 +25,7 @@ The shorter `realtime.md` draft was archived at `archive/realtime.md`.
 ## 2. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | HADS pointer after realtime consolidation |

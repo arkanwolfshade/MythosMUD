@@ -1,4 +1,5 @@
 # Quest Design Guidelines
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -30,6 +31,7 @@ checklists may reference them.
 ## 3. Core Principles (Lysator-Inspired)
 
 **[NOTE]**
+
 ### 1. Clear hints
 
 - Avoid obscure puzzles with no in-world guidance. Provide enough information (description,
@@ -72,6 +74,7 @@ checklists may reference them.
 ## 4. Practical Guidelines for MythosMUD
 
 **[NOTE]**
+
 ### Triggers and offers
 
 - **Room triggers**: Use when the story is tied to a place (e.g. “leave the tutorial” when
@@ -113,6 +116,7 @@ checklists may reference them.
 ## 5. References
 
 **[SPEC]**
+
 - [QUEST_SYSTEM_FEATURES.md](QUEST_SYSTEM_FEATURES.md) — Feature list and review decisions.
 - [ADR-010: Quest Subsystem Architecture](architecture/decisions/ADR-010-quest-subsystem.md) —
   Technical architecture for the quest system.
@@ -121,6 +125,7 @@ checklists may reference them.
 ## 6. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

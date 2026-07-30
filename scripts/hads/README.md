@@ -6,7 +6,7 @@ Vendored structural validator for the Human-AI Document Standard (HADS).
 
 ## Source pin
 
-- Upstream: https://github.com/catcam/hads
+- Upstream: <https://github.com/catcam/hads>
 - File: `validate.py` (repo root)
 - Commit: `dcfe582df90c8a276690fd05ebe4819d4ba12c36`
 - Local path: `scripts/hads/validate.py`

@@ -1,4 +1,5 @@
 # NPC Subsystem Design
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -24,6 +25,7 @@ Combat targets NPCs; follow can target NPCs; NPCs can react to player_entered_ro
 ## 2. Architecture
 
 **[NOTE]**
+
 ```mermaid
 flowchart LR
   subgraph lifecycle [LifecycleManager]
@@ -94,6 +96,7 @@ flowchart LR
 ## 3. Key design decisions
 
 **[NOTE]**
+
 - **In-memory instances**: Active NPCs live in lifecycle_manager.active_npcs; definitions in DB
   (NPCDefinition); no persistence of instance state except as needed (e.g. respawn timer).
 - **Determination points**: NPC stats use determination_points (legacy hp/dp supported); \_alive
@@ -108,6 +111,7 @@ flowchart LR
 ## 4. Constraints
 
 **[SPEC]**
+
 - **Same room for target**: Combat and follow resolve NPC in player's current room.
 - **NPC instance from lifecycle**: Commands and combat get NPC from get_npc_instance_service()
   .lifecycle_manager.active_npcs[npc_id].
@@ -117,6 +121,7 @@ flowchart LR
 ## 5. Component interactions
 
 **[NOTE]**
+
 1. **Player enters room** – Population control may request spawns for zone; SpawningService spawns
    NPCs; LifecycleManager adds to active_npcs; NPC event reactions (greeting) may fire.
 2. **Combat attack** – Target resolved to NPC in room; \_get_npc_instance(npc_id) from lifecycle;
@@ -129,6 +134,7 @@ flowchart LR
 ## 6. Developer guide
 
 **[SPEC]**
+
 - **New NPC type**: Subclass NPCBase (or use existing PassiveMobNPC, AggressiveMobNPC,
   ShopkeeperNPC); register in SpawningService spawn builder; add spawn rules if needed.
 - **New behavior**: Extend BehaviorEngine and behavior_config; add to NPC definition.
@@ -140,6 +146,7 @@ flowchart LR
 ## 7. Troubleshooting
 
 **[NOTE]**
+
 - **"Target not found" / NPC not in room**: NPC must be in active_npcs and in same room as player;
   check lifecycle_manager.active_npcs and current_room.
 - **NPC not spawning**: Check zone config and spawn rules; population control and
@@ -156,12 +163,14 @@ GAME_BUG_INVESTIGATION_PLAYBOOK.mdc).
 ## 8. Related docs
 
 **[SPEC]**
+
 - [EVENT_OWNERSHIP_MATRIX.md](../EVENT_OWNERSHIP_MATRIX.md)
 - [COMMAND_MODELS_REFERENCE.md](../COMMAND_MODELS_REFERENCE.md)
 
 ## 9. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

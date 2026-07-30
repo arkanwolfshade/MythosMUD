@@ -1,4 +1,5 @@
 # Async Anti-Patterns Quick Reference
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -23,6 +24,7 @@ Read `[NOTE]` only if additional context is needed.
 ## 2. ❌ NEVER DO THIS → ✅ DO THIS INSTEAD
 
 **[NOTE]**
+
 ### 1. Blocking the Event Loop
 
 #### ❌ WRONG - Synchronous call from async function
@@ -381,6 +383,7 @@ doing it wrong.
 ## 3. 🚨 EMERGENCY DETECTION GUIDE
 
 **[NOTE]**
+
 ### "Is my code blocking the event loop?"
 
 Ask yourself:
@@ -435,6 +438,7 @@ Before committing async code, check:
 ## 5. 📚 APPROVED PATTERNS
 
 **[NOTE]**
+
 ### Pattern 1: Structured Concurrency
 
 ```python
@@ -498,6 +502,7 @@ async def flaky_operation():
 ## 6. 🔧 TOOLING
 
 **[NOTE]**
+
 ### Pre-Commit Hook
 
 Add to `.pre-commit-config.yaml`:
@@ -538,6 +543,7 @@ Configure IDE to warn on:
 ## 7. 📞 QUESTIONS?
 
 **[SPEC]**
+
 ### "Should this function be async?"
 
 **YES** if:
@@ -584,6 +590,7 @@ Configure IDE to warn on:
 ## 8. 🎓 LEARNING RESOURCES
 
 **[SPEC]**
+
 1. **Internal**:
 
    - `.cursor/rules/asyncio.mdc` - Comprehensive asyncio guidelines
@@ -622,6 +629,7 @@ These patterns are **NEVER ALLOWED** in MythosMUD:
 ## 10. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

@@ -1,4 +1,5 @@
 # NATS Error Handling Strategy
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -150,6 +151,7 @@ Raised when health check operations fail.
 ## 4. Error Handling Patterns
 
 **[NOTE]**
+
 ### Pattern 1: Let Exceptions Propagate
 
 For operations where failure should stop execution:
@@ -239,6 +241,7 @@ async def safe_nats_operation() -> None:
 ## 5. Best Practices
 
 **[NOTE]**
+
 ### 1. Always Handle Exceptions
 
 Never let NATS exceptions propagate unhandled in production code:
@@ -331,6 +334,7 @@ except NATSPublishError as e:
 ## 6. Error Recovery Strategies
 
 **[NOTE]**
+
 ### Connection Errors
 
 ```python
@@ -408,6 +412,7 @@ async def _handle_nats_message(self, message_data: dict[str, Any]):
 ## 8. Testing Error Handling
 
 **[NOTE]**
+
 ### Test Exception Raising
 
 ```python
@@ -430,6 +435,7 @@ async def test_publish_exception_attributes():
 ## 9. Migration Guide
 
 **[NOTE]**
+
 ### From Return-Value Pattern
 
 **Before**:
@@ -500,6 +506,7 @@ except NATSRequestError as e:
 ## 11. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

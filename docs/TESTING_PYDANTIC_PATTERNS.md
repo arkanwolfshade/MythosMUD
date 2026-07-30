@@ -1,4 +1,5 @@
 # Pydantic Testing Patterns
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -14,6 +15,7 @@ Read `[NOTE]` only if additional context is needed.
 ## 1. FieldInfo Type Checker Issues
 
 **[NOTE]**
+
 ### Problem
 
 When accessing nested Pydantic model attributes in tests, Pylint reports `E1101:no-member` errors because it sees nested
@@ -142,6 +144,7 @@ Pydantic v2 Field descriptors
 ## 2. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

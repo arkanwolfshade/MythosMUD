@@ -1,4 +1,5 @@
 # Item System Observability Runbook
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -99,6 +100,7 @@ Treat `quantity > 5` as an escalation.  The observability harness will emit a
 ## 2. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

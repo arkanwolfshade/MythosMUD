@@ -1,4 +1,5 @@
 # API OpenAPI/Swagger Specification
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -107,6 +108,7 @@ The OpenAPI spec documents the **HTTP/WebSocket contracts** (request/response sh
 ## 6. Using the Specification
 
 **[SPEC]**
+
 ### 5.1 Client Generation
 
 Use the OpenAPI spec to generate typed API clients:
@@ -134,6 +136,7 @@ npx @openapitools/openapi-generator-cli generate \
 ## 7. Related Documentation
 
 **[SPEC]**
+
 | Document | Purpose |
 |----------|---------|
 | [BOUNDED_CONTEXTS_AND_SERVICE_BOUNDARIES.md](../BOUNDED_CONTEXTS_AND_SERVICE_BOUNDARIES.md) | Service boundaries, bounded contexts, internal contracts |
@@ -144,6 +147,7 @@ npx @openapitools/openapi-generator-cli generate \
 ## 8. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

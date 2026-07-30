@@ -1,4 +1,5 @@
 # Aggro and Threat System Design
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -19,6 +20,7 @@ This document specifies the aggro and threat management system for MythosMUD com
 ## 2. Scope and Assumptions
 
 **[SPEC]**
+
 - **Room-based combat:** Everyone in the same room is in the fight; no sub-room positioning.
 - **Taunt is room-local:** Taunt only affects targets in the same room as the mob.
 - **Future kiting:** Pull from one room away is done by attacking (or pull action) from an adjacent room; the NPC may move to the attacker's room. Taunt does not pull from range.
@@ -26,6 +28,7 @@ This document specifies the aggro and threat management system for MythosMUD com
 ## 3. Threat Accumulators
 
 **[SPEC]**
+
 | Source  | Formula / behaviour                                                                                                                             |
 | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
 | Damage  | threat += damage_dealt \* damage_threat_multiplier (default 1.0; tanks may use > 1.0).                                                          |
@@ -38,6 +41,7 @@ All values are per-mob: one hate list per mob (or per combat instance).
 ## 4. Target Priority and Stability
 
 **[SPEC]**
+
 - **Stability (primary):** Current target keeps aggro unless some entity has threat >= current_target_threat \* (1 + stability_margin).
 - **Default stability margin:** 0.10 (10%). A new target is chosen only when their threat is at least 10% above the current target's threat.
 - **When no current target or tie:** Apply optional priority rules per NPC type (e.g. healer priority, caster priority, weakest HP%); in room-based combat "closest" is anyone in room; fallback to highest threat or deterministic tie-break.
@@ -46,6 +50,7 @@ All values are per-mob: one hate list per mob (or per combat instance).
 ## 5. Data Structure: Hate List
 
 **[SPEC]**
+
 - **Recommendation:** Hash map (dict) keyed by entity id (player or NPC), value = threat (and optional metadata: last_damage_tick, is_healer_flag).
 - **Why:** O(1) update by entity; only entities with nonzero threat are stored (sparse). Target resolution = one pass over the map to find max threat and apply stability rule.
 - **Lifecycle:** Create when mob gains first aggro; optional decay or trim (e.g. drop entities with 0 threat after 30s, or cap top N) to bound size in large rooms.
@@ -83,6 +88,7 @@ UpdateAggro(mob, room):
 ## 7. Scaling (1 vs many in room)
 
 **[SPEC]**
+
 - Store only entities with nonzero threat (sparse hate list).
 - Target resolution: find max threat, compare to current target with stability rule; no full sort of all room occupants.
 - On target switch: broadcast one short message to the room (e.g. "The horror turns its gaze to Soandso.").
@@ -90,6 +96,7 @@ UpdateAggro(mob, room):
 ## 8. Test Scenarios
 
 **[SPEC]**
+
 | Scenario             | Expected behaviour                                                                                                                                        |
 | -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Healer overpull      | Tank has threat lead; healer does one big heal. Healer's threat crosses threshold (e.g. 110% of tank) -> mob switches to healer; one message; no flicker. |
@@ -100,6 +107,7 @@ UpdateAggro(mob, room):
 ## 9. Feedback (low-latency, text-efficient)
 
 **[SPEC]**
+
 - On target switch: emit **one** short line to the room (e.g. "The horror turns its gaze to Soandso.").
 - No per-player spam; no repeated "X is now the target" for every occupant. Optionally, the new target can receive a one-line personal notice (e.g. "The horror is now focusing on you.").
 
@@ -114,6 +122,7 @@ The following were decided and are fixed for implementation:
 ## 11. References
 
 **[SPEC]**
+
 - ADR-016: Aggro and Threat Management System
 - [Aggro and Threat Implementation Plan](aggro-threat-implementation-plan.md) – implementation summary and key files
 - Context and comparison (Diku/ROM vs LPMud, modern MUDs, social aggro): see discussion that led to this design.
@@ -121,6 +130,7 @@ The following were decided and are fixed for implementation:
 ## 12. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

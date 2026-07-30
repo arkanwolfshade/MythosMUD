@@ -1,4 +1,5 @@
 # Structured Concurrency Patterns
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -26,6 +27,7 @@ resource leaks, orphaned tasks, and difficult-to-debug issues.
 ## 3. Core Principles
 
 **[SPEC]**
+
 1. **Task Tracking**: All background tasks should be tracked for proper lifecycle management
 2. **Structured Cleanup**: Tasks should be properly cancelled and cleaned up during shutdown
 3. **Exception Handling**: Exceptions in concurrent tasks should be properly aggregated and handled
@@ -34,6 +36,7 @@ resource leaks, orphaned tasks, and difficult-to-debug issues.
 ## 4. Patterns
 
 **[NOTE]**
+
 ### Pattern 1: Structured Concurrency for Multiple Async Operations
 
 **Use Case**: When you need to run multiple async operations concurrently and ensure all complete.
@@ -195,6 +198,7 @@ if asyncio.iscoroutine(result):
 ## 5. When to Use Each Pattern
 
 **[NOTE]**
+
 ### Use Pattern 1 (Structured Concurrency) when
 
 You have multiple async operations that should all complete
@@ -226,6 +230,7 @@ Tasks should run independently
 ## 6. Anti-Patterns to Avoid
 
 **[NOTE]**
+
 ### ❌ Creating tasks without tracking
 
 ```python
@@ -323,6 +328,7 @@ async def test_structured_concurrency_task_cleanup(self):
 ## 10. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

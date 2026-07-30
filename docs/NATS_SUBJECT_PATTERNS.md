@@ -1,4 +1,5 @@
 # NATS Subject Pattern Management
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -41,6 +42,7 @@ registration.
 ## 3. Architecture
 
 **[NOTE]**
+
 ### Pattern Hierarchy
 
 Subject patterns follow a hierarchical structure:
@@ -70,6 +72,7 @@ combat.attack.{room_id}           # Combat attack events
 ## 4. Usage
 
 **[NOTE]**
+
 ### Basic Usage
 
 ```python
@@ -139,6 +142,7 @@ for pattern in chat_patterns:
 ## 5. Predefined Patterns
 
 **[SPEC]**
+
 ### Chat Patterns
 
 | Pattern Name          | Subject Template                  | Parameters | Description                  |
@@ -204,6 +208,7 @@ manager.register_pattern(
 ## 7. Performance Optimization
 
 **[NOTE]**
+
 ### Caching
 
 The subject manager implements two levels of caching:
@@ -276,6 +281,7 @@ Established performance baselines:
 ## 8. Admin API Reference
 
 **[NOTE]**
+
 ### GET /api/admin/nats/subjects/health
 
 Get subject management statistics and health status.
@@ -364,6 +370,7 @@ Register a new subject pattern (admin-only).
 ## 9. Migration Guide
 
 **[NOTE]**
+
 ### Migrating from Hardcoded Subjects
 
 **Before** (hardcoded subject strings):
@@ -419,6 +426,7 @@ subject = self.subject_manager.build_subject(
 ## 10. Error Handling
 
 **[NOTE]**
+
 ### Pattern Not Found
 
 ```python
@@ -449,6 +457,7 @@ except SubjectValidationError as e:
 ## 11. Configuration
 
 **[NOTE]**
+
 ### Initialization Options
 
 ```python
@@ -482,6 +491,7 @@ manager.build_subject("chat_say_room", room_id="room-with-hyphens")
 ## 12. Best Practices
 
 **[NOTE]**
+
 ### 1. Always Use Pattern Names
 
 ```python
@@ -559,6 +569,7 @@ except SubjectValidationError as e:
 ## 13. Testing
 
 **[NOTE]**
+
 ### Unit Testing
 
 ```python
@@ -598,6 +609,7 @@ def test_cache_performance():
 ## 14. Monitoring and Observability
 
 **[NOTE]**
+
 ### Health Endpoint
 
 ```bash
@@ -637,6 +649,7 @@ if avg_validation_time > 1.0:
 ## 15. Troubleshooting
 
 **[SPEC]**
+
 ### Common Issues
 
 #### High Validation Failure Rate
@@ -687,6 +700,7 @@ if avg_validation_time > 1.0:
 ## 17. Migration Status
 
 **[SPEC]**
+
 ### ✅ Fully Migrated Components
 
 The following components have been successfully migrated to use the standardized subject manager:
@@ -732,6 +746,7 @@ The following utility functions are marked as deprecated:
 ## 18. Related Documentation
 
 **[SPEC]**
+
 - [Real-Time Architecture](REAL_TIME_ARCHITECTURE.md) - Overall real-time system design
 - [Enhanced Logging Guide](ENHANCED_LOGGING_GUIDE.md) - Structured logging practices
 - [realtime.md](realtime.md) - WebSocket authentication and production deployment
@@ -749,6 +764,7 @@ The following utility functions are marked as deprecated:
 ## 20. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

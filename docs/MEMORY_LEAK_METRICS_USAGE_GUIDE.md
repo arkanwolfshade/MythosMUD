@@ -1,4 +1,5 @@
 # Memory Leak Metrics Usage Guide
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -19,21 +20,23 @@ This guide explains how to use the comprehensive memory leak monitoring system i
 ## 2. Table of Contents
 
 **[SPEC]**
-1. [Quick Start](#quick-start)
-2. [Accessing Monitoring Endpoints](#accessing-monitoring-endpoints)
-3. [Automatic Logging](#automatic-logging)
-4. [Key Metrics to Monitor](#key-metrics-to-monitor)
-5. [Client-Side Monitoring](#client-side-monitoring)
-6. [Setting Up Monitoring Dashboard](#setting-up-monitoring-dashboard)
-7. [Alerting](#alerting)
-8. [Troubleshooting](#troubleshooting)
-9. [Quick Health Check Script](#quick-health-check-script)
+
+1. [Quick Start](#3-quick-start)
+2. [Accessing Monitoring Endpoints](#4-accessing-monitoring-endpoints)
+3. [Automatic Logging](#5-automatic-logging)
+4. [Key Metrics to Monitor](#6-key-metrics-to-monitor)
+5. [Client-Side Monitoring](#7-client-side-monitoring)
+6. [Setting Up Monitoring Dashboard](#8-setting-up-monitoring-dashboard)
+7. [Alerting](#9-alerting)
+8. [Troubleshooting](#10-troubleshooting)
+9. [Quick Health Check Script](#11-quick-health-check-script)
 
 ---
 
 ## 3. Quick Start
 
 **[NOTE]**
+
 ### 1. Start the Server
 
 ```powershell
@@ -65,6 +68,7 @@ Invoke-RestMethod -Uri "http://localhost:54768/monitoring/memory-leaks" | Conver
 ## 4. Accessing Monitoring Endpoints
 
 **[NOTE]**
+
 ### Comprehensive Memory Leak Metrics (Main Endpoint)
 
 The primary endpoint aggregates all metrics from all sources:
@@ -167,6 +171,7 @@ This file contains:
 ## 6. Key Metrics to Monitor
 
 **[NOTE]**
+
 ### Connection Leaks (Most Critical)
 
 #### `closed_websockets_count`
@@ -254,7 +259,7 @@ Tasks being created faster than they complete.
 
 ### Should match expected service subscriptions
 
-### Growing count indicates leaks
+### Growing subscription count indicates leaks
 
 #### Subscriptions After Cleanup
 
@@ -269,22 +274,23 @@ Subscriptions remaining after service shutdown indicate cleanup failures.
 ## 7. Client-Side Monitoring
 
 **[NOTE]**
+
 ### Using Lifecycle Tracking Hooks
 
 In your React components, use the provided hooks to track component lifecycle and store subscriptions:
 
 ```typescript
-import { useComponentLifecycleTracking } from '@/hooks/useComponentLifecycleTracking';
-import { useStoreSubscriptionTracking } from '@/hooks/useStoreSubscriptionTracking';
+import { useComponentLifecycleTracking } from "@/hooks/useComponentLifecycleTracking";
+import { useStoreSubscriptionTracking } from "@/hooks/useStoreSubscriptionTracking";
 
 function MyComponent() {
   // Track component lifecycle
   const { hasCleanup, setCleanup } = useComponentLifecycleTracking({
-    componentName: 'MyComponent'
+    componentName: "MyComponent",
   });
 
   // Track store subscriptions
-  useStoreSubscriptionTracking({ storeName: 'gameStore' });
+  useStoreSubscriptionTracking({ storeName: "gameStore" });
 
   useEffect(() => {
     // Your component logic
@@ -323,6 +329,7 @@ Open browser DevTools console (development mode only):
 ## 8. Setting Up Monitoring Dashboard
 
 **[NOTE]**
+
 ### Prerequisites
 
 Docker Desktop installed and running
@@ -427,6 +434,7 @@ docker-compose -f docker-compose.monitoring.yml down
 ## 9. Alerting
 
 **[NOTE]**
+
 ### Alert Configuration
 
 Alerts are configured in `monitoring/mythos_alerts.yml` and trigger when:
@@ -475,6 +483,7 @@ _alert_thresholds = {
 ## 10. Troubleshooting
 
 **[NOTE]**
+
 ### Server Not Responding
 
 ```powershell
@@ -584,6 +593,7 @@ if ($metrics.alerts.Count -gt 0) {
 ## 12. Best Practices
 
 **[SPEC]**
+
 1. **Regular Monitoring**: Check metrics periodically during development
 2. **Baseline Comparison**: Compare current metrics to startup baseline
 3. **Watch Growth Rates**: Monitor growth rates over time, not just absolute values
@@ -637,6 +647,7 @@ Use this system to proactively detect and address memory leaks before they impac
 ## 15. Changelog
 
 **[SPEC]**
-| Version | Date | Change |
-| --- | --- | --- |
-| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
+
+| Version | Date       | Change                             |
+| ------- | ---------- | ---------------------------------- |
+| 1.0.0   | 2026-07-30 | Initial HADS structural conversion |

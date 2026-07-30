@@ -1,4 +1,5 @@
 # Cursor IDE Setup Guide for Optimal Subagent Usage
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -92,6 +93,7 @@ For each new machine:
 ## 5. Cursor IDE Settings
 
 **[SPEC]**
+
 ### 1. Enable Max Mode (If on Legacy Plan)
 
 If you're on a legacy request-based plan, you must enable Max Mode to use subagents:
@@ -127,6 +129,7 @@ Optimize chat for subagent usage:
 ## 6. Best Practices for Automatic Subagent Usage
 
 **[NOTE]**
+
 ### 1. Use Descriptive Prompts
 
 The more specific your prompt, the better Cursor can decide when to use subagents:
@@ -182,6 +185,7 @@ Cursor automatically uses subagents when:
 ## 7. Chat Conversation Patterns
 
 **[SPEC]**
+
 ### Pattern 1: Exploration Tasks
 
 **User**: "I need to understand how authentication works across the codebase"
@@ -218,6 +222,7 @@ Cursor automatically uses subagents when:
 ## 8. Optimizing Subagent Performance
 
 **[NOTE]**
+
 ### 1. Provide Context
 
 Give subagents enough context to work effectively:
@@ -251,6 +256,7 @@ and simultaneously use the test analyzer to check test coverage for Player-relat
 ## 9. Monitoring Subagent Usage
 
 **[SPEC]**
+
 ### How to Know When Subagents Are Used
 
 Cursor will indicate when subagents are active:
@@ -271,6 +277,7 @@ Subagent output typically includes:
 ## 10. Troubleshooting
 
 **[SPEC]**
+
 ### Subagents Not Being Used Automatically
 
 **Check**:
@@ -307,6 +314,7 @@ Subagent output typically includes:
 ## 11. Advanced Configuration
 
 **[SPEC]**
+
 ### Custom Subagent Prompts
 
 You can customize subagent behavior by editing files in `.cursor/agents/`:
@@ -326,6 +334,7 @@ Commands can be configured to always use specific subagents. See:
 ## 12. Quick Reference
 
 **[NOTE]**
+
 ### Available Subagents
 
 | Subagent               | Purpose                    | When to Use                                 |
@@ -353,6 +362,7 @@ Commands can be configured to always use specific subagents. See:
 ## 13. References
 
 **[SPEC]**
+
 - Subagent Documentation: `docs/CURSOR_SUBAGENTS.md`
 - Usage Guidelines: `.cursor/rules/subagent-usage.mdc`
 - Workflow Examples: `docs/CURSOR_WORKFLOWS.md`
@@ -361,6 +371,7 @@ Commands can be configured to always use specific subagents. See:
 ## 14. Notes
 
 **[SPEC]**
+
 - Subagents are automatically discovered - no manual configuration needed
 - Cursor decides when to use subagents based on task complexity
 - You can always explicitly request subagent usage
@@ -370,6 +381,7 @@ Commands can be configured to always use specific subagents. See:
 ## 15. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

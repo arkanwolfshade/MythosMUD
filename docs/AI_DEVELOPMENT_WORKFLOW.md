@@ -1,4 +1,5 @@
 # 🐙 MythosMUD AI Development Workflow
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -22,17 +23,18 @@ West, Miskatonic University
 ## 2. Table of Contents
 
 **[SPEC]**
-1. [Overview](#overview)
-2. [AI Tool Selection](#ai-tool-selection)
-3. [Effective Prompting Strategies](#effective-prompting-strategies)
-4. [Command Development Workflow](#command-development-workflow)
-5. [Code Review with AI](#code-review-with-ai)
-6. [Testing with AI](#testing-with-ai)
-7. [Debugging with AI](#debugging-with-ai)
-8. [Documentation with AI](#documentation-with-ai)
-9. [Best Practices](#best-practices)
-10. [Common Pitfalls](#common-pitfalls)
-11. [Example Workflows](#example-workflows)
+
+1. [Overview](#3-overview)
+2. [AI Tool Selection](#4-ai-tool-selection)
+3. [Effective Prompting Strategies](#5-effective-prompting-strategies)
+4. [Command Development Workflow](#6-command-development-workflow)
+5. [Code Review with AI](#7-code-review-with-ai)
+6. [Testing with AI](#12-testing-with-ai)
+7. [Debugging with AI](#13-debugging-with-ai)
+8. [Documentation with AI](#14-documentation-with-ai)
+9. [Best Practices](#15-best-practices)
+10. [Common Pitfalls](#16-common-pitfalls)
+11. [Example Workflows](#17-example-workflows)
 
 ---
 
@@ -73,6 +75,7 @@ strategies for leveraging AI to write better code, catch bugs, and maintain cons
 ## 4. AI Tool Selection
 
 **[NOTE]**
+
 ### Primary Tools
 
 1. **GitHub Copilot**: IDE integration for real-time code suggestions
@@ -126,6 +129,7 @@ Can you help me implement this command following the project's patterns?
 ## 5. Effective Prompting Strategies
 
 **[SPEC]**
+
 ### 1. Provide Context
 
 Always include relevant context about the project:
@@ -180,6 +184,7 @@ Please provide:
 ## 6. Command Development Workflow
 
 **[SPEC]**
+
 ### Step 1: Planning with AI
 
 **Prompt:**
@@ -273,6 +278,7 @@ Include tests for:
 ## 7. Code Review with AI
 
 **[SPEC]**
+
 ### Review Prompts
 
 #### General Code Review
@@ -357,6 +363,7 @@ Check for:
 ## 12. Testing with AI
 
 **[SPEC]**
+
 ### Test Generation
 
 #### Unit Test Generation
@@ -423,6 +430,7 @@ Check for:
 ## 13. Debugging with AI
 
 **[NOTE]**
+
 ### Error Analysis
 
 #### Stack Trace Analysis
@@ -468,6 +476,7 @@ Can you help me identify performance bottlenecks and suggest optimizations?
 ## 14. Documentation with AI
 
 **[SPEC]**
+
 ### Code Documentation
 
 ```
@@ -503,6 +512,7 @@ Please suggest updates for:
 ## 15. Best Practices
 
 **[SPEC]**
+
 ### 1. Iterative Development
 
 ```
@@ -559,6 +569,7 @@ Always review AI-generated code for:
 ## 16. Common Pitfalls
 
 **[NOTE]**
+
 ### 1. Over-Reliance on AI
 
 ```
@@ -599,6 +610,7 @@ Always review AI-generated code for:
 ## 17. Example Workflows
 
 **[NOTE]**
+
 ### Complete Command Implementation
 
 #### Step 1: Planning
@@ -771,6 +783,7 @@ Check that:
 ## 18. AI Tool Configuration
 
 **[NOTE]**
+
 ### IDE Settings
 
 ```json
@@ -869,6 +882,7 @@ security.
 ## 20. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

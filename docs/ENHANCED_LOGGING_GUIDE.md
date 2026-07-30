@@ -441,6 +441,7 @@ system monitoring and debugging._
 ## 14. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

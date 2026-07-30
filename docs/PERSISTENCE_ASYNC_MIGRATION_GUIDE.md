@@ -1,4 +1,5 @@
 # Persistence Layer Async Migration Guide
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -28,6 +29,7 @@ while existing code continues working unchanged.
 ## 3. What's Been Completed
 
 **[NOTE]**
+
 ### New Async Repository Architecture
 
 ```
@@ -97,6 +99,7 @@ Item instance operations via `asyncio.to_thread()` wrappers
 ## 4. How to Use the New Async Repositories
 
 **[NOTE]**
+
 ### Option 1: Use Async Facade (Recommended for Async Code) ✅
 
 ```python
@@ -174,6 +177,7 @@ persistence.save_player(player)
 ## 5. Migration Path for Existing Code
 
 **[NOTE]**
+
 ### Phase 1: Async Repository Extraction ✅ COMPLETE
 
 [x] Extract PlayerRepository
@@ -292,6 +296,7 @@ async def get_player(
 ## 6. Benefits of Async Repositories
 
 **[SPEC]**
+
 ### Performance
 
 **Non-blocking I/O**: True async database operations (no thread pool overhead)
@@ -325,6 +330,7 @@ async def get_player(
 ## 7. Migration Decision Tree
 
 **[SPEC]**
+
 ### When to Use Async Repositories Directly?
 
 **YES - Use async repositories directly when:**
@@ -354,6 +360,7 @@ async def get_player(
 ## 8. Testing the New Repositories
 
 **[NOTE]**
+
 ### Unit Testing Repositories
 
 ```python
@@ -385,6 +392,7 @@ async def test_player_repository_get_by_id(mock_async_session):
 ## 9. Common Pitfalls & Solutions
 
 **[NOTE]**
+
 ### Pitfall 1: Mixing Sync and Async Code
 
 **Problem**:
@@ -460,6 +468,7 @@ except DatabaseError as e:
 ## 10. Performance Comparison
 
 **[SPEC]**
+
 ### Sync Persistence (Current)
 
 ```python
@@ -575,6 +584,7 @@ class UserManager:
 ## 12. File-by-File Migration Priority
 
 **[SPEC]**
+
 ### Priority 1: API Endpoints (Easiest - Already Async!)
 
 FastAPI endpoints are already async, making them the easiest to migrate:
@@ -663,6 +673,7 @@ If issues arise during migration:
 ## 14. Success Metrics
 
 **[SPEC]**
+
 ### Per-File Migration Metrics
 
 [ ] All tests passing
@@ -682,6 +693,7 @@ Current: 0/41 files migrated to async repositories
 ## 15. Next Steps
 
 **[SPEC]**
+
 1. **Start with API endpoints** - Easiest wins, immediate performance benefits
 2. **Migrate high-traffic services** - Combat, player management
 3. **Update real-time handlers** - WebSocket responsiveness
@@ -709,6 +721,7 @@ repositories are available for use, but existing sync code continues working ind
 ## 18. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

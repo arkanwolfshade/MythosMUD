@@ -1,4 +1,5 @@
 # Rescue Subsystem Design
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -24,6 +25,7 @@ target, lucidity adjustment); only **ground** is registered in the command map.
 ## 2. Architecture
 
 **[NOTE]**
+
 ```mermaid
 flowchart LR
   subgraph commands [Commands]
@@ -75,6 +77,7 @@ flowchart LR
 ## 3. Key design decisions
 
 **[NOTE]**
+
 - **Same room only**: Rescuer and target must have the same current_room_id; otherwise "not within
   reach."
 - **Catatonic tier only**: Target's PlayerLucidity.current_tier must be "catatonic"; otherwise no
@@ -90,6 +93,7 @@ flowchart LR
 ## 4. Constraints
 
 **[NOTE]**
+
 - **Target must have PlayerLucidity**: If session.get(PlayerLucidity, target_id) is None, return
   error (ground: "aura cannot be located"; rescue: "lucidity record could not be found").
 - **Rescuer/target resolution**: By player name via persistence.get_player_by_name; rescuer from
@@ -100,6 +104,7 @@ flowchart LR
 ## 5. Component interactions
 
 **[NOTE]**
+
 1. **ground &lt;target&gt;** – Validate rescuer and target, same room. Open session, get
    PlayerLucidity for target; if not catatonic, return. Send channeling events to both. Apply
    lucidity adjustment (ground_rescue), commit. On exception, rollback and send failure events. Send
@@ -113,6 +118,7 @@ flowchart LR
 ## 6. Developer guide
 
 **[NOTE]**
+
 - **Adding a new rescue variant**: Reuse LucidityService.apply_lucidity_adjustment with a distinct
   reason_code and metadata; send appropriate rescue_update events; keep same-room and catatonic
   checks.
@@ -124,6 +130,7 @@ flowchart LR
 ## 7. Troubleshooting
 
 **[NOTE]**
+
 - **"isn't catatonic and needs no grounding"**: current_tier != "catatonic". Check lucidity
   thresholds and tier computation.
 - **"not within reach"**: current_room_id of rescuer and target differ. Verify room persistence
@@ -139,12 +146,14 @@ See also [SUBSYSTEM_LUCIDITY_DESIGN.md](SUBSYSTEM_LUCIDITY_DESIGN.md) and
 ## 8. Related docs
 
 **[SPEC]**
+
 - [SUBSYSTEM_LUCIDITY_DESIGN.md](SUBSYSTEM_LUCIDITY_DESIGN.md)
 - [COMMAND_MODELS_REFERENCE.md](../COMMAND_MODELS_REFERENCE.md)
 
 ## 9. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

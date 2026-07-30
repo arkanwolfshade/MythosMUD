@@ -1,4 +1,5 @@
 # Event Subscription Cleanup Patterns
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -27,6 +28,7 @@ during service lifecycle changes.
 ## 3. Core Principles
 
 **[SPEC]**
+
 1. **Service Identification**: All services should provide a unique `service_id` when subscribing to events
 2. **Explicit Cleanup**: Services should explicitly unsubscribe during their own shutdown
 3. **Automatic Fallback**: EventBus automatically cleans up all subscriptions during application shutdown
@@ -35,6 +37,7 @@ during service lifecycle changes.
 ## 4. Recommended Pattern
 
 **[NOTE]**
+
 ### Basic Service Pattern
 
 ```python
@@ -184,6 +187,7 @@ for event_type, count in counts.items():
 ## 8. Common Pitfalls
 
 **[NOTE]**
+
 ### ❌ Don't: Subscribe without service_id
 
 ```python
@@ -314,6 +318,7 @@ Following these patterns ensures proper resource cleanup and prevents memory lea
 ## 12. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

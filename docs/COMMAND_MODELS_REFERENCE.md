@@ -1,4 +1,5 @@
 # 🐙 MythosMUD Command Models Reference
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -21,14 +22,15 @@ Read `[NOTE]` only if additional context is needed.
 ## 2. Table of Contents
 
 **[SPEC]**
-1. [Overview](#overview)
-2. [Base Command Structure](#base-command-structure)
-3. [Existing Command Models](#existing-command-models)
-4. [Creating New Command Models](#creating-new-command-models)
-5. [Validation Patterns](#validation-patterns)
-6. [Field Types and Constraints](#field-types-and-constraints)
-7. [Best Practices](#best-practices)
-8. [Common Pitfalls](#common-pitfalls)
+
+1. [Overview](#3-overview)
+2. [Base Command Structure](#4-base-command-structure)
+3. [Existing Command Models](#5-existing-command-models)
+4. [Creating New Command Models](#6-creating-new-command-models)
+5. [Validation Patterns](#7-validation-patterns)
+6. [Field Types and Constraints](#8-field-types-and-constraints)
+7. [Best Practices](#9-best-practices)
+8. [Common Pitfalls](#10-common-pitfalls)
 
 ---
 
@@ -91,6 +93,7 @@ class BaseCommand(BaseModel):
 ## 5. Existing Command Models
 
 **[NOTE]**
+
 ### Exploration Commands
 
 #### LookCommand
@@ -537,6 +540,7 @@ class HelpCommand(BaseCommand):
 ## 6. Creating New Command Models
 
 **[NOTE]**
+
 ### Step-by-Step Process
 
 1. **Define the Command Type**
@@ -637,6 +641,7 @@ items: list[str] = Field(default_factory=list, description="List of items")
 ## 7. Validation Patterns
 
 **[NOTE]**
+
 ### String Validation
 
 ```python
@@ -700,6 +705,7 @@ def validate_model(self):
 ## 8. Field Types and Constraints
 
 **[NOTE]**
+
 ### Common Field Types
 
 | Type             | Description     | Example                                            |
@@ -752,6 +758,7 @@ field: str | None = Field(None, description="Optional field")
 ## 9. Best Practices
 
 **[NOTE]**
+
 ### 1. Always Include Descriptions
 
 ```python
@@ -861,6 +868,7 @@ def validate_complex_field(cls, v):
 ## 10. Common Pitfalls
 
 **[NOTE]**
+
 ### 1. Forgetting to Import
 
 ```python
@@ -1001,6 +1009,7 @@ This model includes:
 ## 12. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

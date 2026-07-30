@@ -1,4 +1,5 @@
 # Cursor Subagents Documentation
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -24,6 +25,7 @@ Subagents are specialized AI assistants that Cursor's agent can delegate complex
 ## 3. Key Concepts
 
 **[NOTE]**
+
 ### Context Isolation
 
 Each subagent has its own context window. Long research or exploration tasks don't consume space in your main conversation.
@@ -43,6 +45,7 @@ Custom subagents can be defined and used across projects.
 ## 4. Available Subagents
 
 **[SPEC]**
+
 ### Codebase Explorer
 
 **File**: `.cursor/agents/codebase-explorer.md`
@@ -155,6 +158,7 @@ Custom subagents can be defined and used across projects.
 ## 5. When to Use Subagents
 
 **[SPEC]**
+
 ### Use Subagents When
 
 - **Context Isolation Needed**: Long research or exploration tasks that would consume significant context
@@ -173,6 +177,7 @@ Custom subagents can be defined and used across projects.
 ## 6. Subagent vs Command vs Rule
 
 **[SPEC]**
+
 | Aspect        | Subagents                 | Commands                 | Rules                     |
 | ------------- | ------------------------- | ------------------------ | ------------------------- |
 | **Purpose**   | Complex, multi-step tasks | Single-purpose workflows | Persistent guidance       |
@@ -208,6 +213,7 @@ These are used automatically when appropriate - no configuration needed.
 ## 8. Performance and Cost Considerations
 
 **[SPEC]**
+
 ### Token Usage
 
 - **Subagents consume tokens independently**: Each subagent has its own context window
@@ -248,6 +254,7 @@ Subagents integrate with existing Cursor commands:
 ## 10. Creating Custom Subagents
 
 **[NOTE]**
+
 ### Subagent File Structure
 
 Create subagent files in `.cursor/agents/` with this structure:
@@ -297,6 +304,7 @@ description: "Clear description of what this subagent does"
 ## 16. References
 
 **[SPEC]**
+
 - [Cursor Subagents Documentation](https://cursor.com/docs/context/subagents)
 - Subagent definitions: `.cursor/agents/`
 - Usage guidelines: `.cursor/rules/subagent-usage.mdc`
@@ -305,6 +313,7 @@ description: "Clear description of what this subagent does"
 ## 17. Examples
 
 **[NOTE]**
+
 ### Example 1: Codebase Exploration
 
 ```
@@ -341,6 +350,7 @@ Agent: [Presents findings to user]
 ## 18. Notes
 
 **[SPEC]**
+
 - Subagents are powerful but have overhead - use judiciously
 - Commands provide quick workflows - use for common tasks
 - Rules provide persistent guidance - always applied
@@ -349,6 +359,7 @@ Agent: [Presents findings to user]
 ## 19. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

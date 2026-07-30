@@ -1,4 +1,5 @@
 # Database Access Patterns
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -127,6 +128,7 @@ async for session in get_async_session():
 ## 5. Decision Tree
 
 **[NOTE]**
+
 ```
 Do you need relationships (e.g., Player.user)?
 ├─ Yes → Use SQLAlchemy ORM (Pattern 2)
@@ -136,6 +138,7 @@ Do you need relationships (e.g., Player.user)?
 ## 6. Migration Strategy
 
 **[NOTE]**
+
 ### From AsyncPersistenceLayer to SQLAlchemy ORM
 
 **When**: You need relationships or want better query capabilities
@@ -178,6 +181,7 @@ async def get_player(
 ## 7. Performance Considerations
 
 **[SPEC]**
+
 ### AsyncPersistenceLayer (Pattern 1)
 
 **Pros**: Fastest execution, direct database access
@@ -197,6 +201,7 @@ async def get_player(
 ## 8. Error Handling Patterns
 
 **[NOTE]**
+
 ### AsyncPersistenceLayer (Async)
 
 ```python
@@ -242,6 +247,7 @@ stmt = select(Player).where(Player.player_id == player_id)
 ## 10. Common Patterns
 
 **[NOTE]**
+
 ### Getting a Single Player with User
 
 ```python
@@ -289,6 +295,7 @@ for player, lucidity in result:
 ## 11. Future Migration Goals
 
 **[SPEC]**
+
 1. **Short-term**: Document patterns and migration paths ✅ **COMPLETE**
 2. **Medium-term**: Migrate f-string SQL to ORM (in progress - see notes below)
 3. **Long-term**: Consolidate to SQLAlchemy ORM for all operations
@@ -333,6 +340,7 @@ prefer the ORM for new work, lest you summon the N+1 query demon."*
 ## 14. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

@@ -1,4 +1,5 @@
 # ADR-005: Repository Pattern for Data Access
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -37,6 +38,7 @@ Services depend on AsyncPersistenceLayer or specific repositories via Applicatio
 ## 4. Alternatives Considered
 
 **[SPEC]**
+
 1. **Active Record** - Rejected: mixes persistence with domain models; harder to test and optimize
 2. **Direct SQLAlchemy in services** - Rejected: duplicates query logic; makes testing difficult
 3. **Unit of Work pattern** - Deferred: current repository pattern sufficient; Unit of Work could be added for complex multi-repository transactions
@@ -45,6 +47,7 @@ Services depend on AsyncPersistenceLayer or specific repositories via Applicatio
 ## 5. Consequences
 
 **[SPEC]**
+
 - **Positive**: Clear separation of data access; testable services via repository mocks; atomic operations prevent race conditions; async-first design
 - **Negative**: Some repositories use `asyncio.to_thread()` wrappers (ContainerRepository, ItemRepository) for sync legacy code; full async migration planned
 - **Neutral**: Repository interfaces could be more explicit (protocols); current implementation relies on concrete classes
@@ -52,6 +55,7 @@ Services depend on AsyncPersistenceLayer or specific repositories via Applicatio
 ## 6. Related ADRs
 
 **[SPEC]**
+
 - ADR-001: Layered Architecture with Event-Driven Components
 - ADR-002: ApplicationContainer for Dependency Injection
 - ADR-006: PostgreSQL as Primary Datastore
@@ -59,12 +63,14 @@ Services depend on AsyncPersistenceLayer or specific repositories via Applicatio
 ## 7. References
 
 **[SPEC]**
+
 - [Persistence Repository Architecture](../../PERSISTENCE_REPOSITORY_ARCHITECTURE.md)
 - [Container Item Repository Async Migration Plan](../../CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md)
 
 ## 8. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

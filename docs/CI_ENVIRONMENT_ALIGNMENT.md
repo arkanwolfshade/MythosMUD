@@ -1,4 +1,5 @@
 # CI Environment Alignment
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -36,6 +37,7 @@ This led to:
 ## 3. Solution
 
 **[SPEC]**
+
 ### 1. Shared Dependency Installation Script
 
 Created `scripts/install_ci_dependencies.sh` that:
@@ -126,6 +128,7 @@ test-ci:
 ## 4. How It Works
 
 **[SPEC]**
+
 ### Venv Detection Priority
 
 `scripts/run_test_ci.py` checks for venvs in this order:
@@ -152,6 +155,7 @@ All environments verify pytest installation by:
 ## 5. Benefits
 
 **[SPEC]**
+
 1. **Consistency**: All environments use the same venv name, dependencies, and installation method
 2. **Reproducibility**: Local `make test-ci` now matches CI behavior
 3. **Maintainability**: Single source of truth for dependency installation
@@ -160,6 +164,7 @@ All environments verify pytest installation by:
 ## 6. Usage
 
 **[NOTE]**
+
 ### Local Development
 
 ```bash
@@ -183,6 +188,7 @@ The workflow automatically uses the shared script, no changes needed.
 ## 7. Future Improvements
 
 **[SPEC]**
+
 1. Consider using `uv sync` instead of `uv pip install` for better dependency resolution
 2. Add dependency version pinning to ensure exact version matches
 3. Consider using `uv`'s project environment feature when it's more stable
@@ -190,6 +196,7 @@ The workflow automatically uses the shared script, no changes needed.
 ## 8. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

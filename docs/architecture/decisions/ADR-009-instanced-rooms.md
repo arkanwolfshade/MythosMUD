@@ -1,4 +1,5 @@
 # ADR-009: Instanced Rooms for Tutorial and Future Content
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -29,6 +30,7 @@ Combat and death should be disabled in tutorial instances.
 ## 3. Decision
 
 **[NOTE]**
+
 1. **Room templates**: Use existing room schema with `attributes.is_instanced`,
    `instance_template_id`, `instance_exit_room_id`, `no_combat`, and `no_death`.
 
@@ -51,6 +53,7 @@ Combat and death should be disabled in tutorial instances.
 ## 4. Alternatives Considered
 
 **[NOTE]**
+
 - **Separate tutorial world**: Rejected; reusing room definitions and world loader keeps
   complexity lower.
 - **Database-backed instances**: Rejected; in-memory instances suffice for session-scoped
@@ -61,6 +64,7 @@ Combat and death should be disabled in tutorial instances.
 ## 5. Consequences
 
 **[SPEC]**
+
 - **Positive**: Tutorial is isolated; reconnect behavior is predictable; room attributes
   support future instanced zones (dungeons, group content).
 - **Negative**: Instances are lost on server restart; players with `tutorial_instance_id`
@@ -70,6 +74,7 @@ Combat and death should be disabled in tutorial instances.
 ## 6. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

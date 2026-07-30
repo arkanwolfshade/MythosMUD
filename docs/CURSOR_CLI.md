@@ -1,4 +1,5 @@
 # Cursor CLI Documentation
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -24,6 +25,7 @@ Cursor CLI lets you interact with AI agents directly from your terminal to write
 ## 3. Installation
 
 **[NOTE]**
+
 ### Windows PowerShell
 
 ```powershell
@@ -53,6 +55,7 @@ x64
 ## 4. Core Commands
 
 **[NOTE]**
+
 ### Interactive Mode
 
 Start a conversational session with the agent:
@@ -144,6 +147,7 @@ Test failure remediation:
 ## 7. Common Options
 
 **[NOTE]**
+
 ### Model Selection
 
 ```powershell
@@ -195,6 +199,7 @@ Pick up your Cloud Agent tasks on web or mobile at [cursor.com/agents](https://c
 ## 10. Use Cases
 
 **[NOTE]**
+
 ### Code Writing/Review
 
 ```powershell
@@ -230,6 +235,7 @@ cursor agent -p "review these changes for security issues" --output-format text 
 ## 11. Integration with Project Workflows
 
 **[NOTE]**
+
 ### Test Failure Remediation
 
 ```powershell
@@ -251,6 +257,7 @@ cursor agent -p "review these changes for security issues" --output-format text 
 ## 12. Best Practices
 
 **[SPEC]**
+
 ### Interactive vs Non-Interactive
 
 - **Interactive**: Use for exploratory work, complex refactoring, learning
@@ -270,6 +277,7 @@ cursor agent -p "review these changes for security issues" --output-format text 
 ## 13. Troubleshooting
 
 **[NOTE]**
+
 ### CLI Not Found
 
 ```powershell
@@ -303,6 +311,7 @@ cursor agent -p "your prompt"
 ## 14. References
 
 **[SPEC]**
+
 - [Cursor CLI Documentation](https://cursor.com/docs/cli/overview)
 - [Cursor CLI Reference](https://docs.cursor.com/en/cli/reference/parameters)
 - Project scripts: `scripts/cursor-cli-*.ps1`
@@ -311,6 +320,7 @@ cursor agent -p "your prompt"
 ## 15. Notes
 
 **[SPEC]**
+
 - The CLI is currently in beta and should only be used in trusted environments
 - CLI usage consumes API credits based on your Cursor plan
 - Non-interactive mode is best for automation and CI/CD
@@ -319,6 +329,7 @@ cursor agent -p "your prompt"
 ## 16. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

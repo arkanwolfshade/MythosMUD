@@ -29,6 +29,7 @@ The former root greenfield notes were archived at
 ## 2. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | HADS pointer after TESTING consolidation |

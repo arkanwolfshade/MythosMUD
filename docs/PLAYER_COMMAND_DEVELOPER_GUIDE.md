@@ -1,4 +1,5 @@
 # 🐙 MythosMUD Player Command Developer's Guide
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -21,17 +22,18 @@ Read `[NOTE]` only if additional context is needed.
 ## 2. Table of Contents
 
 **[SPEC]**
-1. [Introduction](#introduction)
-2. [Command System Overview](#command-system-overview)
-3. [Quick Start: Your First Command](#quick-start-your-first-command)
-4. [Command Anatomy](#command-anatomy)
-5. [Development Workflow](#development-workflow)
-6. [Testing Your Commands](#testing-your-commands)
-7. [Common Patterns](#common-patterns)
-8. [Security Considerations](#security-considerations)
-9. [AI-Assisted Development](#ai-assisted-development)
-10. [Troubleshooting](#troubleshooting)
-11. [Reference Documents](#reference-documents)
+
+1. [Introduction](#3-introduction)
+2. [Command System Overview](#4-command-system-overview)
+3. [Quick Start: Your First Command](#5-quick-start-your-first-command)
+4. [Command Anatomy](#6-command-anatomy)
+5. [Development Workflow](#7-development-workflow)
+6. [Testing Your Commands](#8-testing-your-commands)
+7. [Common Patterns](#9-common-patterns)
+8. [Security Considerations](#10-security-considerations)
+9. [AI-Assisted Development](#11-ai-assisted-development)
+10. [Troubleshooting](#12-troubleshooting)
+11. [Reference Documents](#13-reference-documents)
 
 ---
 
@@ -443,6 +445,7 @@ if command == "your_command":
 ## 7. Development Workflow
 
 **[NOTE]**
+
 ### 1. Plan Your Command
 
 Before writing code, ask yourself:
@@ -512,6 +515,7 @@ make security
 ## 8. Testing Your Commands
 
 **[NOTE]**
+
 ### Test Structure
 
 Every command should have comprehensive tests covering:
@@ -586,6 +590,7 @@ def test_your_command_validation(self):
 ## 9. Common Patterns
 
 **[NOTE]**
+
 ### 1. Room-Based Commands
 
 Commands that affect the current room:
@@ -667,6 +672,7 @@ def validate_parameter(cls, v):
 ## 10. Security Considerations
 
 **[NOTE]**
+
 ### 1. Input Validation
 
 Always validate user input:
@@ -736,6 +742,7 @@ logger.info(
 ## 11. AI-Assisted Development
 
 **[SPEC]**
+
 ### Working with AI Tools
 
 When using AI to help implement commands:
@@ -780,6 +787,7 @@ Can you help me implement this command following the project's patterns?
 ## 12. Troubleshooting
 
 **[SPEC]**
+
 ### Common Issues
 
 #### 1. Command Not Found
@@ -866,6 +874,7 @@ corrections as you discover them.*
 ## 15. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

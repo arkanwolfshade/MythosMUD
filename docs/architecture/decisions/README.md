@@ -1,4 +1,5 @@
 # Architecture Decision Records (ADRs)
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -30,6 +31,7 @@ Each ADR follows this structure:
 ## 3. Index
 
 **[SPEC]**
+
 | ADR                                                              | Title                                                | Status   | Date       |
 | ---------------------------------------------------------------- | ---------------------------------------------------- | -------- | ---------- |
 | [ADR-001](ADR-001-layered-architecture-event-driven.md)          | Layered Architecture with Event-Driven Components    | Accepted | 2026-02-02 |
@@ -53,6 +55,7 @@ Each ADR follows this structure:
 ## 4. Related Documentation
 
 **[SPEC]**
+
 - [Architecture Review Plan](../../.cursor/plans/architecture_review_plan_7bcbc812.plan.md)
 - [Bounded Contexts and Service Boundaries](../../BOUNDED_CONTEXTS_AND_SERVICE_BOUNDARIES.md)
 - [ApplicationContainer Analysis](../../APPLICATION_CONTAINER_ANALYSIS.md)
@@ -63,6 +66,7 @@ Each ADR follows this structure:
 ## 5. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

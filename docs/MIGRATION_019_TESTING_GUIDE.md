@@ -1,4 +1,5 @@
 # Migration 019 Testing Guide
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -25,6 +26,7 @@ This guide provides step-by-step instructions for testing Migration 019 before a
 ## 3. Prerequisites
 
 **[SPEC]**
+
 1. **PostgreSQL 10+** (required for `generated always as identity`)
 2. **Database backup** (always backup before migrations)
 3. **Test database** (use `mythos_dev` or `mythos_unit` for testing)
@@ -33,6 +35,7 @@ This guide provides step-by-step instructions for testing Migration 019 before a
 ## 4. Testing Steps
 
 **[NOTE]**
+
 ### Step 1: Backup Database
 
 **CRITICAL:** Always backup before running migrations.
@@ -361,6 +364,7 @@ The migration converts columns to identity, which cannot be easily reversed. If 
 ## 6. Troubleshooting
 
 **[NOTE]**
+
 ### Issue: "function convert_serial_to_identity does not exist"
 
 **Solution:** The function is created at the start of the migration. Ensure you're running the complete migration file.
@@ -416,6 +420,7 @@ Before applying to production:
 ## 10. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

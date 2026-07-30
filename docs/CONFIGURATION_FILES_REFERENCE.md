@@ -1,4 +1,5 @@
 # Configuration Files Reference
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -48,6 +49,7 @@ MythosMUD uses **paired configuration files** for each environment:
 ## 2. Setup Instructions
 
 **[NOTE]**
+
 ### 1. Local Development
 
 ```powershell
@@ -138,6 +140,7 @@ cp env.production.example .env.production
 ## 3. Complete File Matrix
 
 **[SPEC]**
+
 | File Name                       | Location     | Committed? | Created By | Purpose                            |
 | ------------------------------- | ------------ | ---------- | ---------- | ---------------------------------- |
 | `server_config.local.yaml`      | `server/`    | ✅ Yes     | Git        | Local dev behavior                 |
@@ -165,6 +168,7 @@ For each environment, configuration is loaded in this order (highest to lowest p
 ## 5. Quick Reference
 
 **[NOTE]**
+
 ### To Start Server in Different Modes
 
 ```powershell
@@ -228,6 +232,7 @@ The architecture is now complete and consistent!
 ## 7. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

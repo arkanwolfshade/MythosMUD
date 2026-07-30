@@ -1,4 +1,5 @@
 # Debugging Mid-Run Drops (linkdead / has left the game)
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -20,6 +21,7 @@ or disconnected mid-test. **These are bugs to debug**, not flakiness to mask wit
 ## 2. Disconnect causes and what to grep for
 
 **[SPEC]**
+
 | `disconnect_reason`      | Meaning                                                                                                                                         | Where                                      |
 | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
 | `connection_timeout`     | Connection age > `max_connection_age`. Default 5 min; **30 min** when `LOGGING_ENVIRONMENT` is `local` or `e2e_test`.                           | `connection_cleaner.cleanup_orphaned_data` |
@@ -30,6 +32,7 @@ or disconnected mid-test. **These are bugs to debug**, not flakiness to mask wit
 ## 3. Investigation steps
 
 **[SPEC]**
+
 ### Step 1: Reproduce and capture server logs
 
 - Run e2e (`make test-playwright`) or the failing multiplayer scenario.
@@ -103,11 +106,13 @@ The **client** closes the WebSocket with code 1001 (going away). Both connection
 ## 5. References
 
 **[SPEC]**
+
 - **GAME_BUG_INVESTIGATION_PLAYBOOK.mdc**: Use for full investigation methodology; this doc focuses on mid-run drops only.
 
 ## 6. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

@@ -1,4 +1,5 @@
 # GitHub Actions Runner Parity Container
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -22,6 +23,7 @@ Human reader: replicate the default `ubuntu-latest` (Ubuntu 24.04) runner with o
 ## 2. Build Instructions
 
 **[SPEC]**
+
 ```bash
 docker build -t mythosmud-gha-runner -f Dockerfile.github-runner .
 ```
@@ -29,6 +31,7 @@ docker build -t mythosmud-gha-runner -f Dockerfile.github-runner .
 ## 3. Usage Patterns
 
 **[NOTE]**
+
 ### Interactive debugging
 
   ```bash
@@ -70,6 +73,7 @@ Python tooling: `.venv` created via `uv venv`; `uv pip list` reports MythosMUD p
 ## 5. Security and Secrets Management
 
 **[NOTE]**
+
 ### Local Development (Default Behavior)
 
 The Dockerfile includes test/CI-only default values for secrets. These are safe for local development but **must never
@@ -175,6 +179,7 @@ Copy `.act.secrets.example` to `.act.secrets` and populate required tokens (e.g.
 ## 8. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

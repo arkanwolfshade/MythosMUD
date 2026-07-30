@@ -1,4 +1,5 @@
 # ADR-014: Circuit Breaker + Dead Letter Queue for NATS Error Boundaries
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -54,6 +55,7 @@ The NATS message handler had broad exception catching without recovery mechanism
 ## 4. Considered Options
 
 **[SPEC]**
+
 ### Option 1: Circuit Breaker + DLQ + Retry (Custom Implementation)
 
 **Pros**:
@@ -126,6 +128,7 @@ The NATS message handler had broad exception catching without recovery mechanism
 ## 6. Implementation Details
 
 **[NOTE]**
+
 ### 1. Retry Handler with Exponential Backoff
 
 ```python
@@ -200,6 +203,7 @@ class NATSMessageHandler:
 ## 7. Consequences
 
 **[SPEC]**
+
 ### Positive
 
 - **Zero Message Loss**: DLQ ensures all messages are preserved
@@ -226,6 +230,7 @@ class NATSMessageHandler:
 ## 8. Validation
 
 **[SPEC]**
+
 - All 60 NATS error boundary tests passing (100%)
 - Retry handler: 13/13 tests passing
 - Dead Letter Queue: 13/13 tests passing
@@ -239,6 +244,7 @@ class NATSMessageHandler:
 ## 9. Operational Considerations
 
 **[SPEC]**
+
 ### Monitoring
 
 Monitor these metrics for health:
@@ -266,6 +272,7 @@ Alert on:
 ## 10. References
 
 **[SPEC]**
+
 - [Martin Fowler - Circuit Breaker](https://martinfowler.com/bliki/CircuitBreaker.html)
 - [AWS - Dead Letter Queues](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dead-letter-queues.html)
 - Implementation:
@@ -281,6 +288,7 @@ Alert on:
 ## 11. Related ADRs
 
 **[SPEC]**
+
 - [ADR-011](ADR-011-xstate-frontend-fsm.md): XState for Frontend Connection FSM
 - [ADR-012](ADR-012-python-statemachine-backend.md): python-statemachine for Backend Connection FSM
 - [ADR-013](ADR-013-pydantic-configuration.md): Pydantic Configuration Management
@@ -288,6 +296,7 @@ Alert on:
 ## 12. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

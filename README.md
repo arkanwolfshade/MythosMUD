@@ -1,4 +1,5 @@
 # 🐙 MythosMUD
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -30,31 +31,31 @@ Badge](https://app.codacy.com/project/badge/Grade/0c361cf70a234b86b1b0f058ffd005
 [🐙 MythosMUD](#-mythosmud)
 
 - [🐙 MythosMUD](#-mythosmud)
-  - [Status Badges](#status-badges)
-  - [Table of Contents](#table-of-contents)
-  - [Overview](#overview)
-  - [Current Status](#current-status)
+  - [Status Badges](#2-status-badges)
+  - [Table of Contents](#3-table-of-contents)
+  - [Overview](#4-overview)
+  - [Current Status](#5-current-status)
     - [✅ Completed Systems](#-completed-systems)
     - [🔄 In Progress](#-in-progress)
     - [📋 Planned Features](#-planned-features)
-  - [Features](#features)
+  - [Features](#6-features)
     - [Core Gameplay](#core-gameplay)
     - [Technical Features](#technical-features)
     - [Security \& Privacy](#security--privacy)
-  - [Getting Started](#getting-started)
+  - [Getting Started](#7-getting-started)
     - [Quickstart](#quickstart)
-  - [Project Structure](#project-structure)
-  - [Development](#development)
+  - [Project Structure](#8-project-structure)
+  - [Development](#9-development)
     - [Utility Scripts](#utility-scripts)
     - [Development Tools](#development-tools)
-  - [Documentation](#documentation)
+  - [Documentation](#10-documentation)
     - [Core Documentation](#core-documentation)
     - [Development Guides](#development-guides)
     - [Testing Documentation](#testing-documentation)
     - [Architecture \& Technical Specs](#architecture--technical-specs)
     - [Logging \& Monitoring](#logging--monitoring)
     - [Security \& Error Handling](#security--error-handling)
-  - [License](#license)
+  - [License](#11-license)
 
 ---
 
@@ -143,6 +144,7 @@ components, casting times, and integration with combat and lucidity systems
 ## 6. Features
 
 **[SPEC]**
+
 ### Core Gameplay
 
 **Real-time Multiplayer** - Multiple players can interact simultaneously (100ms server tick rate for responsive
@@ -298,6 +300,7 @@ See [DEVELOPMENT.md](docs/DEVELOPMENT.md) for full setup instructions.
 ## 8. Project Structure
 
 **[NOTE]**
+
 ```text
 MythosMUD/
 ├── client/                    # React 19 + TypeScript frontend (Vite 7)
@@ -402,6 +405,7 @@ MythosMUD/
 ## 9. Development
 
 **[SPEC]**
+
 ### Utility Scripts
 
 The `scripts/` directory contains PowerShell and Python utility scripts for managing the development environment:
@@ -480,6 +484,7 @@ See [scripts/README.md](scripts/README.md) for detailed documentation.
 ## 10. Documentation
 
 **[SPEC]**
+
 ### Core Documentation
 
 [Product Requirements Document (PRD)](docs/PRD.md) — Full game and technical design
@@ -535,6 +540,7 @@ See [scripts/README.md](scripts/README.md) for detailed documentation.
 ## 12. Changelog
 
 **[SPEC]**
-| Version | Date | Change |
-| --- | --- | --- |
-| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
+
+| Version | Date       | Change                             |
+| ------- | ---------- | ---------------------------------- |
+| 1.0.0   | 2026-07-30 | Initial HADS structural conversion |

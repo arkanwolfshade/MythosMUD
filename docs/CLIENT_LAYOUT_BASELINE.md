@@ -1,4 +1,5 @@
 # Client Layout Baseline
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -34,6 +35,7 @@ The game client uses a three-column layout with five draggable panels:
 ## 3. Panel Configuration
 
 **[SPEC]**
+
 ### Chat Panel
 
 **Position:** `x: 50, y: 80`
@@ -130,6 +132,7 @@ Z-index values ensure proper layering when panels overlap:
 ## 6. Key Implementation Details
 
 **[SPEC]**
+
 ### Positioning System
 
 All panels use **absolute positioning** with explicit `position: 'absolute'` in inline styles
@@ -182,6 +185,7 @@ Header height: ~60px (panels start at `y: 80` to account for header)
 ## 9. Notes for Future Development
 
 **[SPEC]**
+
 1. **Position Persistence:** Currently disabled (localStorage removed). If re-implementing, ensure validation prevents
 
    off-screen positions.
@@ -219,6 +223,7 @@ The layout matches the wireframe specification:
 ## 11. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

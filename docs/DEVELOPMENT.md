@@ -1,4 +1,5 @@
 # =���n+� MythosMUD G�� Development Environment Setup
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -25,6 +26,7 @@ privacy, and COPPA compliance.
 ## 2. =��� Security & Privacy First
 
 **[SPEC]**
+
 ### Critical Requirements
 
 **COPPA Compliance**: This project serves minors and must comply with Children's Online Privacy Protection Rule
@@ -55,6 +57,7 @@ privacy, and COPPA compliance.
 ## 3. Prerequisites
 
 **[SPEC]**
+
 ### Git
 
 **Python 3.12+** (managed via [pyenv-win](https://github.com/pyenv-win/pyenv-win) recommended)
@@ -72,6 +75,7 @@ privacy, and COPPA compliance.
 ## 4. Install uv
 
 **[NOTE]**
+
 ### On macOS/Linux
 
 ```sh
@@ -95,6 +99,7 @@ uv --version
 ## 5. Clone the Repository
 
 **[NOTE]**
+
 ```sh
 # Option 1: Clone with submodules in one command
 
@@ -118,6 +123,7 @@ above.
 ## 6. Set Up the Python Server
 
 **[NOTE]**
+
 ### a. Set Python Version (if using pyenv-win)
 
 ```sh
@@ -192,6 +198,7 @@ The server should now be running at [http://localhost:54768](http://localhost:54
 ## 7. Set Up the React Client
 
 **[NOTE]**
+
 ### a. Install Dependencies
 
 ```sh
@@ -330,6 +337,7 @@ See the multi-character implementation plan for complete details.
 ## 9. Manual Commands
 
 **[NOTE]**
+
 ### **Python Development:**
 
 ```sh
@@ -392,6 +400,7 @@ npm run build
 ## 10. =��� AI Agent Development Guidelines
 
 **[SPEC]**
+
 ### **Development Workflow**
 
 1. **Start Session**: Review current tasks in `TASKS.local.md`
@@ -462,6 +471,7 @@ When multiple tasks are pending, prioritize in this order:
 ## 12. Troubleshooting
 
 **[NOTE]**
+
 ### **uv not found:**
 
 ```sh
@@ -570,6 +580,7 @@ forces we seek to understand."*
 ## 15. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

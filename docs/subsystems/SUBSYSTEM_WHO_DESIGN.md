@@ -1,4 +1,5 @@
 # Who Subsystem Design
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -23,6 +24,7 @@ filters by last_active.
 ## 2. Architecture
 
 **[NOTE]**
+
 ```mermaid
 flowchart LR
   subgraph cmd [who_commands]
@@ -66,6 +68,7 @@ flowchart LR
 ## 3. Key design decisions
 
 **[SPEC]**
+
 - **Online = last_active within 5 minutes**: No connection_manager check; who is purely
   persistence-based. Players who disconnected but had activity in last 5 minutes still appear.
 - **Optional name filter**: command_data.target_player; if present, filter_players_by_name (partial
@@ -77,6 +80,7 @@ flowchart LR
 ## 4. Constraints
 
 **[SPEC]**
+
 - **Persistence required**: No persistence -> "Player information is not available."
 - **list_players**: Must return players with last_active, name, level, current_room_id, is_admin.
 - **last_active**: Must be comparable (datetime or ISO string); parse_last_active_datetime
@@ -85,6 +89,7 @@ flowchart LR
 ## 5. Component interactions
 
 **[NOTE]**
+
 1. **who [filter]** – Get persistence; list_players(); online_threshold = now - 5 minutes;
    filter_online_players(players, online_threshold); get_players_for_who(online_players, filter_term)
    (apply name filter if filter_term); format_who_result (sorted by name, comma-separated entries);
@@ -97,6 +102,7 @@ flowchart LR
 ## 6. Developer guide
 
 **[NOTE]**
+
 - **Changing online threshold**: In handle_who_command, timedelta(minutes=5); change to desired
   window. Consider making it configurable.
 - **Using connection-based online**: To show only connected players, inject connection_manager
@@ -110,6 +116,7 @@ flowchart LR
 ## 7. Troubleshooting
 
 **[NOTE]**
+
 - **"No players are currently online"**: All players have last_active older than 5 minutes, or
   list_players empty. Check last_active is updated on activity (e.g. commands, movement).
 - **"Unknown Location" for all**: room*id format may not have 4+ parts; check format_player*
@@ -125,11 +132,13 @@ Archived spec: [docs/archive/WHO_COMMAND_FRD.md](../archive/WHO_COMMAND_FRD.md).
 ## 8. Related docs
 
 **[SPEC]**
+
 - [COMMAND_MODELS_REFERENCE.md](../COMMAND_MODELS_REFERENCE.md)
 
 ## 9. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

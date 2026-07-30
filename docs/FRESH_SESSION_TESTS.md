@@ -1,4 +1,5 @@
 # Fresh Session Test Execution Guide
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -20,6 +21,7 @@ provides step-by-step instructions for running these tests.
 ## 2. Test Files Requiring Fresh Sessions
 
 **[SPEC]**
+
 ### Created and Ready to Run
 
 1. **`server/tests/unit/api/test_metrics.py`** (9 tests)
@@ -55,6 +57,7 @@ provides step-by-step instructions for running these tests.
 ## 3. Execution Instructions
 
 **[NOTE]**
+
 ### Option 1: Run Each Module Individually (Recommended for Development)
 
 Open a **fresh PowerShell terminal** for each test run:
@@ -141,6 +144,7 @@ uv run pytest `
 ## 4. Expected Results (When Run in Fresh Sessions)
 
 **[SPEC]**
+
 ### API Metrics (`test_metrics.py`)
 
 **Expected Tests**: 9
@@ -203,6 +207,7 @@ After running tests in fresh session:
 ## 6. Troubleshooting
 
 **[SPEC]**
+
 ### Still Getting bcrypt Errors in Fresh Terminal?
 
 **Cause**: Previous terminal may have contaminated Python cache
@@ -245,6 +250,7 @@ completely avoiding the bcrypt issue. This is the gold standard for final valida
 ## 8. Developer Workflow Recommendation
 
 **[SPEC]**
+
 1. **During Development**: Test non-bcrypt modules normally
 2. **Before Commit**: Run `make test` (uses pytest-xdist, mostly works)
 3. **Final Validation**: Run bcrypt modules in fresh terminal OR use `make test-comprehensive`
@@ -253,6 +259,7 @@ completely avoiding the bcrypt issue. This is the gold standard for final valida
 ## 9. Technical Background
 
 **[SPEC]**
+
 ### Why Fresh Sessions Are Needed
 
 bcrypt uses PyO3 (Rust ↔ Python bindings)
@@ -278,6 +285,7 @@ bcrypt's PyO3 limitation. The tests themselves are high-quality and will provide
 ## 11. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

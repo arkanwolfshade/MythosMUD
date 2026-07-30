@@ -1,4 +1,5 @@
 # ADR-012: python-statemachine for Backend Connection FSM
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -53,6 +54,7 @@ The backend NATS service had manual connection retry logic with implicit state t
 ## 4. Considered Options
 
 **[SPEC]**
+
 ### Option 1: python-statemachine
 
 **Pros**:
@@ -121,6 +123,7 @@ The backend NATS service had manual connection retry logic with implicit state t
 ## 6. Implementation Details
 
 **[NOTE]**
+
 ### State Machine Definition
 
 ```python
@@ -167,6 +170,7 @@ class NATSService:
 ## 7. Consequences
 
 **[SPEC]**
+
 ### Positive
 
 - **Explicit State Tracking**: All connection states are explicit and tracked
@@ -191,6 +195,7 @@ class NATSService:
 ## 8. Validation
 
 **[SPEC]**
+
 - All 24 backend state machine tests passing
 - No import errors
 - No linting errors
@@ -203,6 +208,7 @@ class NATSService:
 ## 9. References
 
 **[SPEC]**
+
 - [python-statemachine Documentation](https://python-statemachine.readthedocs.io/)
 - [python-statemachine GitHub](https://github.com/fgmacedo/python-statemachine)
 - Implementation: `server/realtime/connection_state_machine.py`
@@ -214,6 +220,7 @@ class NATSService:
 ## 10. Related ADRs
 
 **[SPEC]**
+
 - [ADR-011](ADR-011-xstate-frontend-fsm.md): XState for Frontend Connection FSM
 - [ADR-013](ADR-013-pydantic-configuration.md): Pydantic Configuration Management
 - [ADR-014](ADR-014-nats-error-boundaries.md): Circuit Breaker + Dead Letter Queue for NATS
@@ -221,6 +228,7 @@ class NATSService:
 ## 11. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

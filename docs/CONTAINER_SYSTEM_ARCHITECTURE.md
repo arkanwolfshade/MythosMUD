@@ -1,4 +1,5 @@
 # Container System Architecture
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -20,18 +21,20 @@ document describes the architecture, design decisions, and implementation detail
 ## 2. Table of Contents
 
 **[SPEC]**
-1. [System Architecture](#system-architecture)
-2. [Data Model](#data-model)
-3. [Service Layer](#service-layer)
-4. [Persistence Layer](#persistence-layer)
-5. [API Layer](#api-layer)
-6. [WebSocket Events](#websocket-events)
-7. [Security and Compliance](#security-and-compliance)
-8. [Lifecycle Management](#lifecycle-management)
+
+1. [System Architecture](#3-system-architecture)
+2. [Data Model](#4-data-model)
+3. [Service Layer](#5-service-layer)
+4. [Persistence Layer](#6-persistence-layer)
+5. [API Layer](#7-api-layer)
+6. [WebSocket Events](#8-websocket-events)
+7. [Security and Compliance](#9-security-and-compliance)
+8. [Lifecycle Management](#10-lifecycle-management)
 
 ## 3. System Architecture
 
 **[NOTE]**
+
 ### High-Level Architecture
 
 ```
@@ -101,6 +104,7 @@ EnvironmentalContainerLoader
 ## 4. Data Model
 
 **[NOTE]**
+
 ### ContainerComponent (Pydantic Model)
 
 The `ContainerComponent` model serves as the data contract for all container types:
@@ -169,6 +173,7 @@ CREATE INDEX idx_containers_owner ON containers(owner_id);
 ## 5. Service Layer
 
 **[SPEC]**
+
 ### ContainerService
 
 Orchestrates container operations with mutation guards and access control.
@@ -241,6 +246,7 @@ Loads environmental container definitions from room JSON and migrates to Postgre
 ## 6. Persistence Layer
 
 **[SPEC]**
+
 ### Container Persistence Functions
 
 Located in `server/persistence/container_persistence.py`:
@@ -261,6 +267,7 @@ thread-safe access and proper connection management.
 ## 7. API Layer
 
 **[SPEC]**
+
 ### Endpoints
 
 All endpoints are in `server/api/containers.py`:
@@ -376,6 +383,7 @@ Emitted when a corpse container decays.
 ## 9. Security and Compliance
 
 **[NOTE]**
+
 ### Audit Logging
 
 All container operations are logged to audit logs with:
@@ -428,6 +436,7 @@ Per-player rate limiting prevents abuse:
 ## 10. Lifecycle Management
 
 **[SPEC]**
+
 ### Environmental Containers
 
 1. **Definition**: Defined in room JSON with `container` block
@@ -454,6 +463,7 @@ Per-player rate limiting prevents abuse:
 ## 11. Design Decisions
 
 **[SPEC]**
+
 ### Why PostgreSQL Instead of SQLite?
 
 UUID support for player and container IDs
@@ -500,6 +510,7 @@ Weight-based capacity limits
 ## 13. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

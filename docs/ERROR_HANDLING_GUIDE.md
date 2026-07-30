@@ -1,4 +1,5 @@
 # Error Handling Guide for MythosMUD
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -27,6 +28,7 @@ for posterity and analysis.
 ## 3. Core Principles
 
 **[NOTE]**
+
 ### 1. **Enhanced Structured Logging First**
 
 All errors must be logged with the enhanced structured logging system before being raised or returned. This ensures
@@ -74,6 +76,7 @@ filters such data.
 ## 4. Error Types and Usage
 
 **[NOTE]**
+
 ### MythosMUDError (Base Class)
 
 The foundation of our error hierarchy. All custom errors should inherit from this class.
@@ -213,6 +216,7 @@ async def create_player(
 ## 5. Error Context Best Practices
 
 **[NOTE]**
+
 ### Creating Error Context
 
 Always provide meaningful context when creating errors:
@@ -274,6 +278,7 @@ metadata = {
 ## 6. Logging Patterns
 
 **[NOTE]**
+
 ### Using log_and_raise
 
 The `log_and_raise` utility is the preferred way to log and raise errors:
@@ -322,6 +327,7 @@ raise error
 ## 7. Common Patterns
 
 **[NOTE]**
+
 ### Input Validation
 
 ```python
@@ -443,6 +449,7 @@ async def move_player(
 ## 8. Testing Error Handling
 
 **[NOTE]**
+
 ### Unit Tests
 
 ```python
@@ -491,6 +498,7 @@ def test_create_player_duplicate_name():
 ## 9. Error Analysis and Monitoring
 
 **[NOTE]**
+
 ### Using Log Analysis Tools
 
 Our log analysis tools help identify patterns and trends in errors:
@@ -529,6 +537,7 @@ Our system automatically categorizes errors:
 ## 10. Anti-Patterns to Avoid
 
 **[NOTE]**
+
 ### ❌ Don't Do This
 
 ```python
@@ -609,6 +618,7 @@ def risky_operation():
 ## 11. Security Considerations
 
 **[NOTE]**
+
 ### Sensitive Data Protection
 
 Our error logging system automatically filters sensitive data, but you should still be mindful:
@@ -659,6 +669,7 @@ log_and_raise(
 ## 12. Performance Considerations
 
 **[NOTE]**
+
 ### Error Logging Overhead
 
 Our error logging system is designed for minimal performance impact:
@@ -709,6 +720,7 @@ def process_multiple_operations(operations):
 ## 13. Troubleshooting
 
 **[SPEC]**
+
 ### Common Issues
 
 1. **Missing Context**: Always provide meaningful context
@@ -727,6 +739,7 @@ def process_multiple_operations(operations):
 ## 14. Enhanced Logging Best Practices for Error Handling
 
 **[NOTE]**
+
 ### **CRITICAL: Enhanced Logging Requirements for Error Handling**
 
 All error handling MUST use the enhanced logging system for proper observability and debugging.
@@ -861,6 +874,7 @@ consult the restricted archives or contact the system administrators.*
 ## 16. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

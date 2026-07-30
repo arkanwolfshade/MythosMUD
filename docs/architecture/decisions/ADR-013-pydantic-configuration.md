@@ -1,4 +1,5 @@
 # ADR-013: Pydantic BaseSettings for Configuration Management
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -54,6 +55,7 @@ The configuration system used a 395-line custom YAML loader (`config_loader.py`)
 ## 4. Considered Options
 
 **[SPEC]**
+
 ### Option 1: Pydantic BaseSettings
 
 **Pros**:
@@ -125,6 +127,7 @@ The configuration system used a 395-line custom YAML loader (`config_loader.py`)
 ## 6. Implementation Details
 
 **[NOTE]**
+
 ### Configuration Models
 
 ```python
@@ -175,6 +178,7 @@ def get_config() -> AppConfig:
 ## 7. Consequences
 
 **[SPEC]**
+
 ### Positive
 
 - **Type-Safe Access**: `config.server.port` instead of `config.get("server", {}).get("port")`
@@ -200,6 +204,7 @@ def get_config() -> AppConfig:
 ## 8. Validation
 
 **[SPEC]**
+
 - All configuration models validated successfully
 - All environment files updated and documented
 - 50+ files migrated to new configuration system
@@ -212,6 +217,7 @@ def get_config() -> AppConfig:
 ## 9. References
 
 **[SPEC]**
+
 - [Pydantic Settings Documentation](https://docs.pydantic.dev/latest/concepts/pydantic_settings/)
 - [12-Factor App - Config](https://12factor.net/config)
 - Implementation: `server/config/models.py`
@@ -223,6 +229,7 @@ def get_config() -> AppConfig:
 ## 10. Related ADRs
 
 **[SPEC]**
+
 - [ADR-011](ADR-011-xstate-frontend-fsm.md): XState for Frontend Connection FSM
 - [ADR-012](ADR-012-python-statemachine-backend.md): python-statemachine for Backend Connection FSM
 - [ADR-014](ADR-014-nats-error-boundaries.md): Circuit Breaker + Dead Letter Queue for NATS
@@ -230,6 +237,7 @@ def get_config() -> AppConfig:
 ## 11. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

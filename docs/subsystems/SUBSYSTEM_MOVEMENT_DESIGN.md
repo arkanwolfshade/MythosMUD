@@ -1,4 +1,5 @@
 # Movement Subsystem Design
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -22,6 +23,7 @@ Movement is foundational: follow, NPC population, and room visibility all depend
 ## 2. Architecture
 
 **[NOTE]**
+
 ```mermaid
 flowchart LR
   subgraph entry [Entry]
@@ -80,6 +82,7 @@ flowchart LR
 ## 3. Key design decisions
 
 **[NOTE]**
+
 - **Server authority**: Only the server decides if a move succeeds; client sends direction only.
 - **Atomic move**: Under a single lock: validate → remove from source room → add to destination room →
   persist. No intermediate state where the player is in two rooms or none.
@@ -97,6 +100,7 @@ flowchart LR
 ## 4. Constraints
 
 **[SPEC]**
+
 - **Same room**: Moving to the same room is rejected (validation returns false).
 - **Player in source room**: Player must be in `from_room` (in-memory or DB reconciliation via
   `_validate_player_room_membership`).
@@ -109,6 +113,7 @@ flowchart LR
 ## 5. Component interactions
 
 **[NOTE]**
+
 1. **go command** → Gets app container (persistence, connection_manager, movement_service). Validates
    posture (standing), interrupts rest if needed, resolves exit from current room, then calls
    `movement_service.move_player(player_id, from_room_id, to_room_id)`.
@@ -125,6 +130,7 @@ from_room_id=...)`, `save_player` (current_room_id), optional tutorial exit and 
 ## 6. Developer guide
 
 **[NOTE]**
+
 - **Adding a new movement blocker**: Extend `_validate_movement()` in MovementService (e.g. new check
   similar to `_check_combat_state` or `_check_player_posture`). Keep validation synchronous where
   possible to avoid holding the lock across awaits except for existing async steps.
@@ -140,6 +146,7 @@ from_room_id=...)`, `save_player` (current_room_id), optional tutorial exit and 
 ## 7. Troubleshooting
 
 **[NOTE]**
+
 - **“You can't go that way”**: Exit missing for direction, or target room not found (check room IDs
   and instance remapping). Logs: `"No valid exit"`, `"Exit validation failed - room ID mismatch"`,
   `"target room not found"`.
@@ -162,6 +169,7 @@ See also [GAME_BUG_INVESTIGATION_PLAYBOOK](../../.cursor/rules/GAME_BUG_INVESTIG
 ## 8. Related docs
 
 **[SPEC]**
+
 - [COMMAND_MODELS_REFERENCE.md](../COMMAND_MODELS_REFERENCE.md)
 - [EVENT_OWNERSHIP_MATRIX.md](../EVENT_OWNERSHIP_MATRIX.md)
 - [NATS_SUBJECT_PATTERNS.md](../NATS_SUBJECT_PATTERNS.md)
@@ -170,6 +178,7 @@ See also [GAME_BUG_INVESTIGATION_PLAYBOOK](../../.cursor/rules/GAME_BUG_INVESTIG
 ## 9. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

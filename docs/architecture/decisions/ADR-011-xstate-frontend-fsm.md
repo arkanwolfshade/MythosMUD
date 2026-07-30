@@ -1,4 +1,5 @@
 # ADR-011: XState for Frontend Connection State Machine
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -53,6 +54,7 @@ The frontend connection management in `useGameConnection.ts` had grown to 750+ l
 ## 4. Considered Options
 
 **[SPEC]**
+
 ### Option 1: XState
 
 **Pros**:
@@ -125,6 +127,7 @@ The frontend connection management in `useGameConnection.ts` had grown to 750+ l
 ## 6. Implementation Details
 
 **[NOTE]**
+
 ### State Machine Definition
 
 ```typescript
@@ -185,6 +188,7 @@ export function useConnectionState(options?: {
 ## 7. Consequences
 
 **[SPEC]**
+
 ### Positive
 
 - **Eliminated Implicit State Bugs**: Impossible states are now prevented by the FSM
@@ -210,6 +214,7 @@ export function useConnectionState(options?: {
 ## 8. Validation
 
 **[SPEC]**
+
 - All 13 frontend state machine tests passing
 - No TypeScript compilation errors
 - No linting errors
@@ -221,6 +226,7 @@ export function useConnectionState(options?: {
 ## 9. References
 
 **[SPEC]**
+
 - [XState Documentation](https://xstate.js.org/)
 - [XState Inspector](https://stately.ai/docs/inspector)
 - [Martin Fowler on State Machines](https://martinfowler.com/articles/state-machine.html)
@@ -232,6 +238,7 @@ export function useConnectionState(options?: {
 ## 10. Related ADRs
 
 **[SPEC]**
+
 - [ADR-012](ADR-012-python-statemachine-backend.md): python-statemachine for Backend Connection FSM
 - [ADR-013](ADR-013-pydantic-configuration.md): Pydantic Configuration Management
 - [ADR-014](ADR-014-nats-error-boundaries.md): Circuit Breaker + Dead Letter Queue for NATS
@@ -239,6 +246,7 @@ export function useConnectionState(options?: {
 ## 11. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

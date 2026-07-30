@@ -25,6 +25,7 @@ Former quick-start notes archived at `archive/QUICK_START_E2E_TESTS.md`.
 ## 2. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | HADS pointer after E2E consolidation |

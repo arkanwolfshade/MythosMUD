@@ -1,4 +1,5 @@
 # 🐙 MythosMUD Command Testing Guide
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -22,18 +23,19 @@ Thurston, Miskatonic University
 ## 2. Table of Contents
 
 **[SPEC]**
-1. [Overview](#overview)
-2. [Testing Philosophy](#testing-philosophy)
-3. [Test Structure](#test-structure)
-4. [Unit Testing](#unit-testing)
-5. [Integration Testing](#integration-testing)
-6. [Mocking Strategies](#mocking-strategies)
-7. [Test Data Management](#test-data-management)
-8. [Security Testing](#security-testing)
-9. [Performance Testing](#performance-testing)
-10. [Test Coverage](#test-coverage)
-11. [Best Practices](#best-practices)
-12. [Common Testing Patterns](#common-testing-patterns)
+
+1. [Overview](#3-overview)
+2. [Testing Philosophy](#4-testing-philosophy)
+3. [Test Structure](#5-test-structure)
+4. [Unit Testing](#6-unit-testing)
+5. [Integration Testing](#7-integration-testing)
+6. [Mocking Strategies](#8-mocking-strategies)
+7. [Test Data Management](#9-test-data-management)
+8. [Security Testing](#10-security-testing)
+9. [Performance Testing](#11-performance-testing)
+10. [Test Coverage](#12-test-coverage)
+11. [Best Practices](#13-best-practices)
+12. [Common Testing Patterns](#14-common-testing-patterns)
 
 ---
 
@@ -72,6 +74,7 @@ strategies for testing command handlers, models, and integration points.
 ## 4. Testing Philosophy
 
 **[SPEC]**
+
 ### Test-Driven Development (TDD)
 
 1. **Write Tests First**: Define expected behavior before implementation
@@ -96,6 +99,7 @@ strategies for testing command handlers, models, and integration points.
 ## 5. Test Structure
 
 **[NOTE]**
+
 ### File Organization
 
 ```
@@ -149,6 +153,7 @@ class TestCommandName:
 ## 6. Unit Testing
 
 **[NOTE]**
+
 ### Command Handler Testing
 
 #### Basic Handler Test
@@ -357,6 +362,7 @@ def test_command_parser_basic():
 ## 7. Integration Testing
 
 **[NOTE]**
+
 ### End-to-End Command Testing
 
 ```python
@@ -473,6 +479,7 @@ async def test_command_event_integration():
 ## 8. Mocking Strategies
 
 **[NOTE]**
+
 ### Mock Setup Patterns
 
 #### Standard Mock Setup
@@ -593,6 +600,7 @@ async def test_command_mock_verification():
 ## 9. Test Data Management
 
 **[NOTE]**
+
 ### Test Data Factories
 
 ```python
@@ -657,6 +665,7 @@ def create_test_command_string(command, *args):
 ## 10. Security Testing
 
 **[NOTE]**
+
 ### Input Validation Testing
 
 ```python
@@ -819,6 +828,7 @@ async def test_command_rate_limiting():
 ## 11. Performance Testing
 
 **[NOTE]**
+
 ### Response Time Testing
 
 ```python
@@ -899,6 +909,7 @@ async def test_command_memory_usage():
 ## 12. Test Coverage
 
 **[NOTE]**
+
 ### Coverage Requirements
 
 ```python
@@ -949,6 +960,7 @@ def test_command_coverage():
 ## 13. Best Practices
 
 **[NOTE]**
+
 ### 1. Test Organization
 
 ```python
@@ -1091,6 +1103,7 @@ async def test_whisper_2():
 ## 14. Common Testing Patterns
 
 **[NOTE]**
+
 ### 1. Parameterized Testing
 
 ```python
@@ -1203,6 +1216,7 @@ async def test_command_async_operations():
 ## 15. Enhanced Logging in Command Tests
 
 **[NOTE]**
+
 ### **CRITICAL: Enhanced Logging Requirements**
 
 All command tests MUST use the enhanced logging system for proper observability and debugging.
@@ -1326,6 +1340,7 @@ Remember to:
 ## 17. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

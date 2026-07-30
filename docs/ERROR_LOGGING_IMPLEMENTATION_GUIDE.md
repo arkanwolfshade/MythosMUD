@@ -1,4 +1,5 @@
 # Error Logging Implementation Guide
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -21,6 +22,7 @@ requires both theoretical understanding and practical application.
 ## 2. Core Implementation Patterns
 
 **[NOTE]**
+
 ### Pattern 1: MythosMUDError with Automatic Logging
 
 **Use Case**: Custom application errors that need structured logging
@@ -268,6 +270,7 @@ async def process_game_command(player_id: str, command: str, args: list) -> dict
 ## 3. Utility Functions Implementation
 
 **[NOTE]**
+
 ### Error Logging Utilities
 
 ```python
@@ -375,6 +378,7 @@ def wrap_third_party_exception(
 ## 4. Context Creation Helpers
 
 **[NOTE]**
+
 ### Request Context Helpers
 
 ```python
@@ -426,6 +430,7 @@ def create_api_context(
 ## 5. Testing Patterns
 
 **[NOTE]**
+
 ### Error Logging Test Utilities
 
 ```python
@@ -521,6 +526,7 @@ class TestErrorLogging(ErrorLoggingTestMixin):
 ## 6. Migration Checklist
 
 **[NOTE]**
+
 ### For Each File Being Updated
 
 1. **Import Required Modules**
@@ -601,6 +607,7 @@ except ValueError as e:
 ## 7. Best Practices
 
 **[SPEC]**
+
 ### Do's
 
 Always include relevant context in errors
@@ -638,6 +645,7 @@ posterity and analysis.*
 ## 8. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

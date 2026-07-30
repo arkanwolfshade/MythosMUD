@@ -1,4 +1,5 @@
 # Database Connection Pool Configuration
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -74,6 +75,7 @@ asyncpg_command_timeout: int = 60
 ## 5. Pool Sizing Strategy
 
 **[SPEC]**
+
 ### Production Recommendations
 
 **For Low Traffic (< 100 concurrent users)**:
@@ -127,6 +129,7 @@ DATABASE_ASYNCPG_COMMAND_TIMEOUT=60
 ## 7. Monitoring Pool Health
 
 **[SPEC]**
+
 ### Key Metrics to Track
 
 1. **Pool Exhaustion Events**
@@ -169,6 +172,7 @@ logger.setLevel(logging.DEBUG)
 ## 8. Troubleshooting Pool Exhaustion
 
 **[SPEC]**
+
 ### Symptoms
 
 `PoolAcquireTimeoutError` exceptions
@@ -219,6 +223,7 @@ logger.setLevel(logging.DEBUG)
 ## 9. Best Practices
 
 **[NOTE]**
+
 ### Do's
 
 ✅ Use connection pools for all database operations
@@ -246,6 +251,7 @@ logger.setLevel(logging.DEBUG)
 ## 10. Performance Tuning
 
 **[NOTE]**
+
 ### Connection Pool Pre-Ping
 
 SQLAlchemy's `pool_pre_ping=True` (enabled by default) checks connection health before use. This adds slight overhead
@@ -294,6 +300,7 @@ unused, wasting precious resources."*
 ## 13. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

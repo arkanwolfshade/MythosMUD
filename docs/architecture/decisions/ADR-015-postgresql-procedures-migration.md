@@ -1,4 +1,5 @@
 # ADR-015: PostgreSQL Procedures and Functions for Data Access
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -43,6 +44,7 @@ Migrate all Python–PostgreSQL data access to **stored procedures and functions
 ## 4. Alternatives Considered
 
 **[SPEC]**
+
 1. **Keep ORM + raw SQL** – Rejected: did not address scattered SQL or give a single contract at the DB boundary.
 2. **Schema-qualified names in Python** – Rejected in favour of search_path: unqualified names keep Python agnostic of schema; one connection per environment.
 3. **Alembic for procedure versioning** – Deferred: procedures are applied as part of build/test; versioned migrations for procedure changes can be added later if needed.
@@ -50,6 +52,7 @@ Migrate all Python–PostgreSQL data access to **stored procedures and functions
 ## 5. Consequences
 
 **[SPEC]**
+
 - **Positive**: Single place for query logic; procedure return shape is a clear contract; fewer round-trips where procedures aggregate data (e.g. get_rooms_with_exits); test and dev DBs get procedures via the same script; integration tests can assert procedure return shape.
 - **Negative**: Procedure definitions must be kept in sync with table schema; DB type mismatches (e.g. json vs jsonb) surface at call sites until fixed in the procedure.
 - **Neutral**: SQLAlchemy ORM mappings remain for now where used by Alembic or other tooling; `postgres_adapter.py` can be deprecated or removed once unused.
@@ -57,12 +60,14 @@ Migrate all Python–PostgreSQL data access to **stored procedures and functions
 ## 6. Related ADRs
 
 **[SPEC]**
+
 - ADR-005: Repository Pattern for Data Access
 - ADR-006: PostgreSQL as Primary Datastore
 
 ## 7. References
 
 **[SPEC]**
+
 - `db/procedures/README.md` – Apply order and usage
 - `scripts/apply_procedures.ps1` – Application script
 - `server/tests/integration/test_procedures_return_shape.py` – Return-shape tests
@@ -70,6 +75,7 @@ Migrate all Python–PostgreSQL data access to **stored procedures and functions
 ## 8. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

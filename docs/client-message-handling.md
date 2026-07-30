@@ -1,4 +1,5 @@
 # Client message handling and GameState projection
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -21,6 +22,7 @@ meters aligned. The server is authoritative; the client folds WebSocket events i
 ## 2. Data flow
 
 **[NOTE]**
+
 ```mermaid
 flowchart LR
   WS[WebSocket JSON] --> Parse[useGameConnection]
@@ -55,6 +57,7 @@ the Game Info line.
 ## 5. Troubleshooting
 
 **[SPEC]**
+
 | Symptom                                     | Likely cause                               | Where to look                                                                                        |
 | ------------------------------------------- | ------------------------------------------ | ---------------------------------------------------------------------------------------------------- |
 | Game Info shows damage but HP bar unchanged | Event had text but no player stat update   | `player_attacked` payload must include `target_current_dp` or a later `player_update` / `game_state` |
@@ -65,12 +68,14 @@ the Game Info line.
 ## 6. Tests
 
 **[SPEC]**
+
 - `client/src/components/ui-v2/eventLog/__tests__/projector.test.ts` -- projector and DP merge
 - `client/src/components/ui-v2/eventLog/__tests__/messageMapper.test.ts` -- pure formatters
 
 ## 7. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

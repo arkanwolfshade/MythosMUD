@@ -1,4 +1,5 @@
 # ADR-008: React 18+ with TypeScript for Client
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -39,6 +40,7 @@ Components are organized by feature; WebSocket logic centralized in connection h
 ## 4. Alternatives Considered
 
 **[SPEC]**
+
 1. **Vue / Svelte** - Rejected: React chosen for team familiarity and ecosystem
 2. **Plain JavaScript** - Rejected: TypeScript reduces bugs, improves refactoring, documents contracts
 3. **Angular** - Rejected: heavier; React + TypeScript sufficient for SPA scope
@@ -47,6 +49,7 @@ Components are organized by feature; WebSocket logic centralized in connection h
 ## 5. Consequences
 
 **[SPEC]**
+
 - **Positive**: Type safety catches errors at compile time; React ecosystem (testing, tooling) mature; hooks simplify stateful logic; Vite provides fast HMR
 - **Negative**: TypeScript adds build step and strictness; occasional client/server type drift
 - **Neutral**: State management mix (useState vs Zustand) requires conventions; documented in client architecture
@@ -54,18 +57,21 @@ Components are organized by feature; WebSocket logic centralized in connection h
 ## 6. Related ADRs
 
 **[SPEC]**
+
 - ADR-004: WebSocket-Only Real-Time Architecture
 - ADR-001: Layered Architecture with Event-Driven Components
 
 ## 7. References
 
 **[SPEC]**
+
 - [Real-Time Architecture](../../REAL_TIME_ARCHITECTURE.md)
 - [Client Layout Baseline](../../CLIENT_LAYOUT_BASELINE.md)
 
 ## 8. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

@@ -1,4 +1,5 @@
 # Distributed EventBus via NATS
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -52,6 +53,7 @@ All instances subscribe to `events.domain.>` (wildcard) to receive every domain 
 ## 3. Flow
 
 **[SPEC]**
+
 ### Local Publish
 
 1. Domain code calls `event_bus.publish(event)`
@@ -71,6 +73,7 @@ All instances subscribe to `events.domain.>` (wildcard) to receive every domain 
 ## 4. Configuration
 
 **[SPEC]**
+
 - **NATS enabled:** Bridge starts when RealtimeBundle initializes and NATS connects
 - **NATS disabled:** EventBus behaves as single-instance (no NATS publish/subscribe)
 
@@ -79,6 +82,7 @@ All instances subscribe to `events.domain.>` (wildcard) to receive every domain 
 ## 5. Related
 
 **[SPEC]**
+
 - [ADR-003: Dual Event Systems (EventBus + NATS)](decisions/ADR-003-dual-event-systems-eventbus-nats.md)
 - [EVENT_OWNERSHIP_MATRIX](../EVENT_OWNERSHIP_MATRIX.md)
 - [NATS_SUBJECT_PATTERNS](../NATS_SUBJECT_PATTERNS.md)
@@ -87,6 +91,7 @@ All instances subscribe to `events.domain.>` (wildcard) to receive every domain 
 ## 6. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

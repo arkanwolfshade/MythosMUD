@@ -1,4 +1,5 @@
 # 🐙 MythosMUD Command Security Guide
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -22,18 +23,19 @@ Read `[NOTE]` only if additional context is needed.
 ## 2. Table of Contents
 
 **[SPEC]**
-1. [Overview](#overview)
-2. [Security Principles](#security-principles)
-3. [Input Validation](#input-validation)
-4. [Authorization and Access Control](#authorization-and-access-control)
-5. [Injection Prevention](#injection-prevention)
-6. [Rate Limiting](#rate-limiting)
-7. [Logging and Monitoring](#logging-and-monitoring)
-8. [Error Handling](#error-handling)
-9. [Data Protection](#data-protection)
-10. [Security Testing](#security-testing)
-11. [Common Vulnerabilities](#common-vulnerabilities)
-12. [Security Checklist](#security-checklist)
+
+1. [Overview](#3-overview)
+2. [Security Principles](#4-security-principles)
+3. [Input Validation](#5-input-validation)
+4. [Authorization and Access Control](#6-authorization-and-access-control)
+5. [Injection Prevention](#7-injection-prevention)
+6. [Rate Limiting](#8-rate-limiting)
+7. [Logging and Monitoring](#9-logging-and-monitoring)
+8. [Error Handling](#10-error-handling)
+9. [Data Protection](#11-data-protection)
+10. [Security Testing](#12-security-testing)
+11. [Common Vulnerabilities](#13-common-vulnerabilities)
+12. [Security Checklist](#14-security-checklist)
 
 ---
 
@@ -73,6 +75,7 @@ Common threats to command systems:
 ## 4. Security Principles
 
 **[NOTE]**
+
 ### Defense in Depth
 
 Implement multiple layers of security:
@@ -170,6 +173,7 @@ async def handle_secure_command(command_data, current_user, request, alias_stora
 ## 5. Input Validation
 
 **[NOTE]**
+
 ### Pydantic Model Validation
 
 Use Pydantic for comprehensive input validation:
@@ -301,6 +305,7 @@ def sanitize_filename(filename: str) -> str:
 ## 6. Authorization and Access Control
 
 **[NOTE]**
+
 ### Role-Based Access Control
 
 ```python
@@ -423,6 +428,7 @@ async def handle_session_authorized_command(command_data, current_user, request,
 ## 7. Injection Prevention
 
 **[NOTE]**
+
 ### SQL Injection Prevention
 
 ```python
@@ -559,6 +565,7 @@ async def handle_xss_safe_command(command_data, current_user, request, alias_sto
 ## 8. Rate Limiting
 
 **[NOTE]**
+
 ### Token Bucket Rate Limiting
 
 ```python
@@ -667,6 +674,7 @@ teleport_rate_limiter = SlidingWindowRateLimiter(max_requests=1, window_seconds=
 ## 9. Logging and Monitoring
 
 **[NOTE]**
+
 ### Security Event Logging
 
 ```python
@@ -821,6 +829,7 @@ async def handle_audited_command(command_data, current_user, request, alias_stor
 ## 10. Error Handling
 
 **[NOTE]**
+
 ### Secure Error Messages
 
 ```python
@@ -911,6 +920,7 @@ async def handle_insecure_error_command(command_data, current_user, request, ali
 ## 11. Data Protection
 
 **[NOTE]**
+
 ### Sensitive Data Handling
 
 ```python
@@ -1002,6 +1012,7 @@ async def handle_encrypted_command(command_data, current_user, request, alias_st
 ## 12. Security Testing
 
 **[NOTE]**
+
 ### Automated Security Tests
 
 ```python
@@ -1117,6 +1128,7 @@ class SecurityPenetrationTests:
 ## 13. Common Vulnerabilities
 
 **[NOTE]**
+
 ### 1. SQL Injection
 
 **Vulnerable Code:**
@@ -1204,6 +1216,7 @@ if os.path.commonpath([full_path, "files"]) != "files":
 ## 14. Security Checklist
 
 **[SPEC]**
+
 ### Before Deploying Any Command
 
 [ ] **Input Validation**
@@ -1301,6 +1314,7 @@ Remember:
 ## 16. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

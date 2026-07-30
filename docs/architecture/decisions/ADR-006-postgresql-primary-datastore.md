@@ -1,4 +1,5 @@
 # ADR-006: PostgreSQL as Primary Datastore
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -38,6 +39,7 @@ Player data, room state, health, experience, inventory, and related entities res
 ## 4. Alternatives Considered
 
 **[SPEC]**
+
 1. **SQLite** - Rejected: single-writer limitation; file-based; unsuitable for multi-instance deployment
 2. **MySQL/MariaDB** - Rejected: PostgreSQL chosen for JSON/JSONB support, robustness, and team familiarity
 3. **MongoDB/NoSQL** - Rejected: relational model fits game entities (players, rooms, inventory); ACID transactions important for combat and economy
@@ -46,6 +48,7 @@ Player data, room state, health, experience, inventory, and related entities res
 ## 5. Consequences
 
 **[SPEC]**
+
 - **Positive**: ACID transactions; connection pooling; supports horizontal scaling (read replicas); JSONB for flexible schemas (e.g., health stats); mature ecosystem
 - **Negative**: Operational overhead (PostgreSQL server); migration from SQLite required effort
 - **Neutral**: Database hosted externally or in same deployment; environment variables for connection string
@@ -53,18 +56,21 @@ Player data, room state, health, experience, inventory, and related entities res
 ## 6. Related ADRs
 
 **[SPEC]**
+
 - ADR-005: Repository Pattern for Data Access
 - ADR-007: FastAPI with Async/Await
 
 ## 7. References
 
 **[SPEC]**
+
 - [Database Access Patterns](../../DATABASE_ACCESS_PATTERNS.md)
 - [Database Pool Configuration](../../DATABASE_POOL_CONFIGURATION.md)
 
 ## 8. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

@@ -1,4 +1,5 @@
 # Git Submodule Setup for MythosMUD
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -34,6 +35,7 @@ The `data/` directory is a git submodule pointing to the private repository
 ## 3. Repository Structure
 
 **[NOTE]**
+
 ```
 MythosMUD/ (main repository)
 ├── client/          # React frontend
@@ -46,6 +48,7 @@ MythosMUD/ (main repository)
 ## 4. Cloning the Repository
 
 **[NOTE]**
+
 ### Option 1: Clone with submodules (Recommended)
 
 ```bash
@@ -64,6 +67,7 @@ git submodule update --init --recursive
 ## 5. Working with Submodules
 
 **[NOTE]**
+
 ### Updating the submodule to latest version
 
 ```bash
@@ -242,6 +246,7 @@ See `.github/workflows/ci.yml` (**Resolve data submodule** + **Clone private dat
 ## 7. Troubleshooting
 
 **[NOTE]**
+
 ### Submodule not found during clone
 
 ```bash
@@ -344,6 +349,7 @@ The PAT used in workflows should have minimal required permissions
 ## 9. Best Practices
 
 **[SPEC]**
+
 1. **Always use `--recursive` when cloning** to get all submodules
 2. **Commit submodule changes separately** from main repository changes
 3. **Update submodule references** when the submodule repository changes
@@ -368,6 +374,7 @@ The PAT used in workflows should have minimal required permissions
 ## 11. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

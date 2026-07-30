@@ -1,4 +1,5 @@
 # Container System API Reference
+
 **Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
@@ -21,12 +22,13 @@ guards.
 ## 2. Table of Contents
 
 **[SPEC]**
-1. [Container Endpoints](#container-endpoints)
-2. [WebSocket Events](#websocket-events)
-3. [Authentication](#authentication)
-4. [Rate Limiting](#rate-limiting)
-5. [Error Handling](#error-handling)
-6. [Examples](#examples)
+
+1. [Container Endpoints](#3-container-endpoints)
+2. [WebSocket Events](#4-websocket-events)
+3. [Authentication](#5-authentication)
+4. [Rate Limiting](#6-rate-limiting)
+5. [Error Handling](#7-error-handling)
+6. [Examples](#8-examples)
 
 ## 3. Container Endpoints
 
@@ -372,6 +374,7 @@ All errors follow the standard error response format:
 ## 8. Examples
 
 **[NOTE]**
+
 ### Complete Workflow: Opening and Looting a Container
 
 ```javascript
@@ -451,6 +454,7 @@ All container operations are **audit logged** for security and compliance
 ## 10. Changelog
 
 **[SPEC]**
+
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
