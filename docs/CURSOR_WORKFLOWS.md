@@ -1,13 +1,29 @@
 # Cursor Workflows Documentation
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
 _"In the shadowed halls of Miskatonic University, we learn that proper methodology requires understanding how tools work together. This document describes end-to-end workflows combining subagents, CLI, commands, and rules."_
 
-## Overview
+## 2. Overview
 
+**[NOTE]**
 This document provides end-to-end workflow examples showing how to combine Cursor subagents, CLI, commands, and rules for common development tasks.
 
-## Workflow Components
+## 3. Workflow Components
 
+**[SPEC]**
 ### Rules
 
 - **Purpose**: Persistent guidance and best practices
@@ -35,8 +51,9 @@ This document provides end-to-end workflow examples showing how to combine Curso
 - **When Used**: Terminal-based workflows, scripts, automation
 - **Example**: Automated code review, test failure analysis
 
-## Workflow Examples
+## 4. Workflow Examples
 
+**[SPEC]**
 ### Workflow 1: Bug Investigation
 
 **Scenario**: Player reports they cannot log in
@@ -232,8 +249,9 @@ This document provides end-to-end workflow examples showing how to combine Curso
 - Subagent: `test-analyzer.md`
 - Rules: Test quality requirements
 
-## Combining Components
+## 5. Combining Components
 
+**[SPEC]**
 ### Pattern 1: Command → Subagent
 
 ```
@@ -266,8 +284,9 @@ Rules provide guidance → Commands/Subagents/CLI follow rules → Consistent re
 
 **Example**: Security rules guide security-auditor subagent
 
-## Decision Tree
+## 6. Decision Tree
 
+**[NOTE]**
 ```
 Need to perform a task?
 ├─ Simple, single-purpose?
@@ -280,8 +299,9 @@ Need to perform a task?
    └─ Rules (always applied automatically)
 ```
 
-## Best Practices
+## 7. Best Practices
 
+**[SPEC]**
 ### When to Use Each Component
 
 **Use Rules For**:
@@ -319,8 +339,9 @@ Need to perform a task?
 3. **Delegate Complex Work to Subagents**: Isolate context-heavy tasks
 4. **Automate with CLI**: Use CLI for repetitive or scheduled tasks
 
-## Integration Examples
+## 8. Integration Examples
 
+**[SPEC]**
 ### Example 1: Full Development Cycle
 
 1. **Planning**: Use Plan mode in CLI
@@ -380,8 +401,9 @@ Need to perform a task?
    .\scripts\cursor-cli-review.ps1 -GitChanges
    ```
 
-## References
+## 9. References
 
+**[SPEC]**
 - Subagents: `docs/CURSOR_SUBAGENTS.md`
 - CLI: `docs/CURSOR_CLI.md`
 - Cross-machine setup and portability: `docs/CURSOR_SETUP_GUIDE.md` ("Cross-Machine Portability (DRY Source of Truth)")
@@ -389,10 +411,18 @@ Need to perform a task?
 - Rules: `.cursor/rules/`
 - Subagent usage: `.cursor/rules/subagent-usage.mdc`
 
-## Notes
+## 10. Notes
 
+**[SPEC]**
 - All components work together seamlessly
 - Rules provide the foundation for all work
 - Commands provide quick access to common workflows
 - Subagents handle complex, context-heavy tasks
 - CLI enables automation and CI/CD integration
+
+## 11. Changelog
+
+**[SPEC]**
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

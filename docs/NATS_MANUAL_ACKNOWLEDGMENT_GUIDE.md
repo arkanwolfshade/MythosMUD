@@ -1,10 +1,25 @@
 # NATS Manual Acknowledgment Guide
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[SPEC]**
 **Date**: 2026-01-13
 **Purpose**: Guide for when to use manual vs automatic message acknowledgment in NATS
 
-## Overview
+## 2. Overview
 
+**[NOTE]**
 NATS supports two acknowledgment modes for message delivery:
 
 1. **Automatic Acknowledgment** (default): Messages are automatically acknowledged when the handler callback returns
@@ -13,8 +28,9 @@ NATS supports two acknowledgment modes for message delivery:
 
    (`msg.nak()`)
 
-## Current Configuration
+## 3. Current Configuration
 
+**[NOTE]**
 Manual acknowledgment is **disabled by default** in MythosMUD's NATS implementation. This can be enabled via
 configuration:
 
@@ -24,8 +40,9 @@ configuration:
 manual_ack: bool = Field(default=False, description="Enable manual message acknowledgment (ack/nak)")
 ```
 
-## When to Use Manual Acknowledgment
+## 4. When to Use Manual Acknowledgment
 
+**[SPEC]**
 ### Use Manual Ack For
 
 1. **Critical Messages** - Messages that must not be lost if processing fails
@@ -71,8 +88,9 @@ manual_ack: bool = Field(default=False, description="Enable manual message ackno
    - Cache updates
    - Stateless operations
 
-## Implementation Details
+## 5. Implementation Details
 
+**[NOTE]**
 ### Enabling Manual Acknowledgment
 
 ```python
@@ -135,8 +153,9 @@ async def message_handler(message_data: dict[str, Any]) -> None:
 
 ```
 
-## Performance Considerations
+## 6. Performance Considerations
 
+**[SPEC]**
 ### Manual Acknowledgment
 
 **Pros**:
@@ -165,8 +184,9 @@ async def message_handler(message_data: dict[str, Any]) -> None:
 - No built-in retry mechanism
 - Less control over message lifecycle
 
-## Best Practices
+## 7. Best Practices
 
+**[NOTE]**
 ### 1. Use Manual Ack for Critical Paths
 
 ```python
@@ -229,8 +249,9 @@ async def handle_idempotent_operation(msg: Any) -> None:
     await msg.ack()
 ```
 
-## Configuration Recommendations
+## 8. Configuration Recommendations
 
+**[NOTE]**
 ### Production (High Reliability)
 
 ```python
@@ -257,8 +278,9 @@ await nats_service.subscribe("critical.*", handler, manual_ack=True)
 await nats_service.subscribe("chat.*", handler, manual_ack=False)
 ```
 
-## Migration Path
+## 9. Migration Path
 
+**[SPEC]**
 If you want to enable manual ack for existing handlers:
 
 1. **Update Handlers**: Change signature from `(message_data: dict)` to `(msg: Any)`
@@ -267,8 +289,9 @@ If you want to enable manual ack for existing handlers:
 4. **Test Thoroughly**: Ensure no messages are lost or duplicated
 5. **Monitor**: Watch for acknowledgment failures in metrics
 
-## Monitoring
+## 10. Monitoring
 
+**[SPEC]**
 When manual ack is enabled, monitor:
 
 **Acknowledgment Failures**: Messages that fail to ack/nak
@@ -279,8 +302,9 @@ When manual ack is enabled, monitor:
 
 **Processing Time**: Time between message receipt and ack
 
-## Conclusion
+## 11. Conclusion
 
+**[SPEC]**
 **Default (Auto Ack)**: Best for most use cases - simple, fast, good for high-throughput
 
 **Manual Ack**: Use for critical messages requiring guaranteed delivery
@@ -299,3 +323,10 @@ Consider enabling manual ack for:
 
 **Status**: Documentation Complete
 **Last Updated**: 2026-01-13
+
+## 12. Changelog
+
+**[SPEC]**
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

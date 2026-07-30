@@ -1,13 +1,28 @@
 # Client Layout Baseline
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
 **Date:** 2025-11-25
 **Status:** ✅ Verified and Working
 
 This document serves as the baseline reference for the game client panel layout. All future layout changes should
 reference this document and maintain consistency with this established design.
 
-## Layout Overview
+## 2. Layout Overview
 
+**[SPEC]**
 The game client uses a three-column layout with five draggable panels:
 
 **Left Column:** Chat Panel (top) + Room Info Panel (bottom)
@@ -16,8 +31,9 @@ The game client uses a three-column layout with five draggable panels:
 
 **Right Column:** Status Panel (top) + Commands Panel (bottom)
 
-## Panel Configuration
+## 3. Panel Configuration
 
+**[SPEC]**
 ### Chat Panel
 
 **Position:** `x: 50, y: 80`
@@ -88,8 +104,9 @@ The game client uses a three-column layout with five draggable panels:
 
 - **Purpose:** Command input, recent commands, logout
 
-## Header Configuration
+## 4. Header Configuration
 
+**[SPEC]**
 **Position:** `fixed top-0 left-0 right-0`
 
 **Z-Index:** `z-[9999]` (highest, always on top)
@@ -98,8 +115,9 @@ The game client uses a three-column layout with five draggable panels:
 
 **Styling:** Dark background with semi-transparent overlay (`bg-mythos-terminal-surface/95`)
 
-## Z-Index Hierarchy
+## 5. Z-Index Hierarchy
 
+**[SPEC]**
 Z-index values ensure proper layering when panels overlap:
 
 1. **Header:** `9999` (always on top)
@@ -109,8 +127,9 @@ Z-index values ensure proper layering when panels overlap:
 5. **Chat Panel:** `1001` (left column, top)
 6. **Game Log Panel:** `1000` (middle column, lowest)
 
-## Key Implementation Details
+## 6. Key Implementation Details
 
+**[SPEC]**
 ### Positioning System
 
 All panels use **absolute positioning** with explicit `position: 'absolute'` in inline styles
@@ -135,8 +154,9 @@ Header height: ~60px (panels start at `y: 80` to account for header)
 - Default viewport assumption: 1920x1080, but layout adapts to actual viewport
 - Panels are clamped to viewport bounds with 50px padding
 
-## File Locations
+## 7. File Locations
 
+**[SPEC]**
 **Main Layout Component:** `client/src/components/GameTerminal.tsx`
 
 **Panel Component:** `client/src/components/DraggablePanel.tsx`
@@ -149,8 +169,9 @@ Header height: ~60px (panels start at `y: 80` to account for header)
 - Room Info: `client/src/components/RoomInfoPanel.tsx`
 - Status: Inline in `GameTerminal.tsx`
 
-## Layout Validation
+## 8. Layout Validation
 
+**[NOTE]**
 ✅ All panels are fully visible on screen
 ✅ No content bleeding between panels
 ✅ Proper z-index layering prevents overlap issues
@@ -158,8 +179,9 @@ Header height: ~60px (panels start at `y: 80` to account for header)
 ✅ Panels maintain consistent spacing and alignment
 ✅ Layout matches wireframe design specification
 
-## Notes for Future Development
+## 9. Notes for Future Development
 
+**[SPEC]**
 1. **Position Persistence:** Currently disabled (localStorage removed). If re-implementing, ensure validation prevents
 
    off-screen positions.
@@ -178,8 +200,9 @@ Header height: ~60px (panels start at `y: 80` to account for header)
 
    boundaries.
 
-## Visual Reference
+## 10. Visual Reference
 
+**[SPEC]**
 The layout matches the wireframe specification:
 
 - Left column: Two stacked panels (Chat large, Room Info small)
@@ -192,3 +215,10 @@ The layout matches the wireframe specification:
 
 **Last Updated:** 2025-11-25
 **Verified By:** Playwright MCP testing with account Ithaqua/Cthulhu1
+
+## 11. Changelog
+
+**[SPEC]**
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

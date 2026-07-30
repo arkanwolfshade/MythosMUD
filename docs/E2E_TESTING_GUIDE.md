@@ -1,7 +1,19 @@
 # E2E Testing Guide
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
-## Overview
+---
 
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
 MythosMUD uses two approaches for E2E testing:
 
 1. **Automated Playwright CLI Tests** - Single-player scenarios testing error handling, accessibility, and integration
@@ -12,8 +24,9 @@ MythosMUD uses two approaches for E2E testing:
 
 This guide explains when to use each approach, how to run tests locally, and how to add new test scenarios.
 
-## Quick Start
+## 2. Quick Start
 
+**[NOTE]**
 ### Running Automated E2E Tests Locally
 
 ```bash
@@ -49,8 +62,9 @@ For multiplayer scenarios that require AI Agent coordination:
 
 ```
 
-## Test Categories
+## 3. Test Categories
 
+**[SPEC]**
 ### Automated Playwright CLI Tests (10 Scenarios)
 
 **Location**: `client/tests/e2e/runtime/`
@@ -141,8 +155,9 @@ These scenarios require multi-player coordination via Playwright MCP and AI Agen
 
 **See**: `e2e-tests/MULTIPLAYER_TEST_RULES.md` for execution instructions
 
-## When to Use Automated vs MCP Tests
+## 4. When to Use Automated vs MCP Tests
 
+**[NOTE]**
 ### Use Automated Playwright CLI Tests When
 
 ✅ Testing **single-player functionality**
@@ -161,8 +176,9 @@ These scenarios require multi-player coordination via Playwright MCP and AI Agen
 🎭 Testing **room-based message routing** (local channel, movement)
 🎭 Tests require **simultaneous multi-tab coordination**
 
-## Test Database Management
+## 5. Test Database Management
 
+**[SPEC]**
 ### Test Database Location
 
 Automated tests use a separate test database:
@@ -232,8 +248,9 @@ npx ts-node tests/e2e/runtime/fixtures/database.ts
 rm data/players/unit_test_players.db
 ```
 
-## Multi-Character Testing
+## 6. Multi-Character Testing
 
+**[SPEC]**
 **MULTI-CHARACTER SUPPORT**: The system now supports multiple characters per user (up to 3 active characters).
 
 ### Character Selection Flow
@@ -265,8 +282,9 @@ before the new character connects.
 See `e2e-tests/scenarios/scenario-XX-character-selection.md` and related multi-character scenarios for detailed test
 procedures.
 
-## Adding New Automated Tests
+## 7. Adding New Automated Tests
 
+**[NOTE]**
 ### Step 1: Determine Test Category
 
 Choose the appropriate directory based on what you're testing:
@@ -353,8 +371,9 @@ npx playwright test tests/e2e/runtime/error-handling/my-feature-errors.spec.ts -
 npm run test:e2e:runtime
 ```
 
-## Troubleshooting
+## 8. Troubleshooting
 
+**[SPEC]**
 ### Common Issues
 
 #### Issue: "Test database not found"
@@ -438,8 +457,9 @@ cd client
 npx playwright show-report playwright-report/runtime/
 ```
 
-## CI/CD Integration
+## 9. CI/CD Integration
 
+**[SPEC]**
 ### GitHub Actions
 
 Automated E2E tests run automatically on:
@@ -461,8 +481,9 @@ On test failure, the following artifacts are uploaded:
 
 **Access artifacts**: Go to the GitHub Actions run and download from the "Artifacts" section.
 
-## Best Practices
+## 10. Best Practices
 
+**[SPEC]**
 ### Writing Tests
 
 1. **One assertion per test** - Makes failures easier to debug
@@ -486,8 +507,9 @@ On test failure, the following artifacts are uploaded:
 3. **Mark slow tests** - Use `test.slow()` for tests that take >30 seconds
 4. **Skip slow tests in development** - Use `--grep-invert @slow` to skip slow tests
 
-## Test Data Management
+## 11. Test Data Management
 
+**[NOTE]**
 ### Using Test Constants
 
 ```typescript
@@ -521,8 +543,9 @@ export const ERROR_MESSAGES = {
 } as const;
 ```
 
-## FAQ
+## 12. FAQ
 
+**[SPEC]**
 ### Q: Should I write an automated test or an MCP scenario?
 
 **A**: Ask yourself: "Does this test require real-time verification of message broadcasting to multiple players?"
@@ -570,8 +593,9 @@ npm run test:e2e:runtime
 1. Write an MCP scenario in `e2e-tests/scenarios/`
 2. Mock the second player in automated tests if you're only testing integration points
 
-## Enhanced Logging in E2E Tests
+## 13. Enhanced Logging in E2E Tests
 
+**[NOTE]**
 ### **CRITICAL: Enhanced Logging Requirements**
 
 All E2E tests MUST use the enhanced logging system for proper observability and debugging.
@@ -672,10 +696,18 @@ test("should log user actions correctly", async () => {
 
 **Testing Examples**: [docs/examples/logging/testing_examples.py](examples/logging/testing_examples.py)
 
-## Additional Resources
+## 14. Additional Resources
 
+**[SPEC]**
 [Playwright Documentation](https://playwright.dev/docs/intro)
 
 - [MCP Scenario Documentation](../e2e-tests/MULTIPLAYER_TEST_RULES.md)
 - [Scenario Conversion Guide](./SCENARIO_CONVERSION_GUIDE.md)
 - [Test Data Constants](../client/tests/e2e/runtime/fixtures/test-data.ts)
+
+## 15. Changelog
+
+**[SPEC]**
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

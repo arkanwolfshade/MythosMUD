@@ -1,9 +1,24 @@
 # Map regression tests proposal
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
 Tests to add so that the map bugs fixed on the `bug/map` branch do not regress.
 
-## Behaviours fixed (from changelist)
+## 2. Behaviours fixed (from changelist)
 
+**[NOTE]**
 1. **Server – ASCII map context**: Single flow for room load, exploration filter, coordinate generation, and
    `current_room_id` via `_prepare_ascii_map_context`; consistent error handling via `_handle_ascii_map_error`.
 2. **Server – Minimap**: Auth/player/room resolution in `_get_minimap_player_and_room_id`; minimap logic in
@@ -19,8 +34,9 @@ Tests to add so that the map bugs fixed on the `bug/map` branch do not regress.
 
 ---
 
-## Unit tests
+## 3. Unit tests
 
+**[SPEC]**
 ### Client
 
 | Area    | File                                                              | What to test                                                                                                                                                                             |
@@ -41,8 +57,9 @@ Tests to add so that the map bugs fixed on the `bug/map` branch do not regress.
 
 ---
 
-## E2E (Playwright)
+## 4. E2E (Playwright)
 
+**[SPEC]**
 | Scenario        | File                                                  | What to test                                                                                                                       |
 | --------------- | ----------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
 | Map page load   | `client/tests/e2e/runtime/map/ascii-map-page.spec.ts` | Authenticated user can open /map (e.g. from main menu or direct URL); page shows loading then map content or error; no hard crash. |
@@ -52,8 +69,9 @@ E2E depends on test env having at least one room with coordinates; if not, test 
 
 ---
 
-## Implementation status
+## 5. Implementation status
 
+**[SPEC]**
 - [x] Client: useAsciiMap.test.ts
 - [x] Client: asciiMapViewerUtils.test.ts
 - [x] Client: api/maps.test.ts
@@ -63,3 +81,10 @@ E2E depends on test env having at least one room with coordinates; if not, test 
 - [x] Server: test_map_minimap_helpers.py
 - [x] Server: test_ascii_map_renderer_exits.py
 - [ ] E2E: ascii-map-page.spec.ts (and optionally minimap-visible.spec.ts)
+
+## 6. Changelog
+
+**[SPEC]**
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

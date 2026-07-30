@@ -1,12 +1,27 @@
 # Event Ownership Matrix
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[SPEC]**
 **Document Version:** 1.0
 **Date:** November 3, 2025
 **Status:** Architecture Audit
 **Purpose:** Map all event publishers and identify duplicate event sources
 
-## Overview
+## 2. Overview
 
+**[SPEC]**
 This document maps the complete event publishing architecture in MythosMUD to identify:
 
 1. All event publishers and their sources
@@ -14,8 +29,9 @@ This document maps the complete event publishing architecture in MythosMUD to id
 3. Event flow through the system
 4. Canonical event ownership
 
-## Event Publishing Layers
+## 3. Event Publishing Layers
 
+**[SPEC]**
 ### Layer 1: EventBus Events (Domain Events)
 
 These are domain events published through the EventBus system defined in `server/events/event_types.py`:
@@ -62,8 +78,9 @@ NATS subject-based messages for inter-service communication:
 | `chat.local.{subzone}`     | ChatService (planned) | Sub-zone chat    | Players in sub-zone |
 | `combat.{room_id}`         | CombatEventPublisher  | Combat events    | Players in room     |
 
-## Duplicate Event Analysis
+## 4. Duplicate Event Analysis
 
+**[SPEC]**
 ### 🔴 CRITICAL: Player Movement Duplication - CONFIRMED
 
 **Issue:** Players entering/leaving rooms trigger TWO separate message paths:
@@ -121,8 +138,9 @@ Direct WebSocket sends
 - EventBus system events
 - NATS system channel (planned)
 
-## Event Ownership Recommendations
+## 5. Event Ownership Recommendations
 
+**[SPEC]**
 ### Canonical Event Sources
 
 Establish single authoritative source for each domain event:
@@ -155,8 +173,9 @@ Establish single authoritative source for each domain event:
    - Delivered via WebSocket to clients
    - Clear separation from domain events
 
-## Event Flow Diagram
+## 6. Event Flow Diagram
 
+**[NOTE]**
 ```
 Domain Layer (Room, Combat, Player)
     ↓ publishes
@@ -183,8 +202,9 @@ WebSocket
 React Client
 ```
 
-## Consolidation Strategy
+## 7. Consolidation Strategy
 
+**[SPEC]**
 ### Phase 1: Audit Complete ✓
 
 This document represents the audit results.
@@ -214,8 +234,9 @@ This document represents the audit results.
 2. Add event tracing to track event flow
 3. Monitor for duplicate messages in production
 
-## Implementation Checklist
+## 8. Implementation Checklist
 
+**[SPEC]**
 [x] Map all EventBus event types
 
 - [x] Map all Real-Time message types
@@ -226,8 +247,9 @@ This document represents the audit results.
 - [ ] Add tests for event uniqueness
 - [ ] Document event flow in architecture docs
 
-## References
+## 9. References
 
+**[SPEC]**
 `server/events/event_types.py` - EventBus event definitions
 
 - `server/models/room.py` - Room event publishers
@@ -235,3 +257,10 @@ This document represents the audit results.
 - `server/realtime/connection_manager.py` - WebSocket message delivery
 - `server/realtime/nats_message_handler.py` - NATS → Client messages
 - `docs/COMPREHENSIVE_SYSTEM_AUDIT.md` - Original issue documentation
+
+## 10. Changelog
+
+**[SPEC]**
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

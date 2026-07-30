@@ -1,5 +1,19 @@
 # ADR-011: XState for Frontend Connection State Machine
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[SPEC]**
 **Date**: 2025-10-11
 **Status**: Accepted
 **Decision Makers**: Prof. Wolfshade, AI Assistant
@@ -7,8 +21,9 @@
 
 ---
 
-## Context and Problem Statement
+## 2. Context and Problem Statement
 
+**[SPEC]**
 The frontend connection management in `useGameConnection.ts` had grown to 750+ lines with complex manual state tracking using multiple refs and timers. This led to:
 
 1. **Implicit State Bugs**: Impossible states like "connected but also connecting"
@@ -20,8 +35,9 @@ The frontend connection management in `useGameConnection.ts` had grown to 750+ l
 
 ---
 
-## Decision Drivers
+## 3. Decision Drivers
 
+**[SPEC]**
 **Type Safety**: Must provide TypeScript support and type-safe state definitions
 
 **Testability**: Must enable comprehensive unit testing of state transitions
@@ -34,8 +50,9 @@ The frontend connection management in `useGameConnection.ts` had grown to 750+ l
 
 ---
 
-## Considered Options
+## 4. Considered Options
 
+**[SPEC]**
 ### Option 1: XState
 
 **Pros**:
@@ -83,8 +100,9 @@ The frontend connection management in `useGameConnection.ts` had grown to 750+ l
 
 ---
 
-## Decision Outcome
+## 5. Decision Outcome
 
+**[SPEC]**
 **Chosen Option**: **XState v5** with @xstate/react integration
 
 **Rationale**:
@@ -104,8 +122,9 @@ The frontend connection management in `useGameConnection.ts` had grown to 750+ l
 
 ---
 
-## Implementation Details
+## 6. Implementation Details
 
+**[NOTE]**
 ### State Machine Definition
 
 ```typescript
@@ -163,8 +182,9 @@ export function useConnectionState(options?: {
 
 ---
 
-## Consequences
+## 7. Consequences
 
+**[SPEC]**
 ### Positive
 
 - **Eliminated Implicit State Bugs**: Impossible states are now prevented by the FSM
@@ -187,8 +207,9 @@ export function useConnectionState(options?: {
 
 ---
 
-## Validation
+## 8. Validation
 
+**[SPEC]**
 - All 13 frontend state machine tests passing
 - No TypeScript compilation errors
 - No linting errors
@@ -197,8 +218,9 @@ export function useConnectionState(options?: {
 
 ---
 
-## References
+## 9. References
 
+**[SPEC]**
 - [XState Documentation](https://xstate.js.org/)
 - [XState Inspector](https://stately.ai/docs/inspector)
 - [Martin Fowler on State Machines](https://martinfowler.com/articles/state-machine.html)
@@ -207,8 +229,16 @@ export function useConnectionState(options?: {
 
 ---
 
-## Related ADRs
+## 10. Related ADRs
 
+**[SPEC]**
 - [ADR-012](ADR-012-python-statemachine-backend.md): python-statemachine for Backend Connection FSM
 - [ADR-013](ADR-013-pydantic-configuration.md): Pydantic Configuration Management
 - [ADR-014](ADR-014-nats-error-boundaries.md): Circuit Breaker + Dead Letter Queue for NATS
+
+## 11. Changelog
+
+**[SPEC]**
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

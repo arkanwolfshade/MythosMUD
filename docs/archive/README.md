@@ -143,3 +143,9 @@ This directory contains planning and technical documentation that has been conso
 **Archive Created**: 2025-01-27
 **Consolidation Version**: 2.0
 **Next Review**: When new planning documents are created
+
+## HADS note
+
+Documents under `docs/archive/` are historical session reports and superseded drafts.
+They are **not** HADS-validated. Living developer docs live outside this directory and
+are listed in `docs/hads.manifest` after HADS conversion.

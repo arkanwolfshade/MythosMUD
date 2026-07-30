@@ -1,15 +1,28 @@
 # Who Subsystem Design
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
-## Overview
+---
 
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
 The who subsystem lists players considered "online" and optionally filters them by name. The only
 entry point is the **who** command. Online is defined as having last_active within the last 5
 minutes. Results are sorted by name and formatted as "Name [Level] - Zone: Subzone: Room"; admins
 get an [ADMIN] tag. No real-time connection list is used – who uses persistence.list_players() and
 filters by last_active.
 
-## Architecture
+## 2. Architecture
 
+**[NOTE]**
 ```mermaid
 flowchart LR
   subgraph cmd [who_commands]
@@ -50,8 +63,9 @@ flowchart LR
   Used elsewhere (e.g. chat name resolution); who does not use it. Who uses in-file
   filter_players_by_name for name filtering.
 
-## Key design decisions
+## 3. Key design decisions
 
+**[SPEC]**
 - **Online = last_active within 5 minutes**: No connection_manager check; who is purely
   persistence-based. Players who disconnected but had activity in last 5 minutes still appear.
 - **Optional name filter**: command_data.target_player; if present, filter_players_by_name (partial
@@ -60,15 +74,17 @@ flowchart LR
   (earth_zone_subzone_room...) to build "Zone: Subzone: Room" display.
 - **Admin indicator**: format_player_entry adds " [ADMIN]" when player.is_admin.
 
-## Constraints
+## 4. Constraints
 
+**[SPEC]**
 - **Persistence required**: No persistence -> "Player information is not available."
 - **list_players**: Must return players with last_active, name, level, current_room_id, is_admin.
 - **last_active**: Must be comparable (datetime or ISO string); parse_last_active_datetime
   normalizes to timezone-aware datetime.
 
-## Component interactions
+## 5. Component interactions
 
+**[NOTE]**
 1. **who [filter]** – Get persistence; list_players(); online_threshold = now - 5 minutes;
    filter_online_players(players, online_threshold); get_players_for_who(online_players, filter_term)
    (apply name filter if filter_term); format_who_result (sorted by name, comma-separated entries);
@@ -78,8 +94,9 @@ flowchart LR
 3. **format_player_entry(player)** – Build "Name [Level] - Location" or with [ADMIN]; use
    format_player_location(player.current_room_id).
 
-## Developer guide
+## 6. Developer guide
 
+**[NOTE]**
 - **Changing online threshold**: In handle_who_command, timedelta(minutes=5); change to desired
   window. Consider making it configurable.
 - **Using connection-based online**: To show only connected players, inject connection_manager
@@ -90,8 +107,9 @@ flowchart LR
 - **PlayerSearchService**: Who does not use it; for consistent name search elsewhere, consider
   reusing PlayerSearchService in who or sharing filter logic.
 
-## Troubleshooting
+## 7. Troubleshooting
 
+**[NOTE]**
 - **"No players are currently online"**: All players have last_active older than 5 minutes, or
   list_players empty. Check last_active is updated on activity (e.g. commands, movement).
 - **"Unknown Location" for all**: room*id format may not have 4+ parts; check format_player*
@@ -104,6 +122,14 @@ flowchart LR
 See also [GAME_BUG_INVESTIGATION_PLAYBOOK](../../.cursor/rules/GAME_BUG_INVESTIGATION_PLAYBOOK.mdc).
 Archived spec: [docs/archive/WHO_COMMAND_FRD.md](../archive/WHO_COMMAND_FRD.md).
 
-## Related docs
+## 8. Related docs
 
+**[SPEC]**
 - [COMMAND_MODELS_REFERENCE.md](../COMMAND_MODELS_REFERENCE.md)
+
+## 9. Changelog
+
+**[SPEC]**
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

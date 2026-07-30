@@ -1,7 +1,19 @@
 # Rescue Subsystem Design
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
-## Overview
+---
 
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
 The rescue subsystem allows one player to help a catatonic (lucidity-tier) ally recover lucidity.
 The user-facing command is **ground**: the rescuer and target must be in the same room; the target
 must have a lucidity record in catatonic tier. Ground applies a lucidity adjustment (to 1 LCD),
@@ -9,8 +21,9 @@ sends rescue_update events to both players, and notifies the catatonia registry.
 **rescue** flow is implemented in RescueService and handle_rescue_command (same-room, catatonic
 target, lucidity adjustment); only **ground** is registered in the command map.
 
-## Architecture
+## 2. Architecture
 
+**[NOTE]**
 ```mermaid
 flowchart LR
   subgraph commands [Commands]
@@ -59,8 +72,9 @@ flowchart LR
 - **lucidity_event_dispatcher**: send_rescue_update_event – sends rescue_update to target and
   rescuer (e.g. for client UI progress/status).
 
-## Key design decisions
+## 3. Key design decisions
 
+**[NOTE]**
 - **Same room only**: Rescuer and target must have the same current_room_id; otherwise "not within
   reach."
 - **Catatonic tier only**: Target's PlayerLucidity.current_tier must be "catatonic"; otherwise no
@@ -73,8 +87,9 @@ flowchart LR
   RescueService uses session_factory. Commit on success; rollback on exception and send failure
   events.
 
-## Constraints
+## 4. Constraints
 
+**[NOTE]**
 - **Target must have PlayerLucidity**: If session.get(PlayerLucidity, target_id) is None, return
   error (ground: "aura cannot be located"; rescue: "lucidity record could not be found").
 - **Rescuer/target resolution**: By player name via persistence.get_player_by_name; rescuer from
@@ -82,8 +97,9 @@ flowchart LR
 - **Dependencies**: Async persistence, get_async_session, LucidityService, send_rescue_update_event,
   optional catatonia_registry. No combat or position checks (target can be sitting/lying).
 
-## Component interactions
+## 5. Component interactions
 
+**[NOTE]**
 1. **ground &lt;target&gt;** – Validate rescuer and target, same room. Open session, get
    PlayerLucidity for target; if not catatonic, return. Send channeling events to both. Apply
    lucidity adjustment (ground_rescue), commit. On exception, rollback and send failure events. Send
@@ -94,8 +110,9 @@ flowchart LR
 3. **LucidityService** – apply_lucidity_adjustment updates lucidity record and tier; observer
    (catatonia_registry) notified when catatonia is cleared.
 
-## Developer guide
+## 6. Developer guide
 
+**[NOTE]**
 - **Adding a new rescue variant**: Reuse LucidityService.apply_lucidity_adjustment with a distinct
   reason_code and metadata; send appropriate rescue_update events; keep same-room and catatonic
   checks.
@@ -104,8 +121,9 @@ flowchart LR
 - **Event schema**: rescue_update event payload (status, rescuer_name, target_name, message,
   progress, current_lcd) – ensure client and dispatcher stay in sync.
 
-## Troubleshooting
+## 7. Troubleshooting
 
+**[NOTE]**
 - **"isn't catatonic and needs no grounding"**: current_tier != "catatonic". Check lucidity
   thresholds and tier computation.
 - **"not within reach"**: current_room_id of rescuer and target differ. Verify room persistence
@@ -118,7 +136,15 @@ flowchart LR
 See also [SUBSYSTEM_LUCIDITY_DESIGN.md](SUBSYSTEM_LUCIDITY_DESIGN.md) and
 [GAME_BUG_INVESTIGATION_PLAYBOOK](../../.cursor/rules/GAME_BUG_INVESTIGATION_PLAYBOOK.mdc).
 
-## Related docs
+## 8. Related docs
 
+**[SPEC]**
 - [SUBSYSTEM_LUCIDITY_DESIGN.md](SUBSYSTEM_LUCIDITY_DESIGN.md)
 - [COMMAND_MODELS_REFERENCE.md](../COMMAND_MODELS_REFERENCE.md)
+
+## 9. Changelog
+
+**[SPEC]**
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

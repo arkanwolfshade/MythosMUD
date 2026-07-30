@@ -1,15 +1,31 @@
 # Troubleshooting Guide for MythosMUD
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
 *As documented in the restricted archives of Miskatonic University, the proper diagnosis and resolution of system
 anomalies requires both technical expertise and an understanding of the deeper patterns that govern our digital realm.*
 
-## Overview
+## 2. Overview
 
+**[NOTE]**
 This guide provides comprehensive troubleshooting procedures for common issues in the MythosMUD system. Our structured
 error logging and monitoring tools provide the foundation for effective problem diagnosis and resolution.
 
-## Quick Diagnostic Commands
+## 3. Quick Diagnostic Commands
 
+**[NOTE]**
 ### System Health Check
 
 ```bash
@@ -42,8 +58,9 @@ python scripts/analyze_error_logs.py --log-dir logs/development --trends
 python scripts/error_monitoring.py --log-dir logs/development --alerts
 ```
 
-## Common Issues and Solutions
+## 4. Common Issues and Solutions
 
+**[NOTE]**
 ### 1. Database Connection Issues
 
 #### Symptoms
@@ -373,8 +390,9 @@ grep -i "command.*processing\|validation.*failed" logs/development/commands.log
 grep -i "go.*command\|move.*command" logs/development/commands.log
 ```
 
-## Advanced Troubleshooting
+## 5. Advanced Troubleshooting
 
+**[NOTE]**
 ### Log Analysis Techniques
 
 #### Pattern Recognition
@@ -483,8 +501,9 @@ python -m cProfile -o profile.stats server/main.py
 python -c "import pstats; pstats.Stats('profile.stats').sort_stats('cumulative').print_stats(20)"
 ```
 
-## Emergency Procedures
+## 6. Emergency Procedures
 
+**[NOTE]**
 ### System Recovery
 
 #### Database Recovery
@@ -604,8 +623,9 @@ sqlite3 data/players/local_players.db "PRAGMA integrity_check;"
 ./scripts/start_local.ps1
 ```
 
-## Prevention Strategies
+## 7. Prevention Strategies
 
+**[NOTE]**
 ### Monitoring Setup
 
 #### Automated Monitoring
@@ -683,8 +703,9 @@ grep -E "duration_ms.*[0-9]+" logs/development/server.log | awk '{print $NF}' | 
 
 ```
 
-## Getting Help
+## 8. Getting Help
 
+**[SPEC]**
 ### Internal Resources
 
 1. **Log Analysis Tools**: Use our custom tools for detailed analysis
@@ -704,8 +725,9 @@ grep -E "duration_ms.*[0-9]+" logs/development/server.log | awk '{print $NF}' | 
 3. **Level 3**: Contact system administrators
 4. **Level 4**: Escalate to development team
 
-## Conclusion
+## 9. Conclusion
 
+**[NOTE]**
 Effective troubleshooting requires a systematic approach and the proper use of our monitoring and analysis tools. By
 following this guide:
 
@@ -723,3 +745,10 @@ even the most obscure issues can be resolved.*
 
 *This guide is maintained by the Department of Occult Studies, Miskatonic University. For questions or clarifications,
 consult the restricted archives or contact the system administrators.*
+
+## 10. Changelog
+
+**[SPEC]**
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

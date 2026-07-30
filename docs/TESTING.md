@@ -1,6 +1,20 @@
 # Testing Guide for MythosMUD
 
-## Quick Start
+**Version 1.0.0** · MythosMUD · 2026-07-30
+
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Quick Start
+
+**[NOTE]**
 
 ### Running Tests
 
@@ -127,7 +141,9 @@ uv run pytest -v
 uv run pytest server/tests/unit/test_file.py::test_name -v -s --tb=long
 ```
 
-## bcrypt PyO3 Limitation - Technical Details
+## 2. bcrypt PyO3 Limitation - Technical Details
+
+**[NOTE]**
 
 ### Why This Happens
 
@@ -175,7 +191,9 @@ Test bcrypt-dependent modules in fresh sessions
 - Run infrastructure/utility tests before API/auth tests
 - Use `make test-comprehensive` for final validation (Docker isolation)
 
-## Test Organization
+## 3. Test Organization
+
+**[NOTE]**
 
 ```
 server/tests/
@@ -192,7 +210,9 @@ server/tests/
 └── verification/            # System verification tests
 ```
 
-## Common Issues
+## 4. Common Issues
+
+**[NOTE]**
 
 ### Issue: Tests hang indefinitely
 
@@ -209,3 +229,26 @@ server/tests/
 ### Issue: Slow test runs
 
 **Solution**: Use `make test` (excludes slow tests) instead of `make test-comprehensive`
+
+## 5. Markers and isolation (greenfield)
+
+**[SPEC]**
+
+- Preferred entrypoints: `make test`, `make test-comprehensive` (repo root only)
+- Markers: `unit`, `integration`, `e2e`, `slow`, `serial`, `xdist_group(name=...)`
+- Never start the MythosMUD server inside tests
+- Tests that mutate process-global env must use `@pytest.mark.serial` and
+  `@pytest.mark.xdist_group`
+- Unit tier: no real network/DB/filesystem writes; use fakes/mocks
+- Integration tier: ephemeral Postgres; truncate/rollback between tests
+- See also `server/tests/README.md`
+
+**[NOTE]**
+Merged from archived root greenfield notes (`docs/archive/TESTING_GREENFIELD.md`).
+
+## 6. Changelog
+
+**[SPEC]**
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion; merge greenfield markers |

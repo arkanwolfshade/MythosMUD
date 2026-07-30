@@ -1,11 +1,26 @@
 # 🐙 MythosMUD Command Models Reference
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[SPEC]**
 *"The structure of reality is defined by the models we create."* - Anonymous Miskatonic Scholar
 
 ---
 
-## Table of Contents
+## 2. Table of Contents
 
+**[SPEC]**
 1. [Overview](#overview)
 2. [Base Command Structure](#base-command-structure)
 3. [Existing Command Models](#existing-command-models)
@@ -17,8 +32,9 @@
 
 ---
 
-## Overview
+## 3. Overview
 
+**[SPEC]**
 Command models in MythosMUD use Pydantic for type-safe validation and serialization. Each command is defined as a
 Pydantic model that inherits from `BaseCommand` and includes validation rules to ensure security and data integrity.
 
@@ -36,8 +52,9 @@ Pydantic model that inherits from `BaseCommand` and includes validation rules to
 
 ---
 
-## Base Command Structure
+## 4. Base Command Structure
 
+**[NOTE]**
 All command models inherit from `BaseCommand`, which provides common configuration and security features:
 
 ```python
@@ -71,8 +88,9 @@ class BaseCommand(BaseModel):
 
 ---
 
-## Existing Command Models
+## 5. Existing Command Models
 
+**[NOTE]**
 ### Exploration Commands
 
 #### LookCommand
@@ -516,8 +534,9 @@ class HelpCommand(BaseCommand):
 
 ---
 
-## Creating New Command Models
+## 6. Creating New Command Models
 
+**[NOTE]**
 ### Step-by-Step Process
 
 1. **Define the Command Type**
@@ -615,8 +634,9 @@ items: list[str] = Field(default_factory=list, description="List of items")
 
 ---
 
-## Validation Patterns
+## 7. Validation Patterns
 
+**[NOTE]**
 ### String Validation
 
 ```python
@@ -677,8 +697,9 @@ def validate_model(self):
 
 ---
 
-## Field Types and Constraints
+## 8. Field Types and Constraints
 
+**[NOTE]**
 ### Common Field Types
 
 | Type             | Description     | Example                                            |
@@ -728,8 +749,9 @@ field: str | None = Field(None, description="Optional field")
 
 ---
 
-## Best Practices
+## 9. Best Practices
 
+**[NOTE]**
 ### 1. Always Include Descriptions
 
 ```python
@@ -836,8 +858,9 @@ def validate_complex_field(cls, v):
 
 ---
 
-## Common Pitfalls
+## 10. Common Pitfalls
 
+**[NOTE]**
 ### 1. Forgetting to Import
 
 ```python
@@ -921,8 +944,9 @@ raise ValueError("Field contains invalid characters")
 
 ---
 
-## Example: Complete Command Model
+## 11. Example: Complete Command Model
 
+**[NOTE]**
 Here's a complete example of a new command model:
 
 ```python
@@ -973,3 +997,10 @@ This model includes:
 ---
 
 *This reference document should be updated whenever new command models are added or existing ones are modified.*
+
+## 12. Changelog
+
+**[SPEC]**
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

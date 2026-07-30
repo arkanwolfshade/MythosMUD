@@ -1,12 +1,25 @@
 # Fresh Session Test Execution Guide
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
-## Overview
+---
 
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
 Due to bcrypt's PyO3 limitation, some test modules require execution in a fresh Python interpreter session. This guide
 provides step-by-step instructions for running these tests.
 
-## Test Files Requiring Fresh Sessions
+## 2. Test Files Requiring Fresh Sessions
 
+**[SPEC]**
 ### Created and Ready to Run
 
 1. **`server/tests/unit/api/test_metrics.py`** (9 tests)
@@ -39,8 +52,9 @@ provides step-by-step instructions for running these tests.
    - Coverage target: 29% → 50%
    - Module: server/npc/spawning_service.py
 
-## Execution Instructions
+## 3. Execution Instructions
 
+**[NOTE]**
 ### Option 1: Run Each Module Individually (Recommended for Development)
 
 Open a **fresh PowerShell terminal** for each test run:
@@ -124,8 +138,9 @@ uv run pytest `
   -v
 ```
 
-## Expected Results (When Run in Fresh Sessions)
+## 4. Expected Results (When Run in Fresh Sessions)
 
+**[SPEC]**
 ### API Metrics (`test_metrics.py`)
 
 **Expected Tests**: 9
@@ -174,8 +189,9 @@ uv run pytest `
 
 **Runtime**: ~2s
 
-## Verification Checklist
+## 5. Verification Checklist
 
+**[SPEC]**
 After running tests in fresh session:
 
 - [ ] All tests pass
@@ -184,8 +200,9 @@ After running tests in fresh session:
 - [ ] Tests complete in <5s per module
 - [ ] No bcrypt initialization errors
 
-## Troubleshooting
+## 6. Troubleshooting
 
+**[SPEC]**
 ### Still Getting bcrypt Errors in Fresh Terminal?
 
 **Cause**: Previous terminal may have contaminated Python cache
@@ -219,20 +236,23 @@ uv run pytest server/tests/unit/api/test_metrics.py --collect-only
 - Add tests for uncovered code paths
 - See TESTING.md for coverage guidelines
 
-## Integration with CI/CD
+## 7. Integration with CI/CD
 
+**[NOTE]**
 The `make test-comprehensive` target runs all tests in isolated Docker containers,
 completely avoiding the bcrypt issue. This is the gold standard for final validation.
 
-## Developer Workflow Recommendation
+## 8. Developer Workflow Recommendation
 
+**[SPEC]**
 1. **During Development**: Test non-bcrypt modules normally
 2. **Before Commit**: Run `make test` (uses pytest-xdist, mostly works)
 3. **Final Validation**: Run bcrypt modules in fresh terminal OR use `make test-comprehensive`
 4. **CI/CD**: Automatically runs in fresh Docker environment
 
-## Technical Background
+## 9. Technical Background
 
+**[SPEC]**
 ### Why Fresh Sessions Are Needed
 
 bcrypt uses PyO3 (Rust ↔ Python bindings)
@@ -249,7 +269,15 @@ bcrypt uses PyO3 (Rust ↔ Python bindings)
 3. **Alternative Hashing**: Consider non-PyO3 alternatives (performance trade-off)
 4. **Docker-First Testing**: Always use containerized testing
 
-## Summary
+## 10. Summary
 
+**[NOTE]**
 All test files are **created, validated, and ready**. They just need fresh Python interpreter sessions to execute due to
 bcrypt's PyO3 limitation. The tests themselves are high-quality and will provide excellent coverage once run.
+
+## 11. Changelog
+
+**[SPEC]**
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

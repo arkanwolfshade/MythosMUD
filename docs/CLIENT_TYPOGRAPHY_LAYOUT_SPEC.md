@@ -1,12 +1,25 @@
 # Client Typography and Layout Enhancement Specification
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
-## Overview
+---
 
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
 This specification addresses the need to improve the readability and usability of the MythosMUD game client by
 increasing font sizes across all panels and ensuring proper panel sizing and positioning to prevent overlaps.
 
-## Current State Analysis
+## 2. Current State Analysis
 
+**[SPEC]**
 ### Font Size Usage
 
 The client currently uses the following Tailwind CSS font size classes extensively:
@@ -36,8 +49,9 @@ The current panel system uses:
 2. **Panel overlap potential**: Default positions can cause panels to overlap on smaller screens
 3. **Inconsistent sizing**: Some panels may be too small to display all content properly
 
-## Requirements
+## 3. Requirements
 
+**[SPEC]**
 ### 1. Font Size Enhancement
 
 **Increase all font sizes by 2 points** across the entire game client
@@ -62,8 +76,9 @@ The current panel system uses:
 
 **Provide fallback positioning** for edge cases
 
-## Technical Specifications
+## 4. Technical Specifications
 
+**[NOTE]**
 ### Font Size Mapping
 
 #### Current → New Font Sizes
@@ -249,8 +264,9 @@ function calculateVerticalLayout(
 }
 ```
 
-## Implementation Plan
+## 5. Implementation Plan
 
+**[SPEC]**
 ### Phase 1: Font Size Updates
 
 1. **Update CSS Variables** in `index.css` and theme files
@@ -279,8 +295,9 @@ function calculateVerticalLayout(
 3. **Performance Testing** with large message volumes
 4. **User Experience Testing** with various panel configurations
 
-## Files to Modify
+## 6. Files to Modify
 
+**[SPEC]**
 ### Primary Files
 
 `client/src/index.css` - Global font size definitions
@@ -297,8 +314,9 @@ function calculateVerticalLayout(
 - `client/src/components/panels/GameLogPanel.tsx` - Text sizing
 - `client/src/components/DraggablePanel.tsx` - Panel sizing constraints
 
-## Testing Requirements
+## 7. Testing Requirements
 
+**[SPEC]**
 ### Typography Testing
 
 [ ] Verify all text is readable on 1080p displays
@@ -323,8 +341,9 @@ function calculateVerticalLayout(
 - [ ] Verify drag-and-drop functionality
 - [ ] Test panel minimize/maximize operations
 
-## Success Criteria
+## 8. Success Criteria
 
+**[SPEC]**
 ### Typography
 
 [ ] All text is at least 2 points larger than current sizes
@@ -349,8 +368,9 @@ function calculateVerticalLayout(
 - [ ] Efficient layout calculations
 - [ ] Minimal memory usage increase
 
-## Risk Assessment
+## 9. Risk Assessment
 
+**[NOTE]**
 ### Low Risk
 
 Font size increases are straightforward CSS updates
@@ -369,8 +389,9 @@ Complex positioning logic could affect performance
 
 - Edge cases in panel positioning may cause issues
 
-## Dependencies
+## 10. Dependencies
 
+**[NOTE]**
 ### Required
 
 Access to all client component files
@@ -385,8 +406,9 @@ Design system documentation for typography
 - User feedback on current readability issues
 - Performance benchmarks for layout calculations
 
-## Timeline Estimate
+## 11. Timeline Estimate
 
+**[SPEC]**
 **Phase 1 (Font Updates)**: 2-3 days
 
 **Phase 2 (Panel Sizing)**: 2-3 days
@@ -397,8 +419,9 @@ Design system documentation for typography
 
 **Total Estimated Time**: 11-15 days
 
-## Conclusion
+## 12. Conclusion
 
+**[NOTE]**
 This specification provides a comprehensive plan for improving the MythosMUD client's typography and layout. The
 proposed changes will significantly enhance readability while maintaining the existing design aesthetic and ensuring
 proper panel positioning across all screen sizes.
@@ -406,3 +429,10 @@ proper panel positioning across all screen sizes.
 The implementation follows a phased approach to minimize risk and allow for iterative improvements based on testing
 feedback. The font size increases and panel optimizations will provide immediate benefits to user experience, while the
 overlap prevention system ensures a professional and polished interface.
+
+## 13. Changelog
+
+**[SPEC]**
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

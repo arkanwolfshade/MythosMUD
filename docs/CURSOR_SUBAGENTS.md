@@ -1,13 +1,29 @@
 # Cursor Subagents Documentation
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[SPEC]**
 *"In the shadowed halls of Miskatonic University, we learn that complex investigations require specialized expertise. Each subagent operates in its own isolated context, allowing deep exploration without contaminating the main conversation."*
 
-## Overview
+## 2. Overview
 
+**[NOTE]**
 Subagents are specialized AI assistants that Cursor's agent can delegate complex tasks to. Each subagent operates in its own context window, handles specific types of work, and returns its result to the parent agent.
 
-## Key Concepts
+## 3. Key Concepts
 
+**[NOTE]**
 ### Context Isolation
 
 Each subagent has its own context window. Long research or exploration tasks don't consume space in your main conversation.
@@ -24,8 +40,9 @@ Subagents can be configured with custom prompts, tool access, and models for dom
 
 Custom subagents can be defined and used across projects.
 
-## Available Subagents
+## 4. Available Subagents
 
+**[SPEC]**
 ### Codebase Explorer
 
 **File**: `.cursor/agents/codebase-explorer.md`
@@ -135,8 +152,9 @@ Custom subagents can be defined and used across projects.
 
 **Integration**: Used by `investigate-bug.md` command
 
-## When to Use Subagents
+## 5. When to Use Subagents
 
+**[SPEC]**
 ### Use Subagents When
 
 - **Context Isolation Needed**: Long research or exploration tasks that would consume significant context
@@ -152,8 +170,9 @@ Custom subagents can be defined and used across projects.
 - **Tasks Completing in One Shot**: Main agent is faster
 - **Simple File Operations**: Main agent handles these efficiently
 
-## Subagent vs Command vs Rule
+## 6. Subagent vs Command vs Rule
 
+**[SPEC]**
 | Aspect        | Subagents                 | Commands                 | Rules                     |
 | ------------- | ------------------------- | ------------------------ | ------------------------- |
 | **Purpose**   | Complex, multi-step tasks | Single-purpose workflows | Persistent guidance       |
@@ -161,8 +180,9 @@ Custom subagents can be defined and used across projects.
 | **Execution** | Parallel or sequential    | Sequential               | Applied automatically     |
 | **Best For**  | Deep research, analysis   | Quick actions, workflows | Best practices, standards |
 
-## Built-in Subagents
+## 7. Built-in Subagents
 
+**[SPEC]**
 Cursor includes three built-in subagents that handle context-heavy operations automatically:
 
 ### Explore Subagent
@@ -185,8 +205,9 @@ Cursor includes three built-in subagents that handle context-heavy operations au
 
 These are used automatically when appropriate - no configuration needed.
 
-## Performance and Cost Considerations
+## 8. Performance and Cost Considerations
 
+**[SPEC]**
 ### Token Usage
 
 - **Subagents consume tokens independently**: Each subagent has its own context window
@@ -214,8 +235,9 @@ These are used automatically when appropriate - no configuration needed.
 - Tasks requiring conversation context
 - Immediate feedback needed
 
-## Integration with Commands
+## 9. Integration with Commands
 
+**[SPEC]**
 Subagents integrate with existing Cursor commands:
 
 - `investigate-bug.md` → Uses `bug-investigator` subagent
@@ -223,8 +245,9 @@ Subagents integrate with existing Cursor commands:
 - `client-test-remediation.md` → Uses `test-analyzer` subagent
 - `multiplayer-playwright-testing.md` → Uses `codebase-explorer` subagent
 
-## Creating Custom Subagents
+## 10. Creating Custom Subagents
 
+**[NOTE]**
 ### Subagent File Structure
 
 Create subagent files in `.cursor/agents/` with this structure:
@@ -237,19 +260,29 @@ description: "Clear description of what this subagent does"
 
 # Subagent Name
 
-## Purpose
+## 11. Purpose
+
+**[NOTE]**
 [Clear explanation of when to use this subagent]
 
-## Capabilities
+## 12. Capabilities
+
+**[NOTE]**
 [List of what this subagent can do]
 
-## Usage
+## 13. Usage
+
+**[NOTE]**
 [How to invoke this subagent]
 
-## Output Format
+## 14. Output Format
+
+**[NOTE]**
 [What kind of report/result to expect]
 
-## Integration
+## 15. Integration
+
+**[SPEC]**
 [How this integrates with existing commands/rules]
 ```
 
@@ -261,15 +294,17 @@ description: "Clear description of what this subagent does"
 - **Well Documented**: Include comprehensive documentation
 - **Integration**: Integrate with existing commands and rules
 
-## References
+## 16. References
 
+**[SPEC]**
 - [Cursor Subagents Documentation](https://cursor.com/docs/context/subagents)
 - Subagent definitions: `.cursor/agents/`
 - Usage guidelines: `.cursor/rules/subagent-usage.mdc`
 - Command definitions: `.cursor/commands/`
 
-## Examples
+## 17. Examples
 
+**[NOTE]**
 ### Example 1: Codebase Exploration
 
 ```
@@ -303,9 +338,17 @@ Subagent: [Returns security assessment report]
 Agent: [Presents findings to user]
 ```
 
-## Notes
+## 18. Notes
 
+**[SPEC]**
 - Subagents are powerful but have overhead - use judiciously
 - Commands provide quick workflows - use for common tasks
 - Rules provide persistent guidance - always applied
 - All components work together: Rules guide → Commands execute → Subagents handle complex work
+
+## 19. Changelog
+
+**[SPEC]**
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

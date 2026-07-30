@@ -1,9 +1,24 @@
 # Architecture Decision Records (ADRs)
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
 This directory contains Architecture Decision Records (ADRs) documenting major architectural decisions for MythosMUD. Each ADR captures the context, decision, rationale, and consequences of a significant architectural choice.
 
-## Format
+## 2. Format
 
+**[SPEC]**
 Each ADR follows this structure:
 
 - **Status**: Proposed | Accepted | Deprecated | Superseded
@@ -12,8 +27,9 @@ Each ADR follows this structure:
 - **Alternatives Considered**: Other options evaluated
 - **Consequences**: Positive, negative, and neutral outcomes
 
-## Index
+## 3. Index
 
+**[SPEC]**
 | ADR                                                              | Title                                                | Status   | Date       |
 | ---------------------------------------------------------------- | ---------------------------------------------------- | -------- | ---------- |
 | [ADR-001](ADR-001-layered-architecture-event-driven.md)          | Layered Architecture with Event-Driven Components    | Accepted | 2026-02-02 |
@@ -34,11 +50,19 @@ Each ADR follows this structure:
 | [ADR-016](ADR-016-aggro-threat-management.md)                    | Aggro and Threat Management System                   | Accepted | 2026-02-26 |
 | [ADR-017](ADR-017-ast-console-pruning-client-build.md)           | AST-Based Console Pruning in Client Production Build | Proposed | 2026-03-25 |
 
-## Related Documentation
+## 4. Related Documentation
 
+**[SPEC]**
 - [Architecture Review Plan](../../.cursor/plans/architecture_review_plan_7bcbc812.plan.md)
 - [Bounded Contexts and Service Boundaries](../../BOUNDED_CONTEXTS_AND_SERVICE_BOUNDARIES.md)
 - [ApplicationContainer Analysis](../../APPLICATION_CONTAINER_ANALYSIS.md)
 - [Event Ownership Matrix](../../EVENT_OWNERSHIP_MATRIX.md)
 - [Real-Time Architecture](../../REAL_TIME_ARCHITECTURE.md)
 - [Aggro and Threat System Design](../aggro-threat-system.md)
+
+## 5. Changelog
+
+**[SPEC]**
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

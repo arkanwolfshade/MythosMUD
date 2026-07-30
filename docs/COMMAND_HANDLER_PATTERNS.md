@@ -1,12 +1,27 @@
 # 🐙 MythosMUD Command Handler Patterns
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[SPEC]**
 *"Patterns emerge from chaos, and in those patterns we find the structure of our reality."* - Dr. Henry Armitage,
 Miskatonic University
 
 ---
 
-## Table of Contents
+## 2. Table of Contents
 
+**[SPEC]**
 1. [Overview](#overview)
 2. [Basic Handler Structure](#basic-handler-structure)
 3. [Common Handler Patterns](#common-handler-patterns)
@@ -20,8 +35,9 @@ Miskatonic University
 
 ---
 
-## Overview
+## 3. Overview
 
+**[NOTE]**
 Command handlers in MythosMUD are async functions that process validated command data and interact with the game
 systems. They follow consistent patterns to ensure maintainability, security, and performance.
 
@@ -54,8 +70,9 @@ async def handle_command_name(
 
 ---
 
-## Basic Handler Structure
+## 4. Basic Handler Structure
 
+**[NOTE]**
 ### Minimal Handler
 
 ```python
@@ -127,8 +144,9 @@ async def handle_standard_command(
 
 ---
 
-## Common Handler Patterns
+## 5. Common Handler Patterns
 
+**[NOTE]**
 ### 1. Room-Based Commands
 
 Commands that affect or interact with the current room:
@@ -420,8 +438,9 @@ async def handle_validation_command(
 
 ---
 
-## Accessing Game Systems
+## 6. Accessing Game Systems
 
+**[NOTE]**
 ### Persistence Layer
 
 ```python
@@ -480,8 +499,9 @@ success = movement_service.move_player(
 
 ---
 
-## Error Handling Patterns
+## 7. Error Handling Patterns
 
+**[NOTE]**
 ### Graceful Degradation
 
 ```python
@@ -581,8 +601,9 @@ async def handle_specific_errors(
 
 ---
 
-## Logging Patterns
+## 8. Logging Patterns
 
+**[NOTE]**
 ### Standard Logging
 
 ```python
@@ -695,8 +716,9 @@ async def handle_security_logged_command(
 
 ---
 
-## Security Patterns
+## 9. Security Patterns
 
+**[NOTE]**
 ### Input Sanitization
 
 ```python
@@ -793,8 +815,9 @@ async def handle_rate_limited_command(
 
 ---
 
-## Performance Patterns
+## 10. Performance Patterns
 
+**[NOTE]**
 ### Caching
 
 ```python
@@ -903,8 +926,9 @@ async def handle_batch_command(
 
 ---
 
-## Testing Patterns
+## 11. Testing Patterns
 
+**[NOTE]**
 ### Mock Setup
 
 ```python
@@ -985,8 +1009,9 @@ async def test_command_handler_errors():
 
 ---
 
-## Anti-Patterns to Avoid
+## 12. Anti-Patterns to Avoid
 
+**[NOTE]**
 ### 1. Blocking Operations
 
 ```python
@@ -1090,3 +1115,10 @@ async def handle_validated_command(...):
 ---
 
 *This reference document should be updated as new patterns emerge and existing ones evolve.*
+
+## 13. Changelog
+
+**[SPEC]**
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

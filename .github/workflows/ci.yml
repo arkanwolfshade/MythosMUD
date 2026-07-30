@@ -473,3 +473,15 @@ jobs:
           "${CODACY_REPORTER}" final \
             --project-token "${CODACY_PROJECT_TOKEN}" \
             --commit-uuid "${CODACY_COMMIT_UUID}"
+
+  # Structural HADS check for living developer docs listed in docs/hads.manifest
+  hads-docs:
+    name: HADS docs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 1
+      - name: Validate HADS manifest
+        run: python scripts/hads/validate.py --manifest docs/hads.manifest

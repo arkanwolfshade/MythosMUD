@@ -1,12 +1,34 @@
 # Enhanced Logging System Implementation Guide
 
-## Overview
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
-The MythosMUD server now features a comprehensive enhanced logging system that addresses all the anti-patterns and
-security issues identified in the original logging implementation. This guide provides complete documentation for the
-new system.
+---
 
-## 🔧 **What Was Implemented**
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[SPEC]**
+
+- Canonical living logging guide for MythosMUD (consolidates former best-practices and quick-ref docs)
+- Import: `from server.structured_logging.enhanced_logging_config import get_logger`
+- Never use `import logging` / `logging.getLogger()` for server code
+- Prefer structured key-value fields; never f-string log messages
+
+**[NOTE]**
+The MythosMUD server features an enhanced logging system that addresses anti-patterns and security issues from earlier
+logging. Former `LOGGING_BEST_PRACTICES.md` and `LOGGING_QUICK_REFERENCE.md` were archived; pointers remain at those
+paths.
+
+## 2. 🔧 **What Was Implemented**
+
+**[SPEC]**
 
 ### **High Priority Items (Completed)**
 
@@ -108,7 +130,9 @@ new system.
 - Exception statistics
 - Handler system for custom processing
 
-## 🚀 **How to Use the Enhanced System**
+## 3. 🚀 **How to Use the Enhanced System**
+
+**[NOTE]**
 
 ### **Basic Usage**
 
@@ -192,7 +216,9 @@ except Exception as e:
     )
 ```
 
-## 🔧 **Configuration**
+## 4. 🔧 **Configuration**
+
+**[NOTE]**
 
 ### **Enhanced Logging Setup**
 
@@ -252,8 +278,9 @@ print(f"System status: {health.status}")
 print(f"Performance score: {health.performance_score}")
 ```
 
-## 📊 **Monitoring Endpoints**
+## 5. 📊 **Monitoring Endpoints**
 
+**[SPEC]**
 The enhanced system provides several monitoring endpoints:
 
 - `/health` - System health check
@@ -262,7 +289,9 @@ The enhanced system provides several monitoring endpoints:
 - `/monitoring/alerts` - System alerts
 - `/monitoring/alerts/{alert_id}/resolve` - Resolve alerts
 
-## 🔒 **Security Features**
+## 6. 🔒 **Security Features**
+
+**[NOTE]**
 
 ### **Automatic Data Sanitization**
 
@@ -287,8 +316,9 @@ sensitive_keys = [
 ]
 ```
 
-## 📈 **Performance Benefits**
+## 7. 📈 **Performance Benefits**
 
+**[SPEC]**
 **Async Processing**: Background log processing reduces I/O blocking
 
 **Context Variables**: Efficient context propagation without parameter overhead
@@ -299,7 +329,9 @@ sensitive_keys = [
 
 **Aggregation**: Centralized log collection and analysis
 
-## 🧪 **Testing**
+## 8. 🧪 **Testing**
+
+**[NOTE]**
 
 ### **Running Tests**
 
@@ -321,7 +353,9 @@ python -m pytest server/tests/test_monitoring.py
 python server/scripts/migrate_to_enhanced_logging.py
 ```
 
-## 🚨 **Migration Notes**
+## 9. 🚨 **Migration Notes**
+
+**[SPEC]**
 
 ### **Breaking Changes**
 
@@ -336,7 +370,9 @@ Old log files remain readable
 - Existing log formats are preserved
 - Gradual migration is supported
 
-## 🔮 **Future Enhancements**
+## 10. 🔮 **Future Enhancements**
+
+**[SPEC]**
 
 ### **Planned Features**
 
@@ -353,15 +389,17 @@ Old log files remain readable
 3. **ELK Stack**: Elasticsearch, Logstash, Kibana integration
 4. **Sentry**: Error tracking and alerting integration
 
-## 📚 **Documentation References**
+## 11. 📚 **Documentation References**
 
+**[SPEC]**
 [Structlog Documentation](https://www.structlog.org/)
 
 - [FastAPI Middleware](https://fastapi.tiangolo.com/tutorial/middleware/)
 - [Python Logging Best Practices](https://docs.python.org/3/howto/logging.html)
 
-## 🤝 **Contributing**
+## 12. 🤝 **Contributing**
 
+**[SPEC]**
 When contributing to the logging system:
 
 1. Use structured logging with proper context
@@ -370,7 +408,9 @@ When contributing to the logging system:
 4. Add performance monitoring where appropriate
 5. Update tests for any logging changes
 
-## 🆘 **Troubleshooting**
+## 13. 🆘 **Troubleshooting**
+
+**[NOTE]**
 
 ### **Common Issues**
 
@@ -394,6 +434,13 @@ config = {
 
 ---
 
-*As noted in the Pnakotic Manuscripts, proper documentation and understanding of our systems is essential for
+_As noted in the Pnakotic Manuscripts, proper documentation and understanding of our systems is essential for
 maintaining their stability and observability. The enhanced logging system provides the foundation for comprehensive
-system monitoring and debugging.*
+system monitoring and debugging._
+
+## 14. Changelog
+
+**[SPEC]**
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

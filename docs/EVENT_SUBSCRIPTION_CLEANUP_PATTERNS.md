@@ -1,23 +1,40 @@
 # Event Subscription Cleanup Patterns
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
 This document describes the recommended patterns for managing event subscriptions in MythosMUD services to prevent
 memory leaks and ensure proper resource cleanup.
 
-## Overview
+## 2. Overview
 
+**[NOTE]**
 The EventBus provides automatic cleanup of service subscriptions during application shutdown, but services should also
 implement proper cleanup patterns to ensure subscriptions are removed in the correct order and prevent memory leaks
 during service lifecycle changes.
 
-## Core Principles
+## 3. Core Principles
 
+**[SPEC]**
 1. **Service Identification**: All services should provide a unique `service_id` when subscribing to events
 2. **Explicit Cleanup**: Services should explicitly unsubscribe during their own shutdown
 3. **Automatic Fallback**: EventBus automatically cleans up all subscriptions during application shutdown
 4. **Order Matters**: Service-level cleanup should happen before application-level cleanup
 
-## Recommended Pattern
+## 4. Recommended Pattern
 
+**[NOTE]**
 ### Basic Service Pattern
 
 ```python
@@ -111,8 +128,9 @@ async def my_function(event_bus: EventBus):
         pass
 ```
 
-## Service ID Naming Conventions
+## 5. Service ID Naming Conventions
 
+**[SPEC]**
 Service IDs should follow these conventions:
 
 **Format**: `{module_name}_{service_name}` or `{service_name}` for top-level services
@@ -126,8 +144,9 @@ Service IDs should follow these conventions:
 - **Uniqueness**: Service IDs must be unique within the application
 - **Persistence**: Service IDs should remain constant across service restarts
 
-## Cleanup Order
+## 6. Cleanup Order
 
+**[SPEC]**
 The recommended cleanup order is:
 
 1. **Service-Level Cleanup**: Services call `unsubscribe_all_for_service()` during their own shutdown
@@ -142,8 +161,9 @@ This two-phase approach ensures:
 - No subscriptions are missed if a service fails to clean up
 - Proper logging of cleanup operations
 
-## Monitoring
+## 7. Monitoring
 
+**[NOTE]**
 The EventBus provides monitoring methods to track subscription health:
 
 ```python
@@ -161,8 +181,9 @@ for event_type, count in counts.items():
     print(f"{event_type}: {count} subscribers")
 ```
 
-## Common Pitfalls
+## 8. Common Pitfalls
 
+**[NOTE]**
 ### ❌ Don't: Subscribe without service_id
 
 ```python
@@ -217,8 +238,9 @@ service1 = MyService(event_bus, instance_id="1")  # service_id="my_service_1"
 service2 = MyService(event_bus, instance_id="2")  # service_id="my_service_2"
 ```
 
-## Testing
+## 9. Testing
 
+**[NOTE]**
 When testing services with event subscriptions:
 
 1. **Verify Cleanup**: Test that `unsubscribe_all_for_service()` removes all subscriptions
@@ -249,8 +271,9 @@ async def test_service_cleanup_subscriptions(event_bus: EventBus):
     assert 'my_service' not in stats['service_subscriber_counts']
 ```
 
-## Integration with Application Shutdown
+## 10. Integration with Application Shutdown
 
+**[NOTE]**
 The EventBus is automatically cleaned up during application shutdown in `server/app/lifespan_shutdown.py`:
 
 ```python
@@ -276,8 +299,9 @@ async def _shutdown_event_bus(container: ApplicationContainer) -> None:
 This ensures that even if services fail to clean up their subscriptions, the EventBus will clean them up during
 application shutdown.
 
-## Summary
+## 11. Summary
 
+**[SPEC]**
 Always provide a unique `service_id` when subscribing to events
 
 - Explicitly call `unsubscribe_all_for_service()` during service shutdown
@@ -286,3 +310,10 @@ Always provide a unique `service_id` when subscribing to events
 - Test cleanup behavior in your service tests
 
 Following these patterns ensures proper resource cleanup and prevents memory leaks from orphaned event subscriptions.
+
+## 12. Changelog
+
+**[SPEC]**
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

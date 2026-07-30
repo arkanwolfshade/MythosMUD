@@ -1,16 +1,32 @@
 # ConnectionManager Modular Architecture
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[SPEC]**
 **Last Updated**: December 4, 2025
 **Status**: ✅ Refactoring Complete
 
-## Overview
+## 2. Overview
 
+**[NOTE]**
 The ConnectionManager has been successfully refactored from a 3,653-line monolithic module into a well-structured,
 modular system following the Facade design pattern. This document describes the new architecture and how components
 interact.
 
-## Architecture Diagram
+## 3. Architecture Diagram
 
+**[NOTE]**
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                      ConnectionManager                          │
@@ -52,8 +68,9 @@ interact.
 └─────────────────┘
 ```
 
-## Component Descriptions
+## 4. Component Descriptions
 
+**[SPEC]**
 ### 1. Monitoring (`realtime/monitoring/`)
 
 **Purpose**: Performance tracking, statistics collection, and health monitoring
@@ -159,8 +176,9 @@ PlayerEnteredRoom event handling
 - NATS event publishing
 - Room occupant updates
 
-## Component Interaction Patterns
+## 5. Component Interaction Patterns
 
+**[NOTE]**
 ### Connection Flow
 
 ```python
@@ -209,8 +227,9 @@ self.message_broadcaster = MessageBroadcaster(
 )
 ```
 
-## Benefits Achieved
+## 6. Benefits Achieved
 
+**[NOTE]**
 ### 1. **Improved Maintainability**
 
 Each component has 200-400 lines (vs. 3,653 monolithic)
@@ -246,8 +265,9 @@ Easy to identify bottlenecks in specific components
 - Targeted optimization opportunities
 - Clear performance metrics per component
 
-## Design Patterns Applied
+## 7. Design Patterns Applied
 
+**[NOTE]**
 ### Facade Pattern
 
 ConnectionManager coordinates components
@@ -276,8 +296,9 @@ Different strategies for error handling
 - Pluggable message delivery mechanisms
 - Flexible component implementations
 
-## Migration Notes
+## 8. Migration Notes
 
+**[NOTE]**
 ### API Compatibility
 
 Public API remains unchanged
@@ -299,8 +320,9 @@ No measurable performance degradation
 - Some improvements due to better separation
 - Memory usage unchanged
 
-## Future Opportunities
+## 9. Future Opportunities
 
+**[SPEC]**
 While significant improvements were achieved, additional refinement could include:
 
 1. **Session Management Module**: If session logic expands beyond current scope
@@ -308,9 +330,10 @@ While significant improvements were achieved, additional refinement could includ
 3. **WebSocket Lifecycle Module**: If connection patterns become more sophisticated
 4. **Additional Monitoring**: More granular performance metrics per component
 
-## References
+## 10. References
 
-**Refactoring Summary**: `REFACTORING_SUMMARY.md`
+**[SPEC]**
+**Refactoring Summary**: `archive/REFACTORING_SUMMARY.md`
 
 **Original Plan**: `.cursor/plans/connection-manager-refactor_b94299a2.plan.md`
 
@@ -318,8 +341,9 @@ While significant improvements were achieved, additional refinement could includ
 
 **Python Best Practices**: `.cursor/rules/python.mdc`
 
-## Metrics
+## 11. Metrics
 
+**[SPEC]**
 **Original Size**: 3,653 lines
 
 **Current Size**: 2,382 lines
@@ -332,3 +356,10 @@ While significant improvements were achieved, additional refinement could includ
 
 - **Linting**: ✅ All passed
 - **Refactoring Duration**: December 4, 2025
+
+## 12. Changelog
+
+**[SPEC]**
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

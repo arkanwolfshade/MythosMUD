@@ -1,7 +1,19 @@
 # Admin Commands Subsystem Design
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
-## Overview
+---
 
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
 The admin commands subsystem groups all commands that require admin permission: mute/unmute (and
 global), add_admin, teleport/goto, summon, shutdown, setstat, setlucidity, npc (admin NPC spawn/
 despawn/list). Permission is validated via player.is_admin; admin actions are logged via
@@ -10,8 +22,9 @@ admin_teleport_commands, admin_mute_commands, admin_shutdown_command, admin_summ
 admin_setstat_command, admin_setlucidity_command, npc_admin_commands); the main "admin" command
 dispatches subcommands.
 
-## Architecture
+## 2. Architecture
 
+**[NOTE]**
 ```mermaid
 flowchart LR
   subgraph entry [Entry]
@@ -65,8 +78,9 @@ flowchart LR
   structured_logging/admin_actions_logger.py) – Logs permission checks and admin actions for
   audit.
 
-## Key design decisions
+## 3. Key design decisions
 
+**[NOTE]**
 - **Single permission check**: player.is_admin (boolean on player model); no role hierarchy in
   code. validate_admin_permission centralizes check and audit log.
 - **Admin command routing**: "admin" command takes subcommand (e.g. admin teleport &lt;player&gt;
@@ -78,15 +92,17 @@ flowchart LR
 - **Security**: Admin-only; no elevation of privilege beyond is_admin. Input validation (room id,
   player name) in each module to avoid injection or invalid state.
 
-## Constraints
+## 4. Constraints
 
+**[NOTE]**
 - **Player must be admin**: validate_admin_permission returns False if not player or not
   player.is_admin; command returns error message.
 - **Dependencies**: Persistence (player, room), MovementService (teleport/goto), UserManager
   (mute), ConnectionManager (summon, shutdown), lifecycle/spawning (npc admin), admin_actions_logger.
 
-## Component interactions
+## 5. Component interactions
 
+**[SPEC]**
 1. **admin &lt;subcommand&gt; [args]** – Parse subcommand; validate*admin_permission(player);
    if not admin return error; dispatch to handle*\* for mute, teleport, goto, add_admin, etc.;
    each handler may log action.
@@ -97,8 +113,9 @@ flowchart LR
 5. **setstat / setlucidity** – validate_admin_permission; load player; set stat; save_player.
 6. **npc** – validate_admin_permission; npc spawn/despawn/list via lifecycle and spawning.
 
-## Developer guide
+## 6. Developer guide
 
+**[NOTE]**
 - **Adding new admin command**: Create handler (or add to existing module); register in
   command_service and in handle_admin_command if using "admin &lt;subcommand&gt;" form; call
   validate_admin_permission at start; log action via admin_actions_logger.
@@ -109,8 +126,9 @@ flowchart LR
 - **Security**: Never trust client for admin flag; always load player from persistence and check
   is_admin server-side.
 
-## Troubleshooting
+## 7. Troubleshooting
 
+**[NOTE]**
 - **"You do not have permission"**: validate_admin_permission failed; check player.is_admin in
   DB and that command uses same player object from persistence.
 - **Admin action not logged**: Ensure handler calls validate_admin_permission (which logs) and
@@ -124,8 +142,16 @@ flowchart LR
 See also [GAME_BUG_INVESTIGATION_PLAYBOOK](../../.cursor/rules/GAME_BUG_INVESTIGATION_PLAYBOOK.mdc) and
 security/COPPA requirements in project rules.
 
-## Related docs
+## 8. Related docs
 
+**[SPEC]**
 - [COMMAND_MODELS_REFERENCE.md](../COMMAND_MODELS_REFERENCE.md)
 - [SUBSYSTEM_MOVEMENT_DESIGN.md](SUBSYSTEM_MOVEMENT_DESIGN.md) (teleport/goto)
 - [SUBSYSTEM_NPC_DESIGN.md](SUBSYSTEM_NPC_DESIGN.md) (npc admin)
+
+## 9. Changelog
+
+**[SPEC]**
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

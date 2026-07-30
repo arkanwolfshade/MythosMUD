@@ -1,10 +1,25 @@
 # ADR-010: Quest Subsystem Architecture
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[SPEC]**
 **Status:** Accepted
 **Date:** 2026-02-19
 
-## Context
+## 2. Context
 
+**[NOTE]**
 MythosMUD needs a data-driven quest system so builders can add and tune quests without code
 changes. Requirements (from [QUEST_SYSTEM_FEATURES.md](../../QUEST_SYSTEM_FEATURES.md)): goal
 types (e.g. complete-activity, kill N), reward types (XP, item, spell), triggers (room, NPC,
@@ -12,8 +27,9 @@ item), event-driven progression, persistent per-character state, quest log/journ
 prerequisite chains. The server must remain authoritative; the client displays quest state
 provided by the server (game_state.quest_log or GET /api/players/{id}/quests).
 
-## Decision
+## 3. Decision
 
+**[NOTE]**
 1. **Storage**: Quest definitions live in PostgreSQL: table `quest_definitions` (id, definition
    JSONB, timestamps). Per-character state in `quest_instances` (player_id, quest_id, state,
    progress JSONB, accepted_at, completed_at). Table `quest_offers` links quests to entities
@@ -44,8 +60,9 @@ provided by the server (game_state.quest_log or GET /api/players/{id}/quests).
 6. **Client**: Journal panel (default layout, title "Journal") displays quest_log from
    game_state or refreshed via GET /quests; server-authoritative.
 
-## Alternatives Considered
+## 4. Alternatives Considered
 
+**[NOTE]**
 - **YAML/JSON files on disk**: Rejected in favor of JSONB in PostgreSQL for consistency with
   ADR-006, single source of truth, and no file-path or reload concerns. Migrations can seed
   initial quests.
@@ -54,8 +71,9 @@ provided by the server (game_state.quest_log or GET /api/players/{id}/quests).
 - **Client-authoritative progress**: Rejected; server is authoritative (server-authority rule);
   progress is updated only when server-side events occur.
 
-## Consequences
+## 5. Consequences
 
+**[NOTE]**
 - **Positive**: Builders can add quests via migrations or future tooling; quest log and
   abandon are covered by API and commands; event-driven progression fits existing EventBus
   usage; prerequisites support linear chains.
@@ -63,3 +81,10 @@ provided by the server (game_state.quest_log or GET /api/players/{id}/quests).
   inventory/spell services to be wired.
 - **Neutral**: Quest design guidelines (e.g. lysator principles) live in developer docs;
   content quality is a separate concern from architecture.
+
+## 6. Changelog
+
+**[SPEC]**
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

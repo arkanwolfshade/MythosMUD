@@ -1,7 +1,19 @@
 # Item System Observability Runbook
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
-## Purpose
+---
 
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Purpose
+
+**[SPEC]**
 This runbook equips operators with the steps required to keep the MythosMUD item
 system healthy during prototype updates, administrative summon rituals, and data
 recoveries.  It complements the structured logging and alerting hooks delivered
@@ -83,3 +95,10 @@ Treat `quantity > 5` as an escalation.  The observability harness will emit a
 
    - Update the operational log with the root cause, fix, and validation steps.
    - If durability values were altered, notify design to confirm balance impact.
+
+## 2. Changelog
+
+**[SPEC]**
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

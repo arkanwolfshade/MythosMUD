@@ -1,16 +1,32 @@
 # Persistence Repository Architecture
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[SPEC]**
 **Last Updated**: December 2025
 **Status**: ✅ Fully Async - PersistenceLayer Removed
 
-## Overview
+## 2. Overview
 
+**[NOTE]**
 The persistence layer has been fully migrated to async. The legacy `PersistenceLayer` (synchronous shim) has been
 removed. All code now uses `AsyncPersistenceLayer` with async repositories. This provides a modern async foundation with
 no legacy sync code.
 
-## Architecture Diagram
+## 3. Architecture Diagram
 
+**[NOTE]**
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                    async_persistence.py                          │
@@ -44,8 +60,9 @@ no legacy sync code.
 └─────────────────────┘
 ```
 
-## Repository Descriptions
+## 4. Repository Descriptions
 
+**[SPEC]**
 ### 1. PlayerRepository (400 lines)
 
 **Purpose**: Player CRUD and query operations
@@ -205,8 +222,9 @@ no legacy sync code.
 
 **Note**: Uses `asyncio.to_thread()` to wrap sync functions
 
-## Usage Examples
+## 5. Usage Examples
 
+**[NOTE]**
 ### Example 1: Direct Repository Usage
 
 ```python
@@ -290,8 +308,9 @@ class CombatService:
         return {"damage_dealt": damage, "target_alive": target.get_stats()["current_health"] > 0}
 ```
 
-## Design Patterns
+## 6. Design Patterns
 
+**[SPEC]**
 ### Repository Pattern
 
 Each repository encapsulates database access for a specific domain:
@@ -351,8 +370,9 @@ WHERE player_id = :player_id
 - Stronger consistency
 - Reduced lock contention
 
-## Migration Status
+## 7. Migration Status
 
+**[SPEC]**
 ### Completed ✅
 
 [x] PlayerRepository extracted
@@ -378,12 +398,20 @@ WHERE player_id = :player_id
 - [x] Remove sync persistence layer ✅ **COMPLETE**
 - [x] Remove persistence.py ✅ **COMPLETE**
 
-## References
+## 8. References
 
+**[SPEC]**
 **Repositories**: `server/persistence/repositories/`
 
 **Migration Guide**: `docs/PERSISTENCE_ASYNC_MIGRATION_GUIDE.md`
 
 **Migration Plan**: `docs/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
 
-**Summary**: `PERSISTENCE_REFACTORING_SUMMARY.md`
+**Summary**: `archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+
+## 9. Changelog
+
+**[SPEC]**
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

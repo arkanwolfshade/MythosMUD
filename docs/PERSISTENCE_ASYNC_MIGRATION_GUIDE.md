@@ -1,17 +1,33 @@
 # Persistence Layer Async Migration Guide
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[SPEC]**
 **Date**: December 5, 2025
 **Status**: Phase 1 Complete - Async Repositories Extracted
 **Migration Strategy**: Conservative - Gradual async adoption
 
-## Executive Summary
+## 2. Executive Summary
 
+**[NOTE]**
 The persistence layer has been refactored to extract async repositories while maintaining full backward compatibility
 through the existing `persistence.py` synchronous interface. New async-first code can use the repositories directly,
 while existing code continues working unchanged.
 
-## What's Been Completed
+## 3. What's Been Completed
 
+**[NOTE]**
 ### New Async Repository Architecture
 
 ```
@@ -78,8 +94,9 @@ Item instance operations via `asyncio.to_thread()` wrappers
 
 - Delegates to existing `item_instance_persistence.py` module
 
-## How to Use the New Async Repositories
+## 4. How to Use the New Async Repositories
 
+**[NOTE]**
 ### Option 1: Use Async Facade (Recommended for Async Code) ✅
 
 ```python
@@ -154,8 +171,9 @@ persistence.save_player(player)
 - Existing code continues working
 - No migration pressure
 
-## Migration Path for Existing Code
+## 5. Migration Path for Existing Code
 
+**[NOTE]**
 ### Phase 1: Async Repository Extraction ✅ COMPLETE
 
 [x] Extract PlayerRepository
@@ -271,8 +289,9 @@ async def get_player(
 - Convert sync assertions to async
 - Migrate database setup/teardown to async
 
-## Benefits of Async Repositories
+## 6. Benefits of Async Repositories
 
+**[SPEC]**
 ### Performance
 
 **Non-blocking I/O**: True async database operations (no thread pool overhead)
@@ -303,8 +322,9 @@ async def get_player(
 
 **Scalability Foundation**: Ready for distributed architecture
 
-## Migration Decision Tree
+## 7. Migration Decision Tree
 
+**[SPEC]**
 ### When to Use Async Repositories Directly?
 
 **YES - Use async repositories directly when:**
@@ -331,8 +351,9 @@ async def get_player(
 | **LOW**    | Game logic         | Stable code, low traffic                        |
 | **LOW**    | NPC systems        | Background operations, not latency-sensitive    |
 
-## Testing the New Repositories
+## 8. Testing the New Repositories
 
+**[NOTE]**
 ### Unit Testing Repositories
 
 ```python
@@ -361,8 +382,9 @@ async def test_player_repository_get_by_id(mock_async_session):
     assert player == expected_player
 ```
 
-## Common Pitfalls & Solutions
+## 9. Common Pitfalls & Solutions
 
+**[NOTE]**
 ### Pitfall 1: Mixing Sync and Async Code
 
 **Problem**:
@@ -435,8 +457,9 @@ except DatabaseError as e:
 
 ```
 
-## Performance Comparison
+## 10. Performance Comparison
 
+**[SPEC]**
 ### Sync Persistence (Current)
 
 ```python
@@ -475,8 +498,9 @@ player = await player_repo.get_player_by_id(player_id)  # Non-blocking
 - 100 concurrent operations: ~50-100% faster (async shines)
 - 1000 concurrent operations: ~200-400% faster (async dominates)
 
-## Migration Checklist (Per File)
+## 11. Migration Checklist (Per File)
 
+**[NOTE]**
 Use this checklist when migrating a file to async repositories:
 
 ### Pre-Migration
@@ -548,8 +572,9 @@ class UserManager:
         return await self.player_repo.get_player_by_id(player_id)
 ```
 
-## File-by-File Migration Priority
+## 12. File-by-File Migration Priority
 
+**[SPEC]**
 ### Priority 1: API Endpoints (Easiest - Already Async!)
 
 FastAPI endpoints are already async, making them the easiest to migrate:
@@ -625,8 +650,9 @@ Migrate tests after their corresponding code is migrated:
 **Benefit**: Test async behavior properly
 **Risk**: Low - tests should guide migration
 
-## Rollback Strategy
+## 13. Rollback Strategy
 
+**[SPEC]**
 If issues arise during migration:
 
 1. **Individual File Rollback**: Revert specific file to sync version
@@ -634,8 +660,9 @@ If issues arise during migration:
 3. **Feature Flags**: Use environment variable to toggle async/sync
 4. **No Breaking Changes**: Existing code continues working throughout migration
 
-## Success Metrics
+## 14. Success Metrics
 
+**[SPEC]**
 ### Per-File Migration Metrics
 
 [ ] All tests passing
@@ -652,8 +679,9 @@ Current: 0/41 files migrated to async repositories
 - Test Coverage: Maintain 82%+ throughout migration
 - Performance: No regressions, potential improvements
 
-## Next Steps
+## 15. Next Steps
 
+**[SPEC]**
 1. **Start with API endpoints** - Easiest wins, immediate performance benefits
 2. **Migrate high-traffic services** - Combat, player management
 3. **Update real-time handlers** - WebSocket responsiveness
@@ -661,8 +689,9 @@ Current: 0/41 files migrated to async repositories
 5. **Migrate tests** - After corresponding code is migrated
 6. **Eventually deprecate sync layer** - When all code is async
 
-## References
+## 16. References
 
+**[SPEC]**
 **Async Repositories**: `server/persistence/repositories/`
 
 **Async Persistence Layer**: `server/async_persistence.py`
@@ -671,7 +700,15 @@ Current: 0/41 files migrated to async repositories
 
 **Async Remediation Summary**: `docs/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
 
-## Questions?
+## 17. Questions?
 
+**[NOTE]**
 This migration is **entirely optional** and can proceed at whatever pace makes sense for the project. The async
 repositories are available for use, but existing sync code continues working indefinitely.
+
+## 18. Changelog
+
+**[SPEC]**
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

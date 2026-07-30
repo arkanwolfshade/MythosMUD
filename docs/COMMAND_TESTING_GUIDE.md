@@ -1,12 +1,27 @@
 # 🐙 MythosMUD Command Testing Guide
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[SPEC]**
 *"In the realm of eldritch coding, the only truth is that which can be tested and verified."* - Dr. Francis Wayland
 Thurston, Miskatonic University
 
 ---
 
-## Table of Contents
+## 2. Table of Contents
 
+**[SPEC]**
 1. [Overview](#overview)
 2. [Testing Philosophy](#testing-philosophy)
 3. [Test Structure](#test-structure)
@@ -22,8 +37,9 @@ Thurston, Miskatonic University
 
 ---
 
-## Overview
+## 3. Overview
 
+**[NOTE]**
 Testing is crucial for maintaining the reliability and security of MythosMUD commands. This guide provides comprehensive
 strategies for testing command handlers, models, and integration points.
 
@@ -53,8 +69,9 @@ strategies for testing command handlers, models, and integration points.
 
 ---
 
-## Testing Philosophy
+## 4. Testing Philosophy
 
+**[SPEC]**
 ### Test-Driven Development (TDD)
 
 1. **Write Tests First**: Define expected behavior before implementation
@@ -76,8 +93,9 @@ strategies for testing command handlers, models, and integration points.
 
 ---
 
-## Test Structure
+## 5. Test Structure
 
+**[NOTE]**
 ### File Organization
 
 ```
@@ -128,8 +146,9 @@ class TestCommandName:
 
 ---
 
-## Unit Testing
+## 6. Unit Testing
 
+**[NOTE]**
 ### Command Handler Testing
 
 #### Basic Handler Test
@@ -335,8 +354,9 @@ def test_command_parser_basic():
 
 ---
 
-## Integration Testing
+## 7. Integration Testing
 
+**[NOTE]**
 ### End-to-End Command Testing
 
 ```python
@@ -450,8 +470,9 @@ async def test_command_event_integration():
 
 ---
 
-## Mocking Strategies
+## 8. Mocking Strategies
 
+**[NOTE]**
 ### Mock Setup Patterns
 
 #### Standard Mock Setup
@@ -569,8 +590,9 @@ async def test_command_mock_verification():
 
 ---
 
-## Test Data Management
+## 9. Test Data Management
 
+**[NOTE]**
 ### Test Data Factories
 
 ```python
@@ -632,8 +654,9 @@ def create_test_command_string(command, *args):
 
 ---
 
-## Security Testing
+## 10. Security Testing
 
+**[NOTE]**
 ### Input Validation Testing
 
 ```python
@@ -793,8 +816,9 @@ async def test_command_rate_limiting():
 
 ---
 
-## Performance Testing
+## 11. Performance Testing
 
+**[NOTE]**
 ### Response Time Testing
 
 ```python
@@ -872,8 +896,9 @@ async def test_command_memory_usage():
 
 ---
 
-## Test Coverage
+## 12. Test Coverage
 
+**[NOTE]**
 ### Coverage Requirements
 
 ```python
@@ -921,8 +946,9 @@ def test_command_coverage():
 
 ---
 
-## Best Practices
+## 13. Best Practices
 
+**[NOTE]**
 ### 1. Test Organization
 
 ```python
@@ -1062,8 +1088,9 @@ async def test_whisper_2():
 
 ---
 
-## Common Testing Patterns
+## 14. Common Testing Patterns
 
+**[NOTE]**
 ### 1. Parameterized Testing
 
 ```python
@@ -1173,8 +1200,9 @@ async def test_command_async_operations():
 
 ---
 
-## Enhanced Logging in Command Tests
+## 15. Enhanced Logging in Command Tests
 
+**[NOTE]**
 ### **CRITICAL: Enhanced Logging Requirements**
 
 All command tests MUST use the enhanced logging system for proper observability and debugging.
@@ -1271,8 +1299,9 @@ def test_command_logging():
 
 **Testing Examples**: [docs/examples/logging/testing_examples.py](examples/logging/testing_examples.py)
 
-## Conclusion
+## 16. Conclusion
 
+**[SPEC]**
 Comprehensive testing is essential for maintaining the reliability and security of MythosMUD commands. By following
 these patterns and best practices, you can ensure that:
 
@@ -1293,3 +1322,10 @@ Remember to:
 ---
 
 *This guide should be updated as testing practices evolve and new patterns emerge.*
+
+## 17. Changelog
+
+**[SPEC]**
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

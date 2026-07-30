@@ -1,5 +1,19 @@
 # =��� MythosMUD G�� AI Agent Development Guide
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
 *"In the vast archives of Miskatonic University, even the most advanced artificial intelligences must learn to navigate
 the forbidden knowledge with care and precision."*
 
@@ -9,8 +23,9 @@ Mythos-themed MUD development.
 
 ---
 
-## =�Ļ AI Agent Context & Personality
+## 2. =�Ļ AI Agent Context & Personality
 
+**[SPEC]**
 ### **Project Character**
 
 **Theme**: Cthulhu Mythos-themed MUD (Multi-User Dungeon)
@@ -25,8 +40,9 @@ Mythos-themed MUD development.
 
 ---
 
-## 🏗️ CRITICAL ARCHITECTURE UPDATES (December 2025)
+## 3. 🏗️ CRITICAL ARCHITECTURE UPDATES (December 2025)
 
+**[SPEC]**
 ### **ConnectionManager Modular Refactoring**
 
 The real-time ConnectionManager has been refactored from a 3,653-line monolithic module into a modular architecture:
@@ -50,8 +66,9 @@ The real-time ConnectionManager has been refactored from a 3,653-line monolithic
 
 ---
 
-## =��� CRITICAL SECURITY & PRIVACY REQUIREMENTS
+## 4. =��� CRITICAL SECURITY & PRIVACY REQUIREMENTS
 
+**[SPEC]**
 ### **Security-First Mindset**
 
 ### ALL decisions prioritize security over convenience
@@ -95,8 +112,9 @@ The real-time ConnectionManager has been refactored from a 3,653-line monolithic
 
 ---
 
-## ?? Enhanced Logging Requirements for AI Agents
+## 5. ?? Enhanced Logging Requirements for AI Agents
 
+**[NOTE]**
 ### **CRITICAL: Mandatory Logging Patterns**
 
 AI agents MUST use the enhanced logging system. Default Python logging is strictly forbidden.
@@ -174,8 +192,9 @@ When generating code, AI agents MUST ensure:
 
 ---
 
-## =��� Essential Reading for AI Agents
+## 6. =��� Essential Reading for AI Agents
 
+**[SPEC]**
 ### **Start Every Session With:**
 
 1. **`PLANNING.md`** - Project vision, architecture, and technical stack
@@ -202,8 +221,9 @@ When generating code, AI agents MUST ensure:
 
 ---
 
-## =���n+� Project Architecture for AI Understanding
+## 7. =���n+� Project Architecture for AI Understanding
 
+**[NOTE]**
 ### **Backend (Python/FastAPI)**
 
 ```
@@ -494,8 +514,9 @@ G��G��G�� [visualization files]     # Room visualization outputs
 
 ---
 
-## =���n+� Development Environment for AI Agents
+## 8. =���n+� Development Environment for AI Agents
 
+**[NOTE]**
 ### **Required Tools**
 
 **uv** (Python package manager) - `uv --version`
@@ -535,8 +556,9 @@ cd server && uv run ruff format .
 
 ---
 
-## =��� AI Agent DevelopmentRules
+## 9. =��� AI Agent DevelopmentRules
 
+**[SPEC]**
 ### **Development Environment Rules**
 
 **CRITICAL**: Always follo these rules when working on this project:
@@ -618,8 +640,9 @@ When multiple tasks are pending, prioritize in this order:
 
 ---
 
-## =��� AI Agent Coding Guidelines
+## 10. =��� AI Agent Coding Guidelines
 
+**[NOTE]**
 ### **Code Style & Patterns**
 
 #### **Python (Backend)**
@@ -697,8 +720,9 @@ def apply_non_euclidean_effect(player_id: str) -> None:
 
 ---
 
-## =��� Testing Patterns for AI Agents
+## 11. =��� Testing Patterns for AI Agents
 
+**[NOTE]**
 ### **Test Structure**
 
 ```python
@@ -762,8 +786,9 @@ MOCK_ROOM = {
 
 ---
 
-## =��� Security Considerations for AI Agents
+## 12. =��� Security Considerations for AI Agents
 
+**[NOTE]**
 ### **Input Validation**
 
 ```python
@@ -815,8 +840,9 @@ def test_data_minimization_compliance():
 
 ---
 
-## =�ī Game Mechanics for AI Understanding
+## 13. =�ī Game Mechanics for AI Understanding
 
+**[SPEC]**
 ### **Core Systems**
 
 **lucidity System**: Players start with 100 lucidity, lose it from encounters
@@ -851,8 +877,9 @@ Rooms are connected via exits (north, south, east, west)
 
 ---
 
-## =��� Common AI Agent Tasks
+## 14. =��� Common AI Agent Tasks
 
+**[SPEC]**
 ### **Adding New Features**
 
 1. **Read relevant documentation** (PLANNING.md, existing code)
@@ -881,8 +908,9 @@ Rooms are connected via exits (north, south, east, west)
 
 ---
 
-## =��� AI Agent Best Practices
+## 15. =��� AI Agent Best Practices
 
+**[NOTE]**
 ### **Code Generation**
 
 **Always include type hints** for Python functions
@@ -935,8 +963,9 @@ COPPA_ENFORCED = os.getenv("COPPA_ENFORCED", "true").lower() == "true"
 
 ---
 
-## =�ܿ Common Pitfalls for AI Agents
+## 16. =�ܿ Common Pitfalls for AI Agents
 
+**[SPEC]**
 ### **Avoid These Patterns**
 
 G�� **Hardcoded paths** - Use `validate_secure_path()`
@@ -961,8 +990,9 @@ G�� **Direct file path concatenation** without validation
 
 ---
 
-## =�Ļ AI Agent Success Metrics
+## 17. =�Ļ AI Agent Success Metrics
 
+**[SPEC]**
 ### **Code Quality**
 
 G�� All tests pass (minimum 80% coverage)
@@ -993,8 +1023,9 @@ G�� Features work as specified in PLANNING.md
 
 ---
 
-## =��� Future Considerations for AI Agents
+## 18. =��� Future Considerations for AI Agents
 
+**[SPEC]**
 ### **Scalability**
 
 Current SQLite database can be upgraded to PostgreSQL
@@ -1019,8 +1050,9 @@ Automated testing generation
 
 ---
 
-## =��� Task Tracking with GitHub Issues
+## 19. =��� Task Tracking with GitHub Issues
 
+**[SPEC]**
 ### **GitHub Issues Workflow**
 
 All task tracking is now done through [GitHub Issues](https://github.com/arkanwolfshade/MythosMUD/issues) instead of
@@ -1071,8 +1103,9 @@ features.
 
 ---
 
-## =��P AI Agent Communication
+## 20. =��P AI Agent Communication
 
+**[SPEC]**
 ### **When to Ask Questions**
 
 **Unclear requirements** - Ask for clarification
@@ -1099,8 +1132,9 @@ features.
 
 ---
 
-## =��� Security Checklist for AI Agents
+## 21. =��� Security Checklist for AI Agents
 
+**[SPEC]**
 Before completing any feature, ensure:
 
 - [ ] No hardcoded secrets in code
@@ -1129,3 +1163,10 @@ knowledge we seek to implement must be both powerful and safe for all users.
  
  
  
+
+## 22. Changelog
+
+**[SPEC]**
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

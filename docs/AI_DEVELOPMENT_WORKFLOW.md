@@ -1,12 +1,27 @@
 # 🐙 MythosMUD AI Development Workflow
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[SPEC]**
 *"The boundaries between human and artificial intelligence blur in the pursuit of eldritch knowledge."* - Dr. Herbert
 West, Miskatonic University
 
 ---
 
-## Table of Contents
+## 2. Table of Contents
 
+**[SPEC]**
 1. [Overview](#overview)
 2. [AI Tool Selection](#ai-tool-selection)
 3. [Effective Prompting Strategies](#effective-prompting-strategies)
@@ -21,8 +36,9 @@ West, Miskatonic University
 
 ---
 
-## Overview
+## 3. Overview
 
+**[SPEC]**
 AI tools can significantly accelerate MythosMUD command development when used effectively. This guide provides
 strategies for leveraging AI to write better code, catch bugs, and maintain consistency with project patterns.
 
@@ -54,8 +70,9 @@ strategies for leveraging AI to write better code, catch bugs, and maintain cons
 
 ---
 
-## AI Tool Selection
+## 4. AI Tool Selection
 
+**[NOTE]**
 ### Primary Tools
 
 1. **GitHub Copilot**: IDE integration for real-time code suggestions
@@ -106,8 +123,9 @@ Can you help me implement this command following the project's patterns?
 
 ---
 
-## Effective Prompting Strategies
+## 5. Effective Prompting Strategies
 
+**[SPEC]**
 ### 1. Provide Context
 
 Always include relevant context about the project:
@@ -159,8 +177,9 @@ Please provide:
 
 ---
 
-## Command Development Workflow
+## 6. Command Development Workflow
 
+**[SPEC]**
 ### Step 1: Planning with AI
 
 **Prompt:**
@@ -251,8 +270,9 @@ Include tests for:
 
 ---
 
-## Code Review with AI
+## 7. Code Review with AI
 
+**[SPEC]**
 ### Review Prompts
 
 #### General Code Review
@@ -306,31 +326,37 @@ Check for:
 ### Review Response Format
 
 ```
-## Security Issues
 
+## 8. Security Issues
+
+**[NOTE]**
 [Issue 1]: Description and fix
 - [Issue 2]: Description and fix
 
-## Code Quality
+## 9. Code Quality
 
+**[NOTE]**
 [Issue 1]: Description and improvement
 - [Issue 2]: Description and improvement
 
-## Performance
+## 10. Performance
 
+**[NOTE]**
 [Issue 1]: Description and optimization
 - [Issue 2]: Description and optimization
 
-## Recommendations
+## 11. Recommendations
 
+**[SPEC]**
 [Recommendation 1]
 - [Recommendation 2]
 ```
 
 ---
 
-## Testing with AI
+## 12. Testing with AI
 
+**[SPEC]**
 ### Test Generation
 
 #### Unit Test Generation
@@ -394,8 +420,9 @@ Check for:
 
 ---
 
-## Debugging with AI
+## 13. Debugging with AI
 
+**[NOTE]**
 ### Error Analysis
 
 #### Stack Trace Analysis
@@ -438,8 +465,9 @@ Can you help me identify performance bottlenecks and suggest optimizations?
 
 ---
 
-## Documentation with AI
+## 14. Documentation with AI
 
+**[SPEC]**
 ### Code Documentation
 
 ```
@@ -472,8 +500,9 @@ Please suggest updates for:
 
 ---
 
-## Best Practices
+## 15. Best Practices
 
+**[SPEC]**
 ### 1. Iterative Development
 
 ```
@@ -527,8 +556,9 @@ Always review AI-generated code for:
 
 ---
 
-## Common Pitfalls
+## 16. Common Pitfalls
 
+**[NOTE]**
 ### 1. Over-Reliance on AI
 
 ```
@@ -566,8 +596,9 @@ Always review AI-generated code for:
 
 ---
 
-## Example Workflows
+## 17. Example Workflows
 
+**[NOTE]**
 ### Complete Command Implementation
 
 #### Step 1: Planning
@@ -737,8 +768,9 @@ Check that:
 
 ---
 
-## AI Tool Configuration
+## 18. AI Tool Configuration
 
+**[NOTE]**
 ### IDE Settings
 
 ```json
@@ -812,8 +844,9 @@ Requirements:
 
 ---
 
-## Conclusion
+## 19. Conclusion
 
+**[SPEC]**
 AI tools can be powerful allies in MythosMUD development when used thoughtfully and responsibly. Remember:
 
 **AI is a tool, not a replacement** for understanding and critical thinking
@@ -832,3 +865,10 @@ security.
 ---
 
 *This guide should be updated as AI tools evolve and new best practices emerge.*
+
+## 20. Changelog
+
+**[SPEC]**
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

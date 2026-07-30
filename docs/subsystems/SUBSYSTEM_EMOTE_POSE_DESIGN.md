@@ -1,7 +1,19 @@
 # Emote / Pose Subsystem Design
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
-## Overview
+---
 
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
 The emote/pose subsystem covers three ways players express themselves in the room: **emote**
 (predefined or freeform actions sent to the room via chat), **me** (freeform action text, currently
 returned only to the actor), and **pose** (persistent character pose stored on the player and
@@ -9,8 +21,9 @@ displayed in look/room). Emote uses EmoteService for predefined messages (loaded
 emotes/emote_aliases) and ChatService to broadcast; pose is a player attribute persisted and
 cleared via the pose command.
 
-## Architecture
+## 2. Architecture
 
+**[NOTE]**
 ```mermaid
 flowchart LR
   subgraph commands [Commands]
@@ -53,8 +66,9 @@ flowchart LR
 - **ChatService**: send_emote_message – Publishes/broadcasts emote to room (NATS/real-time).
 - **Persistence**: Player model has pose attribute; pose command reads/writes it.
 
-## Key design decisions
+## 3. Key design decisions
 
+**[NOTE]**
 - **Emote = room broadcast**: Emote goes to room via chat_service.send_emote_message; actor gets
   self_message in command result.
 - **Me = actor-only in current code**: handle_me_command returns the formatted string to the actor
@@ -66,8 +80,9 @@ flowchart LR
 - **Graceful degradation**: If emotes table is missing, EmoteService continues with empty
   emotes so custom emotes still work.
 
-## Constraints
+## 4. Constraints
 
+**[NOTE]**
 - **Player in room**: Emote and me require player to be resolved and have current_room_id (emote
   uses it via chat service).
 - **Pose**: Any string; stored as-is. No length limit documented in code; consider validation for
@@ -75,8 +90,9 @@ flowchart LR
 - **Dependencies**: PlayerService, ChatService (emote); Persistence (pose). EmoteService uses
   asyncpg directly for DB load (separate event loop in thread during init).
 
-## Component interactions
+## 5. Component interactions
 
+**[NOTE]**
 1. **emote &lt;action&gt;** – Resolve player and room; if action is predefined alias, format
    self_message and other_message; else custom. Call chat_service.send_emote_message(player_id,
    formatted_action); return self_message to actor.
@@ -84,8 +100,9 @@ flowchart LR
 3. **pose [description]** – If no pose arg, clear player.pose and save. Else set player.pose and
    save. Return confirmation. Client/room state can show pose in look/occupants.
 
-## Developer guide
+## 6. Developer guide
 
+**[NOTE]**
 - **Adding predefined emotes**: Insert into emotes table (stable_id, self_message, other_message)
   and emote_aliases; restart or reload EmoteService so \_load_emotes runs (init only).
 - **Making me broadcast**: Change handle_me_command to call chat_service.send_me_message (or
@@ -97,8 +114,9 @@ flowchart LR
   test_emote_command in emote_commands; EmoteService unit tests for format_emote_messages and
   alias resolution.
 
-## Troubleshooting
+## 7. Troubleshooting
 
+**[NOTE]**
 - **"Emote functionality is not available"**: Chat service or player service missing from
   container/app.state.
 - **"You are not in a room"**: current_room_id is None; resolve player and room before sending
@@ -110,7 +128,15 @@ flowchart LR
 
 See also [GAME_BUG_INVESTIGATION_PLAYBOOK](../../.cursor/rules/GAME_BUG_INVESTIGATION_PLAYBOOK.mdc).
 
-## Related docs
+## 8. Related docs
 
+**[SPEC]**
 - [COMMAND_MODELS_REFERENCE.md](../COMMAND_MODELS_REFERENCE.md)
 - Chat/NATS: [NATS_SUBJECT_PATTERNS.md](../NATS_SUBJECT_PATTERNS.md), [realtime.md](../realtime.md)
+
+## 9. Changelog
+
+**[SPEC]**
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

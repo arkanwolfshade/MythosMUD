@@ -1,7 +1,19 @@
 # Respawn Subsystem Design
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
-## Overview
+---
 
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
 The respawn subsystem places a dead player (DP <= -10 or in limbo) back into the world at a
 respawn location and restores their state (e.g. DP). PlayerRespawnWrapper and PlayerRespawnService
 handle the flow; death is determined by player.get_stats().current_dp <= -10 or current_room_id
@@ -9,8 +21,9 @@ handle the flow; death is determined by player.get_stats().current_dp <= -10 or 
 one. Combat and damage application trigger death when DP reaches -10; respawn is then invoked (e.g. via
 API or game loop).
 
-## Architecture
+## 2. Architecture
 
+**[NOTE]**
 ```mermaid
 flowchart LR
   subgraph death [Death]
@@ -51,8 +64,9 @@ flowchart LR
   triggered (by event, API, or game tick); see SUBSYSTEM_STATUS_EFFECTS_DESIGN.md and combat
   integration.
 
-## Key design decisions
+## 3. Key design decisions
 
+**[NOTE]**
 - **Death at -10 DP**: Incapacitated is 0 to -9; -10 is death; respawn restores player to respawn
   location and resets DP.
 - **Limbo room**: If player is in LIMBO_ROOM_ID they are treated as eligible for respawn (e.g. after
@@ -62,8 +76,9 @@ flowchart LR
 - **Respawn room**: PlayerRespawnService (or persistence) defines respawn location (e.g. default
   room or last rest location).
 
-## Constraints
+## 4. Constraints
 
+**[NOTE]**
 - **Player must be dead or in limbo**: \_is_eligible_for_respawn checks is_dead() or
   current_room_id == LIMBO_ROOM_ID; otherwise ValidationError "No dead character found".
 - **Session and persistence**: respawn_player_by_user_id requires AsyncSession and
@@ -71,8 +86,9 @@ flowchart LR
 - **Dependencies**: Persistence, PlayerRespawnService, session (for player load with user
   relationship).
 
-## Component interactions
+## 5. Component interactions
 
+**[NOTE]**
 1. **Death (DP -10)** – Damage path (combat/magic) applies damage; when current_dp reaches -10,
    death handler or event triggers respawn flow (e.g. API call or internal respawn_player_by_user_id).
 2. **respawn_player_by_user_id** – Load players by user_id; filter to dead or limbo; call
@@ -81,8 +97,9 @@ flowchart LR
 3. **PlayerRespawnService** – Set player current_room_id to respawn room, restore DP (and possibly
    other stats), save_player; return room info.
 
-## Developer guide
+## 6. Developer guide
 
+**[NOTE]**
 - **Changing respawn location**: Respawn room is determined in PlayerRespawnService (or config);
   update that logic (e.g. last_rest_room, default_room_id).
 - **Multi-character**: Wrapper already selects dead player(s) by user_id; if multiple dead,
@@ -92,8 +109,9 @@ flowchart LR
 - **no_death rooms**: In no_death rooms damage is capped so DP never goes below 0 (ADR-009); respawn
   is not triggered there.
 
-## Troubleshooting
+## 7. Troubleshooting
 
+**[NOTE]**
 - **"Player not found for respawn"**: No active players for user_id; check user_id and is_deleted.
 - **"No dead character found"**: No player has current_dp <= -10 and none in limbo; check is_dead()
   and LIMBO_ROOM_ID; ensure damage path actually sets -10 and triggers respawn.
@@ -105,6 +123,14 @@ See also [SUBSYSTEM_STATUS_EFFECTS_DESIGN.md](SUBSYSTEM_STATUS_EFFECTS_DESIGN.md
 [SUBSYSTEM_COMBAT_DESIGN.md](SUBSYSTEM_COMBAT_DESIGN.md), [ADR-009](../architecture/decisions/
 ADR-009-instanced-rooms.md) (no_death).
 
-## Related docs
+## 8. Related docs
 
+**[SPEC]**
 - [COMMAND_MODELS_REFERENCE.md](../COMMAND_MODELS_REFERENCE.md)
+
+## 9. Changelog
+
+**[SPEC]**
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

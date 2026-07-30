@@ -1,11 +1,26 @@
 # 🐙 MythosMUD Player Command Developer's Guide
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[SPEC]**
 *"The proper study of mankind is the command line."* - H.P. Lovecraft (probably)
 
 ---
 
-## Table of Contents
+## 2. Table of Contents
 
+**[SPEC]**
 1. [Introduction](#introduction)
 2. [Command System Overview](#command-system-overview)
 3. [Quick Start: Your First Command](#quick-start-your-first-command)
@@ -20,8 +35,9 @@
 
 ---
 
-## Introduction
+## 3. Introduction
 
+**[NOTE]**
 Welcome, junior researcher! You've been assigned to the forbidden task of implementing player commands for MythosMUD.
 Fear not - this guide will illuminate the dark corners of our command system and prepare you for the eldritch knowledge
 that lies ahead.
@@ -45,8 +61,9 @@ Basic Python knowledge (functions, classes, async/await)
 
 ---
 
-## Command System Overview
+## 4. Command System Overview
 
+**[NOTE]**
 The MythosMUD command system is built on a multi-layered architecture that ensures security, maintainability, and
 extensibility. Here's how it all fits together:
 
@@ -91,8 +108,9 @@ extensibility. Here's how it all fits together:
 
 ---
 
-## Quick Start: Your First Command
+## 5. Quick Start: Your First Command
 
+**[NOTE]**
 Let's implement a simple `dance` command to get you started. This command will make the player perform a dance and
 notify others in the room.
 
@@ -341,8 +359,9 @@ commands in MythosMUD.
 
 ---
 
-## Command Anatomy
+## 6. Command Anatomy
 
+**[NOTE]**
 Every command in MythosMUD follows a consistent structure. Let's break down the components:
 
 ### 1. Command Model (Pydantic)
@@ -421,8 +440,9 @@ if command == "your_command":
 
 ---
 
-## Development Workflow
+## 7. Development Workflow
 
+**[NOTE]**
 ### 1. Plan Your Command
 
 Before writing code, ask yourself:
@@ -489,8 +509,9 @@ make security
 
 ---
 
-## Testing Your Commands
+## 8. Testing Your Commands
 
+**[NOTE]**
 ### Test Structure
 
 Every command should have comprehensive tests covering:
@@ -562,8 +583,9 @@ def test_your_command_validation(self):
 
 ---
 
-## Common Patterns
+## 9. Common Patterns
 
+**[NOTE]**
 ### 1. Room-Based Commands
 
 Commands that affect the current room:
@@ -642,8 +664,9 @@ def validate_parameter(cls, v):
 
 ---
 
-## Security Considerations
+## 10. Security Considerations
 
+**[NOTE]**
 ### 1. Input Validation
 
 Always validate user input:
@@ -710,8 +733,9 @@ logger.info(
 
 ---
 
-## AI-Assisted Development
+## 11. AI-Assisted Development
 
+**[SPEC]**
 ### Working with AI Tools
 
 When using AI to help implement commands:
@@ -753,8 +777,9 @@ Can you help me implement this command following the project's patterns?
 
 ---
 
-## Troubleshooting
+## 12. Troubleshooting
 
+**[SPEC]**
 ### Common Issues
 
 #### 1. Command Not Found
@@ -797,8 +822,9 @@ Can you help me implement this command following the project's patterns?
 
 ---
 
-## Reference Documents
+## 13. Reference Documents
 
+**[SPEC]**
 For detailed information on specific aspects of command development, see:
 
 - [Command Models Reference](COMMAND_MODELS_REFERENCE.md) - Complete Pydantic model documentation
@@ -809,8 +835,9 @@ For detailed information on specific aspects of command development, see:
 
 ---
 
-## Conclusion
+## 14. Conclusion
 
+**[SPEC]**
 You now have the foundational knowledge to implement commands in MythosMUD! Remember:
 
 **Start Simple**: Begin with basic commands and add complexity gradually
@@ -835,3 +862,10 @@ Good luck with your eldritch coding endeavors!
 
 *This guide is a living document. As the codebase evolves, so too will this guide. Please contribute improvements and
 corrections as you discover them.*
+
+## 15. Changelog
+
+**[SPEC]**
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

@@ -1,16 +1,32 @@
 # Error Handling Guide for MythosMUD
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
 *As documented in the restricted archives of Miskatonic University, proper error handling is not merely a technical
 exercise, but a critical component of maintaining the delicate balance between order and chaos in our digital realm.*
 
-## Overview
+## 2. Overview
 
+**[NOTE]**
 This guide provides comprehensive instructions for implementing proper error handling throughout the MythosMUD codebase.
 Our structured error logging system ensures that every anomaly, every exception, and every error is properly catalogued
 for posterity and analysis.
 
-## Core Principles
+## 3. Core Principles
 
+**[NOTE]**
 ### 1. **Enhanced Structured Logging First**
 
 All errors must be logged with the enhanced structured logging system before being raised or returned. This ensures
@@ -55,8 +71,9 @@ Errors exposed to users must be clear, actionable, and free of technical jargon 
 Never log sensitive data such as passwords, tokens, or personal information. Our error logging system automatically
 filters such data.
 
-## Error Types and Usage
+## 4. Error Types and Usage
 
+**[NOTE]**
 ### MythosMUDError (Base Class)
 
 The foundation of our error hierarchy. All custom errors should inherit from this class.
@@ -193,8 +210,9 @@ async def create_player(
         ) from None
 ```
 
-## Error Context Best Practices
+## 5. Error Context Best Practices
 
+**[NOTE]**
 ### Creating Error Context
 
 Always provide meaningful context when creating errors:
@@ -253,8 +271,9 @@ metadata = {
 }
 ```
 
-## Logging Patterns
+## 6. Logging Patterns
 
+**[NOTE]**
 ### Using log_and_raise
 
 The `log_and_raise` utility is the preferred way to log and raise errors:
@@ -300,8 +319,9 @@ error = ValidationError(
 raise error
 ```
 
-## Common Patterns
+## 7. Common Patterns
 
+**[NOTE]**
 ### Input Validation
 
 ```python
@@ -420,8 +440,9 @@ async def move_player(
         ) from None
 ```
 
-## Testing Error Handling
+## 8. Testing Error Handling
 
+**[NOTE]**
 ### Unit Tests
 
 ```python
@@ -467,8 +488,9 @@ def test_create_player_duplicate_name():
     assert "A player with this name already exists" == error.user_friendly
 ```
 
-## Error Analysis and Monitoring
+## 9. Error Analysis and Monitoring
 
+**[NOTE]**
 ### Using Log Analysis Tools
 
 Our log analysis tools help identify patterns and trends in errors:
@@ -504,8 +526,9 @@ Our system automatically categorizes errors:
 - **Game Logic**: Player actions, room interactions, command processing
 - **System**: Memory issues, resource exhaustion, system errors
 
-## Anti-Patterns to Avoid
+## 10. Anti-Patterns to Avoid
 
+**[NOTE]**
 ### ❌ Don't Do This
 
 ```python
@@ -583,8 +606,9 @@ def risky_operation():
         )
 ```
 
-## Security Considerations
+## 11. Security Considerations
 
+**[NOTE]**
 ### Sensitive Data Protection
 
 Our error logging system automatically filters sensitive data, but you should still be mindful:
@@ -632,8 +656,9 @@ log_and_raise(
 )
 ```
 
-## Performance Considerations
+## 12. Performance Considerations
 
+**[NOTE]**
 ### Error Logging Overhead
 
 Our error logging system is designed for minimal performance impact:
@@ -681,8 +706,9 @@ def process_multiple_operations(operations):
             log_and_raise(ProcessingError, f"Failed: {e}", context=context)
 ```
 
-## Troubleshooting
+## 13. Troubleshooting
 
+**[SPEC]**
 ### Common Issues
 
 1. **Missing Context**: Always provide meaningful context
@@ -698,8 +724,9 @@ def process_multiple_operations(operations):
 3. Look at error timelines to identify trends
 4. Use the monitoring tools for real-time error tracking
 
-## Enhanced Logging Best Practices for Error Handling
+## 14. Enhanced Logging Best Practices for Error Handling
 
+**[NOTE]**
 ### **CRITICAL: Enhanced Logging Requirements for Error Handling**
 
 All error handling MUST use the enhanced logging system for proper observability and debugging.
@@ -811,8 +838,9 @@ def test_error_logging():
 
 **Error Handling Examples**: [docs/examples/logging/](examples/logging/)
 
-## Conclusion
+## 15. Conclusion
 
+**[SPEC]**
 Proper error handling is essential for maintaining a robust and reliable system. By following these guidelines and using
 our structured error logging system, you ensure that:
 
@@ -829,3 +857,10 @@ but a fundamental requirement for understanding the deeper patterns that govern 
 
 *This guide is maintained by the Department of Occult Studies, Miskatonic University. For questions or clarifications,
 consult the restricted archives or contact the system administrators.*
+
+## 16. Changelog
+
+**[SPEC]**
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

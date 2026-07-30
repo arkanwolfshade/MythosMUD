@@ -1,20 +1,34 @@
 # GitHub Actions Runner Parity Container
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
-## Purpose
+---
 
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Purpose
+
+**[NOTE]**
 Human reader: replicate the default `ubuntu-latest` (Ubuntu 24.04) runner with only the tooling MythosMUD CI jobs
   require, enabling local reproduction of workflow failures.
 
 - AI reader: container expected to build from `Dockerfile.github-runner` at project root.
 
-## Build Instructions
+## 2. Build Instructions
 
+**[SPEC]**
 ```bash
 docker build -t mythosmud-gha-runner -f Dockerfile.github-runner .
 ```
 
-## Usage Patterns
+## 3. Usage Patterns
 
+**[NOTE]**
 ### Interactive debugging
 
   ```bash
@@ -38,8 +52,9 @@ docker build -t mythosmud-gha-runner -f Dockerfile.github-runner .
     bash -lc "cd client && npm run build"
   ```
 
-## Validation Checklist
+## 4. Validation Checklist
 
+**[SPEC]**
 Python tooling: `.venv` created via `uv venv`; `uv pip list` reports MythosMUD packages.
 
 - Playwright: `playwright install chromium` already executed during build; verify with `playwright show-trace --help`.
@@ -52,8 +67,9 @@ Python tooling: `.venv` created via `uv venv`; `uv pip list` reports MythosMUD p
 
   ...` inside the container should match GitHub Actions behavior.
 
-## Security and Secrets Management
+## 5. Security and Secrets Management
 
+**[NOTE]**
 ### Local Development (Default Behavior)
 
 The Dockerfile includes test/CI-only default values for secrets. These are safe for local development but **must never
@@ -125,8 +141,9 @@ docker run --rm -it \
 
 This ensures secrets are never baked into image layers.
 
-## Notes
+## 6. Notes
 
+**[NOTE]**
 Human reader: container runs as root; adjust volume permissions if needed when binding host workspace.
 
 - AI reader: avoid installing additional tooling inside image to keep parity scope narrow.
@@ -139,8 +156,9 @@ Human reader: container runs as root; adjust volume permissions if needed when b
 
   runtime environment variables.
 
-## ACT Integration
+## 7. ACT Integration
 
+**[NOTE]**
 Copy `.act.secrets.example` to `.act.secrets` and populate required tokens (e.g., `MYTHOSMUD_PAT`,
   `SEMGREP_APP_TOKEN`).
 
@@ -153,3 +171,10 @@ Copy `.act.secrets.example` to `.act.secrets` and populate required tokens (e.g.
 
   This command rebuilds the runner image and executes both `backend` and `frontend` jobs from `.github/workflows/ci.yml`
   via `act`.
+
+## 8. Changelog
+
+**[SPEC]**
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

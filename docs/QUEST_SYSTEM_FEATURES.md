@@ -1,11 +1,26 @@
 # Quest System Features: Common MUD Patterns
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
 > Reference document of common quest system features observed across MUDs (Ranvier, Aardwolf,
 > MUD Wiki, lysator design guide). Used to decide which features MythosMUD will include and how
 > to implement them. Review each feature one-by-one for include/defer and scope.
 
-## Purpose
+## 2. Purpose
 
+**[NOTE]**
 This document lists common MUD quest features with short descriptions, sources, and implementation
 notes. It supports a one-by-one design review: for each feature we decide whether to include it and
 how (e.g. data-driven vs code, server vs client, persistence). No implementation is specified
@@ -13,8 +28,9 @@ here; decisions from the review will feed a later implementation plan.
 
 ---
 
-## Feature 1: Quest goal types
+## 3. Feature 1: Quest goal types
 
+**[NOTE]**
 **Description:** Reusable objective types that define what the player must do to advance a quest.
 Common types: **Kill** (defeat specific NPCs or counts), **Gather/Collect (Fetch)** (acquire items,
 often with a count), **Delivery** (take an item or message to a target), **Escort** (bring an NPC
@@ -30,8 +46,9 @@ events occur. Config can live in quest definitions (YAML) so builders add goals 
 
 ---
 
-## Feature 2: Quest reward types
+## 4. Feature 2: Quest reward types
 
+**[NOTE]**
 **Description:** Reusable reward types granted when a quest is completed. Common types:
 **Experience**, **currency**, **loot/items**, **access to areas** (flags or unlocks), **follow-up
 quests** (unlock next in chain). Each reward type has configuration (e.g. amount for XP/currency,
@@ -46,8 +63,9 @@ YAML (e.g. `type: ExperienceReward`, `config: { amount: 5 }`).
 
 ---
 
-## Feature 3: Quest triggers
+## 5. Feature 3: Quest triggers
 
+**[NOTE]**
 **Description:** The mechanism that starts a quest. Common triggers: **room entry** (player
 enters a specific room), **NPC interaction** (e.g. talk to quest giver), **item acquisition**
 (pick up a specific item), **prerequisite quest completion** (finishing one quest unlocks another).
@@ -63,8 +81,9 @@ quest IDs so builders can attach quests without code.
 
 ---
 
-## Feature 4: Event-driven progression
+## 6. Feature 4: Event-driven progression
 
+**[NOTE]**
 **Description:** Quest progress updates in response to in-game events. Examples: **get** / **drop**
 for fetch goals, **kill** or death events for kill goals, **give** to NPC for delivery. The server
 emits or handles these events; active quests listen and update their internal state (e.g. count
@@ -79,8 +98,9 @@ updates progress. Fully server-authoritative; client only displays state receive
 
 ---
 
-## Feature 5: Declarative quest config (YAML)
+## 7. Feature 5: Declarative quest config (YAML)
 
+**[NOTE]**
 **Description:** Quests are defined in data files (e.g. `quests.yml`) rather than hard-coded.
 Typical fields: `id`, `title`, `description`, `goals[]` (each with `type` and `config`),
 `rewards[]` (each with `type` and `config`), `requires` (prerequisite quest id), `repeatable`,
@@ -96,8 +116,9 @@ types. Stored in repo under a designated data path (e.g. `data/quests/`).
 
 ---
 
-## Feature 6: Quest givers (questors)
+## 8. Feature 6: Quest givers (questors)
 
+**[NOTE]**
 **Description:** NPCs (or optionally rooms/objects) that offer one or more quests. Linkage from
 NPC config to quest IDs: e.g. an NPC has a `quests` array listing which quests they offer. When
 the player interacts (e.g. talk, "quests" command), the server checks which of those quests
@@ -112,8 +133,9 @@ determines offer/turn-in: e.g. "can start" if prerequisites met and not already 
 
 ---
 
-## Feature 7: Quest log / journal
+## 9. Feature 7: Quest log / journal
 
+**[NOTE]**
 **Description:** Player-facing way to view active quests, current objectives, progress text, and
 optional hints. Implemented as a command (e.g. `quests`, `journal`, `tasklog`) and/or client UI
 panel. Shows title, description, list of goals with progress (e.g. "Collect rust-covered sword
@@ -129,8 +151,9 @@ stored per player per quest/task and revealed by rules (e.g. after N steps).
 
 ---
 
-## Feature 8: Quest chains / prerequisites
+## 10. Feature 8: Quest chains / prerequisites
 
+**[NOTE]**
 **Description:** A quest can require completion of another quest before it can be started (`requires`
 or similar). Enables sequential storylines: complete "The Lost Tome" before "The Librarian's
 Request" is offered. Prerequisite is checked when evaluating whether to offer or start a quest.
@@ -144,8 +167,9 @@ chains initially.
 
 ---
 
-## Feature 9: Repeatable quests
+## 11. Feature 9: Repeatable quests
 
+**[NOTE]**
 **Description:** A quest can be marked as repeatable so the player may accept and complete it
 multiple times. Optionally: cooldown between completions, or a cap on completions. Completion
 state for repeatables is typically "completed N times" or "last completed at T" rather than
@@ -160,8 +184,9 @@ completion.
 
 ---
 
-## Feature 10: Persistent quest state
+## 12. Feature 10: Persistent quest state
 
+**[NOTE]**
 **Description:** Per-player save/load of quest state across sessions: which quests are accepted,
 in progress, or completed; per-goal progress (e.g. counts); for repeatables, completion count
 or cooldown. Ensures progress is not lost on disconnect or logout.
@@ -177,8 +202,9 @@ single-player persistence only.
 
 ---
 
-## Feature 11: Design principles (from lysator)
+## 13. Feature 11: Design principles (from lysator)
 
+**[NOTE]**
 **Description:** Player-centric design principles for good quests: **clear hints** (no obscure
 puzzles without guidance), **no un-warned death** (fair warning before lethal outcomes),
 **winnable without meta-knowledge** (no requiring out-of-game knowledge), **meaningful rewards**
@@ -196,8 +222,9 @@ certain goal types).
 
 ---
 
-## Review order
+## 14. Review order
 
+**[NOTE]**
 Features are reviewed in the order above (1 through 11). For each feature:
 
 - Decide: **include** (yes), **defer** (later), or **exclude** (no).
@@ -208,8 +235,9 @@ Decisions from this review will be recorded below and used in a follow-up implem
 
 ---
 
-## Review decisions
+## 15. Review decisions
 
+**[SPEC]**
 | #   | Feature                         | Decision (include / defer / exclude) | Scope / how                                                                                                                     |
 | --- | ------------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------- |
 | 1   | Quest goal types                | include                              | Scope 1: complete activity (e.g. exit the tutorial room). Scope 2: kill N targets. Scope 3: collect N items (inventory-backed). |
@@ -226,8 +254,9 @@ Decisions from this review will be recorded below and used in a follow-up implem
 
 ---
 
-## Client integration
+## 16. Client integration
 
+**[NOTE]**
 - **Initial game state:** The WebSocket `game_state` event sent on connect includes a `quest_log`
   array (same shape as the GET quests API). The client can render the Journal from this payload.
 - **Refresh:** The client may refresh the quest log via
@@ -235,8 +264,9 @@ Decisions from this review will be recorded below and used in a follow-up implem
   Use when opening the Journal panel or after quest-related actions if the server does not push an
   updated game_state.
 
-## Collect N goals and NPC turn-in (implemented)
+## 17. Collect N goals and NPC turn-in (implemented)
 
+**[NOTE]**
 - **Goal type `collect_n`:** Progress is derived from the player's current holdings of an item
   **prototype id** (`goal.target`), including stacks in nested `inner_container.items`. Progress
   is recounted when the quest starts and after inventory mutations (get, drop, put, and similar).
@@ -248,8 +278,9 @@ Decisions from this review will be recorded below and used in a follow-up implem
   trigger match). `quest turnin <npc>` turns in all active quests that list the NPC in
   `turn_in_entities` when objectives are met.
 
-## Feature notes: quest + NPC chat (MVP, issue #146)
+## 18. Feature notes: quest + NPC chat (MVP, issue #146)
 
+**[NOTE]**
 Quest lifecycle events (start, every progress tick, complete, abandon) emit personal
 **system** chat via ChatService. Successful `quest ask` / `quest turnin` also emit a
 say-shaped NPC room line (code templates). NPC reaction greet/spoke hooks use the same
@@ -258,7 +289,15 @@ follow-up [#583](https://github.com/arkanwolfshade/MythosMUD/issues/583).
 
 ---
 
-## Related documentation
+## 19. Related documentation
 
+**[SPEC]**
 - **Architecture:** [ADR-010: Quest Subsystem Architecture](architecture/decisions/ADR-010-quest-subsystem.md).
 - **Quest design (lysator principles):** [QUEST_DESIGN_GUIDELINES.md](QUEST_DESIGN_GUIDELINES.md).
+
+## 20. Changelog
+
+**[SPEC]**
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

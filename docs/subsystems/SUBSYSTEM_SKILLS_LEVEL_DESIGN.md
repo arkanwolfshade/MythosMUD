@@ -1,7 +1,19 @@
 # Skills / Level Subsystem Design
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
-## Overview
+---
 
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
 The skills/level subsystem covers the skills catalog, per-character skill values (including
 occupation and personal interest at creation), skill use logging, improvement rolls, and
 level/XP. LevelService grants XP and computes level from a level curve; level-up can trigger a hook
@@ -10,8 +22,9 @@ get_player_skills (with ownership), and skill use logging. The teach command use
 and may integrate with skills. Character creation assigns occupation slots (one 70, two 60, three
 50, three 40) and personal interest bonus (20); max skill value 99.
 
-## Architecture
+## 2. Architecture
 
+**[NOTE]**
 ```mermaid
 flowchart LR
   subgraph commands [Commands]
@@ -64,8 +77,9 @@ flowchart LR
   skills).
 - **Repositories**: SkillRepository, PlayerSkillRepository, SkillUseLogRepository (persistence).
 
-## Key design decisions
+## 3. Key design decisions
 
+**[SPEC]**
 - **Occupation slots at creation**: Exactly 9 skills with one 70, two 60, three 50, three 40;
   validated in \_validate_occupation_slots.
 - **Personal interest**: One skill gets PERSONAL_INTEREST_BONUS (20) in addition to base/occupation.
@@ -76,16 +90,18 @@ flowchart LR
 - **Own language / Cthulhu Mythos**: Special skill keys (OWN_LANGUAGE_KEY, CTHULHU_MYTHOS_KEY) may
   have different rules (e.g. improvement caps).
 
-## Constraints
+## 4. Constraints
 
+**[SPEC]**
 - **Max skill value**: 99 (MAX_SKILL_VALUE).
 - **Catalog**: Skills come from SkillRepository (DB); allow_at_creation and category affect
   character creation and display.
 - **Dependencies**: AsyncPersistence, SkillRepository, PlayerSkillRepository, SkillUseLogRepository;
   LevelService needs persistence and optional level_up_hook.
 
-## Component interactions
+## 5. Component interactions
 
+**[SPEC]**
 1. **skills command** – Get catalog and player skills; return formatted list/info.
 2. **Character creation** – Set occupation_slots and personal interest via SkillService (or
    character_creation_service); validation enforces OCCUPATION_VALUES.
@@ -93,8 +109,9 @@ flowchart LR
    recomputes level, saves and runs level_up_hook on level-up.
 4. **teach** – SpellLearningService for spell teaching; may reference skills for eligibility.
 
-## Developer guide
+## 6. Developer guide
 
+**[NOTE]**
 - **New skill**: Add to skills table/catalog (SkillRepository); ensure allow_at_creation/category
   set if used at creation.
 - **Changing level curve**: Update level_curve.level_from_total_xp; ensure grant_xp and any
@@ -104,8 +121,9 @@ flowchart LR
 - **Tests**: server/tests/unit/game/ for SkillService and LevelService; test occupation validation,
   grant_xp and level-up hook.
 
-## Troubleshooting
+## 7. Troubleshooting
 
+**[NOTE]**
 - **"occupation_slots must have exactly 9 entries"**: Character creation must send 9 slots with
   values matching OCCUPATION_VALUES.
 - **Level not increasing**: Check experience_points is persisted and level_from_total_xp curve;
@@ -115,6 +133,14 @@ flowchart LR
 See also [SUBSYSTEM_MAGIC_DESIGN.md](SUBSYSTEM_MAGIC_DESIGN.md) (teach/learn),
 [GAME_BUG_INVESTIGATION_PLAYBOOK](../../.cursor/rules/GAME_BUG_INVESTIGATION_PLAYBOOK.mdc).
 
-## Related docs
+## 8. Related docs
 
+**[SPEC]**
 - [COMMAND_MODELS_REFERENCE.md](../COMMAND_MODELS_REFERENCE.md)
+
+## 9. Changelog
+
+**[SPEC]**
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

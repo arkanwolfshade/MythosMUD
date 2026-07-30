@@ -1,22 +1,39 @@
 # Structured Concurrency Patterns
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
 This document outlines the structured concurrency patterns used in the MythosMUD codebase, based on AnyIO best practices
 adapted for asyncio.
 
-## Overview
+## 2. Overview
 
+**[NOTE]**
 Structured concurrency ensures that all async tasks are properly managed, tracked, and cleaned up. This prevents
 resource leaks, orphaned tasks, and difficult-to-debug issues.
 
-## Core Principles
+## 3. Core Principles
 
+**[SPEC]**
 1. **Task Tracking**: All background tasks should be tracked for proper lifecycle management
 2. **Structured Cleanup**: Tasks should be properly cancelled and cleaned up during shutdown
 3. **Exception Handling**: Exceptions in concurrent tasks should be properly aggregated and handled
 4. **No Orphaned Tasks**: All tasks should complete or be cancelled before their parent context ends
 
-## Patterns
+## 4. Patterns
 
+**[NOTE]**
 ### Pattern 1: Structured Concurrency for Multiple Async Operations
 
 **Use Case**: When you need to run multiple async operations concurrently and ensure all complete.
@@ -175,8 +192,9 @@ if asyncio.iscoroutine(result):
 - Errors are logged
 - No blocking of main flow
 
-## When to Use Each Pattern
+## 5. When to Use Each Pattern
 
+**[NOTE]**
 ### Use Pattern 1 (Structured Concurrency) when
 
 You have multiple async operations that should all complete
@@ -205,8 +223,9 @@ Tasks should run independently
 - Tasks are intentionally decoupled
 - You still want error logging
 
-## Anti-Patterns to Avoid
+## 6. Anti-Patterns to Avoid
 
+**[NOTE]**
 ### ❌ Creating tasks without tracking
 
 ```python
@@ -244,8 +263,9 @@ async def process_data(self):
     time.sleep(1)  # Should use asyncio.sleep() or asyncio.to_thread()
 ```
 
-## Testing Structured Concurrency
+## 7. Testing Structured Concurrency
 
+**[NOTE]**
 When testing structured concurrency patterns:
 
 1. **Verify task completion**: Ensure all tasks complete or are properly cancelled
@@ -281,15 +301,17 @@ async def test_structured_concurrency_task_cleanup(self):
     assert task2.done()
 ```
 
-## References
+## 8. References
 
+**[SPEC]**
 [AnyIO Best Practices](.cursor/rules/anyio.mdc)
 
 - [Python asyncio.TaskGroup](https://docs.python.org/3/library/asyncio-task.html#asyncio.TaskGroup) (Python 3.11+)
 - [Structured Concurrency](https://en.wikipedia.org/wiki/Structured_concurrency)
 
-## Implementation Status
+## 9. Implementation Status
 
+**[NOTE]**
 ✅ EventBus: Uses structured concurrency for async subscribers
 
 ✅ NATS Service: Tracks all background tasks with proper cleanup
@@ -297,3 +319,10 @@ async def test_structured_concurrency_task_cleanup(self):
 ✅ Connection Manager: Health check tasks properly managed
 
 ✅ Catatonia Registry: Fire-and-forget tasks with error logging
+
+## 10. Changelog
+
+**[SPEC]**
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
