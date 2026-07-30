@@ -65,7 +65,9 @@ def _str_field(value: object, default: str) -> str:
     return value if isinstance(value, str) else default
 
 
-class NATSMessageProcessingMixin(NATSMessageHandlerMixinBase):
+class NATSMessageProcessingMixin(  # pylint: disable=too-few-public-methods  # Reason: Mixin; methods are _-prefixed by design
+    NATSMessageHandlerMixinBase
+):
     """Mixin: NATS message ingest, retry, chat field extract/validate, channel broadcast."""
 
     async def _handle_nats_message(self, message_data: dict[str, object]) -> None:

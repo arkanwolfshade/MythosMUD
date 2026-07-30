@@ -22,7 +22,9 @@ logger = get_logger("communications.nats_message_handler")
 ECHO_SENDER_CHANNELS = frozenset({"say", "local", "emote", "pose"})
 
 
-class NATSMessageBroadcastMixin(NATSMessageHandlerMixinBase):
+class NATSMessageBroadcastMixin(  # pylint: disable=too-few-public-methods  # Reason: Mixin; methods are _-prefixed by design
+    NATSMessageHandlerMixinBase
+):
     """Mixin: room filtering, mute checks, dampening, and personal send."""
 
     def _collect_room_targets(self, room_id: str) -> set[str]:

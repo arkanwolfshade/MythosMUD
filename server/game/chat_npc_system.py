@@ -25,7 +25,7 @@ _NPC_SENDER_NS = uuid.UUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8")
 _SYSTEM_SENDER_ID = str(uuid.UUID("00000000-0000-4000-8000-000000000001"))
 
 
-class _ChatDeliveryService(Protocol):
+class _ChatDeliveryService(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
     """Minimal ChatService surface for NPC/system delivery (avoids chat_service import cycle)."""
 
     _room_messages: dict[str, list[ChatMessage]]

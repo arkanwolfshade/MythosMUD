@@ -21,7 +21,7 @@ if TYPE_CHECKING:
     from .nats_retry_handler import NATSRetryHandler
 
 
-class NATSMessageHandlerMixinBase:
+class NATSMessageHandlerMixinBase:  # pylint: disable=too-few-public-methods  # Reason: Mixin; methods are _-prefixed by design
     """Attrs/methods provided by NATSMessageHandler when mixed in."""
 
     subject_manager: Any
