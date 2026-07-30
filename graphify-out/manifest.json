@@ -6845,9 +6845,9 @@
     "semantic_hash": "b49ec7af8dee76bfa698257b963bc6de"
   },
   "server/realtime/connection_initialization.py": {
-    "mtime": 1785361580.294915,
-    "ast_hash": "88772819355265167232a5d90ba7a8e5",
-    "semantic_hash": "88772819355265167232a5d90ba7a8e5"
+    "mtime": 1785420432.5646992,
+    "ast_hash": "befbafe6a1bb06a076bdfb17d4ff2a8d",
+    "semantic_hash": ""
   },
   "server/realtime/connection_manager.py": {
     "mtime": 1785363465.048972,
@@ -6855,13 +6855,13 @@
     "semantic_hash": "b81b8dd6f3bae11967e7500755578658"
   },
   "server/realtime/connection_manager_api.py": {
-    "mtime": 1785360950.4012356,
-    "ast_hash": "9aa20ef9862ae599daa8a6c4f5d90dce",
-    "semantic_hash": "9aa20ef9862ae599daa8a6c4f5d90dce"
+    "mtime": 1785420435.3828936,
+    "ast_hash": "039bf2d4cf3a50891bbd62c35d3ae4d6",
+    "semantic_hash": ""
   },
   "server/realtime/connection_manager_methods.py": {
-    "mtime": 1785373503.7363007,
-    "ast_hash": "87cd48d473cb73c486b4bb1a8fe4907a",
+    "mtime": 1785420437.0034885,
+    "ast_hash": "e66e7638f191e47b99c0121511d457b3",
     "semantic_hash": ""
   },
   "server/realtime/connection_manager_utils.py": {
@@ -7040,8 +7040,8 @@
     "semantic_hash": "42b8cab51095670e96e8002cc0ce3789"
   },
   "server/realtime/monitoring/statistics_aggregator.py": {
-    "mtime": 1785374951.2571695,
-    "ast_hash": "8d68941ca6fe0c95fbf033f062016539",
+    "mtime": 1785420437.1602838,
+    "ast_hash": "312c3235426b5764ae259176915c7dde",
     "semantic_hash": ""
   },
   "server/realtime/nats_message_handler.py": {
@@ -10980,7 +10980,7 @@
     "semantic_hash": "14a662582b3347bd10912dbe7dd9b8a2"
   },
   ".codacy/codacy.yaml": {
-    "mtime": 1785376434.6804469,
+    "mtime": 1785420503.2489176,
     "ast_hash": "b657d1aa91f6ddc9bd0130ad3cbf457d",
     "semantic_hash": ""
   },
@@ -14480,8 +14480,8 @@
     "semantic_hash": "a1621cf2128048dff1f1b21a46e8be75"
   },
   "server/game/chat_npc_system.py": {
-    "mtime": 1785373077.9106617,
-    "ast_hash": "61a210825ff7d0663adc28a7d79512c9",
+    "mtime": 1785420427.9457939,
+    "ast_hash": "a97341833480aa1c1d5e020ce50701da",
     "semantic_hash": ""
   },
   "server/game/quest/collect_inventory.py": {

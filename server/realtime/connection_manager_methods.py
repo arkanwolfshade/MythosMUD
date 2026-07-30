@@ -7,6 +7,7 @@ This module contains methods that were extracted from ConnectionManager
 to reduce file complexity and improve maintainability.
 """
 
+# pylint: disable=too-many-lines  # Reason: Facade impls for stats/broadcast/health/presence; further splits raise coupling without reducing complexity
 # Error handling and cleanup impls live in connection_error_methods / connection_cleanup_methods
 # (keeps this file under Lizard file-nloc 500).
 

@@ -34,7 +34,7 @@ class _ChatDeliveryService(Protocol):
     subject_manager: object | None
 
 
-_chat_service: _ChatDeliveryService | None = None
+_chat_service: _ChatDeliveryService | None = None  # pylint: disable=invalid-name  # Reason: Module-level singleton, underscore prefix marks private mutable state (not a constant)
 
 
 def set_chat_service_for_npc_system(chat_service: _ChatDeliveryService | None) -> None:
@@ -159,7 +159,7 @@ def schedule_personal_system(player_id: uuid.UUID | str, message: str) -> None:
     schedule_coro(deliver_personal_system(player_id, message))
 
 
-_npc_spoke_subscribed = False
+_npc_spoke_subscribed = False  # pylint: disable=invalid-name  # Reason: Module-level one-shot guard, underscore prefix marks private mutable state (not a constant)
 
 
 def _on_npc_spoke(event: NPCSpoke) -> None:

@@ -7,7 +7,7 @@ and provides comprehensive reporting for monitoring and diagnostics.
 AI Agent: Extracted from ConnectionManager to centralize statistics reporting logic.
 """
 
-# pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals  # Reason: Statistics aggregation requires many parameters and intermediate variables for complex statistics processing logic
+# pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals,too-many-lines  # Reason: Stats aggregation keeps memory/connection/health reporting cohesive; many params/locals required for multi-section payloads
 
 import time
 import uuid

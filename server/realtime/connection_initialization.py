@@ -28,6 +28,7 @@ from .room_subscription_manager import RoomSubscriptionManager
 
 def initialize_connection_state(manager: Any, event_publisher: Any | None = None) -> None:
     """Initialize websocket, presence, session, and health-check state attributes."""
+    # pylint: disable=protected-access  # Reason: Friend-module init for ConnectionManager private attrs; keeps __init__ thin
     manager.active_websockets = {}
     manager.player_websockets = {}
     manager.connection_metadata = {}

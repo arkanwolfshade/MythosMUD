@@ -21,6 +21,8 @@ logger = get_logger(__name__)
 class _ConnectionManagerAPI(Protocol):
     """Structural type for API helpers; avoids importing ConnectionManager."""
 
+    # pylint: disable=missing-function-docstring  # Reason: Protocol stubs; docs live on ConnectionManager
+
     def send_personal_message(self, player_id: UUID, event: object) -> Awaitable[object]: ...
 
     def broadcast_global(self, event: object, exclude_player: str | None = None) -> Awaitable[object]: ...
