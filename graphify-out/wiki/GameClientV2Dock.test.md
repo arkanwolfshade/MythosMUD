@@ -18,7 +18,7 @@
 
 ## Relationships
 
-- [HealthMeter](HealthMeter.md) (2 shared connections)
+- [monitoring models](monitoring_models.md) (2 shared connections)
 - [GameLogMessagesList](GameLogMessagesList.md) (1 shared connections)
 
 ## Source Files

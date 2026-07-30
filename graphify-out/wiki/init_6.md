@@ -1,11 +1,10 @@
 # init
 
-> 2 nodes
+> 1 nodes
 
 ## Key Concepts
 
-- **__init__.py** (1 connections) — `server/constants/__init__.py`
-- **Project-wide constants packages.** (1 connections) — `server/constants/__init__.py`
+- **__init__.py** (0 connections) — `server/app/__init__.py`
 
 ## Relationships
 
@@ -13,11 +12,11 @@
 
 ## Source Files
 
-- `server/constants/__init__.py`
+- `server/app/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

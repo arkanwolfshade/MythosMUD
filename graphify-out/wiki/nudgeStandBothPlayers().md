@@ -1,43 +1,56 @@
 # nudgeStandBothPlayers()
 
-> 21 nodes
+> 30 nodes
 
 ## Key Concepts
 
-- **.validate_json_structure()** (7 connections) — `server/realtime/message_validator.py`
-- **._unwrap_string_inner_message_if_json()** (7 connections) — `server/realtime/message_validator.py`
-- **.parse_and_validate()** (7 connections) — `server/realtime/message_validator.py`
-- **._parse_outer_json_object()** (6 connections) — `server/realtime/message_validator.py`
-- **.validate_size()** (5 connections) — `server/realtime/message_validator.py`
-- **.validate_schema()** (5 connections) — `server/realtime/message_validator.py`
-- **._extract_csrf_token_string()** (5 connections) — `server/realtime/message_validator.py`
-- **.validate_csrf()** (5 connections) — `server/realtime/message_validator.py`
-- **._validate_string_lengths()** (4 connections) — `server/realtime/message_validator.py`
-- **._calculate_depth()** (3 connections) — `server/realtime/message_validator.py`
-- **BaseModel** (2 connections)
-- **Validate message size.          Args:             data: Raw message data as s** (1 connections) — `server/realtime/message_validator.py`
-- **Validate JSON structure including depth limits.          Args:             me** (1 connections) — `server/realtime/message_validator.py`
-- **Calculate the maximum nesting depth of a JSON structure.          Args:** (1 connections) — `server/realtime/message_validator.py`
-- **Validate that strings in the JSON structure don't exceed length limits.** (1 connections) — `server/realtime/message_validator.py`
-- **Validate message against Pydantic schema.          Args:             message:** (1 connections) — `server/realtime/message_validator.py`
-- **Return the first string CSRF token from known keys, or None if absent.** (1 connections) — `server/realtime/message_validator.py`
-- **Validate CSRF token in message.          Args:             message: Parsed JS** (1 connections) — `server/realtime/message_validator.py`
-- **Parse raw payload to a dict; validate size and outer JSON structure.** (1 connections) — `server/realtime/message_validator.py`
-- **If ``message["message"]`` is a JSON string, parse and validate inner object.** (1 connections) — `server/realtime/message_validator.py`
-- **Parse and validate a complete WebSocket message.          This is the main ent** (1 connections) — `server/realtime/message_validator.py`
+- **test_message_handlers.py** (12 connections) — `server/tests/unit/realtime/test_message_handlers.py`
+- **handle_command_message()** (11 connections) — `server/realtime/message_handlers.py`
+- **handle_chat_message()** (10 connections) — `server/realtime/message_handlers.py`
+- **handle_ping_message()** (10 connections) — `server/realtime/message_handlers.py`
+- **handle_follow_response_message()** (9 connections) — `server/realtime/message_handlers.py`
+- **handle_party_invite_response_message()** (8 connections) — `server/realtime/message_handlers.py`
+- **handle_client_error_report_message()** (6 connections) — `server/realtime/message_handlers.py`
+- **WebSocket** (6 connections)
+- **Any** (6 connections)
+- **test_handle_command_message()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
+- **test_handle_command_message_no_command()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
+- **test_handle_command_message_no_args()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
+- **test_handle_chat_message()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
+- **test_handle_chat_message_no_message()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
+- **test_handle_ping_message()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
+- **test_handle_ping_message_with_data()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
+- **Handle client_error_report: log client-reported errors to errors.log (via ERROR-** (1 connections) — `server/realtime/message_handlers.py`
+- **Handle command message type.** (1 connections) — `server/realtime/message_handlers.py`
+- **Handle chat message type.** (1 connections) — `server/realtime/message_handlers.py`
+- **Handle ping message type.** (1 connections) — `server/realtime/message_handlers.py`
+- **Handle follow_response message (accept/decline follow request).** (1 connections) — `server/realtime/message_handlers.py`
+- **Handle party_invite_response message (accept/decline party invite).** (1 connections) — `server/realtime/message_handlers.py`
+- **Unit tests for message handlers.  Tests the message_handlers module functions.** (1 connections) — `server/tests/unit/realtime/test_message_handlers.py`
+- **Test handle_command_message() delegates to handle_game_command.** (1 connections) — `server/tests/unit/realtime/test_message_handlers.py`
+- **Test handle_command_message() handles missing command.** (1 connections) — `server/tests/unit/realtime/test_message_handlers.py`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
-- [. init ()](_init_%28%29.md) (18 shared connections)
+- [world](world.md) (7 shared connections)
+- [convert pydantic error()](convert_pydantic_error%28%29.md) (6 shared connections)
+- [processing](processing.md) (6 shared connections)
+- [circuit breaker](circuit_breaker.md) (3 shared connections)
+- [test command parser](test_command_parser.md) (2 shared connections)
+- [.is required()](is_required%28%29.md) (1 shared connections)
+- [.model dump()](model_dump%28%29.md) (1 shared connections)
+- [Any](Any.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/message_validator.py`
+- `server/realtime/message_handlers.py`
+- `server/tests/unit/realtime/test_message_handlers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 66 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 112 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

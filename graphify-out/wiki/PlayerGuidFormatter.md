@@ -34,10 +34,10 @@
 ## Relationships
 
 - [. init ()](_init_%28%29.md) (7 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (4 shared connections)
+- [world](world.md) (3 shared connections)
 - [logging handlers](logging_handlers.md) (3 shared connections)
+- [get current tick()](get_current_tick%28%29.md) (2 shared connections)
 - [Path](Path.md) (2 shared connections)
-- [.shutdown()](shutdown%28%29.md) (1 shared connections)
 
 ## Source Files
 

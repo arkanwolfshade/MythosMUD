@@ -1,48 +1,50 @@
 # NATSMessageSubscriptionMixin
 
-> 16 nodes
+> 26 nodes
 
 ## Key Concepts
 
-- **NATSMessageSubscriptionMixin** (31 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **.subscribe_to_room()** (2 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **.get_subscription_count()** (2 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **.get_active_subjects()** (2 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **.subscribe_to_event_subjects()** (2 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **.unsubscribe_from_event_subjects()** (2 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **.get_event_subscription_count()** (2 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **.is_event_subscription_active()** (2 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **Mixin: room, subzone, and event NATS subscription lifecycle.** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **Subscribe to chat messages for a specific room.          Args:             room_** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **Get the number of active subscriptions.** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **Get list of active subscription subjects.** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **Subscribe to all event-related NATS subjects using standardized patterns.** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **Unsubscribe from all event-related NATS subjects using standardized patterns.** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **Get the number of active event subscriptions.          Returns:             Numb** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **Check if a specific event subscription is active.          Args:             sub** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **test_combat_cleanup_handler.py** (18 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
+- **cleanup_handler()** (3 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
+- **mock_combat()** (3 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
+- **test_cleanup_stale_combats()** (3 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
+- **test_cleanup_stale_combats_no_end_combat_method()** (3 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
+- **test_cleanup_stale_combats_no_stale_combats()** (3 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
+- **mock_combat_service()** (2 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
+- **test_cleanup_handler_init()** (2 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
+- **test_cleanup_combat_tracking()** (2 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
+- **test_check_connection_state()** (2 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
+- **test_check_connection_state_error()** (2 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
+- **test_check_connection_state_no_connection_manager()** (2 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
+- **test_check_connection_state_no_room_subscriptions()** (2 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
+- **Unit tests for combat cleanup handler.  Tests the CombatCleanupHandler class for** (1 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
+- **Create mock combat service.** (1 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
+- **Create CombatCleanupHandler instance.** (1 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
+- **Create mock combat instance.** (1 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
+- **Test CombatCleanupHandler initialization.** (1 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
+- **Test cleanup_combat_tracking removes combat from tracking.** (1 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
+- **Test check_connection_state checks connection state.** (1 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
+- **Test check_connection_state handles errors gracefully.** (1 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
+- **Test cleanup_stale_combats removes stale combats.** (1 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
+- **Test cleanup_stale_combats handles missing end_combat method.** (1 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
+- **Test cleanup_stale_combats when no stale combats exist.** (1 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
+- **Test check_connection_state handles no connection manager.** (1 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [PerformanceTracker](PerformanceTracker.md) (6 shared connections)
-- [Player](Player.md) (4 shared connections)
-- [verify npc occupants](verify_npc_occupants.md) (3 shared connections)
-- [EnvironmentalContainerLoader](EnvironmentalContainerLoader.md) (3 shared connections)
-- [AliasStorage](AliasStorage.md) (1 shared connections)
-- [handle explore command()](handle_explore_command%28%29.md) (1 shared connections)
-- [.get original string id()](get_original_string_id%28%29.md) (1 shared connections)
-- [Any](Any.md) (1 shared connections)
-- [logging utilities](logging_utilities.md) (1 shared connections)
-- [Tests for get spell targeting](Tests_for_get_spell_targeting.md) (1 shared connections)
-- [get alias validator()](get_alias_validator%28%29.md) (1 shared connections)
+- [close db()](close_db%28%29.md) (5 shared connections)
+- [Any](Any.md) (3 shared connections)
+- [test combat attack handler](test_combat_attack_handler.md) (2 shared connections)
 
 ## Source Files
 
-- `server/realtime/nats_message_handler_subscriptions.py`
+- `server/tests/unit/services/test_combat_cleanup_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 51 (96%)
-- INFERRED: 2 (4%)
+- EXTRACTED: 56 (93%)
+- INFERRED: 4 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

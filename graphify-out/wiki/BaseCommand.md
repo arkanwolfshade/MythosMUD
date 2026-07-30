@@ -1,68 +1,56 @@
 # BaseCommand
 
-> 207 nodes
+> 69 nodes
 
 ## Key Concepts
 
-- **TransferContainerRequest** (57 connections) — `server/api/container_models.py`
-- **container_endpoints_basic.py** (50 connections) — `server/api/container_endpoints_basic.py`
-- **container_helpers.py** (44 connections) — `server/api/container_helpers.py`
 - **test_container_helpers.py** (43 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **transfer_items()** (25 connections) — `server/api/container_endpoints_basic.py`
-- **open_container()** (23 connections) — `server/api/container_endpoints_basic.py`
-- **TestTransferItems** (20 connections) — `server/tests/unit/api/test_containers.py`
-- **close_container()** (19 connections) — `server/api/container_endpoints_basic.py`
-- **get_player_id_from_user()** (19 connections) — `server/api/container_helpers.py`
-- **handle_container_service_error()** (19 connections) — `server/api/container_helpers.py`
-- **emit_transfer_event()** (17 connections) — `server/api/container_events.py`
-- **get_container_service()** (16 connections) — `server/api/container_helpers.py`
-- **CloseContainerRequest** (14 connections) — `server/api/container_models.py`
-- **TestHandleContainerServiceError** (13 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **execute_transfer()** (12 connections) — `server/api/container_helpers.py`
-- **container_models.py** (12 connections) — `server/api/container_models.py`
-- **TestEmitTransferEvent** (12 connections) — `server/tests/unit/api/test_container_events.py`
-- **Request** (11 connections)
+- **TestCreateErrorContext** (12 connections) — `server/tests/unit/api/test_container_helpers.py`
 - **TestGetPlayerIdFromUser** (11 connections) — `server/tests/unit/api/test_container_helpers.py`
 - **TestValidateUserForOpenContainer** (11 connections) — `server/tests/unit/api/test_container_helpers.py`
 - **TestApplyRateLimitingForOpenContainer** (11 connections) — `server/tests/unit/api/test_container_helpers.py`
 - **TestValidateUserForTransfer** (11 connections) — `server/tests/unit/api/test_container_helpers.py`
 - **TestApplyRateLimitingForTransfer** (11 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **TestExecuteTransfer** (11 connections) — `server/tests/unit/api/test_container_helpers.py`
 - **TestValidateUserForCloseContainer** (11 connections) — `server/tests/unit/api/test_container_helpers.py`
-- *... and 182 more nodes in this community*
+- **TestApplyRateLimitingForCloseContainer** (11 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **TestValidateUserForLootAll** (11 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **TestApplyRateLimitingForLootAll** (11 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **.test_apply_rate_limiting_for_open_container_exceeded()** (5 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **.test_apply_rate_limiting_for_transfer_exceeded()** (5 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **.test_apply_rate_limiting_for_close_container_exceeded()** (5 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **.test_apply_rate_limiting_for_loot_all_exceeded()** (5 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **.test_get_player_id_from_user_not_found()** (4 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **.test_validate_user_for_open_container_no_user()** (4 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **.test_validate_user_for_transfer_no_user()** (4 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **.test_validate_user_for_close_container_no_user()** (4 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **.test_validate_user_for_loot_all_no_user()** (4 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **.test_create_error_context_with_user()** (3 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **.test_create_error_context_no_user()** (3 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **.test_create_error_context_no_request()** (3 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **.test_get_player_id_from_user_success()** (3 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **.test_validate_user_for_open_container_success()** (3 connections) — `server/tests/unit/api/test_container_helpers.py`
+- *... and 44 more nodes in this community*
 
 ## Relationships
 
-- [AbstractContextManager](AbstractContextManager.md) (128 shared connections)
-- [. init ()](_init_%28%29.md) (36 shared connections)
-- [APIRouter](APIRouter.md) (36 shared connections)
-- [metrics](metrics.md) (34 shared connections)
-- [DeadLetterMessage](DeadLetterMessage.md) (22 shared connections)
-- [.get population stats()](get_population_stats%28%29.md) (20 shared connections)
-- [test path validator](test_path_validator.md) (10 shared connections)
-- [Player](Player.md) (7 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (5 shared connections)
-- [test player event handlers state](test_player_event_handlers_state.md) (5 shared connections)
-- [chat nats publisher](chat_nats_publisher.md) (4 shared connections)
-- [Lock](Lock.md) (3 shared connections)
+- [AbstractContextManager](AbstractContextManager.md) (48 shared connections)
+- [APIRouter](APIRouter.md) (31 shared connections)
+- [. init ()](_init_%28%29.md) (26 shared connections)
+- [DeadLetterMessage](DeadLetterMessage.md) (13 shared connections)
+- [Connection Manager](Connection_Manager.md) (12 shared connections)
+- [convert pydantic error()](convert_pydantic_error%28%29.md) (1 shared connections)
+- [real time](real_time.md) (1 shared connections)
+- [close db()](close_db%28%29.md) (1 shared connections)
+- [Lock](Lock.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/container_endpoints_basic.py`
-- `server/api/container_events.py`
-- `server/api/container_helpers.py`
-- `server/api/container_models.py`
-- `server/schemas/containers/__init__.py`
-- `server/schemas/containers/container.py`
-- `server/schemas/containers/container_data.py`
-- `server/tests/unit/api/test_container_events.py`
 - `server/tests/unit/api/test_container_helpers.py`
-- `server/tests/unit/api/test_containers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 878 (82%)
-- INFERRED: 187 (18%)
+- EXTRACTED: 190 (70%)
+- INFERRED: 80 (30%)
 - AMBIGUOUS: 0 (0%)
 
 ---

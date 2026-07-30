@@ -1,53 +1,53 @@
 # Any
 
-> 69 nodes
+> 49 nodes
 
 ## Key Concepts
 
-- **test_metrics.py** (27 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **SubjectManagerMetrics** (16 connections) — `server/services/nats_subject_manager/metrics.py`
-- **._calculate_percentile()** (6 connections) — `server/services/nats_subject_manager/metrics.py`
-- **.__init__()** (5 connections) — `server/services/nats_subject_manager/manager.py`
-- **.get_metrics()** (4 connections) — `server/services/nats_subject_manager/metrics.py`
-- **.__init__()** (3 connections) — `server/services/nats_subject_manager/metrics.py`
-- **metrics()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_subject_manager_metrics_init()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_calculate_percentile_empty()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_calculate_percentile_single_value()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_calculate_percentile_multiple_values()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **.record_validation()** (2 connections) — `server/services/nats_subject_manager/metrics.py`
-- **.record_build()** (2 connections) — `server/services/nats_subject_manager/metrics.py`
-- **.record_error()** (2 connections) — `server/services/nats_subject_manager/metrics.py`
-- **.reset()** (2 connections) — `server/services/nats_subject_manager/metrics.py`
-- **test_record_validation_success()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_record_validation_failure()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_record_validation_cache_hit()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_record_validation_multiple()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_record_validation_stores_times()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_record_build_success()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_record_build_failure()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_record_build_multiple()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_record_build_stores_times()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_record_error_pattern_not_found()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- *... and 44 more nodes in this community*
+- **RoomDataValidator** (18 connections) — `server/services/room_data_validator.py`
+- **test_room_data_validator.py** (16 connections) — `server/tests/unit/services/test_room_data_validator.py`
+- **.validate_room_data()** (10 connections) — `server/services/room_data_validator.py`
+- **Any** (8 connections)
+- **.validate_room_consistency()** (7 connections) — `server/services/room_data_validator.py`
+- **.validate_required_fields()** (6 connections) — `server/services/room_data_validator.py`
+- **.validate_field_types()** (6 connections) — `server/services/room_data_validator.py`
+- **.check_duplicate_occupants()** (6 connections) — `server/services/room_data_validator.py`
+- **.is_valid_room_id()** (5 connections) — `server/services/room_data_validator.py`
+- **.check_occupant_count_consistency()** (5 connections) — `server/services/room_data_validator.py`
+- **.check_empty_room_with_occupants()** (5 connections) — `server/services/room_data_validator.py`
+- **.validate_occupant_consistency()** (4 connections) — `server/services/room_data_validator.py`
+- **test_validate_required_fields()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
+- **test_validate_required_fields_all_present()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
+- **test_validate_field_types()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
+- **test_validate_field_types_valid()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
+- **test_validate_room_data_valid()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
+- **test_validate_room_data_invalid()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
+- **test_validate_room_data_room_id()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
+- **test_is_valid_room_id()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
+- **test_check_occupant_count_consistency()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
+- **test_check_duplicate_occupants()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
+- **test_check_duplicate_occupants_no_duplicates()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
+- **test_check_empty_room_with_occupants()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
+- **test_validate_room_consistency()** (3 connections) — `server/tests/unit/services/test_room_data_validator.py`
+- *... and 24 more nodes in this community*
 
 ## Relationships
 
-- [Any](Any.md) (5 shared connections)
-- [get subject manager dependency()](get_subject_manager_dependency%28%29.md) (2 shared connections)
-- [. init ()](_init_%28%29.md) (1 shared connections)
-- [Coord](Coord.md) (1 shared connections)
+- [test combat attack handler](test_combat_attack_handler.md) (2 shared connections)
+- [. init ()](_init_%28%29.md) (2 shared connections)
+- [world](world.md) (2 shared connections)
+- [combat taunt](combat_taunt.md) (2 shared connections)
+- [Any](Any.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/nats_subject_manager/manager.py`
-- `server/services/nats_subject_manager/metrics.py`
-- `server/tests/unit/services/nats_subject_manager/test_metrics.py`
+- `server/services/room_data_validator.py`
+- `server/tests/unit/services/test_room_data_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 155 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 156 (98%)
+- INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **test_evaluate_condition_unknown()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test evaluate_condition() returns False for unknown condition.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_state_direct_access()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test state can be accessed directly.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 

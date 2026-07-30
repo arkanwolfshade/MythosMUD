@@ -1,18 +1,36 @@
 # Quest Design Guidelines
 
+**Version 1.0.0** · MythosMUD · 2026-07-30
+
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
 > Player-centric principles for authoring MythosMUD quests. Informed by common MUD practice and
 > the lysator.liu.se quest design guide ("How to make good quests"). Use these when creating or
 > reviewing quest content and when extending the quest system.
 
-## Purpose
+## 2. Purpose
 
+**[NOTE]**
 These guidelines help authors and reviewers design quests that are fair, discoverable, and
 rewarding. They are content and design principles, not enforced by code; tooling or review
 checklists may reference them.
 
 ---
 
-## Core Principles (Lysator-Inspired)
+## 3. Core Principles (Lysator-Inspired)
+
+**[NOTE]**
 
 ### 1. Clear hints
 
@@ -53,7 +71,9 @@ checklists may reference them.
 
 ---
 
-## Practical Guidelines for MythosMUD
+## 4. Practical Guidelines for MythosMUD
+
+**[NOTE]**
 
 ### Triggers and offers
 
@@ -93,9 +113,19 @@ checklists may reference them.
 
 ---
 
-## References
+## 5. References
+
+**[SPEC]**
 
 - [QUEST_SYSTEM_FEATURES.md](QUEST_SYSTEM_FEATURES.md) — Feature list and review decisions.
 - [ADR-010: Quest Subsystem Architecture](architecture/decisions/ADR-010-quest-subsystem.md) —
   Technical architecture for the quest system.
 - lysator.liu.se MUD quest design guide (external) — “How to make good quests.”
+
+## 6. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

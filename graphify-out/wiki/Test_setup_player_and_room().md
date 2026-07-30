@@ -1,23 +1,24 @@
 # Test setup player and room()
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_search_rooms_by_name_empty_term()** (2 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test search_rooms_by_name() returns empty list for empty term.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Visual Test Value Distribution** (3 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Overall Test Suite Composition (4,965 Tests)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Test Count by Category** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
 
 ## Relationships
 
-- [test room service](test_room_service.md) (1 shared connections)
+- [. is uuid string()](_is_uuid_string%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `docs/archive/TEST_VALUE_DISTRIBUTION.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -2,7 +2,7 @@
 
 > God node · 229 connections · `server/alias_storage.py`
 
-**Community:** [test magic commands](test_magic_commands.md)
+**Community:** [Any](Any.md)
 
 ## Connections by Relation
 

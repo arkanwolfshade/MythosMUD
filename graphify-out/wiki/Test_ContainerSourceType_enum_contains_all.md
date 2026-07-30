@@ -1,24 +1,28 @@
 # Test ContainerSourceType enum contains all
 
-> 2 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **test_prepare_room_data_with_to_dict()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **Test _prepare_room_data() prepares room data with to_dict.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **Configuration Files Reference** (3 connections) — `docs/CONFIGURATION_FILES_REFERENCE.md`
+- **Development Environment Setup** (2 connections) — `docs/DEVELOPMENT.md`
+- **Configuration File Tuples** (1 connections) — `docs/CONFIGURATION_FILES_REFERENCE.md`
+- **.env.local Secrets Pattern** (1 connections) — `docs/CONFIGURATION_FILES_REFERENCE.md`
+- **COPPA Compliance Checklist** (1 connections) — `docs/DEVELOPMENT.md`
 
 ## Relationships
 
-- [. call ()](_call_%28%29.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- `docs/CONFIGURATION_FILES_REFERENCE.md`
+- `docs/DEVELOPMENT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 6 (75%)
+- INFERRED: 2 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

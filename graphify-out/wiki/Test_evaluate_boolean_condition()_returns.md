@@ -1,23 +1,27 @@
 # Test evaluate boolean condition() returns
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_get_adjacent_rooms_target_not_found()** (2 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_adjacent_rooms() handles target room not found.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **benchmark_validation_performance()** (5 connections) — `server/validators/optimized_security_validator.py`
+- **test_benchmark_validation_performance()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test benchmark function runs without errors.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Benchmark the performance of optimized vs original validation functions.** (1 connections) — `server/validators/optimized_security_validator.py`
 
 ## Relationships
 
-- [test room service](test_room_service.md) (1 shared connections)
+- [test optimized security validator](test_optimized_security_validator.md) (3 shared connections)
+- [world](world.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `server/tests/unit/validators/test_optimized_security_validator.py`
+- `server/validators/optimized_security_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 10 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

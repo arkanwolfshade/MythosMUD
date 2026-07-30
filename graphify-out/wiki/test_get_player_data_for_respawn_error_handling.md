@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_add_room_drop_negative_quantity()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **Test add_room_drop() handles negative quantity gracefully.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **test_process_tick_regeneration_player_not_found()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Test process_tick_regeneration() returns zero when player not found.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Relationships
 
-- [test room subscription manager drops](test_room_subscription_manager_drops.md) (1 shared connections)
+- [MPRegenerationService](MPRegenerationService.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Audit Trail
 

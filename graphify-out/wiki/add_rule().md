@@ -27,7 +27,7 @@
 ## Relationships
 
 - [TerminalButtonProps](TerminalButtonProps.md) (9 shared connections)
-- [Any](Any.md) (1 shared connections)
+- [test admin commands](test_admin_commands.md) (1 shared connections)
 
 ## Source Files
 

@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **test_is_cache_valid_false_expired()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test _is_cache_valid() returns False for expired cache.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_is_cache_valid_true()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test _is_cache_valid() returns True for valid cache.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
 
 ## Relationships
 

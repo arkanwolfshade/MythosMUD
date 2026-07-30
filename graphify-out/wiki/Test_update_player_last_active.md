@@ -1,23 +1,24 @@
 # Test update player last active
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_get_room_info_not_found()** (2 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_room_info() returns None when room not found.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **🧪 Testing Status** (3 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **Automated Tests** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **Manual Testing Required** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
 
 ## Relationships
 
-- [test room service](test_room_service.md) (1 shared connections)
+- [Test handle nats message handles](Test_handle_nats_message_handles.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

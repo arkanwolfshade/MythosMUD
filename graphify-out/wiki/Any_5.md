@@ -1,60 +1,28 @@
 # Any
 
-> 25 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **utility_commands.py** (20 connections) — `server/commands/utility_commands.py`
-- **handle_emote_command()** (15 connections) — `server/commands/emote_commands.py`
-- **emote_commands.py** (14 connections) — `server/commands/emote_commands.py`
-- **_get_emote_services()** (7 connections) — `server/commands/emote_commands.py`
-- **test_emote_commands.py** (6 connections) — `server/tests/unit/commands/test_emote_commands.py`
-- **Any** (5 connections)
-- **_extract_emote_action()** (4 connections) — `server/commands/emote_commands.py`
-- **_validate_player_for_emote()** (4 connections) — `server/commands/emote_commands.py`
-- **_format_emote_messages()** (4 connections) — `server/commands/emote_commands.py`
-- **_handle_emote_result()** (4 connections) — `server/commands/emote_commands.py`
-- **test_handle_emote_command()** (3 connections) — `server/tests/unit/commands/test_emote_commands.py`
-- **test_handle_emote_command_no_message()** (3 connections) — `server/tests/unit/commands/test_emote_commands.py`
-- **test_handle_emote_command_no_chat_service()** (3 connections) — `server/tests/unit/commands/test_emote_commands.py`
-- **Emote command handlers for MythosMUD.  This module contains handlers for the emo** (1 connections) — `server/commands/emote_commands.py`
-- **Extract action from command_data.      Args:         command_data: Command data** (1 connections) — `server/commands/emote_commands.py`
-- **Get chat service and player service from app state.      Args:         request:** (1 connections) — `server/commands/emote_commands.py`
-- **Validate player and extract required information for emote.      Args:         p** (1 connections) — `server/commands/emote_commands.py`
-- **Format emote messages for predefined or custom emotes.      Args:         action** (1 connections) — `server/commands/emote_commands.py`
-- **Handle the result from chat service after sending emote.      Args:         resu** (1 connections) — `server/commands/emote_commands.py`
-- **Handle the emote command for performing emotes.      Args:         command_data:** (1 connections) — `server/commands/emote_commands.py`
-- **Utility commands for MythosMUD.  This module contains handlers for utility comma** (1 connections) — `server/commands/utility_commands.py`
-- **Unit tests for emote command handlers.  Tests the emote command functionality.** (1 connections) — `server/tests/unit/commands/test_emote_commands.py`
-- **Test handle_emote_command() processes emote.** (1 connections) — `server/tests/unit/commands/test_emote_commands.py`
-- **Test handle_emote_command() handles missing message.** (1 connections) — `server/tests/unit/commands/test_emote_commands.py`
-- **Test handle_emote_command() handles missing chat service.** (1 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **.create_tracked_task()** (5 connections) — `server/app/tracked_task_manager.py`
+- **.create_supervised_task()** (5 connections) — `server/app/tracked_task_manager.py`
+- **Any** (2 connections)
+- **Task** (2 connections)
+- **Create a managed asyncio.Task with mandatory lifecycle tracking.          Args:** (1 connections) — `server/app/tracked_task_manager.py`
+- **Create a task with enhanced supervision for legacy cleanup scenarios.          A** (1 connections) — `server/app/tracked_task_manager.py`
 
 ## Relationships
 
-- [utility commands](utility_commands.md) (4 shared connections)
-- [disconnect player connections()](disconnect_player_connections%28%29.md) (3 shared connections)
-- [status commands](status_commands.md) (3 shared connections)
-- [test magic commands](test_magic_commands.md) (2 shared connections)
-- [PlayerIdCarrier](PlayerIdCarrier.md) (2 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
-- [get health status()](get_health_status%28%29.md) (2 shared connections)
-- [AuthSlice](AuthSlice.md) (1 shared connections)
-- [ContainerData](ContainerData.md) (1 shared connections)
-- [websocket integration](websocket_integration.md) (1 shared connections)
-- [.state()](state%28%29.md) (1 shared connections)
-- [Player Position Service](Player_Position_Service.md) (1 shared connections)
+- [test command parser](test_command_parser.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/emote_commands.py`
-- `server/commands/utility_commands.py`
-- `server/tests/unit/commands/test_emote_commands.py`
+- `server/app/tracked_task_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 100 (96%)
-- INFERRED: 4 (4%)
+- EXTRACTED: 16 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

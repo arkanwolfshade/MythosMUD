@@ -1,23 +1,24 @@
 # Test get player by user
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_get_room_exits_room_not_found()** (2 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_room_exits() returns empty dict when room not found.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Monitoring & Validation** (3 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Metrics to Track** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Performance Validation** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
 
 ## Relationships
 
-- [test room service](test_room_service.md) (1 shared connections)
+- [FastAPI Dependency Injection](FastAPI_Dependency_Injection.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

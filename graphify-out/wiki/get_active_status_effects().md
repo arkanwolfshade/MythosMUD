@@ -13,7 +13,7 @@
 
 ## Relationships
 
-- [cfg float()](cfg_float%28%29.md) (3 shared connections)
+- [datetime](datetime.md) (3 shared connections)
 - [.get explored rooms()](get_explored_rooms%28%29.md) (1 shared connections)
 
 ## Source Files

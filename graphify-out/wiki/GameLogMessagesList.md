@@ -1,74 +1,77 @@
 # GameLogMessagesList
 
-> 49 nodes
+> 63 nodes
 
 ## Key Concepts
 
 - **GameLogPanel.tsx** (18 connections) — `client/src/components/panels/GameLogPanel.tsx`
 - **GameLogMessagesList.tsx** (16 connections) — `client/src/components/panels/GameLogMessagesList.tsx`
-- **GameLogPanelSections.tsx** (16 connections) — `client/src/components/panels/GameLogPanelSections.tsx`
+- **ansiToHtml.ts** (16 connections) — `client/src/utils/ansiToHtml.ts`
+- **ansiToHtmlWithBreaks()** (15 connections) — `client/src/utils/ansiToHtml.ts`
+- **chatPanelRefactoredDerived.ts** (13 connections) — `client/src/components/panels/chatPanelRefactoredDerived.ts`
+- **useChatPanelRefactored.ts** (12 connections) — `client/src/components/panels/useChatPanelRefactored.ts`
 - **@testing-library/jest-dom/vitest** (12 connections) — `client/tsconfig.test.json`
+- **ChatPanelRefactored.tsx** (10 connections) — `client/src/components/panels/ChatPanelRefactored.tsx`
+- **chatPanelRefactoredDerived.test.ts** (10 connections) — `client/src/components/panels/__tests__/chatPanelRefactoredDerived.test.ts`
 - **GameLogPanel()** (9 connections) — `client/src/components/panels/GameLogPanel.tsx`
-- **chat-panel.spec.tsx** (9 connections) — `client/src/components/panels/__tests__/chat-panel.spec.tsx`
 - **gameLogPanelUtils.ts** (9 connections) — `client/src/components/panels/gameLogPanelUtils.ts`
 - **ChatMessage** (9 connections) — `client/src/stores/gameStore.ts`
 - **gameLogPanelUtils.test.ts** (7 connections) — `client/src/components/panels/__tests__/gameLogPanelUtils.test.ts`
+- **useChatPanelRefactored()** (7 connections) — `client/src/components/panels/useChatPanelRefactored.ts`
 - **gameLogFilter.ts** (7 connections) — `client/src/utils/gameLogFilter.ts`
 - **GameLogMessagesList()** (6 connections) — `client/src/components/panels/GameLogMessagesList.tsx`
 - **game-log-panel.spec.tsx** (6 connections) — `client/src/components/panels/__tests__/game-log-panel.spec.tsx`
 - **game-log-panel.test.tsx** (6 connections) — `client/src/components/panels/__tests__/game-log-panel.test.tsx`
+- **resolveMessageChannel()** (6 connections) — `client/src/components/panels/chatPanelRefactoredDerived.ts`
+- **computeUnreadCounts()** (6 connections) — `client/src/components/panels/chatPanelRefactoredDerived.ts`
+- **computeFilteredMessages()** (6 connections) — `client/src/components/panels/chatPanelRefactoredDerived.ts`
+- **ChatPanelRefactoredMessage** (6 connections) — `client/src/components/panels/chatPanelRefactoredTypes.ts`
 - **useGameLogPanelState.ts** (6 connections) — `client/src/components/panels/useGameLogPanelState.ts`
+- **ansiToHtml()** (6 connections) — `client/src/utils/ansiToHtml.ts`
 - **GameLogPanelFilterBar()** (5 connections) — `client/src/components/panels/GameLogPanelSections.tsx`
-- **filterGameLogMessages()** (5 connections) — `client/src/utils/gameLogFilter.ts`
-- **ProfessionSelectionScreen.test.tsx** (4 connections) — `client/src/components/ProfessionSelectionScreen.test.tsx`
-- **GameTerminal.test.tsx** (4 connections) — `client/src/components/__tests__/GameTerminal.test.tsx`
-- **game-log-panel.test.tsx** (4 connections) — `client/src/components/__tests__/game-log-panel.test.tsx`
-- **GameLogListMessage** (4 connections) — `client/src/components/panels/GameLogMessagesList.tsx`
-- **getGameLogMessageClassName()** (4 connections) — `client/src/components/panels/gameLogPanelUtils.ts`
-- **getGameLogMessageRowClassName()** (4 connections) — `client/src/components/panels/gameLogPanelUtils.ts`
-- **getGameLogMessageFilterSelectClassName()** (4 connections) — `client/src/components/panels/gameLogPanelUtils.ts`
-- **getGameLogTimeFilterSelectClassName()** (4 connections) — `client/src/components/panels/gameLogPanelUtils.ts`
-- **getGameLogSearchInputClassName()** (4 connections) — `client/src/components/panels/gameLogPanelUtils.ts`
-- *... and 24 more nodes in this community*
+- *... and 38 more nodes in this community*
 
 ## Relationships
 
-- [ChatPanelTest](ChatPanelTest.md) (9 shared connections)
-- [createInitialState()](createInitialState%28%29.md) (6 shared connections)
-- [Any](Any.md) (4 shared connections)
-- [SERVER UNAVAILABLE PATTERNS](SERVER_UNAVAILABLE_PATTERNS.md) (3 shared connections)
+- [ChatPanelTest](ChatPanelTest.md) (29 shared connections)
+- [chatPanelChannelFilter](chatPanelChannelFilter.md) (11 shared connections)
+- [Any](Any.md) (6 shared connections)
+- [EdgeDetailsPanel](EdgeDetailsPanel.md) (4 shared connections)
 - [domPurifyTestWindow](domPurifyTestWindow.md) (3 shared connections)
-- [test player cache](test_player_cache.md) (3 shared connections)
-- [.create corpse()](create_corpse%28%29.md) (3 shared connections)
 - [Channel](Channel.md) (2 shared connections)
-- [async sessionmaker](async_sessionmaker.md) (2 shared connections)
-- [chatPanelChannelFilter](chatPanelChannelFilter.md) (1 shared connections)
-- [ChatHistoryToggle()](ChatHistoryToggle%28%29.md) (1 shared connections)
+- [monitoring models](monitoring_models.md) (2 shared connections)
+- [SERVER UNAVAILABLE PATTERNS](SERVER_UNAVAILABLE_PATTERNS.md) (2 shared connections)
+- [createInitialState()](createInitialState%28%29.md) (1 shared connections)
 - [fetchSpy](fetchSpy.md) (1 shared connections)
+- [MonitoringPanel](MonitoringPanel.md) (1 shared connections)
+- [HealthMeter](HealthMeter.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/ProfessionSelectionScreen.test.tsx`
-- `client/src/components/__tests__/GameTerminal.test.tsx`
 - `client/src/components/__tests__/game-log-panel.test.tsx`
+- `client/src/components/panels/ChatPanelRefactored.tsx`
 - `client/src/components/panels/GameLogMessagesList.tsx`
 - `client/src/components/panels/GameLogPanel.tsx`
 - `client/src/components/panels/GameLogPanelSections.tsx`
+- `client/src/components/panels/__tests__/ChatPanelRefactored.test.tsx`
 - `client/src/components/panels/__tests__/GameLogPanel.test.tsx`
-- `client/src/components/panels/__tests__/chat-panel.spec.tsx`
+- `client/src/components/panels/__tests__/chatPanelRefactoredDerived.test.ts`
 - `client/src/components/panels/__tests__/game-log-panel.spec.tsx`
 - `client/src/components/panels/__tests__/game-log-panel.test.tsx`
 - `client/src/components/panels/__tests__/gameLogPanelUtils.test.ts`
+- `client/src/components/panels/chatPanelRefactoredDerived.ts`
+- `client/src/components/panels/chatPanelRefactoredTypes.ts`
 - `client/src/components/panels/gameLogPanelUtils.ts`
+- `client/src/components/panels/useChatPanelRefactored.ts`
 - `client/src/components/panels/useGameLogPanelState.ts`
 - `client/src/stores/gameStore.ts`
 - `client/src/utils/__tests__/gameLogFilter.test.ts`
-- `client/src/utils/gameLogFilter.ts`
-- `client/tsconfig.test.json`
+- `client/src/utils/ansiToHtml.test.ts`
+- `client/src/utils/ansiToHtml.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 223 (100%)
+- EXTRACTED: 337 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

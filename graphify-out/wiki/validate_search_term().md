@@ -33,9 +33,10 @@
 
 ## Relationships
 
-- [Spell Targeting](Spell_Targeting.md) (34 shared connections)
-- [.initialize()](initialize%28%29.md) (25 shared connections)
-- [test command parser helpers](test_command_parser_helpers.md) (1 shared connections)
+- [Spell Targeting](Spell_Targeting.md) (33 shared connections)
+- [.initialize()](initialize%28%29.md) (24 shared connections)
+- [test command parser helpers](test_command_parser_helpers.md) (2 shared connections)
+- [world](world.md) (1 shared connections)
 
 ## Source Files
 

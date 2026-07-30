@@ -1,73 +1,62 @@
 # .shutdown()
 
-> 110 nodes
+> 40 nodes
 
 ## Key Concepts
 
 - **lifespan.py** (42 connections) — `server/app/lifespan.py`
-- **MemoryLeakMetricsCollector** (33 connections) — `server/monitoring/memory_leak_metrics.py`
-- **monitoring_dashboard.py** (25 connections) — `server/monitoring/monitoring_dashboard.py`
-- **system_monitoring.py** (23 connections) — `server/api/system_monitoring.py`
-- **get_monitoring_dashboard()** (20 connections) — `server/monitoring/monitoring_dashboard.py`
-- **performance_monitor.py** (20 connections) — `server/monitoring/performance_monitor.py`
-- **exception_tracker.py** (18 connections) — `server/monitoring/exception_tracker.py`
-- **get_cache_manager()** (16 connections) — `server/caching/lru_cache.py`
 - **lifespan()** (15 connections) — `server/app/lifespan.py`
 - **_startup_application()** (13 connections) — `server/app/lifespan.py`
-- **get_performance_monitor()** (13 connections) — `server/monitoring/performance_monitor.py`
-- **test_main.py** (13 connections) — `server/tests/unit/test_main.py`
-- **ExceptionStats** (12 connections) — `server/monitoring/exception_tracker.py`
-- **get_system_metrics()** (11 connections) — `server/api/system_monitoring.py`
-- **__init__.py** (11 connections) — `server/monitoring/__init__.py`
-- **PerformanceStats** (11 connections) — `server/monitoring/performance_monitor.py`
-- **get_system_monitoring_summary()** (10 connections) — `server/api/system_monitoring.py`
-- **resolve_system_alert()** (10 connections) — `server/api/system_monitoring.py`
 - **_shutdown_with_error_handling()** (10 connections) — `server/app/lifespan.py`
-- **set_auth_epoch()** (10 connections) — `server/auth/token_epoch.py`
-- **get_exception_tracker()** (10 connections) — `server/monitoring/exception_tracker.py`
-- **get_system_health()** (9 connections) — `server/api/system_monitoring.py`
-- **get_system_monitoring_alerts()** (9 connections) — `server/api/system_monitoring.py`
-- **test_jwt_strategy.py** (9 connections) — `server/tests/unit/auth/test_jwt_strategy.py`
 - **_initialize_enhanced_systems()** (8 connections) — `server/app/lifespan.py`
-- *... and 85 more nodes in this community*
+- **.reset_instance()** (6 connections) — `server/container/main.py`
+- **test_application_container_set_instance()** (6 connections) — `server/tests/unit/test_application_container.py`
+- **TestLifespan** (6 connections) — `server/tests/unit/test_main.py`
+- **_cleanup_container_on_error()** (5 connections) — `server/app/lifespan.py`
+- **_calculate_metrics_delta()** (4 connections) — `server/app/lifespan.py`
+- **_persist_metrics_to_file()** (4 connections) — `server/app/lifespan.py`
+- **_log_memory_metrics_periodically()** (4 connections) — `server/app/lifespan.py`
+- **FastAPI** (4 connections)
+- **_persist_mythos_state_on_error()** (4 connections) — `server/app/lifespan.py`
+- **.set_instance()** (4 connections) — `server/container/main.py`
+- **test_application_container_get_instance()** (4 connections) — `server/tests/unit/test_application_container.py`
+- **test_application_container_reset_instance()** (4 connections) — `server/tests/unit/test_application_container.py`
+- **.test_lifespan_success()** (4 connections) — `server/tests/unit/test_main.py`
+- **.test_lifespan_shutdown()** (4 connections) — `server/tests/unit/test_main.py`
+- **Any** (3 connections)
+- **.test_lifespan_initialization_failure()** (3 connections) — `server/tests/unit/test_main.py`
+- **Application lifecycle management for MythosMUD server.  This module handles appl** (1 connections) — `server/app/lifespan.py`
+- **Calculate metrics delta between startup and shutdown.** (1 connections) — `server/app/lifespan.py`
+- **Persist metrics to file in JSON format.** (1 connections) — `server/app/lifespan.py`
+- **Log memory leak metrics periodically.      Args:         collector: MemoryLeakMe** (1 connections) — `server/app/lifespan.py`
+- *... and 15 more nodes in this community*
 
 ## Relationships
 
-- [fetch container items()](fetch_container_items%28%29.md) (19 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (19 shared connections)
-- [PerformanceStats](PerformanceStats.md) (19 shared connections)
-- [Any](Any.md) (14 shared connections)
-- [init](init.md) (13 shared connections)
-- [. is npc in combat()](_is_npc_in_combat%28%29.md) (12 shared connections)
-- [. init ()](_init_%28%29.md) (9 shared connections)
-- [nats retry handler](nats_retry_handler.md) (9 shared connections)
-- [AbstractContextManager](AbstractContextManager.md) (8 shared connections)
-- [websocket integration](websocket_integration.md) (8 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (7 shared connections)
-- [test command parser](test_command_parser.md) (7 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (17 shared connections)
+- [init](init.md) (8 shared connections)
+- [AsyncSessionFactory](AsyncSessionFactory.md) (7 shared connections)
+- [PerformanceStats](PerformanceStats.md) (7 shared connections)
+- [Any](Any.md) (7 shared connections)
+- [world](world.md) (4 shared connections)
+- [test command parser](test_command_parser.md) (4 shared connections)
+- [Protocol](Protocol.md) (3 shared connections)
+- [Connection Manager](Connection_Manager.md) (3 shared connections)
+- [aggregate log entry()](aggregate_log_entry%28%29.md) (3 shared connections)
+- [ConnectionsComponent](ConnectionsComponent.md) (2 shared connections)
+- [. initialize handlers()](_initialize_handlers%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/monitoring_models.py`
-- `server/api/system_monitoring.py`
 - `server/app/lifespan.py`
-- `server/auth/token_epoch.py`
-- `server/caching/lru_cache.py`
-- `server/monitoring/__init__.py`
-- `server/monitoring/exception_tracker.py`
-- `server/monitoring/memory_leak_metrics.py`
-- `server/monitoring/monitoring_dashboard.py`
-- `server/monitoring/performance_monitor.py`
-- `server/structured_logging/enhanced_logging_config.py`
-- `server/structured_logging/log_aggregator.py`
-- `server/tests/unit/auth/conftest.py`
-- `server/tests/unit/auth/test_jwt_strategy.py`
+- `server/container/main.py`
+- `server/tests/unit/test_application_container.py`
 - `server/tests/unit/test_main.py`
 
 ## Audit Trail
 
-- EXTRACTED: 559 (94%)
-- INFERRED: 35 (6%)
+- EXTRACTED: 171 (97%)
+- INFERRED: 5 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

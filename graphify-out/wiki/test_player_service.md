@@ -1,42 +1,40 @@
 # test player service
 
-> 60 nodes
+> 16 nodes
 
 ## Key Concepts
 
 - **test_skill_service.py** (36 connections) — `server/tests/unit/game/test_skill_service.py`
-- **_occupation_slots_9()** (11 connections) — `server/tests/unit/game/test_skill_service.py`
-- **_personal_interest_4()** (8 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_valid_creates_rows()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_own_language_not_allocated_equals_edu()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_cthulhu_mythos_in_occupation_rejected()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_wrong_occupation_values_raises()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_duplicate_occupation_skill_ids_raises()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_cthulhu_mythos_in_personal_rejected()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_wrong_occupation_count_raises()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_personal_interest_not_four_raises()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_duplicate_personal_skill_ids_raises()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_overlap_occupation_and_personal_raises()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **mock_skill_repo()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
-- **mock_player_skill_repo()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
+- **catalog_with_own_language_and_mythos()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
 - **mock_persistence()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
-- **mock_skill_use_log_repo()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
 - **test_get_skills_catalog_returns_list()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_get_player_skills_owner_returns_list()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_get_player_skills_non_owner_returns_none()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
 - **test_record_successful_skill_use_calls_repo()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_get_skills_used_this_level_returns_repo_result()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
 - **test_run_improvement_rolls_previous_level_under_1_no_op()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_run_improvement_rolls_no_skills_used_no_updates()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_run_improvement_rolls_improvement_applied_when_roll_exceeds_value()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
-- *... and 35 more nodes in this community*
+- **test_roll_skill_check_unknown_skill_returns_false()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_roll_skill_check_failure_does_not_record()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
+- **Unit tests for SkillService (get_skills_catalog, set_player_skills, get_player_s** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **Minimal catalog: accounting, library_use, own_language, cthulhu_mythos (for cove** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **Mock AsyncPersistenceLayer (get_profession_by_id, get_player_by_id).** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **get_skills_catalog returns list of skill dicts.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **record_successful_skill_use delegates to repo.record_use with correct args.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **run_improvement_rolls with new_level 1 does nothing (previous level 0).** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **roll_skill_check when player has no value for skill_id returns False.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **When roll > skill value, record_use is not called and returns False.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
 
 ## Relationships
 
-- [emit close container event()](emit_close_container_event%28%29.md) (2 shared connections)
-- [test quest definition repository](test_quest_definition_repository.md) (2 shared connections)
+- [test websocket room updates build](test_websocket_room_updates_build.md) (6 shared connections)
+- [Linting Complexity Alignment](Linting_Complexity_Alignment.md) (6 shared connections)
+- [real time](real_time.md) (3 shared connections)
+- [test quest definition repository](test_quest_definition_repository.md) (1 shared connections)
 - [main()](main%28%29.md) (1 shared connections)
+- [test_get_current_lucidity_not_found](test_get_current_lucidity_not_found.md) (1 shared connections)
+- [test_get_player_data_for_delirium_respawn_success](test_get_player_data_for_delirium_respawn_success.md) (1 shared connections)
+- [test_get_player_data_for_delirium_respawn_no_connection_manager](test_get_player_data_for_delirium_respawn_no_connection_manager.md) (1 shared connections)
 - [AppState](AppState.md) (1 shared connections)
+- [test_get_player_data_for_delirium_respawn_error_handling](test_get_player_data_for_delirium_respawn_error_handling.md) (1 shared connections)
+- [test_get_player_data_for_delirium_respawn_player_not_found](test_get_player_data_for_delirium_respawn_player_not_found.md) (1 shared connections)
+- [test_handle_player_delirium_respawned_success](test_handle_player_delirium_respawned_success.md) (1 shared connections)
 
 ## Source Files
 
@@ -44,7 +42,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 154 (100%)
+- EXTRACTED: 59 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

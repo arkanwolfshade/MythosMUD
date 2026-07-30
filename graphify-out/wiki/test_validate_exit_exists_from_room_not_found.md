@@ -1,23 +1,24 @@
 # test_validate_exit_exists_from_room_not_found
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_validate_exit_exists_from_room_not_found()** (2 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test validate_exit_exists() returns False when from_room not found.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **🎯 Audit Compliance Score** (3 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **Before Remediation** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **After Remediation** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
 
 ## Relationships
 
-- [test room service](test_room_service.md) (1 shared connections)
+- [get alias validator()](get_alias_validator%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,26 +1,27 @@
 # .get available slots()
 
-> 5 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **rename_used_to_is_active.py** (4 connections) — `server/scripts/rename_used_to_is_active.py`
-- **apply_migration()** (3 connections) — `server/scripts/rename_used_to_is_active.py`
-- **main()** (3 connections) — `server/scripts/rename_used_to_is_active.py`
-- **Apply the migration to rename used back to is_active.      Args:         databas** (1 connections) — `server/scripts/rename_used_to_is_active.py`
-- **Main entry point for the migration script.** (1 connections) — `server/scripts/rename_used_to_is_active.py`
+- **Log Levels and Usage** (6 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **DEBUG** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **INFO** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **WARNING** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **ERROR** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **CRITICAL** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
 
 ## Relationships
 
-- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
+- [minLength](minLength.md) (1 shared connections)
 
 ## Source Files
 
-- `server/scripts/rename_used_to_is_active.py`
+- `docs/archive/LOGGING_BEST_PRACTICES.md`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -34,7 +34,7 @@
 ## Relationships
 
 - [. init ()](_init_%28%29.md) (14 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (13 shared connections)
+- [world](world.md) (13 shared connections)
 - [logging handlers](logging_handlers.md) (10 shared connections)
 - [PlayerGuidFormatter](PlayerGuidFormatter.md) (2 shared connections)
 - [Path](Path.md) (2 shared connections)

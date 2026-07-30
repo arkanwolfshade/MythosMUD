@@ -1,23 +1,24 @@
 # Test add rule() replaces existing
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_get_adjacent_rooms_null_exit()** (2 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_adjacent_rooms() skips null exits.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **metadata** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **additionalProperties** (1 connections) — `schemas/items/item_prototype.schema.json`
 
 ## Relationships
 
-- [test room service](test_room_service.md) (1 shared connections)
+- [type](type.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `schemas/items/item_prototype.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

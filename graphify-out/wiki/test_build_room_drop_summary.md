@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [UUID](UUID.md) (5 shared connections)
+- [.check and interrupt rest()](check_and_interrupt_rest%28%29.md) (5 shared connections)
 - [look room](look_room.md) (4 shared connections)
 - [look helpers](look_helpers.md) (3 shared connections)
 

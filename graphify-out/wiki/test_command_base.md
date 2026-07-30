@@ -1,11 +1,12 @@
 # test command base
 
-> 20 nodes
+> 22 nodes
 
 ## Key Concepts
 
 - **.create_instance()** (7 connections) — `server/game/instance_manager.py`
 - **._build_instance_rooms()** (6 connections) — `server/game/instance_manager.py`
+- **.__init__()** (5 connections) — `server/game/instance_manager.py`
 - **Room** (5 connections)
 - **._stable_id_from_room()** (5 connections) — `server/game/instance_manager.py`
 - **Instance** (4 connections) — `server/game/instance_manager.py`
@@ -16,6 +17,7 @@
 - **.get_room_by_id()** (3 connections) — `server/game/instance_manager.py`
 - **UUID** (2 connections)
 - **An instanced set of rooms, unique per player or group.** (1 connections) — `server/game/instance_manager.py`
+- **Initialize the instance manager.          Args:             room_cache: Shared r** (1 connections) — `server/game/instance_manager.py`
 - **Create an instance from room templates with the given template_id.          Args** (1 connections) — `server/game/instance_manager.py`
 - **Return template rooms matching instance_template_id.** (1 connections) — `server/game/instance_manager.py`
 - **Clone template rooms into instance-scoped rooms with remapped exits.** (1 connections) — `server/game/instance_manager.py`
@@ -27,8 +29,9 @@
 
 ## Relationships
 
-- [emit close container event()](emit_close_container_event%28%29.md) (8 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (3 shared connections)
+- [test command parser](test_command_parser.md) (9 shared connections)
+- [world](world.md) (3 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
 
 ## Source Files
 
@@ -36,7 +39,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 55 (100%)
+- EXTRACTED: 61 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

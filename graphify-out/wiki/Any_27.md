@@ -1,52 +1,34 @@
 # Any
 
-> 53 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **TestRoomDataFixer** (20 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **RoomDataFixer** (14 connections) — `server/services/room_data_fixer.py`
-- **.apply_room_data_fixes()** (13 connections) — `server/services/room_data_fixer.py`
-- **.fix_missing_name()** (7 connections) — `server/services/room_data_fixer.py`
-- **.fix_occupant_count_mismatch()** (7 connections) — `server/services/room_data_fixer.py`
-- **.fix_missing_description()** (6 connections) — `server/services/room_data_fixer.py`
-- **.fix_missing_timestamp()** (6 connections) — `server/services/room_data_fixer.py`
-- **Any** (5 connections)
-- **.count_applied_fixes()** (5 connections) — `server/services/room_data_fixer.py`
-- **.test_apply_room_data_fixes_exception_handling()** (5 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **test_room_data_fixer.py** (4 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **.test_fix_missing_name()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **.test_fix_missing_name_no_error()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **.test_fix_missing_name_unknown_id()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **.test_fix_missing_description()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **.test_fix_missing_description_no_error()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **.test_fix_occupant_count_mismatch()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **.test_fix_occupant_count_mismatch_no_error()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **.test_fix_occupant_count_mismatch_no_occupants()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **.test_fix_missing_timestamp()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **.test_fix_missing_timestamp_existing()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **.test_count_applied_fixes()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **.test_count_applied_fixes_no_fixable()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **.test_apply_room_data_fixes_all_fixes()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- **.test_apply_room_data_fixes_no_errors()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
-- *... and 28 more nodes in this community*
+- **TestPrepareCommandForProcessing** (7 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **.test_prepare_command_rate_limited()** (3 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **.test_prepare_command_validation_failed()** (3 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **.test_prepare_command_empty_after_cleaning()** (3 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **.test_prepare_command_empty_after_normalization()** (3 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **.test_prepare_command_success()** (3 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **Test _prepare_command_for_processing function.** (1 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **Test _prepare_command_for_processing returns rate limit result when rate limited** (1 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **Test _prepare_command_for_processing returns validation result when validation f** (1 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **Test _prepare_command_for_processing handles empty command after cleaning.** (1 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **Test _prepare_command_for_processing handles empty command after normalization.** (1 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **Test _prepare_command_for_processing successfully prepares command.** (1 connections) — `server/tests/unit/commands/test_command_preparation.py`
 
 ## Relationships
 
-- [TerminalButtonProps](TerminalButtonProps.md) (3 shared connections)
-- [combat taunt](combat_taunt.md) (1 shared connections)
-- [Any](Any.md) (1 shared connections)
-- [UUID](UUID.md) (1 shared connections)
+- [check alias safety()](check_alias_safety%28%29.md) (6 shared connections)
 
 ## Source Files
 
-- `server/services/room_data_fixer.py`
-- `server/tests/unit/services/test_room_data_fixer.py`
+- `server/tests/unit/commands/test_command_preparation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 160 (96%)
-- INFERRED: 6 (4%)
+- EXTRACTED: 28 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

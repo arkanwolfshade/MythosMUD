@@ -1,6 +1,6 @@
 # bench cache npc
 
-> 99 nodes
+> 105 nodes
 
 ## Key Concepts
 
@@ -9,6 +9,8 @@
 - **test_quest_definition_repository.py** (20 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
 - **quest_instance_repository.py** (19 connections) — `server/persistence/repositories/quest_instance_repository.py`
 - **QuestInstanceRepository** (19 connections) — `server/persistence/repositories/quest_instance_repository.py`
+- **QuestDefinitionRepository** (17 connections) — `server/persistence/repositories/quest_definition_repository.py`
+- **quest_definition_repository.py** (16 connections) — `server/persistence/repositories/quest_definition_repository.py`
 - **test_quest_flow.py** (15 connections) — `server/tests/integration/test_quest_flow.py`
 - **quest.py** (13 connections) — `server/models/quest.py`
 - **QuestDefinition** (13 connections) — `server/models/quest.py`
@@ -24,28 +26,27 @@
 - **_str_player_id()** (7 connections) — `server/persistence/repositories/quest_instance_repository.py`
 - **test_quest_start_log_abandon_flow()** (7 connections) — `server/tests/integration/test_quest_flow.py`
 - **test_quest_start_by_trigger_then_abandon()** (7 connections) — `server/tests/integration/test_quest_flow.py`
-- **QuestOffer** (6 connections) — `server/models/quest.py`
+- **_row_to_quest_definition()** (6 connections) — `server/persistence/repositories/quest_definition_repository.py`
 - **_row_for_quest_instance()** (6 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
 - **_make_shared_session_factory()** (5 connections) — `server/tests/integration/test_quest_flow.py`
-- **Any** (4 connections)
-- **_row_for_quest_definition()** (4 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- *... and 74 more nodes in this community*
+- *... and 80 more nodes in this community*
 
 ## Relationships
 
-- [real time](real_time.md) (49 shared connections)
+- [real time](real_time.md) (51 shared connections)
 - [QuestCompleted](QuestCompleted.md) (11 shared connections)
-- [main()](main%28%29.md) (9 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (3 shared connections)
-- [emit close container event()](emit_close_container_event%28%29.md) (3 shared connections)
-- [.validate message()](validate_message%28%29.md) (3 shared connections)
+- [main()](main%28%29.md) (11 shared connections)
+- [world](world.md) (6 shared connections)
+- [test command parser](test_command_parser.md) (6 shared connections)
+- [close db()](close_db%28%29.md) (3 shared connections)
+- [.validate message()](validate_message%28%29.md) (2 shared connections)
 - [. init ()](_init_%28%29.md) (1 shared connections)
-- [metrics](metrics.md) (1 shared connections)
 - [test command factories communication](test_command_factories_communication.md) (1 shared connections)
 
 ## Source Files
 
 - `server/models/quest.py`
+- `server/persistence/repositories/quest_definition_repository.py`
 - `server/persistence/repositories/quest_instance_repository.py`
 - `server/tests/integration/test_quest_flow.py`
 - `server/tests/unit/persistence/test_quest_definition_repository.py`
@@ -53,8 +54,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 382 (93%)
-- INFERRED: 29 (7%)
+- EXTRACTED: 418 (93%)
+- INFERRED: 32 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

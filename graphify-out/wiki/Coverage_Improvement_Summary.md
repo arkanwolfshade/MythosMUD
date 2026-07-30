@@ -1,26 +1,31 @@
 # Coverage Improvement Summary
 
-> 3 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **Easy Coverage Wins** (2 connections) — `docs/EASY_COVERAGE_WINS.md`
-- **Coverage Improvement Summary** (1 connections) — `docs/COVERAGE_IMPROVEMENT_SUMMARY.md`
-- **Tiered Coverage Wins** (1 connections) — `docs/EASY_COVERAGE_WINS.md`
+- **🔴 Anti-Patterns Check (Critical)** (9 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **1. Blocking the Event Loop?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **2. Missing `await` Keywords?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **3. Using `asyncio.run()` in Library Code?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **4. Mixing Sync and Async Code Incorrectly?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **5. Forgetting to Await Awaitable Objects?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **6. Not Handling Exceptions?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **7. Over-using Locks?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **8. Unstructured Concurrency?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [.get stats()](get_stats%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/COVERAGE_IMPROVEMENT_SUMMARY.md`
-- `docs/EASY_COVERAGE_WINS.md`
+- `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (50%)
-- INFERRED: 2 (50%)
+- EXTRACTED: 17 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -33,9 +33,10 @@
 
 ## Relationships
 
-- [SERVER UNAVAILABLE PATTERNS](SERVER_UNAVAILABLE_PATTERNS.md) (4 shared connections)
 - [.append()](append%28%29.md) (3 shared connections)
 - [mockOpenContainers](mockOpenContainers.md) (3 shared connections)
+- [applyAuthenticatedSession](applyAuthenticatedSession.md) (2 shared connections)
+- [init](init.md) (2 shared connections)
 
 ## Source Files
 

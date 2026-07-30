@@ -1,23 +1,26 @@
 # Test process room rows with
 
-> 2 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **test_process_room_rows_zone_single_part()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _process_room_rows with zone_stable_id that has only one part (no slash).** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Phase 1: Quick Wins (Week 1)** (5 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Task 1.1: Remove Placeholder Tests (30 minutes)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Task 1.2: Remove Trivial Type Assertions (1 hour)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Task 1.3: Remove Duplicate Tests (30 minutes)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Task 1.4: Delete Empty Test File (5 minutes)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
 
 ## Relationships
 
-- [test async persistence room loading](test_async_persistence_room_loading.md) (1 shared connections)
+- [Test query rooms with exits](Test_query_rooms_with_exits.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

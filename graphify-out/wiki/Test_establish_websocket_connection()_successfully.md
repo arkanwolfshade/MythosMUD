@@ -1,23 +1,24 @@
 # Test establish websocket connection() successfully
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_search_rooms_by_name_not_implemented()** (2 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test search_rooms_by_name() returns empty list (not implemented).** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **E2E Testing Guide** (2 connections) — `docs/E2E_TESTING_GUIDE.md`
+- **Playwright CLI E2E Tests** (2 connections) — `docs/E2E_TESTING_GUIDE.md`
+- **Playwright MCP Multiplayer Scenarios** (2 connections) — `docs/E2E_TESTING_GUIDE.md`
 
 ## Relationships
 
-- [test room service](test_room_service.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `docs/E2E_TESTING_GUIDE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

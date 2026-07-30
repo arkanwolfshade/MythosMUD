@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_room_subscribers_empty()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **Test get_room_subscribers() returns empty set when no subscribers.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_get_skills_used_this_level_returns_repo_result()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
+- **get_skills_used_this_level returns distinct skill_ids from repo.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
 
 ## Relationships
 
-- [test room subscription manager](test_room_subscription_manager.md) (1 shared connections)
+- [test player service](test_player_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager.py`
+- `server/tests/unit/game/test_skill_service.py`
 
 ## Audit Trail
 

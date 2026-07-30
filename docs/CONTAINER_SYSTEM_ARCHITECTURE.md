@@ -1,22 +1,39 @@
 # Container System Architecture
 
-## Overview
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
 The unified container system provides secure storage for environmental props, wearable gear, and corpse containers. This
 document describes the architecture, design decisions, and implementation details of the container system.
 
-## Table of Contents
+## 2. Table of Contents
 
-1. [System Architecture](#system-architecture)
-2. [Data Model](#data-model)
-3. [Service Layer](#service-layer)
-4. [Persistence Layer](#persistence-layer)
-5. [API Layer](#api-layer)
-6. [WebSocket Events](#websocket-events)
-7. [Security and Compliance](#security-and-compliance)
-8. [Lifecycle Management](#lifecycle-management)
+**[SPEC]**
 
-## System Architecture
+1. [System Architecture](#3-system-architecture)
+2. [Data Model](#4-data-model)
+3. [Service Layer](#5-service-layer)
+4. [Persistence Layer](#6-persistence-layer)
+5. [API Layer](#7-api-layer)
+6. [WebSocket Events](#8-websocket-events)
+7. [Security and Compliance](#9-security-and-compliance)
+8. [Lifecycle Management](#10-lifecycle-management)
+
+## 3. System Architecture
+
+**[NOTE]**
 
 ### High-Level Architecture
 
@@ -84,7 +101,9 @@ EnvironmentalContainerLoader
 └── Room JSON Schema (container definitions)
 ```
 
-## Data Model
+## 4. Data Model
+
+**[NOTE]**
 
 ### ContainerComponent (Pydantic Model)
 
@@ -151,7 +170,9 @@ CREATE INDEX idx_containers_entity ON containers(entity_id);
 CREATE INDEX idx_containers_owner ON containers(owner_id);
 ```
 
-## Service Layer
+## 5. Service Layer
+
+**[SPEC]**
 
 ### ContainerService
 
@@ -222,7 +243,9 @@ Loads environmental container definitions from room JSON and migrates to Postgre
 - Room JSON schema includes optional `container` block
 - Containers loaded with room data
 
-## Persistence Layer
+## 6. Persistence Layer
+
+**[SPEC]**
 
 ### Container Persistence Functions
 
@@ -241,7 +264,9 @@ Located in `server/persistence/container_persistence.py`:
 The main `PersistenceLayer` class provides wrapper methods that delegate to container persistence functions, ensuring
 thread-safe access and proper connection management.
 
-## API Layer
+## 7. API Layer
+
+**[SPEC]**
 
 ### Endpoints
 
@@ -273,8 +298,9 @@ Standardized error responses with appropriate HTTP status codes:
 - `429 Too Many Requests`: Rate limit exceeded
 - `500 Internal Server Error`: Server error
 
-## WebSocket Events
+## 8. WebSocket Events
 
+**[NOTE]**
 Real-time events emitted for container state changes:
 
 ### container.opened
@@ -354,7 +380,9 @@ Emitted when a corpse container decays.
 }
 ```
 
-## Security and Compliance
+## 9. Security and Compliance
+
+**[NOTE]**
 
 ### Audit Logging
 
@@ -405,7 +433,9 @@ Per-player rate limiting prevents abuse:
 - Metrics tracked for telemetry
 - Violations logged for security monitoring
 
-## Lifecycle Management
+## 10. Lifecycle Management
+
+**[SPEC]**
 
 ### Environmental Containers
 
@@ -430,7 +460,9 @@ Per-player rate limiting prevents abuse:
 4. **Decay**: Container decays after timer expires (default 1 hour)
 5. **Cleanup**: Decayed containers removed, items redistributed
 
-## Design Decisions
+## 11. Design Decisions
+
+**[SPEC]**
 
 ### Why PostgreSQL Instead of SQLite?
 
@@ -464,8 +496,9 @@ Security compliance requirements
 - Player behavior monitoring
 - Incident response support
 
-## Future Enhancements
+## 12. Future Enhancements
 
+**[SPEC]**
 Weight-based capacity limits
 
 - Container locking with keys
@@ -473,3 +506,11 @@ Weight-based capacity limits
 - Container sharing between players
 - Container templates for world builders
 - Container analytics and metrics
+
+## 13. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

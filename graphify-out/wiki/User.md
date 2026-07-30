@@ -2,7 +2,7 @@
 
 > God node · 306 connections · `server/models/user.py`
 
-**Community:** [metrics](metrics.md)
+**Community:** [Connection Manager](Connection_Manager.md)
 
 ## Connections by Relation
 

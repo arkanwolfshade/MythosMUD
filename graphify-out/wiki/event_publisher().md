@@ -33,7 +33,8 @@
 
 ## Relationships
 
-- [test command parser](test_command_parser.md) (5 shared connections)
+- [Any](Any.md) (4 shared connections)
+- [world](world.md) (1 shared connections)
 
 ## Source Files
 

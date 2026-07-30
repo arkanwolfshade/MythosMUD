@@ -4,24 +4,24 @@
 
 ## Key Concepts
 
-- **enum** (6 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **environment** (5 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **indoors** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **outdoors** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **underwater** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **intersection** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **street_paved** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **default** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **Recommended Test Additions** (10 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Immediate Priority (Add First)** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **1. MessageBroker Integration Tests (15 tests, ~1 hour)** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **2. ApplicationContainer Lifecycle Tests (10 tests, ~1 hour)** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **3. Database Migration Tests (10 tests, ~1.5 hours)** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Total: 35 tests, ~3.5 hours effort, closes critical gaps** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Secondary Priority (Add Second)** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **4. WebSocket Edge Case Tests (15 tests, ~2 hours)** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **5. Error Recovery Tests (20 tests, ~3 hours)** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Total: 35 tests, ~5 hours effort, improves reliability** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
 
 ## Relationships
 
-- [description](description.md) (1 shared connections)
+- [TypedDict](TypedDict.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- `docs/archive/TEST_COVERAGE_GAPS.md`
 
 ## Audit Trail
 

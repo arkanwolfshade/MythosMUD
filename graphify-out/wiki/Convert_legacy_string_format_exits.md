@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [AuthSlice](AuthSlice.md) (4 shared connections)
+- [get room service()](get_room_service%28%29.md) (4 shared connections)
 - [PathValidator](PathValidator.md) (4 shared connections)
 - [test hierarchical schema](test_hierarchical_schema.md) (3 shared connections)
 - [Path](Path.md) (2 shared connections)

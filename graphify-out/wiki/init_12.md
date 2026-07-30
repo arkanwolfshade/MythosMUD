@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **__init__.py** (1 connections) — `server/domain/services/__init__.py`
-- **Domain services for MythosMUD.  Domain services contain business logic that does** (1 connections) — `server/domain/services/__init__.py`
+- **__init__.py** (1 connections) — `server/domain/repositories/__init__.py`
+- **Domain repository interfaces for MythosMUD.  Repositories provide an abstraction** (1 connections) — `server/domain/repositories/__init__.py`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `server/domain/services/__init__.py`
+- `server/domain/repositories/__init__.py`
 
 ## Audit Trail
 

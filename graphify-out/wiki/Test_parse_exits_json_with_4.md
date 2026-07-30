@@ -1,23 +1,27 @@
 # Test parse exits json with
 
-> 2 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **test_get_player_lucidity_tier_with_uuid()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _get_player_lucidity_tier handles UUID objects.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **PostgreSQL Procedures Migration - Audit Spreadsheet** (5 connections) — `docs/archive/postgresql_procedures_audit.md`
+- **postgresql_procedures_audit.md** (1 connections) — `docs/archive/postgresql_procedures_audit.md`
+- **Scope** (1 connections) — `docs/archive/postgresql_procedures_audit.md`
+- **Audit Table** (1 connections) — `docs/archive/postgresql_procedures_audit.md`
+- **Existing PostgreSQL Functions (Already in DDL)** (1 connections) — `docs/archive/postgresql_procedures_audit.md`
+- **Domain Grouping Summary** (1 connections) — `docs/archive/postgresql_procedures_audit.md`
 
 ## Relationships
 
-- [test nats message handler chat](test_nats_message_handler_chat.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `docs/archive/postgresql_procedures_audit.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 10 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

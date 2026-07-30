@@ -33,14 +33,12 @@
 
 ## Relationships
 
-- [connection disconnection](connection_disconnection.md) (8 shared connections)
-- [.store npc xp mapping for](store_npc_xp_mapping_for.md) (3 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (3 shared connections)
-- [test statistics aggregator](test_statistics_aggregator.md) (2 shared connections)
-- [Player](Player.md) (2 shared connections)
-- [connection delegates](connection_delegates.md) (1 shared connections)
-- [command processor()](command_processor%28%29.md) (1 shared connections)
-- [nats config()](nats_config%28%29.md) (1 shared connections)
+- [Player](Player.md) (7 shared connections)
+- [connection disconnection](connection_disconnection.md) (6 shared connections)
+- [test statistics aggregator](test_statistics_aggregator.md) (5 shared connections)
+- [test connection cleaner](test_connection_cleaner.md) (1 shared connections)
+- [Any](Any.md) (1 shared connections)
+- [get current tick()](get_current_tick%28%29.md) (1 shared connections)
 
 ## Source Files
 

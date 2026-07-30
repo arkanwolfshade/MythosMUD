@@ -1,38 +1,44 @@
 # 25 30% Critical Regression Tests
 
-> 11 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **Test Audit Executive Summary** (4 connections) — `docs/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Test Optimization Roadmap** (4 connections) — `docs/TEST_OPTIMIZATION_ROADMAP.md`
-- **25-30% Critical Regression Tests** (3 connections) — `docs/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Test Pruning Candidates** (2 connections) — `docs/TEST_PRUNING_CANDIDATES.md`
-- **Test Timing Analysis** (2 connections) — `docs/TEST_TIMING_ANALYSIS.md`
-- **Test Value Distribution** (2 connections) — `docs/TEST_VALUE_DISTRIBUTION.md`
-- **Low-Value Test Pruning Candidates** (2 connections) — `docs/TEST_PRUNING_CANDIDATES.md`
-- **Test Value Scoring** (2 connections) — `docs/TEST_VALUE_DISTRIBUTION.md`
-- **Test Quality Audit Report** (1 connections) — `docs/TEST_QUALITY_AUDIT_REPORT.md`
-- **Test Optimization Phases** (1 connections) — `docs/TEST_OPTIMIZATION_ROADMAP.md`
-- **Slow Test Timing Targets** (1 connections) — `docs/TEST_TIMING_ANALYSIS.md`
+- **test_lucidity_event_dispatcher.py** (34 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_send_catatonia_event_with_current_lcd()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_send_catatonia_event_with_message()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_send_catatonia_event_with_rescuer_and_target()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_send_rescue_update_event_basic()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_send_rescue_update_event_with_progress_only()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_dispatch_player_event_import_error()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **mock_send_game_event()** (2 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **Unit tests for lucidity event dispatcher.  Tests the lucidity event broadcasting** (1 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **Create a mock send_game_event function.** (1 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **Test send_catatonia_event with current_lcd.** (1 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **Test send_catatonia_event with message.** (1 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **Test send_catatonia_event with rescuer and target names.** (1 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **Test send_rescue_update_event with basic parameters.** (1 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **Test send_rescue_update_event with progress only.** (1 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **Test _dispatch_player_event handles import errors gracefully.** (1 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [local channel isolation.spec](local_channel_isolation.spec.md) (12 shared connections)
+- [LiabilityStackEntry](LiabilityStackEntry.md) (9 shared connections)
+- [seed e2e users](seed_e2e_users.md) (7 shared connections)
+- [test_dispatch_player_event_uuid_conversion](test_dispatch_player_event_uuid_conversion.md) (1 shared connections)
+- [test_send_catatonia_event_basic](test_send_catatonia_event_basic.md) (1 shared connections)
+- [test_send_rescue_update_event_dispatch_error](test_send_rescue_update_event_dispatch_error.md) (1 shared connections)
+- [main()](main%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- `docs/TEST_OPTIMIZATION_ROADMAP.md`
-- `docs/TEST_PRUNING_CANDIDATES.md`
-- `docs/TEST_QUALITY_AUDIT_REPORT.md`
-- `docs/TEST_TIMING_ANALYSIS.md`
-- `docs/TEST_VALUE_DISTRIBUTION.md`
+- `server/tests/unit/services/test_lucidity_event_dispatcher.py`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (58%)
-- INFERRED: 10 (42%)
+- EXTRACTED: 62 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

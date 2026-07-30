@@ -1,45 +1,44 @@
 # init
 
-> 18 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **.apply_combat_effects()** (8 connections) — `server/npc/combat_integration_base.py`
-- **._apply_player_combat_effects()** (8 connections) — `server/npc/combat_integration_base.py`
-- **._is_target_in_login_grace_period()** (7 connections) — `server/npc/combat_integration_base.py`
-- **._convert_target_id_to_uuid()** (6 connections) — `server/npc/combat_integration_base.py`
-- **._handle_attribute_error()** (4 connections) — `server/npc/combat_integration_base.py`
-- **._handle_validation_error()** (4 connections) — `server/npc/combat_integration_base.py`
-- **._handle_unexpected_error()** (4 connections) — `server/npc/combat_integration_base.py`
-- **._apply_mental_effects()** (3 connections) — `server/npc/combat_integration_base.py`
-- **ValidationError** (1 connections)
-- **Exception** (1 connections)
-- **Apply combat effects to a target (player or NPC).          Args:** (1 connections) — `server/npc/combat_integration_base.py`
-- **Convert target_id to UUID, accepting either string or UUID input.** (1 connections) — `server/npc/combat_integration_base.py`
-- **Apply combat effects to a player.** (1 connections) — `server/npc/combat_integration_base.py`
-- **Apply mental/occult effects (lucidity loss and fear) based on damage type.** (1 connections) — `server/npc/combat_integration_base.py`
-- **Handle AttributeError (critical programming error).** (1 connections) — `server/npc/combat_integration_base.py`
-- **Handle ValidationError (expected validation error).** (1 connections) — `server/npc/combat_integration_base.py`
-- **Handle unexpected errors.** (1 connections) — `server/npc/combat_integration_base.py`
-- **Return True if the target player is currently in login grace period.** (1 connections) — `server/npc/combat_integration_base.py`
+- **MessageBroker** (11 connections) — `server/infrastructure/message_broker.py`
+- **__init__.py** (3 connections) — `server/infrastructure/__init__.py`
+- **.publish()** (3 connections) — `server/infrastructure/message_broker.py`
+- **.subscribe()** (3 connections) — `server/infrastructure/message_broker.py`
+- **.request()** (3 connections) — `server/infrastructure/message_broker.py`
+- **.connect()** (2 connections) — `server/infrastructure/message_broker.py`
+- **.disconnect()** (2 connections) — `server/infrastructure/message_broker.py`
+- **.is_connected()** (2 connections) — `server/infrastructure/message_broker.py`
+- **Any** (2 connections)
+- **.unsubscribe()** (2 connections) — `server/infrastructure/message_broker.py`
+- **Infrastructure layer for MythosMUD.  This package contains abstractions for exte** (1 connections) — `server/infrastructure/__init__.py`
+- **Protocol** (1 connections)
+- **Protocol defining the message broker interface.      This abstract interface all** (1 connections) — `server/infrastructure/message_broker.py`
+- **Connect to the message broker.          Returns:             bool: True if conne** (1 connections) — `server/infrastructure/message_broker.py`
+- **Disconnect from the message broker.          Closes all subscriptions and releas** (1 connections) — `server/infrastructure/message_broker.py`
+- **Check if connected to the message broker.          Returns:             bool: Tr** (1 connections) — `server/infrastructure/message_broker.py`
+- **Publish a message to a subject/topic.          Args:             subject: Subjec** (1 connections) — `server/infrastructure/message_broker.py`
+- **Subscribe to a subject/topic with a message handler.          Args:** (1 connections) — `server/infrastructure/message_broker.py`
+- **Unsubscribe from a subject/topic.          Args:             subscription_id: ID** (1 connections) — `server/infrastructure/message_broker.py`
+- **Send a request and wait for a reply (request-reply pattern).          Args:** (1 connections) — `server/infrastructure/message_broker.py`
 
 ## Relationships
 
-- [PanelManager](PanelManager.md) (10 shared connections)
-- [process dead players()](process_dead_players%28%29.md) (2 shared connections)
-- [.state()](state%28%29.md) (2 shared connections)
-- [login grace period](login_grace_period.md) (2 shared connections)
-- [UUID](UUID.md) (1 shared connections)
-- [get asyncpg server settings for](get_asyncpg_server_settings_for.md) (1 shared connections)
+- [Any](Any.md) (2 shared connections)
+- [. init ()](_init_%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/combat_integration_base.py`
+- `server/infrastructure/__init__.py`
+- `server/infrastructure/message_broker.py`
 
 ## Audit Trail
 
-- EXTRACTED: 52 (96%)
-- INFERRED: 2 (4%)
+- EXTRACTED: 43 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

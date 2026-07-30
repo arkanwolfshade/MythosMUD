@@ -35,10 +35,10 @@
 
 - [ChatMessage](ChatMessage.md) (21 shared connections)
 - [. init ()](_init_%28%29.md) (6 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (3 shared connections)
 - [test magic commands](test_magic_commands.md) (3 shared connections)
-- [.initialize()](initialize%28%29.md) (3 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (2 shared connections)
 - [test command parser](test_command_parser.md) (2 shared connections)
+- [.initialize()](initialize%28%29.md) (2 shared connections)
 - [message handler factory](message_handler_factory.md) (1 shared connections)
 - [chat moderation](chat_moderation.md) (1 shared connections)
 - [player preferences service](player_preferences_service.md) (1 shared connections)

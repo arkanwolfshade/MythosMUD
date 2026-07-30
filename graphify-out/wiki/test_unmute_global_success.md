@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **test_unmute_global_success()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test unmute_global() successfully unmutes a player.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_get_who_muted_player()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test get_who_muted_player() returns list of muters.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
 
 ## Relationships
 

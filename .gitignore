@@ -57,6 +57,7 @@ MANIFEST
 
 # PyInstaller
 *.manifest
+!docs/hads.manifest
 *.spec
 
 # Installer logs

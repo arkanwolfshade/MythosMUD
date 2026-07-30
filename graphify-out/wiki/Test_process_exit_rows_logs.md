@@ -1,24 +1,32 @@
 # Test process exit rows logs
 
-> 2 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **test_process_exit_rows_debug_logging()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _process_exit_rows logs debug info for specific room.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **.get_player_and_room()** (6 connections) — `server/commands/combat_handler.py`
+- **AppWithState** (5 connections)
+- **._get_persistence_from_app()** (5 connections) — `server/commands/combat_handler.py`
+- **Get player data and room, returning error dict if any step fails. Public API.** (1 connections) — `server/commands/combat_handler.py`
+- **Resolve persistence from app (container preferred, then app.state). Returns None** (1 connections) — `server/commands/combat_handler.py`
+- **Get player data and room, returning error dict if any step fails.** (1 connections) — `server/commands/combat_handler.py`
 
 ## Relationships
 
-- [test async persistence room loading](test_async_persistence_room_loading.md) (1 shared connections)
+- [chat nats publisher](chat_nats_publisher.md) (2 shared connections)
+- [CombatService](CombatService.md) (2 shared connections)
+- [Any](Any.md) (1 shared connections)
+- [PlayerPositionService](PlayerPositionService.md) (1 shared connections)
+- [Player Position Service](Player_Position_Service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- `server/commands/combat_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 16 (84%)
+- INFERRED: 3 (16%)
 - AMBIGUOUS: 0 (0%)
 
 ---

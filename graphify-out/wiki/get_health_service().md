@@ -1,6 +1,6 @@
 # get health service()
 
-> 45 nodes
+> 43 nodes
 
 ## Key Concepts
 
@@ -21,7 +21,6 @@
 - **test_finalize_attack_result_awards_xp_and_completes_combat()** (6 connections) — `server/tests/unit/services/test_combat_service.py`
 - **test_process_attack_returns_melee_validation_early_result()** (6 connections) — `server/tests/unit/services/test_combat_service.py`
 - **test_process_attack_happy_path_calls_helpers_and_returns_final_result()** (6 connections) — `server/tests/unit/services/test_combat_service.py`
-- **.apply_damage_and_check_involuntary_flee()** (5 connections) — `server/services/combat_service.py`
 - **.get_data_provider()** (5 connections) — `server/services/npc_combat_integration_combat_mixin.py`
 - **test_validate_melee_or_end_combat_returns_none_on_valid()** (5 connections) — `server/tests/unit/services/test_combat_service.py`
 - **test_apply_damage_and_check_involuntary_flee_no_flee_for_npc()** (5 connections) — `server/tests/unit/services/test_combat_service.py`
@@ -29,28 +28,27 @@
 - **.start_new_combat_for_mixin()** (4 connections) — `server/services/npc_combat_integration_combat_mixin.py`
 - **._broadcast_npc_attack_on_player_started()** (3 connections) — `server/services/npc_combat_integration_combat_mixin.py`
 - **Result of a combat action.** (1 connections) — `server/models/combat.py`
-- *... and 20 more nodes in this community*
+- **Protocol** (1 connections)
+- *... and 18 more nodes in this community*
 
 ## Relationships
 
-- [Any](Any.md) (18 shared connections)
-- [test combat attack handler](test_combat_attack_handler.md) (8 shared connections)
-- [. initialize handlers()](_initialize_handlers%28%29.md) (8 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (3 shared connections)
-- [process all status effects()](process_all_status_effects%28%29.md) (2 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
-- [UUID](UUID.md) (1 shared connections)
+- [test combat attack handler](test_combat_attack_handler.md) (15 shared connections)
+- [. initialize handlers()](_initialize_handlers%28%29.md) (14 shared connections)
+- [close db()](close_db%28%29.md) (7 shared connections)
+- [. init ()](_init_%28%29.md) (1 shared connections)
+- [.check and interrupt rest()](check_and_interrupt_rest%28%29.md) (1 shared connections)
+- [Any](Any.md) (1 shared connections)
 
 ## Source Files
 
 - `server/models/combat.py`
-- `server/services/combat_service.py`
 - `server/services/npc_combat_integration_combat_mixin.py`
 - `server/tests/unit/services/test_combat_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 196 (95%)
+- EXTRACTED: 190 (95%)
 - INFERRED: 11 (5%)
 - AMBIGUOUS: 0 (0%)
 

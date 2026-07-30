@@ -1,54 +1,42 @@
 # generate invites db
 
-> 26 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **ChatPanelRuntimeViewParts.tsx** (29 connections) — `client/src/components/panels/ChatPanelRuntimeViewParts.tsx`
-- **ChatPanelRefactoredToolbar.tsx** (9 connections) — `client/src/components/panels/ChatPanelRefactoredToolbar.tsx`
-- **ChannelActivityIndicators.tsx** (7 connections) — `client/src/components/panels/chat/ChannelActivityIndicators.tsx`
-- **ChannelSelectorSection.tsx** (7 connections) — `client/src/components/panels/chat/ChannelSelectorSection.tsx`
-- **ChatPanelRuntimeView.tsx** (6 connections) — `client/src/components/panels/ChatPanelRuntimeView.tsx`
-- **ChatPanelRuntimeViewProps** (5 connections) — `client/src/components/panels/chatPanelRuntimeViewTypes.ts`
-- **ChannelActivityIndicators()** (4 connections) — `client/src/components/panels/chat/ChannelActivityIndicators.tsx`
-- **ChatPanelRuntimeViewInner()** (3 connections) — `client/src/components/panels/ChatPanelRuntimeViewParts.tsx`
-- **ChatPanelRefactoredToolbar()** (2 connections) — `client/src/components/panels/ChatPanelRefactoredToolbar.tsx`
-- **ChatPanelRuntimeView()** (2 connections) — `client/src/components/panels/ChatPanelRuntimeView.tsx`
-- **getActivityColor()** (2 connections) — `client/src/components/panels/chat/ChannelActivityIndicators.tsx`
-- **ChannelSelectorSection()** (2 connections) — `client/src/components/panels/chat/ChannelSelectorSection.tsx`
-- **ChatPanelRefactoredToolbarProps** (1 connections) — `client/src/components/panels/ChatPanelRefactoredToolbar.tsx`
-- **ChatExportDialogLazy** (1 connections) — `client/src/components/panels/ChatPanelRuntimeViewParts.tsx`
-- **ChatPanelToolbarProps** (1 connections) — `client/src/components/panels/ChatPanelRuntimeViewParts.tsx`
-- **ChatPanelToolbar()** (1 connections) — `client/src/components/panels/ChatPanelRuntimeViewParts.tsx`
-- **ChatPanelChannelSectionProps** (1 connections) — `client/src/components/panels/ChatPanelRuntimeViewParts.tsx`
-- **ChatPanelChannelSection()** (1 connections) — `client/src/components/panels/ChatPanelRuntimeViewParts.tsx`
-- **ChatPanelHistorySearchProps** (1 connections) — `client/src/components/panels/ChatPanelRuntimeViewParts.tsx`
-- **ChatPanelHistorySearch()** (1 connections) — `client/src/components/panels/ChatPanelRuntimeViewParts.tsx`
-- **ChatPanelViewingStripProps** (1 connections) — `client/src/components/panels/ChatPanelRuntimeViewParts.tsx`
-- **ChatPanelViewingStrip()** (1 connections) — `client/src/components/panels/ChatPanelRuntimeViewParts.tsx`
-- **ChatPanelRuntimeChatAreaProps** (1 connections) — `client/src/components/panels/ChatPanelRuntimeViewParts.tsx`
-- **ChatPanelRuntimeChatArea()** (1 connections) — `client/src/components/panels/ChatPanelRuntimeViewParts.tsx`
-- **ChannelActivityIndicatorsProps** (1 connections) — `client/src/components/panels/chat/ChannelActivityIndicators.tsx`
-- *... and 1 more nodes in this community*
+- **._handle_exception()** (10 connections) — `server/middleware/error_handling_middleware.py`
+- **request_id_from_scope()** (7 connections) — `server/middleware/error_handling_middleware.py`
+- **.log_exception()** (7 connections) — `server/middleware/error_handling_middleware.py`
+- **.__call__()** (6 connections) — `server/middleware/error_handling_middleware.py`
+- **.dispatch()** (6 connections) — `server/middleware/error_handling_middleware.py`
+- **Scope** (3 connections)
+- **test_request_id_from_scope()** (3 connections) — `server/tests/unit/middleware/test_error_handling_middleware.py`
+- **Receive** (2 connections)
+- **Send** (2 connections)
+- **Exception** (2 connections)
+- **Request** (2 connections)
+- **test_request_id_from_scope_non_str_coerced()** (2 connections) — `server/tests/unit/middleware/test_error_handling_middleware.py`
+- **Response** (1 connections)
+- **Read request_id from ASGI scope.state (Scope values are Any; avoid untyped .get** (1 connections) — `server/middleware/error_handling_middleware.py`
+- **ASGI application interface.          Args:             scope: ASGI connection sc** (1 connections) — `server/middleware/error_handling_middleware.py`
+- **Handle an exception and send a standardized error response.          Args:** (1 connections) — `server/middleware/error_handling_middleware.py`
+- **Backward-compatible dispatch method for BaseHTTPMiddleware interface.          T** (1 connections) — `server/middleware/error_handling_middleware.py`
+- **Log the exception with full context information.          Public entry point so** (1 connections) — `server/middleware/error_handling_middleware.py`
+- **Scope** (1 connections)
 
 ## Relationships
 
-- [ChatPanelTest](ChatPanelTest.md) (18 shared connections)
-- [chatPanelChannelFilter](chatPanelChannelFilter.md) (8 shared connections)
-- [ChatHistoryToggle()](ChatHistoryToggle%28%29.md) (2 shared connections)
+- [Response](Response.md) (9 shared connections)
+- [convert pydantic error()](convert_pydantic_error%28%29.md) (2 shared connections)
 
 ## Source Files
 
-- `client/src/components/panels/ChatPanelRefactoredToolbar.tsx`
-- `client/src/components/panels/ChatPanelRuntimeView.tsx`
-- `client/src/components/panels/ChatPanelRuntimeViewParts.tsx`
-- `client/src/components/panels/chat/ChannelActivityIndicators.tsx`
-- `client/src/components/panels/chat/ChannelSelectorSection.tsx`
-- `client/src/components/panels/chatPanelRuntimeViewTypes.ts`
+- `server/middleware/error_handling_middleware.py`
+- `server/tests/unit/middleware/test_error_handling_middleware.py`
 
 ## Audit Trail
 
-- EXTRACTED: 92 (100%)
+- EXTRACTED: 59 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

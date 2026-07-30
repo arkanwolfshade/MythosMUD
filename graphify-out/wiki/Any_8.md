@@ -1,47 +1,55 @@
 # Any
 
-> 21 nodes
+> 34 nodes
 
 ## Key Concepts
 
-- **handle_npc_command()** (17 connections) — `server/commands/npc_admin/router.py`
-- **_resolve_npc_command_player()** (5 connections) — `server/commands/npc_admin/router.py`
-- **Any** (5 connections)
-- **_extract_npc_subcommand()** (5 connections) — `server/commands/npc_admin/router.py`
-- **_invoke_npc_handler()** (5 connections) — `server/commands/npc_admin/router.py`
-- **test_handle_npc_command_no_player_service()** (3 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
-- **test_handle_npc_command_player_not_found()** (3 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
-- **test_handle_npc_command_no_permission()** (3 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
-- **test_handle_npc_command_no_args()** (3 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
-- **test_spawn_command_regression_routing_via_npc_command()** (3 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
-- **test_handle_npc_command_unknown_subcommand()** (3 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
-- **Resolve player for NPC command. Returns (player_obj, error).     If error is set** (1 connections) — `server/commands/npc_admin/router.py`
-- **Extract subcommand and normalize args. Returns (subcommand, args, help_result).** (1 connections) — `server/commands/npc_admin/router.py`
-- **Invoke the handler for the given subcommand.** (1 connections) — `server/commands/npc_admin/router.py`
-- **Handle the main NPC admin command with subcommand routing.      Args:         co** (1 connections) — `server/commands/npc_admin/router.py`
-- **Test handle_npc_command() when player service is not available.** (1 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
-- **Test handle_npc_command() when player is not found.** (1 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
-- **Test handle_npc_command() when player lacks admin permission.** (1 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
-- **Test handle_npc_command() with no arguments.** (1 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
-- **Regression: Ensure /spawn (npc spawn) command is reachable and not removed.** (1 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
-- **Test handle_npc_command() with unknown subcommand.** (1 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
+- **test_communication_commands_support.py** (21 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **communication_commands_support.py** (15 connections) — `server/commands/communication_commands_support.py`
+- **get_services_from_container()** (15 connections) — `server/commands/communication_commands_support.py`
+- **message_id_from_result()** (11 connections) — `server/commands/communication_commands_support.py`
+- **app_from_request()** (10 connections) — `server/commands/communication_commands_support.py`
+- **get_pose_persistence()** (9 connections) — `server/commands/communication_commands_support.py`
+- **UserManagerProtocol** (7 connections) — `server/commands/communication_commands_support.py`
+- **AsyncPersistenceForPose** (6 connections) — `server/commands/communication_commands_support.py`
+- **Protocol** (5 connections)
+- **PlayerWithPose** (4 connections) — `server/commands/communication_commands_support.py`
+- **test_app_from_request_with_app()** (3 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_get_services_from_container_via_container()** (3 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_get_services_from_container_state_fallback()** (3 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_get_pose_persistence_from_container()** (3 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_get_pose_persistence_state_fallback()** (3 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **.get_player_by_name()** (2 connections) — `server/commands/communication_commands_support.py`
+- **.save_player()** (2 connections) — `server/commands/communication_commands_support.py`
+- **test_app_from_request_none()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_primary_id_prefers_id()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_primary_id_falls_back_to_player_id()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_get_services_from_container_no_app()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_chat_result_map_dict()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_chat_result_map_non_dict()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_message_id_from_result_nested()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_message_id_from_result_no_id()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [Any](Any.md) (9 shared connections)
-- [NATSMetrics](NATSMetrics.md) (7 shared connections)
-- [test magic commands](test_magic_commands.md) (2 shared connections)
-- [Player Position Service](Player_Position_Service.md) (1 shared connections)
+- [chat send with room bundle()](chat_send_with_room_bundle%28%29.md) (34 shared connections)
+- [handle global command()](handle_global_command%28%29.md) (6 shared connections)
+- [Any](Any.md) (2 shared connections)
+- [.state()](state%28%29.md) (2 shared connections)
+- [admin setstat command](admin_setstat_command.md) (1 shared connections)
+- [. init ()](_init_%28%29.md) (1 shared connections)
+- [websocket integration](websocket_integration.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/npc_admin/router.py`
-- `server/tests/unit/commands/test_npc_admin_commands.py`
+- `server/commands/communication_commands_support.py`
+- `server/tests/unit/commands/test_communication_commands_support.py`
 
 ## Audit Trail
 
-- EXTRACTED: 52 (80%)
-- INFERRED: 13 (20%)
+- EXTRACTED: 135 (92%)
+- INFERRED: 12 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,5 +1,20 @@
 # ADR-013: Pydantic BaseSettings for Configuration Management
 
+**Version 1.0.0** · MythosMUD · 2026-07-30
+
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[SPEC]**
 **Date**: 2025-10-11
 **Status**: Accepted
 **Decision Makers**: Prof. Wolfshade, AI Assistant
@@ -7,8 +22,9 @@
 
 ---
 
-## Context and Problem Statement
+## 2. Context and Problem Statement
 
+**[SPEC]**
 The configuration system used a 395-line custom YAML loader (`config_loader.py`) with:
 
 1. **No Validation**: Configuration errors only discovered at runtime
@@ -21,8 +37,9 @@ The configuration system used a 395-line custom YAML loader (`config_loader.py`)
 
 ---
 
-## Decision Drivers
+## 3. Decision Drivers
 
+**[SPEC]**
 **Type Safety**: Must provide type-checked configuration access
 
 **Validation**: Must validate configuration at startup, not runtime
@@ -35,7 +52,9 @@ The configuration system used a 395-line custom YAML loader (`config_loader.py`)
 
 ---
 
-## Considered Options
+## 4. Considered Options
+
+**[SPEC]**
 
 ### Option 1: Pydantic BaseSettings
 
@@ -83,8 +102,9 @@ The configuration system used a 395-line custom YAML loader (`config_loader.py`)
 
 ---
 
-## Decision Outcome
+## 5. Decision Outcome
 
+**[SPEC]**
 **Chosen Option**: **Pydantic BaseSettings v2.0+**
 
 **Rationale**:
@@ -104,7 +124,9 @@ The configuration system used a 395-line custom YAML loader (`config_loader.py`)
 
 ---
 
-## Implementation Details
+## 6. Implementation Details
+
+**[NOTE]**
 
 ### Configuration Models
 
@@ -153,7 +175,9 @@ def get_config() -> AppConfig:
 
 ---
 
-## Consequences
+## 7. Consequences
+
+**[SPEC]**
 
 ### Positive
 
@@ -177,7 +201,9 @@ def get_config() -> AppConfig:
 
 ---
 
-## Validation
+## 8. Validation
+
+**[SPEC]**
 
 - All configuration models validated successfully
 - All environment files updated and documented
@@ -188,7 +214,9 @@ def get_config() -> AppConfig:
 
 ---
 
-## References
+## 9. References
+
+**[SPEC]**
 
 - [Pydantic Settings Documentation](https://docs.pydantic.dev/latest/concepts/pydantic_settings/)
 - [12-Factor App - Config](https://12factor.net/config)
@@ -198,8 +226,18 @@ def get_config() -> AppConfig:
 
 ---
 
-## Related ADRs
+## 10. Related ADRs
+
+**[SPEC]**
 
 - [ADR-011](ADR-011-xstate-frontend-fsm.md): XState for Frontend Connection FSM
 - [ADR-012](ADR-012-python-statemachine-backend.md): python-statemachine for Backend Connection FSM
 - [ADR-014](ADR-014-nats-error-boundaries.md): Circuit Breaker + Dead Letter Queue for NATS
+
+## 11. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

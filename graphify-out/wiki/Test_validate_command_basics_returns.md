@@ -1,38 +1,43 @@
 # Test validate command basics returns
 
-> 13 nodes
+> 21 nodes
 
 ## Key Concepts
 
-- **NPCActionMessage** (12 connections) — `server/npc/threading.py`
-- **NPCActionType** (8 connections) — `server/npc/threading.py`
-- **.from_dict()** (5 connections) — `server/npc/threading.py`
-- **.to_dict()** (4 connections) — `server/npc/threading.py`
-- **.to_json()** (3 connections) — `server/npc/threading.py`
-- **.from_json()** (3 connections) — `server/npc/threading.py`
-- **Enum** (2 connections)
-- **Enumeration of NPC action types.** (1 connections) — `server/npc/threading.py`
-- **Message structure for NPC actions.      This class represents a single action th** (1 connections) — `server/npc/threading.py`
-- **Convert message to dictionary for serialization.** (1 connections) — `server/npc/threading.py`
-- **Create message from dictionary.** (1 connections) — `server/npc/threading.py`
-- **Convert message to JSON string.** (1 connections) — `server/npc/threading.py`
-- **Create message from JSON string.** (1 connections) — `server/npc/threading.py`
+- **validate.py** (11 connections) — `scripts/hads/validate.py`
+- **validate()** (10 connections) — `scripts/hads/validate.py`
+- **parse_manifest()** (4 connections) — `scripts/hads/validate.py`
+- **validate_manifest()** (4 connections) — `scripts/hads/validate.py`
+- **load()** (3 connections) — `scripts/hads/validate.py`
+- **find_h1()** (3 connections) — `scripts/hads/validate.py`
+- **find_version()** (3 connections) — `scripts/hads/validate.py`
+- **find_manifest()** (3 connections) — `scripts/hads/validate.py`
+- **find_first_content_section()** (3 connections) — `scripts/hads/validate.py`
+- **find_bug_blocks()** (3 connections) — `scripts/hads/validate.py`
+- **check_loose_tags()** (3 connections) — `scripts/hads/validate.py`
+- **check_bug_content()** (3 connections) — `scripts/hads/validate.py`
+- **Path** (3 connections)
+- **Return line index of first H1, or None.** (1 connections) — `scripts/hads/validate.py`
+- **Return line index of version declaration, or None.** (1 connections) — `scripts/hads/validate.py`
+- **Return line index where AI manifest starts, or None.** (1 connections) — `scripts/hads/validate.py`
+- **Return line index of first H2 that is NOT the manifest.** (1 connections) — `scripts/hads/validate.py`
+- **Return list of BUG blocks with their content.** (1 connections) — `scripts/hads/validate.py`
+- **Find tag-like patterns that are not properly formatted.** (1 connections) — `scripts/hads/validate.py`
+- **Check that a [BUG] block contains required fields.** (1 connections) — `scripts/hads/validate.py`
+- **Return non-comment, non-empty paths from a HADS manifest file.** (1 connections) — `scripts/hads/validate.py`
 
 ## Relationships
 
-- [TerminalButtonProps](TerminalButtonProps.md) (7 shared connections)
-- [get current tick()](get_current_tick%28%29.md) (4 shared connections)
-- [cfg float()](cfg_float%28%29.md) (2 shared connections)
-- [. init ()](_init_%28%29.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/npc/threading.py`
+- `scripts/hads/validate.py`
 
 ## Audit Trail
 
-- EXTRACTED: 39 (91%)
-- INFERRED: 4 (9%)
+- EXTRACTED: 64 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

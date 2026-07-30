@@ -18,7 +18,7 @@
 ## Relationships
 
 - [check alias safety()](check_alias_safety%28%29.md) (5 shared connections)
-- [test magic commands](test_magic_commands.md) (1 shared connections)
+- [Any](Any.md) (1 shared connections)
 
 ## Source Files
 

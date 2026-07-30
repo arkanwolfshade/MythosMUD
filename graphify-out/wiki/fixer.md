@@ -36,7 +36,7 @@
 - [Path](Path.md) (12 shared connections)
 - [Any](Any.md) (7 shared connections)
 - [PathValidator](PathValidator.md) (5 shared connections)
-- [AuthSlice](AuthSlice.md) (2 shared connections)
+- [get room service()](get_room_service%28%29.md) (2 shared connections)
 - [MinimapRenderer](MinimapRenderer.md) (2 shared connections)
 - [Convert legacy string format exits](Convert_legacy_string_format_exits.md) (1 shared connections)
 

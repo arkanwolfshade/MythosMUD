@@ -1,61 +1,60 @@
 # .get instance()
 
-> 43 nodes
+> 46 nodes
 
 ## Key Concepts
 
-- **communication_commands.py** (31 connections) — `server/commands/communication_commands.py`
-- **request_with_app_container()** (28 connections) — `server/tests/unit/commands/communication_commands_mocks.py`
-- **test_communication_commands_say_me_pose.py** (22 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **handle_say_command()** (17 connections) — `server/commands/communication_commands.py`
-- **handle_pose_command()** (14 connections) — `server/commands/communication_commands.py`
-- **handle_me_command()** (8 connections) — `server/commands/communication_commands.py`
-- **communication_commands_mocks.py** (5 connections) — `server/tests/unit/commands/communication_commands_mocks.py`
-- **test_handle_say_command_player_not_found()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_say_command_success()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_say_command_delegates_broadcast_to_chat_service_with_ids()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_pose_command_player_not_found()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_pose_command_clear_pose()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_pose_command_set_pose()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_say_command_no_room()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_say_command_no_player_id()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_say_command_chat_service_failure()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_say_command_exception()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_say_command_no_message()** (3 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_say_command_no_services()** (3 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_me_command_no_action()** (3 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_me_command_success()** (3 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_pose_command_no_persistence()** (3 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **Communication commands for MythosMUD.  Handlers delegate heavy logic to commun** (1 connections) — `server/commands/communication_commands.py`
-- **Room-wide say; returns user-facing result dict.** (1 connections) — `server/commands/communication_commands.py`
-- **Set or clear persistent pose text.** (1 connections) — `server/commands/communication_commands.py`
-- *... and 18 more nodes in this community*
+- **PlayerRoomEventHandler** (30 connections) — `server/realtime/player_event_handlers_room.py`
+- **RoomOccupantManager** (22 connections) — `server/realtime/room_occupant_manager.py`
+- **player_event_handlers_room.py** (17 connections) — `server/realtime/player_event_handlers_room.py`
+- **UUID** (12 connections)
+- **Any** (10 connections)
+- **.handle_player_entered()** (9 connections) — `server/realtime/player_event_handlers_room.py`
+- **.__init__()** (7 connections) — `server/realtime/player_event_handlers_room.py`
+- **.send_occupants_snapshot_to_player()** (7 connections) — `server/realtime/player_event_handlers_room.py`
+- **.send_room_updates_to_entering_player()** (7 connections) — `server/realtime/player_event_handlers_room.py`
+- **.handle_player_left()** (7 connections) — `server/realtime/player_event_handlers_room.py`
+- **._prepare_room_data()** (6 connections) — `server/realtime/player_event_handlers_room.py`
+- **.send_room_update_to_player()** (6 connections) — `server/realtime/player_event_handlers_room.py`
+- **.log_player_movement()** (5 connections) — `server/realtime/player_event_handlers_room.py`
+- **._send_room_name_message()** (5 connections) — `server/realtime/player_event_handlers_room.py`
+- **._log_occupants_info()** (5 connections) — `server/realtime/player_event_handlers_room.py`
+- **.query_room_occupants_snapshot()** (5 connections) — `server/realtime/player_event_handlers_room.py`
+- **.send_room_state_to_player()** (5 connections) — `server/realtime/player_event_handlers_room.py`
+- **.get_room_state_event()** (5 connections) — `server/realtime/player_event_handlers_room.py`
+- **.broadcast_player_entered_message()** (4 connections) — `server/realtime/player_event_handlers_room.py`
+- **.subscribe_player_to_room()** (4 connections) — `server/realtime/player_event_handlers_room.py`
+- **.build_room_occupants_message()** (4 connections) — `server/realtime/player_event_handlers_room.py`
+- **._process_player_entered_event()** (4 connections) — `server/realtime/player_event_handlers_room.py`
+- **.unsubscribe_player_from_room()** (4 connections) — `server/realtime/player_event_handlers_room.py`
+- **.broadcast_player_left_message()** (4 connections) — `server/realtime/player_event_handlers_room.py`
+- **Room-related player event handlers.  This module handles player room entry/exit** (1 connections) — `server/realtime/player_event_handlers_room.py`
+- *... and 21 more nodes in this community*
 
 ## Relationships
 
-- [test quest service collect](test_quest_service_collect.md) (13 shared connections)
-- [handle global command()](handle_global_command%28%29.md) (12 shared connections)
-- [ConnectionsComponent](ConnectionsComponent.md) (6 shared connections)
-- [test magic commands](test_magic_commands.md) (4 shared connections)
-- [websocket handler app state](websocket_handler_app_state.md) (4 shared connections)
-- [DropResolved](DropResolved.md) (4 shared connections)
-- [.validate alias name field()](validate_alias_name_field%28%29.md) (4 shared connections)
-- [chat send with room bundle()](chat_send_with_room_bundle%28%29.md) (4 shared connections)
-- [Player Position Service](Player_Position_Service.md) (3 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
-- [AuthSlice](AuthSlice.md) (1 shared connections)
-- [Spell Targeting](Spell_Targeting.md) (1 shared connections)
+- [NPCCombatIntegrationBase](NPCCombatIntegrationBase.md) (11 shared connections)
+- [world](world.md) (6 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (5 shared connections)
+- [NPCEventHandler](NPCEventHandler.md) (4 shared connections)
+- [connection statistics](connection_statistics.md) (4 shared connections)
+- [.validate player name field()](validate_player_name_field%28%29.md) (3 shared connections)
+- [PlayerChannelPreferences](PlayerChannelPreferences.md) (3 shared connections)
+- [test room occupant manager](test_room_occupant_manager.md) (3 shared connections)
+- [circuit breaker](circuit_breaker.md) (2 shared connections)
+- [NPCOccupantProcessor](NPCOccupantProcessor.md) (2 shared connections)
+- [UUID](UUID.md) (1 shared connections)
+- [occupant formatter](occupant_formatter.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/communication_commands.py`
-- `server/tests/unit/commands/communication_commands_mocks.py`
-- `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- `server/realtime/player_event_handlers_room.py`
+- `server/realtime/room_occupant_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 197 (98%)
-- INFERRED: 4 (2%)
+- EXTRACTED: 203 (94%)
+- INFERRED: 13 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

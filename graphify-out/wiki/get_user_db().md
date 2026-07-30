@@ -1,24 +1,34 @@
 # get user db()
 
-> 2 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **party_service()** (3 connections) — `server/tests/unit/game/test_party_service.py`
-- **PartyService with no dependencies (in-memory only).** (1 connections) — `server/tests/unit/game/test_party_service.py`
+- **Migration Guide: From Default Logging to Enhanced Logging** (5 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Step-by-Step Migration Process** (5 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Troubleshooting Common Issues** (5 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **1. Update Import Statements** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **2. Migrate Context Parameters** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **3. Convert String Formatting to Structured Logging** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **4. Add Rich Context to Error Messages** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Validation Checklist for Code Reviews** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Issue 1: ImportError when using enhanced logging** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Issue 2: TypeError with context parameter** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Issue 3: Logs not appearing in files** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Issue 4: Sensitive data appearing in logs** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
 
 ## Relationships
 
-- [test command factories player state](test_command_factories_player_state.md) (1 shared connections)
-- [test party service](test_party_service.md) (1 shared connections)
+- [minLength](minLength.md) (1 shared connections)
+- [Temporal System Research](Temporal_System_Research.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_party_service.py`
+- `docs/archive/LOGGING_BEST_PRACTICES.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 24 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

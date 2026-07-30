@@ -1,37 +1,41 @@
 # def row()
 
-> 8 nodes
+> 18 nodes
 
 ## Key Concepts
 
-- **NPCService** (14 connections) — `server/services/npc_service/__init__.py`
-- **npc_service()** (3 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_npc_service_init()** (3 connections) — `server/tests/unit/services/test_npc_service.py`
-- **.__init__()** (2 connections) — `server/services/npc_service/__init__.py`
-- **Comprehensive NPC management service.      Handles CRUD operations for NPC defin** (1 connections) — `server/services/npc_service/__init__.py`
-- **Initialize the NPC service.** (1 connections) — `server/services/npc_service/__init__.py`
-- **Create NPCService instance.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
-- **Test NPCService initialization.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
+- **Gladiator Ring (Arena) Implementation Plan** (8 connections) — `docs/archive/plans/gladiator_ring_arena_plan.md`
+- **Todos (detailed)** (5 connections) — `docs/archive/plans/gladiator-ring-arena-implementation-todos.md`
+- **Gladiator Ring (Arena) — Implementation Todos** (4 connections) — `docs/archive/plans/gladiator-ring-arena-implementation-todos.md`
+- **gladiator-ring-arena-implementation-todos.md** (2 connections) — `docs/archive/plans/gladiator-ring-arena-implementation-todos.md`
+- **gladiator_ring_arena_plan.md** (2 connections) — `docs/archive/plans/gladiator_ring_arena_plan.md`
+- **Phase 1: Schema and world data (Codebase Explorer for DML/schema pattern discovery) — DONE** (1 connections) — `docs/archive/plans/gladiator-ring-arena-implementation-todos.md`
+- **Phase 2: Tutorial exit and respawn (main agent)** (1 connections) — `docs/archive/plans/gladiator-ring-arena-implementation-todos.md`
+- **Phase 3: NPC startup — also spawn in arena (main agent) — DONE** (1 connections) — `docs/archive/plans/gladiator-ring-arena-implementation-todos.md`
+- **Phase 4: Tests and validation (main agent / Test Suite Analyzer) — DONE** (1 connections) — `docs/archive/plans/gladiator-ring-arena-implementation-todos.md`
+- **Subagent usage** (1 connections) — `docs/archive/plans/gladiator-ring-arena-implementation-todos.md`
+- **Plan frontmatter todos (for Cursor plan file)** (1 connections) — `docs/archive/plans/gladiator-ring-arena-implementation-todos.md`
+- **Plan summary** (1 connections) — `docs/archive/plans/gladiator_ring_arena_plan.md`
+- **Frontmatter todos (for Cursor plan file)** (1 connections) — `docs/archive/plans/gladiator_ring_arena_plan.md`
+- **1. Schema and data: zone, subzone, rooms, links** (1 connections) — `docs/archive/plans/gladiator_ring_arena_plan.md`
+- **2. Tutorial exit and respawn** (1 connections) — `docs/archive/plans/gladiator_ring_arena_plan.md`
+- **3. NPCs also spawn in arena** (1 connections) — `docs/archive/plans/gladiator_ring_arena_plan.md`
+- **4. Tests and validation** (1 connections) — `docs/archive/plans/gladiator_ring_arena_plan.md`
+- **Implementation references** (1 connections) — `docs/archive/plans/gladiator_ring_arena_plan.md`
 
 ## Relationships
 
-- [TerminalButtonProps](TerminalButtonProps.md) (3 shared connections)
-- [test npc service](test_npc_service.md) (3 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (2 shared connections)
-- [test resolve state no app()](test_resolve_state_no_app%28%29.md) (1 shared connections)
-- [test mp regeneration service](test_mp_regeneration_service.md) (1 shared connections)
-- [Profession](Profession.md) (1 shared connections)
-- [projectorHandlersMessages](projectorHandlersMessages.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/services/npc_service/__init__.py`
-- `server/tests/unit/services/test_npc_service.py`
+- `docs/archive/plans/gladiator-ring-arena-implementation-todos.md`
+- `docs/archive/plans/gladiator_ring_arena_plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (88%)
-- INFERRED: 3 (12%)
+- EXTRACTED: 34 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

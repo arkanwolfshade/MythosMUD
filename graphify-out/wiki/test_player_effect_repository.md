@@ -1,6 +1,6 @@
 # test player effect repository
 
-> 25 nodes
+> 23 nodes
 
 ## Key Concepts
 
@@ -10,7 +10,6 @@
 - **test_get_active_effects_for_player_filters_by_remaining()** (4 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
 - **test_has_effect_true()** (4 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
 - **test_get_effect_remaining_ticks()** (4 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
-- **repo()** (3 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
 - **test_add_effect_returns_id()** (2 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
 - **test_delete_effect()** (2 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
 - **test_has_effect_false()** (2 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
@@ -18,7 +17,6 @@
 - **test_expire_effects_for_tick_returns_expired_and_deletes()** (2 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
 - **player_id()** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
 - **Unit tests for PlayerEffectRepository (ADR-009 effects system).  Tests add_effec** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
-- **Create PlayerEffectRepository instance.** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
 - **Build a mock PlayerEffect with given fields.** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
 - **Build a procedure result row (mappings().all() item) from effect mock.** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
 - **add_effect persists effect and returns effect id (via add_player_effect procedur** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
@@ -32,9 +30,8 @@
 
 ## Relationships
 
+- [main()](main%28%29.md) (3 shared connections)
 - [real time](real_time.md) (3 shared connections)
-- [. init ()](_init_%28%29.md) (2 shared connections)
-- [main()](main%28%29.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,7 +39,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 65 (98%)
+- EXTRACTED: 61 (98%)
 - INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,39 +1,62 @@
 # Any
 
-> 13 nodes
+> 89 nodes
 
 ## Key Concepts
 
-- **extract_player_name()** (16 connections) — `server/realtime/player_presence_utils.py`
-- **get_player_position()** (7 connections) — `server/realtime/player_presence_utils.py`
-- **_get_name_from_user()** (5 connections) — `server/realtime/player_presence_utils.py`
-- **_is_valid_name()** (4 connections) — `server/realtime/player_presence_utils.py`
-- **_is_uuid_string()** (3 connections) — `server/realtime/player_presence_utils.py`
-- **Player** (3 connections)
-- **UUID** (3 connections)
-- **Any** (1 connections)
-- **Check if a value is a valid non-empty string name.      Args:         name: Valu** (1 connections) — `server/realtime/player_presence_utils.py`
-- **Check if a string is a UUID format.      Args:         value: String to check** (1 connections) — `server/realtime/player_presence_utils.py`
-- **Attempt to get player name from related User object.      Args:         player:** (1 connections) — `server/realtime/player_presence_utils.py`
-- **Extract and validate player name, ensuring it's never a UUID.      Args:** (1 connections) — `server/realtime/player_presence_utils.py`
-- **Get player position from stats.      Args:         player: The player object** (1 connections) — `server/realtime/player_presence_utils.py`
+- **SubjectValidationError** (29 connections) — `server/services/nats_subject_manager/exceptions.py`
+- **SubjectValidator** (23 connections) — `server/services/nats_subject_manager/validation.py`
+- **PatternNotFoundError** (21 connections) — `server/services/nats_subject_manager/exceptions.py`
+- **manager.py** (20 connections) — `server/services/nats_subject_manager/manager.py`
+- **MissingParameterError** (17 connections) — `server/services/nats_subject_manager/exceptions.py`
+- **InvalidPatternError** (17 connections) — `server/services/nats_subject_manager/exceptions.py`
+- **NATSSubjectError** (16 connections) — `server/services/nats_subject_manager/exceptions.py`
+- **test_nats_subject_exceptions.py** (16 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
+- **test_subscription_patterns.py** (14 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
+- **exceptions.py** (13 connections) — `server/services/nats_subject_manager/exceptions.py`
+- **__init__.py** (12 connections) — `server/services/nats_subject_manager/__init__.py`
+- **get_subscription_pattern()** (12 connections) — `server/services/nats_subject_manager/subscription_patterns.py`
+- **subscription_patterns.py** (10 connections) — `server/services/nats_subject_manager/subscription_patterns.py`
+- **get_chat_subscription_patterns()** (10 connections) — `server/services/nats_subject_manager/subscription_patterns.py`
+- **get_event_subscription_patterns()** (10 connections) — `server/services/nats_subject_manager/subscription_patterns.py`
+- **validation.py** (7 connections) — `server/services/nats_subject_manager/validation.py`
+- **test_exception_hierarchy()** (7 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
+- **test_exceptions_can_be_raised()** (6 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
+- **metrics.py** (5 connections) — `server/services/nats_subject_manager/metrics.py`
+- **.validate_parameter_value()** (5 connections) — `server/services/nats_subject_manager/validation.py`
+- **test_exceptions_can_be_caught_by_base()** (5 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
+- **.validate_pattern_params()** (4 connections) — `server/services/nats_subject_manager/validation.py`
+- **test_pattern_not_found_error()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
+- **test_missing_parameter_error_single()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
+- **test_invalid_pattern_error()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
+- *... and 64 more nodes in this community*
 
 ## Relationships
 
-- [Player](Player.md) (7 shared connections)
-- [player presence tracker](player_presence_tracker.md) (5 shared connections)
-- [player disconnect handlers](player_disconnect_handlers.md) (3 shared connections)
-- [real time](real_time.md) (2 shared connections)
-- [Any](Any.md) (2 shared connections)
+- [get subject manager dependency()](get_subject_manager_dependency%28%29.md) (15 shared connections)
+- [test validation](test_validation.md) (15 shared connections)
+- [test corpse lifecycle service](test_corpse_lifecycle_service.md) (14 shared connections)
+- [Any](Any.md) (6 shared connections)
+- [test clear corrupted cache entry](test_clear_corrupted_cache_entry.md) (4 shared connections)
+- [. init ()](_init_%28%29.md) (3 shared connections)
+- [ChatMessage](ChatMessage.md) (2 shared connections)
 
 ## Source Files
 
-- `server/realtime/player_presence_utils.py`
+- `server/services/nats_subject_manager/__init__.py`
+- `server/services/nats_subject_manager/exceptions.py`
+- `server/services/nats_subject_manager/manager.py`
+- `server/services/nats_subject_manager/metrics.py`
+- `server/services/nats_subject_manager/patterns.py`
+- `server/services/nats_subject_manager/subscription_patterns.py`
+- `server/services/nats_subject_manager/validation.py`
+- `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
+- `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
 
 ## Audit Trail
 
-- EXTRACTED: 45 (96%)
-- INFERRED: 2 (4%)
+- EXTRACTED: 355 (91%)
+- INFERRED: 36 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

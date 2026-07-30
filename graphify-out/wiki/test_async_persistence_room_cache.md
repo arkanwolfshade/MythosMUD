@@ -1,32 +1,40 @@
 # test async persistence room cache
 
-> 8 nodes
+> 60 nodes
 
 ## Key Concepts
 
 - **test_async_persistence_room_cache.py** (32 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_get_players_batch_with_players()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_load_room_cache_async_rooms_none()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 - **test_load_room_cache_async_table_not_found()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **test_process_exit_rows_missing_stable_id()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **test_warmup_room_cache()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **Unit tests for async persistence layer: load_room_cache_async, query_rooms, warm** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **Test _load_room_cache_async handles table not found error.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **Test _process_exit_rows handles missing stable_id.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **Test warmup_room_cache calls _ensure_room_cache_loaded.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_load_room_cache_async_other_error_raises()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_query_rooms_with_exits_async_table_not_found()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_query_rooms_with_exits_async_other_error_raises()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_get_user_by_username_case_insensitive_no_session()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_get_professions_no_session()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_get_players_batch_empty_list()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_generate_room_id_from_zone_data_with_prefix()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_generate_room_id_from_zone_data_needs_generation()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_generate_room_id_from_zone_data_none_values()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_parse_exits_json_string_valid()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_parse_exits_json_string_invalid()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_parse_exits_json_list()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_parse_exits_json_other_type()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_process_exits_for_room_with_direction()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_process_exits_for_room_no_direction()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_process_exits_for_room_multiple_exits()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_process_combined_rows_with_exits()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_process_combined_rows_no_exits()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_process_room_rows_with_none_zone_stable_id()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_process_room_rows_with_none_stable_id()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_process_exit_rows_missing_direction()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- *... and 35 more nodes in this community*
 
 ## Relationships
 
-- [Any](Any.md) (3 shared connections)
 - [. init ()](_init_%28%29.md) (2 shared connections)
-- [EventDict](EventDict.md) (1 shared connections)
-- [Test get spawn rules() successfully](Test_get_spawn_rules%28%29_successfully.md) (1 shared connections)
-- [Tests for get container dependency](Tests_for_get_container_dependency.md) (1 shared connections)
-- [middleware()](middleware%28%29.md) (1 shared connections)
-- [test utility commands whoami](test_utility_commands_whoami.md) (1 shared connections)
-- [Test broadcast combat ended broadcasts](Test_broadcast_combat_ended_broadcasts.md) (1 shared connections)
-- [rename invites columns](rename_invites_columns.md) (1 shared connections)
-- [Test handle player movement handles](Test_handle_player_movement_handles.md) (1 shared connections)
-- [Test subscribe to subject returns](Test_subscribe_to_subject_returns.md) (1 shared connections)
-- [add hashed password column](add_hashed_password_column.md) (1 shared connections)
+- [main()](main%28%29.md) (1 shared connections)
 
 ## Source Files
 
@@ -34,8 +42,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 42 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 120 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

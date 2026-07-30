@@ -1,42 +1,51 @@
 # test find item in room
 
-> 17 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **lifespan_shutdown.py** (15 connections) — `server/app/lifespan_shutdown.py`
-- **shutdown_services()** (12 connections) — `server/app/lifespan_shutdown.py`
-- **FastAPI** (5 connections)
-- **_shutdown_mythos_chronicle()** (4 connections) — `server/app/lifespan_shutdown.py`
-- **_shutdown_nats_handler()** (4 connections) — `server/app/lifespan_shutdown.py`
-- **_shutdown_connection_manager()** (4 connections) — `server/app/lifespan_shutdown.py`
-- **_shutdown_mythos_tick_scheduler()** (4 connections) — `server/app/lifespan_shutdown.py`
-- **_shutdown_task_registry()** (4 connections) — `server/app/lifespan_shutdown.py`
-- **_shutdown_event_bus()** (4 connections) — `server/app/lifespan_shutdown.py`
-- **Application shutdown logic.  This module handles graceful shutdown of all servic** (1 connections) — `server/app/lifespan_shutdown.py`
-- **Shutdown and persist mythos chronicle state.** (1 connections) — `server/app/lifespan_shutdown.py`
-- **Shutdown NATS message handler if present.** (1 connections) — `server/app/lifespan_shutdown.py`
-- **Shutdown connection manager if present.** (1 connections) — `server/app/lifespan_shutdown.py`
-- **Shutdown mythos tick scheduler if present.** (1 connections) — `server/app/lifespan_shutdown.py`
-- **Shutdown task registry if present.** (1 connections) — `server/app/lifespan_shutdown.py`
-- **Shutdown event bus and clean up all service subscriptions.** (1 connections) — `server/app/lifespan_shutdown.py`
-- **Handle graceful shutdown of all services.** (1 connections) — `server/app/lifespan_shutdown.py`
+- **CommandProcessor** (15 connections) — `server/utils/command_processor.py`
+- **get_command_processor()** (7 connections) — `server/utils/command_processor.py`
+- **.extract_command_data()** (5 connections) — `server/utils/command_processor.py`
+- **command_processor()** (4 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_get_command_processor()** (4 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **.process_command_string()** (4 connections) — `server/utils/command_processor.py`
+- **._extract_attributes()** (4 connections) — `server/utils/command_processor.py`
+- **._is_combat_command()** (4 connections) — `server/utils/command_processor.py`
+- **test_process_command_string_pydantic_validation_error()** (3 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **.__init__()** (3 connections) — `server/utils/command_processor.py`
+- **Any** (3 connections)
+- **.validate_command_safety()** (2 connections) — `server/utils/command_processor.py`
+- **.get_command_help()** (2 connections) — `server/utils/command_processor.py`
+- **Create a CommandProcessor instance.** (1 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **Test process_command_string handles Pydantic validation errors.** (1 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **Test get_command_processor returns global instance.** (1 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **Command processor that integrates Pydantic validation with existing command infr** (1 connections) — `server/utils/command_processor.py`
+- **Initialize the command processor.** (1 connections) — `server/utils/command_processor.py`
+- **Process a raw command string through the new validation system.          Args:** (1 connections) — `server/utils/command_processor.py`
+- **Extract attributes from validated command using a mapping configuration.** (1 connections) — `server/utils/command_processor.py`
+- **Check if a command type is a combat command.          Args:             command_** (1 connections) — `server/utils/command_processor.py`
+- **Extract command data from a validated Pydantic command object.          This met** (1 connections) — `server/utils/command_processor.py`
+- **Perform additional safety validation on command input.          This provides an** (1 connections) — `server/utils/command_processor.py`
+- **Get help information for commands.          Args:             command_name: Spec** (1 connections) — `server/utils/command_processor.py`
+- **Get the global command processor instance.      Returns:         The global Comm** (1 connections) — `server/utils/command_processor.py`
 
 ## Relationships
 
-- [test command parser](test_command_parser.md) (4 shared connections)
-- [.shutdown()](shutdown%28%29.md) (3 shared connections)
-- [get health status()](get_health_status%28%29.md) (3 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
+- [test command processor](test_command_processor.md) (5 shared connections)
+- [Spell Targeting](Spell_Targeting.md) (4 shared connections)
+- [test player event handlers room](test_player_event_handlers_room.md) (2 shared connections)
+- [Player Position Service](Player_Position_Service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/app/lifespan_shutdown.py`
+- `server/tests/unit/utils/test_command_processor.py`
+- `server/utils/command_processor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 64 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 67 (93%)
+- INFERRED: 5 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

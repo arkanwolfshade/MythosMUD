@@ -1,24 +1,27 @@
 # Test evaluate boolean condition() handles
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_get_adjacent_rooms_source_not_found()** (2 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_adjacent_rooms() returns empty list when source room not found.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Container System API Reference** (2 connections) — `docs/CONTAINER_SYSTEM_API_REFERENCE.md`
+- **Container System Architecture** (2 connections) — `docs/CONTAINER_SYSTEM_ARCHITECTURE.md`
+- **Container Item System** (1 connections) — `docs/CONTAINER_SYSTEM_ARCHITECTURE.md`
+- **Container System API** (1 connections) — `docs/CONTAINER_SYSTEM_API_REFERENCE.md`
 
 ## Relationships
 
-- [test room service](test_room_service.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `docs/CONTAINER_SYSTEM_API_REFERENCE.md`
+- `docs/CONTAINER_SYSTEM_ARCHITECTURE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 4 (67%)
+- INFERRED: 2 (33%)
 - AMBIGUOUS: 0 (0%)
 
 ---

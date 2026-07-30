@@ -1,9 +1,10 @@
 # connection statistics
 
-> 36 nodes
+> 62 nodes
 
 ## Key Concepts
 
+- **PlayerNameExtractor** (104 connections) — `server/realtime/player_name_utils.py`
 - **Any** (14 connections)
 - **UUID** (8 connections)
 - **._validate_name_not_uuid()** (8 connections) — `server/realtime/player_name_utils.py`
@@ -22,28 +23,35 @@
 - **._get_name_from_user_object()** (4 connections) — `server/realtime/player_name_utils.py`
 - **._check_uuid_string_matches()** (4 connections) — `server/realtime/player_name_utils.py`
 - **.is_valid_name_for_occupant()** (4 connections) — `server/realtime/player_name_utils.py`
+- **.__init__()** (3 connections) — `server/realtime/player_name_utils.py`
 - **._check_uuid_pattern_match()** (3 connections) — `server/realtime/player_name_utils.py`
-- **Check if a string looks like a UUID.          Args:             value: The strin** (1 connections) — `server/realtime/player_name_utils.py`
-- **Check if a name is valid (non-empty string, not a UUID).          Args:** (1 connections) — `server/realtime/player_name_utils.py`
-- **Check if a name is a valid non-UUID string.          Args:             name: The** (1 connections) — `server/realtime/player_name_utils.py`
-- **Extract initial player name from player object.          Args:             playe** (1 connections) — `server/realtime/player_name_utils.py`
-- **Try to get username from player object.          Args:             player: The p** (1 connections) — `server/realtime/player_name_utils.py`
-- **Get name from user object (username or display_name).          Args:** (1 connections) — `server/realtime/player_name_utils.py`
-- *... and 11 more nodes in this community*
+- **.test_init()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **.test_is_valid_name_none()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **.test_get_name_from_user_object_username()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **.test_get_name_from_user_object_display_name()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- *... and 37 more nodes in this community*
 
 ## Relationships
 
-- [container websocket events](container_websocket_events.md) (17 shared connections)
+- [PlayerNameExtractor](PlayerNameExtractor.md) (61 shared connections)
+- [NPCCombatIntegrationBase](NPCCombatIntegrationBase.md) (6 shared connections)
+- [world](world.md) (6 shared connections)
+- [.get instance()](get_instance%28%29.md) (4 shared connections)
+- [login grace period](login_grace_period.md) (4 shared connections)
+- [test combat persistence handler](test_combat_persistence_handler.md) (3 shared connections)
 - [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
+- [UUID](UUID.md) (1 shared connections)
+- [NPCEventHandler](NPCEventHandler.md) (1 shared connections)
 
 ## Source Files
 
 - `server/realtime/player_name_utils.py`
+- `server/tests/unit/realtime/test_player_name_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 128 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 274 (98%)
+- INFERRED: 7 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

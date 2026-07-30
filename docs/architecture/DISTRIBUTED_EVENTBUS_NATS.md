@@ -1,5 +1,20 @@
 # Distributed EventBus via NATS
 
+**Version 1.0.0** · MythosMUD · 2026-07-30
+
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[SPEC]**
 **Document Version:** 1.0
 **Date:** February 2026
 **Status:** Implemented
@@ -7,8 +22,9 @@
 
 ---
 
-## 1. Overview
+## 2. Overview
 
+**[SPEC]**
 The EventBus is now distributed across server instances using NATS. When any instance publishes a domain event, all instances (including the publisher) receive it, enabling horizontal scaling without Redis.
 
 ### 1.1 Components
@@ -34,7 +50,9 @@ All instances subscribe to `events.domain.>` (wildcard) to receive every domain 
 
 ---
 
-## 2. Flow
+## 3. Flow
+
+**[SPEC]**
 
 ### Local Publish
 
@@ -52,16 +70,28 @@ All instances subscribe to `events.domain.>` (wildcard) to receive every domain 
 
 ---
 
-## 3. Configuration
+## 4. Configuration
+
+**[SPEC]**
 
 - **NATS enabled:** Bridge starts when RealtimeBundle initializes and NATS connects
 - **NATS disabled:** EventBus behaves as single-instance (no NATS publish/subscribe)
 
 ---
 
-## 4. Related
+## 5. Related
+
+**[SPEC]**
 
 - [ADR-003: Dual Event Systems (EventBus + NATS)](decisions/ADR-003-dual-event-systems-eventbus-nats.md)
 - [EVENT_OWNERSHIP_MATRIX](../EVENT_OWNERSHIP_MATRIX.md)
 - [NATS_SUBJECT_PATTERNS](../NATS_SUBJECT_PATTERNS.md)
 - [Architecture Review Plan](../../.cursor/plans/architecture_review_plan_7bcbc812.plan.md) – evaluate-distributed-eventbus
+
+## 6. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

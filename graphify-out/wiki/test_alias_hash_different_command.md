@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **.test_is_uuid_string_invalid_characters()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **Test _is_uuid_string with invalid characters.** (1 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **test_handle_who_command_no_persistence()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **Test handle_who_command when persistence is not available.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
 
 ## Relationships
 
-- [container websocket events](container_websocket_events.md) (1 shared connections)
-- [PlayerNameExtractor](PlayerNameExtractor.md) (1 shared connections)
+- [GameConfig](GameConfig.md) (1 shared connections)
+- [utility commands](utility_commands.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_name_utils.py`
+- `server/tests/unit/commands/test_who_commands.py`
 
 ## Audit Trail
 

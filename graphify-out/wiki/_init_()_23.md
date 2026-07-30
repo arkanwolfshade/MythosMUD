@@ -1,35 +1,47 @@
 # . init ()
 
-> 13 nodes
+> 38 nodes
 
 ## Key Concepts
 
-- **🎯 MANDATORY AI EXECUTION PROTOCOL** (8 connections) — `.cursor/commands/lint-remediation.md`
-- **Phase 5: Fix Implementation Patterns** (4 connections) — `.cursor/commands/lint-remediation.md`
-- **Phase 4: Tool Selection Guide** (3 connections) — `.cursor/commands/lint-remediation.md`
-- **Phase 3: Systematic Fixing Process** (2 connections) — `.cursor/commands/lint-remediation.md`
-- **Phase 1: Initial Assessment (REQUIRED FIRST)** (1 connections) — `.cursor/commands/lint-remediation.md`
-- **For Each Issue Category** (1 connections) — `.cursor/commands/lint-remediation.md`
-- **Python/Ruff Issues** (1 connections) — `.cursor/commands/lint-remediation.md`
-- **React/ESLint Issues** (1 connections) — `.cursor/commands/lint-remediation.md`
-- **🔴 CRITICAL FIXES - Compilation Errors** (1 connections) — `.cursor/commands/lint-remediation.md`
-- **🟡 HIGH PRIORITY FIXES - Code Quality Issues** (1 connections) — `.cursor/commands/lint-remediation.md`
-- **🟢 MEDIUM PRIORITY FIXES - Style Issues** (1 connections) — `.cursor/commands/lint-remediation.md`
-- **Phase 6: Verification Protocol** (1 connections) — `.cursor/commands/lint-remediation.md`
-- **Phase 7: Success Validation** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **Async Persistence Migration Plan** (11 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
+- **Phase 2: Migrate Callers to Async** (8 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
+- **Phase 3: Remove PersistenceLayer** (5 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
+- **Phase 5: Create Greenfield Async Tests** (5 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
+- **Phase 6: Verification and Cleanup** (5 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
+- **Phase 4: Delete Persistence Unit Tests** (4 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
+- **Phase 1: Identify All Sync Callers** (3 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
+- **Implementation Notes** (3 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
+- **ASYNC_PERSISTENCE_MIGRATION_PLAN.md** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
+- **Overview** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
+- **Current Architecture** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
+- **1.1 Find all PersistenceLayer usage** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
+- **1.2 Document call sites** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
+- **2.1 Update ApplicationContainer** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
+- **2.2 Update lifespan.py** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
+- **2.3 Migrate API endpoints** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
+- **2.4 Migrate services** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
+- **2.5 Migrate commands** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
+- **2.6 Update test fixtures** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
+- **2.7 Update integration tests** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
+- **3.1 Delete persistence.py** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
+- **3.2 Update persistence package** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
+- **3.3 Remove hook decorator** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
+- **3.4 Update imports** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
+- **4.1 Identify test files to delete** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [lint remediation](lint_remediation.md) (1 shared connections)
-- [minLength](minLength.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `.cursor/commands/lint-remediation.md`
+- `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 26 (100%)
+- EXTRACTED: 74 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

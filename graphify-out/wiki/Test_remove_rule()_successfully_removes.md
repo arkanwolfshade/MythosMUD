@@ -1,23 +1,24 @@
 # Test remove rule() successfully removes
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_get_local_chat_scope_source_not_found()** (2 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_local_chat_scope() returns empty list when source room not found.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **📈 Performance Impact Assessment** (3 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **Before Migration** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **After Migration** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
 
 ## Relationships
 
-- [test room service](test_room_service.md) (1 shared connections)
+- [.get stats()](get_stats%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

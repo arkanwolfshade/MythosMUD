@@ -1,21 +1,12 @@
 # TerminalButtonProps
 
-> 1162 nodes
+> 489 nodes
 
 ## Key Concepts
 
-- **get_logger()** (511 connections) — `server/structured_logging/enhanced_logging_config.py`
-- **enhanced_logging_config.py** (485 connections) — `server/structured_logging/enhanced_logging_config.py`
 - **EventBus** (135 connections) — `server/events/event_bus.py`
 - **NPCDefinition** (119 connections) — `server/models/npc.py`
-- **time.py** (89 connections) — `server/container/bundles/time.py`
-- **NPCBase** (83 connections) — `server/npc/npc_base.py`
 - **event_types.py** (79 connections) — `server/events/event_types.py`
-- **get_npc_instance_service()** (79 connections) — `server/services/npc_instance_service.py`
-- **NPCLifecycleManager** (76 connections) — `server/npc/lifecycle_manager.py`
-- **async_persistence.py** (73 connections) — `server/async_persistence.py`
-- **BaseEvent** (73 connections) — `server/events/event_types.py`
-- **PlayerEnteredRoom** (71 connections) — `server/events/event_types.py`
 - **test_population_control.py** (65 connections) — `server/tests/unit/npc/test_population_control.py`
 - **NPCPopulationController** (64 connections) — `server/npc/population_control.py`
 - **NPCCombatIntegration** (63 connections) — `server/npc/combat_integration.py`
@@ -23,56 +14,65 @@
 - **test_npc_instance_service.py** (53 connections) — `server/tests/unit/services/test_npc_instance_service.py`
 - **NPCEnteredRoom** (51 connections) — `server/events/event_types.py`
 - **NPCSpawningService** (50 connections) — `server/npc/spawning_service.py`
-- **npc_combat_integration_service.py** (50 connections) — `server/services/npc_combat_integration_service.py`
-- **lifecycle_manager.py** (48 connections) — `server/npc/lifecycle_manager.py`
-- **threading.py** (47 connections) — `server/npc/threading.py`
 - **NPCLeftRoom** (46 connections) — `server/events/event_types.py`
 - **npc_base.py** (44 connections) — `server/npc/npc_base.py`
 - **population_control.py** (42 connections) — `server/npc/population_control.py`
-- *... and 1137 more nodes in this community*
+- **PopulationStats** (42 connections) — `server/npc/population_stats.py`
+- **npc.py** (37 connections) — `server/models/npc.py`
+- **spawning_service.py** (37 connections) — `server/npc/spawning_service.py`
+- **event_handler.py** (35 connections) — `server/realtime/event_handler.py`
+- **npc_instance_service.py** (32 connections) — `server/services/npc_instance_service.py`
+- **event_bus.py** (31 connections) — `server/events/event_bus.py`
+- **event_reaction_system.py** (29 connections) — `server/npc/event_reaction_system.py`
+- **combat_integration.py** (25 connections) — `server/npc/combat_integration.py`
+- **spawning_instance_factory.py** (24 connections) — `server/npc/spawning_instance_factory.py`
+- **NPCInstanceService** (24 connections) — `server/services/npc_instance_service.py`
+- **test_npc_combat_integration_class.py** (23 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **spawning_request_execution.py** (19 connections) — `server/npc/spawning_request_execution.py`
+- *... and 464 more nodes in this community*
 
 ## Relationships
 
-- [Any](Any.md) (204 shared connections)
-- [. init ()](_init_%28%29.md) (147 shared connections)
-- [Player](Player.md) (102 shared connections)
-- [real time](real_time.md) (100 shared connections)
-- [NPCCombatIntegrationBase](NPCCombatIntegrationBase.md) (76 shared connections)
-- [test command parser](test_command_parser.md) (73 shared connections)
-- [UUID](UUID.md) (56 shared connections)
-- [metrics](metrics.md) (51 shared connections)
-- [.validate player name field()](validate_player_name_field%28%29.md) (48 shared connections)
-- [. repr ()](_repr_%28%29.md) (44 shared connections)
-- [chat nats publisher](chat_nats_publisher.md) (35 shared connections)
-- [.initialize()](initialize%28%29.md) (33 shared connections)
+- [parse jsonb column()](parse_jsonb_column%28%29.md) (82 shared connections)
+- [get current tick()](get_current_tick%28%29.md) (54 shared connections)
+- [combat initialization](combat_initialization.md) (49 shared connections)
+- [world](world.md) (44 shared connections)
+- [.validate player name field()](validate_player_name_field%28%29.md) (40 shared connections)
+- [. repr ()](_repr_%28%29.md) (37 shared connections)
+- [Test check all command blocks](Test_check_all_command_blocks.md) (34 shared connections)
+- [Any](Any.md) (33 shared connections)
+- [. init ()](_init_%28%29.md) (28 shared connections)
+- [chat nats publisher](chat_nats_publisher.md) (23 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (22 shared connections)
+- [NPCCombatIntegrationBase](NPCCombatIntegrationBase.md) (21 shared connections)
 
 ## Source Files
 
-- `scripts/run_test_ci.py`
-- `server/app/lifespan_startup.py`
-- `server/app/task_registry.py`
-- `server/async_persistence.py`
-- `server/caching/cache_service.py`
-- `server/caching/lru_cache.py`
-- `server/commands/container_helpers_inventory_logging.py`
-- `server/commands/position_commands.py`
-- `server/commands/shutdown_process_termination.py`
-- `server/config/models/cors.py`
-- `server/constants/spawn_defaults.py`
 - `server/container/bundles/npc.py`
-- `server/container/bundles/time.py`
 - `server/events/__init__.py`
-- `server/events/distributed_event_bus.py`
 - `server/events/event_bus.py`
 - `server/events/event_types.py`
-- `server/events/nats_event_bridge.py`
-- `server/game/chat_pose_manager.py`
-- `server/game/chat_whisper_tracker.py`
+- `server/game/party_service.py`
+- `server/models/npc.py`
+- `server/models/room.py`
+- `server/npc/aggressive_mob_npc.py`
+- `server/npc/behaviors.py`
+- `server/npc/combat_integration.py`
+- `server/npc/combat_integration_protocols.py`
+- `server/npc/communication_integration.py`
+- `server/npc/event_reaction_system.py`
+- `server/npc/movement_integration.py`
+- `server/npc/npc_base.py`
+- `server/npc/population_control.py`
+- `server/npc/population_stats.py`
+- `server/npc/shopkeeper_npc.py`
+- `server/npc/spawning_instance_factory.py`
+- `server/npc/spawning_models.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6550 (93%)
-- INFERRED: 471 (7%)
+- EXTRACTED: 2301 (91%)
+- INFERRED: 240 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

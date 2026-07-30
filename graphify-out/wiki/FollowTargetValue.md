@@ -33,17 +33,12 @@
 
 ## Relationships
 
-- [BaseUserManager](BaseUserManager.md) (8 shared connections)
-- [test combat persistence handler events](test_combat_persistence_handler_events.md) (6 shared connections)
-- [Any](Any.md) (4 shared connections)
-- [correct patterns](correct_patterns.md) (4 shared connections)
-- [test command parser](test_command_parser.md) (3 shared connections)
-- [connection state machine](connection_state_machine.md) (3 shared connections)
-- [MapZoneContext](MapZoneContext.md) (3 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
-- [combat initialization](combat_initialization.md) (1 shared connections)
-- [Player](Player.md) (1 shared connections)
-- [. initialize handlers()](_initialize_handlers%28%29.md) (1 shared connections)
+- [Any](Any.md) (19 shared connections)
+- [BaseUserManager](BaseUserManager.md) (11 shared connections)
+- [combat initialization](combat_initialization.md) (2 shared connections)
+- [. initialize handlers()](_initialize_handlers%28%29.md) (2 shared connections)
+- [circuit breaker](circuit_breaker.md) (1 shared connections)
+- [connection state machine](connection_state_machine.md) (1 shared connections)
 - [get subject manager dependency()](get_subject_manager_dependency%28%29.md) (1 shared connections)
 
 ## Source Files

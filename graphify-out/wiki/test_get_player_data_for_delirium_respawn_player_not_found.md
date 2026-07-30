@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_adjust_room_drop()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **Test adjust_room_drop() adjusts quantity.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **test_get_player_skills_owner_returns_list()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
+- **get_player_skills for owned player returns list of skill dicts.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
 
 ## Relationships
 
-- [test room subscription manager drops](test_room_subscription_manager_drops.md) (1 shared connections)
+- [test player service](test_player_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- `server/tests/unit/game/test_skill_service.py`
 
 ## Audit Trail
 

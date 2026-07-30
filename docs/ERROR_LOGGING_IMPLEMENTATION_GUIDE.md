@@ -1,12 +1,27 @@
 # Error Logging Implementation Guide
 
-## Overview
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
 This guide provides practical implementation examples and patterns for integrating comprehensive error logging
 throughout the MythosMUD codebase. As noted in the Pnakotic Manuscripts, the proper documentation of anomalous events
 requires both theoretical understanding and practical application.
 
-## Core Implementation Patterns
+## 2. Core Implementation Patterns
+
+**[NOTE]**
 
 ### Pattern 1: MythosMUDError with Automatic Logging
 
@@ -252,7 +267,9 @@ async def process_game_command(player_id: str, command: str, args: list) -> dict
         raise mythos_error
 ```
 
-## Utility Functions Implementation
+## 3. Utility Functions Implementation
+
+**[NOTE]**
 
 ### Error Logging Utilities
 
@@ -358,7 +375,9 @@ def wrap_third_party_exception(
     return handle_exception(exc, context)
 ```
 
-## Context Creation Helpers
+## 4. Context Creation Helpers
+
+**[NOTE]**
 
 ### Request Context Helpers
 
@@ -408,7 +427,9 @@ def create_api_context(
     )
 ```
 
-## Testing Patterns
+## 5. Testing Patterns
+
+**[NOTE]**
 
 ### Error Logging Test Utilities
 
@@ -502,7 +523,9 @@ class TestErrorLogging(ErrorLoggingTestMixin):
         assert context_dict["metadata"]["test"] is True
 ```
 
-## Migration Checklist
+## 6. Migration Checklist
+
+**[NOTE]**
 
 ### For Each File Being Updated
 
@@ -581,7 +604,9 @@ except ValueError as e:
     raise mythos_error
 ```
 
-## Best Practices
+## 7. Best Practices
+
+**[SPEC]**
 
 ### Do's
 
@@ -616,3 +641,11 @@ Sanitize user input in error messages
 a technical exercise, but a critical component of maintaining the delicate balance between order and chaos in our
 digital realm. This guide ensures that every error, every exception, and every anomaly is properly catalogued for
 posterity and analysis.*
+
+## 8. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

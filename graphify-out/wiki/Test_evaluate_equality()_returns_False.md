@@ -1,24 +1,25 @@
 # Test evaluate equality() returns False
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_handle_player_entered_success()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **Test handle_player_entered() successfully handles event.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **📞 Next Steps** (4 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **Immediate (Today)** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **Short-Term (This Week)** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **Medium-Term (Next Sprint)** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
 
 ## Relationships
 
-- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
-- [. call ()](_call_%28%29.md) (1 shared connections)
+- [get alias validator()](get_alias_validator%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

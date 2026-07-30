@@ -1,53 +1,48 @@
 # Return stats[key] as int, or
 
-> 30 nodes
+> 34 nodes
 
 ## Key Concepts
 
-- **_NPCCombatIntegrationValidationDeps** (19 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **.store_npc_xp_mapping_for_mixin()** (10 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **.get_data_provider()** (6 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **.get_uuid_mapping()** (6 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **UUID** (6 connections)
-- **._setup_combat_uuids_and_mappings()** (6 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **._validate_and_get_npc_instance()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **._validate_combat_location()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **._end_combat_if_participant_in_combat()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **._setup_combat_uuids_npc_attacker()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **.get_combat_service()** (4 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **.get_lucidity_service()** (4 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **_coerce_xp_mapping_value()** (3 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **_warn_attacked_dead_npc()** (3 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **.store_npc_xp_mapping_for_mixin()** (3 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **Protocol** (1 connections)
-- **Parse xp_value from NPC base_stats JSON; bool maps to 0 (avoid True -> 1).** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **Log when a player targets an NPC that exists but is not alive.** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **Attributes supplied by NPCCombatIntegrationService (mixin cannot initialize them** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **Return combat service dependency.** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **Return data provider dependency.** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **Return UUID mapping dependency.** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **Return lucidity dependency.** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **Store XP mapping for NPC combat setup from validation mixin.** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **Validate NPC instance (lookup when missing). Return instance or None.** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- *... and 5 more nodes in this community*
+- **Persistence Layer Refactoring - COMPLETE ✅** (12 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **✨ Key Achievements** (6 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **📊 Final Metrics** (4 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **🚀 What's Now Possible** (4 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **🎓 Lessons Learned** (4 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **🔍 Validation Results** (4 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **🏗️ What Was Built** (3 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **📈 Benefits** (3 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **PERSISTENCE_REFACTORING_COMPLETE.md** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **🎯 Mission Accomplished** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **Code Created** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **Repository Breakdown** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **Backward Compatibility** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **Directory Structure** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **Documentation Created** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **1. Modular Architecture** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **2. Async Foundation** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **3. Zero Breaking Changes** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **4. Comprehensive Documentation** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **5. Quality Maintained** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **For New Code** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **For Existing Code** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **For Gradual Migration** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **Immediate (Available Now)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **Future (Post-Migration)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [Any](Any.md) (10 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (4 shared connections)
-- [. initialize handlers()](_initialize_handlers%28%29.md) (2 shared connections)
-- [. init ()](_init_%28%29.md) (2 shared connections)
-- [Path](Path.md) (2 shared connections)
-- [. repr ()](_repr_%28%29.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/services/npc_combat_integration_validation_mixin.py`
+- `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 99 (94%)
-- INFERRED: 6 (6%)
+- EXTRACTED: 66 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

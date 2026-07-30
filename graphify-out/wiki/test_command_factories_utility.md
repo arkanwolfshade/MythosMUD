@@ -36,8 +36,8 @@
 - [Spell Targeting](Spell_Targeting.md) (41 shared connections)
 - [.initialize()](initialize%28%29.md) (18 shared connections)
 - [real time](real_time.md) (1 shared connections)
-- [connection helpers](connection_helpers.md) (1 shared connections)
-- [get health status()](get_health_status%28%29.md) (1 shared connections)
+- [world](world.md) (1 shared connections)
+- [AsyncSessionFactory](AsyncSessionFactory.md) (1 shared connections)
 
 ## Source Files
 

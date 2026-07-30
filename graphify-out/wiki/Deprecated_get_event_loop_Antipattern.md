@@ -1,23 +1,27 @@
 # Deprecated get event loop Antipattern
 
-> 2 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **Uvicorn/ASGI Code Review** (1 connections) — `docs/UVICORN_CODE_REVIEW.md`
-- **Deprecated get_event_loop Antipattern** (1 connections) — `docs/UVICORN_CODE_REVIEW.md`
+- **Enhanced Logging Features** (6 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **MDC (Mapped Diagnostic Context)** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Correlation IDs** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Security Sanitization** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Performance Monitoring** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Exception Tracking** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [minLength](minLength.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/UVICORN_CODE_REVIEW.md`
+- `docs/archive/LOGGING_BEST_PRACTICES.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

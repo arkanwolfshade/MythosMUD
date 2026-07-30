@@ -1,6 +1,6 @@
 # mockOpenContainers
 
-> 56 nodes
+> 57 nodes
 
 ## Key Concepts
 
@@ -9,6 +9,7 @@
 - **ContainerSplitPane.tsx** (16 connections) — `client/src/components/containers/ContainerSplitPane.tsx`
 - **ContainerKeyboardAccessibility.test.tsx** (15 connections) — `client/src/components/containers/__tests__/ContainerKeyboardAccessibility.test.tsx`
 - **BackpackTab.tsx** (12 connections) — `client/src/components/containers/BackpackTab.tsx`
+- **useGameStore** (11 connections) — `client/src/stores/gameStore.ts`
 - **CorpseOverlay()** (10 connections) — `client/src/components/containers/CorpseOverlay.tsx`
 - **BackpackTab.test.tsx** (10 connections) — `client/src/components/containers/__tests__/BackpackTab.test.tsx`
 - **useContainerStore** (10 connections) — `client/src/stores/containerStore.ts`
@@ -28,16 +29,16 @@
 - **isCorpseOwner()** (2 connections) — `client/src/components/containers/CorpseOverlay.tsx`
 - **isGracePeriodActive()** (2 connections) — `client/src/components/containers/CorpseOverlay.tsx`
 - **ContainerSourceType** (2 connections) — `client/src/stores/containerStore.ts`
-- **ContainerLockState** (2 connections) — `client/src/stores/containerStore.ts`
-- *... and 31 more nodes in this community*
+- *... and 32 more nodes in this community*
 
 ## Relationships
 
 - [ChatPanelTest](ChatPanelTest.md) (12 shared connections)
-- [createInitialState()](createInitialState%28%29.md) (9 shared connections)
+- [EdgeDetailsPanel](EdgeDetailsPanel.md) (5 shared connections)
 - [.constructor()](constructor%28%29.md) (3 shared connections)
+- [createInitialState()](createInitialState%28%29.md) (3 shared connections)
 - [LoginResponse](LoginResponse.md) (2 shared connections)
-- [fetchSpy](fetchSpy.md) (2 shared connections)
+- [AppCreationFlowViews](AppCreationFlowViews.md) (2 shared connections)
 
 ## Source Files
 
@@ -51,11 +52,12 @@
 - `client/src/components/containers/__tests__/CorpseOverlay.test.tsx`
 - `client/src/stores/__tests__/containerStore.test.ts`
 - `client/src/stores/containerStore.ts`
+- `client/src/stores/gameStore.ts`
 - `client/src/utils/apiTypeGuards.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 222 (100%)
+- EXTRACTED: 233 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

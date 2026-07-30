@@ -1,43 +1,42 @@
 # roomHandlers
 
-> 19 nodes
+> 21 nodes
 
 ## Key Concepts
 
-- **roomHandlers.ts** (26 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **roomHandlers.test.ts** (12 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/roomHandlers.test.ts`
-- **handleRoomUpdate()** (7 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **handleStructuredOccupantsFormat()** (5 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **handleRoomOccupants()** (5 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **hasOccupantData()** (3 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **createRoomUpdateWithPreservedOccupants()** (3 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **getValueOrDefault()** (3 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **getFinalNpcs()** (3 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **getFinalPlayers()** (3 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **__setOccupantDebugForTests()** (2 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **handleGameState()** (2 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **handleFollowState()** (2 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **extractRoomMetadata()** (2 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **createInitialRoomState()** (2 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **getRoomDataFromEvent()** (2 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **validateRoomIdMatch()** (2 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **calculateOccupantCount()** (2 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **createMinimalRoomFromOccupantsEvent()** (2 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
+- **ConnectionManager Refactoring Summary** (9 connections) — `docs/archive/REFACTORING_SUMMARY.md`
+- **Extracted Modules** (8 connections) — `docs/archive/REFACTORING_SUMMARY.md`
+- **Refactoring Results** (3 connections) — `docs/archive/REFACTORING_SUMMARY.md`
+- **Architecture Improvements** (3 connections) — `docs/archive/REFACTORING_SUMMARY.md`
+- **REFACTORING_SUMMARY.md** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
+- **Overview** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
+- **File Size Reduction** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
+- **1. Statistics & Monitoring (`realtime/monitoring/`)** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
+- **2. Error Handling (`realtime/errors/`)** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
+- **3. Health Monitoring (`realtime/monitoring/`)** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
+- **4. Cleanup & Maintenance (`realtime/maintenance/`)** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
+- **5. Game State Management (`realtime/integration/`)** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
+- **6. Room Event Integration (`realtime/integration/`)** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
+- **7. Message Broadcasting (`realtime/messaging/`)** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
+- **Before** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
+- **After** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
+- **Remaining Core Responsibilities** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
+- **Test Coverage** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
+- **Benefits Achieved** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
+- **Future Refactoring Opportunities** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
+- **Conclusion** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
 
 ## Relationships
 
-- [monitoring models](monitoring_models.md) (8 shared connections)
-- [useConnectionStateMachine.test](useConnectionStateMachine.test.md) (4 shared connections)
-- [HealthMeter](HealthMeter.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `client/src/components/ui-v2/eventHandlers/__tests__/roomHandlers.test.ts`
-- `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
+- `docs/archive/REFACTORING_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 88 (100%)
+- EXTRACTED: 40 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

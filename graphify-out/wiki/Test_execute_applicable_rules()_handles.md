@@ -1,23 +1,25 @@
 # Test execute applicable rules() handles
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_get_room_persistence_not_found()** (2 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_room() returns None when room not found in persistence.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Phase 3: Coverage Test Optimization (Week 3)** (4 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Task 3.1: Reduce Command Handler Coverage Tests (3 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Task 3.2: Reduce Error Logging Coverage Tests (2 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Task 3.3: Merge Coverage Tests into Domain Tests (3 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
 
 ## Relationships
 
-- [test room service](test_room_service.md) (1 shared connections)
+- [Test query rooms with exits](Test_query_rooms_with_exits.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

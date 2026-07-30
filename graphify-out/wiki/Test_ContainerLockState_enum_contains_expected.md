@@ -1,23 +1,24 @@
 # Test ContainerLockState enum contains expected
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_prepare_room_data_without_to_dict()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **Test _prepare_room_data() handles room without to_dict method.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **8. Error Handling and Debugging** (3 connections) — `.cursor/commands/server-test-remediation.md`
+- **Test Debugging** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **Common Debug Commands** (1 connections) — `.cursor/commands/server-test-remediation.md`
 
 ## Relationships
 
-- [. call ()](_call_%28%29.md) (1 shared connections)
+- [10. Final Verification](10._Final_Verification.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- `.cursor/commands/server-test-remediation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

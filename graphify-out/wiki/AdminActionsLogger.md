@@ -30,7 +30,7 @@
 ## Relationships
 
 - [test command factories inventory](test_command_factories_inventory.md) (2 shared connections)
-- [get skill repository()](get_skill_repository%28%29.md) (1 shared connections)
+- [Any](Any.md) (1 shared connections)
 - [process dead players()](process_dead_players%28%29.md) (1 shared connections)
 
 ## Source Files

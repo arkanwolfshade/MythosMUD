@@ -1,26 +1,27 @@
 # .is locked()
 
-> 5 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **add_fastapi_users_columns.py** (4 connections) — `server/scripts/add_fastapi_users_columns.py`
-- **apply_migration()** (3 connections) — `server/scripts/add_fastapi_users_columns.py`
-- **main()** (3 connections) — `server/scripts/add_fastapi_users_columns.py`
-- **Apply the migration to add FastAPI Users columns.      Args:         database_ur** (1 connections) — `server/scripts/add_fastapi_users_columns.py`
-- **Main entry point for the migration script.** (1 connections) — `server/scripts/add_fastapi_users_columns.py`
+- **Enhanced Logging Migration Report** (5 connections) — `docs/archive/migration_report.md`
+- **migration_report.md** (1 connections) — `docs/archive/migration_report.md`
+- **Summary** (1 connections) — `docs/archive/migration_report.md`
+- **Successfully Updated Files** (1 connections) — `docs/archive/migration_report.md`
+- **Next Steps** (1 connections) — `docs/archive/migration_report.md`
+- **Enhanced Logging Features** (1 connections) — `docs/archive/migration_report.md`
 
 ## Relationships
 
-- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/scripts/add_fastapi_users_columns.py`
+- `docs/archive/migration_report.md`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 10 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

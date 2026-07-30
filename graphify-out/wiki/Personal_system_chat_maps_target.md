@@ -1,23 +1,25 @@
 # Personal system chat maps target
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_get_room_without_cache()** (2 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_room() falls back to persistence when cache unavailable.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **_format_liabilities()** (4 connections) — `server/services/lucidity_event_dispatcher.py`
+- **LiabilityStackEntry** (1 connections)
+- **Flatten liability entries into human-readable strings for the client.** (1 connections) — `server/services/lucidity_event_dispatcher.py`
 
 ## Relationships
 
-- [test room service](test_room_service.md) (1 shared connections)
+- [local channel isolation.spec](local_channel_isolation.spec.md) (1 shared connections)
+- [LiabilityStackEntry](LiabilityStackEntry.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `server/services/lucidity_event_dispatcher.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,22 +1,24 @@
 # Domain Model Anemic Anti Pattern
 
-> 1 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Domain Model Anemic Anti-Pattern Audit** (0 connections) — `docs/architecture/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **test_connect_transition()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **Test connect() transition from disconnected to connecting.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [connection state machine](connection_state_machine.md) (1 shared connections)
+- [enhance player ids()](enhance_player_ids%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/architecture/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- `server/tests/unit/realtime/test_connection_state_machine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

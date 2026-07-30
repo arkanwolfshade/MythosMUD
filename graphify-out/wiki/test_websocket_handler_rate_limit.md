@@ -19,7 +19,7 @@
 
 ## Relationships
 
-- [.is required()](is_required%28%29.md) (1 shared connections)
+- [.reset instance()](reset_instance%28%29.md) (1 shared connections)
 
 ## Source Files
 

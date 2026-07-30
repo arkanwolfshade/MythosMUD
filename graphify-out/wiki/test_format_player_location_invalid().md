@@ -1,33 +1,43 @@
 # test format player location invalid()
 
-> 8 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **validate_shutdown_admin_permission()** (9 connections) — `server/commands/admin_shutdown_command.py`
-- **test_validate_shutdown_admin_permission_no_player()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_validate_shutdown_admin_permission_not_admin()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_validate_shutdown_admin_permission_admin()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Validate that a player has admin permissions for server shutdown.      Args:** (1 connections) — `server/commands/admin_shutdown_command.py`
-- **Test validate_shutdown_admin_permission() returns False when player is None.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Test validate_shutdown_admin_permission() returns False when player is not admin** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Test validate_shutdown_admin_permission() returns True when player is admin.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **__init__.py** (10 connections) — `server/schemas/maps/__init__.py`
+- **map.py** (9 connections) — `server/schemas/maps/map.py`
+- **BaseModel** (7 connections)
+- **AsciiMapResponse** (7 connections) — `server/schemas/maps/map.py`
+- **AsciiMinimapResponse** (7 connections) — `server/schemas/maps/map.py`
+- **CoordinateRecalculationResponse** (7 connections) — `server/schemas/maps/map.py`
+- **MapOriginSetResponse** (7 connections) — `server/schemas/maps/map.py`
+- **ViewportInfo** (4 connections) — `server/schemas/maps/map.py`
+- **CoordinateGenerationResponse** (4 connections) — `server/schemas/maps/map.py`
+- **CoordinateValidationResponse** (4 connections) — `server/schemas/maps/map.py`
+- **Maps domain schemas: map API responses.** (1 connections) — `server/schemas/maps/__init__.py`
+- **Map API response schemas for MythosMUD server.  This module provides Pydantic mo** (1 connections) — `server/schemas/maps/map.py`
+- **Viewport information for map rendering.** (1 connections) — `server/schemas/maps/map.py`
+- **Response model for ASCII map endpoint.** (1 connections) — `server/schemas/maps/map.py`
+- **Response model for ASCII minimap endpoint.** (1 connections) — `server/schemas/maps/map.py`
+- **Response model for coordinate generation endpoint.** (1 connections) — `server/schemas/maps/map.py`
+- **Response model for coordinate validation endpoint.** (1 connections) — `server/schemas/maps/map.py`
+- **Response model for coordinate recalculation endpoint.** (1 connections) — `server/schemas/maps/map.py`
+- **Response model for setting map origin endpoint.** (1 connections) — `server/schemas/maps/map.py`
 
 ## Relationships
 
-- [Any](Any.md) (4 shared connections)
-- [get skill repository()](get_skill_repository%28%29.md) (3 shared connections)
-- [Player Position Service](Player_Position_Service.md) (1 shared connections)
+- [ExitStack](ExitStack.md) (8 shared connections)
+- [close db()](close_db%28%29.md) (5 shared connections)
 
 ## Source Files
 
-- `server/commands/admin_shutdown_command.py`
-- `server/tests/unit/commands/test_admin_shutdown_command.py`
+- `server/schemas/maps/__init__.py`
+- `server/schemas/maps/map.py`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (95%)
-- INFERRED: 1 (5%)
+- EXTRACTED: 75 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

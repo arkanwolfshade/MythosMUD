@@ -1,49 +1,67 @@
 # 🐙 MythosMUD
 
+**Version 1.0.0** · MythosMUD · 2026-07-30
+
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
 A text-based, browser-accessible Multi-User Dungeon (MUD) inspired by the Cthulhu Mythos.
 
-## Status Badges
+## 2. Status Badges
 
+**[NOTE]**
 [![CI](https://github.com/arkanwolfshade/MythosMUD/actions/workflows/ci.yml/badge.svg)](https://github.com/arkanwolfshade/MythosMUD/actions/workflows/ci.yml)
 [![CodeQL](https://github.com/arkanwolfshade/MythosMUD/actions/workflows/codeql.yml/badge.svg)](https://github.com/arkanwolfshade/MythosMUD/actions/workflows/codeql.yml)
 [![Codacy
 Badge](https://app.codacy.com/project/badge/Grade/0c361cf70a234b86b1b0f058ffd00549)](https://app.codacy.com/gh/arkanwolfshade/MythosMUD/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 
-## Table of Contents
+## 3. Table of Contents
 
+**[SPEC]**
 [🐙 MythosMUD](#-mythosmud)
 
 - [🐙 MythosMUD](#-mythosmud)
-  - [Status Badges](#status-badges)
-  - [Table of Contents](#table-of-contents)
-  - [Overview](#overview)
-  - [Current Status](#current-status)
+  - [Status Badges](#2-status-badges)
+  - [Table of Contents](#3-table-of-contents)
+  - [Overview](#4-overview)
+  - [Current Status](#5-current-status)
     - [✅ Completed Systems](#-completed-systems)
     - [🔄 In Progress](#-in-progress)
     - [📋 Planned Features](#-planned-features)
-  - [Features](#features)
+  - [Features](#6-features)
     - [Core Gameplay](#core-gameplay)
     - [Technical Features](#technical-features)
     - [Security \& Privacy](#security--privacy)
-  - [Getting Started](#getting-started)
+  - [Getting Started](#7-getting-started)
     - [Quickstart](#quickstart)
-  - [Project Structure](#project-structure)
-  - [Development](#development)
+  - [Project Structure](#8-project-structure)
+  - [Development](#9-development)
     - [Utility Scripts](#utility-scripts)
     - [Development Tools](#development-tools)
-  - [Documentation](#documentation)
+  - [Documentation](#10-documentation)
     - [Core Documentation](#core-documentation)
     - [Development Guides](#development-guides)
     - [Testing Documentation](#testing-documentation)
     - [Architecture \& Technical Specs](#architecture--technical-specs)
     - [Logging \& Monitoring](#logging--monitoring)
     - [Security \& Error Handling](#security--error-handling)
-  - [License](#license)
+  - [License](#11-license)
 
 ---
 
-## Overview
+## 4. Overview
 
+**[SPEC]**
 **MythosMUD** is a persistent, multiplayer, text-based adventure game with a Lovecraftian horror theme. It is designed
 to be beginner-friendly for both players and contributors, with a focus on exploration, narrative, and light horror
 combat.
@@ -65,8 +83,9 @@ combat.
 
 ---
 
-## Current Status
+## 5. Current Status
 
+**[SPEC]**
 **🟢 Beta Development** - Core systems implemented and tested, multiplayer features active
 
 ### ✅ Completed Systems
@@ -122,7 +141,9 @@ components, casting times, and integration with combat and lucidity systems
 
 ---
 
-## Features
+## 6. Features
+
+**[SPEC]**
 
 ### Core Gameplay
 
@@ -183,8 +204,9 @@ security, and performance categories
 
 ---
 
-## Getting Started
+## 7. Getting Started
 
+**[NOTE]**
 See [DEVELOPMENT.md](docs/DEVELOPMENT.md) for full setup instructions.
 
 ### Quickstart
@@ -275,7 +297,9 @@ See [DEVELOPMENT.md](docs/DEVELOPMENT.md) for full setup instructions.
 
 ---
 
-## Project Structure
+## 8. Project Structure
+
+**[NOTE]**
 
 ```text
 MythosMUD/
@@ -378,7 +402,9 @@ MythosMUD/
 
 ---
 
-## Development
+## 9. Development
+
+**[SPEC]**
 
 ### Utility Scripts
 
@@ -455,7 +481,9 @@ See [scripts/README.md](scripts/README.md) for detailed documentation.
 
 ---
 
-## Documentation
+## 10. Documentation
+
+**[SPEC]**
 
 ### Core Documentation
 
@@ -504,6 +532,15 @@ See [scripts/README.md](scripts/README.md) for detailed documentation.
 
 ---
 
-## License
+## 11. License
 
+**[NOTE]**
 [https://github.com/arkanwolfshade/MythosMUD/blob/main/LICENSE](https://github.com/arkanwolfshade/MythosMUD/blob/main/LICENSE)
+
+## 12. Changelog
+
+**[SPEC]**
+
+| Version | Date       | Change                             |
+| ------- | ---------- | ---------------------------------- |
+| 1.0.0   | 2026-07-30 | Initial HADS structural conversion |

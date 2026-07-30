@@ -1,44 +1,47 @@
 # CommandRequest
 
-> 18 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **sanitize_sensitive_data()** (14 connections) — `server/structured_logging/logging_processors.py`
-- **test_sanitize_sensitive_data_password()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_sanitize_sensitive_data_token()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_sanitize_sensitive_data_api_key()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_sanitize_sensitive_data_safe_fields()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_sanitize_sensitive_data_nested_dict()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_sanitize_sensitive_data_multiple_sensitive_fields()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_sanitize_sensitive_data_no_sensitive_fields()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_sanitize_sensitive_data_case_insensitive()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Remove sensitive data from log entries.      This processor automatically redact** (1 connections) — `server/structured_logging/logging_processors.py`
-- **Test sanitize_sensitive_data() redacts password fields.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Test sanitize_sensitive_data() redacts token fields.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Test sanitize_sensitive_data() redacts fields ending with _key.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Test sanitize_sensitive_data() preserves safe fields.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Test sanitize_sensitive_data() sanitizes nested dictionaries.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Test sanitize_sensitive_data() redacts multiple sensitive fields.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Test sanitize_sensitive_data() leaves non-sensitive fields unchanged.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Test sanitize_sensitive_data() is case insensitive.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **Migration 019 Verification Report** (7 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
+- **2. Model Updates Verified** (6 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
+- **Verification Steps Completed** (5 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
+- **Files Modified Summary** (5 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
+- **Risk Assessment** (4 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
+- **Next Steps** (2 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
+- **MIGRATION_019_VERIFICATION.md** (1 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
+- **Verification Summary** (1 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
+- **1. Code Quality Checks** (1 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
+- **✅ `server/models/profession.py`** (1 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
+- **✅ `server/models/npc.py`** (1 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
+- **✅ `server/models/lucidity.py`** (1 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
+- **✅ `server/models/player.py`** (1 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
+- **✅ `server/models/player_spells.py`** (1 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
+- **3. Type Compatibility** (1 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
+- **4. Database Schema Alignment** (1 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
+- **Python Models (5 files)** (1 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
+- **SQL Schema Files (4 files)** (1 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
+- **Migration Scripts (1 file)** (1 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
+- **Documentation (3 files)** (1 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
+- **Before Production Deployment** (1 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
+- **Low Risk ✅** (1 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
+- **Medium Risk ⚠️** (1 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
+- **Mitigation** (1 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
+- **Conclusion** (1 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
 
 ## Relationships
 
-- [QueueListener](QueueListener.md) (9 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
-- [alias storage()](alias_storage%28%29.md) (1 shared connections)
-- [ASGIApp](ASGIApp.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/structured_logging/logging_processors.py`
-- `server/tests/unit/structured_logging/test_logging_processors.py`
+- `docs/archive/MIGRATION_019_VERIFICATION.md`
 
 ## Audit Trail
 
-- EXTRACTED: 46 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 48 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

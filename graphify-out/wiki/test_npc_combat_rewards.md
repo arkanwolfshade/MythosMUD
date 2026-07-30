@@ -1,12 +1,10 @@
 # test npc combat rewards
 
-> 34 nodes
+> 30 nodes
 
 ## Key Concepts
 
 - **TestNPCCombatRewards** (19 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **test_npc_combat_rewards.py** (4 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **.rewards_service()** (3 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
 - **.mock_persistence()** (2 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
 - **.mock_game_mechanics()** (2 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
 - **.test_calculate_xp_reward_with_npc_definition()** (2 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
@@ -21,20 +19,21 @@
 - **.test_award_xp_to_killer_failure()** (2 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
 - **.test_award_xp_to_killer_exception()** (2 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
 - **.test_award_xp_to_killer_zero_xp()** (2 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **Unit tests for NPC combat rewards.  Tests the NPCCombatRewards class for XP calc** (1 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
 - **Test suite for NPCCombatRewards class.** (1 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
 - **Create a mock persistence layer.** (1 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
 - **Create a mock game mechanics service.** (1 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **Create a NPCCombatRewards instance for testing.** (1 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
 - **Test calculate_xp_reward returns XP from NPC definition.** (1 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
 - **Test calculate_xp_reward returns 0 when no xp_value in stats.** (1 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
 - **Test calculate_xp_reward returns 0 when NPC is None.** (1 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- *... and 9 more nodes in this community*
+- **Test calculate_xp_reward returns 0 when stats is not a dict.** (1 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
+- **Test _is_valid_uuid returns True for valid UUID.** (1 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
+- **Test _is_valid_uuid returns False for invalid UUID.** (1 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
+- **Test check_player_connection_state logs connection state.** (1 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
 - [look container](look_container.md) (4 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,8 +41,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 70 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 61 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

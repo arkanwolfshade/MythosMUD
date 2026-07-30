@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_rooms_in_zone()** (2 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_rooms_in_zone() returns empty list (not implemented).** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_apply_dampening_and_send_message_exception()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _apply_dampening_and_send_message handles exceptions.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [test room service](test_room_service.md) (1 shared connections)
+- [test nats message handler chat](test_nats_message_handler_chat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 

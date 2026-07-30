@@ -1,70 +1,47 @@
 # UUID
 
-> 348 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **websocket_initial_state.py** (45 connections) — `server/realtime/websocket_initial_state.py`
-- **test_websocket_initial_state.py** (45 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
-- **RealTimeEventHandler** (44 connections) — `server/realtime/event_handler.py`
-- **AttributeError** (37 connections)
-- **websocket_helpers.py** (37 connections) — `server/realtime/websocket_helpers.py`
-- **websocket_room_updates.py** (35 connections) — `server/realtime/websocket_room_updates.py`
-- **test_websocket_helpers.py** (34 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_websocket_room_updates.py** (32 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **broadcast_room_update()** (24 connections) — `server/realtime/websocket_room_updates.py`
-- **test_websocket_helpers_player.py** (23 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **get_async_persistence()** (19 connections) — `server/async_persistence.py`
-- **send_initial_room_state()** (19 connections) — `server/realtime/websocket_initial_state.py`
-- **send_initial_game_state()** (15 connections) — `server/realtime/websocket_initial_state.py`
-- **validate_occupant_name()** (14 connections) — `server/realtime/websocket_helpers.py`
-- **get_player_and_room()** (14 connections) — `server/realtime/websocket_helpers.py`
-- **check_and_send_death_notification()** (14 connections) — `server/realtime/websocket_initial_state.py`
-- **build_room_update_event()** (13 connections) — `server/realtime/websocket_room_updates.py`
-- **get_npc_name_from_instance()** (12 connections) — `server/realtime/websocket_helpers.py`
-- **check_shutdown_and_reject()** (12 connections) — `server/realtime/websocket_helpers.py`
-- **prepare_player_data()** (12 connections) — `server/realtime/websocket_helpers.py`
-- **get_occupant_names()** (11 connections) — `server/realtime/websocket_helpers.py`
-- **convert_uuids_to_strings()** (11 connections) — `server/realtime/websocket_helpers.py`
-- **get_player_occupants()** (11 connections) — `server/realtime/websocket_room_updates.py`
-- **get_npc_occupants_from_lifecycle_manager()** (11 connections) — `server/realtime/websocket_room_updates.py`
-- **send_game_state_event_safely()** (10 connections) — `server/realtime/websocket_initial_state.py`
-- *... and 323 more nodes in this community*
+- **debrief_command.py** (25 connections) — `server/commands/debrief_command.py`
+- **handle_debrief_command()** (16 connections) — `server/commands/debrief_command.py`
+- **Any** (8 connections)
+- **_generate_narrative_recap()** (6 connections) — `server/commands/debrief_command.py`
+- **_check_debrief_availability()** (5 connections) — `server/commands/debrief_command.py`
+- **_perform_therapy_if_requested()** (5 connections) — `server/commands/debrief_command.py`
+- **_complete_debrief()** (5 connections) — `server/commands/debrief_command.py`
+- **_get_persistence_from_app()** (4 connections) — `server/commands/debrief_command.py`
+- **_get_catatonia_registry_from_app()** (4 connections) — `server/commands/debrief_command.py`
+- **_validate_debrief_context()** (4 connections) — `server/commands/debrief_command.py`
+- **Debrief command for MythosMUD.  After sanitarium failover (LCD -100), players mu** (1 connections) — `server/commands/debrief_command.py`
+- **Retrieve persistence service from app container or state.** (1 connections) — `server/commands/debrief_command.py`
+- **Retrieve catatonia registry from app container or state.** (1 connections) — `server/commands/debrief_command.py`
+- **Validate persistence and player existence for debrief command.** (1 connections) — `server/commands/debrief_command.py`
+- **Check if debrief cooldown exists and return error if not available.** (1 connections) — `server/commands/debrief_command.py`
+- **Perform therapy session if requested and append result to message.** (1 connections) — `server/commands/debrief_command.py`
+- **Complete debrief by clearing cooldown and finalizing message.** (1 connections) — `server/commands/debrief_command.py`
+- **Handle the debrief command after sanitarium failover.      Provides narrative re** (1 connections) — `server/commands/debrief_command.py`
+- **Generate narrative recap of recent events leading to sanitarium intervention.** (1 connections) — `server/commands/debrief_command.py`
 
 ## Relationships
 
-- [TerminalButtonProps](TerminalButtonProps.md) (35 shared connections)
-- [Player](Player.md) (19 shared connections)
-- [.is required()](is_required%28%29.md) (19 shared connections)
-- [Any](Any.md) (15 shared connections)
-- [NPCCombatIntegrationBase](NPCCombatIntegrationBase.md) (14 shared connections)
-- [. init ()](_init_%28%29.md) (14 shared connections)
-- [spawn defaults](spawn_defaults.md) (6 shared connections)
-- [login grace period](login_grace_period.md) (6 shared connections)
-- [chat nats publisher](chat_nats_publisher.md) (5 shared connections)
-- [test build room drop summary](test_build_room_drop_summary.md) (5 shared connections)
-- [clean command input()](clean_command_input%28%29.md) (4 shared connections)
-- [follow commands](follow_commands.md) (3 shared connections)
+- [main()](main%28%29.md) (11 shared connections)
+- [Player Position Service](Player_Position_Service.md) (4 shared connections)
+- [Any](Any.md) (3 shared connections)
+- [close db()](close_db%28%29.md) (3 shared connections)
+- [CommandHandler](CommandHandler.md) (3 shared connections)
+- [world](world.md) (2 shared connections)
+- [Spell Targeting](Spell_Targeting.md) (1 shared connections)
 
 ## Source Files
 
-- `server/async_persistence.py`
-- `server/realtime/event_handler.py`
-- `server/realtime/websocket_helpers.py`
-- `server/realtime/websocket_initial_state.py`
-- `server/realtime/websocket_room_updates.py`
-- `server/tests/unit/realtime/test_event_handler.py`
-- `server/tests/unit/realtime/test_websocket_helpers.py`
-- `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- `server/tests/unit/realtime/test_websocket_initial_state.py`
-- `server/tests/unit/realtime/test_websocket_room_updates.py`
-- `server/tests/unit/realtime/test_websocket_room_updates_build_event.py`
-- `server/tests/unit/services/test_npc_instance_service.py`
+- `server/commands/debrief_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1207 (93%)
-- INFERRED: 95 (7%)
+- EXTRACTED: 88 (97%)
+- INFERRED: 3 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

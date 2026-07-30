@@ -34,7 +34,7 @@
 ## Relationships
 
 - [Convert legacy string format exits](Convert_legacy_string_format_exits.md) (3 shared connections)
-- [AuthSlice](AuthSlice.md) (1 shared connections)
+- [get room service()](get_room_service%28%29.md) (1 shared connections)
 
 ## Source Files
 

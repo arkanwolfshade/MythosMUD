@@ -1,23 +1,24 @@
 # test_list_rooms_with_plane_zone
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_list_rooms_with_plane_zone()** (2 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test list_rooms() filters by plane and zone.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **📈 Performance Impact** (3 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **Before Migration** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **After Migration** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
 
 ## Relationships
 
-- [test room service](test_room_service.md) (1 shared connections)
+- [Test handle nats message handles](Test_handle_nats_message_handles.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

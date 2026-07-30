@@ -1,23 +1,26 @@
 # Test build room objects includes
 
-> 2 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **test_build_room_objects_with_exits()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _build_room_objects includes exits in room data.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Financial Impact (If You're Tracking Dev Time)** (5 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Time Savings Calculation** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Developer Time Saved** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **CI/CD Time Saved** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Maintenance Time Saved** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
 
 ## Relationships
 
-- [test async persistence room loading](test_async_persistence_room_loading.md) (1 shared connections)
+- [notify quest abandoned()](notify_quest_abandoned%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

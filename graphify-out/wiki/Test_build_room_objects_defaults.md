@@ -1,23 +1,26 @@
 # Test build room objects defaults
 
-> 2 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **test_build_room_objects_without_environment_in_attributes()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _build_room_objects defaults to outdoors when environment not in attributes** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Phase 4: Test Consolidation (Week 4)** (5 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Task 4.1: Parametrize Command Validation Tests (4 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Task 4.2: Parametrize Error Response Tests (3 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Task 4.3: Parametrize Permission Tests (2 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Task 4.4: Consolidate Similar Integration Tests (3 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
 
 ## Relationships
 
-- [test async persistence room loading](test_async_persistence_room_loading.md) (1 shared connections)
+- [Test query rooms with exits](Test_query_rooms_with_exits.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

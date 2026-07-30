@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_process_exits_for_room_multiple_exits()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **Test _process_exits_for_room handles multiple exits.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_run_improvement_rolls_high_skill_gains_one()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
+- **When current >= 90, successful improvement adds 1 (cap 99).** (1 connections) — `server/tests/unit/game/test_skill_service.py`
 
 ## Relationships
 
-- [test async persistence room cache](test_async_persistence_room_cache.md) (1 shared connections)
+- [test player service](test_player_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- `server/tests/unit/game/test_skill_service.py`
 
 ## Audit Trail
 

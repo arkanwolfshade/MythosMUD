@@ -1,36 +1,65 @@
 # . init ()
 
-> 12 nodes
+> 55 nodes
 
 ## Key Concepts
 
-- **Any** (7 connections)
-- **.execute()** (5 connections) — `server/postgres_adapter.py`
-- **.keys()** (4 connections) — `server/postgres_adapter.py`
-- **.cursor()** (4 connections) — `server/postgres_adapter.py`
-- **.__getitem__()** (3 connections) — `server/postgres_adapter.py`
-- **cursor** (3 connections)
-- **.__init__()** (2 connections) — `server/postgres_adapter.py`
-- **.__iter__()** (2 connections) — `server/postgres_adapter.py`
-- **.__init__()** (2 connections) — `server/postgres_adapter.py`
-- **Return the keys of the row dictionary.          Returns:             dict_keys:** (1 connections) — `server/postgres_adapter.py`
-- **Execute a query and return a cursor.          Args:             query: SQL query** (1 connections) — `server/postgres_adapter.py`
-- **Get a cursor from the underlying connection.          This method provides direc** (1 connections) — `server/postgres_adapter.py`
+- **CombatMessagingService** (18 connections) — `server/services/combat_messaging_service.py`
+- **CombatBroadcastMixin** (15 connections) — `server/services/combat_messaging/combat_broadcasts.py`
+- **CombatMessagingIntegration** (12 connections) — `server/services/combat_messaging/integration.py`
+- **base.py** (11 connections) — `server/services/combat_messaging/base.py`
+- **PlayerBroadcastMixin** (11 connections) — `server/services/combat_messaging/player_broadcasts.py`
+- **combat_broadcasts.py** (9 connections) — `server/services/combat_messaging/combat_broadcasts.py`
+- **integration.py** (9 connections) — `server/services/combat_messaging/integration.py`
+- **player_broadcasts.py** (9 connections) — `server/services/combat_messaging/player_broadcasts.py`
+- **combat_messaging_service.py** (9 connections) — `server/services/combat_messaging_service.py`
+- **CombatMessagingBase** (8 connections) — `server/services/combat_messaging/base.py`
+- **HasConnectionManager** (7 connections) — `server/services/combat_messaging/base.py`
+- **.broadcast_player_mortally_wounded()** (6 connections) — `server/services/combat_messaging/player_broadcasts.py`
+- **CombatMessages** (6 connections)
+- **Any** (5 connections)
+- **._send_mortally_wounded_personal_message()** (4 connections) — `server/services/combat_messaging/player_broadcasts.py`
+- **.broadcast_player_death()** (4 connections) — `server/services/combat_messaging/player_broadcasts.py`
+- **.broadcast_player_respawn()** (4 connections) — `server/services/combat_messaging/player_broadcasts.py`
+- **.send_dp_decay_message()** (4 connections) — `server/services/combat_messaging/player_broadcasts.py`
+- **test_combat_messaging_service.py** (4 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **__init__.py** (3 connections) — `server/services/combat_messaging/__init__.py`
+- **.__init__()** (3 connections) — `server/services/combat_messaging/base.py`
+- **._build_mortally_wounded_messages()** (3 connections) — `server/services/combat_messaging/player_broadcasts.py`
+- **.get_attack_message()** (3 connections) — `server/services/combat_messaging_service.py`
+- **.get_death_message()** (3 connections) — `server/services/combat_messaging_service.py`
+- **.get_combat_start_messages()** (3 connections) — `server/services/combat_messaging_service.py`
+- *... and 30 more nodes in this community*
 
 ## Relationships
 
-- [PostgresRow](PostgresRow.md) (4 shared connections)
-- [PostgresConnection](PostgresConnection.md) (3 shared connections)
-- [.mock cursor()](mock_cursor%28%29.md) (2 shared connections)
+- [circuit breaker](circuit_breaker.md) (18 shared connections)
+- [world](world.md) (8 shared connections)
+- [. init ()](_init_%28%29.md) (5 shared connections)
+- [Any](Any.md) (4 shared connections)
+- [test combat messaging service](test_combat_messaging_service.md) (4 shared connections)
+- [combat](combat.md) (2 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (1 shared connections)
+- [get health service()](get_health_service%28%29.md) (1 shared connections)
+- [test_parse_command_empty_string](test_parse_command_empty_string.md) (1 shared connections)
+- [test combat messaging integration](test_combat_messaging_integration.md) (1 shared connections)
+- [real time](real_time.md) (1 shared connections)
 
 ## Source Files
 
-- `server/postgres_adapter.py`
+- `server/services/combat_messaging/__init__.py`
+- `server/services/combat_messaging/base.py`
+- `server/services/combat_messaging/combat_broadcasts.py`
+- `server/services/combat_messaging/integration.py`
+- `server/services/combat_messaging/player_broadcasts.py`
+- `server/services/combat_messaging_integration.py`
+- `server/services/combat_messaging_service.py`
+- `server/tests/unit/services/test_combat_messaging_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 35 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 195 (94%)
+- INFERRED: 13 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,29 +1,47 @@
 # 🐙 MythosMUD Command Testing Guide
 
+**Version 1.0.0** · MythosMUD · 2026-07-30
+
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[SPEC]**
 *"In the realm of eldritch coding, the only truth is that which can be tested and verified."* - Dr. Francis Wayland
 Thurston, Miskatonic University
 
 ---
 
-## Table of Contents
+## 2. Table of Contents
 
-1. [Overview](#overview)
-2. [Testing Philosophy](#testing-philosophy)
-3. [Test Structure](#test-structure)
-4. [Unit Testing](#unit-testing)
-5. [Integration Testing](#integration-testing)
-6. [Mocking Strategies](#mocking-strategies)
-7. [Test Data Management](#test-data-management)
-8. [Security Testing](#security-testing)
-9. [Performance Testing](#performance-testing)
-10. [Test Coverage](#test-coverage)
-11. [Best Practices](#best-practices)
-12. [Common Testing Patterns](#common-testing-patterns)
+**[SPEC]**
+
+1. [Overview](#3-overview)
+2. [Testing Philosophy](#4-testing-philosophy)
+3. [Test Structure](#5-test-structure)
+4. [Unit Testing](#6-unit-testing)
+5. [Integration Testing](#7-integration-testing)
+6. [Mocking Strategies](#8-mocking-strategies)
+7. [Test Data Management](#9-test-data-management)
+8. [Security Testing](#10-security-testing)
+9. [Performance Testing](#11-performance-testing)
+10. [Test Coverage](#12-test-coverage)
+11. [Best Practices](#13-best-practices)
+12. [Common Testing Patterns](#14-common-testing-patterns)
 
 ---
 
-## Overview
+## 3. Overview
 
+**[NOTE]**
 Testing is crucial for maintaining the reliability and security of MythosMUD commands. This guide provides comprehensive
 strategies for testing command handlers, models, and integration points.
 
@@ -53,7 +71,9 @@ strategies for testing command handlers, models, and integration points.
 
 ---
 
-## Testing Philosophy
+## 4. Testing Philosophy
+
+**[SPEC]**
 
 ### Test-Driven Development (TDD)
 
@@ -76,7 +96,9 @@ strategies for testing command handlers, models, and integration points.
 
 ---
 
-## Test Structure
+## 5. Test Structure
+
+**[NOTE]**
 
 ### File Organization
 
@@ -128,7 +150,9 @@ class TestCommandName:
 
 ---
 
-## Unit Testing
+## 6. Unit Testing
+
+**[NOTE]**
 
 ### Command Handler Testing
 
@@ -335,7 +359,9 @@ def test_command_parser_basic():
 
 ---
 
-## Integration Testing
+## 7. Integration Testing
+
+**[NOTE]**
 
 ### End-to-End Command Testing
 
@@ -450,7 +476,9 @@ async def test_command_event_integration():
 
 ---
 
-## Mocking Strategies
+## 8. Mocking Strategies
+
+**[NOTE]**
 
 ### Mock Setup Patterns
 
@@ -569,7 +597,9 @@ async def test_command_mock_verification():
 
 ---
 
-## Test Data Management
+## 9. Test Data Management
+
+**[NOTE]**
 
 ### Test Data Factories
 
@@ -632,7 +662,9 @@ def create_test_command_string(command, *args):
 
 ---
 
-## Security Testing
+## 10. Security Testing
+
+**[NOTE]**
 
 ### Input Validation Testing
 
@@ -793,7 +825,9 @@ async def test_command_rate_limiting():
 
 ---
 
-## Performance Testing
+## 11. Performance Testing
+
+**[NOTE]**
 
 ### Response Time Testing
 
@@ -872,7 +906,9 @@ async def test_command_memory_usage():
 
 ---
 
-## Test Coverage
+## 12. Test Coverage
+
+**[NOTE]**
 
 ### Coverage Requirements
 
@@ -921,7 +957,9 @@ def test_command_coverage():
 
 ---
 
-## Best Practices
+## 13. Best Practices
+
+**[NOTE]**
 
 ### 1. Test Organization
 
@@ -1062,7 +1100,9 @@ async def test_whisper_2():
 
 ---
 
-## Common Testing Patterns
+## 14. Common Testing Patterns
+
+**[NOTE]**
 
 ### 1. Parameterized Testing
 
@@ -1173,7 +1213,9 @@ async def test_command_async_operations():
 
 ---
 
-## Enhanced Logging in Command Tests
+## 15. Enhanced Logging in Command Tests
+
+**[NOTE]**
 
 ### **CRITICAL: Enhanced Logging Requirements**
 
@@ -1271,8 +1313,9 @@ def test_command_logging():
 
 **Testing Examples**: [docs/examples/logging/testing_examples.py](examples/logging/testing_examples.py)
 
-## Conclusion
+## 16. Conclusion
 
+**[SPEC]**
 Comprehensive testing is essential for maintaining the reliability and security of MythosMUD commands. By following
 these patterns and best practices, you can ensure that:
 
@@ -1293,3 +1336,11 @@ Remember to:
 ---
 
 *This guide should be updated as testing practices evolve and new patterns emerge.*
+
+## 17. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

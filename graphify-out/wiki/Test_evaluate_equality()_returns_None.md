@@ -1,24 +1,25 @@
 # Test evaluate equality() returns None
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_handle_player_entered_no_player_info()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **Test handle_player_entered() handles player not found.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **Context Management** (4 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Request Context** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **User Context** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **System Context** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
 
 ## Relationships
 
-- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
-- [. call ()](_call_%28%29.md) (1 shared connections)
+- [minLength](minLength.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- `docs/archive/LOGGING_BEST_PRACTICES.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

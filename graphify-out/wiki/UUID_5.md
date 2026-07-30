@@ -1,54 +1,59 @@
 # UUID
 
-> 42 nodes
+> 63 nodes
 
 ## Key Concepts
 
-- **hallucinations.py** (12 connections) — `server/services/passive_lucidity_flux/hallucinations.py`
-- **PhantomHostileService** (12 connections) — `server/services/phantom_hostile_service.py`
-- **handle_hallucination_triggers()** (10 connections) — `server/services/passive_lucidity_flux/hallucinations.py`
-- **FakeHallucinationService** (8 connections) — `server/services/fake_hallucination_service.py`
-- **send_hallucination_event()** (7 connections) — `server/services/lucidity_event_dispatcher.py`
-- **handle_phantom_hostile_hallucination()** (6 connections) — `server/services/passive_lucidity_flux/hallucinations.py`
-- **handle_fake_hallucination()** (6 connections) — `server/services/passive_lucidity_flux/hallucinations.py`
-- **.create_phantom_hostile_data()** (5 connections) — `server/services/phantom_hostile_service.py`
-- **UUID** (5 connections)
-- **.generate_fake_npc_tell()** (4 connections) — `server/services/fake_hallucination_service.py`
-- **.generate_room_text_overlay()** (4 connections) — `server/services/fake_hallucination_service.py`
-- **UUID** (4 connections)
-- **UUID** (3 connections)
-- **.generate_phantom_name()** (3 connections) — `server/services/phantom_hostile_service.py`
-- **.remove_phantom()** (3 connections) — `server/services/phantom_hostile_service.py`
-- **.get_active_phantoms()** (3 connections) — `server/services/phantom_hostile_service.py`
-- **.clear_all_phantoms()** (3 connections) — `server/services/phantom_hostile_service.py`
-- **.__init__()** (2 connections) — `server/services/fake_hallucination_service.py`
-- **Any** (2 connections)
-- **.select_hallucination_type()** (2 connections) — `server/services/fake_hallucination_service.py`
-- **.__init__()** (2 connections) — `server/services/phantom_hostile_service.py`
-- **.should_spawn_phantom_hostile()** (2 connections) — `server/services/phantom_hostile_service.py`
-- **Service for generating fake NPC tells and room text overlays.      These halluci** (1 connections) — `server/services/fake_hallucination_service.py`
-- **Initialize the fake hallucination service.** (1 connections) — `server/services/fake_hallucination_service.py`
-- **Generate a fake NPC tell hallucination.          Args:             player_id: Pl** (1 connections) — `server/services/fake_hallucination_service.py`
-- *... and 17 more nodes in this community*
+- **UserManager** (59 connections) — `server/services/user_manager.py`
+- **UUID** (39 connections)
+- **._normalize_to_uuid()** (26 connections) — `server/services/user_manager.py`
+- **.save_player_mutes()** (14 connections) — `server/services/user_manager.py`
+- **.load_player_mutes()** (12 connections) — `server/services/user_manager.py`
+- **.is_admin_sync()** (7 connections) — `server/services/user_manager.py`
+- **._get_player_mute_file()** (7 connections) — `server/services/user_manager.py`
+- **.add_admin()** (6 connections) — `server/services/user_manager.py`
+- **.remove_admin()** (6 connections) — `server/services/user_manager.py`
+- **.mute_player()** (6 connections) — `server/services/user_manager.py`
+- **.unmute_player()** (6 connections) — `server/services/user_manager.py`
+- **.mute_global()** (6 connections) — `server/services/user_manager.py`
+- **.unmute_global()** (6 connections) — `server/services/user_manager.py`
+- **.is_player_muted()** (6 connections) — `server/services/user_manager.py`
+- **.can_send_message()** (6 connections) — `server/services/user_manager.py`
+- **._load_player_mutes_from_data()** (6 connections) — `server/services/user_manager.py`
+- **._load_global_mutes_from_data()** (6 connections) — `server/services/user_manager.py`
+- **.mute_channel()** (5 connections) — `server/services/user_manager.py`
+- **.unmute_channel()** (5 connections) — `server/services/user_manager.py`
+- **.is_channel_muted()** (5 connections) — `server/services/user_manager.py`
+- **.is_globally_muted()** (5 connections) — `server/services/user_manager.py`
+- **._convert_mute_info_timestamps()** (5 connections) — `server/services/user_manager.py`
+- **._convert_mute_info_uuids()** (5 connections) — `server/services/user_manager.py`
+- **._load_channel_mutes_from_data()** (5 connections) — `server/services/user_manager.py`
+- **._update_cache_on_error()** (5 connections) — `server/services/user_manager.py`
+- *... and 38 more nodes in this community*
 
 ## Relationships
 
-- [TerminalButtonProps](TerminalButtonProps.md) (6 shared connections)
-- [LiabilityStackEntry](LiabilityStackEntry.md) (3 shared connections)
-- [config](config.md) (3 shared connections)
-- [map helpers](map_helpers.md) (2 shared connections)
+- [message filtering](message_filtering.md) (17 shared connections)
+- [test motd loader](test_motd_loader.md) (11 shared connections)
+- [circuit breaker](circuit_breaker.md) (4 shared connections)
+- [test command parser](test_command_parser.md) (3 shared connections)
+- [DeadLetterMessage](DeadLetterMessage.md) (3 shared connections)
+- [.validate player name field()](validate_player_name_field%28%29.md) (2 shared connections)
+- [world](world.md) (2 shared connections)
+- [MythosValidationError](MythosValidationError.md) (2 shared connections)
+- [chat nats publisher](chat_nats_publisher.md) (2 shared connections)
+- [Any](Any.md) (2 shared connections)
+- [ChatLogger](ChatLogger.md) (1 shared connections)
+- [test user manager](test_user_manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/fake_hallucination_service.py`
-- `server/services/lucidity_event_dispatcher.py`
-- `server/services/passive_lucidity_flux/hallucinations.py`
-- `server/services/phantom_hostile_service.py`
+- `server/services/user_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 128 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 322 (98%)
+- INFERRED: 5 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

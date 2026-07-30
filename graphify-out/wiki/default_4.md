@@ -1,23 +1,31 @@
 # default
 
-> 2 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **test_process_exits_for_room_no_direction()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **Test _process_exits_for_room skips exits without direction.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **enum** (6 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **environment** (5 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **indoors** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **outdoors** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **underwater** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **intersection** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **street_paved** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **default** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
 
 ## Relationships
 
-- [test async persistence room cache](test_async_persistence_room_cache.md) (1 shared connections)
+- [description](description.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 19 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

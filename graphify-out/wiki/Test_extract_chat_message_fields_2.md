@@ -1,23 +1,24 @@
 # Test extract chat message fields
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_get_room_cache_not_found()** (2 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_room() returns None when room not in cache.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **.validate_coordinates()** (3 connections) — `server/services/coordinate_validator.py`
+- **Any** (1 connections)
+- **Validate coordinates for rooms in a zone/subzone and detect conflicts.** (1 connections) — `server/services/coordinate_validator.py`
 
 ## Relationships
 
-- [test room service](test_room_service.md) (1 shared connections)
+- [ExitStack](ExitStack.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `server/services/coordinate_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

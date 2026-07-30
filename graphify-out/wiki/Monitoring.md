@@ -4,45 +4,49 @@
 
 ## Key Concepts
 
-- **test_active_lucidity_service.py** (34 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **active_lucidity_service()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_active_lucidity_service_init()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_active_lucidity_service_init_with_now_provider()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_apply_encounter_lucidity_loss_unknown_category()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_perform_recovery_action_on_cooldown()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_perform_recovery_action_naive_datetime_cooldown()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_perform_recovery_action_unknown_action()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **mock_session()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **sample_player_id()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_apply_encounter_lucidity_loss_first_encounter()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_apply_encounter_lucidity_loss_repeat_encounter()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_apply_encounter_lucidity_loss_acclimated()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_apply_encounter_lucidity_loss_string_player_id()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_apply_encounter_lucidity_loss_invalid_string_player_id()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_apply_encounter_lucidity_loss_horrific_category()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_apply_encounter_lucidity_loss_cosmic_category()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_apply_encounter_lucidity_loss_with_location()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_perform_recovery_action_success()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_perform_recovery_action_cooldown_expired()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_perform_recovery_action_string_player_id()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_perform_recovery_action_invalid_string_player_id()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_perform_recovery_action_all_actions()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_perform_recovery_action_sets_cooldown()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_perform_recovery_action_with_location()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **TaskRegistry** (33 connections) — `server/app/task_registry.py`
+- **Any** (10 connections)
+- **._setup_task_tracking()** (9 connections) — `server/app/task_registry.py`
+- **Task** (8 connections)
+- **TaskMetadata** (7 connections) — `server/app/task_registry.py`
+- **.register_task()** (7 connections) — `server/app/task_registry.py`
+- **.shutdown_all()** (7 connections) — `server/app/task_registry.py`
+- **._create_task_completion_callback()** (5 connections) — `server/app/task_registry.py`
+- **.get_task_lifecycle_metrics()** (5 connections) — `server/app/task_registry.py`
+- **unregister_task()** (5 connections) — `server/app/task_registry.py`
+- **.__init__()** (4 connections) — `server/app/task_registry.py`
+- **.unregister_task()** (4 connections) — `server/app/task_registry.py`
+- **.cancel_task()** (4 connections) — `server/app/task_registry.py`
+- **._cleanup_registry_collections()** (4 connections) — `server/app/task_registry.py`
+- **register_task()** (4 connections) — `server/app/task_registry.py`
+- **._ensure_unique_task_name()** (3 connections) — `server/app/task_registry.py`
+- **._track_task_creation_metrics()** (3 connections) — `server/app/task_registry.py`
+- **._extract_service_name()** (3 connections) — `server/app/task_registry.py`
+- **._cancel_lifecycle_tasks()** (3 connections) — `server/app/task_registry.py`
+- **._cancel_remaining_tasks()** (3 connections) — `server/app/task_registry.py`
+- **._wait_for_task_completion()** (3 connections) — `server/app/task_registry.py`
+- **._forcible_cleanup_on_timeout()** (3 connections) — `server/app/task_registry.py`
+- **.list_active_tasks()** (3 connections) — `server/app/task_registry.py`
+- **.get_registry_info()** (3 connections) — `server/app/task_registry.py`
+- **.get_active_task_count()** (3 connections) — `server/app/task_registry.py`
 - *... and 33 more nodes in this community*
 
 ## Relationships
 
-- [UUID](UUID.md) (8 shared connections)
-- [CommandHandler](CommandHandler.md) (4 shared connections)
+- [test command parser](test_command_parser.md) (6 shared connections)
+- [world](world.md) (5 shared connections)
+- [Any](Any.md) (2 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
+- [get current tick()](get_current_tick%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_active_lucidity_service.py`
+- `server/app/task_registry.py`
+- `server/app/tracked_task_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 123 (98%)
+- EXTRACTED: 184 (98%)
 - INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 

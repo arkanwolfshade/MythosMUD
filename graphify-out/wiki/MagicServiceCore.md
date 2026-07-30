@@ -35,7 +35,7 @@
 
 - [.initialize()](initialize%28%29.md) (4 shared connections)
 - [real time](real_time.md) (4 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
+- [chat nats publisher](chat_nats_publisher.md) (1 shared connections)
 
 ## Source Files
 

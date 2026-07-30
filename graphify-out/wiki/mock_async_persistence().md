@@ -1,42 +1,52 @@
 # mock async persistence()
 
-> 19 nodes
+> 27 nodes
 
 ## Key Concepts
 
-- **MemoryMonitor** (13 connections) — `server/realtime/memory_monitor.py`
-- **.get_memory_usage()** (4 connections) — `server/realtime/memory_monitor.py`
-- **.get_memory_alerts()** (4 connections) — `server/realtime/memory_monitor.py`
-- **_max_connection_age_seconds()** (3 connections) — `server/realtime/memory_monitor.py`
-- **.__init__()** (3 connections) — `server/realtime/memory_monitor.py`
-- **.should_cleanup()** (3 connections) — `server/realtime/memory_monitor.py`
-- **.get_memory_stats()** (3 connections) — `server/realtime/memory_monitor.py`
-- **Any** (2 connections)
-- **.update_cleanup_time()** (2 connections) — `server/realtime/memory_monitor.py`
-- **.force_garbage_collection()** (2 connections) — `server/realtime/memory_monitor.py`
-- **Connection age threshold (seconds). Higher in e2e/local to avoid mid-run drops.** (1 connections) — `server/realtime/memory_monitor.py`
-- **Monitor memory usage and trigger cleanup when needed.      This class provides m** (1 connections) — `server/realtime/memory_monitor.py`
-- **Initialize the memory monitor with default settings.** (1 connections) — `server/realtime/memory_monitor.py`
-- **Check if cleanup should be triggered.          Returns:             bool: True i** (1 connections) — `server/realtime/memory_monitor.py`
-- **Get current memory usage as percentage.          Returns:             float: Mem** (1 connections) — `server/realtime/memory_monitor.py`
-- **Get detailed memory statistics.          Returns:             dict: Memory stati** (1 connections) — `server/realtime/memory_monitor.py`
-- **Get memory-related alerts based on current usage and connection statistics.** (1 connections) — `server/realtime/memory_monitor.py`
-- **Update the last cleanup time to the current time.** (1 connections) — `server/realtime/memory_monitor.py`
-- **Force garbage collection to free memory.** (1 connections) — `server/realtime/memory_monitor.py`
+- **_get_enum_value()** (9 connections) — `server/services/wearable_container_service.py`
+- **_filter_container_data()** (9 connections) — `server/services/wearable_container_service.py`
+- **Any** (8 connections)
+- **.add_items_to_wearable_container()** (8 connections) — `server/services/wearable_container_service.py`
+- **.update_wearable_container_items()** (8 connections) — `server/services/wearable_container_service.py`
+- **UUID** (7 connections)
+- **.handle_equip_wearable_container()** (6 connections) — `server/services/wearable_container_service.py`
+- **.handle_unequip_wearable_container()** (6 connections) — `server/services/wearable_container_service.py`
+- **.handle_container_overflow()** (6 connections) — `server/services/wearable_container_service.py`
+- **.get_wearable_containers_for_player()** (5 connections) — `server/services/wearable_container_service.py`
+- **.__init__()** (3 connections) — `server/services/wearable_container_service.py`
+- **test_get_enum_value_with_enum()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_get_enum_value_with_string()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_filter_container_data()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **ContainerComponent** (1 connections)
+- **Safely get enum value, handling both enum instances and string values.      When** (1 connections) — `server/services/wearable_container_service.py`
+- **Filter out database-only fields from container data before validation.      The** (1 connections) — `server/services/wearable_container_service.py`
+- **Initialize the wearable container service.          Args:             persistenc** (1 connections) — `server/services/wearable_container_service.py`
+- **Handle equipping a wearable container item.          Creates a container in Post** (1 connections) — `server/services/wearable_container_service.py`
+- **Handle unequipping a wearable container item.          Preserves the container a** (1 connections) — `server/services/wearable_container_service.py`
+- **Get all wearable containers for a player.          Args:             player_id:** (1 connections) — `server/services/wearable_container_service.py`
+- **Add items to a wearable container.          Args:             player_id: UUID of** (1 connections) — `server/services/wearable_container_service.py`
+- **Update items in a wearable container.          Args:             player_id: UUID** (1 connections) — `server/services/wearable_container_service.py`
+- **Handle container overflow by spilling items to inventory or ground.          Arg** (1 connections) — `server/services/wearable_container_service.py`
+- **Test _get_enum_value returns value from enum instance.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [TerminalButtonProps](TerminalButtonProps.md) (4 shared connections)
-- [test statistics aggregator](test_statistics_aggregator.md) (2 shared connections)
+- [Any](Any.md) (10 shared connections)
+- [filter container data()](filter_container_data%28%29.md) (5 shared connections)
+- [look item](look_item.md) (4 shared connections)
+- [real time](real_time.md) (4 shared connections)
 
 ## Source Files
 
-- `server/realtime/memory_monitor.py`
+- `server/services/wearable_container_service.py`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 48 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 93 (96%)
+- INFERRED: 4 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

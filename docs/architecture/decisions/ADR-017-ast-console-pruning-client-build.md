@@ -1,10 +1,26 @@
 # ADR-017: AST-Based Console Pruning in Client Production Build
 
+**Version 1.0.0** · MythosMUD · 2026-07-30
+
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[SPEC]**
 **Status:** Proposed
 **Date:** 2026-03-25
 
-## Context
+## 2. Context
 
+**[NOTE]**
 The client build currently keeps a TODO in `client/vite.userConfig.ts` for console pruning:
 regex-based removal was considered but disabled because it can remove important diagnostics. In
 practice, we want smaller and quieter production bundles while preserving critical observability.
@@ -15,8 +31,9 @@ Specifically:
 - Preserve incident-relevant output (`warn`, `error`).
 - Avoid brittle string/regex transforms that can break valid code paths.
 
-## Decision
+## 3. Decision
 
+**[SPEC]**
 Adopt an AST-based production-only transform in the Vite pipeline for console pruning.
 
 The transform will:
@@ -26,7 +43,9 @@ The transform will:
 - Keep `console.warn` and `console.error` intact.
 - Be deterministic and syntax-aware, avoiding regex text replacement.
 
-## Alternatives Considered
+## 4. Alternatives Considered
+
+**[NOTE]**
 
 1. **Regex replacement in built output**
    Rejected: unsafe and prone to false positives/negatives.
@@ -35,20 +54,34 @@ The transform will:
 3. **Minifier-only approach**
    Rejected for now: not explicit enough for allowlist behavior (`warn`/`error` preservation).
 
-## Consequences
+## 5. Consequences
+
+**[SPEC]**
 
 - **Positive:** Better production signal-to-noise, smaller output, and safer transformation behavior.
 - **Negative:** Adds one more build concern to maintain and test.
 - **Neutral:** Development and test behavior remain unchanged.
 
-## Acceptance Criteria
+## 6. Acceptance Criteria
+
+**[SPEC]**
 
 - Production build removes `console.log/info/debug/trace` from app code.
 - `console.warn/error` remain present and functional.
 - `npm run build` passes with no new runtime regressions.
 - TODO in `client/vite.userConfig.ts` is replaced by configured plugin wiring.
 
-## References
+## 7. References
+
+**[SPEC]**
 
 - `client/vite.userConfig.ts`
 - Existing TODO comments near the `plugins` array in `createViteUserConfig()`
+
+## 8. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

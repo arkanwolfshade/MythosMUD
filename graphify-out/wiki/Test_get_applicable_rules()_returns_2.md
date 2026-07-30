@@ -1,24 +1,25 @@
 # Test get applicable rules() returns
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **.test_try_player_username_invalid_uuid()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **Test _try_player_username rejects UUID-formatted string as username.** (1 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **Missing Test Scenarios** (4 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Database Connection Loss** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **NATS Unavailability** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Room Data Corruption** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
 
 ## Relationships
 
-- [container websocket events](container_websocket_events.md) (1 shared connections)
-- [PlayerNameExtractor](PlayerNameExtractor.md) (1 shared connections)
+- [async sessionmaker](async_sessionmaker.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_name_utils.py`
+- `docs/archive/TEST_COVERAGE_GAPS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,55 +1,57 @@
 # . init ()
 
-> 47 nodes
+> 59 nodes
 
 ## Key Concepts
 
-- **AppConfig** (31 connections) — `server/config/models/app.py`
-- **GameConfig** (15 connections) — `server/config/models/game.py`
-- **.to_legacy_dict()** (7 connections) — `server/config/models/app.py`
-- **Any** (6 connections)
-- **_create_config_instance()** (5 connections) — `server/config/__init__.py`
-- **_get_config_cached()** (5 connections) — `server/config/__init__.py`
-- **_get_config_test()** (5 connections) — `server/config/__init__.py`
-- **.__init__()** (5 connections) — `server/config/models/app.py`
-- **._legacy_game_entries()** (5 connections) — `server/config/models/app.py`
-- **._legacy_nats_dict()** (5 connections) — `server/config/models/app.py`
-- **._legacy_chat_dict()** (5 connections) — `server/config/models/app.py`
-- **._legacy_cors_dict()** (5 connections) — `server/config/models/app.py`
-- **._sanitize_environment_for_nested_configs()** (4 connections) — `server/config/models/app.py`
-- **._first_cors_origins_env()** (3 connections) — `server/config/models/app.py`
-- **.set_legacy_environment_variables()** (2 connections) — `server/config/models/app.py`
-- **.validate_max_connections()** (2 connections) — `server/config/models/game.py`
-- **.validate_aliases_dir()** (2 connections) — `server/config/models/game.py`
-- **.validate_combat_tick_interval()** (2 connections) — `server/config/models/game.py`
-- **.validate_combat_timeout()** (2 connections) — `server/config/models/game.py`
-- **.validate_combat_xp_multiplier()** (2 connections) — `server/config/models/game.py`
-- **.validate_combat_alert_threshold()** (2 connections) — `server/config/models/game.py`
-- **.validate_combat_performance_threshold()** (2 connections) — `server/config/models/game.py`
-- **.validate_combat_error_threshold()** (2 connections) — `server/config/models/game.py`
-- **Create a new AppConfig instance from current environment.      This is a helper** (1 connections) — `server/config/__init__.py`
-- **Production config loader with caching.      Uses both @lru_cache and global _con** (1 connections) — `server/config/__init__.py`
-- *... and 22 more nodes in this community*
+- **test_websocket_helpers.py** (34 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **get_shutdown_blocking_message()** (13 connections) — `server/commands/admin_shutdown_command.py`
+- **check_shutdown_and_reject()** (12 connections) — `server/realtime/websocket_helpers.py`
+- **load_player_mute_data()** (7 connections) — `server/realtime/websocket_helpers.py`
+- **test_get_npc_name_from_instance_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_get_npc_name_from_instance_not_found()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_get_npc_name_from_instance_no_name_attribute()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_get_npc_name_from_instance_import_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_get_npc_name_from_instance_runtime_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_check_shutdown_and_reject_not_shutting_down()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_check_shutdown_and_reject_shutting_down()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_check_shutdown_and_reject_websocket_disconnect()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_load_player_mute_data_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_load_player_mute_data_import_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_validate_occupant_name_valid()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_validate_occupant_name_uuid()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_validate_occupant_name_empty()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_validate_occupant_name_none()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_validate_occupant_name_not_string()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_get_occupant_names_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_get_occupant_names_filters_uuid()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_get_occupant_names_empty()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_get_occupant_names_none()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_convert_uuids_to_strings_dict()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_convert_uuids_to_strings_list()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- *... and 34 more nodes in this community*
 
 ## Relationships
 
-- [world](world.md) (17 shared connections)
-- [process dead players()](process_dead_players%28%29.md) (3 shared connections)
-- [.model dump()](model_dump%28%29.md) (3 shared connections)
-- [.get lucidity service()](get_lucidity_service%28%29.md) (2 shared connections)
-- [MapZoneContext](MapZoneContext.md) (2 shared connections)
-- [get health status()](get_health_status%28%29.md) (1 shared connections)
+- [UUID](UUID.md) (16 shared connections)
+- [message formatters](message_formatters.md) (8 shared connections)
+- [Any](Any.md) (6 shared connections)
+- [.check and interrupt rest()](check_and_interrupt_rest%28%29.md) (6 shared connections)
+- [admin shutdown command](admin_shutdown_command.md) (3 shared connections)
+- [Connection Manager](Connection_Manager.md) (2 shared connections)
+- [.reset instance()](reset_instance%28%29.md) (2 shared connections)
+- [follow commands](follow_commands.md) (2 shared connections)
 
 ## Source Files
 
-- `server/config/__init__.py`
-- `server/config/models/app.py`
-- `server/config/models/game.py`
+- `server/commands/admin_shutdown_command.py`
+- `server/realtime/websocket_helpers.py`
+- `server/tests/unit/realtime/test_websocket_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 136 (92%)
-- INFERRED: 12 (8%)
+- EXTRACTED: 171 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

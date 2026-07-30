@@ -1,64 +1,78 @@
 # close db()
 
-> 272 nodes
+> 417 nodes
 
 ## Key Concepts
 
 - **.get_instance()** (88 connections) — `server/database.py`
 - **.reset_instance()** (87 connections) — `server/database.py`
-- **test_database_helpers.py** (46 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **database.py** (75 connections) — `server/database.py`
+- **__init__.py** (70 connections) — `server/schemas/__init__.py`
+- **user.py** (57 connections) — `server/models/user.py`
+- **get_async_session()** (54 connections) — `server/database.py`
+- **users.py** (47 connections) — `server/auth/users.py`
+- **test_database_extended.py** (43 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
 - **test_database_error_handling.py** (41 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **get_admin_auth_service()** (39 connections) — `server/services/admin_auth_service.py`
 - **test_database_init.py** (36 connections) — `server/tests/unit/infrastructure/test_database_init.py`
-- **database_helpers.py** (30 connections) — `server/database_helpers.py`
-- **DatabaseManager** (29 connections) — `server/database.py`
+- **rooms.py** (35 connections) — `server/api/rooms.py`
+- **validate_admin_permission()** (31 connections) — `server/api/admin/npc_router_core.py`
+- **npc_definitions_api.py** (29 connections) — `server/api/admin/npc_definitions_api.py`
+- **npc_instances_api.py** (26 connections) — `server/api/admin/npc_instances_api.py`
+- **test_auth_dependencies.py** (24 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
+- **npc_population_api.py** (22 connections) — `server/api/admin/npc_population_api.py`
+- **npc_spawn_rules_api.py** (22 connections) — `server/api/admin/npc_spawn_rules_api.py`
+- **npc_schemas.py** (21 connections) — `server/api/admin/npc_schemas.py`
+- **npc_admin_mgmt_api.py** (20 connections) — `server/api/admin/npc_admin_mgmt_api.py`
+- **admin_auth_service.py** (19 connections) — `server/services/admin_auth_service.py`
+- **dependencies.py** (18 connections) — `server/auth/dependencies.py`
+- **invites.py** (16 connections) — `server/auth/invites.py`
 - **reset_database()** (16 connections) — `server/database.py`
-- **get_database_path()** (16 connections) — `server/database_helpers.py`
-- **get_async_session()** (13 connections) — `server/database_helpers.py`
-- **get_engine()** (9 connections) — `server/database_helpers.py`
-- **get_session_maker()** (9 connections) — `server/database_helpers.py`
-- **close_db()** (9 connections) — `server/database_helpers.py`
-- **reset_database()** (8 connections) — `server/database_helpers.py`
-- **init_db()** (8 connections) — `server/database_helpers.py`
-- **ensure_database_directory()** (7 connections) — `server/database_helpers.py`
-- **test_database.py** (7 connections) — `server/tests/unit/infrastructure/test_database.py`
-- **get_database_url()** (6 connections) — `server/database_helpers.py`
-- **_reset_database_url_state()** (5 connections) — `server/database.py`
-- **test_database_manager_init_raises_when_instance_exists()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_initialize_database_config_validation_error()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_initialize_database_config_runtime_error()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_initialize_database_none_url()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_initialize_database_unsupported_url()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_initialize_database_value_error()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- *... and 247 more nodes in this community*
+- **npc_router_core.py** (15 connections) — `server/api/admin/npc_router_core.py`
+- *... and 392 more nodes in this community*
 
 ## Relationships
 
-- [real time](real_time.md) (65 shared connections)
-- [.initialize()](initialize%28%29.md) (34 shared connections)
-- [test command parser](test_command_parser.md) (3 shared connections)
-- [. init ()](_init_%28%29.md) (3 shared connections)
-- [test rate limiter utils](test_rate_limiter_utils.md) (3 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (2 shared connections)
-- [UUID](UUID.md) (2 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
-- [.use invite()](use_invite%28%29.md) (1 shared connections)
-- [metrics](metrics.md) (1 shared connections)
-- [Any](Any.md) (1 shared connections)
+- [.initialize()](initialize%28%29.md) (72 shared connections)
+- [Connection Manager](Connection_Manager.md) (63 shared connections)
+- [real time](real_time.md) (58 shared connections)
+- [AbstractContextManager](AbstractContextManager.md) (37 shared connections)
+- [world](world.md) (26 shared connections)
+- [memory leak metrics](memory_leak_metrics.md) (18 shared connections)
+- [equipment helpers](equipment_helpers.md) (16 shared connections)
+- [main()](main%28%29.md) (14 shared connections)
+- [get current tick()](get_current_tick%28%29.md) (12 shared connections)
+- [ExitStack](ExitStack.md) (12 shared connections)
+- [init](init.md) (11 shared connections)
+- [admin shutdown command](admin_shutdown_command.md) (11 shared connections)
 
 ## Source Files
 
+- `scripts/add_flavor_text_column.py`
+- `scripts/load_seed_using_project_db.py`
+- `scripts/verify_and_load_seed.py`
+- `server/api/admin/npc.py`
+- `server/api/admin/npc_admin_mgmt_api.py`
+- `server/api/admin/npc_definitions_api.py`
+- `server/api/admin/npc_instances_api.py`
+- `server/api/admin/npc_population_api.py`
+- `server/api/admin/npc_router_core.py`
+- `server/api/admin/npc_schemas.py`
+- `server/api/admin/npc_spawn_rules_api.py`
+- `server/api/rooms.py`
+- `server/async_persistence_direct_queries.py`
+- `server/async_persistence_room_loader.py`
+- `server/auth/__init__.py`
+- `server/auth/dependencies.py`
+- `server/auth/invites.py`
+- `server/auth/users.py`
 - `server/database.py`
-- `server/database_helpers.py`
-- `server/tests/unit/infrastructure/test_database.py`
-- `server/tests/unit/infrastructure/test_database_error_handling.py`
-- `server/tests/unit/infrastructure/test_database_extended.py`
-- `server/tests/unit/infrastructure/test_database_helpers.py`
-- `server/tests/unit/infrastructure/test_database_init.py`
+- `server/models/user.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1034 (96%)
-- INFERRED: 47 (4%)
+- EXTRACTED: 2167 (96%)
+- INFERRED: 81 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

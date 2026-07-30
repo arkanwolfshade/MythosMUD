@@ -1,32 +1,42 @@
 # Test check grace period block
 
-> 6 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **.check_and_cleanup()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **.force_cleanup()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **_stale_prune_max_age_seconds()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **Stale-prune threshold (seconds). Higher in e2e/local to avoid mid-run drops.** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **Force immediate cleanup of all orphaned data.          Args:             cleanup** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **Periodically check for cleanup conditions and perform cleanup if needed.** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **match_equipped_item_by_name()** (18 connections) — `server/commands/inventory_item_matching.py`
+- **search_prefix_match()** (3 connections) — `server/commands/inventory_item_matching.py`
+- **test_match_equipped_item_by_name_exact_match()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_match_equipped_item_by_name_prefix_match()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_match_equipped_item_by_name_substring_match()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_match_equipped_item_by_name_item_id_match()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_match_equipped_item_by_name_no_match()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_match_equipped_item_by_name_empty_search()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **Search for prefix match. Returns slot_key if found, None otherwise.** (1 connections) — `server/commands/inventory_item_matching.py`
+- **Resolve an equipped slot identifier via fuzzy item name search.      Scholars: w** (1 connections) — `server/commands/inventory_item_matching.py`
+- **Test _match_equipped_item_by_name with exact match.** (1 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **Test _match_equipped_item_by_name with prefix match.** (1 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **Test _match_equipped_item_by_name with substring match.** (1 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **Test _match_equipped_item_by_name with item_id match.** (1 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **Test _match_equipped_item_by_name with no match.** (1 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **Test _match_equipped_item_by_name with empty search term.** (1 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
 
 ## Relationships
 
-- [NPCDefinitionCRUDMixin](NPCDefinitionCRUDMixin.md) (4 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
-- [real time](real_time.md) (1 shared connections)
-- [Player](Player.md) (1 shared connections)
-- [occupation slots 9()](occupation_slots_9%28%29.md) (1 shared connections)
+- [test format metadata empty()](test_format_metadata_empty%28%29.md) (7 shared connections)
+- [chat pose helpers](chat_pose_helpers.md) (5 shared connections)
+- [populate test npc databases](populate_test_npc_databases.md) (3 shared connections)
+- [test resolve state no app()](test_resolve_state_no_app%28%29.md) (2 shared connections)
 
 ## Source Files
 
-- `server/realtime/maintenance/connection_cleaner.py`
+- `server/commands/inventory_item_matching.py`
+- `server/tests/unit/commands/test_inventory_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 17 (94%)
-- INFERRED: 1 (6%)
+- EXTRACTED: 47 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

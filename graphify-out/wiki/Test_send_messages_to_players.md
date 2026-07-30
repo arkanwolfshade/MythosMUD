@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **.test_is_uuid_string_valid_uuid()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **Test _is_uuid_string with valid UUID.** (1 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **Files to Update** (2 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **2.3 Update Category C: Infrastructure Tests** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
 
 ## Relationships
 
-- [container websocket events](container_websocket_events.md) (1 shared connections)
-- [PlayerNameExtractor](PlayerNameExtractor.md) (1 shared connections)
+- [Any](Any.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_name_utils.py`
+- `docs/archive/TEST_MODERNIZATION_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,49 +1,46 @@
 # test logout command
 
-> 27 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **TestLogoutCommand** (13 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **Any** (8 connections)
-- **.test_logout_command_success()** (4 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **.test_logout_command_persists_position()** (4 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **.test_logout_command_no_persistence()** (4 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **.test_logout_command_persistence_error()** (4 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **.test_logout_command_connection_error()** (4 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **.test_logout_command_with_args()** (4 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **.test_logout_command_player_not_found()** (4 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **.test_logout_command_general_error_handling()** (4 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **test_logout_command.py** (3 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **.mock_request()** (2 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **.mock_current_user()** (2 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **.mock_alias_storage()** (2 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **Unit tests for the logout command handler.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **Test cases for the logout command handler.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **Create a mock request object.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **Create a mock current user.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **Create a mock alias storage.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **Test successful logout command execution.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **Ensure logout syncs in-memory position back to persistence.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **Test logout command when persistence is not available.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **Test logout command when persistence operations fail.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **Test logout command when connection cleanup fails.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **Test logout command with arguments (should be ignored).** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
-- *... and 2 more nodes in this community*
+- **Domain Model Anemic Anti-Pattern Audit** (10 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **2. High Priority – Domain Logic in Services** (6 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **3. Medium Priority – Partial Enrichment** (5 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **4. Low Priority – Acceptable Service Logic** (5 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **DOMAIN_MODEL_ANEMIC_AUDIT.md** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **Executive Summary** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **1. Already Addressed (Prior Work)** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **2.1 Player Death Service – DP Decay** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **2.2 Combat Turn Processor – “Can Act” Checks** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **2.3 Combat HP Sync – Death Threshold Logic** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **2.4 Combat Persistence Handler – Same Patterns** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **2.5 Player Respawn Service – Stats Restoration** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **3.1 Wearable Container Service – Capacity Checks** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **3.2 Inventory Service – Slot Capacity** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **3.3 NPC Combat Data Provider – Stats Extraction** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **3.4 Combat Event Handler / Publisher – DP in Events** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **4.1 Container Service** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **4.2 Combat Initialization** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **4.3 Combat Service, Combat Messaging Integration** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **4.4 NPC Instance Service, NPC Combat Integration Service (Done)** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **5. Models Already Rich (No Action)** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **6. Recommended Implementation Order** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **7. Services Reviewed (No Domain Logic to Move)** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **8. Summary Table** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
 
 ## Relationships
 
-- [disconnect player connections()](disconnect_player_connections%28%29.md) (8 shared connections)
-- [Any](Any.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/commands/test_logout_command.py`
+- `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 67 (89%)
-- INFERRED: 8 (11%)
+- EXTRACTED: 46 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

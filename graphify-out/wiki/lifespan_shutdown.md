@@ -1,37 +1,41 @@
 # lifespan shutdown
 
-> 12 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **test_command_helpers.py** (27 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **get_command_help()** (12 connections) — `server/utils/command_helpers.py`
-- **test_get_command_help_no_command()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **test_get_command_help_specific_commands()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **test_get_command_help_unknown_command()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **test_get_command_help_case_insensitive()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **Unit tests for command helper utilities.  Tests helper functions for command par** (1 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **Test get_command_help with no command (general help).** (1 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **Test get_command_help with specific command types.** (1 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **Test get_command_help with unknown command.** (1 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **Test get_command_help is case insensitive.** (1 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **Get help text for commands.      Args:         command_type: Specific command to** (1 connections) — `server/utils/command_helpers.py`
+- **Lizard Complexity Analysis Findings** (7 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
+- **🔴 CRITICAL: Functions Exceeding Threshold (CCN > 10)** (5 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
+- **📋 Recommended Action Plan** (4 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
+- **🎯 Refactoring Patterns** (4 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
+- **🟡 WARNING: Functions Near Threshold (CCN 9-10)** (3 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
+- **LIZARD_COMPLEXITY_FINDINGS.md** (1 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
+- **1. `create_app` - CCN: 22** (1 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
+- **2. `_load_rooms_with_coordinates` - CCN: 12** (1 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
+- **3. `_parse_websocket_token` - CCN: 12** (1 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
+- **4. `_ensure_coordinates_generated` - CCN: 11** (1 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
+- **Functions with CCN = 10** (1 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
+- **Functions with CCN = 9** (1 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
+- **Phase 1: Critical Functions (CCN > 10)** (1 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
+- **Phase 2: High-Priority Near-Threshold (CCN 9-10)** (1 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
+- **Phase 3: Monitoring** (1 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
+- **Pattern 1: Extract Exception Handling** (1 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
+- **Pattern 2: Extract Configuration Logic** (1 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
+- **Pattern 3: Extract Data Processing** (1 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
+- **📊 Summary Statistics** (1 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
+- **✅ Next Steps** (1 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
 
 ## Relationships
 
-- [. get persistence from app()](_get_persistence_from_app%28%29.md) (21 shared connections)
-- [Spell Targeting](Spell_Targeting.md) (4 shared connections)
-- [real time](real_time.md) (1 shared connections)
-- [.initialize()](initialize%28%29.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_helpers.py`
-- `server/utils/command_helpers.py`
+- `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 57 (100%)
+- EXTRACTED: 38 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

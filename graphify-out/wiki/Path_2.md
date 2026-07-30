@@ -33,11 +33,10 @@
 
 ## Relationships
 
-- [TerminalButtonProps](TerminalButtonProps.md) (5 shared connections)
+- [test combat attack handler](test_combat_attack_handler.md) (6 shared connections)
 - [combat](combat.md) (2 shared connections)
-- [Return stats\[key\] as int, or](Return_stats%5Bkey%5D_as_int%2C_or.md) (2 shared connections)
+- [. init ()](_init_%28%29.md) (2 shared connections)
 - [Test despawn npc handles NPC](Test_despawn_npc_handles_NPC.md) (1 shared connections)
-- [Any](Any.md) (1 shared connections)
 
 ## Source Files
 

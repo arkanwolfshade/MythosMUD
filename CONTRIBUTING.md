@@ -1,5 +1,21 @@
 # Contributing to MythosMUD
 
+**Version 1.0.0** · MythosMUD · 2026-07-30
+
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
+
 > "In the archives of Miskatonic University, we welcome those who seek knowledge, provided they understand the risks and
 > respect the protocols."
 
@@ -9,22 +25,23 @@ meet our academic standards.
 
 ---
 
-## Table of Contents
+## 2. Table of Contents
 
+**[SPEC]**
 [Contributing to MythosMUD](#contributing-to-mythosmud)
 
 - [Contributing to MythosMUD](#contributing-to-mythosmud)
-  - [Table of Contents](#table-of-contents)
+  - [Table of Contents](#2-table-of-contents)
 
-  - [Code of Conduct](#code-of-conduct)
+  - [Code of Conduct](#3-code-of-conduct)
     - [Project-Specific Values](#project-specific-values)
 
-  - [Getting Started](#getting-started)
+  - [Getting Started](#4-getting-started)
     - [Prerequisites](#prerequisites)
     - [Development Environment Setup](#development-environment-setup)
     - [Understanding the Codebase](#understanding-the-codebase)
 
-  - [Development Workflow](#development-workflow)
+  - [Development Workflow](#5-development-workflow)
     - [Finding Tasks](#finding-tasks)
     - [Creating a Branch](#creating-a-branch)
     - [Making Changes](#making-changes)
@@ -42,40 +59,40 @@ meet our academic standards.
     - [Committing Your Work](#committing-your-work)
     - [Submitting a Pull Request](#submitting-a-pull-request)
 
-  - [Coding Standards](#coding-standards)
+  - [Coding Standards](#6-coding-standards)
     - [Python Guidelines](#python-guidelines)
     - [TypeScript/React Guidelines](#typescriptreact-guidelines)
     - [Logging Best Practices](#logging-best-practices)
       - [✅ CORRECT Usage](#-correct-usage)
-
       - [❌ WRONG Usage (Will Cause Failures)](#-wrong-usage-will-cause-failures)
 
     - [Security Requirements](#security-requirements)
 
-  - [Testing Requirements](#testing-requirements)
+  - [Testing Requirements](#7-testing-requirements)
     - [Writing Tests](#writing-tests)
     - [Test Coverage](#test-coverage)
     - [Running Tests](#running-tests)
-  - [Documentation](#documentation)
+  - [Documentation](#8-documentation)
     - [Code Documentation](#code-documentation)
     - [Project Documentation](#project-documentation)
     - [Mythos References](#mythos-references)
-  - [Community](#community)
+  - [Community](#9-community)
     - [Getting Help](#getting-help)
     - [Communication Guidelines](#communication-guidelines)
     - [Review Process](#review-process)
-  - [Recognition](#recognition)
-  - [Additional Resources](#additional-resources)
+  - [Recognition](#10-recognition)
+  - [Additional Resources](#11-additional-resources)
     - [Essential Reading](#essential-reading)
     - [Technical Documentation](#technical-documentation)
     - [Testing Resources](#testing-resources)
     - [Style Guides](#style-guides)
-  - [Questions?](#questions)
+  - [Questions?](#12-questions)
 
 ---
 
-## Code of Conduct
+## 3. Code of Conduct
 
+**[SPEC]**
 This project adheres to the [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are
 expected to uphold this code. Please report unacceptable behavior to
 [mythosmud-coc.destitute749@simplelogin.com](mailto:mythosmud-coc.destitute749@simplelogin.com).
@@ -105,7 +122,9 @@ We guard our community as carefully as we guard against eldritch threats.
 
 ---
 
-## Getting Started
+## 4. Getting Started
+
+**[SPEC]**
 
 ### Prerequisites
 
@@ -228,7 +247,9 @@ Key documentation to review:
 
 ---
 
-## Development Workflow
+## 5. Development Workflow
+
+**[SPEC]**
 
 ### Finding Tasks
 
@@ -302,7 +323,7 @@ Python: Follow PEP 8 via ruff (120 char line limit)
 
 - TypeScript: Follow project ESLint/Prettier config
 - Use meaningful variable and function names
-- Add comments for complex logic (see [Coding Standards](#coding-standards))
+- Add comments for complex logic (see [Coding Standards](#6-coding-standards))
 
 #### 4. **Use Enhanced Logging**
 
@@ -367,7 +388,7 @@ make lint
 - All bug fixes must have regression tests
 - Tests must pass before PR submission
 
-See [Testing Requirements](#testing-requirements) for details.
+See [Testing Requirements](#7-testing-requirements) for details.
 
 ### Committing Your Work
 
@@ -480,7 +501,9 @@ npm run lint:fix
 
 ---
 
-## Coding Standards
+## 6. Coding Standards
+
+**[NOTE]**
 
 ### Python Guidelines
 
@@ -770,7 +793,9 @@ See [SECURITY.md](SECURITY.md) for comprehensive security policies.
 
 ---
 
-## Testing Requirements
+## 7. Testing Requirements
+
+**[NOTE]**
 
 ### Writing Tests
 
@@ -1000,8 +1025,9 @@ See [server/tests/SETUP.md](server/tests/SETUP.md) for detailed testing guide.
 
 ---
 
-## Documentation
+## 8. Documentation
 
+**[NOTE]**
 **Documentation is as important as code.** When making changes:
 
 ### Code Documentation
@@ -1067,6 +1093,22 @@ When making significant changes, update relevant documentation:
 
 **Code comments**: For implementation details
 
+### HADS (living developer docs)
+
+**[SPEC]**
+
+- New or materially updated **living** developer docs must use HADS structure
+  (H1, `**Version X.Y.Z**`, `## AI READING INSTRUCTION`, `[SPEC]`/`[NOTE]`/`[BUG]`/`[?]`,
+  Changelog)
+- List converted paths in [`docs/hads.manifest`](docs/hads.manifest)
+- Validate locally: `python scripts/hads/validate.py --manifest docs/hads.manifest`
+- CI runs the same check on manifest paths
+- Out of scope for HADS: `docs/archive/`, `AGENTS.md`, `.cursor/` rules/skills, Obsidian wiki
+- One-shot reports (audits, remediations, session summaries) go under `docs/archive/` — not HADS
+
+**[NOTE]**
+See [`scripts/hads/README.md`](scripts/hads/README.md) for the vendored validator pin and usage.
+
 ### Mythos References
 
 We encourage (but don't require) adding Lovecraftian flavor to documentation:
@@ -1092,7 +1134,9 @@ class PositionTracker:
 
 ---
 
-## Community
+## 9. Community
+
+**[SPEC]**
 
 ### Getting Help
 
@@ -1133,8 +1177,9 @@ Be respectful and professional
 
 ---
 
-## Recognition
+## 10. Recognition
 
+**[SPEC]**
 We value all contributions, large and small. Contributors will be:
 
 - Listed in project documentation
@@ -1156,7 +1201,9 @@ We value all contributions, large and small. Contributors will be:
 
 ---
 
-## Additional Resources
+## 11. Additional Resources
+
+**[SPEC]**
 
 ### Essential Reading
 
@@ -1192,8 +1239,9 @@ We value all contributions, large and small. Contributors will be:
 
 ---
 
-## Questions?
+## 12. Questions?
 
+**[SPEC]**
 If you have questions about contributing:
 
 1. Check existing documentation
@@ -1214,3 +1262,11 @@ If you have questions about contributing:
 **Last Updated**: January 2025
 **Version**: 1.0
 **Maintainers**: @arkanwolfshade, @TylerWolfshade
+
+## 13. Changelog
+
+**[SPEC]**
+
+| Version | Date       | Change                             |
+| ------- | ---------- | ---------------------------------- |
+| 1.0.0   | 2026-07-30 | Initial HADS structural conversion |

@@ -1,11 +1,26 @@
 # Client Typography and Layout Enhancement Specification
 
-## Overview
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
 This specification addresses the need to improve the readability and usability of the MythosMUD game client by
 increasing font sizes across all panels and ensuring proper panel sizing and positioning to prevent overlaps.
 
-## Current State Analysis
+## 2. Current State Analysis
+
+**[SPEC]**
 
 ### Font Size Usage
 
@@ -36,7 +51,9 @@ The current panel system uses:
 2. **Panel overlap potential**: Default positions can cause panels to overlap on smaller screens
 3. **Inconsistent sizing**: Some panels may be too small to display all content properly
 
-## Requirements
+## 3. Requirements
+
+**[SPEC]**
 
 ### 1. Font Size Enhancement
 
@@ -62,7 +79,9 @@ The current panel system uses:
 
 **Provide fallback positioning** for edge cases
 
-## Technical Specifications
+## 4. Technical Specifications
+
+**[NOTE]**
 
 ### Font Size Mapping
 
@@ -249,7 +268,9 @@ function calculateVerticalLayout(
 }
 ```
 
-## Implementation Plan
+## 5. Implementation Plan
+
+**[SPEC]**
 
 ### Phase 1: Font Size Updates
 
@@ -279,7 +300,9 @@ function calculateVerticalLayout(
 3. **Performance Testing** with large message volumes
 4. **User Experience Testing** with various panel configurations
 
-## Files to Modify
+## 6. Files to Modify
+
+**[SPEC]**
 
 ### Primary Files
 
@@ -297,7 +320,9 @@ function calculateVerticalLayout(
 - `client/src/components/panels/GameLogPanel.tsx` - Text sizing
 - `client/src/components/DraggablePanel.tsx` - Panel sizing constraints
 
-## Testing Requirements
+## 7. Testing Requirements
+
+**[SPEC]**
 
 ### Typography Testing
 
@@ -323,7 +348,9 @@ function calculateVerticalLayout(
 - [ ] Verify drag-and-drop functionality
 - [ ] Test panel minimize/maximize operations
 
-## Success Criteria
+## 8. Success Criteria
+
+**[SPEC]**
 
 ### Typography
 
@@ -349,7 +376,9 @@ function calculateVerticalLayout(
 - [ ] Efficient layout calculations
 - [ ] Minimal memory usage increase
 
-## Risk Assessment
+## 9. Risk Assessment
+
+**[NOTE]**
 
 ### Low Risk
 
@@ -369,7 +398,9 @@ Complex positioning logic could affect performance
 
 - Edge cases in panel positioning may cause issues
 
-## Dependencies
+## 10. Dependencies
+
+**[NOTE]**
 
 ### Required
 
@@ -385,8 +416,9 @@ Design system documentation for typography
 - User feedback on current readability issues
 - Performance benchmarks for layout calculations
 
-## Timeline Estimate
+## 11. Timeline Estimate
 
+**[SPEC]**
 **Phase 1 (Font Updates)**: 2-3 days
 
 **Phase 2 (Panel Sizing)**: 2-3 days
@@ -397,8 +429,9 @@ Design system documentation for typography
 
 **Total Estimated Time**: 11-15 days
 
-## Conclusion
+## 12. Conclusion
 
+**[NOTE]**
 This specification provides a comprehensive plan for improving the MythosMUD client's typography and layout. The
 proposed changes will significantly enhance readability while maintaining the existing design aesthetic and ensuring
 proper panel positioning across all screen sizes.
@@ -406,3 +439,11 @@ proper panel positioning across all screen sizes.
 The implementation follows a phased approach to minimize risk and allow for iterative improvements based on testing
 feedback. The font size increases and panel optimizations will provide immediate benefits to user experience, while the
 overlap prevention system ensures a professional and polished interface.
+
+## 13. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

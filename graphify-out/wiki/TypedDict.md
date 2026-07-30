@@ -1,27 +1,41 @@
 # TypedDict
 
-> 6 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **.execute_behavior()** (4 connections) — `server/npc/npc_base.py`
-- **.schedule_idle_movement()** (3 connections) — `server/npc/npc_base.py`
-- **._enrich_behavior_context()** (3 connections) — `server/npc/npc_base.py`
-- **Schedule idle movement; default False. Override in subclasses (e.g. PassiveMobNP** (1 connections) — `server/npc/npc_base.py`
-- **Hook for subclasses to add context before behavior rules run.         Override i** (1 connections) — `server/npc/npc_base.py`
-- **Execute NPC behavior based on context.** (1 connections) — `server/npc/npc_base.py`
+- **Changes by document** (16 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
+- **Documentation vs. Code Accuracy Audit Log** (4 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
+- **DOCUMENTATION_AUDIT.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
+- **Audit date** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
+- **Summary** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
+- **docs/NATS_SUBJECT_PATTERNS.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
+- **docs/realtime.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
+- **docs/PERSISTENCE_REPOSITORY_ARCHITECTURE.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
+- **docs/DATABASE_ACCESS_PATTERNS.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
+- **docs/EVENT_OWNERSHIP_MATRIX.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
+- **docs/COMMAND_MODELS_REFERENCE.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
+- **docs/CONTAINER_SYSTEM_API_REFERENCE.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
+- **docs/CONFIGURATION_FILES_REFERENCE.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
+- **docs/LOGGING_QUICK_REFERENCE.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
+- **README.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
+- **CLAUDE.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
+- **docs/QUICK_START_E2E_TESTS.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
+- **docs/E2E_TESTING_GUIDE.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
+- **e2e-tests/MULTIPLAYER_TEST_RULES.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
+- **server/README.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
 
 ## Relationships
 
-- [TerminalButtonProps](TerminalButtonProps.md) (3 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/npc/npc_base.py`
+- `docs/archive/DOCUMENTATION_AUDIT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 38 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

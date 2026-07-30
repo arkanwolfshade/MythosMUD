@@ -1,7 +1,20 @@
 # Status Effects Subsystem Design
 
-## Overview
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
 The status effects subsystem covers damage, healing, posture, incapacitation, and death as
 reflected in player and NPC state. There is no separate "status effect" registry; effects are
 embodied in stats (e.g. current_dp, position), persistence (damage_player, heal_player,
@@ -10,7 +23,9 @@ Combat and magic apply damage; mechanics and persistence own the actual stat upd
 (DP 0 to -9) blocks attack and movement (posture/combat checks); death at -10 triggers respawn.
 ADR-009 no_death rooms cap damage so DP does not go below 0.
 
-## Architecture
+## 2. Architecture
+
+**[NOTE]**
 
 ```mermaid
 flowchart LR
@@ -65,7 +80,9 @@ flowchart LR
 - **Room attributes**: no_combat (block combat), no_death (cap damage so DP never below 0) per
   ADR-009.
 
-## Key design decisions
+## 3. Key design decisions
+
+**[NOTE]**
 
 - **No central effect registry**: Effects are implicit in stat names and persistence methods;
   combat and magic call mechanics or persistence directly.
@@ -79,7 +96,9 @@ flowchart LR
 - **no_death rooms**: Damage is capped so player DP does not go below 0 in no_death rooms
   (tutorial/safe zones).
 
-## Constraints
+## 4. Constraints
+
+**[SPEC]**
 
 - **current_dp**: Source of truth in persistence; combat and magic should apply through
   mechanics.damage_player or persistence.damage_player so no_death and death logic apply.
@@ -87,7 +106,9 @@ flowchart LR
 - **Dependencies**: Persistence (player, stats, damage/heal/lucidity/fear/corruption methods),
   room attributes (no_combat, no_death).
 
-## Component interactions
+## 5. Component interactions
+
+**[NOTE]**
 
 1. **Combat damage** – NPC combat integration computes damage; applies to NPC or player via
    persistence/mechanics; player current_dp updated; if <= 0 command layer blocks further attack;
@@ -100,7 +121,9 @@ flowchart LR
    use mechanics for position; they update player stats or dedicated fields. Movement and combat
    read get_stats().position.
 
-## Developer guide
+## 6. Developer guide
+
+**[NOTE]**
 
 - **Adding a new stat effect**: Add persistence method (e.g. apply_foo) and optionally
   GameMechanicsService method; call from combat, magic, or commands. Document stat name and
@@ -112,7 +135,9 @@ flowchart LR
 - **Tests**: Mechanics tests for apply\_\* and damage/heal; combat tests for incapacitated and
   death; movement tests for posture block.
 
-## Troubleshooting
+## 7. Troubleshooting
+
+**[NOTE]**
 
 - **Player can attack when incapacitated**: Ensure attack handler reads current_dp from
   get_stats() (or equivalent) and blocks when current_dp <= 0.
@@ -130,6 +155,16 @@ See also [SUBSYSTEM_COMBAT_DESIGN.md](SUBSYSTEM_COMBAT_DESIGN.md),
 [ADR-009](../architecture/decisions/ADR-009-instanced-rooms.md). Archived:
 [docs/archive/EFFECTS_SYSTEM_REFERENCE.md](../archive/EFFECTS_SYSTEM_REFERENCE.md).
 
-## Related docs
+## 8. Related docs
+
+**[SPEC]**
 
 - [EVENT_OWNERSHIP_MATRIX.md](../EVENT_OWNERSHIP_MATRIX.md) (if death/effect events are emitted)
+
+## 9. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

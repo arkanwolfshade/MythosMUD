@@ -34,7 +34,7 @@
 ## Relationships
 
 - [AsyncSession](AsyncSession.md) (22 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
+- [world](world.md) (2 shared connections)
 - [add used by user id](add_used_by_user_id.md) (2 shared connections)
 - [test chat logger](test_chat_logger.md) (2 shared connections)
 - [UUID](UUID.md) (1 shared connections)

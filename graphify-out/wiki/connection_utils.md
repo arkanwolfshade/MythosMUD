@@ -23,9 +23,10 @@
 
 ## Relationships
 
-- [TerminalButtonProps](TerminalButtonProps.md) (3 shared connections)
+- [world](world.md) (2 shared connections)
 - [Player](Player.md) (1 shared connections)
-- [UUID](UUID.md) (1 shared connections)
+- [get current tick()](get_current_tick%28%29.md) (1 shared connections)
+- [create access token()](create_access_token%28%29.md) (1 shared connections)
 
 ## Source Files
 

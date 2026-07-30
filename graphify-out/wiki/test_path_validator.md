@@ -1,38 +1,43 @@
 # test path validator
 
-> 13 nodes
+> 21 nodes
 
 ## Key Concepts
 
-- **_convert_container_dict_to_container_data()** (12 connections) — `server/api/container_endpoints_basic.py`
-- **_convert_inventory_list_to_inventory_stacks()** (11 connections) — `server/api/container_endpoints_basic.py`
-- **_build_container_data_from_dict()** (7 connections) — `server/api/container_endpoints_basic.py`
-- **Any** (5 connections)
-- **_convert_uuid_to_string()** (4 connections) — `server/api/container_endpoints_basic.py`
-- **_convert_datetime_to_iso()** (4 connections) — `server/api/container_endpoints_basic.py`
-- **InventoryStack** (2 connections)
-- **ContainerData** (2 connections)
-- **Convert UUID-like object to string if it has __str__ method.** (1 connections) — `server/api/container_endpoints_basic.py`
-- **Convert datetime object to ISO format string.** (1 connections) — `server/api/container_endpoints_basic.py`
-- **Build ContainerData model from dictionary and converted values.** (1 connections) — `server/api/container_endpoints_basic.py`
-- **Convert container dictionary from ContainerComponent.model_dump() to ContainerDa** (1 connections) — `server/api/container_endpoints_basic.py`
-- **Convert list of inventory dicts to InventoryStack models.** (1 connections) — `server/api/container_endpoints_basic.py`
+- **NATS Anti-Patterns Remediation Summary** (10 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
+- **Completed Fixes ✅** (6 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
+- **Code Quality Improvements** (4 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
+- **Impact Assessment** (3 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
+- **NATS_REMEDIATION_SUMMARY_2026-01-13.md** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
+- **Executive Summary** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
+- **1. Fixed Synchronous Operation in WebSocket Helpers** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
+- **2. Standardized Error Handling** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
+- **3. Added Message Validation to NATSMessageBroker** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
+- **4. Improved Batch Flush Error Recovery** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
+- **5. Improved Connection Pool Error Handling** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
+- **Exception Hierarchy** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
+- **Configuration Options** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
+- **Metrics & Observability** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
+- **Testing Status** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
+- **Remaining Medium-Priority Issues** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
+- **Before Remediation** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
+- **After Remediation** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
+- **Performance Impact** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
+- **Backward Compatibility** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
+- **Next Steps (Optional)** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
 
 ## Relationships
 
-- [BaseCommand](BaseCommand.md) (10 shared connections)
-- [APIRouter](APIRouter.md) (4 shared connections)
-- [.initialize()](initialize%28%29.md) (1 shared connections)
-- [Player](Player.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/api/container_endpoints_basic.py`
+- `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
 
 ## Audit Trail
 
-- EXTRACTED: 50 (96%)
-- INFERRED: 2 (4%)
+- EXTRACTED: 40 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

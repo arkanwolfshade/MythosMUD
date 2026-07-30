@@ -1,49 +1,54 @@
 # .validate target()
 
-> 52 nodes
+> 68 nodes
 
 ## Key Concepts
 
-- **test_command_combat.py** (31 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_attack_command_target_min_length()** (4 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_attack_command_target_max_length()** (4 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_punch_command_target_min_length()** (4 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_punch_command_target_max_length()** (4 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_kick_command_target_min_length()** (4 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_kick_command_target_max_length()** (4 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_strike_command_target_min_length()** (4 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_strike_command_target_max_length()** (4 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_attack_command_default_values()** (3 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_attack_command_with_target()** (3 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_attack_command_validate_target_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_attack_command_validate_target_none()** (3 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_attack_command_accepts_long_instance_id()** (3 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_punch_command_default_values()** (3 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_punch_command_with_target()** (3 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_punch_command_validate_target_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_punch_command_validate_target_none()** (3 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_kick_command_default_values()** (3 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_kick_command_with_target()** (3 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_kick_command_validate_target_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_kick_command_validate_target_none()** (3 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_strike_command_default_values()** (3 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_strike_command_with_target()** (3 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_strike_command_validate_target_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_combat.py`
-- *... and 27 more nodes in this community*
+- **test_aggro_threat.py** (29 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **_make_combat()** (23 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **add_damage_threat()** (20 connections) — `server/services/aggro_threat.py`
+- **get_or_create_hate_list()** (19 connections) — `server/services/aggro_threat.py`
+- **test_aggro_flow.py** (14 connections) — `server/tests/integration/test_aggro_flow.py`
+- **_make_participant()** (13 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **apply_taunt()** (12 connections) — `server/services/aggro_threat.py`
+- **_make_participant()** (9 connections) — `server/tests/integration/test_aggro_flow.py`
+- **_make_combat()** (8 connections) — `server/tests/integration/test_aggro_flow.py`
+- **test_aggro_healer_overpull_switches_target()** (7 connections) — `server/tests/integration/test_aggro_flow.py`
+- **test_aggro_taunt_from_next_room_no_effect()** (7 connections) — `server/tests/integration/test_aggro_flow.py`
+- **test_aggro_stealth_wipe_switches_to_next()** (7 connections) — `server/tests/integration/test_aggro_flow.py`
+- **test_aggro_passive_mob_no_damage_threat_taunt_switches()** (7 connections) — `server/tests/integration/test_aggro_flow.py`
+- **test_aggro_nightgaunt_like_damage_and_heal_threat()** (7 connections) — `server/tests/integration/test_aggro_flow.py`
+- **test_aggro_tank_swap_taunt_sequence()** (6 connections) — `server/tests/integration/test_aggro_flow.py`
+- **test_update_aggro_one_entity_sets_target()** (6 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **test_update_aggro_stability_no_switch_when_below_threshold()** (6 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **test_update_aggro_stability_switch_when_at_or_above_threshold()** (6 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **test_update_aggro_excludes_dead_from_candidate()** (6 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **test_on_player_entered_stealth_wipes_from_all_npcs()** (6 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **test_apply_taunt_same_room_sets_threat_above_top()** (5 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **test_apply_taunt_different_room_no_op()** (5 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **test_apply_stealth_wipe_removes_entity()** (5 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **test_update_aggro_no_hate_list_clears_target()** (5 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **test_add_damage_threat_passive_mob_skipped()** (5 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- *... and 43 more nodes in this community*
 
 ## Relationships
 
-- [Spell Targeting](Spell_Targeting.md) (30 shared connections)
-- [.initialize()](initialize%28%29.md) (8 shared connections)
+- [close db()](close_db%28%29.md) (45 shared connections)
+- [test combat attack handler](test_combat_attack_handler.md) (6 shared connections)
+- [. initialize handlers()](_initialize_handlers%28%29.md) (3 shared connections)
+- [. init ()](_init_%28%29.md) (2 shared connections)
+- [test player event handlers room](test_player_event_handlers_room.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/models/test_command_combat.py`
+- `server/services/aggro_threat.py`
+- `server/tests/integration/test_aggro_flow.py`
+- `server/tests/unit/services/test_aggro_threat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 132 (94%)
-- INFERRED: 8 (6%)
+- EXTRACTED: 322 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

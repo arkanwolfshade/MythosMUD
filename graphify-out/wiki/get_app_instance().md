@@ -1,26 +1,36 @@
 # get app instance()
 
-> 4 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **.heal_player()** (4 connections) — `server/async_persistence.py`
-- **.async_heal_player()** (4 connections) — `server/async_persistence.py`
-- **Heal a player. Delegates to HealthRepository.** (1 connections) — `server/async_persistence.py`
-- **Async alias for heal_player. Delegates to HealthRepository.** (1 connections) — `server/async_persistence.py`
+- **Critical Insights** (15 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **1. Infrastructure Tests are the Main Optimization Target** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Problem** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Example Low-Value Test** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **2. Regression Tests are 100% High-Value** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Finding** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Examples** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **3. Coverage Tests Written for Metrics, Not Quality** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Problem** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Example** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **4. No Parametrized Tests (Major Opportunity)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Finding** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Opportunity** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **5. Critical Gaps in New Architecture** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Finding** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
 
 ## Relationships
 
-- [chat nats publisher](chat_nats_publisher.md) (2 shared connections)
-- [PlayerRespawnEventHandler](PlayerRespawnEventHandler.md) (2 shared connections)
+- [notify quest abandoned()](notify_quest_abandoned%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/async_persistence.py`
+- `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
+- EXTRACTED: 29 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

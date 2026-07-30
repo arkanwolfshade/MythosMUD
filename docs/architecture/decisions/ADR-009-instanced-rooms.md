@@ -1,17 +1,35 @@
 # ADR-009: Instanced Rooms for Tutorial and Future Content
 
+**Version 1.0.0** · MythosMUD · 2026-07-30
+
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[SPEC]**
 **Status:** Accepted
 **Date:** 2026-02-17
 
-## Context
+## 2. Context
 
+**[NOTE]**
 MythosMUD needs per-player instanced spaces for the new-character tutorial so that new
 players do not see other players during the initial onboarding. Instanced rooms must
 persist in memory until the player exits, support a fixed exit to the shared world
 (Main Foyer), and handle reconnection (place player at instance start after disconnect).
 Combat and death should be disabled in tutorial instances.
 
-## Decision
+## 3. Decision
+
+**[NOTE]**
 
 1. **Room templates**: Use existing room schema with `attributes.is_instanced`,
    `instance_template_id`, `instance_exit_room_id`, `no_combat`, and `no_death`.
@@ -32,7 +50,9 @@ Combat and death should be disabled in tutorial instances.
 6. **Combat/death guards**: Rooms with `no_combat` block player-initiated combat;
    rooms with `no_death` cap damage so player DP never goes below 0.
 
-## Alternatives Considered
+## 4. Alternatives Considered
+
+**[NOTE]**
 
 - **Separate tutorial world**: Rejected; reusing room definitions and world loader keeps
   complexity lower.
@@ -41,10 +61,20 @@ Combat and death should be disabled in tutorial instances.
 - **Block combat at death handler**: Rejected; capping damage at 0 in no_death rooms
   keeps combat flow intact without special death-path logic.
 
-## Consequences
+## 5. Consequences
+
+**[SPEC]**
 
 - **Positive**: Tutorial is isolated; reconnect behavior is predictable; room attributes
   support future instanced zones (dungeons, group content).
 - **Negative**: Instances are lost on server restart; players with `tutorial_instance_id`
   set are placed at instance start on reconnect (instance recreated if missing).
 - **Neutral**: InstanceManager is optional dependency; systems without it behave as before.
+
+## 6. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

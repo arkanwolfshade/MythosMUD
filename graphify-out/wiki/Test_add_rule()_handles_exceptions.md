@@ -1,23 +1,25 @@
 # Test add rule() handles exceptions
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_get_local_chat_scope()** (2 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_local_chat_scope() returns current room and adjacent rooms.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **zone** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **pattern** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 
 ## Relationships
 
-- [test room service](test_room_service.md) (1 shared connections)
+- [description](description.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

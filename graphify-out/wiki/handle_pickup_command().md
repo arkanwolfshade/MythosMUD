@@ -1,11 +1,10 @@
 # handle pickup command()
 
-> 55 nodes
+> 60 nodes
 
 ## Key Concepts
 
 - **test_inventory_commands.py** (20 connections) — `server/tests/unit/commands/test_inventory_commands.py`
-- **handle_pickup_command()** (18 connections) — `server/commands/inventory_pickup_command.py`
 - **command_result_text()** (17 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
 - **PickupTestWiring** (17 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
 - **test_inventory_commands_pickup.py** (17 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
@@ -27,31 +26,27 @@
 - **test_handle_unequip_command_no_target()** (4 connections) — `server/tests/unit/commands/test_inventory_commands.py`
 - **test_handle_put_command_no_target()** (4 connections) — `server/tests/unit/commands/test_inventory_commands.py`
 - **test_handle_get_command_no_target()** (4 connections) — `server/tests/unit/commands/test_inventory_commands.py`
+- **test_handle_inventory_command()** (3 connections) — `server/tests/unit/commands/test_inventory_commands.py`
 - **test_handle_drop_command()** (3 connections) — `server/tests/unit/commands/test_inventory_commands.py`
 - **test_handle_equip_command()** (3 connections) — `server/tests/unit/commands/test_inventory_commands.py`
-- *... and 30 more nodes in this community*
+- *... and 35 more nodes in this community*
 
 ## Relationships
 
-- [Any](Any.md) (13 shared connections)
-- [test resolve state no app()](test_resolve_state_no_app%28%29.md) (8 shared connections)
+- [Any](Any.md) (20 shared connections)
 - [Lock](Lock.md) (4 shared connections)
-- [container helpers inventory display](container_helpers_inventory_display.md) (3 shared connections)
-- [maps](maps.md) (2 shared connections)
-- [test magic commands](test_magic_commands.md) (1 shared connections)
-- [Player Position Service](Player_Position_Service.md) (1 shared connections)
+- [Player Position Service](Player_Position_Service.md) (3 shared connections)
 
 ## Source Files
 
-- `server/commands/inventory_pickup_command.py`
 - `server/tests/unit/commands/inventory_commands_test_support.py`
 - `server/tests/unit/commands/test_inventory_commands.py`
 - `server/tests/unit/commands/test_inventory_commands_pickup.py`
 
 ## Audit Trail
 
-- EXTRACTED: 198 (90%)
-- INFERRED: 22 (10%)
+- EXTRACTED: 197 (92%)
+- INFERRED: 18 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

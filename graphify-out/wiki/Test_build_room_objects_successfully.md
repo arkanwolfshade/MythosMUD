@@ -1,25 +1,28 @@
 # Test build room objects successfully
 
-> 4 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **created_at** (4 connections) — `schemas/alias_schema.json`
-- **type** (1 connections) — `schemas/alias_schema.json`
-- **description** (1 connections) — `schemas/alias_schema.json`
-- **pattern** (1 connections) — `schemas/alias_schema.json`
+- **.get_stat_requirements()** (5 connections) — `server/models/profession.py`
+- **.meets_stat_requirements()** (3 connections) — `server/models/profession.py`
+- **.get_requirement_display_text()** (3 connections) — `server/models/profession.py`
+- **Get profession stat requirements as dictionary.** (1 connections) — `server/models/profession.py`
+- **Check if given stats meet the profession requirements.          Args:** (1 connections) — `server/models/profession.py`
+- **Get formatted text for displaying stat requirements.          Returns:** (1 connections) — `server/models/profession.py`
 
 ## Relationships
 
-- [description](description.md) (1 shared connections)
+- [Integration tests for the main](Integration_tests_for_the_main.md) (3 shared connections)
+- [game](game.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/alias_schema.json`
+- `server/models/profession.py`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 14 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

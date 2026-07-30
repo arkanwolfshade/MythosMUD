@@ -1,36 +1,23 @@
 # metadata
 
-> 12 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **._is_uuid_string()** (8 connections) — `server/realtime/occupant_formatter.py`
-- **._process_string_occupant_for_update()** (4 connections) — `server/realtime/occupant_formatter.py`
-- **test_occupant_formatter_is_uuid_string_valid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_is_uuid_string_invalid_length()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_is_uuid_string_invalid_dashes()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_is_uuid_string_invalid_chars()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Check if a string looks like a UUID.          Args:             value: The strin** (1 connections) — `server/realtime/occupant_formatter.py`
-- **Process a string occupant (legacy format) and add to list if valid.          Arg** (1 connections) — `server/realtime/occupant_formatter.py`
-- **Test OccupantFormatter._is_uuid_string() returns True for valid UUID.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter._is_uuid_string() returns False for invalid length.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter._is_uuid_string() returns False for wrong dash count.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter._is_uuid_string() returns False for invalid characters.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_run_improvement_rolls_roll_under_current_no_change()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
+- **When roll <= current value, no update_value call.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
 
 ## Relationships
 
-- [occupant formatter](occupant_formatter.md) (4 shared connections)
-- [command parser()](command_parser%28%29.md) (2 shared connections)
-- [. add valid name to](_add_valid_name_to.md) (2 shared connections)
+- [test player service](test_player_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/occupant_formatter.py`
-- `server/tests/unit/realtime/test_occupant_formatter.py`
+- `server/tests/unit/game/test_skill_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 30 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

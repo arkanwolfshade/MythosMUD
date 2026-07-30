@@ -1,23 +1,25 @@
 # Test execute applicable rules() returns
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **mock_room_cache()** (2 connections) — `server/tests/unit/game/test_room_service.py`
-- **Create a mock room cache service.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Implementation Timeline** (4 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Month 1: Pruning and Quick Wins** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Month 2: Consolidation and Additions** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Month 3+: Continuous Improvement** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
 
 ## Relationships
 
-- [test room service](test_room_service.md) (1 shared connections)
+- [Test query rooms with exits](Test_query_rooms_with_exits.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

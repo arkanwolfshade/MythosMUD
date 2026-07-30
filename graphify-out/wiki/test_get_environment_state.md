@@ -1,23 +1,24 @@
 # test_get_environment_state
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_get_environment_state()** (2 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_environment_state() returns current environment state.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Final Recommendation** (3 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Start with Option B (Quick Wins) Immediately** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Then Proceed to Option A (Full Optimization)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
 
 ## Relationships
 
-- [test room service](test_room_service.md) (1 shared connections)
+- [notify quest abandoned()](notify_quest_abandoned%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

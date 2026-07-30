@@ -1,32 +1,50 @@
 # calendar
 
-> 11 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **MockPersistence** (7 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **mock_persistence()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **.get_player_by_name()** (2 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **.get_room_by_id()** (2 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **.__setattr__()** (2 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **.__init__()** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **Mock persistence layer with async methods.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **Mock async method that uses configured mock.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **Mock method that uses configured mock.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **Allow setting get_player_by_name and get_room_by_id to mocks.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **test_game_tick_processing.py** (15 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **_validate_app_state_for_status_effects()** (12 connections) — `server/app/game_tick_processing.py`
+- **reset_current_tick()** (6 connections) — `server/app/game_tick_processing.py`
+- **test_get_current_tick()** (4 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_reset_current_tick()** (4 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_get_tick_interval()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_validate_app_state_for_status_effects_no_container()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_validate_app_state_for_status_effects_no_async_persistence()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_validate_app_state_for_status_effects_no_connection_manager()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_validate_app_state_for_status_effects_valid()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_validate_app_state_for_status_effects_container_is_none()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_validate_app_state_for_status_effects_connection_manager_is_none()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **Reset the current tick for testing.** (1 connections) — `server/app/game_tick_processing.py`
+- **Validate app state has required components for status effect processing.      Re** (1 connections) — `server/app/game_tick_processing.py`
+- **Unit tests for game tick processing functions.  Tests the game tick processing l** (1 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **Test get_current_tick returns the current tick value.** (1 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **Test reset_current_tick resets the tick counter.** (1 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **Test get_tick_interval returns tick interval from config.** (1 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **Test _validate_app_state_for_status_effects returns False when no container.** (1 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **Test _validate_app_state_for_status_effects returns False when no async_persiste** (1 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **Test _validate_app_state_for_status_effects returns False when no connection_man** (1 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **Test _validate_app_state_for_status_effects returns True when all required compo** (1 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **Test _validate_app_state_for_status_effects returns False when container is None** (1 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **Test _validate_app_state_for_status_effects returns False when connection_manage** (1 connections) — `server/tests/unit/app/test_game_tick_processing.py`
 
 ## Relationships
 
-- [.check and interrupt rest()](check_and_interrupt_rest%28%29.md) (2 shared connections)
+- [Protocol](Protocol.md) (5 shared connections)
+- [. initialize handlers()](_initialize_handlers%28%29.md) (3 shared connections)
+- [append unique valid occupant()](append_unique_valid_occupant%28%29.md) (2 shared connections)
+- [.shutdown()](shutdown%28%29.md) (1 shared connections)
+- [process all status effects()](process_all_status_effects%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_rest_command.py`
+- `server/app/game_tick_processing.py`
+- `server/tests/unit/app/test_game_tick_processing.py`
 
 ## Audit Trail
 
-- EXTRACTED: 22 (100%)
+- EXTRACTED: 74 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,25 +1,29 @@
 # Test validate target alive when
 
-> 2 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **test_fetch_container_items_success()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **Test _fetch_container_items successfully fetches items.** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **Recommended Decision** (7 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Option A: Full Optimization (Recommended)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Commit to full 2-month optimization plan** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Option B: Quick Wins Only** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Implement only Phase 1 (Quick Wins)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Option C: Strategic Focus** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Implement gap filling only (skip pruning)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
 
 ## Relationships
 
-- [container persistence](container_persistence.md) (1 shared connections)
-- [disconnect grace period](disconnect_grace_period.md) (1 shared connections)
+- [notify quest abandoned()](notify_quest_abandoned%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 13 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

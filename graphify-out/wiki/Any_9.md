@@ -1,75 +1,53 @@
 # Any
 
-> 203 nodes
+> 23 nodes
 
 ## Key Concepts
 
-- **build_event()** (116 connections) — `server/realtime/envelope.py`
-- **send_game_event()** (30 connections) — `server/realtime/connection_manager_api.py`
-- **test_envelope.py** (28 connections) — `server/tests/unit/realtime/test_envelope.py`
-- **envelope.py** (27 connections) — `server/realtime/envelope.py`
-- **message_handler_factory.py** (23 connections) — `server/realtime/message_handler_factory.py`
-- **connection_manager_api.py** (19 connections) — `server/realtime/connection_manager_api.py`
-- **CombatBroadcastMixin** (15 connections) — `server/services/combat_messaging/combat_broadcasts.py`
-- **message_handlers.py** (14 connections) — `server/realtime/message_handlers.py`
-- **rest_countdown_task.py** (12 connections) — `server/commands/rest_countdown_task.py`
-- **broadcast_game_event()** (12 connections) — `server/realtime/connection_manager_api.py`
-- **CombatMessagingIntegration** (12 connections) — `server/services/combat_messaging/integration.py`
-- **test_message_handlers.py** (12 connections) — `server/tests/unit/realtime/test_message_handlers.py`
-- **handle_command_message()** (11 connections) — `server/realtime/message_handlers.py`
-- **PlayerBroadcastMixin** (11 connections) — `server/services/combat_messaging/player_broadcasts.py`
-- **resolve_connection_manager()** (10 connections) — `server/realtime/connection_manager_utils.py`
-- **handle_chat_message()** (10 connections) — `server/realtime/message_handlers.py`
-- **handle_ping_message()** (10 connections) — `server/realtime/message_handlers.py`
-- **__getattr__()** (9 connections) — `server/realtime/connection_manager.py`
-- **handle_follow_response_message()** (9 connections) — `server/realtime/message_handlers.py`
-- **combat_broadcasts.py** (9 connections) — `server/services/combat_messaging/combat_broadcasts.py`
-- **integration.py** (9 connections) — `server/services/combat_messaging/integration.py`
-- **send_room_event()** (8 connections) — `server/realtime/connection_manager_api.py`
-- **connection_manager_utils.py** (8 connections) — `server/realtime/connection_manager_utils.py`
-- **UUIDEncoder** (8 connections) — `server/realtime/envelope.py`
-- **handle_party_invite_response_message()** (8 connections) — `server/realtime/message_handlers.py`
-- *... and 178 more nodes in this community*
+- **handle_emote_command()** (15 connections) — `server/commands/emote_commands.py`
+- **emote_commands.py** (14 connections) — `server/commands/emote_commands.py`
+- **_get_emote_services()** (7 connections) — `server/commands/emote_commands.py`
+- **test_emote_commands.py** (6 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **Any** (5 connections)
+- **_extract_emote_action()** (4 connections) — `server/commands/emote_commands.py`
+- **_validate_player_for_emote()** (4 connections) — `server/commands/emote_commands.py`
+- **_format_emote_messages()** (4 connections) — `server/commands/emote_commands.py`
+- **_handle_emote_result()** (4 connections) — `server/commands/emote_commands.py`
+- **test_handle_emote_command()** (3 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **test_handle_emote_command_no_message()** (3 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **test_handle_emote_command_no_chat_service()** (3 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **Emote command handlers for MythosMUD.  This module contains handlers for the emo** (1 connections) — `server/commands/emote_commands.py`
+- **Extract action from command_data.      Args:         command_data: Command data** (1 connections) — `server/commands/emote_commands.py`
+- **Get chat service and player service from app state.      Args:         request:** (1 connections) — `server/commands/emote_commands.py`
+- **Validate player and extract required information for emote.      Args:         p** (1 connections) — `server/commands/emote_commands.py`
+- **Format emote messages for predefined or custom emotes.      Args:         action** (1 connections) — `server/commands/emote_commands.py`
+- **Handle the result from chat service after sending emote.      Args:         resu** (1 connections) — `server/commands/emote_commands.py`
+- **Handle the emote command for performing emotes.      Args:         command_data:** (1 connections) — `server/commands/emote_commands.py`
+- **Unit tests for emote command handlers.  Tests the emote command functionality.** (1 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **Test handle_emote_command() processes emote.** (1 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **Test handle_emote_command() handles missing message.** (1 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **Test handle_emote_command() handles missing chat service.** (1 connections) — `server/tests/unit/commands/test_emote_commands.py`
 
 ## Relationships
 
-- [TerminalButtonProps](TerminalButtonProps.md) (40 shared connections)
-- [Player](Player.md) (31 shared connections)
-- [. init ()](_init_%28%29.md) (14 shared connections)
-- [.is required()](is_required%28%29.md) (14 shared connections)
-- [UUID](UUID.md) (11 shared connections)
-- [real time](real_time.md) (8 shared connections)
-- [Any](Any.md) (8 shared connections)
-- [NPCCombatIntegrationBase](NPCCombatIntegrationBase.md) (8 shared connections)
-- [test command factories inventory](test_command_factories_inventory.md) (7 shared connections)
-- [processing](processing.md) (6 shared connections)
-- [process all status effects()](process_all_status_effects%28%29.md) (5 shared connections)
-- [message handler factory](message_handler_factory.md) (5 shared connections)
+- [Any](Any.md) (3 shared connections)
+- [PlayerIdCarrier](PlayerIdCarrier.md) (2 shared connections)
+- [world](world.md) (2 shared connections)
+- [disconnect player connections()](disconnect_player_connections%28%29.md) (2 shared connections)
+- [. init ()](_init_%28%29.md) (1 shared connections)
+- [websocket integration](websocket_integration.md) (1 shared connections)
+- [.state()](state%28%29.md) (1 shared connections)
+- [Player Position Service](Player_Position_Service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/rest_countdown_task.py`
-- `server/realtime/connection_manager.py`
-- `server/realtime/connection_manager_api.py`
-- `server/realtime/connection_manager_utils.py`
-- `server/realtime/envelope.py`
-- `server/realtime/integration/room_event_handler.py`
-- `server/realtime/message_handler_factory.py`
-- `server/realtime/message_handlers.py`
-- `server/realtime/player_event_handlers_state.py`
-- `server/services/combat_messaging/__init__.py`
-- `server/services/combat_messaging/base.py`
-- `server/services/combat_messaging/combat_broadcasts.py`
-- `server/services/combat_messaging/integration.py`
-- `server/services/combat_messaging/player_broadcasts.py`
-- `server/services/combat_messaging_integration.py`
-- `server/tests/unit/realtime/test_envelope.py`
-- `server/tests/unit/realtime/test_message_handlers.py`
+- `server/commands/emote_commands.py`
+- `server/tests/unit/commands/test_emote_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 836 (96%)
-- INFERRED: 35 (4%)
+- EXTRACTED: 79 (95%)
+- INFERRED: 4 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

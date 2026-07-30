@@ -21,3 +21,9 @@
 # Graphify generated knowledge graph / community wiki (not hand-authored docs)
 **/graphify-out/**
 **/graphify/**
+
+# LLM wiki / Obsidian vault (Karpathy raw+wiki; not product docs)
+**/data/MythosMUD-Obsidian/**
+
+# E2E harness one-shot reports (canonical guides live under docs/)
+**/e2e-tests/**

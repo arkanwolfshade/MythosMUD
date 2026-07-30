@@ -33,9 +33,9 @@
 
 ## Relationships
 
-- [NPCCombatIntegrationBase](NPCCombatIntegrationBase.md) (3 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
-- [UUID](UUID.md) (1 shared connections)
+- [.get instance()](get_instance%28%29.md) (3 shared connections)
+- [world](world.md) (1 shared connections)
+- [create access token()](create_access_token%28%29.md) (1 shared connections)
 
 ## Source Files
 

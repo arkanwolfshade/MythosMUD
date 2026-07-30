@@ -1,49 +1,50 @@
 # test movement monitor
 
-> 42 nodes
+> 44 nodes
 
 ## Key Concepts
 
-- **test_combat_persistence_handler_events.py** (25 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **persistence_handler()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_update_event_impl_event_bus_publish_error()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **mock_combat_service()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_update_event()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_update_event_impl()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_update_event_impl_no_event_bus()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_update_event_impl_error()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_update_event_impl_with_nats()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_update_event_impl_legacy_subject()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_update_event_impl_nats_error()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_update_event_impl_no_nats()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_update_event_impl_all_parameters()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_correction_event()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_correction_event_error()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_correction_event_no_event_bus()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_correction_event_all_parameters()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_correction_event_success_new()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_correction_event_publish_error_new()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_correction_event_all_parameters_new()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **test_publish_player_dp_correction_event_outer_exception()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **Unit tests for combat persistence handler - event publishing.  Tests DP update a** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **Create mock combat service.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **Create CombatPersistenceHandler instance.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- **Test publish_player_dp_update_event publishes event.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
-- *... and 17 more nodes in this community*
+- **test_map_helpers.py** (15 connections) — `server/tests/unit/api/test_map_helpers.py`
+- **map_helpers.py** (14 connections) — `server/api/map_helpers.py`
+- **load_rooms_with_coordinates()** (14 connections) — `server/api/map_helpers.py`
+- **load_single_room_with_coordinates()** (11 connections) — `server/api/map_helpers.py`
+- **load_room_exits()** (9 connections) — `server/api/map_helpers.py`
+- **build_room_dict()** (8 connections) — `server/api/map_helpers.py`
+- **build_zone_pattern()** (7 connections) — `server/api/map_helpers.py`
+- **_MockResultRows** (7 connections) — `server/tests/unit/api/test_map_helpers.py`
+- **TestBuildZonePattern** (5 connections) — `server/tests/unit/api/test_map_helpers.py`
+- **Any** (4 connections)
+- **TestBuildRoomDict** (4 connections) — `server/tests/unit/api/test_map_helpers.py`
+- **test_load_room_exits_attaches_exits_by_stable_id()** (4 connections) — `server/tests/unit/api/test_map_helpers.py`
+- **test_load_rooms_with_coordinates_executes_zone_query_and_exits()** (4 connections) — `server/tests/unit/api/test_map_helpers.py`
+- **test_load_single_room_with_coordinates_loads_exits()** (4 connections) — `server/tests/unit/api/test_map_helpers.py`
+- **AsyncSession** (3 connections)
+- **.test_plane_zone_only()** (3 connections) — `server/tests/unit/api/test_map_helpers.py`
+- **.test_plane_zone_sub_zone()** (3 connections) — `server/tests/unit/api/test_map_helpers.py`
+- **.test_empty_sub_zone_treated_as_none()** (3 connections) — `server/tests/unit/api/test_map_helpers.py`
+- **.test_full_row()** (3 connections) — `server/tests/unit/api/test_map_helpers.py`
+- **.test_null_map_coords()** (3 connections) — `server/tests/unit/api/test_map_helpers.py`
+- **test_load_room_exits_no_rooms_no_query()** (3 connections) — `server/tests/unit/api/test_map_helpers.py`
+- **test_load_single_room_with_coordinates_none_when_missing()** (3 connections) — `server/tests/unit/api/test_map_helpers.py`
+- **Map API helpers: room loading and zone pattern utilities.  Extracted from maps.p** (1 connections) — `server/api/map_helpers.py`
+- **Build zone pattern for room query.      Args:         plane: Plane name** (1 connections) — `server/api/map_helpers.py`
+- **Build room dictionary from database row.      Args:         row: Database row re** (1 connections) — `server/api/map_helpers.py`
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [test combat persistence handler persistence](test_combat_persistence_handler_persistence.md) (3 shared connections)
-- [Any](Any.md) (2 shared connections)
-- [test combat persistence handler events](test_combat_persistence_handler_events.md) (1 shared connections)
+- [ExitStack](ExitStack.md) (6 shared connections)
+- [Formatter](Formatter.md) (6 shared connections)
+- [world](world.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- `server/api/map_helpers.py`
+- `server/tests/unit/api/test_map_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 88 (100%)
+- EXTRACTED: 156 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

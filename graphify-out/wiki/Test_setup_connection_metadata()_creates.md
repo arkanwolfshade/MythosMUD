@@ -1,23 +1,24 @@
 # Test setup connection metadata() creates
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_describe_lighting_day()** (2 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test describe_lighting() returns description for day.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Optimization Strategy Overview** (3 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Guiding Principles** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Success Metrics** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
 
 ## Relationships
 
-- [test room service](test_room_service.md) (1 shared connections)
+- [Test query rooms with exits](Test_query_rooms_with_exits.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

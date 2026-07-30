@@ -32,10 +32,9 @@
 
 ## Relationships
 
+- [chatPanelChannelFilter](chatPanelChannelFilter.md) (2 shared connections)
 - [ChatPanelTest](ChatPanelTest.md) (2 shared connections)
 - [GameLogMessagesList](GameLogMessagesList.md) (2 shared connections)
-- [async sessionmaker](async_sessionmaker.md) (1 shared connections)
-- [chatPanelChannelFilter](chatPanelChannelFilter.md) (1 shared connections)
 
 ## Source Files
 

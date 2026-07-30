@@ -33,8 +33,9 @@
 
 ## Relationships
 
-- [TerminalButtonProps](TerminalButtonProps.md) (4 shared connections)
-- [look container](look_container.md) (2 shared connections)
+- [world](world.md) (3 shared connections)
+- [src/**/*.spec](src-__-_.spec.md) (2 shared connections)
+- [test combat attack handler](test_combat_attack_handler.md) (1 shared connections)
 - [combat](combat.md) (1 shared connections)
 - [Test despawn npc handles NPC](Test_despawn_npc_handles_NPC.md) (1 shared connections)
 

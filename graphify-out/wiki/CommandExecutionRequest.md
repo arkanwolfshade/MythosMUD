@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [check alias safety()](check_alias_safety%28%29.md) (11 shared connections)
-- [test alias graph](test_alias_graph.md) (5 shared connections)
+- [check alias safety()](check_alias_safety%28%29.md) (9 shared connections)
+- [test movement service](test_movement_service.md) (8 shared connections)
+- [parse json field()](parse_json_field%28%29.md) (6 shared connections)
+- [main()](main%28%29.md) (5 shared connections)
 - [.add alias()](add_alias%28%29.md) (5 shared connections)
 - [.get uuid mapping()](get_uuid_mapping%28%29.md) (4 shared connections)
-- [test rate limiter utils](test_rate_limiter_utils.md) (4 shared connections)
-- [test movement service](test_movement_service.md) (3 shared connections)
-- [.validate topic()](validate_topic%28%29.md) (2 shared connections)
-- [test player preferences service](test_player_preferences_service.md) (2 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
-- [ContainerDataCore](ContainerDataCore.md) (1 shared connections)
-- [. init ()](_init_%28%29.md) (1 shared connections)
-- [real time](real_time.md) (1 shared connections)
+- [close db()](close_db%28%29.md) (3 shared connections)
+- [world](world.md) (2 shared connections)
+- [Player Position Service](Player_Position_Service.md) (1 shared connections)
+- [CatatoniaRegistry](CatatoniaRegistry.md) (1 shared connections)
+- [cleanup dead connections()](cleanup_dead_connections%28%29_2.md) (1 shared connections)
+- [websocket handler connection](websocket_handler_connection.md) (1 shared connections)
 
 ## Source Files
 

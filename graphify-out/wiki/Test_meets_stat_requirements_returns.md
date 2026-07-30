@@ -1,23 +1,25 @@
 # Test meets stat requirements returns
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_player_room_event_handler_init()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **Test PlayerRoomEventHandler initialization.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **📚 REFERENCES AND RESOURCES** (4 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Best Practice Documents** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **External Resources** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Investigation Reports** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Relationships
 
-- [. call ()](_call_%28%29.md) (1 shared connections)
+- [broadcast message()](broadcast_message%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

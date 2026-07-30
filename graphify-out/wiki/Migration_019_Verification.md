@@ -1,22 +1,24 @@
 # Migration 019 Verification
 
-> 1 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Migration 019 Verification** (0 connections) — `docs/MIGRATION_019_VERIFICATION.md`
+- **test_echo_message_to_sender_exception()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _echo_message_to_sender handles exceptions.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Any](Any.md) (1 shared connections)
+- [test nats message handler chat](test_nats_message_handler_chat.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/MIGRATION_019_VERIFICATION.md`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,11 +1,12 @@
 # test quest service
 
-> 62 nodes
+> 64 nodes
 
 ## Key Concepts
 
 - **test_quest_service.py** (34 connections) — `server/tests/unit/game/test_quest_service.py`
 - **_make_definition_row()** (17 connections) — `server/tests/unit/game/test_quest_service.py`
+- **quest_service()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
 - **_make_turn_in_definition_row()** (6 connections) — `server/tests/unit/game/test_quest_service.py`
 - **test_turn_in_inventory_full_blocks_item_reward()** (4 connections) — `server/tests/unit/game/test_quest_service.py`
 - **test_resolve_name_to_quest_id_found()** (3 connections) — `server/tests/unit/game/test_quest_service.py`
@@ -28,13 +29,15 @@
 - **test_turn_in_no_active_instance_returns_error()** (3 connections) — `server/tests/unit/game/test_quest_service.py`
 - **mock_def_repo()** (2 connections) — `server/tests/unit/game/test_quest_service.py`
 - **mock_instance_repo()** (2 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_resolve_name_to_quest_id_not_found()** (2 connections) — `server/tests/unit/game/test_quest_service.py`
-- *... and 37 more nodes in this community*
+- *... and 39 more nodes in this community*
 
 ## Relationships
 
-- [QuestCompleted](QuestCompleted.md) (3 shared connections)
-- [notify quest abandoned()](notify_quest_abandoned%28%29.md) (1 shared connections)
+- [QuestCompleted](QuestCompleted.md) (4 shared connections)
+- [Any](Any.md) (2 shared connections)
+- [.get room by id()](get_room_by_id%28%29.md) (1 shared connections)
+- [personal interest 4()](personal_interest_4%28%29.md) (1 shared connections)
+- [.state()](state%28%29.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,8 +45,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 164 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 168 (97%)
+- INFERRED: 5 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

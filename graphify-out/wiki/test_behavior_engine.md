@@ -37,7 +37,7 @@
 - [description](description.md) (2 shared connections)
 - [lib](lib.md) (2 shared connections)
 - [sub zone](sub_zone.md) (2 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
+- [world](world.md) (1 shared connections)
 - [Test extract zone from room](Test_extract_zone_from_room.md) (1 shared connections)
 - [Test check rate limit function.](Test_check_rate_limit_function.md) (1 shared connections)
 - [Test create say command delegates](Test_create_say_command_delegates.md) (1 shared connections)

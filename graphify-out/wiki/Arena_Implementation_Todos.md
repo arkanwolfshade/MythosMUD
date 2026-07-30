@@ -1,12 +1,18 @@
 # Arena Implementation Todos
 
-> 3 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **Gladiator Ring Arena** (2 connections) — `docs/plans/gladiator_ring_arena_plan.md`
-- **Arena Center Tutorial Exit and Respawn** (1 connections) — `docs/plans/gladiator_ring_arena_plan.md`
-- **Arena Implementation Todos** (1 connections) — `docs/plans/gladiator-ring-arena-implementation-todos.md`
+- **Python Code Coverage Status** (5 connections) — `docs/archive/PYTHON_COVERAGE_STATUS.md`
+- **Priority Recommendations** (3 connections) — `docs/archive/PYTHON_COVERAGE_STATUS.md`
+- **Normal Files Below 70% Threshold** (2 connections) — `docs/archive/PYTHON_COVERAGE_STATUS.md`
+- **PYTHON_COVERAGE_STATUS.md** (1 connections) — `docs/archive/PYTHON_COVERAGE_STATUS.md`
+- **Summary** (1 connections) — `docs/archive/PYTHON_COVERAGE_STATUS.md`
+- **Critical Files Below Threshold** (1 connections) — `docs/archive/PYTHON_COVERAGE_STATUS.md`
+- **Showing top 50 files with largest coverage gaps** (1 connections) — `docs/archive/PYTHON_COVERAGE_STATUS.md`
+- **Immediate Priority (Critical Files)** (1 connections) — `docs/archive/PYTHON_COVERAGE_STATUS.md`
+- **Secondary Priority (Normal Files)** (1 connections) — `docs/archive/PYTHON_COVERAGE_STATUS.md`
 
 ## Relationships
 
@@ -14,12 +20,11 @@
 
 ## Source Files
 
-- `docs/plans/gladiator-ring-arena-implementation-todos.md`
-- `docs/plans/gladiator_ring_arena_plan.md`
+- `docs/archive/PYTHON_COVERAGE_STATUS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 16 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

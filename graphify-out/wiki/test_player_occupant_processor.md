@@ -1,11 +1,10 @@
 # test player occupant processor
 
-> 48 nodes
+> 46 nodes
 
 ## Key Concepts
 
 - **test_player_occupant_processor.py** (26 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- **processor()** (3 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
 - **test_create_player_occupant_info_grace_period_exception()** (3 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
 - **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
 - **mock_name_extractor()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
@@ -29,12 +28,14 @@
 - **test_process_players_for_occupants_with_invalid_name()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
 - **test_process_players_for_occupants_with_uuid_ensure_player()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
 - **Unit tests for player occupant processor.  Tests the PlayerOccupantProcessor cla** (1 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- *... and 23 more nodes in this community*
+- **Create mock connection manager.** (1 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- *... and 21 more nodes in this community*
 
 ## Relationships
 
-- [login grace period](login_grace_period.md) (3 shared connections)
-- [UUID](UUID.md) (1 shared connections)
+- [test combat persistence handler](test_combat_persistence_handler.md) (2 shared connections)
+- [world](world.md) (1 shared connections)
+- [create access token()](create_access_token%28%29.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,7 +43,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 97 (99%)
+- EXTRACTED: 93 (99%)
 - INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 

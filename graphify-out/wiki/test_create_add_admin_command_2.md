@@ -1,23 +1,28 @@
-# test_create_add_admin_command
+# Test create add admin command
 
-> 2 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **test_create_add_admin_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_add_admin_command delegates to moderation factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Entries** (5 connections) — `docs/archive/investigations/codacy_high_critical_progress.md`
+- **Codacy High/Critical Remediation Progress** (2 connections) — `docs/archive/investigations/codacy_high_critical_progress.md`
+- **codacy_high_critical_progress.md** (1 connections) — `docs/archive/investigations/codacy_high_critical_progress.md`
+- **2026-02-24 — Wave 3 (Backend security) completed** (1 connections) — `docs/archive/investigations/codacy_high_critical_progress.md`
+- **2026-02-24 — Wave 4 (Frontend security) verified** (1 connections) — `docs/archive/investigations/codacy_high_critical_progress.md`
+- **2026-02-24 — Wave 5 (Complexity refactors)** (1 connections) — `docs/archive/investigations/codacy_high_critical_progress.md`
+- **2026-02-24 — Wave 6 (Metrics and hardening)** (1 connections) — `docs/archive/investigations/codacy_high_critical_progress.md`
 
 ## Relationships
 
-- [test command factories](test_command_factories.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `docs/archive/investigations/codacy_high_critical_progress.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

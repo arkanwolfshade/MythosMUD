@@ -1,5 +1,20 @@
 # =��� MythosMUD G�� AI Agent Development Guide
 
+**Version 1.0.0** · MythosMUD · 2026-07-30
+
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
 *"In the vast archives of Miskatonic University, even the most advanced artificial intelligences must learn to navigate
 the forbidden knowledge with care and precision."*
 
@@ -9,7 +24,9 @@ Mythos-themed MUD development.
 
 ---
 
-## =�Ļ AI Agent Context & Personality
+## 2. =�Ļ AI Agent Context & Personality
+
+**[SPEC]**
 
 ### **Project Character**
 
@@ -25,7 +42,9 @@ Mythos-themed MUD development.
 
 ---
 
-## 🏗️ CRITICAL ARCHITECTURE UPDATES (December 2025)
+## 3. 🏗️ CRITICAL ARCHITECTURE UPDATES (December 2025)
+
+**[SPEC]**
 
 ### **ConnectionManager Modular Refactoring**
 
@@ -50,7 +69,9 @@ The real-time ConnectionManager has been refactored from a 3,653-line monolithic
 
 ---
 
-## =��� CRITICAL SECURITY & PRIVACY REQUIREMENTS
+## 4. =��� CRITICAL SECURITY & PRIVACY REQUIREMENTS
+
+**[SPEC]**
 
 ### **Security-First Mindset**
 
@@ -95,7 +116,9 @@ The real-time ConnectionManager has been refactored from a 3,653-line monolithic
 
 ---
 
-## ?? Enhanced Logging Requirements for AI Agents
+## 5. ?? Enhanced Logging Requirements for AI Agents
+
+**[NOTE]**
 
 ### **CRITICAL: Mandatory Logging Patterns**
 
@@ -174,7 +197,9 @@ When generating code, AI agents MUST ensure:
 
 ---
 
-## =��� Essential Reading for AI Agents
+## 6. =��� Essential Reading for AI Agents
+
+**[SPEC]**
 
 ### **Start Every Session With:**
 
@@ -202,7 +227,9 @@ When generating code, AI agents MUST ensure:
 
 ---
 
-## =���n+� Project Architecture for AI Understanding
+## 7. =���n+� Project Architecture for AI Understanding
+
+**[NOTE]**
 
 ### **Backend (Python/FastAPI)**
 
@@ -494,7 +521,9 @@ G��G��G�� [visualization files]     # Room visualization outputs
 
 ---
 
-## =���n+� Development Environment for AI Agents
+## 8. =���n+� Development Environment for AI Agents
+
+**[NOTE]**
 
 ### **Required Tools**
 
@@ -535,7 +564,9 @@ cd server && uv run ruff format .
 
 ---
 
-## =��� AI Agent DevelopmentRules
+## 9. =��� AI Agent DevelopmentRules
+
+**[SPEC]**
 
 ### **Development Environment Rules**
 
@@ -618,7 +649,9 @@ When multiple tasks are pending, prioritize in this order:
 
 ---
 
-## =��� AI Agent Coding Guidelines
+## 10. =��� AI Agent Coding Guidelines
+
+**[NOTE]**
 
 ### **Code Style & Patterns**
 
@@ -697,7 +730,9 @@ def apply_non_euclidean_effect(player_id: str) -> None:
 
 ---
 
-## =��� Testing Patterns for AI Agents
+## 11. =��� Testing Patterns for AI Agents
+
+**[NOTE]**
 
 ### **Test Structure**
 
@@ -762,7 +797,9 @@ MOCK_ROOM = {
 
 ---
 
-## =��� Security Considerations for AI Agents
+## 12. =��� Security Considerations for AI Agents
+
+**[NOTE]**
 
 ### **Input Validation**
 
@@ -815,7 +852,9 @@ def test_data_minimization_compliance():
 
 ---
 
-## =�ī Game Mechanics for AI Understanding
+## 13. =�ī Game Mechanics for AI Understanding
+
+**[SPEC]**
 
 ### **Core Systems**
 
@@ -851,7 +890,9 @@ Rooms are connected via exits (north, south, east, west)
 
 ---
 
-## =��� Common AI Agent Tasks
+## 14. =��� Common AI Agent Tasks
+
+**[SPEC]**
 
 ### **Adding New Features**
 
@@ -881,7 +922,9 @@ Rooms are connected via exits (north, south, east, west)
 
 ---
 
-## =��� AI Agent Best Practices
+## 15. =��� AI Agent Best Practices
+
+**[NOTE]**
 
 ### **Code Generation**
 
@@ -935,7 +978,9 @@ COPPA_ENFORCED = os.getenv("COPPA_ENFORCED", "true").lower() == "true"
 
 ---
 
-## =�ܿ Common Pitfalls for AI Agents
+## 16. =�ܿ Common Pitfalls for AI Agents
+
+**[SPEC]**
 
 ### **Avoid These Patterns**
 
@@ -961,7 +1006,9 @@ G�� **Direct file path concatenation** without validation
 
 ---
 
-## =�Ļ AI Agent Success Metrics
+## 17. =�Ļ AI Agent Success Metrics
+
+**[SPEC]**
 
 ### **Code Quality**
 
@@ -993,7 +1040,9 @@ G�� Features work as specified in PLANNING.md
 
 ---
 
-## =��� Future Considerations for AI Agents
+## 18. =��� Future Considerations for AI Agents
+
+**[SPEC]**
 
 ### **Scalability**
 
@@ -1019,7 +1068,9 @@ Automated testing generation
 
 ---
 
-## =��� Task Tracking with GitHub Issues
+## 19. =��� Task Tracking with GitHub Issues
+
+**[SPEC]**
 
 ### **GitHub Issues Workflow**
 
@@ -1071,7 +1122,9 @@ features.
 
 ---
 
-## =��P AI Agent Communication
+## 20. =��P AI Agent Communication
+
+**[SPEC]**
 
 ### **When to Ask Questions**
 
@@ -1099,8 +1152,9 @@ features.
 
 ---
 
-## =��� Security Checklist for AI Agents
+## 21. =��� Security Checklist for AI Agents
 
+**[SPEC]**
 Before completing any feature, ensure:
 
 - [ ] No hardcoded secrets in code
@@ -1129,3 +1183,11 @@ knowledge we seek to implement must be both powerful and safe for all users.
  
  
  
+
+## 22. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

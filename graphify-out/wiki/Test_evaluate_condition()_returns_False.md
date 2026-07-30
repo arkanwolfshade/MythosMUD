@@ -1,24 +1,25 @@
 # Test evaluate condition() returns False
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **.test_extract_initial_player_name_none()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **Test _extract_initial_player_name when name is None.** (1 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **🚦 Next Steps** (4 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **Immediate (Today)** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **This Week** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **Production Deployment** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
 
 ## Relationships
 
-- [container websocket events](container_websocket_events.md) (1 shared connections)
-- [PlayerNameExtractor](PlayerNameExtractor.md) (1 shared connections)
+- [Test handle nats message handles](Test_handle_nats_message_handles.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_name_utils.py`
+- `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

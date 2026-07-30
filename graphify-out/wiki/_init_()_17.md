@@ -1,50 +1,56 @@
 # . init ()
 
-> 47 nodes
+> 78 nodes
 
 ## Key Concepts
 
-- **test_pattern_matcher.py** (20 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
-- **PatternMatcher** (13 connections) — `server/services/nats_subject_manager/pattern_matcher.py`
-- **pattern_matcher.py** (4 connections) — `server/services/nats_subject_manager/pattern_matcher.py`
-- **.matches_any_pattern()** (4 connections) — `server/services/nats_subject_manager/pattern_matcher.py`
-- **._components_match_pattern()** (3 connections) — `server/services/nats_subject_manager/pattern_matcher.py`
-- **pattern_matcher()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
-- **strict_pattern_matcher()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
-- **test_pattern_matcher_init()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
-- **test_pattern_matcher_init_strict()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
-- **.__init__()** (2 connections) — `server/services/nats_subject_manager/pattern_matcher.py`
-- **test_matches_any_pattern_exact_match()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
-- **test_matches_any_pattern_no_match()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
-- **test_matches_any_pattern_different_length()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
-- **test_matches_any_pattern_multiple_patterns()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
-- **test_matches_any_pattern_strict_validation()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
-- **test_components_match_pattern_exact()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
-- **test_components_match_pattern_placeholder()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
-- **test_components_match_pattern_mismatch()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
-- **test_components_match_pattern_invalid_placeholder_value()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
-- **test_components_match_pattern_strict_no_underscores()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
-- **test_components_match_pattern_strict_allows_hyphens()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
-- **test_components_match_pattern_numbers()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
-- **test_components_match_pattern_multiple_placeholders()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
-- **Any** (1 connections)
-- **Pattern matching utilities for NATS Subject Manager.  This module provides patte** (1 connections) — `server/services/nats_subject_manager/pattern_matcher.py`
-- *... and 22 more nodes in this community*
+- **logging_file_setup.py** (35 connections) — `server/structured_logging/logging_file_setup.py`
+- **setup_enhanced_file_logging()** (20 connections) — `server/structured_logging/logging_file_setup.py`
+- **rotate_log_files()** (18 connections) — `server/structured_logging/logging_utilities.py`
+- **test_logging_file_setup.py** (14 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **load_player_guid_formatter_class()** (11 connections) — `server/structured_logging/logging_utilities.py`
+- **_setup_aggregator_handlers()** (9 connections) — `server/structured_logging/logging_file_setup.py`
+- **_setup_console_handler()** (9 connections) — `server/structured_logging/logging_file_setup.py`
+- **_prepare_log_environment()** (9 connections) — `server/structured_logging/logging_file_setup.py`
+- **_setup_category_handlers()** (8 connections) — `server/structured_logging/logging_file_setup.py`
+- **LoggerNameFilter** (8 connections) — `server/structured_logging/logging_file_setup.py`
+- **_create_handler_for_category()** (8 connections) — `server/structured_logging/logging_file_setup.py`
+- **Queue** (7 connections)
+- **test_queue_listener_has_aggregator_handlers()** (7 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **test_warning_and_error_reach_aggregator_files()** (7 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **get_queue_listener()** (6 connections) — `server/structured_logging/logging_file_setup.py`
+- **stop_queue_listener()** (6 connections) — `server/structured_logging/logging_file_setup.py`
+- **_CategoryHandlerConfig** (6 connections) — `server/structured_logging/logging_file_setup.py`
+- **Handler** (6 connections)
+- **_ConsoleHandlerConfig** (6 connections) — `server/structured_logging/logging_file_setup.py`
+- **_setup_async_logging_queue()** (6 connections) — `server/structured_logging/logging_file_setup.py`
+- **_create_formatter()** (6 connections) — `server/structured_logging/logging_file_setup.py`
+- **_root_handlers_snapshot()** (6 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **_restore_root_handlers()** (6 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **test_aggregator_handlers_on_root_when_async()** (6 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **_get_or_create_log_queue()** (5 connections) — `server/structured_logging/logging_file_setup.py`
+- *... and 53 more nodes in this community*
 
 ## Relationships
 
-- [Any](Any.md) (3 shared connections)
-- [get subject manager dependency()](get_subject_manager_dependency%28%29.md) (1 shared connections)
+- [logging handlers](logging_handlers.md) (15 shared connections)
+- [Path](Path.md) (14 shared connections)
+- [world](world.md) (7 shared connections)
+- [PlayerGuidFormatter](PlayerGuidFormatter.md) (7 shared connections)
+- [windows safe rotation](windows_safe_rotation.md) (4 shared connections)
+- [get current tick()](get_current_tick%28%29.md) (3 shared connections)
+- [aggregate log entry()](aggregate_log_entry%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/nats_subject_manager/pattern_matcher.py`
-- `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
+- `server/structured_logging/logging_file_setup.py`
+- `server/structured_logging/logging_utilities.py`
+- `server/tests/unit/structured_logging/test_logging_file_setup.py`
 
 ## Audit Trail
 
-- EXTRACTED: 107 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 313 (97%)
+- INFERRED: 10 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -34,7 +34,7 @@
 ## Relationships
 
 - [test rate limiter](test_rate_limiter.md) (4 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
+- [world](world.md) (1 shared connections)
 - [CorpseNotFoundError](CorpseNotFoundError.md) (1 shared connections)
 
 ## Source Files

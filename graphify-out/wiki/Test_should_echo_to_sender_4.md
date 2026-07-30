@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **.test_log_uuid_validation_failure_critical()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **Test _log_uuid_validation_failure with critical error.** (1 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **Memory Leak Metrics Usage Guide** (1 connections) — `docs/MEMORY_LEAK_METRICS_USAGE_GUIDE.md`
+- **Memory Leak Monitoring Endpoints** (1 connections) — `docs/MEMORY_LEAK_METRICS_USAGE_GUIDE.md`
 
 ## Relationships
 
-- [container websocket events](container_websocket_events.md) (1 shared connections)
-- [PlayerNameExtractor](PlayerNameExtractor.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_name_utils.py`
+- `docs/MEMORY_LEAK_METRICS_USAGE_GUIDE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

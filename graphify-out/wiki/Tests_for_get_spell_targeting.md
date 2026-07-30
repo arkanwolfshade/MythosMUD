@@ -1,24 +1,44 @@
 # Tests for get spell targeting
 
-> 2 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **._handle_player_entered_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **Handle player_entered event.** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **RoomMapEditorAliases.test.ts** (7 connections) — `client/src/components/map/__tests__/RoomMapEditorAliases.test.ts`
+- **RoomMapEditor.test.tsx** (6 connections) — `client/src/components/map/__tests__/RoomMapEditor.test.tsx`
+- **RoomMapEditorScene.tsx** (5 connections) — `client/src/components/map/RoomMapEditorScene.tsx`
+- **RoomMapEditor.tsx** (4 connections) — `client/src/components/map/RoomMapEditor.tsx`
+- **RoomMapEditorCore.tsx** (3 connections) — `client/src/components/map/RoomMapEditorCore.tsx`
+- **RoomMapEditorFeature.tsx** (3 connections) — `client/src/components/map/RoomMapEditorFeature.tsx`
+- **RoomMapEditorImpl.tsx** (3 connections) — `client/src/components/map/RoomMapEditorImpl.tsx`
+- **RoomMapEditorProps** (2 connections) — `client/src/components/map/RoomMapEditorRuntime.tsx`
+- **roomMapEditorTestSetup.tsx** (2 connections) — `client/src/components/map/__tests__/roomMapEditorTestSetup.tsx`
+- **UseRoomMapDataOptions** (2 connections) — `client/src/components/map/hooks/useRoomMapData.ts`
+- **useRoomMapDataMock** (1 connections) — `client/src/components/map/__tests__/RoomMapEditor.test.tsx`
+- **buildUseMapEditingMockReturn()** (1 connections) — `client/src/components/map/__tests__/roomMapEditorTestSetup.tsx`
 
 ## Relationships
 
-- [NATSMessageSubscriptionMixin](NATSMessageSubscriptionMixin.md) (1 shared connections)
-- [PerformanceTracker](PerformanceTracker.md) (1 shared connections)
+- [EdgeCreationModal](EdgeCreationModal.md) (6 shared connections)
+- [EdgeDetailsPanel](EdgeDetailsPanel.md) (2 shared connections)
+- [RoomMapViewerProps](RoomMapViewerProps.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/nats_message_handler_subscriptions.py`
+- `client/src/components/map/RoomMapEditor.tsx`
+- `client/src/components/map/RoomMapEditorCore.tsx`
+- `client/src/components/map/RoomMapEditorFeature.tsx`
+- `client/src/components/map/RoomMapEditorImpl.tsx`
+- `client/src/components/map/RoomMapEditorRuntime.tsx`
+- `client/src/components/map/RoomMapEditorScene.tsx`
+- `client/src/components/map/__tests__/RoomMapEditor.test.tsx`
+- `client/src/components/map/__tests__/RoomMapEditorAliases.test.ts`
+- `client/src/components/map/__tests__/roomMapEditorTestSetup.tsx`
+- `client/src/components/map/hooks/useRoomMapData.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 39 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

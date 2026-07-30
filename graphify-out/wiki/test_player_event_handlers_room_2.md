@@ -1,45 +1,50 @@
 # test player event handlers room
 
-> 20 nodes
+> 23 nodes
 
 ## Key Concepts
 
-- **delegate_error_handler()** (12 connections) — `server/realtime/connection_delegates.py`
-- **connection_error_methods.py** (10 connections) — `server/realtime/connection_error_methods.py`
-- **detect_and_handle_error_state_impl()** (7 connections) — `server/realtime/connection_error_methods.py`
-- **handle_websocket_error_impl()** (7 connections) — `server/realtime/connection_error_methods.py`
-- **handle_authentication_error_impl()** (7 connections) — `server/realtime/connection_error_methods.py`
-- **handle_security_violation_impl()** (7 connections) — `server/realtime/connection_error_methods.py`
-- **recover_from_error_impl()** (7 connections) — `server/realtime/connection_error_methods.py`
-- **UUID** (6 connections)
-- **Any** (5 connections)
-- **test_delegate_error_handler_success()** (3 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
-- **test_delegate_error_handler_none()** (3 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
-- **Generic delegate for error handler methods.      Args:         error_handler: Er** (1 connections) — `server/realtime/connection_delegates.py`
-- **Error-handling method implementations for ConnectionManager.  Thin wrappers th** (1 connections) — `server/realtime/connection_error_methods.py`
-- **Detect when a client is in an error state and handle it appropriately.** (1 connections) — `server/realtime/connection_error_methods.py`
-- **Handle WebSocket-specific errors.** (1 connections) — `server/realtime/connection_error_methods.py`
-- **Handle authentication-related errors.** (1 connections) — `server/realtime/connection_error_methods.py`
-- **Handle security violations.** (1 connections) — `server/realtime/connection_error_methods.py`
-- **Attempt to recover from an error state for a player.** (1 connections) — `server/realtime/connection_error_methods.py`
-- **Test delegate_error_handler() successfully delegates to handler.** (1 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
-- **Test delegate_error_handler() returns default when handler is None.** (1 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
+- **CommandParser** (19 connections) — `server/utils/command_parser.py`
+- **.parse_command()** (7 connections) — `server/utils/command_parser.py`
+- **._create_command_object()** (7 connections) — `server/utils/command_parser.py`
+- **Command** (4 connections)
+- **._parse_command_parts()** (4 connections) — `server/utils/command_parser.py`
+- **._invoke_create_method()** (4 connections) — `server/utils/command_parser.py`
+- **command_parser()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_create_command_object_pydantic_validation_error()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **command_parser()** (3 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **._normalize_command()** (3 connections) — `server/utils/command_parser.py`
+- **._resolve_command_alias()** (3 connections) — `server/utils/command_parser.py`
+- **.get_command_help()** (2 connections) — `server/utils/command_parser.py`
+- **Create a CommandParser instance.** (1 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **Test _create_command_object handles Pydantic validation errors.** (1 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **Create a CommandParser instance.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **Secure command parser using Click for parsing and Pydantic for validation.** (1 connections) — `server/utils/command_parser.py`
+- **Parse and validate a command string.          Args:             command_string:** (1 connections) — `server/utils/command_parser.py`
+- **Normalize command string by removing slash prefix and cleaning whitespace.** (1 connections) — `server/utils/command_parser.py`
+- **Parse command string into command and arguments.          Args:             comm** (1 connections) — `server/utils/command_parser.py`
+- **Resolve single-letter aliases to full command names.** (1 connections) — `server/utils/command_parser.py`
+- **Invoke the appropriate factory method for the command.** (1 connections) — `server/utils/command_parser.py`
+- **Create and validate command object based on command type.          Args:** (1 connections) — `server/utils/command_parser.py`
+- **Get help information for commands.          Args:             command_name: Spec** (1 connections) — `server/utils/command_parser.py`
 
 ## Relationships
 
-- [Player](Player.md) (11 shared connections)
-- [connection delegates](connection_delegates.md) (6 shared connections)
+- [Spell Targeting](Spell_Targeting.md) (8 shared connections)
+- [.apply dp change()](apply_dp_change%28%29.md) (3 shared connections)
+- [test room sync service](test_room_sync_service.md) (2 shared connections)
+- [test find item in room](test_find_item_in_room.md) (2 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_delegates.py`
-- `server/realtime/connection_error_methods.py`
-- `server/tests/unit/realtime/test_connection_delegates.py`
+- `server/tests/unit/utils/test_command_parser.py`
+- `server/tests/unit/utils/test_command_parser_helpers.py`
+- `server/utils/command_parser.py`
 
 ## Audit Trail
 
-- EXTRACTED: 83 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 71 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

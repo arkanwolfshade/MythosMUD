@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **__init__.py** (1 connections) — `server/tests/__init__.py`
-- **MythosMUD server test suite.** (1 connections) — `server/tests/__init__.py`
+- **__init__.py** (1 connections) — `server/structured_logging/__init__.py`
+- **Structured logging package for MythosMUD.  This package provides enhanced loggin** (1 connections) — `server/structured_logging/__init__.py`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `server/tests/__init__.py`
+- `server/structured_logging/__init__.py`
 
 ## Audit Trail
 

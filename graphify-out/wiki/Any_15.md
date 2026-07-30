@@ -1,50 +1,57 @@
 # Any
 
-> 25 nodes
+> 57 nodes
 
 ## Key Concepts
 
-- **Any** (10 connections)
-- **.collect_all_metrics()** (9 connections) — `server/monitoring/memory_leak_metrics.py`
-- **.check_alerts()** (9 connections) — `server/monitoring/memory_leak_metrics.py`
-- **.collect_connection_metrics()** (5 connections) — `server/monitoring/memory_leak_metrics.py`
-- **.collect_event_metrics()** (5 connections) — `server/monitoring/memory_leak_metrics.py`
-- **.collect_task_metrics()** (5 connections) — `server/monitoring/memory_leak_metrics.py`
-- **.collect_nats_metrics()** (5 connections) — `server/monitoring/memory_leak_metrics.py`
-- **._calculate_single_growth_rate()** (4 connections) — `server/monitoring/memory_leak_metrics.py`
-- **.calculate_growth_rates()** (4 connections) — `server/monitoring/memory_leak_metrics.py`
-- **._check_connection_alerts()** (4 connections) — `server/monitoring/memory_leak_metrics.py`
-- **._check_cache_alerts()** (4 connections) — `server/monitoring/memory_leak_metrics.py`
-- **._check_subscriber_alerts()** (3 connections) — `server/monitoring/memory_leak_metrics.py`
-- **._check_task_alerts()** (3 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Collect all metrics from all sources.          Returns:             Dictionary c** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Collect connection metrics from ConnectionManager.          Returns:** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Collect event metrics from EventBus.          Returns:             Dictionary wi** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Collect task metrics from TaskRegistry.          Returns:             Dictionary** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Collect NATS subscription metrics from NATSService.          Returns:** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Calculate growth rate for a single metric.          Args:             current: C** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Calculate growth rates for metrics over time.          Returns:             Dict** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Check connection-related alerts and append to alerts list.** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Check subscriber growth rate alerts and append to alerts list.** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Check cache-related alerts and append to alerts list.** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Check task growth rate alerts and append to alerts list.** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Check metrics against alert thresholds and return list of alerts.          Args:** (1 connections) — `server/monitoring/memory_leak_metrics.py`
+- **NATSMessageBroker** (30 connections) — `server/infrastructure/nats_broker.py`
+- **nats_broker.py** (17 connections) — `server/infrastructure/nats_broker.py`
+- **MessageBrokerError** (13 connections) — `server/infrastructure/message_broker.py`
+- **message_broker.py** (11 connections) — `server/infrastructure/message_broker.py`
+- **PublishError** (9 connections) — `server/infrastructure/message_broker.py`
+- **SubscribeError** (9 connections) — `server/infrastructure/message_broker.py`
+- **RequestError** (9 connections) — `server/infrastructure/message_broker.py`
+- **MessageBrokerConnectionError** (8 connections) — `server/infrastructure/message_broker.py`
+- **UnsubscribeError** (8 connections) — `server/infrastructure/message_broker.py`
+- **.publish()** (6 connections) — `server/infrastructure/nats_broker.py`
+- **.connect()** (5 connections) — `server/infrastructure/nats_broker.py`
+- **.disconnect()** (5 connections) — `server/infrastructure/nats_broker.py`
+- **.is_connected()** (5 connections) — `server/infrastructure/nats_broker.py`
+- **.subscribe()** (5 connections) — `server/infrastructure/nats_broker.py`
+- **.request()** (5 connections) — `server/infrastructure/nats_broker.py`
+- **._start_health_monitoring()** (5 connections) — `server/infrastructure/nats_broker.py`
+- **._configure_tls()** (4 connections) — `server/infrastructure/nats_broker.py`
+- **.unsubscribe()** (4 connections) — `server/infrastructure/nats_broker.py`
+- **._error_callback()** (4 connections) — `server/infrastructure/nats_broker.py`
+- **._handle_error_async()** (4 connections) — `server/infrastructure/nats_broker.py`
+- **._handle_reconnect_async()** (4 connections) — `server/infrastructure/nats_broker.py`
+- **._health_check_loop()** (4 connections) — `server/infrastructure/nats_broker.py`
+- **Any** (3 connections)
+- **._disconnected_callback()** (3 connections) — `server/infrastructure/nats_broker.py`
+- **._handle_disconnect_async()** (3 connections) — `server/infrastructure/nats_broker.py`
+- *... and 32 more nodes in this community*
 
 ## Relationships
 
-- [.shutdown()](shutdown%28%29.md) (14 shared connections)
-- [Any](Any.md) (2 shared connections)
-- [Player](Player.md) (1 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
+- [message broker](message_broker.md) (20 shared connections)
+- [init](init.md) (2 shared connections)
+- [BaseModel](BaseModel.md) (2 shared connections)
+- [get subject manager dependency()](get_subject_manager_dependency%28%29.md) (2 shared connections)
+- [world](world.md) (2 shared connections)
+- [BaseUserManager](BaseUserManager.md) (1 shared connections)
+- [FollowTargetValue](FollowTargetValue.md) (1 shared connections)
+- [Any](Any.md) (1 shared connections)
+- [. init ()](_init_%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/monitoring/memory_leak_metrics.py`
+- `server/infrastructure/message_broker.py`
+- `server/infrastructure/nats_broker.py`
 
 ## Audit Trail
 
-- EXTRACTED: 82 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 201 (91%)
+- INFERRED: 21 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

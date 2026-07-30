@@ -1,6 +1,6 @@
 # Any
 
-> 76 nodes
+> 80 nodes
 
 ## Key Concepts
 
@@ -13,7 +13,9 @@
 - **.despawn_npc()** (8 connections) — `server/npc/population_control.py`
 - **._get_active_npcs_from_lifecycle_manager()** (6 connections) — `server/npc/population_control.py`
 - **._get_zone_key_from_room_id()** (5 connections) — `server/npc/population_control.py`
+- **._should_remove_inactive_npc()** (5 connections) — `server/npc/population_control.py`
 - **.cleanup_inactive_npcs()** (5 connections) — `server/npc/population_control.py`
+- **.is_required()** (4 connections) — `server/models/npc.py`
 - **._update_population_stats_for_despawn()** (4 connections) — `server/npc/population_control.py`
 - **Any** (3 connections)
 - **_stable_room_id_for_zone()** (3 connections) — `server/npc/npc_utils.py`
@@ -27,24 +29,24 @@
 - **test_extract_npc_metadata_defaults()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
 - **test_extract_npc_metadata_non_string_type()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
 - **test_extract_npc_metadata_truthy_required()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **test_extract_npc_metadata_none_required()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **test_extract_definition_id_from_npc_has_definition_id()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- *... and 51 more nodes in this community*
+- *... and 55 more nodes in this community*
 
 ## Relationships
 
-- [TerminalButtonProps](TerminalButtonProps.md) (17 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (16 shared connections)
+- [Test check all command blocks](Test_check_all_command_blocks.md) (2 shared connections)
 
 ## Source Files
 
+- `server/models/npc.py`
 - `server/npc/npc_utils.py`
 - `server/npc/population_control.py`
 - `server/tests/unit/npc/test_npc_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 236 (100%)
-- INFERRED: 1 (0%)
+- EXTRACTED: 244 (98%)
+- INFERRED: 4 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,64 +1,61 @@
 # . init ()
 
-> 192 nodes
+> 47 nodes
 
 ## Key Concepts
 
-- **MythosMUDError** (79 connections) — `server/exceptions.py`
-- **RateLimitError** (76 connections) — `server/exceptions.py`
-- **legacy_error_handlers.py** (48 connections) — `server/legacy_error_handlers.py`
-- **ErrorType** (47 connections) — `server/error_types.py`
-- **ErrorMessages** (47 connections) — `server/error_types.py`
-- **test_legacy_error_handlers.py** (41 connections) — `server/tests/unit/test_legacy_error_handlers.py`
-- **CircuitBreaker** (38 connections) — `server/legacy_error_handlers.py`
-- **NetworkError** (37 connections) — `server/exceptions.py`
-- **ErrorResponse** (37 connections) — `server/legacy_error_handlers.py`
-- **TestErrorMapping** (35 connections) — `server/tests/unit/test_legacy_error_handlers.py`
-- **ResourceNotFoundError** (34 connections) — `server/exceptions.py`
-- **ConfigurationError** (32 connections) — `server/exceptions.py`
-- **GameLogicError** (31 connections) — `server/exceptions.py`
-- **TestSanitization** (31 connections) — `server/tests/unit/test_legacy_error_handlers.py`
-- **JSONResponse** (30 connections) — `docs/examples/logging/fastapi_integration.py`
-- **ErrorSeverity** (30 connections) — `server/error_types.py`
-- **TestErrorHandlers** (27 connections) — `server/tests/unit/test_legacy_error_handlers.py`
-- **TestCircuitBreaker** (22 connections) — `server/tests/unit/test_legacy_error_handlers.py`
-- **Request** (21 connections)
-- **_AppWithLegacyConfigState** (20 connections) — `server/legacy_error_handlers.py`
-- **TestErrorResponse** (20 connections) — `server/tests/unit/test_legacy_error_handlers.py`
-- **_AppStateWithLegacyConfig** (19 connections) — `server/legacy_error_handlers.py`
-- **TestCreateErrorResponse** (19 connections) — `server/tests/unit/test_legacy_error_handlers.py`
-- **TestLegacyHandlerSecurity** (19 connections) — `server/tests/unit/test_legacy_error_handlers.py`
-- **ErrorResponseDetailsInput** (18 connections)
-- *... and 167 more nodes in this community*
+- **WebSocketRequestContext** (26 connections) — `server/realtime/request_context.py`
+- **player_service()** (23 connections) — `docs/examples/logging/fastapi_integration.py`
+- **test_request_context.py** (16 connections) — `server/tests/unit/realtime/test_request_context.py`
+- **request_context.py** (9 connections) — `server/realtime/request_context.py`
+- **create_websocket_request_context()** (9 connections) — `server/realtime/request_context.py`
+- **Any** (7 connections)
+- **.set_app_state_services()** (4 connections) — `server/realtime/request_context.py`
+- **.get_event_bus()** (4 connections) — `server/realtime/request_context.py`
+- **.get_alias_storage()** (4 connections) — `server/realtime/request_context.py`
+- **test_create_websocket_request_context()** (4 connections) — `server/tests/unit/realtime/test_request_context.py`
+- **test_create_websocket_request_context_no_user()** (4 connections) — `server/tests/unit/realtime/test_request_context.py`
+- **.__init__()** (3 connections) — `server/realtime/request_context.py`
+- **.set_alias_storage()** (3 connections) — `server/realtime/request_context.py`
+- **.get_persistence()** (3 connections) — `server/realtime/request_context.py`
+- **test_websocket_request_context_init()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
+- **test_websocket_request_context_init_no_user()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
+- **test_websocket_request_context_set_alias_storage()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
+- **test_websocket_request_context_set_app_state_services()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
+- **test_websocket_request_context_set_app_state_services_none()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
+- **test_websocket_request_context_get_persistence()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
+- **test_websocket_request_context_get_event_bus()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
+- **test_websocket_request_context_get_event_bus_none()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
+- **test_websocket_request_context_get_alias_storage()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
+- **test_websocket_request_context_get_alias_storage_not_set()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
+- **Simulate player service.** (1 connections) — `docs/examples/logging/fastapi_integration.py`
+- *... and 22 more nodes in this community*
 
 ## Relationships
 
-- [fetch schedule entries()](fetch_schedule_entries%28%29.md) (62 shared connections)
-- [convert pydantic error()](convert_pydantic_error%28%29.md) (60 shared connections)
-- [real time](real_time.md) (35 shared connections)
-- [BaseCommand](BaseCommand.md) (35 shared connections)
-- [AbstractContextManager](AbstractContextManager.md) (35 shared connections)
-- [Any](Any.md) (32 shared connections)
-- [.initialize()](initialize%28%29.md) (29 shared connections)
-- [create access token()](create_access_token%28%29.md) (25 shared connections)
-- [admin shutdown command](admin_shutdown_command.md) (8 shared connections)
-- [.is required()](is_required%28%29.md) (7 shared connections)
-- [Core character statistics with Lovecraftian](Core_character_statistics_with_Lovecraftian.md) (5 shared connections)
-- [Room](Room.md) (4 shared connections)
+- [Send a system message to](Send_a_system_message_to.md) (6 shared connections)
+- [parse json field()](parse_json_field%28%29.md) (6 shared connections)
+- [.is required()](is_required%28%29.md) (6 shared connections)
+- [admin setstat command](admin_setstat_command.md) (2 shared connections)
+- [Any](Any.md) (2 shared connections)
+- [Player Position Service](Player_Position_Service.md) (2 shared connections)
+- [ContainerData](ContainerData.md) (2 shared connections)
+- [world](world.md) (2 shared connections)
+- [check alias safety()](check_alias_safety%28%29.md) (1 shared connections)
+- [admin setlucidity command](admin_setlucidity_command.md) (1 shared connections)
+- [.state()](state%28%29.md) (1 shared connections)
+- [test combat attack handler](test_combat_attack_handler.md) (1 shared connections)
 
 ## Source Files
 
 - `docs/examples/logging/fastapi_integration.py`
-- `server/error_handlers/standardized_responses.py`
-- `server/error_types.py`
-- `server/exceptions.py`
-- `server/legacy_error_handlers.py`
-- `server/tests/unit/test_legacy_error_handlers.py`
+- `server/realtime/request_context.py`
+- `server/tests/unit/realtime/test_request_context.py`
 
 ## Audit Trail
 
-- EXTRACTED: 876 (61%)
-- INFERRED: 559 (39%)
+- EXTRACTED: 149 (87%)
+- INFERRED: 23 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

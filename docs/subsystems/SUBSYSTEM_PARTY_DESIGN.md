@@ -1,14 +1,29 @@
 # Party Subsystem Design
 
-## Overview
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
 The party subsystem provides in-memory, ephemeral groups: a leader can form a party, invite
 (same-room players, with accept/decline), kick, and disband; members can leave. State is not
 persisted; disconnect removes the player from their party and disbands the party if they were
 leader. Party invites use a 60-second TTL and party_invite event to the target; combat uses
 is_in_same_party to block attacking party members. PartyUpdated events are emitted for client sync.
 
-## Architecture
+## 2. Architecture
+
+**[NOTE]**
 
 ```mermaid
 flowchart LR
@@ -64,7 +79,9 @@ flowchart LR
   member (when party-friendly rules apply).
 - **ChatService**: send_party_message for party chat (NATS/room-scoped to party).
 
-## Key design decisions
+## 3. Key design decisions
+
+**[SPEC]**
 
 - **In-memory only**: No DB; parties and invites disappear on server restart or disconnect.
 - **Invite requires acceptance**: request_party_invite creates pending invite and sends party_invite
@@ -77,7 +94,9 @@ flowchart LR
 - **PartyUpdated event**: Emitted on create, disband, member_joined, member_left so clients can
   refresh party UI.
 
-## Constraints
+## 4. Constraints
+
+**[SPEC]**
 
 - **One party per player**: create_party and add_member fail if player already in a party.
 - **Invite target not in party**: Target must not be in any party to receive invite.
@@ -85,7 +104,9 @@ flowchart LR
 - **Dependencies**: EventBus, ConnectionManager (send_personal_message, send_game_event),
   AsyncPersistence (display names, optional), ChatService (party chat).
 
-## Component interactions
+## 5. Component interactions
+
+**[SPEC]**
 
 1. **party invite &lt;name&gt;** – If no party, create_party(leader_id). Resolve target (player, same
    room). request_party_invite -> \_pending_invites, send party_invite to target. Target accepts
@@ -99,7 +120,9 @@ flowchart LR
 6. **Combat** – Before applying attack, CombatValidator checks is_in_same_party(attacker, target);
    if true, block with "cannot attack party member" (or equivalent).
 
-## Developer guide
+## 6. Developer guide
+
+**[SPEC]**
 
 - **Adding party-scoped logic**: Use get_party_for_player or get_party_members; for same-party
   checks use is_in_same_party. Call on_player_disconnect from session cleanup.
@@ -109,7 +132,9 @@ flowchart LR
   party_commands with mocked container and TargetResolutionService.
 - **Client**: Handle party_invite (accept/decline UI), PartyUpdated (refresh party list/state).
 
-## Troubleshooting
+## 7. Troubleshooting
+
+**[NOTE]**
 
 - **"You can only invite players"**: Target resolved as NPC; TargetResolutionService must return
   PLAYER for invite.
@@ -124,7 +149,17 @@ See also [SUBSYSTEM_COMBAT_DESIGN.md](SUBSYSTEM_COMBAT_DESIGN.md) and
 [GAME_BUG_INVESTIGATION_PLAYBOOK](../../.cursor/rules/GAME_BUG_INVESTIGATION_PLAYBOOK.mdc). Archived:
 [docs/archive/PARTY_SYSTEM_REFERENCE.md](../archive/PARTY_SYSTEM_REFERENCE.md).
 
-## Related docs
+## 8. Related docs
+
+**[SPEC]**
 
 - [COMMAND_MODELS_REFERENCE.md](../COMMAND_MODELS_REFERENCE.md)
 - [EVENT_OWNERSHIP_MATRIX.md](../EVENT_OWNERSHIP_MATRIX.md)
+
+## 9. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

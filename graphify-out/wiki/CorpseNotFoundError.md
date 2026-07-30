@@ -14,7 +14,7 @@
 - [process dead players()](process_dead_players%28%29.md) (1 shared connections)
 - [RateLimiter](RateLimiter.md) (1 shared connections)
 - [. init ()](_init_%28%29.md) (1 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
+- [NPCEventHandler](NPCEventHandler.md) (1 shared connections)
 - [ChatLogger](ChatLogger.md) (1 shared connections)
 - [MythosValidationError](MythosValidationError.md) (1 shared connections)
 - [test chat logger](test_chat_logger.md) (1 shared connections)

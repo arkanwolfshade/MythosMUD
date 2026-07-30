@@ -1,13 +1,11 @@
 # test memory profiler
 
-> 61 nodes
+> 57 nodes
 
 ## Key Concepts
 
 - **MemoryProfiler** (32 connections) — `server/utils/memory_profiler.py`
 - **test_memory_profiler.py** (15 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **benchmark_model_memory_usage()** (13 connections) — `server/utils/memory_profiler.py`
-- **memory_profiler.py** (10 connections) — `server/utils/memory_profiler.py`
 - **.measure_model_instantiation()** (8 connections) — `server/utils/memory_profiler.py`
 - **Any** (8 connections)
 - **.measure_model_deserialization()** (8 connections) — `server/utils/memory_profiler.py`
@@ -29,16 +27,15 @@
 - **test_memory_profiler_stop_profiling()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
 - **test_memory_profiler_get_current_memory_usage()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
 - **test_memory_profiler_get_memory_delta()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- *... and 36 more nodes in this community*
+- **test_memory_profiler_get_memory_delta_no_baseline()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
+- **test_memory_profiler_get_memory_usage_summary()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
+- *... and 32 more nodes in this community*
 
 ## Relationships
 
-- [Player](Player.md) (4 shared connections)
-- [test npc instance service](test_npc_instance_service.md) (3 shared connections)
-- [fetch container items()](fetch_container_items%28%29.md) (3 shared connections)
+- [Player](Player.md) (7 shared connections)
 - [alias](alias.md) (2 shared connections)
-- [Spell Targeting](Spell_Targeting.md) (2 shared connections)
-- [. init ()](_init_%28%29.md) (1 shared connections)
+- [command parser()](command_parser%28%29.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,8 +44,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 204 (93%)
-- INFERRED: 15 (7%)
+- EXTRACTED: 185 (95%)
+- INFERRED: 9 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

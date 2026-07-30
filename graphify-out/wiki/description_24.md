@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **name** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **description** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 - **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 - **minLength** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 - **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`

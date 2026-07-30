@@ -1,7 +1,20 @@
 # Combat Subsystem Design
 
-## Overview
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
 The combat subsystem handles player-vs-NPC combat. Players use attack (or aliases punch, kick,
 strike) with a target name; the target is resolved in the same room and must be an NPC. Damage is
 derived from equipped weapon (prototype metadata) or config basic_unarmed_damage, then applied via
@@ -10,7 +23,9 @@ during login grace period, and (via CombatValidator) when attacking a party memb
 player; only NPC targets are currently allowed. Rest is interrupted when the player issues a combat
 command.
 
-## Architecture
+## 2. Architecture
+
+**[NOTE]**
 
 ```mermaid
 flowchart LR
@@ -68,7 +83,9 @@ flowchart LR
 - **TargetResolutionService**: Resolves target name in player's room; combat requires single NPC
   match and is_alive.
 
-## Key design decisions
+## 3. Key design decisions
+
+**[NOTE]**
 
 - **NPC-only targets**: \_resolve_combat_target requires target_type == NPC; "You can only attack
   NPCs" for players. Party check in validator would block same-party if PvP were added.
@@ -86,14 +103,18 @@ flowchart LR
   from container (combat_service, event_bus, player_combat_service, connection_manager,
   async_persistence, item_prototype_registry, party_service).
 
-## Constraints
+## 4. Constraints
+
+**[SPEC]**
 
 - **Same room**: Target resolved in player's current_room_id.
 - **Alive NPC**: npc_instance.is_alive; dead NPC returns "{name} is already dead."
 - **Dependencies**: AsyncPersistence, NPC instance service (lifecycle_manager.active_npcs),
   config (basic_unarmed_damage), optional item_prototype_registry, party_service (validator).
 
-## Component interactions
+## 5. Component interactions
+
+**[NOTE]**
 
 1. **attack &lt;target&gt;** – Rest/grace check; get player and room; current_dp <= 0 -> block; room
    no_combat -> block; resolve target (NPC, alive); validate_combat_action; get weapon damage or
@@ -103,7 +124,9 @@ flowchart LR
    combat; apply damage to NPC; broadcast/events as per combat service.
 3. **Punch/kick/strike** – Same as attack with command_type set to punch/kick/strike for messaging.
 
-## Developer guide
+## 6. Developer guide
+
+**[NOTE]**
 
 - **Adding attack alias**: Register in command_service (e.g. "smack" -> handle_attack_command);
   optionally set command_data["command_type"] for message. Add to CombatValidator.attack_aliases
@@ -117,7 +140,9 @@ flowchart LR
 - **Tests**: server/tests/unit/commands/test_combat\*.py, server/tests/unit/validators/
   test_combat_validator.py, server/tests/unit/services/test_npc_combat_integration_service.py.
 
-## Troubleshooting
+## 7. Troubleshooting
+
+**[NOTE]**
 
 - **"You cannot attack ... right now"**: handle_player_attack_on_npc returned False (e.g. grace
   period, room mismatch, NPC not found). Check logs: "Combat initiation failed".
@@ -134,8 +159,18 @@ See also [SUBSYSTEM_PARTY_DESIGN.md](SUBSYSTEM_PARTY_DESIGN.md), [SUBSYSTEM_REST
 (SUBSYSTEM_REST_DESIGN.md), [SUBSYSTEM_NPC_DESIGN.md](SUBSYSTEM_NPC_DESIGN.md), and
 [GAME_BUG_INVESTIGATION_PLAYBOOK](../../.cursor/rules/GAME_BUG_INVESTIGATION_PLAYBOOK.mdc).
 
-## Related docs
+## 8. Related docs
+
+**[SPEC]**
 
 - [COMMAND_MODELS_REFERENCE.md](../COMMAND_MODELS_REFERENCE.md)
 - [ADR-009: Instanced rooms](../architecture/decisions/ADR-009-instanced-rooms.md) (no_combat,
   no_death)
+
+## 9. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

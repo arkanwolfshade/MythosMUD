@@ -25,7 +25,7 @@
 - [. call ()](_call_%28%29.md) (10 shared connections)
 - [init](init.md) (8 shared connections)
 - [lifespan](lifespan.md) (3 shared connections)
-- [test player event handlers state](test_player_event_handlers_state.md) (2 shared connections)
+- [close db()](close_db%28%29.md) (2 shared connections)
 - [Connection Manager](Connection_Manager.md) (2 shared connections)
 
 ## Source Files

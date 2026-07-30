@@ -1,34 +1,40 @@
 # Any
 
-> 13 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **Any** (6 connections)
-- **.merge_room_data()** (4 connections) — `server/services/room_data_cache.py`
-- **._is_newer_data()** (4 connections) — `server/services/room_data_cache.py`
-- **.is_room_data_fresh()** (3 connections) — `server/services/room_data_cache.py`
-- **.get_cache()** (3 connections) — `server/services/room_data_cache.py`
-- **.set_cache()** (3 connections) — `server/services/room_data_cache.py`
-- **.get_cache_stats()** (3 connections) — `server/services/room_data_cache.py`
-- **Check if room data is fresh enough to use.          Args:             room_data:** (1 connections) — `server/services/room_data_cache.py`
-- **Get room data from cache.          Args:             room_id: Room ID to retriev** (1 connections) — `server/services/room_data_cache.py`
-- **Store room data in cache.          Args:             room_id: Room ID to store** (1 connections) — `server/services/room_data_cache.py`
-- **Get statistics about the room data cache.          Args:             is_room_dat** (1 connections) — `server/services/room_data_cache.py`
-- **Merge room data with proper conflict resolution.          Args:             old_** (1 connections) — `server/services/room_data_cache.py`
-- **Check if new data is newer than old data for a specific key.          Args:** (1 connections) — `server/services/room_data_cache.py`
+- **Any** (7 connections)
+- **.__init__()** (6 connections) — `server/services/room_sync_service.py`
+- **._handle_stale_room_data()** (6 connections) — `server/services/room_sync_service.py`
+- **._process_room_update_with_validation()** (4 connections) — `server/services/room_sync_service.py`
+- **._fetch_fresh_room_data()** (4 connections) — `server/services/room_sync_service.py`
+- **.set_room_service()** (3 connections) — `server/services/room_sync_service.py`
+- **._invalidate_stale_cache()** (3 connections) — `server/services/room_sync_service.py`
+- **._process_room_transition()** (3 connections) — `server/services/room_sync_service.py`
+- **.get_room_data_cache_stats()** (3 connections) — `server/services/room_sync_service.py`
+- **Initialize the room synchronization service.          Args:             room_ser** (1 connections) — `server/services/room_sync_service.py`
+- **Set the room service for fetching fresh room data.          Args:             ro** (1 connections) — `server/services/room_sync_service.py`
+- **Process room update with comprehensive validation.          Args:             ro** (1 connections) — `server/services/room_sync_service.py`
+- **Invalidate stale room cache entry.          Args:             room_id: Room ID t** (1 connections) — `server/services/room_sync_service.py`
+- **Fetch fresh room data from room service.          Args:             room_id: Roo** (1 connections) — `server/services/room_sync_service.py`
+- **Handle stale room data by requesting fresh data.          Args:             room** (1 connections) — `server/services/room_sync_service.py`
+- **Process room transition with proper ordering and validation.          Args:** (1 connections) — `server/services/room_sync_service.py`
+- **Get statistics about the room data cache.          Returns:             Dict[str** (1 connections) — `server/services/room_sync_service.py`
 
 ## Relationships
 
-- [Manages room data caching and](Manages_room_data_caching_and.md) (6 shared connections)
+- [combat taunt](combat_taunt.md) (8 shared connections)
+- [Any](Any.md) (2 shared connections)
+- [Manages room data caching and](Manages_room_data_caching_and.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/room_data_cache.py`
+- `server/services/room_sync_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 32 (100%)
+- EXTRACTED: 47 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

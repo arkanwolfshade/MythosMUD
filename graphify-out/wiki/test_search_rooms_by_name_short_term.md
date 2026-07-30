@@ -1,23 +1,24 @@
 # test_search_rooms_by_name_short_term
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_search_rooms_by_name_short_term()** (2 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test search_rooms_by_name() returns empty list for short search term.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Success Criteria** (3 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Quantitative Goals** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Qualitative Goals** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
 
 ## Relationships
 
-- [test room service](test_room_service.md) (1 shared connections)
+- [Test query rooms with exits](Test_query_rooms_with_exits.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

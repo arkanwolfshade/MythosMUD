@@ -1,41 +1,43 @@
 # QueueListener
 
-> 16 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **test_logging_processors.py** (36 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_add_request_context_adds_timestamp()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_add_request_context_preserves_timestamp()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_add_request_context_adds_logger_name()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_add_request_context_adds_request_id()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_add_request_context_preserves_request_id()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **mock_player_service()** (2 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **sample_event_dict()** (2 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Unit tests for logging processors.  Tests the logging processors for sanitizing** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Create a mock player service.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Create a sample event dictionary.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Test add_request_context() adds timestamp when missing.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Test add_request_context() preserves existing timestamp.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Test add_request_context() adds logger_name.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Test add_request_context() adds request_id when missing.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Test add_request_context() preserves existing request_id.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **Asyncio Code Review - feature/sqlite-to-postgresql Branch** (9 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
+- **🔴 CRITICAL ISSUES** (5 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
+- **🟡 HIGH PRIORITY ISSUES** (4 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
+- **📋 RECOMMENDATIONS SUMMARY** (4 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
+- **🟢 MEDIUM PRIORITY IMPROVEMENTS** (3 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
+- **ASYNCIO_CODE_REVIEW.md** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
+- **Executive Summary** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
+- **1. Blocking Synchronous Operations in Async Methods** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
+- **2. asyncio.run() Called from Context with Existing Event Loop** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
+- **3. Connection Pool Resource Leak Risk** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
+- **4. Missing Exception Handling in Pool Creation** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
+- **5. Event Loop Change Detection May Not Handle All Cases** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
+- **6. Synchronous Database Operations in Async Context** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
+- **7. Missing Transaction Management in Batch Operations** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
+- **8. Connection Pool Size Configuration** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
+- **9. F-String SQL Queries (Minor Security Concern)** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
+- **✅ POSITIVE FINDINGS** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
+- **Immediate Actions (Critical)** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
+- **Short-term (High Priority)** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
+- **Long-term (Medium Priority)** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
+- **🔍 TESTING RECOMMENDATIONS** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
+- **📚 REFERENCES** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
 
 ## Relationships
 
-- [enhance player ids()](enhance_player_ids%28%29.md) (14 shared connections)
-- [CommandRequest](CommandRequest.md) (9 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (6 shared connections)
-- [ASGIApp](ASGIApp.md) (3 shared connections)
-- [alias storage()](alias_storage%28%29.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/structured_logging/test_logging_processors.py`
+- `docs/archive/ASYNCIO_CODE_REVIEW.md`
 
 ## Audit Trail
 
-- EXTRACTED: 63 (100%)
+- EXTRACTED: 42 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

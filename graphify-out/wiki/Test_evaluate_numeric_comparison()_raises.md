@@ -1,23 +1,25 @@
 # Test evaluate numeric comparison() raises
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_broadcast_player_entered_message()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **Test broadcast_player_entered_message() broadcasts to room.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **📚 Changes by Category** (4 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **Service Layer (8 files)** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **Combat/Death (2 files)** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **Core Layer (4 files)** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
 
 ## Relationships
 
-- [. call ()](_call_%28%29.md) (1 shared connections)
+- [Test handle nats message handles](Test_handle_nats_message_handles.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

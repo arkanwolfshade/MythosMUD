@@ -1,12 +1,11 @@
 # MonitoringPanel
 
-> 17 nodes
+> 14 nodes
 
 ## Key Concepts
 
 - **MonitoringPanel.test.tsx** (11 connections) — `client/src/components/panels/__tests__/MonitoringPanel.test.tsx`
 - **monitoringPanelTestFixtures.ts** (11 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
-- **MonitoringPanel.tsx** (8 connections) — `client/src/components/panels/MonitoringPanel.tsx`
 - **mockOkJsonResponse()** (5 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
 - **setupSequentialMonitoringFetch()** (3 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
 - **setupRoundRobinMonitoringFetch()** (3 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
@@ -15,8 +14,6 @@
 - **MonitoringPanel()** (2 connections) — `client/src/components/panels/MonitoringPanel.tsx`
 - **SAMPLE_MONITORING_MOCKS** (2 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
 - **EMPTY_MONITORING_MOCKS** (2 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
-- **MonitoringData** (1 connections) — `client/src/components/panels/MonitoringPanel.tsx`
-- **MonitoringPanelProps** (1 connections) — `client/src/components/panels/MonitoringPanel.tsx`
 - **fetchSpy** (1 connections) — `client/src/components/panels/__tests__/MonitoringPanel.test.tsx`
 - **MonitoringMocks** (1 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
 - **TIMESTAMP_DUAL_CONNECTIONS** (1 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
@@ -25,8 +22,6 @@
 ## Relationships
 
 - [ChatPanelTest](ChatPanelTest.md) (2 shared connections)
-- [fetchSpy](fetchSpy.md) (1 shared connections)
-- [EdgeCreationModal](EdgeCreationModal.md) (1 shared connections)
 - [GameLogMessagesList](GameLogMessagesList.md) (1 shared connections)
 
 ## Source Files
@@ -37,7 +32,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 59 (100%)
+- EXTRACTED: 49 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

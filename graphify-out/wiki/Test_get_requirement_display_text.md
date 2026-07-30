@@ -1,23 +1,25 @@
 # Test get requirement display text
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_send_occupants_snapshot_to_player_no_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **Test send_occupants_snapshot_to_player() skips when connection manager not avail** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **🎭 Closing Remarks** (3 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **Status**: ✅**REMEDIATION COMPLETE** (2 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **Adjusts spectacles with scholarly satisfaction** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **"In the house of the event loop, all operations must flow as one."** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
 
 ## Relationships
 
-- [. call ()](_call_%28%29.md) (1 shared connections)
+- [get alias validator()](get_alias_validator%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

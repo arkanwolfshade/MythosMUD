@@ -1,47 +1,44 @@
 # MetricsCollector
 
-> 23 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **MetricsCollector** (13 connections) — `server/middleware/metrics_collector.py`
-- **.__init__()** (3 connections) — `server/middleware/metrics_collector.py`
-- **.get_metrics()** (3 connections) — `server/middleware/metrics_collector.py`
-- **.get_summary()** (3 connections) — `server/middleware/metrics_collector.py`
-- **.record_message_processed()** (2 connections) — `server/middleware/metrics_collector.py`
-- **.record_message_failed()** (2 connections) — `server/middleware/metrics_collector.py`
-- **.record_message_retried()** (2 connections) — `server/middleware/metrics_collector.py`
-- **.record_message_dlq()** (2 connections) — `server/middleware/metrics_collector.py`
-- **.record_circuit_state_change()** (2 connections) — `server/middleware/metrics_collector.py`
-- **.record_processing_time()** (2 connections) — `server/middleware/metrics_collector.py`
-- **Any** (2 connections)
-- **.reset_metrics()** (2 connections) — `server/middleware/metrics_collector.py`
-- **Simple metrics collector for NATS message delivery.      Thread-safe metrics col** (1 connections) — `server/middleware/metrics_collector.py`
-- **Initialize metrics collector.          AI: Uses Lock for thread-safety in async** (1 connections) — `server/middleware/metrics_collector.py`
-- **Record a successfully processed message.          Args:             channel: Mes** (1 connections) — `server/middleware/metrics_collector.py`
-- **Record a failed message.          Args:             channel: Message channel** (1 connections) — `server/middleware/metrics_collector.py`
-- **Record a message retry attempt.          Args:             channel: Message chan** (1 connections) — `server/middleware/metrics_collector.py`
-- **Record a message added to dead letter queue.          Args:             channel:** (1 connections) — `server/middleware/metrics_collector.py`
-- **Record a circuit breaker state change.          Args:             old_state: Pre** (1 connections) — `server/middleware/metrics_collector.py`
-- **Record message processing time.          Args:             duration_ms: Processi** (1 connections) — `server/middleware/metrics_collector.py`
-- **Get current metrics snapshot.          Returns:             Dictionary containin** (1 connections) — `server/middleware/metrics_collector.py`
-- **Reset all metrics counters.          Useful for clearing metrics after a deploym** (1 connections) — `server/middleware/metrics_collector.py`
-- **Get concise metrics summary.          Returns:             High-level metrics su** (1 connections) — `server/middleware/metrics_collector.py`
+- **Ruff to Pylint Rule Mapping** (9 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **`docs/**/*` files: Multiple rules** (6 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **Per-File Ignores (pyproject.toml)** (5 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **Global Ignores (pyproject.toml)** (3 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **Complexity Checking** (2 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **LINTING_RUFF_PYLINT_MAPPING.md** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **Purpose** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **E501 - Line too long** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **B008 - Function calls in argument defaults** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **`__init__.py` files: F401 (unused import)** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **`tests/**/*` files: B011 (assert on exception)** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **F821 - Undefined name** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **F841 - Unused variable** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **F811 - Redefined name** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **B904 - Broad except** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **E402 - Module level import not at top** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **`server/stubs/**/*.pyi` files: UP046 (old Generic syntax)** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **C901 - Too complex (PRIMARY COMPLEXITY CHECKER)** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **Category Mappings** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **Rules with No Direct Pylint Equivalent** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **Rules with Partial Pylint Equivalents** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **Next Steps** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
 
 ## Relationships
 
-- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
-- [Player](Player.md) (1 shared connections)
-- [Lock](Lock.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/middleware/metrics_collector.py`
+- `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
 
 ## Audit Trail
 
-- EXTRACTED: 48 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 42 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

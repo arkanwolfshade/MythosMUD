@@ -1,10 +1,11 @@
 # init
 
-> 1 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **__init__.py** (0 connections) — `server/game/__init__.py`
+- **__init__.py** (1 connections) — `server/domain/value_objects/__init__.py`
+- **Domain value objects for MythosMUD.  Value objects are immutable objects defined** (1 connections) — `server/domain/value_objects/__init__.py`
 
 ## Relationships
 
@@ -12,11 +13,11 @@
 
 ## Source Files
 
-- `server/game/__init__.py`
+- `server/domain/value_objects/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

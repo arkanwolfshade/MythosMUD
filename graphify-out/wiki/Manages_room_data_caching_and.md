@@ -34,8 +34,8 @@
 ## Relationships
 
 - [Any](Any.md) (7 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (3 shared connections)
-- [combat taunt](combat_taunt.md) (1 shared connections)
+- [world](world.md) (2 shared connections)
+- [combat taunt](combat_taunt.md) (2 shared connections)
 
 ## Source Files
 

@@ -1,10 +1,26 @@
 # Git Submodule Setup for MythosMUD
 
+**Version 1.0.0** · MythosMUD · 2026-07-30
+
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
 This document explains the git submodule configuration for the MythosMUD project, specifically how the `data/` directory
 is managed as a separate repository.
 
-## Overview
+## 2. Overview
 
+**[SPEC]**
 The `data/` directory is a git submodule pointing to the private repository
 `https://github.com/arkanwolfshade/mythosmud_data.git`. This separation allows:
 
@@ -16,7 +32,9 @@ The `data/` directory is a git submodule pointing to the private repository
 
 **Easier deployment** of data updates separate from code updates
 
-## Repository Structure
+## 3. Repository Structure
+
+**[NOTE]**
 
 ```
 MythosMUD/ (main repository)
@@ -27,7 +45,9 @@ MythosMUD/ (main repository)
 └── docs/            # Documentation
 ```
 
-## Cloning the Repository
+## 4. Cloning the Repository
+
+**[NOTE]**
 
 ### Option 1: Clone with submodules (Recommended)
 
@@ -44,7 +64,9 @@ cd MythosMUD
 git submodule update --init --recursive
 ```
 
-## Working with Submodules
+## 5. Working with Submodules
+
+**[NOTE]**
 
 ### Updating the submodule to latest version
 
@@ -94,8 +116,9 @@ git add data
 git commit -m "Pin data submodule to specific version"
 ```
 
-## GitHub Actions Configuration
+## 6. GitHub Actions Configuration
 
+**[NOTE]**
 Since the `mythosmud_data` repository is private, the GitHub Actions workflows need special configuration to access it:
 
 ### Official GitHub documentation (authoritative)
@@ -220,7 +243,9 @@ See `.github/workflows/ci.yml` (**Resolve data submodule** + **Clone private dat
     git checkout -q FETCH_HEAD
 ```
 
-## Troubleshooting
+## 7. Troubleshooting
+
+**[NOTE]**
 
 ### Submodule not found during clone
 
@@ -311,8 +336,9 @@ git submodule update --init --recursive
 git submodule update --remote
 ```
 
-## Security Considerations
+## 8. Security Considerations
 
+**[SPEC]**
 The PAT used in workflows should have minimal required permissions
 
 - Private submodules maintain data security while allowing controlled access
@@ -320,7 +346,9 @@ The PAT used in workflows should have minimal required permissions
 - All submodule changes are tracked in the main repository's commit history
 - PATs should be rotated regularly and have appropriate expiration dates
 
-## Best Practices
+## 9. Best Practices
+
+**[SPEC]**
 
 1. **Always use `--recursive` when cloning** to get all submodules
 2. **Commit submodule changes separately** from main repository changes
@@ -330,8 +358,9 @@ The PAT used in workflows should have minimal required permissions
 6. **Use fine-grained PATs** with minimal required permissions
 7. **Regularly rotate PATs** and monitor their usage
 
-## Related Documentation
+## 10. Related Documentation
 
+**[SPEC]**
 [Git Submodules Documentation](https://git-scm.com/book/en/v2/Git-Tools-Submodules)
 
 - [GitHub Actions Checkout Action](https://github.com/actions/checkout)
@@ -341,3 +370,11 @@ The PAT used in workflows should have minimal required permissions
 - [Fine-grained Personal Access
 
   Tokens](<https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token#creating-a-fine-grained-personal-access-token>)
+
+## 11. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

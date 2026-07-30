@@ -33,8 +33,9 @@
 
 ## Relationships
 
-- [look helpers](look_helpers.md) (8 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
+- [look helpers](look_helpers.md) (5 shared connections)
+- [look player](look_player.md) (3 shared connections)
+- [world](world.md) (2 shared connections)
 
 ## Source Files
 

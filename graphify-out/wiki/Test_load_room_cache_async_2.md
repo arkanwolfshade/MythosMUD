@@ -1,24 +1,27 @@
 # Test load room cache async
 
-> 2 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **test_occupant_formatter_is_valid_name_for_occupant_uuid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter._is_valid_name_for_occupant() returns False for UUID.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **Modern Testing Patterns** (6 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Pattern 1: Container-Based Fixtures** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Pattern 2: Mock Container for Unit Tests** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Pattern 3: Parametrized Integration Tests** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Pattern 4: Fixture Factories** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Pattern 5: Async Test Context Managers** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
 
 ## Relationships
 
-- [command parser()](command_parser%28%29.md) (1 shared connections)
-- [occupant formatter](occupant_formatter.md) (1 shared connections)
+- [get mythos time()](get_mythos_time%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_occupant_formatter.py`
+- `docs/archive/TEST_MODERNIZATION_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

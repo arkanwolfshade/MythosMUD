@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **__init__.py** (1 connections) — `server/domain/__init__.py`
-- **Domain layer for MythosMUD.  This package contains the core business logic and d** (1 connections) — `server/domain/__init__.py`
+- **__init__.py** (1 connections) — `server/constants/__init__.py`
+- **Project-wide constants packages.** (1 connections) — `server/constants/__init__.py`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `server/domain/__init__.py`
+- `server/constants/__init__.py`
 
 ## Audit Trail
 

@@ -1,34 +1,45 @@
 # src/**/*.spec
 
-> 10 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **extract_zone_name()** (9 connections) — `server/npc/zone_config_loader.py`
-- **test_extract_zone_name_with_slash()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_extract_zone_name_no_slash()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_extract_zone_name_multiple_slashes()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_extract_zone_name_empty()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **Extract zone name from stable_id (format: 'plane/zone').      Args:         stab** (1 connections) — `server/npc/zone_config_loader.py`
-- **Test extract_zone_name() extracts zone from stable_id.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **Test extract_zone_name() returns stable_id when no slash.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **Test extract_zone_name() extracts from first slash.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **Test extract_zone_name() handles empty string.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **NPCCombatHandlers** (16 connections) — `server/services/npc_combat_handlers.py`
+- **.__init__()** (7 connections) — `server/services/npc_combat_handlers.py`
+- **._handle_npc_death_on_combat_end()** (7 connections) — `server/services/npc_combat_handlers.py`
+- **.handle_combat_result()** (4 connections) — `server/services/npc_combat_handlers.py`
+- **Any** (3 connections)
+- **._is_valid_uuid()** (3 connections) — `server/services/npc_combat_handlers.py`
+- **npc_combat_handlers()** (3 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
+- **.handle_npc_death()** (2 connections) — `server/services/npc_combat_handlers.py`
+- **Handles combat result processing and NPC death operations.** (1 connections) — `server/services/npc_combat_handlers.py`
+- **Initialize the combat handlers.          Args:             data_provider: NPC co** (1 connections) — `server/services/npc_combat_handlers.py`
+- **Handle combat result, including broadcasting messages and handling NPC death.** (1 connections) — `server/services/npc_combat_handlers.py`
+- **Handle NPC death when combat ends, with defensive exception handling.          A** (1 connections) — `server/services/npc_combat_handlers.py`
+- **Handle NPC death and related effects.          Args:             npc_id: ID of t** (1 connections) — `server/services/npc_combat_handlers.py`
+- **Check if a string is a valid UUID.** (1 connections) — `server/services/npc_combat_handlers.py`
+- **Create NPCCombatHandlers instance.** (1 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
 
 ## Relationships
 
-- [HealthMonitor](HealthMonitor.md) (6 shared connections)
-- [memory lifespan coordinator](memory_lifespan_coordinator.md) (2 shared connections)
+- [test combat attack handler](test_combat_attack_handler.md) (3 shared connections)
+- [Test despawn npc handles NPC](Test_despawn_npc_handles_NPC.md) (2 shared connections)
+- [communication commands support](communication_commands_support.md) (2 shared connections)
+- [look container](look_container.md) (2 shared connections)
+- [combat](combat.md) (2 shared connections)
+- [test npc combat handlers](test_npc_combat_handlers.md) (2 shared connections)
+- [Any](Any.md) (2 shared connections)
+- [world](world.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/zone_config_loader.py`
-- `server/tests/unit/npc/test_zone_config_loader.py`
+- `server/services/npc_combat_handlers.py`
+- `server/tests/unit/services/test_npc_combat_handlers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 26 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 46 (88%)
+- INFERRED: 6 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

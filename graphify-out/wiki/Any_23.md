@@ -1,52 +1,35 @@
 # Any
 
-> 54 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **test_health_service.py** (43 connections) — `server/tests/unit/services/test_health_service.py`
-- **get_health_service()** (9 connections) — `server/services/health_service.py`
-- **test_get_health_service_creates_instance()** (4 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_get_health_service_returns_singleton()** (3 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_get_health_service_updates_connection_manager()** (3 connections) — `server/tests/unit/services/test_health_service.py`
-- **mock_connection_manager()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_health_service_initialization()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_get_server_uptime()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_get_memory_usage_success()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_get_memory_usage_error()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_get_cpu_usage_success()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_get_cpu_usage_error()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_check_database_health_healthy()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_check_database_health_degraded()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_check_database_health_unhealthy()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_check_database_health_error()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_check_connections_health_healthy()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_check_connections_health_degraded()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_check_connections_health_unhealthy()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_check_connections_health_no_manager()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_check_connections_health_error()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_get_server_component_health_healthy()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_get_server_component_health_degraded()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_get_server_component_health_unhealthy()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_get_database_component_health()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- *... and 29 more nodes in this community*
+- **Any** (6 connections)
+- **.merge_room_data()** (4 connections) — `server/services/room_data_cache.py`
+- **._is_newer_data()** (4 connections) — `server/services/room_data_cache.py`
+- **.is_room_data_fresh()** (3 connections) — `server/services/room_data_cache.py`
+- **.get_cache()** (3 connections) — `server/services/room_data_cache.py`
+- **.set_cache()** (3 connections) — `server/services/room_data_cache.py`
+- **.get_cache_stats()** (3 connections) — `server/services/room_data_cache.py`
+- **Check if room data is fresh enough to use.          Args:             room_data:** (1 connections) — `server/services/room_data_cache.py`
+- **Get room data from cache.          Args:             room_id: Room ID to retriev** (1 connections) — `server/services/room_data_cache.py`
+- **Store room data in cache.          Args:             room_id: Room ID to store** (1 connections) — `server/services/room_data_cache.py`
+- **Get statistics about the room data cache.          Args:             is_room_dat** (1 connections) — `server/services/room_data_cache.py`
+- **Merge room data with proper conflict resolution.          Args:             old_** (1 connections) — `server/services/room_data_cache.py`
+- **Check if new data is newer than old data for a specific key.          Args:** (1 connections) — `server/services/room_data_cache.py`
 
 ## Relationships
 
-- [alias](alias.md) (14 shared connections)
-- [SafeHtml](SafeHtml.md) (4 shared connections)
-- [fetch container items()](fetch_container_items%28%29.md) (2 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
+- [Manages room data caching and](Manages_room_data_caching_and.md) (6 shared connections)
 
 ## Source Files
 
-- `server/services/health_service.py`
-- `server/tests/unit/services/test_health_service.py`
+- `server/services/room_data_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 132 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 32 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

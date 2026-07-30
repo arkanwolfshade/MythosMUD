@@ -1,22 +1,41 @@
 # Memory Leak Metrics Usage Guide
 
-This guide explains how to use the comprehensive memory leak monitoring system implemented for MythosMUD.
-
-## Table of Contents
-
-1. [Quick Start](#quick-start)
-2. [Accessing Monitoring Endpoints](#accessing-monitoring-endpoints)
-3. [Automatic Logging](#automatic-logging)
-4. [Key Metrics to Monitor](#key-metrics-to-monitor)
-5. [Client-Side Monitoring](#client-side-monitoring)
-6. [Setting Up Monitoring Dashboard](#setting-up-monitoring-dashboard)
-7. [Alerting](#alerting)
-8. [Troubleshooting](#troubleshooting)
-9. [Quick Health Check Script](#quick-health-check-script)
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
 ---
 
-## Quick Start
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
+This guide explains how to use the comprehensive memory leak monitoring system implemented for MythosMUD.
+
+## 2. Table of Contents
+
+**[SPEC]**
+
+1. [Quick Start](#3-quick-start)
+2. [Accessing Monitoring Endpoints](#4-accessing-monitoring-endpoints)
+3. [Automatic Logging](#5-automatic-logging)
+4. [Key Metrics to Monitor](#6-key-metrics-to-monitor)
+5. [Client-Side Monitoring](#7-client-side-monitoring)
+6. [Setting Up Monitoring Dashboard](#8-setting-up-monitoring-dashboard)
+7. [Alerting](#9-alerting)
+8. [Troubleshooting](#10-troubleshooting)
+9. [Quick Health Check Script](#11-quick-health-check-script)
+
+---
+
+## 3. Quick Start
+
+**[NOTE]**
 
 ### 1. Start the Server
 
@@ -46,7 +65,9 @@ Invoke-RestMethod -Uri "http://localhost:54768/monitoring/memory-leaks" | Conver
 
 ---
 
-## Accessing Monitoring Endpoints
+## 4. Accessing Monitoring Endpoints
+
+**[NOTE]**
 
 ### Comprehensive Memory Leak Metrics (Main Endpoint)
 
@@ -112,8 +133,9 @@ rates.
 
 ---
 
-## Automatic Logging
+## 5. Automatic Logging
 
+**[NOTE]**
 The system automatically logs memory leak metrics:
 
 **Every 5 minutes**: Periodic metrics logged to structured logs
@@ -146,7 +168,9 @@ This file contains:
 
 ---
 
-## Key Metrics to Monitor
+## 6. Key Metrics to Monitor
+
+**[NOTE]**
 
 ### Connection Leaks (Most Critical)
 
@@ -235,7 +259,7 @@ Tasks being created faster than they complete.
 
 ### Should match expected service subscriptions
 
-### Growing count indicates leaks
+### Growing subscription count indicates leaks
 
 #### Subscriptions After Cleanup
 
@@ -247,24 +271,26 @@ Subscriptions remaining after service shutdown indicate cleanup failures.
 
 ---
 
-## Client-Side Monitoring
+## 7. Client-Side Monitoring
+
+**[NOTE]**
 
 ### Using Lifecycle Tracking Hooks
 
 In your React components, use the provided hooks to track component lifecycle and store subscriptions:
 
 ```typescript
-import { useComponentLifecycleTracking } from '@/hooks/useComponentLifecycleTracking';
-import { useStoreSubscriptionTracking } from '@/hooks/useStoreSubscriptionTracking';
+import { useComponentLifecycleTracking } from "@/hooks/useComponentLifecycleTracking";
+import { useStoreSubscriptionTracking } from "@/hooks/useStoreSubscriptionTracking";
 
 function MyComponent() {
   // Track component lifecycle
   const { hasCleanup, setCleanup } = useComponentLifecycleTracking({
-    componentName: 'MyComponent'
+    componentName: "MyComponent",
   });
 
   // Track store subscriptions
-  useStoreSubscriptionTracking({ storeName: 'gameStore' });
+  useStoreSubscriptionTracking({ storeName: "gameStore" });
 
   useEffect(() => {
     // Your component logic
@@ -300,7 +326,9 @@ Open browser DevTools console (development mode only):
 
 ---
 
-## Setting Up Monitoring Dashboard
+## 8. Setting Up Monitoring Dashboard
+
+**[NOTE]**
 
 ### Prerequisites
 
@@ -403,7 +431,9 @@ docker-compose -f docker-compose.monitoring.yml down
 
 ---
 
-## Alerting
+## 9. Alerting
+
+**[NOTE]**
 
 ### Alert Configuration
 
@@ -450,7 +480,9 @@ _alert_thresholds = {
 
 ---
 
-## Troubleshooting
+## 10. Troubleshooting
+
+**[NOTE]**
 
 ### Server Not Responding
 
@@ -524,8 +556,9 @@ Write-Host "Growth: $($current.connection.closed_websockets_count - $startup.con
 
 ---
 
-## Quick Health Check Script
+## 11. Quick Health Check Script
 
+**[NOTE]**
 Use the provided script for quick health checks:
 
 ```powershell
@@ -557,7 +590,9 @@ if ($metrics.alerts.Count -gt 0) {
 
 ---
 
-## Best Practices
+## 12. Best Practices
+
+**[SPEC]**
 
 1. **Regular Monitoring**: Check metrics periodically during development
 2. **Baseline Comparison**: Compare current metrics to startup baseline
@@ -569,8 +604,9 @@ if ($metrics.alerts.Count -gt 0) {
 
 ---
 
-## Additional Resources
+## 13. Additional Resources
 
+**[SPEC]**
 **API Documentation**: See `server/README.md` for detailed endpoint documentation
 
 **Memory Leak Audit Report**: `docs/MEMORY_LEAK_AUDIT_REPORT.md`
@@ -581,8 +617,9 @@ if ($metrics.alerts.Count -gt 0) {
 
 ---
 
-## Summary
+## 14. Summary
 
+**[NOTE]**
 The memory leak metrics system provides comprehensive monitoring across:
 
 ✅ Connection management
@@ -606,3 +643,11 @@ All metrics are:
 - Visualized in Grafana dashboards (optional)
 
 Use this system to proactively detect and address memory leaks before they impact performance.
+
+## 15. Changelog
+
+**[SPEC]**
+
+| Version | Date       | Change                             |
+| ------- | ---------- | ---------------------------------- |
+| 1.0.0   | 2026-07-30 | Initial HADS structural conversion |

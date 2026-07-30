@@ -1,62 +1,62 @@
 # .check and interrupt rest()
 
-> 87 nodes
+> 80 nodes
 
 ## Key Concepts
 
-- **test_rest_command.py** (38 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **rest_command.py** (26 connections) — `server/commands/rest_command.py`
-- **handle_rest_command()** (22 connections) — `server/commands/rest_command.py`
-- **cancel_rest_countdown()** (19 connections) — `server/commands/rest_command.py`
-- **is_player_resting()** (17 connections) — `server/commands/rest_command.py`
-- **_start_rest_countdown()** (12 connections) — `server/commands/rest_command.py`
-- **Any** (11 connections)
-- **_execute_rest_flow()** (11 connections) — `server/commands/rest_command.py`
-- **_check_player_in_combat()** (9 connections) — `server/commands/rest_command.py`
-- **UUID** (9 connections)
-- **_check_rest_location()** (9 connections) — `server/commands/rest_command.py`
-- **.check_and_interrupt_rest()** (8 connections) — `server/commands/combat_handler.py`
-- **_disconnect_player_intentionally()** (8 connections) — `server/commands/rest_command.py`
-- **_begin_seated_rest_countdown()** (8 connections) — `server/commands/rest_command.py`
-- **_resolve_rest_command_setup()** (6 connections) — `server/commands/rest_command.py`
-- **_get_services_from_app()** (4 connections) — `server/commands/rest_command.py`
-- **test_rest_interrupts_combat_action()** (3 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_handle_rest_command_no_app()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **test_handle_rest_command_no_persistence()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **test_handle_rest_command_no_connection_manager()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **test_handle_rest_command_player_not_found()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **test_handle_rest_command_already_resting()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **test_handle_rest_command_in_combat()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **test_handle_rest_command_rest_location_instant()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **test_handle_rest_command_starts_countdown()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
-- *... and 62 more nodes in this community*
+- **websocket_room_updates.py** (35 connections) — `server/realtime/websocket_room_updates.py`
+- **test_websocket_room_updates.py** (32 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **broadcast_room_update()** (24 connections) — `server/realtime/websocket_room_updates.py`
+- **build_room_update_event()** (13 connections) — `server/realtime/websocket_room_updates.py`
+- **get_npc_name_from_instance()** (12 connections) — `server/realtime/websocket_helpers.py`
+- **get_player_occupants()** (11 connections) — `server/realtime/websocket_room_updates.py`
+- **get_npc_occupants_from_lifecycle_manager()** (11 connections) — `server/realtime/websocket_room_updates.py`
+- **get_npc_occupants_fallback()** (9 connections) — `server/realtime/websocket_room_updates.py`
+- **update_player_room_subscription()** (8 connections) — `server/realtime/websocket_room_updates.py`
+- **UUID** (6 connections)
+- **_decorate_occupant_name()** (6 connections) — `server/realtime/websocket_room_updates.py`
+- **test_websocket_room_updates_build_event.py** (6 connections) — `server/tests/unit/realtime/test_websocket_room_updates_build_event.py`
+- **_resolve_room_with_fallback()** (5 connections) — `server/realtime/websocket_room_updates.py`
+- **_parse_occupant_player_id()** (4 connections) — `server/realtime/websocket_room_updates.py`
+- **test_get_player_occupants_handles_exception()** (4 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_get_npc_occupants_from_lifecycle_manager_handles_exception()** (4 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_broadcast_room_update_fallback_npc_method()** (4 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_get_player_occupants_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_get_player_occupants_empty()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_get_npc_occupants_from_lifecycle_manager_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_get_npc_occupants_from_lifecycle_manager_filters_dead()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_get_npc_occupants_from_lifecycle_manager_wrong_room()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_get_npc_occupants_from_lifecycle_manager_no_service()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_get_npc_occupants_fallback_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_get_npc_occupants_fallback_filters_dead()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- *... and 55 more nodes in this community*
 
 ## Relationships
 
-- [test magic commands](test_magic_commands.md) (9 shared connections)
-- [Any](Any.md) (8 shared connections)
-- [command admin](command_admin.md) (5 shared connections)
-- [player disconnect handlers](player_disconnect_handlers.md) (4 shared connections)
-- [CombatService](CombatService.md) (3 shared connections)
-- [real time](real_time.md) (3 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (3 shared connections)
-- [. get persistence from app()](_get_persistence_from_app%28%29.md) (2 shared connections)
-- [DropResolved](DropResolved.md) (2 shared connections)
-- [PlayerPositionService](PlayerPositionService.md) (2 shared connections)
-- [Validate that player is in](Validate_that_player_is_in.md) (2 shared connections)
-- [test connection establishment](test_connection_establishment.md) (2 shared connections)
+- [. init ()](_init_%28%29.md) (6 shared connections)
+- [circuit breaker](circuit_breaker.md) (6 shared connections)
+- [login grace period](login_grace_period.md) (6 shared connections)
+- [test build room drop summary](test_build_room_drop_summary.md) (5 shared connections)
+- [get current tick()](get_current_tick%28%29.md) (4 shared connections)
+- [create access token()](create_access_token%28%29.md) (3 shared connections)
+- [message formatters](message_formatters.md) (2 shared connections)
+- [Player](Player.md) (2 shared connections)
+- [command admin](command_admin.md) (2 shared connections)
+- [.reset instance()](reset_instance%28%29.md) (2 shared connections)
+- [UUID](UUID.md) (2 shared connections)
+- [world](world.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/combat_handler.py`
-- `server/commands/rest_command.py`
-- `server/tests/integration/test_rest_and_grace_period.py`
-- `server/tests/unit/commands/test_rest_command.py`
+- `server/realtime/websocket_helpers.py`
+- `server/realtime/websocket_room_updates.py`
+- `server/tests/unit/realtime/test_websocket_room_updates.py`
+- `server/tests/unit/realtime/test_websocket_room_updates_build_event.py`
 
 ## Audit Trail
 
-- EXTRACTED: 336 (99%)
-- INFERRED: 4 (1%)
+- EXTRACTED: 297 (99%)
+- INFERRED: 3 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

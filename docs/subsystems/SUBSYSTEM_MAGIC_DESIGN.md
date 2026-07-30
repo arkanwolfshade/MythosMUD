@@ -1,7 +1,20 @@
 # Magic Subsystem Design
 
-## Overview
+**Version 1.0.0** · MythosMUD · 2026-07-30
 
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
 The magic subsystem handles spellcasting: spell lookup (SpellRegistry), MP and lucidity costs
 (SpellCostsService), targeting (SpellTargetingService), effect execution (SpellEffects), casting
 state (CastingStateManager), and learning (SpellLearningService). Commands: cast, spells, spell,
@@ -9,7 +22,9 @@ learn, stop. Rest is interrupted when casting. Incapacitated players (DP <= 0) c
 spells can require lucidity; materials may be consumed. The server is authoritative for all
 cast checks and effect application.
 
-## Architecture
+## 2. Architecture
+
+**[NOTE]**
 
 ```mermaid
 flowchart LR
@@ -68,7 +83,9 @@ flowchart LR
 - **MP regeneration**: [server/game/magic/mp_regeneration_service.py](server/game/magic/
   mp_regeneration_service.py) – MP regen over time/tick.
 
-## Key design decisions
+## 3. Key design decisions
+
+**[NOTE]**
 
 - **Server authority**: All validation (can_cast_spell) and effect application (SpellEffects) on
   server; client displays results from command_response and room/game state.
@@ -82,7 +99,9 @@ flowchart LR
 - **Costs first**: MP and materials are checked and applied before effect; effect runs only after
   cost application.
 
-## Constraints
+## 4. Constraints
+
+**[NOTE]**
 
 - **Spell known**: cast_spell validates player knows spell (player_spell_repository or equivalent).
 - **Room/visibility**: Targeting and effect scope may depend on room (same room, line of sight) per
@@ -91,7 +110,9 @@ flowchart LR
   SpellCostsService, SpellMaterialsService, CastingStateManager, optional SpellLearningService and
   CombatService.
 
-## Component interactions
+## 5. Component interactions
+
+**[SPEC]**
 
 1. **cast &lt;spell&gt; [target]** – Get player; incapacitated check; rest interrupt; magic_service
    .cast_spell(player_id, spell_name, target_name). cast_spell: can_cast_spell; resolve target;
@@ -101,7 +122,9 @@ flowchart LR
 3. **learn** – SpellLearningService (teach, book, or other source).
 4. **stop** – CastingStateManager stop casting (cancel in-progress cast).
 
-## Developer guide
+## 6. Developer guide
+
+**[SPEC]**
 
 - **New spell**: Add to Spell registry/data; implement effect in SpellEffects; set MP/lucidity cost
   and targeting rules; ensure can_cast_spell and cast_spell handle the spell.
@@ -111,7 +134,9 @@ flowchart LR
 - **Tests**: server/tests/unit/game/magic/, server/tests/unit/commands/ for magic_commands; mock
   MagicService and persistence.
 
-## Troubleshooting
+## 7. Troubleshooting
+
+**[NOTE]**
 
 - **"Not enough magic points"**: can_cast_spell checks current_mp >= spell.mp_cost; ensure stats
   (magic_points, max_magic_points) are set and normalized (e.g. full MP at creation).
@@ -128,6 +153,16 @@ See also [SUBSYSTEM_REST_DESIGN.md](SUBSYSTEM_REST_DESIGN.md), [SUBSYSTEM_STATUS
 GAME_BUG_INVESTIGATION_PLAYBOOK.mdc). Archived: [docs/archive/MAGIC_SYSTEM_FEATURE_PLAN.md]
 (../archive/MAGIC_SYSTEM_FEATURE_PLAN.md).
 
-## Related docs
+## 8. Related docs
+
+**[SPEC]**
 
 - [COMMAND_MODELS_REFERENCE.md](../COMMAND_MODELS_REFERENCE.md)
+
+## 9. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

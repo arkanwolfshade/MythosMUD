@@ -9,7 +9,7 @@
 
 ## Relationships
 
-- [test command parser](test_command_parser.md) (1 shared connections)
+- [world](world.md) (1 shared connections)
 - [GameTickService](GameTickService.md) (1 shared connections)
 - [InviteBase](InviteBase.md) (1 shared connections)
 

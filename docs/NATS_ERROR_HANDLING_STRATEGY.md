@@ -1,16 +1,33 @@
 # NATS Error Handling Strategy
 
+**Version 1.0.0** · MythosMUD · 2026-07-30
+
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[SPEC]**
 **Date**: 2026-01-13
 **Purpose**: Guidelines for consistent error handling in NATS operations
 
-## Overview
+## 2. Overview
 
+**[NOTE]**
 MythosMUD's NATS implementation uses a **standardized exception-based error handling strategy**. All NATS operations
 raise specific exception types instead of returning error codes or `None`, enabling precise error handling and better
 debugging.
 
-## Exception Hierarchy
+## 3. Exception Hierarchy
 
+**[NOTE]**
 All NATS exceptions inherit from `NATSError`:
 
 ```
@@ -131,7 +148,9 @@ Raised when health check operations fail.
 
 - `consecutive_failures`: Number of consecutive failures
 
-## Error Handling Patterns
+## 4. Error Handling Patterns
+
+**[NOTE]**
 
 ### Pattern 1: Let Exceptions Propagate
 
@@ -219,7 +238,9 @@ async def safe_nats_operation() -> None:
 
 ```
 
-## Best Practices
+## 5. Best Practices
+
+**[NOTE]**
 
 ### 1. Always Handle Exceptions
 
@@ -310,7 +331,9 @@ except NATSPublishError as e:
     logger.warning("Publish failed, continuing", error=str(e))
 ```
 
-## Error Recovery Strategies
+## 6. Error Recovery Strategies
+
+**[NOTE]**
 
 ### Connection Errors
 
@@ -363,8 +386,9 @@ async def request_with_fallback(subject: str, data: dict[str, Any]) -> dict[str,
         return None
 ```
 
-## Integration with Error Boundaries
+## 7. Integration with Error Boundaries
 
+**[NOTE]**
 The NATS message handler uses error boundaries (retry handler, circuit breaker, DLQ):
 
 ```python
@@ -385,7 +409,9 @@ async def _handle_nats_message(self, message_data: dict[str, Any]):
         self.dead_letter_queue.enqueue(message_data, error=str(e))
 ```
 
-## Testing Error Handling
+## 8. Testing Error Handling
+
+**[NOTE]**
 
 ### Test Exception Raising
 
@@ -406,7 +432,9 @@ async def test_publish_exception_attributes():
     assert exc_info.value.original_error is not None
 ```
 
-## Migration Guide
+## 9. Migration Guide
+
+**[NOTE]**
 
 ### From Return-Value Pattern
 
@@ -455,8 +483,9 @@ except NATSRequestError as e:
     response = None
 ```
 
-## Summary
+## 10. Summary
 
+**[SPEC]**
 **Always use exceptions** - Never return error codes or `None`
 
 **Catch specific exceptions** - Use specific types when different handling is needed
@@ -473,3 +502,11 @@ except NATSRequestError as e:
 
 **Status**: Documentation Complete
 **Last Updated**: 2026-01-13
+
+## 11. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

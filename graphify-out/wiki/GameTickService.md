@@ -25,7 +25,7 @@
 
 - [InviteBase](InviteBase.md) (8 shared connections)
 - [.start()](start%28%29.md) (2 shared connections)
-- [test command parser](test_command_parser.md) (1 shared connections)
+- [world](world.md) (1 shared connections)
 - [test_game_tick_service.py](test_game_tick_service.py.md) (1 shared connections)
 - [.test_get_tick_count](test_get_tick_count.md) (1 shared connections)
 - [.test_init_custom_interval](test_init_custom_interval.md) (1 shared connections)

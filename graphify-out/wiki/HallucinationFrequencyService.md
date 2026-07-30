@@ -1,34 +1,45 @@
 # HallucinationFrequencyService
 
-> 12 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **test_combat_service_npc_in_combat.py** (8 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
-- **combat_service()** (3 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
-- **test_is_npc_in_combat_sync_returns_false_when_npc_not_in_combat()** (2 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
-- **test_is_npc_in_combat_sync_returns_true_when_npc_uuid_in_combat()** (2 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
-- **test_is_npc_in_combat_sync_returns_false_for_invalid_uuid_string()** (2 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
-- **test_is_npc_in_combat_sync_returns_true_when_string_id_mapped_to_combat()** (2 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
-- **Unit tests for CombatService.is_npc_in_combat_sync.  Tests the NPC-in-combat che** (1 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
-- **Create CombatService with mocked dependencies so is_npc_in_combat_sync can be te** (1 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
-- **Test is_npc_in_combat_sync returns False when NPC is not in any combat.** (1 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
-- **Test is_npc_in_combat_sync returns True when NPC UUID is in _npc_combats.** (1 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
-- **Test is_npc_in_combat_sync returns False for non-UUID string when no mapping.** (1 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
-- **Test is_npc_in_combat_sync returns True when integration service maps string id** (1 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
+- **test_status_commands_helpers.py** (13 connections) — `server/tests/unit/commands/test_status_commands_helpers.py`
+- **_add_profession_lines()** (11 connections) — `server/commands/status_commands.py`
+- **test_add_profession_lines_with_profession()** (3 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **test_add_profession_lines_no_name()** (3 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **test_add_profession_lines_partial_info()** (3 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **test_build_base_status_lines()** (3 connections) — `server/tests/unit/commands/test_status_commands_helpers.py`
+- **test_build_base_status_lines_in_combat()** (3 connections) — `server/tests/unit/commands/test_status_commands_helpers.py`
+- **test_build_base_status_lines_sitting()** (3 connections) — `server/tests/unit/commands/test_status_commands_helpers.py`
+- **test_add_profession_lines()** (3 connections) — `server/tests/unit/commands/test_status_commands_helpers.py`
+- **test_add_profession_lines_no_profession()** (3 connections) — `server/tests/unit/commands/test_status_commands_helpers.py`
+- **Add profession information lines to status lines.      Args:         status_line** (1 connections) — `server/commands/status_commands.py`
+- **Test _add_profession_lines adds profession info when available.** (1 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **Test _add_profession_lines does nothing when no profession name.** (1 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **Test _add_profession_lines handles partial profession info.** (1 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **Unit tests for status_commands helper functions.  Tests helper functions in stat** (1 connections) — `server/tests/unit/commands/test_status_commands_helpers.py`
+- **Test _build_base_status_lines() builds status lines.** (1 connections) — `server/tests/unit/commands/test_status_commands_helpers.py`
+- **Test _build_base_status_lines() shows combat status.** (1 connections) — `server/tests/unit/commands/test_status_commands_helpers.py`
+- **Test _build_base_status_lines() formats position correctly.** (1 connections) — `server/tests/unit/commands/test_status_commands_helpers.py`
+- **Test _add_profession_lines() adds profession information.** (1 connections) — `server/tests/unit/commands/test_status_commands_helpers.py`
+- **Test _add_profession_lines() does nothing when no profession.** (1 connections) — `server/tests/unit/commands/test_status_commands_helpers.py`
 
 ## Relationships
 
-- [. initialize handlers()](_initialize_handlers%28%29.md) (2 shared connections)
-- [Any](Any.md) (1 shared connections)
+- [logging utilities](logging_utilities.md) (8 shared connections)
+- [status commands](status_commands.md) (4 shared connections)
+- [MutableHeaders](MutableHeaders.md) (4 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_service_npc_in_combat.py`
+- `server/commands/status_commands.py`
+- `server/tests/unit/commands/test_status_commands.py`
+- `server/tests/unit/commands/test_status_commands_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (100%)
+- EXTRACTED: 58 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

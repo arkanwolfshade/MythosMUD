@@ -1,54 +1,51 @@
 # test room sync service
 
-> 133 nodes
+> 38 nodes
 
 ## Key Concepts
 
-- **test_command_parser.py** (45 connections) — `server/tests/unit/utils/test_command_parser.py`
 - **test_command_parser_helpers.py** (24 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **CommandParser** (19 connections) — `server/utils/command_parser.py`
-- **.parse_command()** (7 connections) — `server/utils/command_parser.py`
-- **._create_command_object()** (7 connections) — `server/utils/command_parser.py`
-- **Command** (4 connections)
-- **._parse_command_parts()** (4 connections) — `server/utils/command_parser.py`
-- **._invoke_create_method()** (4 connections) — `server/utils/command_parser.py`
-- **command_parser()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_empty_string()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_whitespace_only()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_too_long()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_unknown_command()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_valid_look()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_valid_go()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_with_slash_prefix()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_spawn_alias()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_alias_l()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_alias_g()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_create_command_object_pydantic_validation_error()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_global_function()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_global_function_with_args()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **command_parser()** (3 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **._normalize_command()** (3 connections) — `server/utils/command_parser.py`
-- **._resolve_command_alias()** (3 connections) — `server/utils/command_parser.py`
-- *... and 108 more nodes in this community*
+- **test_normalize_command_removes_slash_prefix()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_normalize_command_cleans_whitespace()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_normalize_command_strips_whitespace()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_normalize_command_no_slash()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_parse_command_parts_simple()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_parse_command_parts_with_args()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_parse_command_parts_lowercases_command()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_parse_command_parts_empty_raises()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_parse_command_parts_whitespace_only_raises()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_get_command_help_specific_command()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_get_command_help_unknown_command()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_get_command_help_none()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_create_command_object_with_alias_l()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_create_command_object_with_alias_g()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_create_command_object_with_alias_w()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_create_command_object_unsupported_command()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_create_command_object_pydantic_validation_error()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_create_command_object_value_error()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **Unit tests for command_parser helper methods.  Tests the helper methods in Comma** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **Test _normalize_command() removes leading slash.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **Test _normalize_command() cleans multiple whitespace.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **Test _normalize_command() strips leading/trailing whitespace.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **Test _normalize_command() handles command without slash.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **Test _parse_command_parts() parses simple command.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [Spell Targeting](Spell_Targeting.md) (24 shared connections)
-- [real time](real_time.md) (2 shared connections)
-- [.initialize()](initialize%28%29.md) (2 shared connections)
-- [test command processor](test_command_processor.md) (2 shared connections)
-- [NATS](NATS.md) (1 shared connections)
+- [test player event handlers room](test_player_event_handlers_room.md) (2 shared connections)
+- [real time](real_time.md) (1 shared connections)
+- [.initialize()](initialize%28%29.md) (1 shared connections)
+- [Spell Targeting](Spell_Targeting.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_parser.py`
 - `server/tests/unit/utils/test_command_parser_helpers.py`
-- `server/utils/command_parser.py`
 
 ## Audit Trail
 
-- EXTRACTED: 313 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 79 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

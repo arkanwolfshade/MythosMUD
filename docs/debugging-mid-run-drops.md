@@ -1,9 +1,26 @@
 # Debugging Mid-Run Drops (linkdead / has left the game)
 
+**Version 1.0.0** · MythosMUD · 2026-07-30
+
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
 E2E or multiplayer runs sometimes show one player (often Ithaqua) as "linkdead", "has left the game",
 or disconnected mid-test. **These are bugs to debug**, not flakiness to mask with retries or timeouts.
 
-## Disconnect causes and what to grep for
+## 2. Disconnect causes and what to grep for
+
+**[SPEC]**
 
 | `disconnect_reason`      | Meaning                                                                                                                                         | Where                                      |
 | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
@@ -12,7 +29,9 @@ or disconnected mid-test. **These are bugs to debug**, not flakiness to mask wit
 | `new_game_session`       | Same character reconnected (e.g. new tab); old connection closed.                                                                               | `connection_session_management`            |
 | `select_character_other` | User selected another character; other character's connection force-disconnected.                                                               | `api/players._disconnect_other_characters` |
 
-## Investigation steps
+## 3. Investigation steps
+
+**[SPEC]**
 
 ### Step 1: Reproduce and capture server logs
 
@@ -49,8 +68,9 @@ Select-String -Path "logs/local/*.log" -Pattern "disconnect_reason|Broadcasting 
 - Include relevant log snippets and timestamps.
 - Note configuration (e.g. `max_connection_age`, prune interval) and test setup (describe length, which player dropped).
 
-## Both players see linkdead (Occupants (1) with linkdead)
+## 4. Both players see linkdead (Occupants (1) with linkdead)
 
+**[SPEC]**
 When E2E instrumentation shows **both** players with `occupantsCount: 1` and `hasLinkdead: true`, each client sees the *other* player as linkdead. That implies both WebSockets have disconnected and entered the 30-second grace period.
 
 ### Log evidence (2026-01-30)
@@ -83,6 +103,16 @@ The **client** closes the WebSocket with code 1001 (going away). Both connection
 3. **Check ping behavior**: Ping interval is 30s (`useWebSocketConnection.ts`). If tabs are throttled, pings may not run; verify `last_seen` updates.
 4. **Run a single multiplayer spec** (e.g. who-command only) to reduce suite length and connection_age / stale_prune pressure.
 
-## References
+## 5. References
+
+**[SPEC]**
 
 - **GAME_BUG_INVESTIGATION_PLAYBOOK.mdc**: Use for full investigation methodology; this doc focuses on mid-run drops only.
+
+## 6. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

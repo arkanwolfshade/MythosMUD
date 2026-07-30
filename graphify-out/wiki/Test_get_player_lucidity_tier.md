@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_room_service_init_with_cache()** (2 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test RoomService initialization with cache.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **user_manager()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Create a UserManager instance.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
 
 ## Relationships
 
-- [test room service](test_room_service.md) (1 shared connections)
+- [UUID](UUID.md) (1 shared connections)
+- [test user manager](test_user_manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `server/tests/unit/services/test_user_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

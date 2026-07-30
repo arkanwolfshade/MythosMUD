@@ -1,23 +1,25 @@
 # Test add rule() returns False
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **mock_persistence()** (2 connections) — `server/tests/unit/game/test_room_service.py`
-- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Net Impact Projection** (4 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **After Month 1 (Pruning Phase)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **After Month 2 (Consolidation + Additions)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **After Month 3+ (Continuous Improvement)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
 
 ## Relationships
 
-- [test room service](test_room_service.md) (1 shared connections)
+- [Test query rooms with exits](Test_query_rooms_with_exits.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

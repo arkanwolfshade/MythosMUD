@@ -1,6 +1,6 @@
 # Validate an expanded command for
 
-> 60 nodes
+> 66 nodes
 
 ## Key Concepts
 
@@ -13,6 +13,7 @@
 - **is_suspicious_input()** (8 connections) — `server/validators/command_validator.py`
 - **validate_command_length()** (7 connections) — `server/validators/command_validator.py`
 - **.extract_command_name()** (5 connections) — `server/validators/command_validator.py`
+- **.is_valid_command_name()** (4 connections) — `server/validators/command_validator.py`
 - **test_normalize_command_no_slash()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
 - **test_normalize_command_with_slash()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
 - **test_normalize_command_empty()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
@@ -28,17 +29,15 @@
 - **test_validate_command_length_too_long()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
 - **test_validate_command_length_custom_max()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
 - **test_validate_command_format_valid()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **test_validate_command_format_empty()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
-- *... and 35 more nodes in this community*
+- *... and 41 more nodes in this community*
 
 ## Relationships
 
-- [ContainerDataCore](ContainerDataCore.md) (19 shared connections)
-- [test movement service](test_movement_service.md) (7 shared connections)
+- [ContainerDataCore](ContainerDataCore.md) (21 shared connections)
 - [.validate topic()](validate_topic%28%29.md) (6 shared connections)
-- [Spell Targeting](Spell_Targeting.md) (2 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
-- [test alias graph](test_alias_graph.md) (1 shared connections)
+- [test movement service](test_movement_service.md) (5 shared connections)
+- [Player Position Service](Player_Position_Service.md) (2 shared connections)
+- [world](world.md) (2 shared connections)
 - [.get uuid mapping()](get_uuid_mapping%28%29.md) (1 shared connections)
 - [check alias safety()](check_alias_safety%28%29.md) (1 shared connections)
 
@@ -50,7 +49,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 217 (100%)
+- EXTRACTED: 230 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_unsubscribe_from_room_error()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **Test unsubscribe_from_room() handles errors gracefully.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_profession_get_mechanical_effects_none()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **Test get_mechanical_effects returns empty dict for invalid value.** (1 connections) — `server/tests/unit/models/test_profession.py`
 
 ## Relationships
 
-- [test room subscription manager](test_room_subscription_manager.md) (1 shared connections)
+- [Integration tests for the main](Integration_tests_for_the_main.md) (1 shared connections)
+- [test profession](test_profession.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager.py`
+- `server/tests/unit/models/test_profession.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

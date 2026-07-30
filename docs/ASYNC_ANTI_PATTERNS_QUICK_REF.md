@@ -1,12 +1,29 @@
 # Async Anti-Patterns Quick Reference
 
+**Version 1.0.0** · MythosMUD · 2026-07-30
+
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[SPEC]**
 **Purpose**: Quick reference for avoiding common async/await anti-patterns in MythosMUD
 **Audience**: All developers working with async code
 **Last Updated**: December 3, 2025
 
 ---
 
-## ❌ NEVER DO THIS → ✅ DO THIS INSTEAD
+## 2. ❌ NEVER DO THIS → ✅ DO THIS INSTEAD
+
+**[NOTE]**
 
 ### 1. Blocking the Event Loop
 
@@ -363,7 +380,9 @@ doing it wrong.
 
 ---
 
-## 🚨 EMERGENCY DETECTION GUIDE
+## 3. 🚨 EMERGENCY DETECTION GUIDE
+
+**[NOTE]**
 
 ### "Is my code blocking the event loop?"
 
@@ -398,8 +417,9 @@ async def my_function():
 
 ---
 
-## 🎯 PRACTICAL CHECKLIST
+## 4. 🎯 PRACTICAL CHECKLIST
 
+**[SPEC]**
 Before committing async code, check:
 
 - [ ] All database operations use `async_persistence` methods (not `persistence`)
@@ -415,7 +435,9 @@ Before committing async code, check:
 
 ---
 
-## 📚 APPROVED PATTERNS
+## 5. 📚 APPROVED PATTERNS
+
+**[NOTE]**
 
 ### Pattern 1: Structured Concurrency
 
@@ -477,7 +499,9 @@ async def flaky_operation():
 
 ---
 
-## 🔧 TOOLING
+## 6. 🔧 TOOLING
+
+**[NOTE]**
 
 ### Pre-Commit Hook
 
@@ -516,7 +540,9 @@ Configure IDE to warn on:
 
 ---
 
-## 📞 QUESTIONS?
+## 7. 📞 QUESTIONS?
+
+**[SPEC]**
 
 ### "Should this function be async?"
 
@@ -561,7 +587,9 @@ Configure IDE to warn on:
 
 ---
 
-## 🎓 LEARNING RESOURCES
+## 8. 🎓 LEARNING RESOURCES
+
+**[SPEC]**
 
 1. **Internal**:
 
@@ -578,8 +606,9 @@ Configure IDE to warn on:
 
 ---
 
-## 🚫 BANNED PATTERNS
+## 9. 🚫 BANNED PATTERNS
 
+**[SPEC]**
 These patterns are **NEVER ALLOWED** in MythosMUD:
 
 1. ❌ F-string logging: `logger.info(f"...")`
@@ -596,3 +625,11 @@ These patterns are **NEVER ALLOWED** in MythosMUD:
 **Last Updated**: December 3, 2025
 **Maintained By**: Architecture Team
 **Questions**: Ask in #async-questions Slack channel
+
+## 10. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

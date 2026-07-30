@@ -1,10 +1,12 @@
 # test health monitor
 
-> 24 nodes
+> 28 nodes
 
 ## Key Concepts
 
 - **test_health_monitor.py** (16 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **health_monitor()** (3 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **test_health_monitor_init_custom_intervals()** (3 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
 - **mock_is_websocket_open()** (2 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
 - **mock_validate_token()** (2 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
 - **mock_cleanup_dead_websocket()** (2 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
@@ -21,18 +23,17 @@
 - **Create a mock validate_token callback.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
 - **Create a mock cleanup_dead_websocket callback.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
 - **Create a mock performance tracker.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **Create a HealthMonitor instance.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
 - **Test HealthMonitor initialization.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
 - **Test check_player_connection_health() returns health status.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
 - **Test check_player_connection_health() when player has no websockets.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
 - **Test check_player_connection_health() when websockets are unhealthy.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
 - **Test check_all_connections_health() checks all connections.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- **Test start_periodic_checks() starts periodic checks.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- **Test stop_periodic_checks() stops periodic checks.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [GameConfig](GameConfig.md) (3 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
+- [world](world.md) (4 shared connections)
 
 ## Source Files
 
@@ -40,7 +41,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 50 (100%)
+- EXTRACTED: 58 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

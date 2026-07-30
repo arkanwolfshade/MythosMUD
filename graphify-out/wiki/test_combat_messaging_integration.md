@@ -15,7 +15,7 @@
 
 ## Relationships
 
-- [.validate player name field()](validate_player_name_field%28%29.md) (2 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (2 shared connections)
 - [test_parse_command_empty_string](test_parse_command_empty_string.md) (1 shared connections)
 - [test_create_command_object_attribute_error](test_create_command_object_attribute_error.md) (1 shared connections)
 - [test_broadcast_combat_attack](test_broadcast_combat_attack.md) (1 shared connections)

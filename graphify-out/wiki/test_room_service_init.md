@@ -1,24 +1,26 @@
 # test_room_service_init
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_room_service_init()** (2 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test RoomService initialization.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **.model_dump()** (4 connections) — `server/models/alias.py`
+- **Any** (1 connections)
+- **Convert alias to dictionary for JSON serialization.** (1 connections) — `server/models/alias.py`
 
 ## Relationships
 
-- [test room service](test_room_service.md) (1 shared connections)
+- [command parser()](command_parser%28%29.md) (1 shared connections)
+- [message formatters](message_formatters.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `server/models/alias.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 5 (83%)
+- INFERRED: 1 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

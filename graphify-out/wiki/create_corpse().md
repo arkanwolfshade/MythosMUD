@@ -1,56 +1,47 @@
 # .create corpse()
 
-> 31 nodes
+> 27 nodes
 
 ## Key Concepts
 
-- **debugLogger** (25 connections) — `client/src/utils/debugLogger.ts`
-- **GameTerminalPresentation.tsx** (16 connections) — `client/src/components/GameTerminalPresentation.tsx`
-- **.log()** (9 connections) — `client/src/utils/debugLogger.ts`
-- **debugLogger.ts** (7 connections) — `client/src/utils/debugLogger.ts`
-- **.logToConsole()** (6 connections) — `client/src/utils/debugLogger.ts`
-- **GameTerminalPresentation.test.tsx** (5 connections) — `client/src/components/__tests__/GameTerminalPresentation.test.tsx`
-- **.downloadLogs()** (5 connections) — `client/src/utils/debugLogger.ts`
-- **GameTerminalPresentation()** (4 connections) — `client/src/components/GameTerminalPresentation.tsx`
-- **debugLogger.test.ts** (4 connections) — `client/src/utils/__tests__/debugLogger.test.ts`
-- **.warn()** (4 connections) — `client/src/utils/debugLogger.ts`
-- **.error()** (4 connections) — `client/src/utils/debugLogger.ts`
-- **.initializeConfig()** (3 connections) — `client/src/utils/debugLogger.ts`
-- **.debug()** (3 connections) — `client/src/utils/debugLogger.ts`
-- **.info()** (3 connections) — `client/src/utils/debugLogger.ts`
-- **GameTerminalPresentationProps** (2 connections) — `client/src/components/GameTerminalPresentation.tsx`
-- **.constructor()** (2 connections) — `client/src/utils/debugLogger.ts`
-- **.getDefaultLogLevel()** (2 connections) — `client/src/utils/debugLogger.ts`
-- **.shouldLog()** (2 connections) — `client/src/utils/debugLogger.ts`
-- **.createLogEntry()** (2 connections) — `client/src/utils/debugLogger.ts`
-- **.addToBuffer()** (2 connections) — `client/src/utils/debugLogger.ts`
-- **.formatMessage()** (2 connections) — `client/src/utils/debugLogger.ts`
-- **.getLogsAsString()** (2 connections) — `client/src/utils/debugLogger.ts`
-- **mockConsole** (1 connections) — `client/src/utils/__tests__/debugLogger.test.ts`
-- **constructor()** (1 connections) — `client/src/utils/__tests__/debugLogger.test.ts`
-- **LogLevel** (1 connections) — `client/src/utils/debugLogger.ts`
-- *... and 6 more nodes in this community*
+- **Uvicorn/ASGI Code Review - feature/sqlite-to-postgresql Branch** (10 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
+- **✅ POSITIVE FINDINGS** (5 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
+- **🔴 CRITICAL ISSUES** (4 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
+- **🟡 HIGH PRIORITY ISSUES** (4 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
+- **🟢 MEDIUM PRIORITY ISSUES** (4 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
+- **📋 RECOMMENDATIONS SUMMARY** (4 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
+- **UVICORN_CODE_REVIEW.md** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
+- **Executive Summary** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
+- **1. Deprecated `asyncio.get_event_loop()` Usage** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
+- **2. SQL Injection Risk in Field Name Construction** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
+- **3. Connection Pool Cleanup Verification** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
+- **4. Blocking Operations in Async Context** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
+- **5. Event Loop Change Detection Complexity** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
+- **6. Missing Error Context in Some Exception Handlers** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
+- **7. F-String SQL Construction (Even with Constants)** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
+- **8. Inconsistent Async/Sync Patterns** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
+- **9. Missing Type Hints in Some Areas** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
+- **1. Proper Connection Pool Management** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
+- **2. Good Error Handling Patterns** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
+- **3. Async/Await Usage** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
+- **4. Security Considerations** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
+- **Immediate Actions (Before Production)** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
+- **Short-term Improvements** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
+- **Long-term Improvements** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
+- **🔍 TESTING RECOMMENDATIONS** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [Any](Any.md) (5 shared connections)
-- [createInitialState()](createInitialState%28%29.md) (3 shared connections)
-- [GameLogMessagesList](GameLogMessagesList.md) (3 shared connections)
-- [player repository save](player_repository_save.md) (2 shared connections)
-- [ChatPanelTest](ChatPanelTest.md) (2 shared connections)
-- [async sessionmaker](async_sessionmaker.md) (1 shared connections)
-- [chatPanelChannelFilter](chatPanelChannelFilter.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `client/src/components/GameTerminalPresentation.tsx`
-- `client/src/components/__tests__/GameTerminalPresentation.test.tsx`
-- `client/src/utils/__tests__/debugLogger.test.ts`
-- `client/src/utils/debugLogger.ts`
+- `docs/archive/UVICORN_CODE_REVIEW.md`
 
 ## Audit Trail
 
-- EXTRACTED: 123 (100%)
+- EXTRACTED: 52 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

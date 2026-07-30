@@ -1,43 +1,47 @@
 # Remove sensitive data from log
 
-> 14 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **MessageBroadcaster** (19 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **._deliver_room_broadcast()** (6 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **.broadcast_to_room()** (6 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **._build_target_mapping()** (5 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **.broadcast_room_event()** (4 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **._prepare_room_targets()** (3 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **message_broadcaster()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **Broadcasts messages to rooms and globally.      This class provides:     - Room-** (1 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **Convert string player IDs to UUIDs for message sending.          Args:** (1 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **Dedupe subscribers and count exclusions.** (1 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **Run batch gather (or fallback) for a room broadcast.** (1 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **Broadcast a message to all players in a room.          Args:             room_id** (1 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **Broadcast a room-specific event.** (1 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **Create a MessageBroadcaster instance.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **SecurityHeadersMiddleware** (13 connections) — `server/middleware/security_headers.py`
+- **security_headers.py** (6 connections) — `server/middleware/security_headers.py`
+- **.__call__()** (5 connections) — `server/middleware/security_headers.py`
+- **.dispatch()** (5 connections) — `server/middleware/security_headers.py`
+- **._add_security_headers_to_response()** (4 connections) — `server/middleware/security_headers.py`
+- **.__init__()** (3 connections) — `server/middleware/security_headers.py`
+- **test_security_headers_middleware_init()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **test_security_headers_middleware_init_with_env_vars()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **Any** (2 connections)
+- **ASGIApp** (1 connections)
+- **Scope** (1 connections)
+- **Receive** (1 connections)
+- **Send** (1 connections)
+- **Request** (1 connections)
+- **Security headers middleware for MythosMUD server.  This module provides comprehe** (1 connections) — `server/middleware/security_headers.py`
+- **Pure ASGI middleware to add comprehensive security headers to all HTTP responses** (1 connections) — `server/middleware/security_headers.py`
+- **Initialize security headers middleware.          Args:             app: ASGI app** (1 connections) — `server/middleware/security_headers.py`
+- **ASGI application interface.          Args:             scope: ASGI connection sc** (1 connections) — `server/middleware/security_headers.py`
+- **Backward-compatible dispatch method for BaseHTTPMiddleware interface.          T** (1 connections) — `server/middleware/security_headers.py`
+- **Add security headers to Response object (compatibility method).** (1 connections) — `server/middleware/security_headers.py`
+- **Test SecurityHeadersMiddleware initialization.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **Test SecurityHeadersMiddleware initialization with environment variables.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
 
 ## Relationships
 
-- [canonical room id impl()](canonical_room_id_impl%28%29.md) (10 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (3 shared connections)
-- [SendPersonalMessage](SendPersonalMessage.md) (2 shared connections)
-- [test connection cleaner](test_connection_cleaner.md) (1 shared connections)
-- [test database](test_database.md) (1 shared connections)
-- [game](game.md) (1 shared connections)
-- [Any](Any.md) (1 shared connections)
+- [test security headers](test_security_headers.md) (6 shared connections)
+- [init](init.md) (3 shared connections)
+- [world](world.md) (2 shared connections)
 
 ## Source Files
 
-- `server/realtime/messaging/message_broadcaster.py`
-- `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- `server/middleware/security_headers.py`
+- `server/tests/unit/middleware/test_security_headers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 53 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 56 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

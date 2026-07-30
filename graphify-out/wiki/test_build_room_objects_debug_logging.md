@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_build_room_objects_debug_logging()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _build_room_objects logs debug info for specific room.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_profession_meets_stat_requirements_multiple_not_met()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **Test meets_stat_requirements returns False when multiple requirements are not me** (1 connections) — `server/tests/unit/models/test_profession.py`
 
 ## Relationships
 
-- [test async persistence room loading](test_async_persistence_room_loading.md) (1 shared connections)
+- [Integration tests for the main](Integration_tests_for_the_main.md) (1 shared connections)
+- [test profession](test_profession.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- `server/tests/unit/models/test_profession.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

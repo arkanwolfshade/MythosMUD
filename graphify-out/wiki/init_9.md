@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **__init__.py** (1 connections) — `server/domain/events/__init__.py`
-- **Domain events for MythosMUD.  Domain events represent significant state changes** (1 connections) — `server/domain/events/__init__.py`
+- **__init__.py** (1 connections) — `server/domain/entities/__init__.py`
+- **Domain entities for MythosMUD.  Entities are objects with identity and lifecycle** (1 connections) — `server/domain/entities/__init__.py`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `server/domain/events/__init__.py`
+- `server/domain/entities/__init__.py`
 
 ## Audit Trail
 

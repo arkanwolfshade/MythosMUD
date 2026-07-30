@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **test_load_player_mutes_batch_all_cached()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test load_player_mutes_batch() when all players are cached.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_save_player_mutes_serialization_error()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test save_player_mutes() handles serialization error.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
 
 ## Relationships
 

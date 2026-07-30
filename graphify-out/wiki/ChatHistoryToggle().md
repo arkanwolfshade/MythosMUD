@@ -1,58 +1,54 @@
 # ChatHistoryToggle()
 
-> 24 nodes
+> 32 nodes
 
 ## Key Concepts
 
-- **ChatPanelRefactoredView.tsx** (14 connections) — `client/src/components/panels/ChatPanelRefactoredView.tsx`
-- **chatPanelRefactoredDerived.ts** (13 connections) — `client/src/components/panels/chatPanelRefactoredDerived.ts`
-- **useChatPanelRefactored.ts** (12 connections) — `client/src/components/panels/useChatPanelRefactored.ts`
-- **ChatPanelRefactored.tsx** (10 connections) — `client/src/components/panels/ChatPanelRefactored.tsx`
-- **chatPanelRefactoredDerived.test.ts** (10 connections) — `client/src/components/panels/__tests__/chatPanelRefactoredDerived.test.ts`
-- **useChatPanelRefactored()** (7 connections) — `client/src/components/panels/useChatPanelRefactored.ts`
-- **resolveMessageChannel()** (6 connections) — `client/src/components/panels/chatPanelRefactoredDerived.ts`
-- **computeUnreadCounts()** (6 connections) — `client/src/components/panels/chatPanelRefactoredDerived.ts`
-- **computeFilteredMessages()** (6 connections) — `client/src/components/panels/chatPanelRefactoredDerived.ts`
-- **ChatPanelRefactoredMessage** (6 connections) — `client/src/components/panels/chatPanelRefactoredTypes.ts`
-- **ChatPanelRefactored.test.tsx** (5 connections) — `client/src/components/panels/__tests__/ChatPanelRefactored.test.tsx`
-- **isDisplayableChatMessage()** (5 connections) — `client/src/components/panels/chatPanelRefactoredDerived.ts`
-- **computeChannelMessages()** (5 connections) — `client/src/components/panels/chatPanelRefactoredDerived.ts`
-- **chatPanelRefactoredTypes.ts** (5 connections) — `client/src/components/panels/chatPanelRefactoredTypes.ts`
-- **filterNonSystemMessages()** (4 connections) — `client/src/components/panels/chatPanelRefactoredDerived.ts`
-- **ChatPanelRefactored()** (3 connections) — `client/src/components/panels/ChatPanelRefactored.tsx`
-- **ChatStatistics()** (3 connections) — `client/src/components/panels/chat/ChatStatistics.tsx`
-- **ChatPanelRefactoredProps** (2 connections) — `client/src/components/panels/ChatPanelRefactored.tsx`
-- **ChatPanelRefactoredView()** (2 connections) — `client/src/components/panels/ChatPanelRefactoredView.tsx`
-- **ChatHistoryToggle()** (2 connections) — `client/src/components/panels/chat/ChatHistoryToggle.tsx`
-- **UseChatPanelRefactoredResult** (2 connections) — `client/src/components/panels/useChatPanelRefactored.ts`
-- **ChatPanelRefactoredChromeProps** (1 connections) — `client/src/components/panels/ChatPanelRefactoredView.tsx`
-- **ChatPanelRefactoredViewProps** (1 connections) — `client/src/components/panels/ChatPanelRefactoredView.tsx`
-- **base()** (1 connections) — `client/src/components/panels/__tests__/chatPanelRefactoredDerived.test.ts`
+- **test_look_npc_helpers.py** (34 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **_parse_npc_stats_dict()** (14 connections) — `server/commands/look_npc.py`
+- **test_parse_npc_stats_dict_from_dict()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_parse_npc_stats_dict_from_json_string()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_parse_npc_stats_dict_invalid_json()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_parse_npc_stats_dict_non_dict_non_string()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_parse_npc_stats_dict_from_dict()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_parse_npc_stats_dict_from_json_string()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_parse_npc_stats_dict_invalid_json()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_parse_npc_stats_dict_other_type()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_format_core_attributes()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_format_core_attributes_empty()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_format_other_stats()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_format_other_stats_empty()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_format_lifecycle_info()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_format_lifecycle_info_no_lifecycle_state()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **Parse NPC stats dictionary, handling both dict and JSON string formats.** (1 connections) — `server/commands/look_npc.py`
+- **Test parsing NPC stats from dictionary.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test parsing NPC stats from JSON string.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test parsing NPC stats from invalid JSON.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test parsing NPC stats from non-dict, non-string.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Unit tests for look_npc helper functions.  Tests the helper functions in look_np** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **Test _parse_npc_stats_dict() handles dict input.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **Test _parse_npc_stats_dict() parses JSON string.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **Test _parse_npc_stats_dict() returns empty dict for invalid JSON.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [ChatPanelTest](ChatPanelTest.md) (8 shared connections)
-- [chatPanelChannelFilter](chatPanelChannelFilter.md) (5 shared connections)
-- [generate invites db](generate_invites_db.md) (2 shared connections)
-- [test player cache](test_player_cache.md) (2 shared connections)
-- [createInitialState()](createInitialState%28%29.md) (1 shared connections)
-- [GameLogMessagesList](GameLogMessagesList.md) (1 shared connections)
+- [AttributeError](AttributeError.md) (13 shared connections)
+- [Test prepare command for processing](Test_prepare_command_for_processing.md) (6 shared connections)
+- [look npc](look_npc.md) (5 shared connections)
+- [AttributeType](AttributeType.md) (4 shared connections)
+- [test database](test_database.md) (4 shared connections)
+- [AliasStorage](AliasStorage.md) (4 shared connections)
 
 ## Source Files
 
-- `client/src/components/panels/ChatPanelRefactored.tsx`
-- `client/src/components/panels/ChatPanelRefactoredView.tsx`
-- `client/src/components/panels/__tests__/ChatPanelRefactored.test.tsx`
-- `client/src/components/panels/__tests__/chatPanelRefactoredDerived.test.ts`
-- `client/src/components/panels/chat/ChatHistoryToggle.tsx`
-- `client/src/components/panels/chat/ChatStatistics.tsx`
-- `client/src/components/panels/chatPanelRefactoredDerived.ts`
-- `client/src/components/panels/chatPanelRefactoredTypes.ts`
-- `client/src/components/panels/useChatPanelRefactored.ts`
+- `server/commands/look_npc.py`
+- `server/tests/unit/commands/test_look_npc.py`
+- `server/tests/unit/commands/test_look_npc_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 131 (100%)
+- EXTRACTED: 106 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

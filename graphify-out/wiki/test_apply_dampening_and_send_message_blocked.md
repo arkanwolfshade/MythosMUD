@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_apply_dampening_and_send_message_blocked()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _apply_dampening_and_send_message handles blocked messages.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_normalize_to_uuid_invalid()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test _normalize_to_uuid() with invalid format.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
 
 ## Relationships
 
-- [test nats message handler chat](test_nats_message_handler_chat.md) (1 shared connections)
+- [test user manager](test_user_manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `server/tests/unit/services/test_user_manager.py`
 
 ## Audit Trail
 

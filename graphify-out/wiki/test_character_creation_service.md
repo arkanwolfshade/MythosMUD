@@ -22,10 +22,9 @@
 
 ## Relationships
 
-- [CharacterSelectionScreen](CharacterSelectionScreen.md) (14 shared connections)
+- [CharacterSelectionScreen](CharacterSelectionScreen.md) (15 shared connections)
 - [SERVER UNAVAILABLE PATTERNS](SERVER_UNAVAILABLE_PATTERNS.md) (2 shared connections)
 - [handle reply command()](handle_reply_command%28%29.md) (1 shared connections)
-- [applyAuthenticatedSession](applyAuthenticatedSession.md) (1 shared connections)
 
 ## Source Files
 

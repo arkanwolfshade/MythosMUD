@@ -1,6 +1,6 @@
 # maps
 
-> 36 nodes
+> 38 nodes
 
 ## Key Concepts
 
@@ -10,6 +10,7 @@
 - **AsciiMapViewerViews.tsx** (10 connections) — `client/src/components/map/AsciiMapViewerViews.tsx`
 - **fetchAsciiMap()** (9 connections) — `client/src/api/maps.ts`
 - **fetchAsciiMinimap()** (8 connections) — `client/src/api/maps.ts`
+- **isAsciiMapApiResponse()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
 - **useAsciiMapViewerBindings()** (5 connections) — `client/src/components/map/AsciiMapViewer.tsx`
 - **AsciiMapViewer()** (5 connections) — `client/src/components/map/AsciiMapViewer.tsx`
 - **runFetchMap()** (5 connections) — `client/src/components/map/useAsciiMap.ts`
@@ -28,18 +29,17 @@
 - **AsciiMapViewerLoading()** (2 connections) — `client/src/components/map/AsciiMapViewerViews.tsx`
 - **AsciiMapViewerError()** (2 connections) — `client/src/components/map/AsciiMapViewerViews.tsx`
 - **AsciiMapViewerContent()** (2 connections) — `client/src/components/map/AsciiMapViewerViews.tsx`
-- **asciiMapViewerUtils.test.ts** (2 connections) — `client/src/components/map/__tests__/asciiMapViewerUtils.test.ts`
-- *... and 11 more nodes in this community*
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [LoginResponse](LoginResponse.md) (5 shared connections)
+- [LoginResponse](LoginResponse.md) (6 shared connections)
 - [HealthMeter](HealthMeter.md) (3 shared connections)
 - [EdgeCreationModal](EdgeCreationModal.md) (2 shared connections)
 - [test find item in equipped](test_find_item_in_equipped.md) (2 shared connections)
-- [domPurifyTestWindow](domPurifyTestWindow.md) (2 shared connections)
+- [ChatPanelTest](ChatPanelTest.md) (2 shared connections)
 - [EdgeDetailsPanel](EdgeDetailsPanel.md) (2 shared connections)
-- [fetchSpy](fetchSpy.md) (1 shared connections)
+- [AppCreationFlowViews](AppCreationFlowViews.md) (1 shared connections)
 
 ## Source Files
 
@@ -56,7 +56,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 149 (100%)
+- EXTRACTED: 158 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

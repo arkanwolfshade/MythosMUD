@@ -1,70 +1,50 @@
 # test resolve state no app()
 
-> 117 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **__init__.py** (47 connections) — `server/services/__init__.py`
-- **inventory_equip_command.py** (45 connections) — `server/commands/inventory_equip_command.py`
-- **inventory_unequip_command.py** (32 connections) — `server/commands/inventory_unequip_command.py`
-- **InventoryCapacityError** (29 connections) — `server/services/inventory_service.py`
-- **inventory_commands.py** (28 connections) — `server/commands/inventory_commands.py`
-- **WearableContainerService** (23 connections) — `server/services/wearable_container_service.py`
-- **SlotValidationError** (22 connections) — `server/services/equipment_service.py`
-- **test_equipment_service.py** (22 connections) — `server/tests/unit/services/test_equipment_service.py`
-- **equipment_service.py** (21 connections) — `server/services/equipment_service.py`
-- **wearable_container_service.py** (20 connections) — `server/services/wearable_container_service.py`
-- **resolve_state_and_player()** (19 connections) — `server/commands/inventory_command_helpers.py`
-- **get_shared_services()** (19 connections) — `server/commands/inventory_service_helpers.py`
-- **EquipmentCapacityError** (17 connections) — `server/services/equipment_service.py`
-- **EquipmentService** (17 connections) — `server/services/equipment_service.py`
-- **inventory_service_helpers.py** (16 connections) — `server/commands/inventory_service_helpers.py`
-- **handle_unequip_command()** (14 connections) — `server/commands/inventory_unequip_command.py`
-- **_equip_build_work()** (13 connections) — `server/commands/inventory_equip_command.py`
-- **handle_equip_command()** (12 connections) — `server/commands/inventory_equip_command.py`
-- **_unequip_run_mutation()** (12 connections) — `server/commands/inventory_unequip_command.py`
-- **EquipmentServiceError** (10 connections) — `server/services/equipment_service.py`
-- **inventory_command_contracts.py** (9 connections) — `server/commands/inventory_command_contracts.py`
-- **.equip_from_inventory()** (9 connections) — `server/services/equipment_service.py`
-- **normalize_inventory_slots()** (8 connections) — `server/commands/equipment_helpers.py`
+- **equipment_helpers.py** (28 connections) — `server/commands/equipment_helpers.py`
 - **normalize_equipped_items()** (8 connections) — `server/commands/equipment_helpers.py`
-- **_equip_run_mutation()** (8 connections) — `server/commands/inventory_equip_command.py`
-- *... and 92 more nodes in this community*
+- **resolve_unequip_slot()** (8 connections) — `server/commands/equipment_helpers.py`
+- **resolve_equip_item_index()** (7 connections) — `server/commands/equipment_helpers.py`
+- **handle_wearable_container_on_equip()** (7 connections) — `server/commands/equipment_helpers.py`
+- **find_equipped_item_after_equip()** (6 connections) — `server/commands/equipment_helpers.py`
+- **_equip_stack_from_inventory_index()** (4 connections) — `server/commands/equipment_helpers.py`
+- **InventoryStack** (4 connections)
+- **Player** (3 connections)
+- **_find_equipped_by_item_id()** (3 connections) — `server/commands/equipment_helpers.py`
+- **_try_resolve_unequip_by_search()** (3 connections) — `server/commands/equipment_helpers.py`
+- **_unequip_usage_missing_slot()** (2 connections) — `server/commands/equipment_helpers.py`
+- **_try_resolve_unequip_slot_key()** (2 connections) — `server/commands/equipment_helpers.py`
+- **Equipment-related helper functions for inventory commands.** (1 connections) — `server/commands/equipment_helpers.py`
+- **Deep-copy inventory stack at index and normalize slot_type.** (1 connections) — `server/commands/equipment_helpers.py`
+- **Resolve item index from command data for equip command.** (1 connections) — `server/commands/equipment_helpers.py`
+- **Normalize slot names and slot_type in equipped items.** (1 connections) — `server/commands/equipment_helpers.py`
+- **Find the equipped slot and item after equipping.** (1 connections) — `server/commands/equipment_helpers.py`
+- **Handle wearable container creation when equipping a container item.** (1 connections) — `server/commands/equipment_helpers.py`
+- **Resolve slot from command data for unequip command.** (1 connections) — `server/commands/equipment_helpers.py`
 
 ## Relationships
 
-- [Lock](Lock.md) (43 shared connections)
-- [Any](Any.md) (34 shared connections)
-- [test format metadata empty()](test_format_metadata_empty%28%29.md) (20 shared connections)
-- [filter container data()](filter_container_data%28%29.md) (16 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (15 shared connections)
-- [AbstractContextManager](AbstractContextManager.md) (12 shared connections)
-- [handle pickup command()](handle_pickup_command%28%29.md) (8 shared connections)
-- [maps](maps.md) (5 shared connections)
-- [container helpers inventory display](container_helpers_inventory_display.md) (5 shared connections)
-- [test magic commands](test_magic_commands.md) (5 shared connections)
-- [. init ()](_init_%28%29.md) (5 shared connections)
-- [container helpers inventory find](container_helpers_inventory_find.md) (5 shared connections)
+- [Any](Any.md) (21 shared connections)
+- [Update player's connection list to](Update_player%27s_connection_list_to.md) (4 shared connections)
+- [Test check grace period block](Test_check_grace_period_block.md) (2 shared connections)
+- [Test process alias expansion function.](Test_process_alias_expansion_function.md) (2 shared connections)
+- [Lock](Lock.md) (2 shared connections)
+- [world](world.md) (2 shared connections)
+- [chat pose helpers](chat_pose_helpers.md) (1 shared connections)
+- [main()](main%28%29.md) (1 shared connections)
+- [. init ()](_init_%28%29.md) (1 shared connections)
 
 ## Source Files
 
 - `server/commands/equipment_helpers.py`
-- `server/commands/inventory_command_contracts.py`
-- `server/commands/inventory_command_helpers.py`
-- `server/commands/inventory_commands.py`
-- `server/commands/inventory_equip_command.py`
-- `server/commands/inventory_service_helpers.py`
-- `server/commands/inventory_unequip_command.py`
-- `server/services/__init__.py`
-- `server/services/equipment_service.py`
-- `server/services/inventory_service.py`
-- `server/services/wearable_container_service.py`
-- `server/tests/unit/services/test_equipment_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 642 (90%)
-- INFERRED: 74 (10%)
+- EXTRACTED: 92 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

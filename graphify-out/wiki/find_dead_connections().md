@@ -1,33 +1,38 @@
 # find dead connections()
 
-> 5 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **datetime** (6 connections)
-- **.update_player_last_active()** (4 connections) — `server/async_persistence.py`
-- **.get_decayed_containers()** (4 connections) — `server/async_persistence.py`
-- **Update the last_active timestamp for a player. Delegates to PlayerRepository.** (1 connections) — `server/async_persistence.py`
-- **Get decayed containers.** (1 connections) — `server/async_persistence.py`
+- **Async Persistence Migration Tracker** (8 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
+- **Migration Strategy** (5 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
+- **Migration Pattern** (3 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
+- **Current Status** (2 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
+- **ASYNC_PERSISTENCE_MIGRATION_TRACKER.md** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
+- **Overview** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
+- **Files Requiring Migration** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
+- **Phase 1: High Priority (✅ COMPLETE)** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
+- **Phase 2: Service Layer Migration (Next)** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
+- **Phase 3: Supporting Services** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
+- **Phase 4: Startup Services (Low Priority)** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
+- **Template for Migration** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
+- **Decision Tree** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
+- **Progress Tracking** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
+- **Testing Requirements** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
+- **Success Criteria** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
 
 ## Relationships
 
-- [chat nats publisher](chat_nats_publisher.md) (2 shared connections)
-- [init](init.md) (1 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
-- [time commands](time_commands.md) (1 shared connections)
-- [Protocol](Protocol.md) (1 shared connections)
-- [real time](real_time.md) (1 shared connections)
-- [PlayerChannelPreferences](PlayerChannelPreferences.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/async_persistence.py`
+- `docs/archive/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (81%)
-- INFERRED: 3 (19%)
+- EXTRACTED: 30 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

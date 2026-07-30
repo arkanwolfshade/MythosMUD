@@ -1,10 +1,26 @@
 # CI Environment Alignment
 
+**Version 1.0.0** · MythosMUD · 2026-07-30
+
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
 This document describes how we've aligned the Docker, GitHub Actions, and local `make test-ci` environments to ensure
 consistent test execution across all platforms.
 
-## Problem
+## 2. Problem
 
+**[SPEC]**
 Previously, there were inconsistencies between:
 **Dockerfile.github-runner**: Used `.venv`, activation-based installation, missing `pytest-xdist`
 
@@ -18,7 +34,9 @@ This led to:
 - Different dependency versions between environments
 - Difficulty reproducing CI failures locally
 
-## Solution
+## 3. Solution
+
+**[SPEC]**
 
 ### 1. Shared Dependency Installation Script
 
@@ -107,7 +125,9 @@ test-ci:
 - Works on both Windows and Unix
 - Automatically uses venv Python when available
 
-## How It Works
+## 4. How It Works
+
+**[SPEC]**
 
 ### Venv Detection Priority
 
@@ -132,14 +152,18 @@ All environments verify pytest installation by:
 2. Attempting to import pytest and print version
 3. Listing site-packages contents if verification fails (for debugging)
 
-## Benefits
+## 5. Benefits
+
+**[SPEC]**
 
 1. **Consistency**: All environments use the same venv name, dependencies, and installation method
 2. **Reproducibility**: Local `make test-ci` now matches CI behavior
 3. **Maintainability**: Single source of truth for dependency installation
 4. **Debugging**: Better error messages when dependencies are missing
 
-## Usage
+## 6. Usage
+
+**[NOTE]**
 
 ### Local Development
 
@@ -161,8 +185,18 @@ The Dockerfile automatically uses the shared script, no changes needed.
 
 The workflow automatically uses the shared script, no changes needed.
 
-## Future Improvements
+## 7. Future Improvements
+
+**[SPEC]**
 
 1. Consider using `uv sync` instead of `uv pip install` for better dependency resolution
 2. Add dependency version pinning to ensure exact version matches
 3. Consider using `uv`'s project environment feature when it's more stable
+
+## 8. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

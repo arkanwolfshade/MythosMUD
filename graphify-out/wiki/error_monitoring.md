@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
+- [get current tick()](get_current_tick%28%29.md) (1 shared connections)
 - [Coord](Coord.md) (1 shared connections)
 
 ## Source Files

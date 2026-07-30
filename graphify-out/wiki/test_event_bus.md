@@ -1,11 +1,12 @@
 # test event bus
 
-> 80 nodes
+> 82 nodes
 
 ## Key Concepts
 
 - **test_event_bus.py** (45 connections) — `server/tests/unit/events/test_event_bus.py`
 - **MockEventClass** (29 connections) — `server/tests/unit/events/test_event_bus.py`
+- **event_bus()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
 - **test_event_bus_subscribe()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
 - **test_event_bus_subscribe_multiple()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
 - **test_event_bus_unsubscribe()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
@@ -28,12 +29,12 @@
 - **test_subscribe_with_service_id()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
 - **test_unsubscribe_all_for_service()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
 - **test_unsubscribe_all_for_service_partial_cleanup()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_get_subscriber_stats()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- *... and 55 more nodes in this community*
+- *... and 57 more nodes in this community*
 
 ## Relationships
 
-- [TerminalButtonProps](TerminalButtonProps.md) (7 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (5 shared connections)
+- [combat initialization](combat_initialization.md) (2 shared connections)
 
 ## Source Files
 
@@ -41,7 +42,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 171 (80%)
+- EXTRACTED: 175 (80%)
 - INFERRED: 44 (20%)
 - AMBIGUOUS: 0 (0%)
 

@@ -35,7 +35,7 @@
 
 - [real time](real_time.md) (5 shared connections)
 - [TerminalButtonProps](TerminalButtonProps.md) (4 shared connections)
-- [def row()](def_row%28%29.md) (3 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (3 shared connections)
 - [. repr ()](_repr_%28%29.md) (2 shared connections)
 
 ## Source Files

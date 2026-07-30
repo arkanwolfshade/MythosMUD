@@ -1,37 +1,48 @@
 # datetime
 
-> 13 nodes
+> 34 nodes
 
 ## Key Concepts
 
-- **.load_container_from_room_json()** (8 connections) — `server/services/environmental_container_loader.py`
-- **.migrate_room_container_to_postgresql()** (7 connections) — `server/services/environmental_container_loader.py`
-- **EnvironmentalContainerLoader** (6 connections) — `server/services/environmental_container_loader.py`
-- **.__init__()** (3 connections) — `server/services/environmental_container_loader.py`
-- **Any** (3 connections)
-- **.load_containers_for_room()** (3 connections) — `server/services/environmental_container_loader.py`
-- **ContainerComponent** (2 connections)
-- **UUID** (2 connections)
-- **Service for loading environmental containers from JSON and PostgreSQL.      Hand** (1 connections) — `server/services/environmental_container_loader.py`
-- **Initialize the environmental container loader.          Args:             persis** (1 connections) — `server/services/environmental_container_loader.py`
-- **Load a container definition from room JSON.          Args:             room_json** (1 connections) — `server/services/environmental_container_loader.py`
-- **Migrate a container from room JSON to PostgreSQL.          Checks if container a** (1 connections) — `server/services/environmental_container_loader.py`
-- **Load all environmental containers for a room from PostgreSQL.          Args:** (1 connections) — `server/services/environmental_container_loader.py`
+- **Persistence Layer Refactoring Summary** (11 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **Repository Details** (8 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **Files Created/Modified** (4 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **What Was Created** (3 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **Backward Compatibility** (3 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **Migration Strategy** (3 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **Benefits Achieved** (3 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **Metrics** (3 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **Validation** (3 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **PERSISTENCE_REFACTORING_SUMMARY.md** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **Summary** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **Async Repository Structure** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **1. PlayerRepository (439 lines)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **2. RoomRepository (42 lines)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **3. ProfessionRepository (74 lines)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **4. HealthRepository (165 lines)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **5. ExperienceRepository (203 lines)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **6. ContainerRepository (80 lines)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **7. ItemRepository (84 lines)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **Existing Code (Unchanged)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **New Async Code (Opt-In)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **Conservative Approach** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **Migration Path (Optional)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **Immediate Benefits (Phase 1)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **Future Benefits (Post-Migration)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [real time](real_time.md) (4 shared connections)
-- [.initialize()](initialize%28%29.md) (2 shared connections)
-- [datetime](datetime.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/services/environmental_container_loader.py`
+- `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 37 (95%)
-- INFERRED: 2 (5%)
+- EXTRACTED: 66 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

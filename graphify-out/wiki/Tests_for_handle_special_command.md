@@ -1,30 +1,43 @@
 # Tests for handle special command
 
-> 7 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **.create_instance()** (6 connections) — `server/game/items/item_factory.py`
-- **initialize_components()** (5 connections) — `server/game/items/component_hooks.py`
-- **Any** (1 connections)
-- **Prepare component state metadata for a new item instance.      This routine curr** (1 connections) — `server/game/items/component_hooks.py`
-- **Any** (1 connections)
-- **ItemInstance** (1 connections)
-- **Create an item instance from a prototype.          Args:             prototype_i** (1 connections) — `server/game/items/item_factory.py`
+- **_get_lifecycle_manager()** (11 connections) — `server/commands/look_npc.py`
+- **_get_npcs_in_room()** (7 connections) — `server/commands/look_npc.py`
+- **_resolve_npc_in_player_room()** (7 connections) — `server/commands/quest_commands.py`
+- **_active_npc_ids_in_room()** (6 connections) — `server/commands/quest_commands.py`
+- **test_get_lifecycle_manager_success()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_get_lifecycle_manager_no_service()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_get_lifecycle_manager_no_lifecycle_manager()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Get the lifecycle manager from the NPC instance service.** (1 connections) — `server/commands/look_npc.py`
+- **Get list of NPC names in a room from lifecycle manager.** (1 connections) — `server/commands/look_npc.py`
+- **Return active, includable NPC ids currently in room_id.** (1 connections) — `server/commands/quest_commands.py`
+- **Find a single matching NPC in the player's current room.      Returns (npc_insta** (1 connections) — `server/commands/quest_commands.py`
+- **Test getting lifecycle manager successfully.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test getting lifecycle manager when service not available.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test getting lifecycle manager when lifecycle_manager not available.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
 
 ## Relationships
 
-- [emit close container event()](emit_close_container_event%28%29.md) (3 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
+- [.get room by id()](get_room_by_id%28%29.md) (6 shared connections)
+- [AttributeError](AttributeError.md) (4 shared connections)
+- [look npc](look_npc.md) (4 shared connections)
+- [test database](test_database.md) (2 shared connections)
+- [AliasStorage](AliasStorage.md) (2 shared connections)
+- [look room](look_room.md) (2 shared connections)
+- [get current tick()](get_current_tick%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/items/component_hooks.py`
-- `server/game/items/item_factory.py`
+- `server/commands/look_npc.py`
+- `server/commands/quest_commands.py`
+- `server/tests/unit/commands/test_look_npc.py`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 47 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **.test_validate_name_not_uuid_valid()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **Test _validate_name_not_uuid with valid name.** (1 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **NATS Manual Acknowledgment Guide** (1 connections) — `docs/NATS_MANUAL_ACKNOWLEDGMENT_GUIDE.md`
+- **NATS Manual Ack Pattern** (1 connections) — `docs/NATS_MANUAL_ACKNOWLEDGMENT_GUIDE.md`
 
 ## Relationships
 
-- [container websocket events](container_websocket_events.md) (1 shared connections)
-- [PlayerNameExtractor](PlayerNameExtractor.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_name_utils.py`
+- `docs/NATS_MANUAL_ACKNOWLEDGMENT_GUIDE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

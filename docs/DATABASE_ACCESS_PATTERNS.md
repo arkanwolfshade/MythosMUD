@@ -1,10 +1,26 @@
 # Database Access Patterns
 
+**Version 1.0.0** · MythosMUD · 2026-07-30
+
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
 This document explains when to use each database access pattern in the MythosMUD codebase and provides guidance on
 migrating between patterns.
 
-## Overview
+## 2. Overview
 
+**[SPEC]**
 The codebase currently uses two database access patterns:
 
 1. **AsyncPersistenceLayer** (async asyncpg) - Performance-critical operations, direct database access
@@ -12,8 +28,9 @@ The codebase currently uses two database access patterns:
 
 **Note**: The legacy `PersistenceLayer` (synchronous psycopg2) has been removed. All code now uses async patterns.
 
-## Pattern 1: AsyncPersistenceLayer (Asynchronous asyncpg)
+## 3. Pattern 1: AsyncPersistenceLayer (Asynchronous asyncpg)
 
+**[SPEC]**
 **Location**: `server/async_persistence.py`
 
 **When to Use**:
@@ -56,8 +73,9 @@ player = await async_persistence.get_player_by_id(player_id)
 **Migration Path**:
 Migrate to SQLAlchemy ORM when you need relationships or complex queries
 
-## Pattern 2: SQLAlchemy ORM (Asynchronous)
+## 4. Pattern 2: SQLAlchemy ORM (Asynchronous)
 
+**[SPEC]**
 **Location**: `server/database.py`, `server/services/`, `server/game/`
 
 **When to Use**:
@@ -107,7 +125,9 @@ async for session in get_async_session():
 - Slightly more overhead than raw SQL
 - Requires understanding of SQLAlchemy ORM
 
-## Decision Tree
+## 5. Decision Tree
+
+**[NOTE]**
 
 ```
 Do you need relationships (e.g., Player.user)?
@@ -115,7 +135,9 @@ Do you need relationships (e.g., Player.user)?
 └─ No → Use AsyncPersistenceLayer (Pattern 1)
 ```
 
-## Migration Strategy
+## 6. Migration Strategy
+
+**[NOTE]**
 
 ### From AsyncPersistenceLayer to SQLAlchemy ORM
 
@@ -156,7 +178,9 @@ async def get_player(
     return result.scalar_one_or_none()
 ```
 
-## Performance Considerations
+## 7. Performance Considerations
+
+**[SPEC]**
 
 ### AsyncPersistenceLayer (Pattern 1)
 
@@ -174,7 +198,9 @@ async def get_player(
 
 **Use When**: Relationships needed, complex queries, maintainability important
 
-## Error Handling Patterns
+## 8. Error Handling Patterns
+
+**[NOTE]**
 
 ### AsyncPersistenceLayer (Async)
 
@@ -196,8 +222,9 @@ except Exception as e:
     log_and_raise(DatabaseError, f"Database error: {e}")
 ```
 
-## Eager Loading Best Practices
+## 9. Eager Loading Best Practices
 
+**[NOTE]**
 Always use eager loading when accessing relationships:
 
 ```python
@@ -217,7 +244,9 @@ stmt = select(Player).where(Player.player_id == player_id)
 
 ```
 
-## Common Patterns
+## 10. Common Patterns
+
+**[NOTE]**
 
 ### Getting a Single Player with User
 
@@ -263,14 +292,17 @@ for player, lucidity in result:
     pass
 ```
 
-## Future Migration Goals
+## 11. Future Migration Goals
+
+**[SPEC]**
 
 1. **Short-term**: Document patterns and migration paths ✅ **COMPLETE**
 2. **Medium-term**: Migrate f-string SQL to ORM (in progress - see notes below)
 3. **Long-term**: Consolidate to SQLAlchemy ORM for all operations
 
-## F-String SQL Migration Status
+## 12. F-String SQL Migration Status
 
+**[SPEC]**
 **Current State**: Persistence layers use f-strings with compile-time constants (e.g., `PLAYER_COLUMNS`). These are safe
 from SQL injection but represent an anti-pattern.
 
@@ -291,8 +323,9 @@ from SQL injection but represent an anti-pattern.
 - Refactor persistence layers to use SQLAlchemy when feasible
 - Prefer ORM for all new database operations
 
-## References
+## 13. References
 
+**[SPEC]**
 [SQLAlchemy Best Practices](./.cursor/rules/sqlalchemy.mdc)
 
 - [SQLAlchemy Async Best Practices](./docs/SQLALCHEMY_ASYNC_BEST_PRACTICES.md)
@@ -303,3 +336,11 @@ from SQL injection but represent an anti-pattern.
 *"In the restricted archives, we learn that different incantations serve different purposes. The raw SQL rituals provide
 direct power, while the ORM ceremonies offer safety and convenience. Choose wisely based on your needs, but always
 prefer the ORM for new work, lest you summon the N+1 query demon."*
+
+## 14. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

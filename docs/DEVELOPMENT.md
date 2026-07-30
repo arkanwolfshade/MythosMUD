@@ -1,5 +1,20 @@
 # =���n+� MythosMUD G�� Development Environment Setup
 
+**Version 1.0.0** · MythosMUD · 2026-07-30
+
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
+## 1. Overview
+
+**[NOTE]**
 *"The proper setup of one's laboratory is as crucial to the pursuit of forbidden knowledge as the knowledge itself. Let
 us ensure our tools are both powerful and safe."*
 
@@ -8,7 +23,9 @@ privacy, and COPPA compliance.
 
 ---
 
-## =��� Security & Privacy First
+## 2. =��� Security & Privacy First
+
+**[SPEC]**
 
 ### Critical Requirements
 
@@ -37,7 +54,9 @@ privacy, and COPPA compliance.
 
 ---
 
-## Prerequisites
+## 3. Prerequisites
+
+**[SPEC]**
 
 ### Git
 
@@ -53,7 +72,9 @@ privacy, and COPPA compliance.
 
 ---
 
-## 1. Install uv
+## 4. Install uv
+
+**[NOTE]**
 
 ### On macOS/Linux
 
@@ -75,7 +96,9 @@ uv --version
 
 ---
 
-## 2. Clone the Repository
+## 5. Clone the Repository
+
+**[NOTE]**
 
 ```sh
 # Option 1: Clone with submodules in one command
@@ -97,7 +120,9 @@ above.
 
 ---
 
-## 3. Set Up the Python Server
+## 6. Set Up the Python Server
+
+**[NOTE]**
 
 ### a. Set Python Version (if using pyenv-win)
 
@@ -170,7 +195,9 @@ The server should now be running at [http://localhost:54768](http://localhost:54
 
 ---
 
-## 4. Set Up the React Client
+## 7. Set Up the React Client
+
+**[NOTE]**
 
 ### a. Install Dependencies
 
@@ -189,8 +216,9 @@ The client should now be running at [http://localhost:3000](http://localhost:300
 
 ---
 
-## 5. Development Scripts
+## 8. Development Scripts
 
+**[NOTE]**
 We provide convenient scripts for common development tasks:
 
 ### **Install Everything:**
@@ -306,7 +334,9 @@ See the multi-character implementation plan for complete details.
 
 ---
 
-## 6. Manual Commands
+## 9. Manual Commands
+
+**[NOTE]**
 
 ### **Python Development:**
 
@@ -367,7 +397,9 @@ npm run build
 
 ---
 
-## 7. =��� AI Agent Development Guidelines
+## 10. =��� AI Agent Development Guidelines
+
+**[SPEC]**
 
 ### **Development Workflow**
 
@@ -421,8 +453,9 @@ When multiple tasks are pending, prioritize in this order:
 
 ---
 
-## 8. Why uv?
+## 11. Why uv?
 
+**[SPEC]**
 **=��� Faster**: 10-100x faster than pip/poetry
 
 **=��� Reliable**: Deterministic dependency resolution
@@ -435,7 +468,9 @@ When multiple tasks are pending, prioritize in this order:
 
 ---
 
-## 9. Troubleshooting
+## 12. Troubleshooting
+
+**[NOTE]**
 
 ### **uv not found:**
 
@@ -505,8 +540,9 @@ curl http://localhost:54768/game/status
 
 ---
 
-## 10. Next Steps
+## 13. Next Steps
 
+**[SPEC]**
 Read the [PLANNING.md](PLANNING.md) for project architecture and priorities
 
 - Check [GitHub Issues](https://github.com/arkanwolfshade/MythosMUD/issues) for current development priorities
@@ -515,8 +551,9 @@ Read the [PLANNING.md](PLANNING.md) for project architecture and priorities
 
 ---
 
-## 11. Security Checklist
+## 14. Security Checklist
 
+**[SPEC]**
 Before starting development, ensure:
 
 - [ ] Environment variables properly configured
@@ -539,3 +576,11 @@ forces we seek to understand."*
  
  
  
+
+## 15. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

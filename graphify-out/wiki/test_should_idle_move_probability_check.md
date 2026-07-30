@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_take_room_drop_removes_empty_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **Test take_room_drop() removes room when drop list becomes empty.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **test_restore_mp_from_item_respects_max()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Test restore_mp_from_item() respects max_mp limit.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Relationships
 
-- [test room subscription manager drops](test_room_subscription_manager_drops.md) (1 shared connections)
+- [MPRegenerationService](MPRegenerationService.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Audit Trail
 

@@ -1,23 +1,25 @@
 # test_gain_occult_knowledge
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_send_room_update_to_player_error_handling()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **Test send_room_update_to_player() handles errors.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **📊 METRICS AND SUCCESS CRITERIA** (4 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Performance Metrics** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Code Quality Metrics** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Test Coverage** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Relationships
 
-- [. call ()](_call_%28%29.md) (1 shared connections)
+- [broadcast message()](broadcast_message%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

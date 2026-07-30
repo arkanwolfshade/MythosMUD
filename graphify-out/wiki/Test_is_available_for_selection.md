@@ -1,23 +1,25 @@
 # Test is available for selection
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_build_room_occupants_message()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **Test build_room_occupants_message() builds correct message.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **🚀 DEPLOYMENT STRATEGY** (4 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Pre-Deployment Checklist** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Rollback Plan** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Monitoring Post-Deployment** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Relationships
 
-- [. call ()](_call_%28%29.md) (1 shared connections)
+- [broadcast message()](broadcast_message%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

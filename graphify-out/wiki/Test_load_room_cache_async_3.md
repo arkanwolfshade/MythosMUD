@@ -1,24 +1,27 @@
 # Test load room cache async
 
-> 2 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **test_occupant_formatter_is_valid_name_for_occupant_none()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter._is_valid_name_for_occupant() returns False for None.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **Backward Compatibility Strategy** (6 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Three-Layer Compatibility** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Layer 1: New Tests (Use Container)** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Layer 2: Updated Tests (Hybrid)** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Layer 3: Legacy Tests (Unchanged)** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Migration Flags** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
 
 ## Relationships
 
-- [command parser()](command_parser%28%29.md) (1 shared connections)
-- [occupant formatter](occupant_formatter.md) (1 shared connections)
+- [get mythos time()](get_mythos_time%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_occupant_formatter.py`
+- `docs/archive/TEST_MODERNIZATION_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

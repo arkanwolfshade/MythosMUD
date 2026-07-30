@@ -24,7 +24,7 @@
 ## Relationships
 
 - [test optimized security validator](test_optimized_security_validator.md) (8 shared connections)
-- [Test stripping ANSI codes from](Test_stripping_ANSI_codes_from.md) (1 shared connections)
+- [world](world.md) (1 shared connections)
 
 ## Source Files
 

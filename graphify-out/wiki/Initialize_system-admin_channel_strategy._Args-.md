@@ -1,25 +1,27 @@
 # Initialize system/admin channel strategy. Args:
 
-> 4 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **id** (4 connections) — `schemas/calendar/schedule.schema.json`
-- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **pattern** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **minLength** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **Mythos Holiday Candidates** (4 connections) — `docs/archive/MYTHOS_HOLIDAY_CANDIDATES.md`
+- **Implementation Notes** (2 connections) — `docs/archive/MYTHOS_HOLIDAY_CANDIDATES.md`
+- **MYTHOS_HOLIDAY_CANDIDATES.md** (1 connections) — `docs/archive/MYTHOS_HOLIDAY_CANDIDATES.md`
+- **Canonical & Derived Observances** (1 connections) — `docs/archive/MYTHOS_HOLIDAY_CANDIDATES.md`
+- **Narrative Flavor Seeds** (1 connections) — `docs/archive/MYTHOS_HOLIDAY_CANDIDATES.md`
+- **Opportunities for Expansion** (1 connections) — `docs/archive/MYTHOS_HOLIDAY_CANDIDATES.md`
 
 ## Relationships
 
-- [type](type.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `schemas/calendar/schedule.schema.json`
+- `docs/archive/MYTHOS_HOLIDAY_CANDIDATES.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 10 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

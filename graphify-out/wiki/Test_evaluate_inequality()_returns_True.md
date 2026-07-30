@@ -1,23 +1,25 @@
 # Test evaluate inequality() returns True
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_log_player_movement_left()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **Test log_player_movement() logs player left.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **🚨 CRITICAL ANTI-PATTERNS - DO NOT USE** (4 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **❌ FORBIDDEN IMPORT PATTERNS** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **❌ FORBIDDEN LOGGING PATTERNS** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **✅ MANDATORY CORRECT PATTERNS** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
 
 ## Relationships
 
-- [. call ()](_call_%28%29.md) (1 shared connections)
+- [minLength](minLength.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- `docs/archive/LOGGING_BEST_PRACTICES.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

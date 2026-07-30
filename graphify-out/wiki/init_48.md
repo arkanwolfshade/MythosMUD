@@ -4,20 +4,20 @@
 
 ## Key Concepts
 
-- **test_send_messages_to_players_invalid_player_id()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _send_messages_to_players handles invalid player_id.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **__init__.py** (1 connections) — `server/tests/unit/realtime/monitoring/__init__.py`
+- **Realtime monitoring unit tests.** (1 connections) — `server/tests/unit/realtime/monitoring/__init__.py`
 
 ## Relationships
 
-- [test nats message handler chat](test_nats_message_handler_chat.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `server/tests/unit/realtime/monitoring/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

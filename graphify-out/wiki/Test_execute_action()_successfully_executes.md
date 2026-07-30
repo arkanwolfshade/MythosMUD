@@ -1,23 +1,25 @@
 # Test execute action() successfully executes
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_list_rooms_in_zone()** (2 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test list_rooms_in_zone() returns empty list (not implemented).** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Detailed Category Value Breakdown** (4 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **🔴 CRITICAL VALUE TESTS (1,272 tests = 25.6%)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **🟡 IMPORTANT VALUE TESTS (2,943 tests = 59.3%)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **🟢 LOW VALUE TESTS (750 tests = 15.1%)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
 
 ## Relationships
 
-- [test room service](test_room_service.md) (1 shared connections)
+- [. is uuid string()](_is_uuid_string%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `docs/archive/TEST_VALUE_DISTRIBUTION.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

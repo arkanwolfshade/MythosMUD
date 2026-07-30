@@ -1,12 +1,11 @@
 # nats config()
 
-> 83 nodes
+> 81 nodes
 
 ## Key Concepts
 
 - **MessageQueue** (54 connections) — `server/realtime/message_queue.py`
 - **test_message_queue.py** (32 connections) — `server/tests/unit/realtime/test_message_queue.py`
-- **mock_manager()** (5 connections) — `server/tests/unit/realtime/test_connection_disconnection.py`
 - **.add_message()** (4 connections) — `server/realtime/message_queue.py`
 - **Any** (4 connections)
 - **.cleanup_old_messages()** (4 connections) — `server/realtime/message_queue.py`
@@ -29,28 +28,29 @@
 - **test_message_queue_add_message_limit_reached()** (3 connections) — `server/tests/unit/realtime/test_message_queue.py`
 - **test_message_queue_add_message_error()** (3 connections) — `server/tests/unit/realtime/test_message_queue.py`
 - **test_message_queue_get_messages()** (3 connections) — `server/tests/unit/realtime/test_message_queue.py`
-- *... and 58 more nodes in this community*
+- **test_message_queue_get_messages_empty()** (3 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- *... and 56 more nodes in this community*
 
 ## Relationships
 
 - [Coord](Coord.md) (10 shared connections)
-- [connection disconnection](connection_disconnection.md) (8 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (4 shared connections)
-- [test statistics aggregator](test_statistics_aggregator.md) (2 shared connections)
+- [connection disconnection](connection_disconnection.md) (7 shared connections)
+- [test statistics aggregator](test_statistics_aggregator.md) (3 shared connections)
 - [Player](Player.md) (2 shared connections)
-- [Custom user manager for MythosMUD.](Custom_user_manager_for_MythosMUD.md) (1 shared connections)
+- [test connection cleaner](test_connection_cleaner.md) (1 shared connections)
+- [UUID](UUID.md) (1 shared connections)
 - [Any](Any.md) (1 shared connections)
+- [get current tick()](get_current_tick%28%29.md) (1 shared connections)
 
 ## Source Files
 
 - `server/realtime/message_queue.py`
-- `server/tests/unit/realtime/test_connection_disconnection.py`
 - `server/tests/unit/realtime/test_message_queue.py`
 
 ## Audit Trail
 
-- EXTRACTED: 239 (93%)
-- INFERRED: 17 (7%)
+- EXTRACTED: 236 (94%)
+- INFERRED: 14 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

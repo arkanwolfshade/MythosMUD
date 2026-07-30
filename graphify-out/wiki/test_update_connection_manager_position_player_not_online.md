@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_add_room_occupant_existing_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **Test add_room_occupant() adds occupant to existing room.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_roll_skill_check_success_records_use_and_returns_true()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
+- **When roll <= skill value, record_use is called and returns True.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
 
 ## Relationships
 
-- [test room subscription manager](test_room_subscription_manager.md) (1 shared connections)
+- [test player service](test_player_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager.py`
+- `server/tests/unit/game/test_skill_service.py`
 
 ## Audit Trail
 
