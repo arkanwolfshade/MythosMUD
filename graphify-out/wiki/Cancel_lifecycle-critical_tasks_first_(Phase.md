@@ -27,12 +27,11 @@
 
 - [monitoring models](monitoring_models.md) (13 shared connections)
 - [player respawn](player_respawn.md) (8 shared connections)
+- [HealthMeter](HealthMeter.md) (6 shared connections)
 - [.append()](append%28%29.md) (6 shared connections)
-- [HealthMeter](HealthMeter.md) (4 shared connections)
 - [Instance](Instance.md) (3 shared connections)
 - [MythosTimeHud](MythosTimeHud.md) (3 shared connections)
 - [ConnectionCleaner](ConnectionCleaner.md) (3 shared connections)
-- [GameClientV2Dock.test](GameClientV2Dock.test.md) (2 shared connections)
 - [useConnectionStateMachine.test](useConnectionStateMachine.test.md) (1 shared connections)
 
 ## Source Files

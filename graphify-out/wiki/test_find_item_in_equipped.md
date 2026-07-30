@@ -34,13 +34,12 @@
 ## Relationships
 
 - [.append()](append%28%29.md) (7 shared connections)
+- [HealthMeter](HealthMeter.md) (3 shared connections)
 - [maps](maps.md) (2 shared connections)
 - [EdgeCreationModal](EdgeCreationModal.md) (2 shared connections)
-- [GameClientV2Dock.test](GameClientV2Dock.test.md) (2 shared connections)
 - [ChatPanelTest](ChatPanelTest.md) (2 shared connections)
 - [useConnectionStateMachine.test](useConnectionStateMachine.test.md) (2 shared connections)
-- [AppCreationFlowViews](AppCreationFlowViews.md) (1 shared connections)
-- [HealthMeter](HealthMeter.md) (1 shared connections)
+- [fetchSpy](fetchSpy.md) (1 shared connections)
 
 ## Source Files
 

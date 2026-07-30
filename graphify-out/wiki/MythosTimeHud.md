@@ -35,16 +35,16 @@
 
 - [monitoring models](monitoring_models.md) (16 shared connections)
 - [Any](Any.md) (8 shared connections)
+- [HealthMeter](HealthMeter.md) (6 shared connections)
 - [ChatPanelTest](ChatPanelTest.md) (5 shared connections)
 - [ConnectionCleaner](ConnectionCleaner.md) (5 shared connections)
 - [Instance](Instance.md) (5 shared connections)
 - [.append()](append%28%29.md) (4 shared connections)
 - [useConnectionStateMachine.test](useConnectionStateMachine.test.md) (4 shared connections)
-- [GameClientV2Dock.test](GameClientV2Dock.test.md) (3 shared connections)
 - [Cancel lifecycle/critical tasks first (Phase](Cancel_lifecycle-critical_tasks_first_%28Phase.md) (3 shared connections)
-- [HealthMeter](HealthMeter.md) (3 shared connections)
 - [test combat persistence handler](test_combat_persistence_handler.md) (2 shared connections)
-- [AppCreationFlowViews](AppCreationFlowViews.md) (2 shared connections)
+- [fetchSpy](fetchSpy.md) (2 shared connections)
+- [messageHandlers](messageHandlers.md) (1 shared connections)
 
 ## Source Files
 

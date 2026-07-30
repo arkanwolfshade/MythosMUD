@@ -1,23 +1,25 @@
 # Test build room objects successfully
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_build_room_objects_success()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _build_room_objects successfully builds room objects.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **created_at** (4 connections) — `schemas/alias_schema.json`
+- **type** (1 connections) — `schemas/alias_schema.json`
+- **description** (1 connections) — `schemas/alias_schema.json`
+- **pattern** (1 connections) — `schemas/alias_schema.json`
 
 ## Relationships
 
-- [test async persistence room loading](test_async_persistence_room_loading.md) (1 shared connections)
+- [description](description.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- `schemas/alias_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

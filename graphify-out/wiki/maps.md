@@ -39,7 +39,7 @@
 - [test find item in equipped](test_find_item_in_equipped.md) (2 shared connections)
 - [domPurifyTestWindow](domPurifyTestWindow.md) (2 shared connections)
 - [EdgeDetailsPanel](EdgeDetailsPanel.md) (2 shared connections)
-- [AppCreationFlowViews](AppCreationFlowViews.md) (1 shared connections)
+- [fetchSpy](fetchSpy.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,9 +1,10 @@
 # assertLookVisibleInPanels()
 
-> 69 nodes
+> 81 nodes
 
 ## Key Concepts
 
+- **executeCommand()** (81 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
 - **multiplayer.ts** (53 connections) — `client/tests/e2e/runtime/fixtures/multiplayer.ts`
 - **ensurePlayerInGame()** (49 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-ready.ts`
 - **createMultiPlayerContexts()** (41 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-contexts.ts`
@@ -20,25 +21,23 @@
 - **getPlayerMessages()** (19 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-ready.ts`
 - **movement-between-rooms.spec.ts** (19 connections) — `client/tests/e2e/runtime/movement/movement-between-rooms.spec.ts`
 - **ensurePlayersInSameRoom()** (18 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts`
-- **PlayerContext** (18 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-contexts.ts`
 - **party-commands.spec.ts** (18 connections) — `client/tests/e2e/runtime/party/party-commands.spec.ts`
 - **admin-teleportation.spec.ts** (17 connections) — `client/tests/e2e/runtime/admin/admin-teleportation.spec.ts`
 - **whisper-basic.spec.ts** (16 connections) — `client/tests/e2e/runtime/communication/whisper-basic.spec.ts`
 - **prepareReceiverForInboundMessages()** (16 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-ready.ts`
 - **whisper-integration.spec.ts** (15 connections) — `client/tests/e2e/runtime/communication/whisper-integration.spec.ts`
 - **basic-connection.spec.ts** (15 connections) — `client/tests/e2e/runtime/connection/basic-connection.spec.ts`
+- **waitForLookReflectedInUi()** (15 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts`
 - **reopenPlayerPageIfClosed()** (15 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-contexts.ts`
-- **local-channel-errors.spec.ts** (14 connections) — `client/tests/e2e/runtime/error-handling/local-channel-errors.spec.ts`
-- *... and 44 more nodes in this community*
+- *... and 56 more nodes in this community*
 
 ## Relationships
 
-- [character deletion.spec](character_deletion.spec.md) (91 shared connections)
-- [whisper movement.spec](whisper_movement.spec.md) (63 shared connections)
-- [combat messages game info.spec](combat_messages_game_info.spec.md) (39 shared connections)
-- [ensurePlayableConnection](ensurePlayableConnection.md) (38 shared connections)
-- [generate invites db](generate_invites_db.md) (14 shared connections)
-- [e2e bootstrap](e2e_bootstrap.md) (1 shared connections)
+- [combat messages game info.spec](combat_messages_game_info.spec.md) (70 shared connections)
+- [character deletion.spec](character_deletion.spec.md) (59 shared connections)
+- [test room subscription manager npcs](test_room_subscription_manager_npcs.md) (49 shared connections)
+- [ensurePlayableConnection](ensurePlayableConnection.md) (48 shared connections)
+- [whisper movement.spec](whisper_movement.spec.md) (22 shared connections)
 
 ## Source Files
 
@@ -55,17 +54,17 @@
 - `client/tests/e2e/runtime/communication/local-channel-isolation.spec.ts`
 - `client/tests/e2e/runtime/communication/whisper-basic.spec.ts`
 - `client/tests/e2e/runtime/communication/whisper-integration.spec.ts`
+- `client/tests/e2e/runtime/communication/whisper-movement.spec.ts`
 - `client/tests/e2e/runtime/connection/basic-connection.spec.ts`
 - `client/tests/e2e/runtime/connection/clean-game-state.spec.ts`
 - `client/tests/e2e/runtime/containers/container-corpse-looting.spec.ts`
 - `client/tests/e2e/runtime/containers/container-environmental-interactions.spec.ts`
 - `client/tests/e2e/runtime/containers/container-multi-user-looting.spec.ts`
 - `client/tests/e2e/runtime/containers/container-wearable-management.spec.ts`
-- `client/tests/e2e/runtime/error-handling/local-channel-errors.spec.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 834 (100%)
+- EXTRACTED: 940 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

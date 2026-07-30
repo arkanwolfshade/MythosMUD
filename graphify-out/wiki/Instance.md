@@ -35,14 +35,13 @@
 
 - [monitoring models](monitoring_models.md) (9 shared connections)
 - [player respawn](player_respawn.md) (8 shared connections)
-- [HealthMeter](HealthMeter.md) (5 shared connections)
+- [HealthMeter](HealthMeter.md) (6 shared connections)
 - [MythosTimeHud](MythosTimeHud.md) (5 shared connections)
 - [ConnectionCleaner](ConnectionCleaner.md) (4 shared connections)
 - [Cancel lifecycle/critical tasks first (Phase](Cancel_lifecycle-critical_tasks_first_%28Phase.md) (3 shared connections)
 - [useConnectionStateMachine.test](useConnectionStateMachine.test.md) (2 shared connections)
 - [chatPanelChannelFilter](chatPanelChannelFilter.md) (1 shared connections)
 - [messageHandlers](messageHandlers.md) (1 shared connections)
-- [GameClientV2Dock.test](GameClientV2Dock.test.md) (1 shared connections)
 
 ## Source Files
 

@@ -35,7 +35,7 @@
 
 - [append unique valid occupant()](append_unique_valid_occupant%28%29.md) (34 shared connections)
 - [. init ()](_init_%28%29.md) (31 shared connections)
-- [.initialize()](initialize%28%29.md) (25 shared connections)
+- [.initialize()](initialize%28%29.md) (26 shared connections)
 - [TerminalButtonProps](TerminalButtonProps.md) (22 shared connections)
 - [Spell Targeting](Spell_Targeting.md) (14 shared connections)
 - [real time](real_time.md) (11 shared connections)

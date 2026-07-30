@@ -1,6 +1,6 @@
 # help content
 
-> 108 nodes
+> 104 nodes
 
 ## Key Concepts
 
@@ -19,8 +19,6 @@
 - **test_process_websocket_command_room_changed_no_player_handler_skips_room_state()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
 - **_invoke_get_room_state_event()** (3 connections) — `server/realtime/websocket_handler_commands.py`
 - **test_handle_game_command_broadcasts_when_result_requests()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
-- **test_handle_generic_exception()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_handle_generic_exception_should_break()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
 - **test_get_help_content()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
 - **test_get_help_content_with_command()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
 - **test_send_system_message()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
@@ -29,7 +27,9 @@
 - **test_handle_game_command_empty_command()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
 - **test_handle_game_command_whitespace_only()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
 - **test_handle_game_command_single_word_no_args()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- *... and 83 more nodes in this community*
+- **test_handle_game_command_with_provided_args()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **test_handle_websocket_message()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- *... and 79 more nodes in this community*
 
 ## Relationships
 
@@ -50,8 +50,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 296 (92%)
-- INFERRED: 25 (8%)
+- EXTRACTED: 290 (93%)
+- INFERRED: 23 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

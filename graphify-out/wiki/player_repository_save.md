@@ -34,7 +34,7 @@
 
 - [ChatPanelTest](ChatPanelTest.md) (7 shared connections)
 - [Any](Any.md) (2 shared connections)
-- [async sessionmaker](async_sessionmaker.md) (2 shared connections)
+- [.create corpse()](create_corpse%28%29.md) (2 shared connections)
 
 ## Source Files
 

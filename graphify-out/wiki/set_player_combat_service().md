@@ -1,51 +1,50 @@
 # .set player combat service()
 
-> 58 nodes
+> 46 nodes
 
 ## Key Concepts
 
-- **test_player_service_mutations.py** (34 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_delete_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_update_player_location_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_soft_delete_character_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_soft_delete_character_wrong_user()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_delete_player_persistence_fails()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_soft_delete_character_persistence_fails()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_apply_lucidity_loss_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_apply_fear_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_apply_corruption_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_gain_occult_knowledge_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_heal_player_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_damage_player_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **mock_persistence()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_delete_player_success()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_update_player_location_success()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_apply_lucidity_loss()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_apply_fear()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_apply_corruption()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_gain_occult_knowledge()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_heal_player()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_damage_player()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_get_user_characters()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_soft_delete_character_success()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_validate_player_name_empty()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- *... and 33 more nodes in this community*
+- **test_command_factories_player_state.py** (27 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- **test_create_status_command_with_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- **test_create_whoami_command_with_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- **test_create_time_command_with_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- **test_create_quit_command_with_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- **test_create_rest_command_with_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- **test_create_skills_command_with_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- **test_create_journal_command_with_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- **test_create_quests_command_with_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- **test_create_status_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- **test_create_whoami_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- **test_create_time_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- **test_create_who_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- **test_create_who_command_with_filter()** (3 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- **test_create_quit_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- **test_create_logout_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- **test_create_logout_command_with_args()** (3 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- **test_create_rest_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- **test_create_skills_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- **test_create_journal_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- **test_create_quests_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- **test_create_quest_command_empty_args()** (3 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- **test_create_quest_command_with_args()** (3 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- **Unit tests for player state command factories.  Tests the PlayerStateCommandFact** (1 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- **Test create_status_command() creates StatusCommand.** (1 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- *... and 21 more nodes in this community*
 
 ## Relationships
 
-- [.initialize()](initialize%28%29.md) (11 shared connections)
-- [real time](real_time.md) (3 shared connections)
-- [append unique valid occupant()](append_unique_valid_occupant%28%29.md) (2 shared connections)
-- [Player](Player.md) (1 shared connections)
+- [Spell Targeting](Spell_Targeting.md) (24 shared connections)
+- [.initialize()](initialize%28%29.md) (9 shared connections)
+- [real time](real_time.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_player_service_mutations.py`
+- `server/tests/unit/utils/test_command_factories_player_state.py`
 
 ## Audit Trail
 
-- EXTRACTED: 119 (91%)
-- INFERRED: 12 (9%)
+- EXTRACTED: 116 (94%)
+- INFERRED: 8 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -27,12 +27,12 @@
 
 ## Relationships
 
-- [assertLookVisibleInPanels()](assertLookVisibleInPanels%28%29.md) (38 shared connections)
-- [character deletion.spec](character_deletion.spec.md) (18 shared connections)
-- [combat messages game info.spec](combat_messages_game_info.spec.md) (16 shared connections)
-- [whisper movement.spec](whisper_movement.spec.md) (13 shared connections)
+- [assertLookVisibleInPanels()](assertLookVisibleInPanels%28%29.md) (48 shared connections)
+- [combat messages game info.spec](combat_messages_game_info.spec.md) (18 shared connections)
+- [test room subscription manager npcs](test_room_subscription_manager_npcs.md) (12 shared connections)
+- [character deletion.spec](character_deletion.spec.md) (7 shared connections)
 - [e2e bootstrap](e2e_bootstrap.md) (4 shared connections)
-- [generate invites db](generate_invites_db.md) (3 shared connections)
+- [whisper movement.spec](whisper_movement.spec.md) (3 shared connections)
 
 ## Source Files
 

@@ -34,14 +34,14 @@
 ## Relationships
 
 - [SERVER UNAVAILABLE PATTERNS](SERVER_UNAVAILABLE_PATTERNS.md) (56 shared connections)
+- [fetchSpy](fetchSpy.md) (19 shared connections)
 - [LoginResponse](LoginResponse.md) (16 shared connections)
 - [test character creation service](test_character_creation_service.md) (14 shared connections)
 - [applyAuthenticatedSession](applyAuthenticatedSession.md) (14 shared connections)
-- [AppCreationFlowViews](AppCreationFlowViews.md) (11 shared connections)
-- [fetchSpy](fetchSpy.md) (9 shared connections)
 - [handle reply command()](handle_reply_command%28%29.md) (4 shared connections)
 - [useConnectionStateMachine.test](useConnectionStateMachine.test.md) (2 shared connections)
 - [test combat persistence handler](test_combat_persistence_handler.md) (1 shared connections)
+- [AppCreationFlowViews](AppCreationFlowViews.md) (1 shared connections)
 
 ## Source Files
 

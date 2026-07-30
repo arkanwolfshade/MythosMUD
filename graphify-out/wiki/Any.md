@@ -35,13 +35,14 @@
 
 - [monitoring models](monitoring_models.md) (21 shared connections)
 - [MythosTimeHud](MythosTimeHud.md) (8 shared connections)
-- [async sessionmaker](async_sessionmaker.md) (6 shared connections)
 - [look item](look_item.md) (5 shared connections)
+- [.create corpse()](create_corpse%28%29.md) (5 shared connections)
+- [GameLogMessagesList](GameLogMessagesList.md) (4 shared connections)
 - [ChatPanelTest](ChatPanelTest.md) (3 shared connections)
-- [.create corpse()](create_corpse%28%29.md) (3 shared connections)
 - [player repository save](player_repository_save.md) (2 shared connections)
-- [GameLogMessagesList](GameLogMessagesList.md) (2 shared connections)
 - [useConnectionStateMachine.test](useConnectionStateMachine.test.md) (2 shared connections)
+- [async sessionmaker](async_sessionmaker.md) (1 shared connections)
+- [chatPanelChannelFilter](chatPanelChannelFilter.md) (1 shared connections)
 - [.append()](append%28%29.md) (1 shared connections)
 
 ## Source Files

@@ -1,15 +1,13 @@
 # Lock
 
-> 151 nodes
+> 163 nodes
 
 ## Key Concepts
 
-- **__init__.py** (47 connections) — `server/services/__init__.py`
 - **InventoryService** (43 connections) — `server/services/inventory_service.py`
 - **InventoryMutationGuard** (42 connections) — `server/services/inventory_mutation_guard.py`
 - **InventoryStack** (34 connections) — `server/services/inventory_service.py`
 - **inventory_service.py** (29 connections) — `server/services/inventory_service.py`
-- **InventoryCapacityError** (29 connections) — `server/services/inventory_service.py`
 - **inventory_mutation_guard.py** (20 connections) — `server/services/inventory_mutation_guard.py`
 - **test_inventory_service.py** (20 connections) — `server/tests/unit/services/test_inventory_service.py`
 - **MutationDecision** (18 connections) — `server/services/inventory_mutation_guard.py`
@@ -18,6 +16,7 @@
 - **InventorySplitError** (13 connections) — `server/services/inventory_service.py`
 - **.acquire_async()** (11 connections) — `server/services/inventory_mutation_guard.py`
 - **.acquire()** (10 connections) — `server/services/inventory_mutation_guard.py`
+- **test_inventory_mutation_guard_sync.py** (10 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
 - **Lock** (9 connections)
 - **InventoryServiceError** (9 connections) — `server/services/inventory_service.py`
 - **._clone_stack()** (9 connections) — `server/services/inventory_service.py`
@@ -29,38 +28,40 @@
 - **._clone_with_quantity()** (7 connections) — `server/services/inventory_service.py`
 - **_AsyncPlayerGuardState** (6 connections) — `server/services/inventory_mutation_guard.py`
 - **InventoryStackRequired** (6 connections) — `server/services/inventory_service.py`
-- *... and 126 more nodes in this community*
+- **InnerContainer** (6 connections) — `server/services/inventory_service.py`
+- *... and 138 more nodes in this community*
 
 ## Relationships
 
-- [AbstractContextManager](AbstractContextManager.md) (32 shared connections)
-- [.validate message()](validate_message%28%29.md) (24 shared connections)
-- [test resolve state no app()](test_resolve_state_no_app%28%29.md) (20 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (11 shared connections)
-- [Any](Any.md) (10 shared connections)
-- [DeadLetterMessage](DeadLetterMessage.md) (5 shared connections)
-- [UUID](UUID.md) (4 shared connections)
+- [test resolve state no app()](test_resolve_state_no_app%28%29.md) (43 shared connections)
+- [AbstractContextManager](AbstractContextManager.md) (20 shared connections)
+- [Any](Any.md) (8 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (7 shared connections)
 - [.shutdown()](shutdown%28%29.md) (4 shared connections)
 - [handle pickup command()](handle_pickup_command%28%29.md) (4 shared connections)
 - [Test prepare command for processing](Test_prepare_command_for_processing.md) (3 shared connections)
 - [test admin commands](test_admin_commands.md) (3 shared connections)
-- [test room subscription manager npcs](test_room_subscription_manager_npcs.md) (3 shared connections)
+- [DeadLetterMessage](DeadLetterMessage.md) (3 shared connections)
+- [BaseCommand](BaseCommand.md) (3 shared connections)
+- [container helpers inventory display](container_helpers_inventory_display.md) (3 shared connections)
+- [. init ()](_init_%28%29.md) (2 shared connections)
 
 ## Source Files
 
 - `server/container/main.py`
 - `server/npc/threading.py`
-- `server/services/__init__.py`
 - `server/services/inventory_mutation_guard.py`
 - `server/services/inventory_service.py`
+- `server/tests/unit/services/test_equipment_service.py`
 - `server/tests/unit/services/test_inventory_mutation_guard.py`
 - `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
 - `server/tests/unit/services/test_inventory_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 562 (84%)
-- INFERRED: 104 (16%)
+- EXTRACTED: 535 (86%)
+- INFERRED: 87 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

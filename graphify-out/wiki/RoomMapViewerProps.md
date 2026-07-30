@@ -29,10 +29,9 @@
 ## Relationships
 
 - [EdgeDetailsPanel](EdgeDetailsPanel.md) (4 shared connections)
+- [fetchSpy](fetchSpy.md) (4 shared connections)
 - [EdgeCreationModal](EdgeCreationModal.md) (2 shared connections)
-- [AppCreationFlowViews](AppCreationFlowViews.md) (2 shared connections)
 - [useConnectionStateMachine.test](useConnectionStateMachine.test.md) (2 shared connections)
-- [fetchSpy](fetchSpy.md) (2 shared connections)
 
 ## Source Files
 

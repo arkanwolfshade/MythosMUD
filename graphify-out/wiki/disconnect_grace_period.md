@@ -34,8 +34,8 @@
 ## Relationships
 
 - [spell registry](spell_registry.md) (36 shared connections)
-- [datetime](datetime.md) (34 shared connections)
-- [real time](real_time.md) (30 shared connections)
+- [real time](real_time.md) (34 shared connections)
+- [datetime](datetime.md) (30 shared connections)
 - [PlayerOccupantProcessor](PlayerOccupantProcessor.md) (17 shared connections)
 - [rescue commands](rescue_commands.md) (10 shared connections)
 - [chat nats publisher](chat_nats_publisher.md) (5 shared connections)

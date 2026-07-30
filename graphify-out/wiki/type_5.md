@@ -5,8 +5,8 @@
 ## Key Concepts
 
 - **properties** (10 connections) — `db/static/schemas/room.schema.json`
-- **id** (3 connections) — `db/static/schemas/room.schema.json`
 - **name** (3 connections) — `db/static/schemas/room.schema.json`
+- **description** (3 connections) — `db/static/schemas/room.schema.json`
 - **zone** (3 connections) — `db/static/schemas/room.schema.json`
 - **sub_zone** (3 connections) — `db/static/schemas/room.schema.json`
 - **attributes** (3 connections) — `db/static/schemas/room.schema.json`
@@ -26,8 +26,8 @@
 ## Relationships
 
 - [room.schema](room.schema.md) (1 shared connections)
-- [.add message()](add_message%28%29.md) (1 shared connections)
 - [type](type.md) (1 shared connections)
+- [id](id.md) (1 shared connections)
 - [minLength](minLength.md) (1 shared connections)
 
 ## Source Files

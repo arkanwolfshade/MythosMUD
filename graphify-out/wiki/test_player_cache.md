@@ -29,7 +29,7 @@
 
 - [ChatPanelTest](ChatPanelTest.md) (8 shared connections)
 - [chatPanelChannelFilter](chatPanelChannelFilter.md) (5 shared connections)
-- [GameClientV2Dock.test](GameClientV2Dock.test.md) (4 shared connections)
+- [HealthMeter](HealthMeter.md) (4 shared connections)
 - [GameLogMessagesList](GameLogMessagesList.md) (3 shared connections)
 - [domPurifyTestWindow](domPurifyTestWindow.md) (2 shared connections)
 - [ChatHistoryToggle()](ChatHistoryToggle%28%29.md) (2 shared connections)

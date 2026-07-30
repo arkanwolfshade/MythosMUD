@@ -28,9 +28,8 @@
 
 - [CharacterSelectionScreen](CharacterSelectionScreen.md) (14 shared connections)
 - [SERVER UNAVAILABLE PATTERNS](SERVER_UNAVAILABLE_PATTERNS.md) (8 shared connections)
-- [fetchSpy](fetchSpy.md) (4 shared connections)
+- [fetchSpy](fetchSpy.md) (6 shared connections)
 - [LoginResponse](LoginResponse.md) (4 shared connections)
-- [AppCreationFlowViews](AppCreationFlowViews.md) (2 shared connections)
 - [test character creation service](test_character_creation_service.md) (1 shared connections)
 
 ## Source Files

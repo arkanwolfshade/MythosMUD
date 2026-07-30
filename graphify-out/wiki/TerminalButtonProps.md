@@ -36,7 +36,7 @@
 - [Any](Any.md) (204 shared connections)
 - [. init ()](_init_%28%29.md) (147 shared connections)
 - [Player](Player.md) (102 shared connections)
-- [real time](real_time.md) (98 shared connections)
+- [real time](real_time.md) (100 shared connections)
 - [NPCCombatIntegrationBase](NPCCombatIntegrationBase.md) (76 shared connections)
 - [test command parser](test_command_parser.md) (73 shared connections)
 - [UUID](UUID.md) (56 shared connections)

@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **test_echo_message_to_sender_exception()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _echo_message_to_sender handles exceptions.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_broadcast_to_room_with_filtering_exception()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _broadcast_to_room_with_filtering handles exceptions.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 

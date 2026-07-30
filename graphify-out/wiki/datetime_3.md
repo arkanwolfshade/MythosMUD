@@ -1,60 +1,37 @@
 # datetime
 
-> 88 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **container_persistence_async.py** (33 connections) — `server/persistence/container_persistence_async.py`
-- **container_helpers.py** (26 connections) — `server/persistence/container_helpers.py`
-- **container_query_helpers_async.py** (23 connections) — `server/persistence/container_query_helpers_async.py`
-- **container_repository.py** (23 connections) — `server/persistence/repositories/container_repository.py`
-- **get_container_async()** (16 connections) — `server/persistence/container_persistence_async.py`
-- **ContainerRepository** (16 connections) — `server/persistence/repositories/container_repository.py`
-- **_build_container_data_from_row_async()** (14 connections) — `server/persistence/container_query_helpers_async.py`
-- **create_container_async()** (13 connections) — `server/persistence/container_persistence_async.py`
-- **parse_jsonb_column()** (11 connections) — `server/persistence/container_helpers.py`
-- **Any** (11 connections)
-- **_finalize_container_creation()** (11 connections) — `server/persistence/container_persistence_async.py`
-- **update_container_async()** (11 connections) — `server/persistence/container_persistence_async.py`
-- **update_container_items()** (10 connections) — `server/persistence/container_helpers.py`
-- **fetch_container_items_async()** (10 connections) — `server/persistence/container_persistence_async.py`
-- **get_containers_by_entity_id_async()** (10 connections) — `server/persistence/container_query_helpers_async.py`
-- **get_decayed_containers_async()** (10 connections) — `server/persistence/container_query_helpers_async.py`
-- **_container_data_to_dict()** (10 connections) — `server/persistence/repositories/container_repository.py`
-- **_populate_container_items_async()** (9 connections) — `server/persistence/container_persistence_async.py`
-- **get_containers_by_room_id_async()** (9 connections) — `server/persistence/container_query_helpers_async.py`
-- **validate_lock_state()** (8 connections) — `server/persistence/container_helpers.py`
-- **AsyncSession** (8 connections)
-- **delete_container_async()** (8 connections) — `server/persistence/container_persistence_async.py`
-- **_coerce_row_quantity()** (7 connections) — `server/persistence/container_helpers.py`
-- **_call_create_container_procedure()** (7 connections) — `server/persistence/container_persistence_async.py`
-- **Any** (7 connections)
-- *... and 63 more nodes in this community*
+- **.load_container_from_room_json()** (8 connections) — `server/services/environmental_container_loader.py`
+- **.migrate_room_container_to_postgresql()** (7 connections) — `server/services/environmental_container_loader.py`
+- **EnvironmentalContainerLoader** (6 connections) — `server/services/environmental_container_loader.py`
+- **.__init__()** (3 connections) — `server/services/environmental_container_loader.py`
+- **Any** (3 connections)
+- **.load_containers_for_room()** (3 connections) — `server/services/environmental_container_loader.py`
+- **ContainerComponent** (2 connections)
+- **UUID** (2 connections)
+- **Service for loading environmental containers from JSON and PostgreSQL.      Hand** (1 connections) — `server/services/environmental_container_loader.py`
+- **Initialize the environmental container loader.          Args:             persis** (1 connections) — `server/services/environmental_container_loader.py`
+- **Load a container definition from room JSON.          Args:             room_json** (1 connections) — `server/services/environmental_container_loader.py`
+- **Migrate a container from room JSON to PostgreSQL.          Checks if container a** (1 connections) — `server/services/environmental_container_loader.py`
+- **Load all environmental containers for a room from PostgreSQL.          Args:** (1 connections) — `server/services/environmental_container_loader.py`
 
 ## Relationships
 
-- [real time](real_time.md) (45 shared connections)
-- [disconnect grace period](disconnect_grace_period.md) (34 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (10 shared connections)
-- [spell registry](spell_registry.md) (7 shared connections)
-- [.initialize()](initialize%28%29.md) (6 shared connections)
-- [clean command input()](clean_command_input%28%29.md) (3 shared connections)
-- [test player death service](test_player_death_service.md) (2 shared connections)
-- [Test is valid target name](Test_is_valid_target_name.md) (1 shared connections)
-- [PlayerOccupantProcessor](PlayerOccupantProcessor.md) (1 shared connections)
-- [chat nats publisher](chat_nats_publisher.md) (1 shared connections)
+- [real time](real_time.md) (4 shared connections)
+- [.initialize()](initialize%28%29.md) (2 shared connections)
+- [datetime](datetime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/persistence/container_helpers.py`
-- `server/persistence/container_persistence_async.py`
-- `server/persistence/container_query_helpers_async.py`
-- `server/persistence/repositories/container_repository.py`
+- `server/services/environmental_container_loader.py`
 
 ## Audit Trail
 
-- EXTRACTED: 461 (97%)
-- INFERRED: 15 (3%)
+- EXTRACTED: 37 (95%)
+- INFERRED: 2 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

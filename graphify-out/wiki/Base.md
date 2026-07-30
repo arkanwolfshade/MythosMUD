@@ -1,50 +1,53 @@
 # Base
 
-> 45 nodes
+> 33 nodes
 
 ## Key Concepts
 
-- **test_item.py** (19 connections) — `server/tests/unit/models/test_item.py`
-- **ItemPrototype** (14 connections) — `server/models/item.py`
-- **ItemInstance** (11 connections) — `server/models/item.py`
-- **item.py** (8 connections) — `server/models/item.py`
-- **.unique_key()** (8 connections) — `server/models/item.py`
-- **ItemComponentState** (7 connections) — `server/models/item.py`
-- **Base** (3 connections)
-- **test_item_prototype_primary_slot_with_slots()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_prototype_primary_slot_single_slot()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_prototype_primary_slot_empty()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_prototype_primary_slot_none()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_instance_apply_flag_new_flag()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_instance_apply_flag_existing_flag()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_instance_apply_flag_multiple_flags()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_instance_apply_flag_preserves_order()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_component_state_unique_key()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_component_state_unique_key_different_values()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_component_state_unique_key_same_instance_different_component()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_component_state_unique_key_different_instance_same_component()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_component_state_unique_key_empty_strings()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_component_state_unique_key_static_method()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **.primary_slot()** (2 connections) — `server/models/item.py`
-- **.apply_flag()** (2 connections) — `server/models/item.py`
-- **SQLAlchemy models for MythosMUD item prototypes, instances, and component state.** (1 connections) — `server/models/item.py`
-- **Immutable catalog entry describing a canonical item.** (1 connections) — `server/models/item.py`
-- *... and 20 more nodes in this community*
+- **format_metadata()** (15 connections) — `server/commands/inventory_display_helpers.py`
+- **inventory_display_helpers.py** (12 connections) — `server/commands/inventory_display_helpers.py`
+- **render_inventory()** (9 connections) — `server/commands/inventory_display_helpers.py`
+- **Any** (7 connections)
+- **test_inventory_commands_format_helpers.py** (6 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
+- **build_inventory_lines()** (5 connections) — `server/commands/inventory_display_helpers.py`
+- **build_container_metadata()** (5 connections) — `server/commands/inventory_display_helpers.py`
+- **build_equipped_lines()** (5 connections) — `server/commands/inventory_display_helpers.py`
+- **get_equipped_item_identifiers()** (4 connections) — `server/commands/inventory_display_helpers.py`
+- **filter_non_equipped_inventory()** (4 connections) — `server/commands/inventory_display_helpers.py`
+- **test_format_metadata_empty()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
+- **test_format_metadata_simple()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
+- **test_format_metadata_nested_dict()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
+- **test_format_metadata_none()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_format_metadata_empty()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_format_metadata_simple()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_format_metadata_complex()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **Display and rendering helpers for inventory commands.** (1 connections) — `server/commands/inventory_display_helpers.py`
+- **Format metadata for display.** (1 connections) — `server/commands/inventory_display_helpers.py`
+- **Get sets of equipped item IDs and instance IDs for efficient lookup.** (1 connections) — `server/commands/inventory_display_helpers.py`
+- **Filter out equipped items and container items from inventory.** (1 connections) — `server/commands/inventory_display_helpers.py`
+- **Build inventory display lines.** (1 connections) — `server/commands/inventory_display_helpers.py`
+- **Build and format metadata for equipped item with container.** (1 connections) — `server/commands/inventory_display_helpers.py`
+- **Build equipped items display lines.** (1 connections) — `server/commands/inventory_display_helpers.py`
+- **Render inventory display with equipped items and container contents.** (1 connections) — `server/commands/inventory_display_helpers.py`
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [main()](main%28%29.md) (9 shared connections)
-- [emit close container event()](emit_close_container_event%28%29.md) (3 shared connections)
+- [test format metadata empty()](test_format_metadata_empty%28%29.md) (6 shared connections)
+- [test resolve state no app()](test_resolve_state_no_app%28%29.md) (2 shared connections)
+- [TerminalButtonProps](TerminalButtonProps.md) (2 shared connections)
+- [container helpers inventory display](container_helpers_inventory_display.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/item.py`
-- `server/tests/unit/models/test_item.py`
+- `server/commands/inventory_display_helpers.py`
+- `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
+- `server/tests/unit/commands/test_inventory_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 133 (96%)
-- INFERRED: 5 (4%)
+- EXTRACTED: 109 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

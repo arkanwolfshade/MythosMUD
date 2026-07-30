@@ -37,7 +37,7 @@
 - [createInitialState()](createInitialState%28%29.md) (9 shared connections)
 - [.constructor()](constructor%28%29.md) (3 shared connections)
 - [LoginResponse](LoginResponse.md) (2 shared connections)
-- [AppCreationFlowViews](AppCreationFlowViews.md) (2 shared connections)
+- [fetchSpy](fetchSpy.md) (2 shared connections)
 
 ## Source Files
 

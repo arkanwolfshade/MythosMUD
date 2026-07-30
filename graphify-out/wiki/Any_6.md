@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [test resolve state no app()](test_resolve_state_no_app%28%29.md) (36 shared connections)
+- [test resolve state no app()](test_resolve_state_no_app%28%29.md) (34 shared connections)
 - [DropResolved](DropResolved.md) (21 shared connections)
 - [handle pickup command()](handle_pickup_command%28%29.md) (13 shared connections)
 - [. init ()](_init_%28%29.md) (11 shared connections)
-- [Lock](Lock.md) (10 shared connections)
 - [clean command input()](clean_command_input%28%29.md) (8 shared connections)
+- [Lock](Lock.md) (8 shared connections)
 - [TerminalButtonProps](TerminalButtonProps.md) (8 shared connections)
 - [container helpers inventory](container_helpers_inventory.md) (8 shared connections)
 - [maps](maps.md) (5 shared connections)
+- [test format metadata empty()](test_format_metadata_empty%28%29.md) (5 shared connections)
 - [lifespan](lifespan.md) (5 shared connections)
 - [test magic commands](test_magic_commands.md) (5 shared connections)
-- [AuthSlice](AuthSlice.md) (3 shared connections)
 
 ## Source Files
 

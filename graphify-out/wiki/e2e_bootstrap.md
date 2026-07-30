@@ -33,9 +33,8 @@
 
 ## Relationships
 
+- [character deletion.spec](character_deletion.spec.md) (4 shared connections)
 - [ensurePlayableConnection](ensurePlayableConnection.md) (4 shared connections)
-- [character deletion.spec](character_deletion.spec.md) (3 shared connections)
-- [assertLookVisibleInPanels()](assertLookVisibleInPanels%28%29.md) (1 shared connections)
 
 ## Source Files
 

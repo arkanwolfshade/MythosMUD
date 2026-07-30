@@ -25,7 +25,7 @@
 ## Relationships
 
 - [ChatPanelTest](ChatPanelTest.md) (2 shared connections)
-- [AppCreationFlowViews](AppCreationFlowViews.md) (1 shared connections)
+- [fetchSpy](fetchSpy.md) (1 shared connections)
 - [EdgeCreationModal](EdgeCreationModal.md) (1 shared connections)
 - [GameLogMessagesList](GameLogMessagesList.md) (1 shared connections)
 

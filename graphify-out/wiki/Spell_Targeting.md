@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [.initialize()](initialize%28%29.md) (215 shared connections)
+- [.initialize()](initialize%28%29.md) (191 shared connections)
 - [.validate topic()](validate_topic%28%29.md) (64 shared connections)
 - [test command factories utility](test_command_factories_utility.md) (41 shared connections)
 - [.validate search term()](validate_search_term%28%29.md) (34 shared connections)
@@ -41,10 +41,10 @@
 - [test command factories exploration](test_command_factories_exploration.md) (31 shared connections)
 - [.validate target()](validate_target%28%29.md) (30 shared connections)
 - [test room sync service](test_room_sync_service.md) (24 shared connections)
+- [.set player combat service()](set_player_combat_service%28%29.md) (24 shared connections)
 - [TerminalButtonProps](TerminalButtonProps.md) (22 shared connections)
 - [test command parser helpers](test_command_parser_helpers.md) (16 shared connections)
 - [real time](real_time.md) (14 shared connections)
-- [Player](Player.md) (14 shared connections)
 
 ## Source Files
 

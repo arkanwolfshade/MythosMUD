@@ -33,7 +33,8 @@
 
 ## Relationships
 
-- [character deletion.spec](character_deletion.spec.md) (12 shared connections)
+- [character deletion.spec](character_deletion.spec.md) (10 shared connections)
+- [test room subscription manager npcs](test_room_subscription_manager_npcs.md) (2 shared connections)
 
 ## Source Files
 

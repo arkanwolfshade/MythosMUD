@@ -1,6 +1,6 @@
 # convert pydantic error()
 
-> 172 nodes
+> 180 nodes
 
 ## Key Concepts
 
@@ -29,7 +29,7 @@
 - **._create_fallback_error_response()** (8 connections) — `server/error_handlers/pydantic_error_handler.py`
 - **.convert_to_mythos_error()** (8 connections) — `server/error_handlers/pydantic_error_handler.py`
 - **._extract_context_from_request()** (8 connections) — `server/error_handlers/standardized_responses.py`
-- *... and 147 more nodes in this community*
+- *... and 155 more nodes in this community*
 
 ## Relationships
 
@@ -55,12 +55,14 @@
 - `server/exceptions.py`
 - `server/realtime/websocket_handler_validation.py`
 - `server/tests/unit/error_handlers/test_standardized_responses_security.py`
+- `server/tests/unit/realtime/test_websocket_handler_core.py`
+- `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
 - `server/tests/unit/test_error_types.py`
 
 ## Audit Trail
 
-- EXTRACTED: 776 (97%)
-- INFERRED: 21 (3%)
+- EXTRACTED: 788 (97%)
+- INFERRED: 25 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

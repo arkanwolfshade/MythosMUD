@@ -1,36 +1,55 @@
 # test room subscription manager npcs
 
-> 14 nodes
+> 30 nodes
 
 ## Key Concepts
 
-- **test_inventory_mutation_guard_sync.py** (10 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **guard()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **test_acquire_serializes_per_player()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **test_acquire_token_expiry()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **test_acquire_token_ttl_zero()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **test_acquire_enforces_max_tokens()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **test_acquire_cleanup_empty_state()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **Unit tests for inventory mutation guard - synchronous acquire operations.  Tests** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **Create an InventoryMutationGuard instance.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **Test acquire serializes mutations per player.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **Test acquire allows token reuse after expiry.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **Test acquire with token_ttl=0 (no expiry).** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **Test acquire enforces max_tokens limit.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **Test acquire cleans up state when tokens are empty.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
+- **auth.ts** (87 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **waitForPlayableSession()** (15 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **recoverPlayableSession()** (13 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **assertCommandChannelReady()** (11 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **executeCommandTrusted()** (10 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **reopenClosedPage()** (9 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **resolveActivePage()** (8 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **recoverPlayableViaSpaNavigation()** (7 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **getLivePageForUsername()** (6 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **reconnectPlayableSession()** (6 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **linkdead-recovery.ts** (6 connections) — `client/tests/e2e/runtime/fixtures/linkdead-recovery.ts`
+- **rememberPageSession()** (5 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **isPageUsable()** (5 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **restorePlayableAfterLogin()** (5 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **tryInPlacePlayableRecovery()** (5 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **refreshPlayableSession()** (5 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **resolveExecuteCommandPage()** (5 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **reopenIfClosed()** (4 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **resolveEnsuredPage()** (4 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **isUsernameLoginVisible()** (4 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **tryInPlacePlayableRecovery()** (4 connections) — `client/tests/e2e/runtime/fixtures/linkdead-recovery.ts`
+- **ensureSessionHealthy()** (4 connections) — `client/tests/e2e/runtime/fixtures/linkdead-recovery.ts`
+- **assertNotStuckOnLogin()** (3 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **forceLogoutPlayer()** (2 connections) — `client/tests/e2e/runtime/connection/basic-connection.spec.ts`
+- **pageSessionCredentials** (1 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
-- [Lock](Lock.md) (3 shared connections)
-- [TerminalButtonProps](TerminalButtonProps.md) (1 shared connections)
+- [assertLookVisibleInPanels()](assertLookVisibleInPanels%28%29.md) (49 shared connections)
+- [character deletion.spec](character_deletion.spec.md) (29 shared connections)
+- [combat messages game info.spec](combat_messages_game_info.spec.md) (13 shared connections)
+- [ensurePlayableConnection](ensurePlayableConnection.md) (12 shared connections)
+- [CharacterSelectionPage](CharacterSelectionPage.md) (2 shared connections)
+- [constants](constants.md) (1 shared connections)
+- [whisper movement.spec](whisper_movement.spec.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
+- `client/tests/e2e/runtime/connection/basic-connection.spec.ts`
+- `client/tests/e2e/runtime/fixtures/auth.ts`
+- `client/tests/e2e/runtime/fixtures/linkdead-recovery.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 30 (100%)
+- EXTRACTED: 239 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

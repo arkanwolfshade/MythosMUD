@@ -38,13 +38,13 @@
 - [Instance](Instance.md) (8 shared connections)
 - [Cancel lifecycle/critical tasks first (Phase](Cancel_lifecycle-critical_tasks_first_%28Phase.md) (8 shared connections)
 - [useConnectionStateMachine.test](useConnectionStateMachine.test.md) (7 shared connections)
-- [HealthMeter](HealthMeter.md) (4 shared connections)
+- [HealthMeter](HealthMeter.md) (5 shared connections)
 - [ConnectionCleaner](ConnectionCleaner.md) (3 shared connections)
 - [LoginResponse](LoginResponse.md) (2 shared connections)
 - [EdgeDetailsPanel](EdgeDetailsPanel.md) (2 shared connections)
-- [AppCreationFlowViews](AppCreationFlowViews.md) (2 shared connections)
+- [fetchSpy](fetchSpy.md) (2 shared connections)
 - [test combat persistence handler](test_combat_persistence_handler.md) (1 shared connections)
-- [GameClientV2Dock.test](GameClientV2Dock.test.md) (1 shared connections)
+- [MythosTimeHud](MythosTimeHud.md) (1 shared connections)
 
 ## Source Files
 

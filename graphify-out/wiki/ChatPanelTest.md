@@ -1,13 +1,12 @@
 # ChatPanelTest
 
-> 128 nodes
+> 102 nodes
 
 ## Key Concepts
 
 - **EldritchIcon.tsx** (37 connections) — `client/src/components/ui/EldritchIcon.tsx`
 - **MythosIcons** (34 connections) — `client/src/components/ui/MythosIcons.ts`
 - **EldritchIcon()** (31 connections) — `client/src/components/ui/EldritchIcon.tsx`
-- **ChatPanelRuntimeViewParts.tsx** (29 connections) — `client/src/components/panels/ChatPanelRuntimeViewParts.tsx`
 - **channels.ts** (25 connections) — `client/src/config/channels.ts`
 - **CommandPanel.tsx** (23 connections) — `client/src/components/panels/CommandPanel.tsx`
 - **ChatHistoryPanel.tsx** (23 connections) — `client/src/components/ui-v2/panels/ChatHistoryPanel.tsx`
@@ -25,26 +24,27 @@
 - **TerminalInput.tsx** (11 connections) — `client/src/components/ui/TerminalInput.tsx`
 - **MythosPanel.tsx** (10 connections) — `client/src/components/ui/MythosPanel.tsx`
 - **TerminalInput** (10 connections) — `client/src/components/ui/TerminalInput.tsx`
-- **ChatPanelRefactoredToolbar.tsx** (9 connections) — `client/src/components/panels/ChatPanelRefactoredToolbar.tsx`
 - **ChatHeader.tsx** (9 connections) — `client/src/components/panels/chat/ChatHeader.tsx`
 - **CommandHistoryPanel.tsx** (9 connections) — `client/src/components/ui-v2/panels/CommandHistoryPanel.tsx`
 - **MythosPanel()** (9 connections) — `client/src/components/ui/MythosPanel.tsx`
-- *... and 103 more nodes in this community*
+- **CHAT_CHANNEL_OPTIONS** (9 connections) — `client/src/config/channels.ts`
+- **ChatHistoryToggle.tsx** (8 connections) — `client/src/components/panels/chat/ChatHistoryToggle.tsx`
+- *... and 77 more nodes in this community*
 
 ## Relationships
 
-- [chatPanelChannelFilter](chatPanelChannelFilter.md) (16 shared connections)
+- [generate invites db](generate_invites_db.md) (18 shared connections)
+- [HealthMeter](HealthMeter.md) (18 shared connections)
 - [StatusPanel](StatusPanel.md) (13 shared connections)
 - [mockOpenContainers](mockOpenContainers.md) (12 shared connections)
-- [ChatHistoryToggle()](ChatHistoryToggle%28%29.md) (10 shared connections)
-- [HealthMeter](HealthMeter.md) (10 shared connections)
-- [GameClientV2Dock.test](GameClientV2Dock.test.md) (8 shared connections)
+- [chatPanelChannelFilter](chatPanelChannelFilter.md) (11 shared connections)
+- [GameLogMessagesList](GameLogMessagesList.md) (9 shared connections)
+- [ChatHistoryToggle()](ChatHistoryToggle%28%29.md) (8 shared connections)
 - [test player cache](test_player_cache.md) (8 shared connections)
-- [GameLogMessagesList](GameLogMessagesList.md) (8 shared connections)
 - [player repository save](player_repository_save.md) (7 shared connections)
-- [async sessionmaker](async_sessionmaker.md) (5 shared connections)
 - [MythosTimeHud](MythosTimeHud.md) (5 shared connections)
 - [Any](Any.md) (3 shared connections)
+- [.create corpse()](create_corpse%28%29.md) (2 shared connections)
 
 ## Source Files
 
@@ -60,18 +60,18 @@
 - `client/src/components/TailwindTest.tsx`
 - `client/src/components/__tests__/CommandPanel.test.tsx`
 - `client/src/components/__tests__/command-panel.test.tsx`
-- `client/src/components/panels/ChatPanelRefactoredToolbar.tsx`
-- `client/src/components/panels/ChatPanelRuntimeViewParts.tsx`
 - `client/src/components/panels/CommandPanel.tsx`
 - `client/src/components/panels/__tests__/CommandPanel-LogoutButton.integration.test.tsx`
 - `client/src/components/panels/__tests__/command-panel.spec.tsx`
 - `client/src/components/panels/__tests__/command-panel.test.tsx`
-- `client/src/components/panels/chat/ChannelActivityIndicators.tsx`
-- `client/src/components/panels/chat/ChannelSelectorSection.tsx`
+- `client/src/components/panels/chat/ChatHeader.tsx`
+- `client/src/components/panels/chat/ChatHistoryToggle.tsx`
+- `client/src/components/panels/chat/ChatStatistics.tsx`
+- `client/src/components/panels/chat/__tests__/ChatHeader.test.tsx`
 
 ## Audit Trail
 
-- EXTRACTED: 681 (100%)
+- EXTRACTED: 593 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

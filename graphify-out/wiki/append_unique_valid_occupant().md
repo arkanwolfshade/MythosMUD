@@ -39,7 +39,7 @@
 - [metrics](metrics.md) (21 shared connections)
 - [test player event handlers state](test_player_event_handlers_state.md) (20 shared connections)
 - [message handler factory](message_handler_factory.md) (17 shared connections)
-- [.initialize()](initialize%28%29.md) (13 shared connections)
+- [.initialize()](initialize%28%29.md) (15 shared connections)
 - [admin shutdown command](admin_shutdown_command.md) (12 shared connections)
 - [Room](Room.md) (10 shared connections)
 - [real time](real_time.md) (7 shared connections)

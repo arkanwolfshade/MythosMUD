@@ -1,12 +1,10 @@
 # test websocket handler helpers extended
 
-> 52 nodes
+> 48 nodes
 
 ## Key Concepts
 
 - **test_websocket_handler_helpers_extended.py** (33 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_handle_generic_exception_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_handle_generic_exception_disconnected()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
 - **mock_websocket()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
 - **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
 - **mock_validator()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
@@ -29,7 +27,9 @@
 - **test_handle_message_loop_exception_json_decode_error()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
 - **test_handle_message_loop_exception_websocket_disconnect()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
 - **test_handle_message_loop_exception_runtime_error()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- *... and 27 more nodes in this community*
+- **test_handle_message_loop_exception_generic()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
+- **Extended unit tests for websocket handler helper functions.  Tests additional he** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
+- *... and 23 more nodes in this community*
 
 ## Relationships
 
@@ -45,8 +45,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 109 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 103 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

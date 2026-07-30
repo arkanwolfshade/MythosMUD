@@ -1,6 +1,6 @@
 # bench cache npc
 
-> 97 nodes
+> 99 nodes
 
 ## Key Concepts
 
@@ -11,6 +11,7 @@
 - **QuestInstanceRepository** (19 connections) — `server/persistence/repositories/quest_instance_repository.py`
 - **test_quest_flow.py** (15 connections) — `server/tests/integration/test_quest_flow.py`
 - **quest.py** (13 connections) — `server/models/quest.py`
+- **QuestDefinition** (13 connections) — `server/models/quest.py`
 - **_make_session_context()** (13 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
 - **_make_session_context()** (11 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
 - **.create()** (10 connections) — `server/persistence/repositories/quest_instance_repository.py`
@@ -28,16 +29,16 @@
 - **_make_shared_session_factory()** (5 connections) — `server/tests/integration/test_quest_flow.py`
 - **Any** (4 connections)
 - **_row_for_quest_definition()** (4 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **test_get_by_id_success()** (4 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- *... and 72 more nodes in this community*
+- *... and 74 more nodes in this community*
 
 ## Relationships
 
 - [real time](real_time.md) (49 shared connections)
 - [QuestCompleted](QuestCompleted.md) (11 shared connections)
-- [main()](main%28%29.md) (10 shared connections)
+- [main()](main%28%29.md) (9 shared connections)
 - [TerminalButtonProps](TerminalButtonProps.md) (3 shared connections)
 - [emit close container event()](emit_close_container_event%28%29.md) (3 shared connections)
+- [.validate message()](validate_message%28%29.md) (3 shared connections)
 - [. init ()](_init_%28%29.md) (1 shared connections)
 - [metrics](metrics.md) (1 shared connections)
 - [test command factories communication](test_command_factories_communication.md) (1 shared connections)
@@ -52,8 +53,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 371 (93%)
-- INFERRED: 26 (7%)
+- EXTRACTED: 382 (93%)
+- INFERRED: 29 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

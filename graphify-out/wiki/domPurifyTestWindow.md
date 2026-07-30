@@ -34,13 +34,12 @@
 ## Relationships
 
 - [fetchSpy](fetchSpy.md) (5 shared connections)
+- [HealthMeter](HealthMeter.md) (4 shared connections)
 - [GameLogMessagesList](GameLogMessagesList.md) (3 shared connections)
 - [maps](maps.md) (2 shared connections)
-- [HealthMeter](HealthMeter.md) (2 shared connections)
 - [test player cache](test_player_cache.md) (2 shared connections)
 - [chatPanelChannelFilter](chatPanelChannelFilter.md) (2 shared connections)
 - [ChatPanelTest](ChatPanelTest.md) (2 shared connections)
-- [GameClientV2Dock.test](GameClientV2Dock.test.md) (2 shared connections)
 - [react](react.md) (1 shared connections)
 
 ## Source Files
