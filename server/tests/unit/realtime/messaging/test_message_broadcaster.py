@@ -5,7 +5,7 @@ Tests the MessageBroadcaster class.
 """
 
 import uuid
-from unittest.mock import AsyncMock
+from unittest.mock import AsyncMock, patch
 
 import pytest
 
@@ -130,8 +130,71 @@ async def test_broadcast_room_event(message_broadcaster, mock_room_manager):
 
 
 @pytest.mark.asyncio
+async def test_broadcast_to_room_invalid_player_id(message_broadcaster, mock_room_manager):
+    """Test broadcast_to_room() records invalid subscriber IDs."""
+    mock_room_manager.get_room_subscribers = AsyncMock(return_value={"not-a-uuid", str(uuid.uuid4())})
+    event = {"type": "test_event", "data": "test"}
+    result = await message_broadcaster.broadcast_to_room("room_001", event)
+    assert result["failed_deliveries"] >= 1
+
+
+@pytest.mark.asyncio
+async def test_broadcast_to_room_batch_exception_falls_back(
+    message_broadcaster, mock_room_manager, mock_send_personal_message
+):
+    """Test broadcast_to_room() falls back when batch gather fails."""
+    valid_id = str(uuid.uuid4())
+    mock_room_manager.get_room_subscribers = AsyncMock(return_value={valid_id})
+
+    async def _fail_batch(*_args, **_kwargs):
+        raise RuntimeError("batch failed")
+
+    mock_send_personal_message.side_effect = _fail_batch
+    with patch(
+        "server.realtime.messaging.message_broadcaster.asyncio.gather",
+        side_effect=RuntimeError("gather failed"),
+    ):
+        result = await message_broadcaster.broadcast_to_room("room_001", {"type": "x"})
+    assert result["failed_deliveries"] >= 1
+
+
+@pytest.mark.asyncio
+async def test_broadcast_global_batch_exception_falls_back(message_broadcaster, mock_send_personal_message):
+    """Test broadcast_global() falls back when batch gather fails."""
+    player_id = uuid.uuid4()
+    mock_send_personal_message.return_value = {"success": True}
+    with patch(
+        "server.realtime.messaging.message_broadcaster.asyncio.gather",
+        side_effect=RuntimeError("gather failed"),
+    ):
+        result = await message_broadcaster.broadcast_global({"type": "x"}, None, {player_id: ["ws"]})
+    assert result["successful_deliveries"] >= 1
+
+
+@pytest.mark.asyncio
+async def test_broadcast_room_event_error(message_broadcaster):
+    """Test broadcast_room_event() returns error payload on failure."""
+    with patch(
+        "server.realtime.messaging.message_broadcaster.build_event",
+        side_effect=RuntimeError("build failed"),
+    ):
+        result = await message_broadcaster.broadcast_room_event("evt", "room_001", {})
+    assert result.get("error") == "build failed"
+
+
+@pytest.mark.asyncio
 async def test_broadcast_global_event(message_broadcaster, mock_send_personal_message):
     """Test broadcast_global_event() broadcasts global event."""
-    # broadcast_global_event takes (event_type, data) - no player_websockets parameter
     result = await message_broadcaster.broadcast_global_event("test_event", {"data": "test"})
     assert "total_players" in result or "total_targets" in result or isinstance(result, dict)
+
+
+@pytest.mark.asyncio
+async def test_broadcast_global_event_error(message_broadcaster):
+    """Test broadcast_global_event() returns error payload on failure."""
+    with patch(
+        "server.realtime.messaging.message_broadcaster.build_event",
+        side_effect=RuntimeError("build failed"),
+    ):
+        result = await message_broadcaster.broadcast_global_event("evt", {})
+    assert result.get("error") == "build failed"

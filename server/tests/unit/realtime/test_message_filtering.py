@@ -232,3 +232,136 @@ def test_get_user_manager_global(message_filtering_helper):
     result = message_filtering_helper._get_user_manager()
     # Should return global user_manager
     assert result is not None
+
+
+@pytest.mark.asyncio
+async def test_get_player_room_from_persistence_no_layer(message_filtering_helper, mock_connection_manager):
+    mock_connection_manager.async_persistence = None
+    assert await message_filtering_helper.get_player_room_from_persistence("player_001") is None
+
+
+@pytest.mark.asyncio
+async def test_get_player_room_from_persistence_mock_player(message_filtering_helper, mock_connection_manager):
+    mock_persistence = MagicMock()
+    mock_persistence.get_player_by_id = AsyncMock(return_value=MagicMock())
+    mock_connection_manager.async_persistence = mock_persistence
+    assert await message_filtering_helper.get_player_room_from_persistence("player_001") is None
+
+
+@pytest.mark.asyncio
+async def test_is_player_in_room_via_persistence(message_filtering_helper, mock_connection_manager):
+    mock_connection_manager.online_players = {}
+
+    class SimplePlayer:
+        current_room_id = "room_001"
+
+    mock_persistence = MagicMock()
+    mock_persistence.get_player_by_id = AsyncMock(return_value=SimplePlayer())
+    mock_connection_manager.async_persistence = mock_persistence
+    mock_connection_manager.canonical_room_id = MagicMock(return_value="room_001")
+    assert await message_filtering_helper.is_player_in_room("player_001", "room_001") is True
+
+
+@pytest.mark.asyncio
+async def test_is_player_in_room_error_returns_false(message_filtering_helper, mock_connection_manager):
+    from server.services.nats_exceptions import NATSError
+
+    mock_connection_manager.online_players = {"player_001": {"current_room_id": "room_001"}}
+    mock_connection_manager.canonical_room_id = MagicMock(side_effect=NATSError("boom"))
+    assert await message_filtering_helper.is_player_in_room("player_001", "room_001") is False
+
+
+def test_is_player_muted_global_mute_and_admin(message_filtering_helper):
+    um = MagicMock()
+    um.load_player_mutes = MagicMock(return_value=True)
+    um.is_player_muted = MagicMock(return_value=False)
+    um.is_player_muted_by_others = MagicMock(return_value=True)
+    um.is_admin_sync = MagicMock(return_value=False)
+    um._player_mutes = {}
+    message_filtering_helper.user_manager = um
+    assert message_filtering_helper.is_player_muted_by_receiver("receiver_001", "sender_001") is True
+
+    um.is_admin_sync = MagicMock(return_value=True)
+    assert message_filtering_helper.is_player_muted_by_receiver("receiver_001", "sender_001") is False
+
+
+def test_is_player_muted_by_receiver_exception(message_filtering_helper):
+    um = MagicMock()
+    um.load_player_mutes = MagicMock(side_effect=RuntimeError("mute fail"))
+    message_filtering_helper.user_manager = um
+    assert message_filtering_helper.is_player_muted_by_receiver("receiver_001", "sender_001") is False
+
+
+@pytest.mark.asyncio
+async def test_is_player_muted_with_user_manager_async_paths(message_filtering_helper):
+    um = MagicMock()
+    um.load_player_mutes_async = AsyncMock(return_value=True)
+    um.is_player_muted = MagicMock(return_value=False)
+    um.is_player_muted_by_others = MagicMock(return_value=True)
+    um.is_admin = AsyncMock(return_value=False)
+    um._player_mutes = {"receiver_001": {"sender_001": True}}
+    assert (
+        await message_filtering_helper.is_player_muted_by_receiver_with_user_manager(um, "receiver_001", "sender_001")
+        is True
+    )
+
+    um.is_admin = AsyncMock(return_value=True)
+    assert (
+        await message_filtering_helper.is_player_muted_by_receiver_with_user_manager(um, "receiver_001", "sender_001")
+        is False
+    )
+
+    um.load_player_mutes_async = AsyncMock(side_effect=RuntimeError("async mute fail"))
+    assert (
+        await message_filtering_helper.is_player_muted_by_receiver_with_user_manager(um, "receiver_001", "sender_001")
+        is False
+    )
+
+
+@pytest.mark.asyncio
+async def test_check_player_mute_status_patched_and_emote(message_filtering_helper):
+    um = MagicMock()
+    handler = MagicMock()
+    handler._is_player_muted_by_receiver = MagicMock(return_value=True)
+    assert (
+        await message_filtering_helper.check_player_mute_status(
+            um, "p1", "s1", "emote", {"sender_name": "Ada"}, handler
+        )
+        is True
+    )
+
+    um.load_player_mutes_async = AsyncMock(return_value=True)
+    um.is_player_muted = MagicMock(return_value=False)
+    um.is_player_muted_by_others = MagicMock(return_value=False)
+    um.is_admin = AsyncMock(return_value=False)
+    assert (
+        await message_filtering_helper.check_player_mute_status(um, "p1", "s1", "pose", {"sender_name": "Ada"}, None)
+        is False
+    )
+
+
+@pytest.mark.asyncio
+async def test_filter_target_players_room_and_mute(message_filtering_helper, mock_connection_manager):
+    mock_connection_manager.online_players = {
+        "p1": {"current_room_id": "room_001"},
+        "p2": {"current_room_id": "room_002"},
+        "sender": {"current_room_id": "room_001"},
+    }
+    mock_connection_manager.canonical_room_id = MagicMock(side_effect=lambda x: x)
+    um = MagicMock()
+    um.load_player_mutes_async = AsyncMock(return_value=True)
+    um.is_player_muted = MagicMock(side_effect=lambda r, s: r == "p1")
+    um.is_player_muted_by_others = MagicMock(return_value=False)
+    um.is_admin = AsyncMock(return_value=False)
+
+    filtered = await message_filtering_helper.filter_target_players(
+        {"sender", "p1", "p2"},
+        "sender",
+        "room_001",
+        "say",
+        "msg-1",
+        um,
+        {"sender_name": "Ada"},
+        None,
+    )
+    assert filtered == []
