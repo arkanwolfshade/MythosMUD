@@ -315,6 +315,10 @@ The definition of done for any work must include:
 - Passing linting checks
 - Passing testing (with appropriate coverage)
 - All code quality standards met
+- **In-game help** for player-facing commands and features (`help <command>` /
+  `server/help/help_content.py`, plus short entries in command help lists when applicable)
+- Content-creator documentation when the feature adds authoring tools (runbooks under
+  `docs/runbooks/` or subsystem docs)
 
 ---
 
@@ -662,6 +666,8 @@ jobs:
 - In Playwright E2E specs, avoid `expect` only inside promise `.catch` handlers (see `playwright/no-conditional-expect`); use
   `try`/`catch` with an unconditional assertion path, and ensure tests that mainly await helpers such as `waitForMessage` still
   contain at least one explicit `expect`
+- In-game help is part of definition of done for player-facing features (`help <command>` in
+  `server/help/help_content.py`); content tools need a runbook under `docs/runbooks/`
 
 ## Learned workspace facts
 

@@ -1,74 +1,59 @@
 # message handler factory
 
-> 246 nodes
+> 107 nodes
 
 ## Key Concepts
 
-- **PlayerService** (140 connections) — `server/game/player_service.py`
-- **magic_service.py** (39 connections) — `server/game/magic/magic_service.py`
-- **PlayerSpellRepository** (36 connections) — `server/persistence/repositories/player_spell_repository.py`
-- **SpellRegistry** (35 connections) — `server/game/magic/spell_registry.py`
-- **lifespan_magic.py** (34 connections) — `server/app/lifespan_magic.py`
-- **SpellTargetingService** (31 connections) — `server/game/magic/spell_targeting.py`
-- **SpellLearningService** (30 connections) — `server/game/magic/spell_learning_service.py`
-- **MagicService** (29 connections) — `server/game/magic/magic_service.py`
-- **magic_service_completion.py** (25 connections) — `server/game/magic/magic_service_completion.py`
-- **MagicServiceCompletionMixin** (21 connections) — `server/game/magic/magic_service_completion.py`
-- **spell_learning_service.py** (21 connections) — `server/game/magic/spell_learning_service.py`
-- **magic.py** (19 connections) — `server/container/bundles/magic.py`
-- **MagicBundle** (18 connections) — `server/container/bundles/magic.py`
-- **CastingStateManager** (18 connections) — `server/game/magic/casting_state_manager.py`
-- **MagicServiceOptionalDeps** (17 connections) — `server/game/magic/magic_service.py`
-- **initialize_magic_services()** (15 connections) — `server/app/lifespan_magic.py`
-- **SpellMaterialsService** (15 connections) — `server/game/magic/spell_materials.py`
-- **spell_registry.py** (15 connections) — `server/game/magic/spell_registry.py`
-- **SpellCostsService** (14 connections) — `server/game/magic/spell_costs.py`
-- **SpellRepository** (14 connections) — `server/persistence/repositories/spell_repository.py`
-- **_initialize_magic_service()** (13 connections) — `server/app/lifespan_magic.py`
-- **_create_registry_and_targeting()** (13 connections) — `server/container/bundles/magic.py`
-- **UUID** (12 connections)
-- **spell_costs.py** (12 connections) — `server/game/magic/spell_costs.py`
-- **.__init__()** (11 connections) — `server/game/magic/magic_service.py`
-- *... and 221 more nodes in this community*
+- **message_handler_factory.py** (23 connections) — `server/realtime/message_handler_factory.py`
+- **test_message_handler_factory.py** (21 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **MessageHandlerFactory** (18 connections) — `server/realtime/message_handler_factory.py`
+- **MessageHandler** (14 connections) — `server/realtime/message_handler_factory.py`
+- **message_handlers.py** (14 connections) — `server/realtime/message_handlers.py`
+- **test_message_handlers.py** (12 connections) — `server/tests/unit/realtime/test_message_handlers.py`
+- **handle_command_message()** (11 connections) — `server/realtime/message_handlers.py`
+- **handle_chat_message()** (10 connections) — `server/realtime/message_handlers.py`
+- **handle_ping_message()** (10 connections) — `server/realtime/message_handlers.py`
+- **CommandMessageHandler** (9 connections) — `server/realtime/message_handler_factory.py`
+- **handle_follow_response_message()** (9 connections) — `server/realtime/message_handlers.py`
+- **WebSocket** (8 connections)
+- **Any** (8 connections)
+- **.__init__()** (8 connections) — `server/realtime/message_handler_factory.py`
+- **handle_party_invite_response_message()** (8 connections) — `server/realtime/message_handlers.py`
+- **ChatMessageHandler** (7 connections) — `server/realtime/message_handler_factory.py`
+- **PingMessageHandler** (7 connections) — `server/realtime/message_handler_factory.py`
+- **ClientErrorReportMessageHandler** (7 connections) — `server/realtime/message_handler_factory.py`
+- **.handle_message()** (7 connections) — `server/realtime/message_handler_factory.py`
+- **.handle()** (6 connections) — `server/realtime/message_handler_factory.py`
+- **handle_client_error_report_message()** (6 connections) — `server/realtime/message_handlers.py`
+- **WebSocket** (6 connections)
+- **Any** (6 connections)
+- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
+- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
+- *... and 82 more nodes in this community*
 
 ## Relationships
 
-- [. init ()](_init_%28%29.md) (111 shared connections)
-- [CombatService](CombatService.md) (29 shared connections)
-- [Player](Player.md) (22 shared connections)
-- [world](world.md) (20 shared connections)
-- [real time](real_time.md) (19 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (18 shared connections)
-- [Any](Any.md) (18 shared connections)
-- [.initialize()](initialize%28%29.md) (18 shared connections)
-- [test magic commands](test_magic_commands.md) (17 shared connections)
-- [append unique valid occupant()](append_unique_valid_occupant%28%29.md) (14 shared connections)
-- [command execution request](command_execution_request.md) (13 shared connections)
-- [. initialize handlers()](_initialize_handlers%28%29.md) (12 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (5 shared connections)
+- [NATS Messaging](NATS_Messaging.md) (4 shared connections)
+- [combat services messaging](combat_services_messaging.md) (4 shared connections)
+- [Memory Task Runtime](Memory_Task_Runtime.md) (3 shared connections)
+- [websocket handler realtime](websocket_handler_realtime.md) (3 shared connections)
+- [connection manager realtime](connection_manager_realtime.md) (2 shared connections)
+- [infrastructure message broker](infrastructure_message_broker.md) (1 shared connections)
+- [infrastructure nats broker](infrastructure_nats_broker.md) (1 shared connections)
+- [npc combat base](npc_combat_base.md) (1 shared connections)
 
 ## Source Files
 
-- `server/app/lifespan_magic.py`
-- `server/commands/magic_commands.py`
-- `server/container/bundles/magic.py`
-- `server/game/magic/casting_state_manager.py`
-- `server/game/magic/magic_service.py`
-- `server/game/magic/magic_service_completion.py`
-- `server/game/magic/spell_costs.py`
-- `server/game/magic/spell_effects.py`
-- `server/game/magic/spell_learning_service.py`
-- `server/game/magic/spell_materials.py`
-- `server/game/magic/spell_registry.py`
-- `server/game/magic/spell_targeting.py`
-- `server/game/player_service.py`
-- `server/persistence/repositories/player_spell_repository.py`
-- `server/persistence/repositories/spell_repository.py`
-- `server/tests/unit/game/magic/test_spell_targeting.py`
+- `server/realtime/message_handler_factory.py`
+- `server/realtime/message_handlers.py`
+- `server/tests/unit/realtime/test_message_handler_factory.py`
+- `server/tests/unit/realtime/test_message_handlers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1092 (85%)
-- INFERRED: 190 (15%)
+- EXTRACTED: 394 (98%)
+- INFERRED: 8 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

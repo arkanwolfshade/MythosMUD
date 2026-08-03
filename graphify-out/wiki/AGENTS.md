@@ -1,11 +1,10 @@
 # AGENTS
 
-> 2 nodes
+> 1 nodes
 
 ## Key Concepts
 
-- **AGENTS.md** (1 connections) — `AGENTS.md`
-- **.codacy.yaml** (1 connections) — `.codacy/codacy.yaml`
+- **AGENTS.md** (0 connections) — `AGENTS.md`
 
 ## Relationships
 
@@ -13,12 +12,11 @@
 
 ## Source Files
 
-- `.codacy/codacy.yaml`
 - `AGENTS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

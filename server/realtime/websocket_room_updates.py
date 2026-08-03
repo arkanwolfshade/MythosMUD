@@ -271,19 +271,23 @@ async def broadcast_room_update(  # pylint: disable=too-many-locals,too-many-sta
     Args:
         player_id: The player who triggered the update
         room_id: The room's ID
-        connection_manager: ConnectionManager instance (optional, will resolve from app.state if not provided)
+        connection_manager: ConnectionManager instance (optional, will resolve from ApplicationContainer if not provided)
     """
     logger.debug("broadcast_room_update called", player_id=player_id, room_id=room_id)
     try:
         if connection_manager is None:
-            # Import inside function to avoid circular import (main.py imports websocket_room_updates indirectly)
-            from ..main import (
-                app,  # pylint: disable=import-outside-toplevel  # Reason: Import inside function to avoid circular import, main.py imports websocket_room_updates indirectly
+            # Resolve via DI container; never import main.app (that closes factory/lifespan cycles)
+            from ..container import (
+                ApplicationContainer,  # pylint: disable=import-outside-toplevel  # Reason: Lazy import keeps realtime off the container module graph at import time
             )
 
-            connection_manager = app.state.container.connection_manager
+            connection_manager = getattr(ApplicationContainer.get_instance(), "connection_manager", None)
 
-        async_persistence = getattr(connection_manager, "async_persistence", None) if connection_manager else None
+        if connection_manager is None:
+            logger.warning("Connection manager not available for room update")
+            return
+
+        async_persistence = getattr(connection_manager, "async_persistence", None)
         if not async_persistence:
             logger.warning("Async persistence layer not available for room update")
             return

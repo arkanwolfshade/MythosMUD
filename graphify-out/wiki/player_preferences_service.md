@@ -1,52 +1,50 @@
 # player preferences service
 
-> 55 nodes
+> 106 nodes
 
 ## Key Concepts
 
-- **ChatModeration** (25 connections) — `server/game/chat_moderation.py`
-- **UUID** (17 connections)
-- **normalize_player_id()** (16 connections) — `server/game/chat_moderation.py`
-- **.get_player_by_id()** (12 connections) — `server/game/chat_moderation.py`
-- **chat_moderation.py** (10 connections) — `server/game/chat_moderation.py`
-- **Any** (8 connections)
-- **.get_mute_status()** (8 connections) — `server/game/chat_moderation.py`
-- **.resolve_player_name()** (7 connections) — `server/game/chat_moderation.py`
-- **.mute_player()** (6 connections) — `server/game/chat_moderation.py`
-- **.unmute_player()** (6 connections) — `server/game/chat_moderation.py`
-- **.mute_global()** (6 connections) — `server/game/chat_moderation.py`
-- **.unmute_global()** (6 connections) — `server/game/chat_moderation.py`
-- **.get_player_mutes()** (6 connections) — `server/game/chat_moderation.py`
-- **PlayerServiceProtocol** (5 connections) — `server/game/chat_moderation.py`
-- **.mute_channel()** (5 connections) — `server/game/chat_moderation.py`
-- **.unmute_channel()** (5 connections) — `server/game/chat_moderation.py`
-- **.add_admin()** (5 connections) — `server/game/chat_moderation.py`
-- **.remove_admin()** (5 connections) — `server/game/chat_moderation.py`
-- **.is_admin()** (5 connections) — `server/game/chat_moderation.py`
-- **._format_mute_entry()** (5 connections) — `server/game/chat_moderation.py`
-- **._format_mute_section()** (5 connections) — `server/game/chat_moderation.py`
-- **.is_channel_muted()** (4 connections) — `server/game/chat_moderation.py`
-- **.is_player_muted()** (4 connections) — `server/game/chat_moderation.py`
-- **.is_globally_muted()** (4 connections) — `server/game/chat_moderation.py`
-- **.get_user_management_stats()** (4 connections) — `server/game/chat_moderation.py`
-- *... and 30 more nodes in this community*
+- **test_player_preferences_service.py** (59 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **sample_preferences()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_create_player_preferences_success()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_create_player_preferences_with_string_id()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_create_player_preferences_already_exists()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_get_player_preferences_success()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_get_player_preferences_not_found()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_update_default_channel_success()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_update_default_channel_not_found()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_mute_channel_success()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_mute_channel_already_muted()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_unmute_channel_success()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_unmute_channel_not_muted()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_get_muted_channels_success()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_get_muted_channels_not_found()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_is_channel_muted_true()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_is_channel_muted_false()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_delete_player_preferences_success()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_delete_player_preferences_not_found()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_delete_player_preferences_database_error()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_update_default_channel_database_error()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_mute_channel_not_found()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_unmute_channel_not_found()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_unmute_channel_database_error()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_mute_channel_database_error()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- *... and 81 more nodes in this community*
 
 ## Relationships
 
-- [chat moderation](chat_moderation.md) (5 shared connections)
-- [world](world.md) (2 shared connections)
-- [ChatMessage](ChatMessage.md) (2 shared connections)
-- [ChatService](ChatService.md) (1 shared connections)
-- [. init ()](_init_%28%29.md) (1 shared connections)
+- [auth users rationale](auth_users_rationale.md) (25 shared connections)
+- [world models rationale](world_models_rationale.md) (3 shared connections)
+- [player preferences services](player_preferences_services.md) (3 shared connections)
 
 ## Source Files
 
-- `server/game/chat_moderation.py`
+- `server/tests/unit/services/test_player_preferences_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 226 (100%)
-- INFERRED: 1 (0%)
+- EXTRACTED: 216 (90%)
+- INFERRED: 25 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

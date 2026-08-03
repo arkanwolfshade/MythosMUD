@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [main()](main%28%29.md) (1 shared connections)
-- [sqlint](sqlint.md) (1 shared connections)
+- [scripts run guard](scripts_run_guard.md) (1 shared connections)
+- [scripts worktree ops](scripts_worktree_ops.md) (1 shared connections)
 
 ## Source Files
 

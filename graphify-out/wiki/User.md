@@ -1,8 +1,8 @@
 # User
 
-> God node · 306 connections · `server/models/user.py`
+> God node · 315 connections · `server/models/user.py`
 
-**Community:** [Connection Manager](Connection_Manager.md)
+**Community:** [auth users rationale](auth_users_rationale.md)
 
 ## Connections by Relation
 
@@ -37,13 +37,13 @@
 - __init__.py `EXTRACTED`
 - players.py `EXTRACTED`
 - test_users.py `EXTRACTED`
+- endpoints.py `EXTRACTED`
 - test_admin_auth_service.py `EXTRACTED`
 - maps.py `EXTRACTED`
-- endpoints.py `EXTRACTED`
 - test_endpoints.py `EXTRACTED`
 - container_endpoints_basic.py `EXTRACTED`
-- character_creation.py `EXTRACTED`
 - users.py `EXTRACTED`
+- character_creation.py `EXTRACTED`
 - container_helpers.py `EXTRACTED`
 - test_container_helpers.py `EXTRACTED`
 - test_async_persistence_core.py `EXTRACTED`
@@ -56,7 +56,6 @@
 ### indirect_call
 - _admin_user() `INFERRED`
 - _check_username_exists() `INFERRED`
-- get_user_db() `INFERRED`
 - test_apply_exploration_filter_if_needed_calls_for_normal_user() `INFERRED`
 - test_apply_exploration_filter_if_needed_skips_for_superuser() `INFERRED`
 - generate_unique_bogus_email() `INFERRED`
@@ -74,7 +73,7 @@
 - mock_user() `INFERRED`
 
 ### inherits
-- [Base](Base.md) `EXTRACTED`
+- Base `EXTRACTED`
 - SQLAlchemyBaseUserTableUUID `EXTRACTED`
 
 ### method
@@ -87,8 +86,8 @@
 
 ### references
 - loot_all_items() `EXTRACTED`
-- handle_transfer_items_exceptions() `EXTRACTED`
 - validate_admin_permission() `EXTRACTED`
+- handle_transfer_items_exceptions() `EXTRACTED`
 - handle_open_container_exceptions() `EXTRACTED`
 - transfer_items() `EXTRACTED`
 - handle_loot_all_exceptions() `EXTRACTED`
@@ -109,9 +108,9 @@
 
 ### uses
 - [Player](Player.md) `INFERRED`
-- [Base](Base.md) `INFERRED`
+- Base `INFERRED`
 - Invite `INFERRED`
-- [PlayerChannelPreferences](PlayerChannelPreferences.md) `INFERRED`
+- PlayerChannelPreferences `INFERRED`
 - PlayerInventory `INFERRED`
 - TestTransferAllItemsFromContainer `INFERRED`
 - TestHelperFunctions `INFERRED`

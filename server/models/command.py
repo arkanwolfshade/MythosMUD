@@ -87,6 +87,7 @@ from .command_utility import (
     QuestsCommand,
     SkillsCommand,
     StatusCommand,
+    TalkCommand,
     TimeCommand,
     WhoamiCommand,
     WhoCommand,
@@ -144,6 +145,7 @@ __all__ = [
     "JournalCommand",
     "QuestsCommand",
     "QuestCommand",
+    "TalkCommand",
     "HelpCommand",
     # Inventory commands
     "InventoryCommand",
@@ -211,6 +213,7 @@ Command = (
     | JournalCommand
     | QuestsCommand
     | QuestCommand
+    | TalkCommand
     | InventoryCommand
     | PickupCommand
     | DropCommand

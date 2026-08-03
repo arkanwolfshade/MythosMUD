@@ -1,54 +1,58 @@
 # player presence tracker
 
-> 21 nodes
+> 86 nodes
 
 ## Key Concepts
 
+- **test_player_presence_tracker.py** (38 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **player_presence_tracker.py** (31 connections) — `server/realtime/player_presence_tracker.py`
 - **track_player_disconnected_impl()** (29 connections) — `server/realtime/player_presence_tracker.py`
+- **track_player_connected_impl()** (16 connections) — `server/realtime/player_presence_tracker.py`
+- **_build_player_info()** (10 connections) — `server/realtime/player_presence_tracker.py`
+- **broadcast_connection_message_impl()** (10 connections) — `server/realtime/player_presence_tracker.py`
+- **Any** (9 connections)
+- **_resolve_room_id()** (9 connections) — `server/realtime/player_presence_tracker.py`
 - **_should_skip_disconnect()** (9 connections) — `server/realtime/player_presence_tracker.py`
 - **_acquire_disconnect_lock()** (9 connections) — `server/realtime/player_presence_tracker.py`
+- **_get_instance_manager_from_manager()** (6 connections) — `server/realtime/player_presence_tracker.py`
+- **test_player_presence_tracker_grace_period.py** (6 connections) — `server/tests/unit/realtime/test_player_presence_tracker_grace_period.py`
+- **_resolve_room_id_for_tutorial_reconnect()** (5 connections) — `server/realtime/player_presence_tracker.py`
 - **UUID** (4 connections)
+- **test_broadcast_connection_message_impl_error()** (4 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **test_track_player_disconnected_impl_error()** (4 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
 - **test_track_player_disconnected_impl_finally_cleanup()** (4 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
-- **test_should_skip_disconnect_has_websocket()** (3 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
-- **test_should_skip_disconnect_no_connection_type()** (3 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
-- **test_acquire_disconnect_lock_success()** (3 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
-- **test_acquire_disconnect_lock_already_disconnecting()** (3 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
-- **test_track_player_disconnected_impl_skip_disconnect()** (3 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
-- **test_track_player_disconnected_impl_no_lock()** (3 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
-- **Check if player disconnection should be skipped.      Args:         player_id: T** (1 connections) — `server/realtime/player_presence_tracker.py`
-- **Acquire disconnect lock and mark player as disconnecting.      Args:         pla** (1 connections) — `server/realtime/player_presence_tracker.py`
-- **Track when a player disconnects.      For unintentional disconnects (connection** (1 connections) — `server/realtime/player_presence_tracker.py`
-- **Test _should_skip_disconnect() returns True when player has websocket.** (1 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
-- **Test _should_skip_disconnect() returns False when connection_type is None.** (1 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
-- **Test _acquire_disconnect_lock() acquires lock successfully.** (1 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
-- **Test _acquire_disconnect_lock() clears stuck player and succeeds.** (1 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
-- **Test track_player_disconnected_impl() skips when player has connections.** (1 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
-- **Test track_player_disconnected_impl() returns early if lock not acquired.** (1 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
-- **Test track_player_disconnected_impl() always removes from disconnecting_players** (1 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **test_build_player_info_new_connection()** (3 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **test_build_player_info_existing_connection()** (3 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **test_build_player_info_no_level()** (3 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **test_resolve_room_id_no_persistence()** (3 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **test_resolve_room_id_no_room_id()** (3 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **test_resolve_room_id_success()** (3 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **test_resolve_room_id_room_no_id()** (3 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **test_track_player_connected_impl_new_connection()** (3 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- *... and 61 more nodes in this community*
 
 ## Relationships
 
-- [get asyncpg server settings for](get_asyncpg_server_settings_for.md) (11 shared connections)
-- [player disconnect handlers](player_disconnect_handlers.md) (10 shared connections)
-- [Test get mortally wounded players()](Test_get_mortally_wounded_players%28%29.md) (4 shared connections)
-- [Any](Any.md) (3 shared connections)
-- [command admin](command_admin.md) (3 shared connections)
-- [real time](real_time.md) (2 shared connections)
-- [Player](Player.md) (2 shared connections)
-- [test_should_skip_disconnect_no_websocket](test_should_skip_disconnect_no_websocket.md) (1 shared connections)
-- [test_acquire_disconnect_lock_stuck_player](test_acquire_disconnect_lock_stuck_player.md) (1 shared connections)
-- [test_track_player_disconnected_impl_error](test_track_player_disconnected_impl_error.md) (1 shared connections)
-- [test_track_player_disconnected_impl_success](test_track_player_disconnected_impl_success.md) (1 shared connections)
+- [realtime player connection](realtime_player_connection.md) (9 shared connections)
+- [player disconnect handlers](player_disconnect_handlers.md) (9 shared connections)
+- [npc populate databases](npc_populate_databases.md) (8 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (7 shared connections)
+- [grace period disconnect](grace_period_disconnect.md) (6 shared connections)
+- [NATS Messaging](NATS_Messaging.md) (3 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [realtime game state](realtime_game_state.md) (1 shared connections)
+- [uuid npc combat](uuid_npc_combat.md) (1 shared connections)
 
 ## Source Files
 
 - `server/realtime/player_presence_tracker.py`
 - `server/tests/unit/realtime/test_player_presence_tracker.py`
+- `server/tests/unit/realtime/test_player_presence_tracker_grace_period.py`
 
 ## Audit Trail
 
-- EXTRACTED: 82 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 321 (98%)
+- INFERRED: 5 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

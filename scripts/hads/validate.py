@@ -22,14 +22,20 @@ from __future__ import annotations
 import re
 import sys
 from pathlib import Path
+from typing import TypedDict
 
 # -- Constants ------------------------------------------------------------------
 
 VALID_TAGS = {"[SPEC]", "[NOTE]", "[BUG]", "[?]"}
-BLOCK_TAG_PATTERN = re.compile(r"^\*\*(\[(?:SPEC|NOTE|BUG|\?)\])\*\*$")
-LOOSE_TAG_PATTERN = re.compile(r"\[(?:SPEC|NOTE|BUG|\?)\]")
-VERSION_PATTERN = re.compile(r"\*\*Version\s+\d+\.\d+\.\d+\*\*")
-MANIFEST_KEYWORDS = ["[SPEC]", "[BUG]", "reading instruction", "ai reading"]
+BLOCK_TAG_PATTERN: re.Pattern[str] = re.compile(r"^\*\*(\[(?:SPEC|NOTE|BUG|\?)\])\*\*$")
+LOOSE_TAG_PATTERN: re.Pattern[str] = re.compile(r"\[(?:SPEC|NOTE|BUG|\?)\]")
+VERSION_PATTERN: re.Pattern[str] = re.compile(r"\*\*Version\s+\d+\.\d+\.\d+\*\*")
+MANIFEST_KEYWORDS: list[str] = ["[SPEC]", "[BUG]", "reading instruction", "ai reading"]
+
+
+class BugBlock(TypedDict):
+    line: int
+    content: list[str]
 
 
 # -- Helpers --------------------------------------------------------------------
@@ -86,15 +92,15 @@ def find_first_content_section(lines: list[str]) -> int | None:
     return None
 
 
-def find_bug_blocks(lines: list[str]) -> list[dict]:
+def find_bug_blocks(lines: list[str]) -> list[BugBlock]:
     """Return list of BUG blocks with their content."""
-    bugs = []
+    bugs: list[BugBlock] = []
     i = 0
     while i < len(lines):
         line = lines[i].strip()
         m = BLOCK_TAG_PATTERN.match(line)
         if m and m.group(1) == "[BUG]":
-            block: dict = {"line": i + 1, "content": []}
+            block: BugBlock = {"line": i + 1, "content": []}
             j = i + 1
             while j < len(lines):
                 next_line = lines[j].strip()
@@ -111,7 +117,7 @@ def find_bug_blocks(lines: list[str]) -> list[dict]:
 
 def check_loose_tags(lines: list[str]) -> list[tuple[int, str]]:
     """Find tag-like patterns that are not properly formatted."""
-    issues = []
+    issues: list[tuple[int, str]] = []
     in_fence = False
     for i, line in enumerate(lines):
         stripped = line.strip()
@@ -123,7 +129,7 @@ def check_loose_tags(lines: list[str]) -> list[tuple[int, str]]:
         if BLOCK_TAG_PATTERN.match(stripped):
             continue
         stripped_check = stripped.lstrip("*").strip()
-        matches = LOOSE_TAG_PATTERN.findall(stripped_check)
+        matches: list[str] = LOOSE_TAG_PATTERN.findall(stripped_check)
         for match in matches:
             if "`" + match + "`" in line:
                 continue
@@ -135,10 +141,10 @@ def check_loose_tags(lines: list[str]) -> list[tuple[int, str]]:
     return issues
 
 
-def check_bug_content(bug: dict) -> list[str]:
+def check_bug_content(bug: BugBlock) -> list[str]:
     """Check that a [BUG] block contains required fields."""
     content = " ".join(bug["content"]).lower()
-    missing = []
+    missing: list[str] = []
     if "symptom" not in content and "symptom:" not in content:
         missing.append("symptom")
     if "fix" not in content:
@@ -149,12 +155,8 @@ def check_bug_content(bug: dict) -> list[str]:
 # -- Main validation ------------------------------------------------------------
 
 
-def validate(path: str, verbose: bool = False) -> int:  # noqa: C901  # vendored HADS validator; keep upstream shape
-    lines = load(path)
-    errors = []
-    warnings = []
-    passed = []
-
+def _check_required_structure(lines: list[str], errors: list[str], passed: list[str]) -> None:
+    """Validate H1, version, and AI manifest placement."""
     h1_line = find_h1(lines)
     if h1_line is None:
         errors.append("MISSING H1 title - document must begin with a '# Title' heading")
@@ -170,27 +172,34 @@ def validate(path: str, verbose: bool = False) -> int:  # noqa: C901  # vendored
     manifest_line = find_manifest(lines)
     if manifest_line is None:
         errors.append("MISSING AI manifest - add an 'AI READING INSTRUCTION' section before content")
-    else:
-        passed.append(f"AI manifest found (line {manifest_line + 1})")
-        content_line = find_first_content_section(lines)
-        if content_line is not None and manifest_line > content_line:
-            errors.append(
-                f"AI manifest (line {manifest_line + 1}) appears AFTER first content section "
-                f"(line {content_line + 1}) - manifest must come first"
-            )
+        return
+    passed.append(f"AI manifest found (line {manifest_line + 1})")
+    content_line = find_first_content_section(lines)
+    if content_line is not None and manifest_line > content_line:
+        errors.append(
+            f"AI manifest (line {manifest_line + 1}) appears AFTER first content section "
+            + f"(line {content_line + 1}) - manifest must come first"
+        )
 
-    bugs = find_bug_blocks(lines)
-    for bug in bugs:
+
+def _check_bugs(lines: list[str], errors: list[str], passed: list[str]) -> None:
+    """Validate [BUG] blocks have required fields."""
+    for bug in find_bug_blocks(lines):
         missing = check_bug_content(bug)
         if missing:
             errors.append(f"[BUG] block at line {bug['line']} is missing required field(s): " + ", ".join(missing))
         else:
             passed.append(f"[BUG] block at line {bug['line']} - OK")
 
-    loose = check_loose_tags(lines)
-    for line_num, msg in loose:
-        warnings.append(f"Line {line_num}: {msg}")
 
+def _print_validation_report(
+    path: str,
+    errors: list[str],
+    warnings: list[str],
+    passed: list[str],
+    verbose: bool,
+) -> None:
+    """Print HADS validation results to stdout."""
     print(f"\nHADS Validator - {path}")
     print("-" * 60)
 
@@ -209,12 +218,16 @@ def validate(path: str, verbose: bool = False) -> int:  # noqa: C901  # vendored
         for e in errors:
             print(f"  {e}")
         print(f"\nResult: INVALID ({len(errors)} error(s))\n")
-    else:
-        print("\nResult: VALID HADS document")
-        if warnings:
-            print(f"        {len(warnings)} warning(s) - review recommended")
-        print()
+        return
 
+    print("\nResult: VALID HADS document")
+    if warnings:
+        print(f"        {len(warnings)} warning(s) - review recommended")
+    print()
+
+
+def _exit_code_for_errors(errors: list[str]) -> int:
+    """Map first error message to HADS exit code."""
     if not errors:
         return 0
     first = errors[0]
@@ -225,6 +238,19 @@ def validate(path: str, verbose: bool = False) -> int:  # noqa: C901  # vendored
     if "[BUG]" in first:
         return 3
     return 1
+
+
+def validate(path: str, verbose: bool = False) -> int:
+    lines = load(path)
+    errors: list[str] = []
+    warnings: list[str] = []
+    passed: list[str] = []
+
+    _check_required_structure(lines, errors, passed)
+    _check_bugs(lines, errors, passed)
+    warnings.extend(f"Line {line_num}: {msg}" for line_num, msg in check_loose_tags(lines))
+    _print_validation_report(path, errors, warnings, passed, verbose)
+    return _exit_code_for_errors(errors)
 
 
 def parse_manifest(manifest_path: Path) -> list[Path]:

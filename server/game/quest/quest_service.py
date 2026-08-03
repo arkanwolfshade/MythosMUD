@@ -23,6 +23,7 @@ from server.game.quest.quest_chat_notify import (
     notify_quest_completed,
     notify_quest_progress,
     notify_quest_started,
+    should_notify_quest_progress,
 )
 from server.models.quest import QuestInstance
 from server.schemas.quest import QuestDefinitionSchema
@@ -286,10 +287,13 @@ class QuestService:
                 continue
             if _goal_activity_target(goal, goal_type) != activity_target:
                 continue
-            new_progress = self._progress_goal(dict(instance.progress), i, goal_type, goal.config or {})
+            old_progress = dict(instance.progress or {})
+            new_progress = self._progress_goal(old_progress, i, goal_type, goal.config or {})
             await self._instance_repo.update_state_and_progress(instance.id, progress=new_progress)
-            notify_quest_progress(player_id, definition.title)
-            if _goals_met(new_progress, definition) and definition.auto_complete:
+            will_complete = _goals_met(new_progress, definition) and definition.auto_complete
+            if should_notify_quest_progress(old_progress, new_progress, definition, will_complete=will_complete):
+                notify_quest_progress(player_id, definition.title)
+            if will_complete:
                 await self._complete_instance(player_id, instance, definition)
             return True
         return False
@@ -346,9 +350,10 @@ class QuestService:
         new_progress = _build_collect_n_progress(definition, stacks, old_progress)
         await self._instance_repo.update_state_and_progress(instance.id, progress=new_progress)
         instance.progress = new_progress
-        if new_progress != old_progress:
+        will_complete = _goals_met(new_progress, definition) and definition.auto_complete
+        if should_notify_quest_progress(old_progress, new_progress, definition, will_complete=will_complete):
             notify_quest_progress(player_id, definition.title)
-        if _goals_met(new_progress, definition) and definition.auto_complete:
+        if will_complete:
             await self._complete_instance(player_id, instance, definition)
 
     async def sync_collect_progress(self, player_id: uuid.UUID) -> None:

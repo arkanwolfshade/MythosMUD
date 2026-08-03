@@ -279,7 +279,7 @@ async def test_quest_ask_success(current_user, mock_request):
     with ExitStack() as stack:
         _enter_quest_command_patches(stack, mock_quest_service, mock_persistence, mock_container)
         stack.enter_context(
-            patch("server.commands.quest_commands._resolve_npc_in_player_room", return_value=(mock_npc, None))
+            patch("server.commands.quest_commands.resolve_npc_in_player_room", return_value=(mock_npc, None))
         )
         emit = stack.enter_context(patch("server.commands.quest_commands.emit_quest_npc_say"))
         result = await handle_quest_command(
@@ -313,7 +313,7 @@ async def test_quest_ask_npc_not_in_room(current_user, mock_request):
         _enter_quest_command_patches(stack, mock_quest_service, mock_persistence, mock_container)
         stack.enter_context(
             patch(
-                "server.commands.quest_commands._resolve_npc_in_player_room",
+                "server.commands.quest_commands.resolve_npc_in_player_room",
                 return_value=(None, "You do not see 'ghost' here."),
             )
         )
@@ -350,7 +350,7 @@ async def test_quest_turnin_success(current_user, mock_request):
     with ExitStack() as stack:
         _enter_quest_command_patches(stack, mock_quest_service, mock_persistence, mock_container)
         stack.enter_context(
-            patch("server.commands.quest_commands._resolve_npc_in_player_room", return_value=(mock_npc, None))
+            patch("server.commands.quest_commands.resolve_npc_in_player_room", return_value=(mock_npc, None))
         )
         emit = stack.enter_context(patch("server.commands.quest_commands.emit_quest_npc_say"))
         result = await handle_quest_command(
@@ -383,7 +383,7 @@ async def test_quest_turnin_npc_not_in_room(current_user, mock_request):
         _enter_quest_command_patches(stack, mock_quest_service, mock_persistence, mock_container)
         stack.enter_context(
             patch(
-                "server.commands.quest_commands._resolve_npc_in_player_room",
+                "server.commands.quest_commands.resolve_npc_in_player_room",
                 return_value=(None, "You do not see 'ghost' here."),
             )
         )

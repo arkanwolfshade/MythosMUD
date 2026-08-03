@@ -80,6 +80,7 @@ def _build_command_factory_part2(factory: CommandFactory) -> dict[str, object]:
         CommandType.JOURNAL.value: factory.create_journal_command,
         CommandType.QUESTS.value: factory.create_quests_command,
         CommandType.QUEST.value: factory.create_quest_command,
+        CommandType.TALK.value: factory.create_talk_command,
         CommandType.GROUND.value: factory.create_ground_command,
         CommandType.FOLLOW.value: factory.create_follow_command,
         CommandType.UNFOLLOW.value: factory.create_unfollow_command,
@@ -265,22 +266,7 @@ class CommandParser:
         raw_command: str | None = None,
         original_command: str | None = None,
     ) -> Command:
-        """
-        Create and validate command object based on command type.
-
-        Args:
-            command: Command name
-            args: Command arguments
-            raw_command: Normalized raw command string (for debug e.g. empty local)
-            original_command: Pre-normalized command string from client (for debug)
-
-        Returns:
-            Validated Command object
-
-        Raises:
-            ValueError: If command creation fails
-            ValidationError: If command validation fails
-        """
+        """Create and validate a Command; raise MythosValidationError on failure."""
         try:
             command = self._resolve_command_alias(command)
             create_method = self._command_factory.get(command)

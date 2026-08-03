@@ -1,7 +1,8 @@
 """Quest lifecycle and NPC quest-line chat helpers (issue #146 MVP).
 
 # group: quest chat notify helpers
-# ponytail: every-tick progress for debug; milestones in follow-up #583
+# Milestone progress (#583): notify on first progress change or newly met goal;
+# completing tick uses only notify_quest_completed (no duplicate progress line).
 """
 
 from __future__ import annotations
@@ -18,7 +19,7 @@ def notify_quest_started(player_id: uuid.UUID | str, title: str) -> None:
 
 
 def notify_quest_progress(player_id: uuid.UUID | str, title: str) -> None:
-    """Personal system chat on every progress tick (debug volume)."""
+    """Personal system chat for milestone progress (first tick or goal newly met)."""
     schedule_personal_system(player_id, f"Quest progress: {title}")
 
 
@@ -30,6 +31,61 @@ def notify_quest_completed(player_id: uuid.UUID | str, title: str) -> None:
 def notify_quest_abandoned(player_id: uuid.UUID | str, title: str) -> None:
     """Personal system chat when a quest is abandoned."""
     schedule_personal_system(player_id, f"Quest abandoned: {title}")
+
+
+def _as_int(value: object, default: int = 0) -> int:
+    """Coerce progress/config scalars to int; non-numeric becomes default."""
+    return int(value) if isinstance(value, int | float) else default
+
+
+def _goal_is_met(progress: dict[str, Any], goal_index: int, goal: Any) -> bool:
+    """Return True if one goal is satisfied given current progress."""
+    current_val = _as_int(progress.get(str(goal_index), 0))
+    goal_type = getattr(goal, "type", None) or (goal.get("type") if isinstance(goal, dict) else None)
+    raw_config = getattr(goal, "config", None) or (goal.get("config") if isinstance(goal, dict) else None)
+    config: dict[str, Any] = raw_config if isinstance(raw_config, dict) else {}
+    if goal_type == "complete_activity":
+        return current_val == 1
+    if goal_type in ("kill_n", "collect_n"):
+        return current_val >= _as_int(config.get("count", 1), 1)
+    return False
+
+
+def _progress_has_any_value(progress: dict[str, Any], goal_count: int) -> bool:
+    """True if any goal slot has a non-zero / non-empty progress value."""
+    for i in range(goal_count):
+        value = progress.get(str(i), 0)
+        if value:
+            return True
+    return False
+
+
+def should_notify_quest_progress(
+    old_progress: dict[str, Any],
+    new_progress: dict[str, Any],
+    definition: Any,
+    *,
+    will_complete: bool = False,
+) -> bool:
+    """
+    Return True when a progress personal-system line should be sent.
+
+    Notifies on first progress change on the instance, or when any goal newly
+    becomes met. Suppresses when progress is unchanged or the tick completes
+    the quest (caller should send notify_quest_completed only).
+    """
+    if will_complete:
+        return False
+    if old_progress == new_progress:
+        return False
+    goals = getattr(definition, "goals", None) or []
+    goal_count = len(goals)
+    if not _progress_has_any_value(old_progress, goal_count):
+        return True
+    for i, goal in enumerate(goals):
+        if not _goal_is_met(old_progress, i, goal) and _goal_is_met(new_progress, i, goal):
+            return True
+    return False
 
 
 def emit_quest_npc_say(

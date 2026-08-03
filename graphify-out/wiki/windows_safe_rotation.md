@@ -33,9 +33,9 @@
 
 ## Relationships
 
-- [logging handlers](logging_handlers.md) (4 shared connections)
-- [. init ()](_init_%28%29.md) (4 shared connections)
-- [get current tick()](get_current_tick%28%29.md) (1 shared connections)
+- [logging handlers structured](logging_handlers_structured.md) (4 shared connections)
+- [logging setup structured](logging_setup_structured.md) (4 shared connections)
+- [NATS Messaging](NATS_Messaging.md) (1 shared connections)
 
 ## Source Files
 

@@ -21,6 +21,8 @@ server data (events, command responses, room/game state). See AGENTS.md "Server 
 - [ ] **Persistence:** Schema changes, migrations, repositories if needed. PostgreSQL only; see
       [mythosmud-database-placement](.cursor/skills/mythosmud-database-placement). Location: `db/`, `server/`
 - [ ] **Client:** UI, hooks, API calls, types. Location: `client/`. Client state must reflect server authority.
+- [ ] **In-game help:** Player-facing commands get `help <command>` in `server/help/help_content.py`
+- [ ] **Authoring docs:** Content tools get a runbook under `docs/runbooks/` (or subsystem doc)
 - [ ] **Terminology:** Use "coordinator" or "controller," not "master"; use "agent," not "slave"
 
 ## Stack Summary

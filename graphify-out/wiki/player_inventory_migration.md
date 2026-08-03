@@ -16,7 +16,7 @@
 
 ## Relationships
 
-- [world](world.md) (2 shared connections)
+- [NATS Messaging](NATS_Messaging.md) (2 shared connections)
 
 ## Source Files
 

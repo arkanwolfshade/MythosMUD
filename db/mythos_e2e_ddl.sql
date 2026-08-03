@@ -171,6 +171,9 @@ ALTER TABLE IF EXISTS ONLY mythos_e2e.room_links DROP CONSTRAINT IF EXISTS room_
 ALTER TABLE IF EXISTS ONLY mythos_e2e.quest_offers DROP CONSTRAINT IF EXISTS quest_offers_pkey;
 ALTER TABLE IF EXISTS ONLY mythos_e2e.quest_instances DROP CONSTRAINT IF EXISTS quest_instances_player_id_quest_id_key;
 ALTER TABLE IF EXISTS ONLY mythos_e2e.quest_instances DROP CONSTRAINT IF EXISTS quest_instances_pkey;
+ALTER TABLE IF EXISTS ONLY mythos_e2e.dialogue_definitions DROP CONSTRAINT IF EXISTS dialogue_definitions_npc_definition_id_fkey;
+ALTER TABLE IF EXISTS ONLY mythos_e2e.dialogue_definitions DROP CONSTRAINT IF EXISTS dialogue_definitions_npc_definition_id_key;
+ALTER TABLE IF EXISTS ONLY mythos_e2e.dialogue_definitions DROP CONSTRAINT IF EXISTS dialogue_definitions_pkey;
 ALTER TABLE IF EXISTS ONLY mythos_e2e.quest_definitions DROP CONSTRAINT IF EXISTS quest_definitions_pkey;
 ALTER TABLE IF EXISTS ONLY mythos_e2e.professions DROP CONSTRAINT IF EXISTS professions_pkey;
 ALTER TABLE IF EXISTS ONLY mythos_e2e.professions DROP CONSTRAINT IF EXISTS professions_name_key;
@@ -229,6 +232,7 @@ DROP TABLE IF EXISTS mythos_e2e.rooms;
 DROP TABLE IF EXISTS mythos_e2e.room_links;
 DROP TABLE IF EXISTS mythos_e2e.quest_offers;
 DROP TABLE IF EXISTS mythos_e2e.quest_instances;
+DROP TABLE IF EXISTS mythos_e2e.dialogue_definitions;
 DROP TABLE IF EXISTS mythos_e2e.quest_definitions;
 DROP TABLE IF EXISTS mythos_e2e.professions;
 DROP TABLE IF EXISTS mythos_e2e.players;
@@ -1264,6 +1268,26 @@ COMMENT ON TABLE mythos_e2e.quest_definitions IS 'Quest templates; definition JS
 
 
 --
+-- Name: dialogue_definitions; Type: TABLE; Schema: mythos_e2e; Owner: -
+--
+
+CREATE TABLE mythos_e2e.dialogue_definitions (
+    id text NOT NULL,
+    definition jsonb NOT NULL,
+    npc_definition_id bigint,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL
+);
+
+
+--
+-- Name: TABLE dialogue_definitions; Type: COMMENT; Schema: mythos_e2e; Owner: -
+--
+
+COMMENT ON TABLE mythos_e2e.dialogue_definitions IS 'NPC dialogue trees; definition JSONB holds start node id and nodes map (text + options).';
+
+
+--
 -- Name: quest_instances; Type: TABLE; Schema: mythos_e2e; Owner: -
 --
 
@@ -1957,6 +1981,22 @@ ALTER TABLE ONLY mythos_e2e.professions
 
 ALTER TABLE ONLY mythos_e2e.quest_definitions
     ADD CONSTRAINT quest_definitions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: dialogue_definitions dialogue_definitions_pkey; Type: CONSTRAINT; Schema: mythos_e2e; Owner: -
+--
+
+ALTER TABLE ONLY mythos_e2e.dialogue_definitions
+    ADD CONSTRAINT dialogue_definitions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: dialogue_definitions dialogue_definitions_npc_definition_id_key; Type: CONSTRAINT; Schema: mythos_e2e; Owner: -
+--
+
+ALTER TABLE ONLY mythos_e2e.dialogue_definitions
+    ADD CONSTRAINT dialogue_definitions_npc_definition_id_key UNIQUE (npc_definition_id);
 
 
 --
@@ -2938,6 +2978,14 @@ ALTER TABLE ONLY mythos_e2e.quest_instances
 
 ALTER TABLE ONLY mythos_e2e.quest_offers
     ADD CONSTRAINT quest_offers_quest_id_fkey FOREIGN KEY (quest_id) REFERENCES mythos_e2e.quest_definitions(id) ON DELETE CASCADE;
+
+
+--
+-- Name: dialogue_definitions dialogue_definitions_npc_definition_id_fkey; Type: FK CONSTRAINT; Schema: mythos_e2e; Owner: -
+--
+
+ALTER TABLE ONLY mythos_e2e.dialogue_definitions
+    ADD CONSTRAINT dialogue_definitions_npc_definition_id_fkey FOREIGN KEY (npc_definition_id) REFERENCES mythos_e2e.npc_definitions(id) ON DELETE SET NULL;
 
 
 --

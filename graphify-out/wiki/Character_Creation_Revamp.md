@@ -1,4 +1,4 @@
-# Character Creation Revamp
+# character creation revamp
 
 > 3 nodes
 

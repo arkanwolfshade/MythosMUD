@@ -65,6 +65,11 @@ export const MainMenuModal: React.FC<MainMenuModalProps> = ({
     onClose();
   };
 
+  const handleDialogueEditorClick = () => {
+    window.open('/admin/content/dialogue', '_blank');
+    onClose();
+  };
+
   // Handle ESC key to close modal
   useEffect(() => {
     if (!isOpen) return;
@@ -160,6 +165,15 @@ export const MainMenuModal: React.FC<MainMenuModalProps> = ({
             type="button"
           >
             Skills (New Tab)
+          </button>
+
+          <button
+            onClick={handleDialogueEditorClick}
+            className="w-full px-4 py-3 bg-mythos-terminal-primary text-white rounded hover:bg-mythos-terminal-primary/80 transition-colors text-left font-medium"
+            style={{ pointerEvents: 'auto' }}
+            type="button"
+          >
+            Content Tools — Dialogue (New Tab)
           </button>
 
           {/* Settings Button (Placeholder - Inactive) */}
