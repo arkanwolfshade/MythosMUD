@@ -31,11 +31,28 @@ TRANSIENT_ERRORS = (
 # Message substrings that indicate transient psycopg2 errors
 PSYCOPG2_TRANSIENT_INDICATORS = ("connection", "timeout", "network", "temporary", "retry")
 
+# Wrappers (e.g. DatabaseError) bury the asyncpg type; match message text instead.
+WRAPPED_TRANSIENT_INDICATORS = (
+    "connectiondoesnotexisterror",
+    "connection was closed",
+    "poolacquiretimeouterror",
+    "postgresconnectionerror",
+    "server closed the connection unexpectedly",
+    "connection reset",
+)
+
 
 def _is_asyncpg_transient(error_type: str, error_module: str) -> bool:
     """Return True if error is an asyncpg transient error."""
-    return "asyncpg" in error_module and (
-        "PoolAcquireTimeoutError" in error_type or "PostgresConnectionError" in error_type
+    if "asyncpg" not in error_module:
+        return False
+    return any(
+        name in error_type
+        for name in (
+            "PoolAcquireTimeoutError",
+            "PostgresConnectionError",
+            "ConnectionDoesNotExistError",
+        )
     )
 
 
@@ -49,6 +66,22 @@ def _is_psycopg2_transient(error: Exception, error_type: str, error_module: str)
     return any(ind in error_msg for ind in PSYCOPG2_TRANSIENT_INDICATORS)
 
 
+def _is_wrapped_transient_message(error: Exception) -> bool:
+    """True when a domain wrapper (DatabaseError) embeds a transient DB failure in its message."""
+    msg = str(error).lower()
+    return any(ind in msg for ind in WRAPPED_TRANSIENT_INDICATORS)
+
+
+def _iter_exception_chain(error: BaseException) -> list[BaseException]:
+    """Walk __cause__/__context__ without looping."""
+    chain: list[BaseException] = []
+    current: BaseException | None = error
+    while current is not None and current not in chain:
+        chain.append(current)
+        current = current.__cause__ or current.__context__
+    return chain
+
+
 def is_transient_error(error: Exception) -> bool:
     """
     Check if an error is a transient database error that should be retried.
@@ -59,15 +92,18 @@ def is_transient_error(error: Exception) -> bool:
     Returns:
         bool: True if the error is transient and should be retried
     """
-    error_type = type(error).__name__
-    error_module = type(error).__module__
+    for exc in _iter_exception_chain(error):
+        error_type = type(exc).__name__
+        error_module = type(exc).__module__
 
-    if error_type in TRANSIENT_ERRORS:
-        return True
-    if _is_asyncpg_transient(error_type, error_module):
-        return True
-    if _is_psycopg2_transient(error, error_type, error_module):
-        return True
+        if error_type in TRANSIENT_ERRORS:
+            return True
+        if _is_asyncpg_transient(error_type, error_module):
+            return True
+        if isinstance(exc, Exception) and _is_psycopg2_transient(exc, error_type, error_module):
+            return True
+        if isinstance(exc, Exception) and _is_wrapped_transient_message(exc):
+            return True
     return False
 
 
