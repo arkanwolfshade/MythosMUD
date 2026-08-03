@@ -58,7 +58,7 @@ def test_decode_and_normalize_delegates() -> None:
         assert c._decode_json_column('{"ok":true}', dict) == {"ok": True}
         dec.assert_called_once()
     with patch("server.container.main.normalize_path_from_url_or_path", return_value=Path("x")) as norm:
-        assert c._normalize_path_from_url_or_path("/tmp", Path(".")) == Path("x")
+        assert c._normalize_path_from_url_or_path("/data/path", Path(".")) == Path("x")
         norm.assert_called_once()
 
 
