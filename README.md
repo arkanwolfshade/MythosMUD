@@ -207,16 +207,17 @@ security, and performance categories
 ## 7. Getting Started
 
 **[NOTE]**
-See [DEVELOPMENT.md](docs/DEVELOPMENT.md) for full setup instructions.
+See [DEVELOPMENT.md](docs/DEVELOPMENT.md) or [CONTRIBUTING.md](CONTRIBUTING.md) for full setup.
 
 ### Quickstart
 
 1. **Prerequisites:**
    - Python 3.12+ (managed via pyenv-win recommended)
    - Node.js 22+ and npm (NVM for Windows recommended)
-   - PostgreSQL 15+ (for database - required for tests and development)
+   - PostgreSQL 15+ (required for development and tests)
    - [uv](https://github.com/astral-sh/uv) for Python dependency management
    - Git
+   - NATS Server binary (set `NATS_SERVER_PATH` in `.env.local`)
 
 2. **Clone the repository with submodules:**
 
@@ -235,11 +236,17 @@ See [DEVELOPMENT.md](docs/DEVELOPMENT.md) for full setup instructions.
    git submodule update --init --recursive
    ```
 
-3. **Set up test environment:**
+3. **Create environment files:**
 
    ```powershell
-   # Create test environment files (required before running tests)
+   # Local development (required before start_local / start_server)
 
+   Copy-Item env.local.example .env.local
+   # Edit .env.local: DATABASE_URL, NATS_SERVER_PATH, secrets
+
+   # Test env files
+
+   Copy-Item env.unit_test.example .env.unit_test
    .\scripts\setup_test_environment.ps1
    ```
 
@@ -256,42 +263,42 @@ See [DEVELOPMENT.md](docs/DEVELOPMENT.md) for full setup instructions.
 
    cd ../client
    npm install
+   cd ..
    ```
 
-5. **Start the development environment:**
+5. **Bootstrap the local database:**
 
    ```powershell
-   # Windows PowerShell - Start both server and client
+   # Create mythos_dev + apply DDL (reads DATABASE_URL from .env.local)
 
+   .\scripts\setup_postgresql_test_db.ps1 -EnvFile .env.local
+
+   # Apply stored procedures to mythos_dev
+
+   make apply-procedures
+   ```
+
+   See `db/mythos_dev_ddl.sql` and [POSTGRESQL_CONTRIBUTOR_GUIDE.md](docs/POSTGRESQL_CONTRIBUTOR_GUIDE.md).
+
+6. **Start the development environment:**
+
+   ```powershell
+   .\scripts\stop_server.ps1
    .\scripts\start_local.ps1
    ```
 
-   Or start components separately:
+   Or start components separately: `.\scripts\start_server.ps1` /
+   `.\scripts\start_client.ps1`.
 
-   ```powershell
-   # Start server only
-
-   .\scripts\start_server.ps1
-
-   # Start client only (in another terminal)
-
-   .\scripts\start_client.ps1
-   ```
-
-6. **Visit:**
+7. **Visit:**
    - Frontend: <http://localhost:5173>
    - Backend API: <http://localhost:54768>
    - API Documentation: <http://localhost:54768/docs>
 
-7. **Test the setup:**
+8. **Test the setup:**
 
    ```sh
-   # Run tests
-
    make test
-
-   # Run linting
-
    make lint
    ```
 
@@ -431,14 +438,15 @@ The `scripts/` directory contains PowerShell and Python utility scripts for mana
 
 **Make Commands:**
 
-- `make test` - Run default test suite from project root (~5-7 min)
-- `make test-comprehensive` - Run comprehensive test suite via act (mirrors CI, ~30 min)
-- `make test-client` - Run client unit tests only (Vitest)
-- `make test-client-e2e` - Run automated E2E tests (Playwright)
-- `make lint` - Run linting for both server and client
-- `make format` - Format code for both server and client
+- `make test` - Default suite from project root (client + server)
+- `make test-coverage` - Coverage reports
+- `make test-ci` - CI-style suite (legacy alias: `make test-comprehensive`)
+- `make test-client` - Client unit tests (Vitest)
+- `make test-client-e2e` - Playwright E2E (alias: `make test-e2e`)
+- `make test-playwright` - Client E2E + server integration helpers
+- `make lint` / `make format` - Lint and format
 
-For multiplayer E2E scenarios, see [e2e-tests/MULTIPLAYER_TEST_RULES.md](e2e-tests/MULTIPLAYER_TEST_RULES.md)
+For Playwright E2E layout, see `client/tests/e2e/`.
 
 See [scripts/README.md](scripts/README.md) for detailed documentation.
 

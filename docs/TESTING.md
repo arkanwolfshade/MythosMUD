@@ -1,6 +1,6 @@
 # Testing Guide for MythosMUD
 
-**Version 1.0.0** · MythosMUD · 2026-07-30
+**Version 1.1.0** · MythosMUD · 2026-08-03
 
 ---
 
@@ -19,21 +19,25 @@ Read `[NOTE]` only if additional context is needed.
 ### Running Tests
 
 ```powershell
-# Daily development - fast unit tests (~5-7 min)
+# Daily development - client + server (excludes integration)
 
 make test
-
-# Full suite - all tests including slow ones (~30 min)
-
-make test-comprehensive
 
 # Coverage report
 
 make test-coverage
 
-# Slow tests only (performance, integration)
+# CI-style suite (coverage thresholds; Docker locally)
 
-make test-slow
+make test-ci
+
+# Playwright client E2E
+
+make test-client-e2e
+
+# Playwright + server integration (needs care with data)
+
+make test-playwright
 ```
 
 ### Fresh Session Testing (For bcrypt-dependent modules)
@@ -70,17 +74,17 @@ These modules require fresh sessions after other tests have run:
 
 ### Makefile Targets
 
-The Makefile already uses `pytest-xdist` (`-n auto`) for parallelization:
+**`make test`**: Client unit + server (excludes `integration` marker)
 
-**`make test`**: Daily development suite (excludes slow/e2e, parallel)
+**`make test-coverage`**: Client and server coverage reports
 
-**`make test-comprehensive`**: Full suite via Docker (fresh environment)
+**`make test-ci`**: CI-style suite with coverage thresholds (`scripts/run_test_ci.py`)
 
-**`make test-coverage`**: Generate coverage reports
+**`make test-client-e2e`**: Playwright E2E (`make test-e2e` is an alias)
 
-**`make test-slow`**: Slow tests only
+**`make test-playwright`**: Client E2E + server integration helpers
 
-**`make test-e2e`**: End-to-end tests
+**`make test-comprehensive`**: Legacy alias for `make test-ci`
 
 ### Running Individual Test Files
 
@@ -176,10 +180,10 @@ uv run pytest server/tests/unit/api/test_metrics.py -v
 uv run pytest server/tests/unit/api/ server/tests/unit/commands/test_utility_commands.py -v
 ```
 
-### Option 3: Use Docker (Most Isolated)
+### Option 3: Use CI-style suite (Most Isolated)
 
 ```powershell
-make test-comprehensive  # Runs in fresh Docker container
+make test-ci  # Docker locally when not already in CI
 ```
 
 ### Option 4: Pytest-xdist with Forked Mode (Linux/Mac only)
@@ -195,7 +199,7 @@ pytest -n auto --forked
 Test bcrypt-dependent modules in fresh sessions
 
 - Run infrastructure/utility tests before API/auth tests
-- Use `make test-comprehensive` for final validation (Docker isolation)
+- Use `make test-ci` for final validation (Docker isolation when local)
 
 ## 3. Test Organization
 
@@ -234,13 +238,13 @@ server/tests/
 
 ### Issue: Slow test runs
 
-**Solution**: Use `make test` (excludes slow tests) instead of `make test-comprehensive`
+**Solution**: Use `make test` for the daily suite; use `make test-ci` for fuller CI validation
 
 ## 5. Markers and isolation (greenfield)
 
 **[SPEC]**
 
-- Preferred entrypoints: `make test`, `make test-comprehensive` (repo root only)
+- Preferred entrypoints: `make test`, `make test-ci`, `make test-coverage` (repo root only)
 - Markers: `unit`, `integration`, `e2e`, `slow`, `serial`, `xdist_group(name=...)`
 - Never start the MythosMUD server inside tests
 - Tests that mutate process-global env must use `@pytest.mark.serial` and
@@ -256,6 +260,7 @@ Merged from archived root greenfield notes (`docs/archive/TESTING_GREENFIELD.md`
 
 **[SPEC]**
 
-| Version | Date | Change |
-| --- | --- | --- |
-| 1.0.0 | 2026-07-30 | Initial HADS structural conversion; merge greenfield markers |
+| Version | Date       | Change                                                       |
+| ------- | ---------- | ------------------------------------------------------------ |
+| 1.1.0   | 2026-08-03 | Align Makefile targets with real `test-ci` / E2E names       |
+| 1.0.0   | 2026-07-30 | Initial HADS structural conversion; merge greenfield markers |

@@ -146,9 +146,9 @@ Before you begin your research, ensure you have the proper tools:
 
 **Visual Studio Code** or **Cursor IDE** with Python and TypeScript extensions
 
-**PostgreSQL** (for production testing, optional for development)
+**PostgreSQL 15+** (required for local development and tests)
 
-**Docker** (for containerized testing, optional)
+**Docker** (optional; used by `make test-ci` locally to mirror CI)
 
 ### Development Environment Setup
 
@@ -197,12 +197,20 @@ Before you begin your research, ensure you have the proper tools:
 
    **CRITICAL**: Edit `.env.local` and `.env.unit_test` to set your local configuration. Never commit these files!
 
-5. **Set up test environment:**
+5. **Set up test environment and apply procedures:**
 
    ```powershell
    # Required before first test run
 
    make setup-test-env
+
+   # Create mythos_dev + apply DDL (from .env.local DATABASE_URL)
+
+   .\scripts\setup_postgresql_test_db.ps1 -EnvFile .env.local
+
+   # Apply procedures to mythos_dev
+
+   make apply-procedures
    ```
 
 6. **Verify setup:**
@@ -214,6 +222,7 @@ Before you begin your research, ensure you have the proper tools:
 
    # Start the development server
 
+   .\scripts\stop_server.ps1
    .\scripts\start_local.ps1
    ```
 
@@ -234,7 +243,7 @@ Before making changes, familiarize yourself with the project structure:
 **`/docs`** - Comprehensive documentation
 
 - **`/scripts`** - Utility scripts for development
-- **`/e2e-tests`** - End-to-end testing framework
+- **`/client/tests/e2e`** - Playwright end-to-end specs
 - **`/schemas`** - JSON schemas for validation
 
 Key documentation to review:
@@ -360,25 +369,23 @@ One feature or fix per pull request
 **CRITICAL**: All changes must be tested before submission.
 
 ```powershell
-# Run all tests
+# Run all tests (client unit + server; excludes integration marker)
 
 make test
 
 # Run specific test categories
 
-make test        # Server tests only
+make test-server        # Server tests only
 make test-client        # Client unit tests
-make test-client-runtime # Client E2E tests
+make test-client-e2e    # Client E2E tests (Playwright)
 
 # Run with coverage
 
-cd server
-uv run pytest --cov=. --cov-report=html
+make test-coverage
 
 # Run linting
 
 make lint
-
 ```
 
 **Test Requirements**:
@@ -461,7 +468,7 @@ uv run ruff check . --fix
 
 cd client
 npm run format
-npm run lint:fix
+npm run lint
 ```
 
 ### Submitting a Pull Request
@@ -968,13 +975,13 @@ TOTAL                                    1234     89    93%
 **NEVER** use `python -m pytest` directly
 
 ```powershell
-# Run all tests
+# Run all tests (client unit + server)
 
 make test
 
 # Run server tests only
 
-make test
+make test-server
 
 # Run client unit tests (Vitest)
 
@@ -982,10 +989,11 @@ make test-client
 
 # Run client E2E tests (Playwright)
 
-make test-client-runtime
+make test-client-e2e
 
 # Run tests with coverage
 
+make test-coverage
 make test-server-coverage
 
 # Check coverage thresholds (after running tests)

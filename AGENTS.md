@@ -192,7 +192,9 @@ other location
 
 **CRITICAL: NEVER use `python -m pytest` directly**
 
-**CRITICAL: ONLY use `make test` and `make test-comprehensive` from project root**
+**CRITICAL: ONLY use Makefile test targets from project root** (e.g. `make test`,
+`make test-ci`, `make test-coverage`). Do not invent targets that are not in the
+Makefile.
 
 - This prevents path resolution issues and ensures log files are created in correct locations
 - Use pytest with verbose output and short tracebacks
@@ -216,9 +218,11 @@ Maintain 70% minimum overall test coverage for all new code
 
 ### Two-tier testing strategy
 
-**Fast Suite** (`make test`): ~5-7 minutes - Unit + critical integration tests
+**Fast Suite** (`make test`): Client unit + server (excludes `integration` marker)
 
-**Comprehensive Suite** (`make test-comprehensive`): ~30 minutes - ALL tests including slow
+**CI Suite** (`make test-ci`): Coverage thresholds; Docker locally when not in CI.
+Alias: `make test-comprehensive` -> `test-ci`. E2E: `make test-client-e2e` (alias
+`make test-e2e`). Integration with Playwright: `make test-playwright`.
 
 ---
 

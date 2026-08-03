@@ -376,8 +376,8 @@ try {
         Write-Host "  - .env.unit_test (for unit tests)" -ForegroundColor Gray
         Write-Host "  - .env.e2e_test (for E2E tests)" -ForegroundColor Gray
         Write-Host ""
-        Write-Host "Copy the appropriate .env.*.example file to create your environment file:" -ForegroundColor Cyan
-        Write-Host "  cp .env.local.example .env.local" -ForegroundColor Gray
+        Write-Host "Copy the appropriate env.*.example file to create your environment file:" -ForegroundColor Cyan
+        Write-Host "  Copy-Item env.local.example .env.local" -ForegroundColor Gray
         exit 1
     }
 

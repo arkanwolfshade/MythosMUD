@@ -1,6 +1,6 @@
 # =��� MythosMUD G�� AI Agent Development Guide
 
-**Version 1.0.0** · MythosMUD · 2026-07-30
+**Version 1.1.0** · MythosMUD · 2026-07-30
 
 ---
 
@@ -334,7 +334,7 @@ G��   G��G��G�� player.py              # Player schemas
 G��   G��G��G�� invite.py              # Invite schemas
 G��
 G��G��G�� sql/                       # Database schema
-G��   G��G��G�� schema.sql             # SQLite schema definition
+G��   G��G��G�� schema.sql             # Obsolete leftover; live DDL is db/mythos_*_ddl.sql
 G��
 G��G��G�� help/                      # Help system
 G��   G��G��G�� __init__.py
@@ -474,7 +474,7 @@ G��G��G�� tsconfig.tsbuildinfo       # TypeScript build info
 ```
 data/
 G��G��G�� players/                   # Player database and data
-G��   G��G��G�� local_players.db            # SQLite player database
+G��   G��G��G�� # (no local_players.db)      # Player DB is PostgreSQL, not SQLite files
 G��   G��G��G�� aliases/              # Player alias files
 G��   G��   G��G��G�� [player]_aliases.json # Individual player aliases
 G��   G��G��G�� [backup files]        # Database backups with timestamps
@@ -971,7 +971,7 @@ logger.info("Player lucidity reduced", extra={
 ```python
 # Use environment variables for configuration
 
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///data/players/local_players.db")
+DATABASE_URL = os.getenv("DATABASE_URL")  # PostgreSQL URL from .env.local; required
 LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
 COPPA_ENFORCED = os.getenv("COPPA_ENFORCED", "true").lower() == "true"
 ```
@@ -1046,7 +1046,7 @@ G�� Features work as specified in PLANNING.md
 
 ### **Scalability**
 
-Current SQLite database can be upgraded to PostgreSQL
+PostgreSQL is the required database (mythos_dev / mythos_unit / mythos_e2e)
 
 - JSON room files can be migrated to database
 - WebSocket support planned for real-time communication
@@ -1190,4 +1190,5 @@ knowledge we seek to implement must be both powerful and safe for all users.
 
 | Version | Date | Change |
 | --- | --- | --- |
+| 1.1.0 | 2026-08-03 | Scrub SQLite leftovers to PostgreSQL truth |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

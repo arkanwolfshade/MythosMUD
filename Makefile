@@ -46,7 +46,7 @@ PYTEST_COV_OPTS := --cov=server --cov-report=html --cov-report=term-missing --co
 .PHONY: setup-test-env setup-test-env-force check-postgresql setup-postgresql-test-db bootstrap-e2e-database ensure-e2e-database verify-schema
 .PHONY: openapi-spec sync-obsidian-graphify
 .PHONY: test test-coverage test-client test-client-e2e test-playwright test-client-coverage test-server test-server-coverage test-ci
-.PHONY: coverage all
+.PHONY: test-comprehensive test-e2e coverage all
 
 # ============================================================================
 # HELP
@@ -103,6 +103,8 @@ help:
 	@echo "  test-server           - Run server tests only (no coverage)"
 	@echo "  test-server-coverage  - Run server tests with coverage"
 	@echo "  test-ci               - CI/CD test suite (enforces coverage thresholds)"
+	@echo "  test-comprehensive    - Alias for test-ci"
+	@echo "  test-e2e              - Alias for test-client-e2e"
 	@echo ""
 	@echo "Build & Deploy:"
 	@echo "  clean             - Remove build, dist, and cache files"
@@ -310,7 +312,9 @@ test-coverage: test-client-coverage test-server-coverage
 test-ci:
 	$(PYTHON) scripts/run_test_ci.py
 
-# Legacy alias for backward compatibility
+# Legacy aliases for docs / agent muscle memory
+test-comprehensive: test-ci
+test-e2e: test-client-e2e
 coverage: test-coverage
 
 # ============================================================================
