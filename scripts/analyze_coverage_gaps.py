@@ -8,6 +8,7 @@ from typing import Any
 from defusedxml.ElementTree import parse as parse_xml
 
 # Critical files requiring 90% coverage (or custom threshold as specified)
+# Keep in sync with scripts/check_coverage_thresholds.py CRITICAL_FILES.
 CRITICAL_FILES = {
     "server/auth/argon2_utils.py": 85,  # Lowered due to PasswordHasher read-only methods being untestable
     "server/auth_utils.py": 90,
