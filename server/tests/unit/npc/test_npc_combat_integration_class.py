@@ -363,7 +363,9 @@ def test_normalize_npc_stats_from_dp(integration: NPCCombatIntegration) -> None:
 
 
 @pytest.mark.asyncio
-async def test_get_combat_stats_entity_not_found(integration: NPCCombatIntegration, mock_persistence: MagicMock) -> None:
+async def test_get_combat_stats_entity_not_found(
+    integration: NPCCombatIntegration, mock_persistence: MagicMock
+) -> None:
     pid = uuid.uuid4()
     mock_persistence.get_player_by_id = AsyncMock(return_value=None)
     assert await integration.get_combat_stats(str(pid)) == {}

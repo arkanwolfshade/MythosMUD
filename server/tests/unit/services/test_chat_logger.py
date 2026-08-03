@@ -268,9 +268,7 @@ def test_log_local_global_system_channel_messages(chat_logger, temp_log_dir):  #
         }
     )
     chat_logger.wait_for_queue_processing(_timeout=1.0)
-    assert list(Path(temp_log_dir).glob("**/chat_local_*.log")) or list(
-        Path(temp_log_dir).rglob("chat_local_*.log")
-    )
+    assert list(Path(temp_log_dir).glob("**/chat_local_*.log")) or list(Path(temp_log_dir).rglob("chat_local_*.log"))
     assert list(Path(temp_log_dir).glob("chat_global_*.log"))
     assert list(Path(temp_log_dir).glob("chat_system_*.log"))
 

@@ -453,9 +453,7 @@ async def test_queue_combat_action_success_and_failures() -> None:
     assert await combat_service_attack.queue_combat_action(service, combat.combat_id, pid, "attack") is False
 
     service.get_combat = MagicMock(return_value=combat)
-    assert (
-        await combat_service_attack.queue_combat_action(service, combat.combat_id, uuid.uuid4(), "attack") is False
-    )
+    assert await combat_service_attack.queue_combat_action(service, combat.combat_id, uuid.uuid4(), "attack") is False
 
 
 def test_effective_room_for_melee_helpers() -> None:
@@ -566,6 +564,5 @@ async def test_finalize_attack_result_and_process_attack() -> None:
     early = MagicMock()
     service.validate_melee_or_end_combat = AsyncMock(return_value=early)
     assert (
-        await combat_service_attack.process_attack(service, attacker.participant_id, target.participant_id, 4)
-        is early
+        await combat_service_attack.process_attack(service, attacker.participant_id, target.participant_id, 4) is early
     )
