@@ -173,3 +173,206 @@ def test_publish_attack_event_emits_npc_attacked(integration: NPCCombatIntegrati
     assert evt.target_id == "player_b"
     assert evt.room_id == "room_z"
     assert evt.damage == 5
+
+
+def test_get_npc_display_name_prefers_lifecycle(integration: NPCCombatIntegration) -> None:
+    with patch.object(integration, "_get_npc_name_from_lifecycle", return_value="Byakhee"):
+        assert integration._get_npc_display_name("byakhee_1") == "Byakhee"
+
+
+def test_get_npc_display_name_falls_back_to_id(integration: NPCCombatIntegration) -> None:
+    with patch.object(integration, "_get_npc_name_from_lifecycle", return_value=None):
+        assert integration._get_npc_display_name("ghoul_arkham_1") == "Ghoul"
+
+
+def test_get_npc_lifecycle_manager_from_config(integration: NPCCombatIntegration) -> None:
+    manager = MagicMock()
+    state = MagicMock()
+    state.npc_lifecycle_manager = manager
+    app = MagicMock()
+    app.state = state
+    config = MagicMock()
+    config._app_instance = app
+    with patch("server.npc.combat_integration.get_config", return_value=config):
+        assert integration._get_npc_lifecycle_manager() is manager
+
+
+def test_get_npc_lifecycle_manager_missing_app(integration: NPCCombatIntegration) -> None:
+    config = MagicMock()
+    config._app_instance = None
+    with patch("server.npc.combat_integration.get_config", return_value=config):
+        assert integration._get_npc_lifecycle_manager() is None
+
+
+def test_get_npc_name_from_lifecycle_swallows_errors(integration: NPCCombatIntegration) -> None:
+    with patch.object(integration, "_get_npc_lifecycle_manager", side_effect=RuntimeError("boom")):
+        assert integration._get_npc_name_from_lifecycle("npc_x") is None
+
+
+@pytest.mark.asyncio
+async def test_publish_player_dp_updated_after_npc_damage(
+    integration: NPCCombatIntegration, mock_persistence: MagicMock
+) -> None:
+    pid = uuid.uuid4()
+    player = MagicMock()
+    player.get_stats = MagicMock(return_value={"current_dp": 7, "max_dp": 20})
+    mock_persistence.get_player_by_id = AsyncMock(return_value=player)
+    bus = MagicMock()
+    integration.event_bus = bus
+    with patch.object(integration, "_convert_target_id_to_uuid", return_value=pid):
+        await integration._publish_player_dp_updated_after_npc_damage(str(pid), 3, "room_a")
+    bus.publish.assert_called_once()
+
+
+@pytest.mark.asyncio
+async def test_publish_player_dp_updated_skips_without_player_or_bus(
+    integration: NPCCombatIntegration, mock_persistence: MagicMock
+) -> None:
+    pid = uuid.uuid4()
+    mock_persistence.get_player_by_id = AsyncMock(return_value=None)
+    integration.event_bus = MagicMock()
+    with patch.object(integration, "_convert_target_id_to_uuid", return_value=pid):
+        await integration._publish_player_dp_updated_after_npc_damage(str(pid), 3, "room_a")
+    cast(MagicMock, integration.event_bus).publish.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_publish_player_dp_updated_swallows_errors(integration: NPCCombatIntegration) -> None:
+    with patch.object(integration, "_get_player_for_dp_update", side_effect=RuntimeError("fail")):
+        await integration._publish_player_dp_updated_after_npc_damage("bad", 1, "room_a")
+
+
+def test_compute_dp_update_fields_non_dict_stats(integration: NPCCombatIntegration) -> None:
+    player = MagicMock()
+    player.get_stats = MagicMock(return_value="broken")
+    old_dp, new_dp, max_dp = integration._compute_dp_update_fields(player, 2)
+    assert new_dp == 0
+    assert old_dp == 2
+    assert max_dp == 20  # empty stats -> default con/siz fallback
+
+
+def test_publish_player_dp_updated_event_noop_without_bus(integration: NPCCombatIntegration) -> None:
+    integration.event_bus = None
+    integration._publish_player_dp_updated_event(uuid.uuid4(), 10, 8, 20, 2, "room_a")
+
+
+@pytest.mark.asyncio
+async def test_publish_npc_attack_to_nats_success(
+    integration: NPCCombatIntegration, mock_persistence: MagicMock
+) -> None:
+    pid = uuid.uuid4()
+    player = MagicMock()
+    player.name = "Investigator"
+    player.get_stats = MagicMock(return_value={"current_dp": 9, "max_dp": 20})
+    mock_persistence.get_player_by_id = AsyncMock(return_value=player)
+    publisher = MagicMock()
+    publisher.publish_player_attacked = AsyncMock(return_value=True)
+    with (
+        patch.object(integration, "_get_combat_event_publisher", return_value=publisher),
+        patch.object(integration, "_convert_target_id_to_uuid", return_value=pid),
+        patch.object(integration, "_get_npc_display_name", return_value="Ghoul"),
+    ):
+        await integration._publish_npc_attack_to_nats("npc_1", str(pid), "room_a", 4, "physical")
+    publisher.publish_player_attacked.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_publish_npc_attack_to_nats_no_publisher(integration: NPCCombatIntegration) -> None:
+    with patch.object(integration, "_get_combat_event_publisher", return_value=None):
+        await integration._publish_npc_attack_to_nats("npc_1", str(uuid.uuid4()), "room_a", 4, "physical")
+
+
+@pytest.mark.asyncio
+async def test_publish_npc_attack_to_nats_swallows_errors(integration: NPCCombatIntegration) -> None:
+    with patch.object(integration, "_get_combat_event_publisher", side_effect=RuntimeError("nats down")):
+        await integration._publish_npc_attack_to_nats("npc_1", str(uuid.uuid4()), "room_a", 4, "physical")
+
+
+def test_get_combat_event_publisher_from_container(integration: NPCCombatIntegration) -> None:
+    publisher = MagicMock()
+    combat_service = MagicMock()
+    combat_service._combat_event_publisher = publisher
+    container = MagicMock()
+    container.combat_service = combat_service
+    state = MagicMock()
+    state.container = container
+    app = MagicMock()
+    app.state = state
+    config = MagicMock()
+    config._app_instance = app
+    with patch("server.npc.combat_integration.get_config", return_value=config):
+        assert integration._get_combat_event_publisher() is publisher
+
+
+def test_get_combat_event_publisher_missing_pieces(integration: NPCCombatIntegration) -> None:
+    config = MagicMock()
+    config._app_instance = None
+    with patch("server.npc.combat_integration.get_config", return_value=config):
+        assert integration._get_combat_event_publisher() is None
+
+
+@pytest.mark.asyncio
+async def test_get_player_and_stats_for_nats_missing_player(
+    integration: NPCCombatIntegration, mock_persistence: MagicMock
+) -> None:
+    pid = uuid.uuid4()
+    mock_persistence.get_player_by_id = AsyncMock(return_value=None)
+    with patch.object(integration, "_convert_target_id_to_uuid", return_value=pid):
+        target_uuid, player, stats = await integration._get_player_and_stats_for_nats(str(pid))
+    assert target_uuid == pid
+    assert player is None
+    assert stats is None
+
+
+def test_build_player_attacked_event_uses_dp_fallback(integration: NPCCombatIntegration) -> None:
+    player = MagicMock()
+    player.name = "Target"
+    with patch.object(integration, "_get_npc_display_name", return_value="Horror"):
+        evt = integration._build_player_attacked_event(
+            "npc_x",
+            "room_a",
+            uuid.uuid4(),
+            player,
+            {"dp": 5, "max_health": 15},
+            3,
+            "physical",
+        )
+    assert evt.attacker_name == "Horror"
+    assert evt.target_current_dp == 5
+    assert evt.target_max_dp == 15
+
+
+@pytest.mark.asyncio
+async def test_handle_npc_death_invalid_killer_returns_false(integration: NPCCombatIntegration) -> None:
+    ok = await integration.handle_npc_death("npc_1", "room_a", killer_id="not-a-uuid")
+    assert ok is False
+
+
+def test_calculate_max_dp_from_max_health(integration: NPCCombatIntegration) -> None:
+    assert integration._calculate_max_dp({"max_health": 33}) == 33
+
+
+def test_get_player_combat_stats_string_and_invalid_dp(integration: NPCCombatIntegration) -> None:
+    assert integration._get_player_combat_stats({"current_dp": "12", "max_dp": 20})["dp"] == 12
+    assert integration._get_player_combat_stats({"current_dp": object(), "max_dp": 20})["dp"] == 100
+
+
+def test_normalize_npc_stats_from_dp(integration: NPCCombatIntegration) -> None:
+    out = integration._normalize_npc_stats({"dp": 9})
+    assert out["hp"] == 9
+
+
+@pytest.mark.asyncio
+async def test_get_combat_stats_entity_not_found(integration: NPCCombatIntegration, mock_persistence: MagicMock) -> None:
+    pid = uuid.uuid4()
+    mock_persistence.get_player_by_id = AsyncMock(return_value=None)
+    assert await integration.get_combat_stats(str(pid)) == {}
+
+
+@pytest.mark.asyncio
+async def test_get_combat_stats_error_without_npc_stats(integration: NPCCombatIntegration) -> None:
+    with patch.object(integration, "_persistence") as persistence:
+        persistence.get_player_by_id = AsyncMock(side_effect=TypeError("bad"))
+        # Valid UUID path still hits except when get_player_by_id raises TypeError
+        result = await integration.get_combat_stats(str(uuid.uuid4()))
+    assert result == {}

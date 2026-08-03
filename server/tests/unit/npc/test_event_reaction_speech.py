@@ -2,8 +2,12 @@
 
 from unittest.mock import MagicMock, patch
 
-from server.events.event_types import NPCListened, PlayerEnteredRoom, PlayerLeftRoom
-from server.npc.event_reaction_system import NPCEventReactionSystem, NPCEventReactionTemplates
+from server.events.event_types import NPCAttacked, NPCListened, PlayerEnteredRoom, PlayerLeftRoom
+from server.npc.event_reaction_system import (
+    NPCEventReaction,
+    NPCEventReactionSystem,
+    NPCEventReactionTemplates,
+)
 
 
 def test_greeting_reaction_schedules_npc_speech():
@@ -66,3 +70,110 @@ def test_set_npc_context_updates_room():
     assert ctx["name"] == "Daisy"
     system.clear_npc_context("npc-1")
     assert system._get_npc_context("npc-1")["current_room"] == "unknown"  # pylint: disable=protected-access
+
+
+def test_npc_event_reaction_wrong_event_type():
+    """should_trigger returns False when event type does not match."""
+    reaction = NPCEventReaction(PlayerEnteredRoom, action=lambda _e, _c: True)
+    listened = NPCListened(
+        npc_id="npc-1",
+        room_id="room-a",
+        message="hi",
+        speaker_id="p1",
+        channel="say",
+    )
+    assert reaction.should_trigger(listened, {}) is False
+
+
+def test_npc_event_reaction_no_condition_defaults_true():
+    """Reactions without a condition trigger for matching event types."""
+    reaction = NPCEventReaction(PlayerEnteredRoom, action=lambda _e, _c: True)
+    event = PlayerEnteredRoom(player_id="p1", room_id="room-a")
+    assert reaction.should_trigger(event, {}) is True
+
+
+def test_npc_event_reaction_condition_error_returns_false():
+    """Condition exceptions are swallowed and should_trigger returns False."""
+
+    def bad_condition(_event: PlayerEnteredRoom, _ctx: dict[str, object]) -> bool:
+        raise RuntimeError("condition boom")
+
+    reaction = NPCEventReaction(PlayerEnteredRoom, condition=bad_condition, action=lambda _e, _c: True)
+    event = PlayerEnteredRoom(player_id="p1", room_id="room-a")
+    assert reaction.should_trigger(event, {}) is False
+
+
+def test_npc_event_reaction_no_action_returns_true():
+    """execute succeeds when no action callback is configured."""
+    reaction = NPCEventReaction(PlayerEnteredRoom)
+    event = PlayerEnteredRoom(player_id="p1", room_id="room-a")
+    assert reaction.execute(event, {}) is True
+
+
+def test_npc_event_reaction_action_error_returns_false():
+    """Action exceptions are swallowed and execute returns False."""
+
+    def bad_action(_event: PlayerEnteredRoom, _ctx: dict[str, object]) -> bool:
+        raise RuntimeError("action boom")
+
+    reaction = NPCEventReaction(PlayerEnteredRoom, action=bad_action)
+    event = PlayerEnteredRoom(player_id="p1", room_id="room-a")
+    assert reaction.execute(event, {}) is False
+
+
+def test_register_handle_event_and_stats():
+    """Registered reactions execute via _handle_event and appear in stats."""
+    event_bus = MagicMock()
+    system = NPCEventReactionSystem(event_bus)
+    executed: list[str] = []
+
+    def action(_event: PlayerEnteredRoom, _ctx: dict[str, object]) -> bool:
+        executed.append("ran")
+        return True
+
+    reaction = NPCEventReaction(PlayerEnteredRoom, action=action, priority=5)
+    system.register_npc_reactions("npc-1", [reaction])
+    system.set_npc_context("npc-1", current_room="room-a", name="Morgan")
+
+    event = PlayerEnteredRoom(player_id="p1", room_id="room-a")
+    system._handle_event(event)  # pylint: disable=protected-access
+
+    assert executed == ["ran"]
+    stats = system.get_npc_reaction_stats("npc-1")
+    assert stats["reaction_count"] == 1
+    assert stats["total_triggers"] == 1
+    assert stats["reactions"][0]["event_type"] == "PlayerEnteredRoom"
+
+    system.unregister_npc_reactions("npc-1")
+    assert system.get_npc_reaction_stats("npc-1") == {}
+
+
+def test_handle_event_respects_cooldown():
+    """Second event within cooldown window does not re-run the reaction."""
+    event_bus = MagicMock()
+    system = NPCEventReactionSystem(event_bus)
+    call_count = 0
+
+    def action(_event: PlayerEnteredRoom, _ctx: dict[str, object]) -> bool:
+        nonlocal call_count
+        call_count += 1
+        return True
+
+    system.register_npc_reactions("npc-1", [NPCEventReaction(PlayerEnteredRoom, action=action)])
+    system.set_npc_context("npc-1", current_room="room-a")
+    event = PlayerEnteredRoom(player_id="p1", room_id="room-a")
+
+    system._handle_event(event)  # pylint: disable=protected-access
+    system._handle_event(event)  # pylint: disable=protected-access
+    assert call_count == 1
+
+
+def test_npc_attacked_retaliation_template():
+    """Retaliation template triggers only when this NPC is the attack target."""
+    reaction = NPCEventReactionTemplates.npc_attacked_retaliation("npc-1")
+    matching = NPCAttacked(npc_id="attacker", target_id="npc-1", room_id="room-a", damage=3)
+    other = NPCAttacked(npc_id="attacker", target_id="npc-2", room_id="room-a", damage=3)
+    ctx: dict[str, object] = {"npc_id": "npc-1"}
+    assert reaction.should_trigger(matching, ctx) is True
+    assert reaction.should_trigger(other, ctx) is False
+    assert reaction.execute(matching, ctx) is True
