@@ -6,7 +6,7 @@ Tests the PlayerRespawnService for managing player resurrection and limbo state.
 
 import uuid
 from datetime import datetime
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from sqlalchemy.exc import SQLAlchemyError
@@ -440,3 +440,91 @@ async def test_respawn_player_from_delirium_combat_clear_error(
 
     assert result is True  # Respawn should still succeed even if combat clear fails
     mock_session.commit.assert_awaited_once()
+
+
+def test_normalize_current_dp_non_numeric(respawn_service):
+    """Non-numeric current_dp defaults to zero."""
+    assert respawn_service._normalize_current_dp({"current_dp": "bad"}) == 0
+
+
+def test_can_move_to_limbo_catatonia_failover(respawn_service, sample_player):
+    """Catatonia failover bypasses DP/death gate."""
+    allowed, dp = respawn_service._can_move_to_limbo(sample_player, "catatonia_failover")
+    assert allowed is True
+    assert dp == 0
+
+
+@pytest.mark.asyncio
+async def test_move_player_to_limbo_catatonia_failover(respawn_service, mock_session, sample_player):
+    """Alive player can enter limbo on catatonia failover."""
+    mock_session.get.return_value = sample_player
+
+    result = await respawn_service.move_player_to_limbo(sample_player.player_id, "catatonia_failover", mock_session)
+
+    assert result is True
+    assert sample_player.current_room_id == LIMBO_ROOM_ID
+    mock_session.commit.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_respawn_player_from_sanitarium_success(respawn_service, mock_session, sample_player, mock_event_bus):
+    """Sanitarium respawn restores LCD, posture, and publishes event."""
+    sample_player.current_room_id = LIMBO_ROOM_ID
+    stats = {"current_dp": 50, "max_dp": 100, "position": PositionState.LYING}
+    sample_player.get_stats.return_value = stats
+    lucidity_record = MagicMock(spec=PlayerLucidity)
+    lucidity_record.current_lcd = -100
+    lucidity_record.current_tier = "catatonic"
+    lucidity_record.liabilities = "[]"
+    mock_session.get.side_effect = [sample_player, lucidity_record]
+
+    with patch("server.services.player_respawn_service.LucidityService") as mock_lucidity_cls:
+        mock_lucidity = MagicMock()
+        mock_lucidity.add_liability = AsyncMock()
+        mock_lucidity.set_cooldown = AsyncMock()
+        mock_lucidity_cls.return_value = mock_lucidity
+
+        result = await respawn_service.respawn_player_from_sanitarium(sample_player.player_id, mock_session)
+
+    assert result is True
+    assert lucidity_record.current_lcd == 1
+    assert stats["position"] == PositionState.STANDING
+    assert sample_player.current_room_id == DEFAULT_RESPAWN_ROOM
+    mock_session.commit.assert_awaited_once()
+    mock_event_bus.publish.assert_called_once()
+    published_event = mock_event_bus.publish.call_args[0][0]
+    assert isinstance(published_event, PlayerRespawnedEvent)
+
+
+@pytest.mark.asyncio
+async def test_respawn_player_from_sanitarium_increments_existing_liabilities(
+    respawn_service, mock_session, sample_player
+):
+    """Existing liability stacks increase (capped at five) during sanitarium respawn."""
+    sample_player.get_stats.return_value = {"position": PositionState.LYING}
+    lucidity_record = MagicMock(spec=PlayerLucidity)
+    lucidity_record.current_lcd = -100
+    lucidity_record.current_tier = "catatonic"
+    lucidity_record.liabilities = '[{"code": "paranoia", "stacks": 4}]'
+    mock_session.get.side_effect = [sample_player, lucidity_record]
+
+    with patch("server.services.player_respawn_service.LucidityService") as mock_lucidity_cls:
+        mock_lucidity = MagicMock()
+        mock_lucidity.set_cooldown = AsyncMock()
+        mock_lucidity_cls.return_value = mock_lucidity
+
+        result = await respawn_service.respawn_player_from_sanitarium(sample_player.player_id, mock_session)
+
+    assert result is True
+    mock_lucidity.add_liability.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_respawn_player_from_sanitarium_lucidity_not_found(respawn_service, mock_session, sample_player):
+    """Sanitarium respawn fails when lucidity record is missing."""
+    mock_session.get.side_effect = [sample_player, None]
+
+    result = await respawn_service.respawn_player_from_sanitarium(sample_player.player_id, mock_session)
+
+    assert result is False
+    mock_session.commit.assert_not_awaited()

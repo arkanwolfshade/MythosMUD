@@ -6,12 +6,17 @@ Tests the HolidayService class for tracking active Mythos holidays.
 
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
-from unittest.mock import MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
 from server.schemas.calendar import HolidayCollection, HolidayEntry
-from server.services.holiday_service import HolidayService
+from server.services.holiday_service import (
+    HolidayService,
+    _ensure_utc,
+    _holiday_entry_from_row,
+    _string_list_from_row,
+)
 
 
 class TestHolidayService:
@@ -240,3 +245,91 @@ class TestHolidayService:
         mythos_dt = datetime(2024, 1, 15, 12, 0, 0, tzinfo=UTC)
         service.refresh_active(mythos_dt=mythos_dt)
         assert service.last_refresh == mythos_dt
+
+    def test_ensure_utc_naive_and_aware(self):
+        """Naive datetimes gain UTC; aware datetimes convert to UTC."""
+        naive = datetime(2024, 1, 1, 12, 0, 0)
+        aware = datetime(2024, 1, 1, 12, 0, 0, tzinfo=UTC)
+        assert _ensure_utc(naive).tzinfo == UTC
+        assert _ensure_utc(aware).tzinfo == UTC
+
+    def test_string_list_from_row(self):
+        """Helper normalizes nullable PostgreSQL array columns."""
+        assert _string_list_from_row(None) == []
+        assert _string_list_from_row(42) == []
+        assert _string_list_from_row(["tag"]) == ["tag"]
+
+    def test_holiday_entry_from_row(self):
+        """Row dict maps to HolidayEntry."""
+        row = {
+            "stable_id": "fest",
+            "name": "Festival",
+            "tradition": "mythos",
+            "month": 3,
+            "day": 20,
+            "duration_hours": 24,
+            "season": "spring",
+            "bonus_tags": ["celebration"],
+        }
+        entry = _holiday_entry_from_row(row)
+        assert entry.id == "fest"
+        assert entry.bonus_tags == ["celebration"]
+
+    def test_get_serialized_active_holidays(self, mock_chronicle, sample_holidays):
+        """Serialized active holidays delegate to refresh_active."""
+        collection = HolidayCollection(holidays=sample_holidays)
+        service = HolidayService(chronicle=mock_chronicle, collection=collection, environment="test")
+        mythos_dt = datetime(2024, 1, 15, 12, 0, 0, tzinfo=UTC)
+        active = service.get_serialized_active_holidays(mythos_dt)
+        assert len(active) == 1
+        assert active[0].id == "midwinter"
+
+    def test_get_serialized_upcoming_holidays(self, mock_chronicle, sample_holidays):
+        """Serialized upcoming holidays delegate to get_upcoming_holidays."""
+        collection = HolidayCollection(holidays=sample_holidays)
+        service = HolidayService(chronicle=mock_chronicle, collection=collection, environment="test")
+        upcoming = service.get_serialized_upcoming_holidays(count=2)
+        assert len(upcoming) == 2
+
+    def test_refresh_active_removes_unknown_holiday_id(self, mock_chronicle, sample_holidays):
+        """Stale active IDs not in collection are removed during refresh."""
+        collection = HolidayCollection(holidays=sample_holidays)
+        service = HolidayService(chronicle=mock_chronicle, collection=collection, environment="test")
+        service._active_started["orphan_id"] = datetime(2024, 1, 15, 0, 0, 0, tzinfo=UTC)
+        mythos_dt = datetime(2024, 1, 15, 12, 0, 0, tzinfo=UTC)
+        active = service.refresh_active(mythos_dt=mythos_dt)
+        assert "orphan_id" not in service._active_started
+        assert len(active) == 1
+
+    @pytest.mark.asyncio
+    async def test_async_load_from_database(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        """Regression: asyncpg load builds HolidayCollection from rows."""
+        monkeypatch.setenv("DATABASE_URL", "postgresql+asyncpg://postgres:secret@127.0.0.1:5432/mythos_unit")
+        mock_conn = MagicMock()
+        mock_conn.fetch = AsyncMock(
+            return_value=[
+                {
+                    "stable_id": "db_holiday",
+                    "name": "DB Holiday",
+                    "tradition": "mythos",
+                    "month": 1,
+                    "day": 2,
+                    "duration_hours": 12,
+                    "season": "winter",
+                    "bonus_tags": [],
+                }
+            ]
+        )
+        mock_conn.close = AsyncMock()
+
+        async def fake_connect(url: str, *, server_settings: dict[str, str] | None = None) -> MagicMock:
+            return mock_conn
+
+        monkeypatch.setattr("server.services.holiday_service.asyncpg.connect", fake_connect)
+
+        svc = object.__new__(HolidayService)
+        result_container: dict[str, object] = {"collection": None, "error": None}
+        await HolidayService._async_load_from_database(svc, result_container)  # type: ignore[arg-type]
+        collection = result_container["collection"]
+        assert isinstance(collection, HolidayCollection)
+        assert collection.holidays[0].id == "db_holiday"

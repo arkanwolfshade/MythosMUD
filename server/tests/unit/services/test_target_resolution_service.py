@@ -303,3 +303,125 @@ async def test_resolve_target_with_disambiguation_suffix(target_service, mock_pe
     result = await target_service.resolve_target(uuid.uuid4(), "target-1")
     # Should extract suffix and search
     assert result.search_term == "target-1"
+
+
+def test_clean_target_name_extracts_suffix(target_service):
+    """Disambiguation suffix is parsed from target name."""
+    clean, suffix = target_service._clean_target_name("Goblin-2")
+    assert clean == "goblin"
+    assert suffix == "-2"
+
+
+def test_clean_target_name_empty(target_service):
+    """Whitespace-only target names are empty."""
+    clean, suffix = target_service._clean_target_name("   ")
+    assert clean == ""
+    assert suffix is None
+
+
+def test_validate_player_and_room_player_not_found(target_service):
+    """Missing player returns error result."""
+    room_id, err = target_service._validate_player_and_room(None, uuid.uuid4())
+    assert room_id is None
+    assert err is not None
+    assert err.success is False
+
+
+def test_validate_player_and_room_blank_room_id(target_service):
+    """Blank room id is treated as not in a room."""
+    player = MagicMock()
+    player.current_room_id = "   "
+    room_id, err = target_service._validate_player_and_room(player, uuid.uuid4())
+    assert room_id is None
+    assert "not in a room" in (err.error_message or "").lower()
+
+
+def test_normalize_name_for_matching(target_service):
+    """Punctuation is stripped for fuzzy name matching."""
+    assert target_service._normalize_name_for_matching("Dr. West!") == "dr west"
+
+
+def test_validate_room_exists_sync_get_room_by_id(target_service, mock_persistence):
+    """Sync get_room_by_id validates room presence."""
+    mock_persistence.get_room_by_id = MagicMock(return_value=MagicMock())
+    assert target_service._validate_room_exists("room_001") is True
+    mock_persistence.get_room_by_id = MagicMock(return_value=None)
+    assert target_service._validate_room_exists("missing") is False
+
+
+@pytest.mark.asyncio
+async def test_validate_room_exists_async(target_service, mock_persistence):
+    """Async get_room_by_id validates room presence."""
+    mock_persistence.get_room_by_id = AsyncMock(return_value=MagicMock())
+    assert await target_service._validate_room_exists_async("room_001") is True
+
+
+def test_add_disambiguation_suffixes(target_service):
+    """Duplicate names receive numeric suffixes."""
+    from server.schemas.shared.target_metadata import TargetMetadata
+    from server.schemas.shared.target_resolution import TargetMatch, TargetType
+
+    matches = [
+        TargetMatch(
+            target_id="p1",
+            target_name="Bob",
+            target_type=TargetType.PLAYER,
+            room_id="room_001",
+            metadata=TargetMetadata(),
+        ),
+        TargetMatch(
+            target_id="p2",
+            target_name="Bob",
+            target_type=TargetType.PLAYER,
+            room_id="room_001",
+            metadata=TargetMetadata(),
+        ),
+    ]
+    result = target_service._add_disambiguation_suffixes(matches)
+    assert result[0].disambiguation_suffix == "-1"
+    assert result[1].disambiguation_suffix == "-2"
+
+
+def test_build_target_result_single_match(target_service):
+    """Single match returns success."""
+    from server.schemas.shared.target_metadata import TargetMetadata
+    from server.schemas.shared.target_resolution import TargetMatch, TargetType
+
+    match = TargetMatch(
+        target_id="p1",
+        target_name="Alice",
+        target_type=TargetType.PLAYER,
+        room_id="room_001",
+        metadata=TargetMetadata(),
+    )
+    result = target_service._build_target_result([match], "alice", "room_001", None)
+    assert result.success is True
+    assert len(result.matches) == 1
+
+
+def test_build_target_result_disambiguation_suffix_match(target_service):
+    """Suffix selects one match from duplicates."""
+    from server.schemas.shared.target_metadata import TargetMetadata
+    from server.schemas.shared.target_resolution import TargetMatch, TargetType
+
+    matches = [
+        TargetMatch(
+            target_id="p1",
+            target_name="Bob",
+            target_type=TargetType.PLAYER,
+            room_id="room_001",
+            metadata=TargetMetadata(),
+            disambiguation_suffix="-1",
+        ),
+        TargetMatch(
+            target_id="p2",
+            target_name="Bob",
+            target_type=TargetType.PLAYER,
+            room_id="room_001",
+            metadata=TargetMetadata(),
+            disambiguation_suffix="-2",
+        ),
+    ]
+    result = target_service._build_target_result(matches, "bob-2", "room_001", "-2")
+    assert result.success is True
+    assert result.matches[0].target_id == "p2"

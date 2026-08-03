@@ -533,3 +533,295 @@ def test_is_npc_still_in_world_false_when_npc_removed_from_active_npcs(
         return_value=mock_inst,
     ):
         assert combat_turn_processor._is_npc_still_in_world(npc) is False  # pylint: disable=protected-access  # noqa: SLF001
+
+
+@pytest.mark.asyncio
+async def test_process_game_tick_triggers_execute_round(
+    combat_turn_processor: CombatTurnProcessor, mock_combat: MagicMock
+) -> None:
+    """When tick >= next_turn_tick, _execute_round is invoked."""
+    mock_combat.status = CombatStatus.ACTIVE
+    mock_combat.auto_progression_enabled = True
+    mock_combat.next_turn_tick = 50
+    combat_turn_processor._execute_round = AsyncMock()  # pylint: disable=protected-access  # noqa: SLF001
+    active = {uuid4(): cast(CombatInstance, mock_combat)}
+    await combat_turn_processor.process_game_tick(100, active, True)
+    combat_turn_processor._execute_round.assert_awaited_once()  # pylint: disable=protected-access  # noqa: SLF001
+
+
+def test_load_round_actions(combat_turn_processor: CombatTurnProcessor, mock_combat: MagicMock) -> None:
+    """Queued actions for next round populate round_actions."""
+    pid = uuid4()
+    action = CombatAction(
+        attacker_id=pid,
+        target_id=uuid4(),
+        action_type="attack",
+        damage=5,
+        round=2,
+    )
+    mock_combat.queued_actions = {pid: [action]}
+    mock_combat.round_actions = {}
+    combat_turn_processor._load_round_actions(mock_combat, 2)  # pylint: disable=protected-access  # noqa: SLF001
+    assert mock_combat.round_actions[pid] is action
+
+
+@pytest.mark.asyncio
+async def test_execute_queued_attack_action(combat_turn_processor: CombatTurnProcessor, mock_combat: MagicMock) -> None:
+    """Queued attack delegates to combat service process_attack."""
+    pid = uuid4()
+    tid = uuid4()
+    participant = CombatParticipant(
+        participant_id=pid,
+        participant_type=CombatParticipantType.PLAYER,
+        name="P",
+        current_dp=10,
+        max_dp=10,
+        dexterity=10,
+    )
+    action = CombatAction(
+        attacker_id=pid,
+        target_id=tid,
+        action_type="attack",
+        damage=7,
+        round=1,
+    )
+    combat_turn_processor._combat_service.process_attack = AsyncMock()  # pylint: disable=protected-access  # noqa: SLF001
+    await combat_turn_processor._execute_queued_action(mock_combat, participant, action, 100)  # pylint: disable=protected-access  # noqa: SLF001
+    combat_turn_processor._combat_service.process_attack.assert_awaited_once()  # pylint: disable=protected-access  # noqa: SLF001
+
+
+@pytest.mark.asyncio
+async def test_execute_queued_spell_without_magic_service(
+    combat_turn_processor: CombatTurnProcessor, mock_combat: MagicMock
+) -> None:
+    """Spell action is skipped when magic service is unavailable."""
+    pid = uuid4()
+    participant = CombatParticipant(
+        participant_id=pid,
+        participant_type=CombatParticipantType.PLAYER,
+        name="P",
+        current_dp=10,
+        max_dp=10,
+        dexterity=10,
+    )
+    action = CombatAction(
+        attacker_id=pid,
+        target_id=uuid4(),
+        action_type="spell",
+        damage=0,
+        round=1,
+        spell_name="zap",
+    )
+    combat_turn_processor._combat_service.magic_service = None  # pylint: disable=protected-access  # noqa: SLF001
+    await combat_turn_processor._execute_queued_action(mock_combat, participant, action, 100)  # pylint: disable=protected-access  # noqa: SLF001
+    assert participant.last_action_tick == 100
+
+
+@pytest.mark.asyncio
+async def test_execute_participant_action_valid_queued_attack(
+    combat_turn_processor: CombatTurnProcessor, mock_combat: MagicMock
+) -> None:
+    """Valid queued attack executes via _execute_queued_action."""
+    pid = uuid4()
+    tid = uuid4()
+    participant = CombatParticipant(
+        participant_id=pid,
+        participant_type=CombatParticipantType.PLAYER,
+        name="P",
+        current_dp=10,
+        max_dp=10,
+        dexterity=10,
+    )
+    target = CombatParticipant(
+        participant_id=tid,
+        participant_type=CombatParticipantType.NPC,
+        name="T",
+        current_dp=5,
+        max_dp=10,
+        dexterity=5,
+    )
+    action = CombatAction(
+        attacker_id=pid,
+        target_id=tid,
+        action_type="attack",
+        damage=3,
+        round=2,
+    )
+    mock_combat.participants = {pid: participant, tid: target}
+    mock_combat.round_actions = {pid: action}
+    mock_combat.clear_queued_actions = MagicMock()
+    combat_turn_processor._execute_queued_action = AsyncMock()  # pylint: disable=protected-access  # noqa: SLF001
+    await combat_turn_processor._execute_participant_action(mock_combat, participant, 2, 100)  # pylint: disable=protected-access  # noqa: SLF001
+    combat_turn_processor._execute_queued_action.assert_awaited_once()  # pylint: disable=protected-access  # noqa: SLF001
+
+
+@pytest.mark.asyncio
+async def test_execute_round_skips_dead_participant(
+    combat_turn_processor: CombatTurnProcessor, mock_combat: MagicMock
+) -> None:
+    dead = CombatParticipant(
+        participant_id=uuid4(),
+        participant_type=CombatParticipantType.PLAYER,
+        name="Dead",
+        current_dp=-20,
+        max_dp=10,
+        dexterity=10,
+    )
+    mock_combat.get_participants_by_initiative = MagicMock(return_value=[dead])
+    mock_combat.combat_round = 0
+    mock_combat.round_actions = {}
+    combat_turn_processor._execute_participant_action = AsyncMock()  # pylint: disable=protected-access  # noqa: SLF001
+    await combat_turn_processor._execute_round(mock_combat, 100)  # pylint: disable=protected-access  # noqa: SLF001
+    combat_turn_processor._execute_participant_action.assert_not_awaited()  # pylint: disable=protected-access  # noqa: SLF001
+
+
+@pytest.mark.asyncio
+async def test_execute_round_skips_npc_removed_from_world(
+    combat_turn_processor: CombatTurnProcessor, mock_combat: MagicMock
+) -> None:
+    npc = CombatParticipant(
+        participant_id=uuid4(),
+        participant_type=CombatParticipantType.NPC,
+        name="Ghost",
+        current_dp=10,
+        max_dp=10,
+        dexterity=10,
+    )
+    mock_combat.get_participants_by_initiative = MagicMock(return_value=[npc])
+    mock_combat.combat_round = 0
+    mock_combat.round_actions = {}
+    combat_turn_processor._is_npc_still_in_world = MagicMock(return_value=False)  # pylint: disable=protected-access  # noqa: SLF001
+    combat_turn_processor._execute_participant_action = AsyncMock()  # pylint: disable=protected-access  # noqa: SLF001
+    await combat_turn_processor._execute_round(mock_combat, 100)  # pylint: disable=protected-access  # noqa: SLF001
+    combat_turn_processor._execute_participant_action.assert_not_awaited()  # pylint: disable=protected-access  # noqa: SLF001
+
+
+@pytest.mark.asyncio
+async def test_execute_queued_flee_skip(combat_turn_processor: CombatTurnProcessor, mock_combat: MagicMock) -> None:
+    pid = uuid4()
+    participant = CombatParticipant(
+        participant_id=pid,
+        participant_type=CombatParticipantType.PLAYER,
+        name="P",
+        current_dp=10,
+        max_dp=10,
+        dexterity=10,
+    )
+    action = CombatAction(
+        attacker_id=pid,
+        target_id=uuid4(),
+        action_type="flee_skip",
+        damage=0,
+        round=1,
+    )
+    await combat_turn_processor._execute_queued_action(mock_combat, participant, action, 50)  # pylint: disable=protected-access  # noqa: SLF001
+    assert participant.last_action_tick == 50
+
+
+@pytest.mark.asyncio
+async def test_execute_queued_unknown_action_logs(
+    combat_turn_processor: CombatTurnProcessor, mock_combat: MagicMock
+) -> None:
+    pid = uuid4()
+    participant = CombatParticipant(
+        participant_id=pid,
+        participant_type=CombatParticipantType.PLAYER,
+        name="P",
+        current_dp=10,
+        max_dp=10,
+        dexterity=10,
+    )
+    action = CombatAction(
+        attacker_id=pid,
+        target_id=uuid4(),
+        action_type="dance",
+        damage=0,
+        round=1,
+    )
+    await combat_turn_processor._execute_queued_action(mock_combat, participant, action, 50)  # pylint: disable=protected-access  # noqa: SLF001
+    assert participant.last_action_tick == 50
+
+
+def test_get_spell_for_action_missing_spell(combat_turn_processor: CombatTurnProcessor) -> None:
+    magic = MagicMock()
+    magic.spell_registry.get_spell = MagicMock(return_value=None)
+    participant = CombatParticipant(
+        participant_id=uuid4(),
+        participant_type=CombatParticipantType.PLAYER,
+        name="P",
+        current_dp=10,
+        max_dp=10,
+        dexterity=10,
+    )
+    action = CombatAction(
+        attacker_id=participant.participant_id,
+        target_id=uuid4(),
+        action_type="spell",
+        damage=0,
+        round=1,
+        spell_id=99,
+        spell_name="zap",
+    )
+    assert combat_turn_processor._get_spell_for_action(magic, action, participant, 1) is None  # pylint: disable=protected-access  # noqa: SLF001
+
+
+def test_build_spell_target_npc(combat_turn_processor: CombatTurnProcessor) -> None:
+    pid = uuid4()
+    tid = uuid4()
+    participant = CombatParticipant(
+        participant_id=pid,
+        participant_type=CombatParticipantType.PLAYER,
+        name="P",
+        current_dp=10,
+        max_dp=10,
+        dexterity=10,
+    )
+    action = CombatAction(
+        attacker_id=pid,
+        target_id=tid,
+        action_type="spell",
+        damage=0,
+        round=1,
+        spell_name="bolt",
+    )
+    target = combat_turn_processor._build_spell_target(action, participant, "room_1")  # pylint: disable=protected-access  # noqa: SLF001
+    assert target.room_id == "room_1"
+    assert str(tid) in target.target_id
+
+
+@pytest.mark.asyncio
+async def test_execute_default_action_no_target(
+    combat_turn_processor: CombatTurnProcessor, mock_combat: MagicMock
+) -> None:
+    lone = CombatParticipant(
+        participant_id=uuid4(),
+        participant_type=CombatParticipantType.PLAYER,
+        name="Solo",
+        current_dp=10,
+        max_dp=10,
+        dexterity=10,
+    )
+    mock_combat.participants = {lone.participant_id: lone}
+    await combat_turn_processor._execute_default_action(mock_combat, lone, 77)  # pylint: disable=protected-access  # noqa: SLF001
+    assert lone.last_action_tick == 77
+
+
+@pytest.mark.asyncio
+async def test_apply_spell_effects(combat_turn_processor: CombatTurnProcessor) -> None:
+    magic = MagicMock()
+    magic.player_spell_repository.get_player_spell = AsyncMock(return_value=MagicMock(mastery=2))
+    magic.spell_effects.process_effect = AsyncMock(return_value={"success": True})
+    magic.player_spell_repository.record_spell_cast = AsyncMock()
+    magic.spell_learning_service = None
+    spell = MagicMock(spell_id=5)
+    participant = CombatParticipant(
+        participant_id=uuid4(),
+        participant_type=CombatParticipantType.PLAYER,
+        name="P",
+        current_dp=10,
+        max_dp=10,
+        dexterity=10,
+    )
+    target = MagicMock()
+    result = await combat_turn_processor._apply_spell_effects(magic, spell, participant, target)  # pylint: disable=protected-access  # noqa: SLF001
+    assert result["success"] is True
