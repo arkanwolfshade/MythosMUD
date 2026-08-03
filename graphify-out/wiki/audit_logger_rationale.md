@@ -1,12 +1,13 @@
 # audit logger rationale
 
-> 38 nodes
+> 46 nodes
 
 ## Key Concepts
 
-- **AuditLogger** (19 connections) — `server/utils/audit_logger.py`
+- **test_audit_logger.py** (15 connections) — `server/tests/unit/utils/test_audit_logger.py`
+- **AuditLogger** (15 connections) — `server/utils/audit_logger.py`
+- **_logger()** (13 connections) — `server/tests/unit/utils/test_audit_logger.py`
 - **._write_entry()** (10 connections) — `server/utils/audit_logger.py`
-- **test_audit_logger.py** (8 connections) — `server/tests/unit/utils/test_audit_logger.py`
 - **Any** (6 connections)
 - **.__init__()** (4 connections) — `server/utils/audit_logger.py`
 - **._get_log_file_path()** (4 connections) — `server/utils/audit_logger.py`
@@ -20,21 +21,19 @@
 - **test_audit_logger_log_permission_change()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
 - **test_audit_logger_log_player_action()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
 - **test_audit_logger_get_recent_entries()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
+- **test_audit_logger_get_recent_entries_filters_and_bad_lines()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
+- **test_audit_logger_get_statistics()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
 - **.log_permission_change()** (3 connections) — `server/utils/audit_logger.py`
 - **.log_player_action()** (3 connections) — `server/utils/audit_logger.py`
 - **.log_alias_expansion()** (3 connections) — `server/utils/audit_logger.py`
-- **Path** (2 connections)
-- **Unit tests for audit_logger utilities.  Tests the AuditLogger class.** (1 connections) — `server/tests/unit/utils/test_audit_logger.py`
-- **Test AuditLogger initialization.** (1 connections) — `server/tests/unit/utils/test_audit_logger.py`
-- **Test AuditLogger.log_command() logs command execution.** (1 connections) — `server/tests/unit/utils/test_audit_logger.py`
-- **Test AuditLogger.log_permission_change() logs permission change.** (1 connections) — `server/tests/unit/utils/test_audit_logger.py`
-- **Test AuditLogger.log_player_action() logs player action.** (1 connections) — `server/tests/unit/utils/test_audit_logger.py`
-- *... and 13 more nodes in this community*
+- **test_audit_logger_log_security_event_severity_branches()** (2 connections) — `server/tests/unit/utils/test_audit_logger.py`
+- **test_audit_logger_log_alias_expansion_cycle()** (2 connections) — `server/tests/unit/utils/test_audit_logger.py`
+- **test_audit_logger_log_container_interaction()** (2 connections) — `server/tests/unit/utils/test_audit_logger.py`
+- *... and 21 more nodes in this community*
 
 ## Relationships
 
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [Item Instances](Item_Instances.md) (1 shared connections)
+- [models npc rationale](models_npc_rationale.md) (3 shared connections)
 
 ## Source Files
 
@@ -43,7 +42,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 115 (100%)
+- EXTRACTED: 147 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

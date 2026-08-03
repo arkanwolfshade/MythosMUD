@@ -33,9 +33,9 @@
 
 ## Relationships
 
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
-- [combat messaging service](combat_messaging_service.md) (1 shared connections)
-- [time service rationale](time_service_rationale.md) (1 shared connections)
+- [commands skills rationale](commands_skills_rationale.md) (1 shared connections)
+- [caching lru cache](caching_lru_cache.md) (1 shared connections)
+- [models npc rationale](models_npc_rationale.md) (1 shared connections)
 
 ## Source Files
 

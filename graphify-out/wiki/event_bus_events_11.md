@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_get_action_cooldown_string_player_id()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **Test get_action_cooldown() handles string player_id.** (1 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_setup_connection_metadata_no_session_token()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **Test _setup_connection_metadata() handles None session and token.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
 
 ## Relationships
 
-- [lucidity active service](lucidity_active_service.md) (1 shared connections)
+- [player event state](player_event_state.md) (1 shared connections)
+- [connection establishment realtime](connection_establishment_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_active_lucidity_service.py`
+- `server/tests/unit/realtime/test_connection_establishment.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

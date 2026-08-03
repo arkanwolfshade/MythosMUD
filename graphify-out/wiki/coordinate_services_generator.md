@@ -1,10 +1,11 @@
 # coordinate services generator
 
-> 26 nodes
+> 42 nodes
 
 ## Key Concepts
 
-- **CoordinateGenerator** (17 connections) — `server/services/coordinate_generator.py`
+- **CoordinateGenerator** (21 connections) — `server/services/coordinate_generator.py`
+- **test_coordinate_generator.py** (17 connections) — `server/tests/unit/services/test_coordinate_generator.py`
 - **._generate_for_subzone()** (8 connections) — `server/services/coordinate_generator.py`
 - **.generate_coordinates_for_zone()** (6 connections) — `server/services/coordinate_generator.py`
 - **Any** (5 connections)
@@ -17,6 +18,9 @@
 - **._get_next_coordinates()** (3 connections) — `server/services/coordinate_generator.py`
 - **._reverse_direction()** (3 connections) — `server/services/coordinate_generator.py`
 - **._store_coordinates()** (3 connections) — `server/services/coordinate_generator.py`
+- **generator()** (2 connections) — `server/tests/unit/services/test_coordinate_generator.py`
+- **test_store_coordinates_persists_values()** (2 connections) — `server/tests/unit/services/test_coordinate_generator.py`
+- **test_store_coordinates_noop_on_empty()** (2 connections) — `server/tests/unit/services/test_coordinate_generator.py`
 - **AsyncSession** (1 connections)
 - **Generates map coordinates for rooms using hierarchical grouping and directional** (1 connections) — `server/services/coordinate_generator.py`
 - **Initialize coordinate generator.          Args:             session: Database se** (1 connections) — `server/services/coordinate_generator.py`
@@ -25,26 +29,22 @@
 - **Find the origin room (map_origin_zone=true, or first room).** (1 connections) — `server/services/coordinate_generator.py`
 - **Build adjacency list from room exits.** (1 connections) — `server/services/coordinate_generator.py`
 - **Assign coordinates using BFS starting from origin.** (1 connections) — `server/services/coordinate_generator.py`
-- **Detect conflicts (multiple rooms at same x,y coordinates).** (1 connections) — `server/services/coordinate_generator.py`
-- **Generate coordinates for rooms in a single subzone.          Args:             r** (1 connections) — `server/services/coordinate_generator.py`
-- **Calculate next coordinates based on direction.          Args:             x: Cur** (1 connections) — `server/services/coordinate_generator.py`
-- **Reverse a direction.          Args:             direction: Original direction** (1 connections) — `server/services/coordinate_generator.py`
-- *... and 1 more nodes in this community*
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [maps handle ascii](maps_handle_ascii.md) (2 shared connections)
-- [command handler processing](command_handler_processing.md) (2 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
-- [message nats handler](message_nats_handler.md) (1 shared connections)
+- [maps handle ascii](maps_handle_ascii.md) (4 shared connections)
+- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [connection disconnection realtime](connection_disconnection_realtime.md) (1 shared connections)
 
 ## Source Files
 
 - `server/services/coordinate_generator.py`
+- `server/tests/unit/services/test_coordinate_generator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 81 (99%)
+- EXTRACTED: 120 (99%)
 - INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 

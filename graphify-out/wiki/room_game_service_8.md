@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_establish_websocket_connection_cancels_rest_countdown()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Reconnect cancels an in-progress rest countdown so it cannot poison the new sess** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_evaluate_numeric_comparison_greater_equal()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test _evaluate_numeric_comparison() handles >= operator.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [player event state](player_event_state.md) (1 shared connections)
-- [connection establishment realtime](connection_establishment_realtime.md) (1 shared connections)
+- [lucidity active service](lucidity_active_service.md) (1 shared connections)
+- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_connection_establishment.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 

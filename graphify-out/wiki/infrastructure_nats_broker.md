@@ -1,10 +1,10 @@
 # infrastructure nats broker
 
-> 46 nodes
+> 47 nodes
 
 ## Key Concepts
 
-- **NATSMessageBroker** (30 connections) — `server/infrastructure/nats_broker.py`
+- **NATSMessageBroker** (31 connections) — `server/infrastructure/nats_broker.py`
 - **.publish()** (6 connections) — `server/infrastructure/nats_broker.py`
 - **.__init__()** (5 connections) — `server/infrastructure/nats_broker.py`
 - **.connect()** (5 connections) — `server/infrastructure/nats_broker.py`
@@ -28,15 +28,15 @@
 - **._perform_health_check()** (3 connections) — `server/infrastructure/nats_broker.py`
 - **nats_broker()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
 - **Exception** (2 connections)
-- **NATS implementation of MessageBroker protocol.      This class wraps NATS client** (1 connections) — `server/infrastructure/nats_broker.py`
-- *... and 21 more nodes in this community*
+- **test_connect_with_user_password()** (2 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- *... and 22 more nodes in this community*
 
 ## Relationships
 
-- [broker infrastructure nats](broker_infrastructure_nats.md) (16 shared connections)
-- [nats services service](nats_services_service.md) (2 shared connections)
+- [broker infrastructure nats](broker_infrastructure_nats.md) (17 shared connections)
+- [combat validator validators](combat_validator_validators.md) (2 shared connections)
 - [manager subject services](manager_subject_services.md) (1 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [models npc rationale](models_npc_rationale.md) (1 shared connections)
 - [schemas nats messages](schemas_nats_messages.md) (1 shared connections)
 - [command commands aliases](command_commands_aliases.md) (1 shared connections)
 
@@ -47,7 +47,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 138 (96%)
+- EXTRACTED: 141 (96%)
 - INFERRED: 6 (4%)
 - AMBIGUOUS: 0 (0%)
 

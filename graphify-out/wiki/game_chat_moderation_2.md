@@ -1,29 +1,47 @@
 # game chat moderation
 
-> 6 nodes
+> 18 nodes
 
 ## Key Concepts
 
-- **TestGetChatService** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_chat_service_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_chat_service_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Tests for get_chat_service dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_chat_service returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_chat_service raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **WebSocket** (8 connections)
+- **Any** (8 connections)
+- **.handle_message()** (7 connections) — `server/realtime/message_handler_factory.py`
+- **.handle()** (6 connections) — `server/realtime/message_handler_factory.py`
+- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
+- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
+- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
+- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
+- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
+- **.handle()** (4 connections) — `server/realtime/message_handler_factory.py`
+- **Handle a specific message type.          Args:             websocket: The WebSoc** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Handle command message type.** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Handle chat message type.** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Handle ping message type.** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Handle follow_response message type.** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Handle party_invite_response message type.** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Handle client_error_report message type.** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Handle a WebSocket message using the appropriate handler.          Args:** (1 connections) — `server/realtime/message_handler_factory.py`
 
 ## Relationships
 
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (3 shared connections)
-- [command inventory models](command_inventory_models.md) (1 shared connections)
+- [combat services messaging](combat_services_messaging.md) (6 shared connections)
+- [tsconfig src/**/* spec](tsconfig_src-__-__spec.md) (3 shared connections)
+- [command commands aliases](command_commands_aliases.md) (2 shared connections)
+- [dead letter queue](dead_letter_queue.md) (1 shared connections)
+- [combat models rationale](combat_models_rationale.md) (1 shared connections)
+- [occupant formatter realtime](occupant_formatter_realtime.md) (1 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
+- [message handler factory](message_handler_factory.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_dependencies.py`
+- `server/realtime/message_handler_factory.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (93%)
-- INFERRED: 1 (7%)
+- EXTRACTED: 66 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

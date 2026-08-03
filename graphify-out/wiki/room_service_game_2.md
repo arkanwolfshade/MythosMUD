@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_wearable_container_service_init()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test WearableContainerService initialization.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_register_action_handler_overwrites()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test register_action_handler() overwrites existing handler.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [wearable container service](wearable_container_service.md) (1 shared connections)
+- [lucidity active service](lucidity_active_service.md) (1 shared connections)
+- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

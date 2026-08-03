@@ -34,8 +34,9 @@
 ## Relationships
 
 - [logging handlers structured](logging_handlers_structured.md) (4 shared connections)
-- [logging setup structured](logging_setup_structured.md) (4 shared connections)
-- [time service rationale](time_service_rationale.md) (1 shared connections)
+- [logging setup structured](logging_setup_structured.md) (3 shared connections)
+- [models npc rationale](models_npc_rationale.md) (1 shared connections)
+- [manager subject services](manager_subject_services.md) (1 shared connections)
 
 ## Source Files
 

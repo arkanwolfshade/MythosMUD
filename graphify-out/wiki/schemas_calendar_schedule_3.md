@@ -1,29 +1,26 @@
 # schemas calendar schedule
 
-> 13 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **properties** (10 connections) — `schemas/calendar/schedule.schema.json`
-- **id** (4 connections) — `schemas/calendar/schedule.schema.json`
-- **name** (3 connections) — `schemas/calendar/schedule.schema.json`
-- **category** (3 connections) — `schemas/calendar/schedule.schema.json`
-- **notes** (2 connections) — `schemas/calendar/schedule.schema.json`
+- **required** (8 connections) — `schemas/calendar/schedule.schema.json`
+- **scheduleEntry** (5 connections) — `schemas/calendar/schedule.schema.json`
+- **$defs** (2 connections) — `schemas/calendar/schedule.schema.json`
 - **type** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **pattern** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **minLength** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **minLength** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **minLength** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **additionalProperties** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **id** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **name** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **category** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **start_hour** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **end_hour** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **days** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **applies_to** (1 connections) — `schemas/calendar/schedule.schema.json`
 
 ## Relationships
 
-- [schemas calendar schedule](schemas_calendar_schedule.md) (3 shared connections)
-- [services user manager](services_user_manager.md) (1 shared connections)
-- [combat death services](combat_death_services.md) (1 shared connections)
-- [realtime monitoring health](realtime_monitoring_health.md) (1 shared connections)
+- [schedule schema schemas](schedule_schema_schemas.md) (1 shared connections)
+- [schemas calendar schedule](schemas_calendar_schedule.md) (1 shared connections)
 
 ## Source Files
 
@@ -31,7 +28,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 30 (100%)
+- EXTRACTED: 24 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,29 +1,45 @@
 # channel broadcasting strategies
 
-> 6 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **TestGetPlayerDeathService** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_player_death_service_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_player_death_service_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Tests for get_player_death_service dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_player_death_service returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_player_death_service raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **channel_broadcasting_strategies.py** (14 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **ChannelBroadcastingStrategy** (12 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **UnknownChannelStrategy** (9 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **GlobalChannelStrategy** (7 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.get_strategy()** (6 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **test_unknown_channel_strategy_broadcast()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **ABC** (2 connections)
+- **.__init__()** (2 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Channel Broadcasting Strategies for NATS Message Handler.  This module implement** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Abstract base class for channel broadcasting strategies.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Strategy for global channel broadcasting.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Strategy for unknown channel types.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Initialize unknown channel strategy.          Args:             channel_type: Un** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Get strategy for channel type.          Args:             channel_type: Type of** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Test UnknownChannelStrategy.broadcast() handles unknown channel.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
 
 ## Relationships
 
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (3 shared connections)
-- [command inventory models](command_inventory_models.md) (1 shared connections)
+- [channel realtime broadcasting](channel_realtime_broadcasting.md) (7 shared connections)
+- [npc behavior engine](npc_behavior_engine.md) (4 shared connections)
+- [realtime channel broadcasting](realtime_channel_broadcasting.md) (4 shared connections)
+- [message handler factory](message_handler_factory.md) (3 shared connections)
+- [channel broadcasting realtime](channel_broadcasting_realtime.md) (2 shared connections)
+- [world loader rationale](world_loader_rationale.md) (2 shared connections)
+- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [auth users rationale](auth_users_rationale.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_dependencies.py`
+- `server/realtime/channel_broadcasting_strategies.py`
+- `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (93%)
-- INFERRED: 1 (7%)
+- EXTRACTED: 59 (95%)
+- INFERRED: 3 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

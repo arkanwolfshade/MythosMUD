@@ -1,5 +1,6 @@
 """Unit tests for PersonalMessageSender."""
 
+import logging
 import uuid
 from collections import deque
 from unittest.mock import AsyncMock, MagicMock, patch
@@ -71,6 +72,39 @@ async def test_send_to_websocket_disconnect(sender: PersonalMessageSender) -> No
     ok = await sender._send_to_websocket(player_id, "conn-1", websocket, {"type": "chat"}, delivery_status)
     assert ok is False
     assert delivery_status["websocket_failed"] == 1
+
+
+@pytest.mark.asyncio
+async def test_send_to_websocket_accept_first_is_debug_not_warning(
+    sender: PersonalMessageSender, caplog: pytest.LogCaptureFixture
+) -> None:
+    """E2E teardown: send after client drop must not warn."""
+    player_id = uuid.uuid4()
+    websocket = MagicMock()
+    websocket.application_state = MagicMock()
+    websocket.send_json = AsyncMock(
+        side_effect=RuntimeError('WebSocket is not connected. Need to call "accept" first.')
+    )
+    delivery_status = {"websocket_failed": 0, "websocket_delivered": 0, "active_connections": 0}
+    with caplog.at_level(logging.WARNING, logger="server.realtime.messaging.personal_message_sender"):
+        ok = await sender._send_to_websocket(player_id, "conn-1", websocket, {"type": "chat"}, delivery_status)
+    assert ok is False
+    assert not any("WebSocket send failed" in r.message for r in caplog.records)
+
+
+@pytest.mark.asyncio
+async def test_send_to_websocket_empty_runtime_error_is_debug(
+    sender: PersonalMessageSender, caplog: pytest.LogCaptureFixture
+) -> None:
+    player_id = uuid.uuid4()
+    websocket = MagicMock()
+    websocket.application_state = MagicMock()
+    websocket.send_json = AsyncMock(side_effect=RuntimeError(""))
+    delivery_status = {"websocket_failed": 0, "websocket_delivered": 0, "active_connections": 0}
+    with caplog.at_level(logging.WARNING, logger="server.realtime.messaging.personal_message_sender"):
+        ok = await sender._send_to_websocket(player_id, "conn-1", websocket, {"type": "chat"}, delivery_status)
+    assert ok is False
+    assert not any("WebSocket send failed" in r.message for r in caplog.records)
 
 
 def test_get_delivery_stats(sender: PersonalMessageSender) -> None:

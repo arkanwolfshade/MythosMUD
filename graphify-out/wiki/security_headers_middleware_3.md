@@ -1,27 +1,36 @@
 # security headers middleware
 
-> 4 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **TestGetProfessionService** (4 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_profession_service_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Tests for get_profession_service dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_profession_service creates service with persistence.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **parse_json_field()** (11 connections) — `server/npc/zone_config_loader.py`
+- **test_parse_json_field_none()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_parse_json_field_string()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_parse_json_field_dict()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_parse_json_field_list()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_parse_json_field_invalid_json()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **Parse a JSON field from database, handling both dict/list and string formats.** (1 connections) — `server/npc/zone_config_loader.py`
+- **Test parse_json_field() returns default when None.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **Test parse_json_field() parses JSON string.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **Test parse_json_field() returns dict as-is.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **Test parse_json_field() returns list as-is.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **Test parse_json_field() raises error on invalid JSON string.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
 
 ## Relationships
 
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (2 shared connections)
-- [command inventory models](command_inventory_models.md) (1 shared connections)
+- [npc realtime occupant](npc_realtime_occupant.md) (7 shared connections)
+- [npc idle movement](npc_idle_movement.md) (3 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_dependencies.py`
+- `server/npc/zone_config_loader.py`
+- `server/tests/unit/npc/test_zone_config_loader.py`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (89%)
-- INFERRED: 1 (11%)
+- EXTRACTED: 32 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

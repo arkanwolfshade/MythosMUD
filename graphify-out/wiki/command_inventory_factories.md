@@ -1,78 +1,77 @@
 # command inventory factories
 
-> 700 nodes
+> 165 nodes
 
 ## Key Concepts
 
-- **get_logger()** (516 connections) — `server/structured_logging/enhanced_logging_config.py`
-- **enhanced_logging_config.py** (489 connections) — `server/structured_logging/enhanced_logging_config.py`
+- **exceptions.py** (238 connections) — `server/exceptions.py`
 - **log_and_raise_enhanced()** (97 connections) — `server/utils/enhanced_error_logging.py`
-- **players.py** (66 connections) — `server/api/players.py`
-- **PlayerRead** (48 connections) — `server/schemas/players/player.py`
-- **test_player_respawn_service.py** (48 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **factory.py** (45 connections) — `server/app/factory.py`
-- **player_service.py** (45 connections) — `server/game/player_service.py`
-- **player_respawn_service.py** (41 connections) — `server/services/player_respawn_service.py`
+- **error_logging.py** (56 connections) — `server/utils/error_logging.py`
 - **enhanced_error_logging.py** (38 connections) — `server/utils/enhanced_error_logging.py`
-- **game.py** (32 connections) — `server/models/game.py`
-- **StatusEffect** (32 connections) — `server/models/game.py`
-- **processing.py** (25 connections) — `server/command_handler/processing.py`
-- **monitoring_dashboard.py** (25 connections) — `server/monitoring/monitoring_dashboard.py`
-- **__init__.py** (24 connections) — `server/config/models/__init__.py`
-- **PerformanceMonitor** (24 connections) — `server/monitoring/performance_monitor.py`
-- **ExceptionTracker** (23 connections) — `server/monitoring/exception_tracker.py`
-- **test_player_schemas.py** (21 connections) — `server/tests/unit/schemas/test_player_schemas.py`
-- **app.py** (20 connections) — `server/config/models/app.py`
-- **PositionState** (20 connections) — `server/models/game.py`
-- **performance_monitor.py** (20 connections) — `server/monitoring/performance_monitor.py`
-- **measure_performance()** (20 connections) — `server/monitoring/performance_monitor.py`
-- **player.py** (20 connections) — `server/schemas/players/player.py`
-- **player_schema_converter.py** (19 connections) — `server/game/player_schema_converter.py`
-- **InventoryItem** (19 connections) — `server/models/game.py`
-- *... and 675 more nodes in this community*
+- **test_error_logging.py** (23 connections) — `server/tests/unit/utils/test_error_logging.py`
+- **WearableContainerServiceError** (22 connections) — `server/services/wearable_container_service.py`
+- **test_enhanced_error_logging.py** (22 connections) — `server/tests/unit/utils/test_enhanced_error_logging.py`
+- **wearable_container_service.py** (20 connections) — `server/services/wearable_container_service.py`
+- **log_with_context()** (20 connections) — `server/structured_logging/logging_context.py`
+- **professions.py** (19 connections) — `server/api/professions.py`
+- **corpse_lifecycle_service.py** (19 connections) — `server/services/corpse_lifecycle_service.py`
+- **CommandParser** (19 connections) — `server/utils/command_parser.py`
+- **player_creation_service.py** (14 connections) — `server/game/player_creation_service.py`
+- **environmental_container_loader.py** (14 connections) — `server/services/environmental_container_loader.py`
+- **create_enhanced_error_context()** (14 connections) — `server/utils/enhanced_error_logging.py`
+- **test_professions_endpoints.py** (13 connections) — `server/tests/unit/api/test_professions_endpoints.py`
+- **PlayerStateService** (12 connections) — `server/game/player_state_service.py`
+- **wrap_third_party_exception_enhanced()** (12 connections) — `server/utils/enhanced_error_logging.py`
+- **command_factories_utility.py** (11 connections) — `server/utils/command_factories_utility.py`
+- **log_structured_error()** (11 connections) — `server/utils/enhanced_error_logging.py`
+- **create_error_context()** (10 connections) — `server/api/player_helpers.py`
+- **get_all_professions()** (10 connections) — `server/api/professions.py`
+- **get_profession_by_id()** (10 connections) — `server/api/professions.py`
+- **player_state_service.py** (10 connections) — `server/game/player_state_service.py`
+- **create_context_from_request()** (10 connections) — `server/utils/error_logging.py`
+- *... and 140 more nodes in this community*
 
 ## Relationships
 
-- [Database Config](Database_Config.md) (143 shared connections)
-- [command inventory models](command_inventory_models.md) (91 shared connections)
-- [commands admin mute](commands_admin_mute.md) (63 shared connections)
-- [time service rationale](time_service_rationale.md) (47 shared connections)
-- [Error Conversion](Error_Conversion.md) (45 shared connections)
-- [NPC Combat](NPC_Combat.md) (43 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (42 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (40 shared connections)
-- [command factories create](command_factories_create.md) (40 shared connections)
-- [game models player](game_models_player.md) (37 shared connections)
-- [item models rationale](item_models_rationale.md) (30 shared connections)
-- [Player Stats](Player_Stats.md) (29 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (49 shared connections)
+- [models npc rationale](models_npc_rationale.md) (39 shared connections)
+- [Database Config](Database_Config.md) (39 shared connections)
+- [command inventory models](command_inventory_models.md) (38 shared connections)
+- [Exception Containers](Exception_Containers.md) (31 shared connections)
+- [Loot Generation](Loot_Generation.md) (24 shared connections)
+- [wearable container service](wearable_container_service.md) (22 shared connections)
+- [player service game](player_service_game.md) (18 shared connections)
+- [exceptions rationale error](exceptions_rationale_error.md) (14 shared connections)
+- [Inventory Equip](Inventory_Equip.md) (13 shared connections)
+- [game chat service](game_chat_service.md) (12 shared connections)
+- [admin auth service](admin_auth_service.md) (11 shared connections)
 
 ## Source Files
 
-- `server/api/__init__.py`
-- `server/api/base.py`
-- `server/api/containers.py`
-- `server/api/players.py`
-- `server/api/skills.py`
-- `server/app/factory.py`
-- `server/app/lifespan.py`
-- `server/caching/__init__.py`
-- `server/caching/cache_service.py`
-- `server/caching/lru_cache.py`
-- `server/command_handler/alias_expansion.py`
-- `server/command_handler/processing.py`
-- `server/commands/container_helpers_inventory_logging.py`
-- `server/config/models/__init__.py`
-- `server/config/models/_helpers.py`
-- `server/config/models/app.py`
-- `server/config/models/chat_time.py`
-- `server/config/models/cors.py`
-- `server/config/models/game.py`
-- `server/config/models/nats.py`
+- `server/api/player_helpers.py`
+- `server/api/professions.py`
+- `server/exceptions.py`
+- `server/game/player_creation_service.py`
+- `server/game/player_service.py`
+- `server/game/player_state_service.py`
+- `server/monitoring/exception_metrics.py`
+- `server/services/corpse_lifecycle_service.py`
+- `server/services/environmental_container_loader.py`
+- `server/services/wearable_container_service.py`
+- `server/structured_logging/logging_context.py`
+- `server/tests/unit/api/test_player_helpers.py`
+- `server/tests/unit/api/test_professions_endpoints.py`
+- `server/tests/unit/utils/test_enhanced_error_logging.py`
+- `server/tests/unit/utils/test_error_logging.py`
+- `server/utils/command_factories_utility.py`
+- `server/utils/command_parser.py`
+- `server/utils/enhanced_error_logging.py`
+- `server/utils/error_logging.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4047 (97%)
-- INFERRED: 135 (3%)
+- EXTRACTED: 1055 (95%)
+- INFERRED: 53 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

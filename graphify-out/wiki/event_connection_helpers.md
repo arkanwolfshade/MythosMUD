@@ -16,8 +16,9 @@
 
 ## Relationships
 
-- [commands admin mute](commands_admin_mute.md) (3 shared connections)
-- [realtime game state](realtime_game_state.md) (1 shared connections)
+- [commands position system](commands_position_system.md) (2 shared connections)
+- [commands npc admin](commands_npc_admin.md) (1 shared connections)
+- [command utility models](command_utility_models.md) (1 shared connections)
 
 ## Source Files
 

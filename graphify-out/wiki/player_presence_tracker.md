@@ -33,15 +33,16 @@
 
 ## Relationships
 
-- [Database Config](Database_Config.md) (10 shared connections)
-- [player disconnect handlers](player_disconnect_handlers.md) (9 shared connections)
+- [Database Config](Database_Config.md) (8 shared connections)
 - [Room Broadcast](Room_Broadcast.md) (7 shared connections)
-- [grace period disconnect](grace_period_disconnect.md) (6 shared connections)
+- [look helpers commands](look_helpers_commands.md) (6 shared connections)
 - [help content websocket](help_content_websocket.md) (6 shared connections)
-- [realtime player connection](realtime_player_connection.md) (3 shared connections)
+- [emote game service](emote_game_service.md) (5 shared connections)
+- [player disconnect handlers](player_disconnect_handlers.md) (4 shared connections)
+- [models npc rationale](models_npc_rationale.md) (3 shared connections)
+- [combat services messaging](combat_services_messaging.md) (3 shared connections)
 - [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [time service rationale](time_service_rationale.md) (1 shared connections)
-- [realtime game state](realtime_game_state.md) (1 shared connections)
+- [command utility models](command_utility_models.md) (1 shared connections)
 - [uuid npc combat](uuid_npc_combat.md) (1 shared connections)
 
 ## Source Files

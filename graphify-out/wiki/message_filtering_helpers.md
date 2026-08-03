@@ -1,29 +1,44 @@
 # message filtering helpers
 
-> 6 nodes
+> 18 nodes
 
 ## Key Concepts
 
-- **TestGetConnectionManager** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_connection_manager_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_connection_manager_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Tests for get_connection_manager dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_connection_manager returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_connection_manager raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **_parse_npc_stats_dict()** (14 connections) — `server/commands/look_npc.py`
+- **test_parse_npc_stats_dict_from_dict()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_parse_npc_stats_dict_from_json_string()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_parse_npc_stats_dict_invalid_json()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_parse_npc_stats_dict_non_dict_non_string()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_parse_npc_stats_dict_from_dict()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_parse_npc_stats_dict_from_json_string()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_parse_npc_stats_dict_invalid_json()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_parse_npc_stats_dict_other_type()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **Parse NPC stats dictionary, handling both dict and JSON string formats.** (1 connections) — `server/commands/look_npc.py`
+- **Test parsing NPC stats from dictionary.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test parsing NPC stats from JSON string.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test parsing NPC stats from invalid JSON.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test parsing NPC stats from non-dict, non-string.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test _parse_npc_stats_dict() handles dict input.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **Test _parse_npc_stats_dict() parses JSON string.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **Test _parse_npc_stats_dict() returns empty dict for invalid JSON.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **Test _parse_npc_stats_dict() returns empty dict for other types.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
 
 ## Relationships
 
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (3 shared connections)
-- [command inventory models](command_inventory_models.md) (1 shared connections)
+- [npc look commands](npc_look_commands.md) (5 shared connections)
+- [schemas calendar rationale](schemas_calendar_rationale.md) (5 shared connections)
+- [services service hallucination](services_service_hallucination.md) (3 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_dependencies.py`
+- `server/commands/look_npc.py`
+- `server/tests/unit/commands/test_look_npc.py`
+- `server/tests/unit/commands/test_look_npc_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (93%)
-- INFERRED: 1 (7%)
+- EXTRACTED: 47 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

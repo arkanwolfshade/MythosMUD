@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_create_command_object_with_alias_w()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **Test _create_command_object() handles 'w' alias.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **subscription_manager()** (3 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **Create a RoomSubscriptionManager instance.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Relationships
 
-- [command parser helpers](command_parser_helpers.md) (1 shared connections)
+- [connection disconnection realtime](connection_disconnection_realtime.md) (1 shared connections)
+- [room subscription manager](room_subscription_manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_parser_helpers.py`
+- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

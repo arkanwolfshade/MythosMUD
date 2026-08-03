@@ -16,7 +16,7 @@
 ## Relationships
 
 - [commands status rationale](commands_status_rationale.md) (3 shared connections)
-- [commands emote rationale](commands_emote_rationale.md) (1 shared connections)
+- [commands who rationale](commands_who_rationale.md) (1 shared connections)
 
 ## Source Files
 

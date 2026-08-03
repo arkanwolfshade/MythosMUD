@@ -1,51 +1,51 @@
 # persistence rationale player
 
-> 19 nodes
+> 30 nodes
 
 ## Key Concepts
 
-- **inventory_put_command.py** (21 connections) — `server/commands/inventory_put_command.py`
-- **handle_put_command()** (12 connections) — `server/commands/inventory_put_command.py`
-- **_put_resolve_container_id()** (9 connections) — `server/commands/inventory_put_command.py`
-- **_put_transfer_finish()** (8 connections) — `server/commands/inventory_put_command.py`
-- **_put_run_validated()** (7 connections) — `server/commands/inventory_put_command.py`
-- **remove_item_from_inventory()** (5 connections) — `server/commands/inventory_command_helpers.py`
-- **PutCommandRuntime** (4 connections) — `server/commands/inventory_put_command.py`
-- **PutValidatedWork** (4 connections) — `server/commands/inventory_put_command.py`
-- **CommandResponse** (4 connections)
-- **UUID** (3 connections)
-- **test_handle_put_command()** (3 connections) — `server/tests/unit/commands/test_inventory_commands.py`
-- **Player** (2 connections)
-- **Remove or update item quantity in player inventory after transfer.** (1 connections) — `server/commands/inventory_command_helpers.py`
-- **Put command: move inventory items into a container.** (1 connections) — `server/commands/inventory_put_command.py`
-- **Services and request scope for put-after-validation.** (1 connections) — `server/commands/inventory_put_command.py`
-- **Validated inventory item and command fields for put.** (1 connections) — `server/commands/inventory_put_command.py`
-- **Locate a room or wearable container id, or return an error response.** (1 connections) — `server/commands/inventory_put_command.py`
-- **Put an item from inventory into a container.** (1 connections) — `server/commands/inventory_put_command.py`
-- **Test handle_put_command() puts item in container.** (1 connections) — `server/tests/unit/commands/test_inventory_commands.py`
+- **test_npc_combat_integration_service_player_attacks.py** (22 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_handle_player_attack_on_npc_grace_period_check_fails()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_handle_player_attack_on_npc_with_existing_combat()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_handle_player_attack_on_npc_login_grace_period_blocked()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_handle_player_attack_on_npc_npc_not_found()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_handle_player_attack_on_npc_error_handling()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_setup_combat_uuids_and_mappings_value_error()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_setup_combat_uuids_and_mappings_valid_uuid()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_store_npc_xp_mapping_no_definition()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_store_npc_xp_mapping_non_dict_base_stats()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_store_npc_xp_mapping_first_engagement()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_store_npc_xp_mapping_no_xp_value()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_process_combat_attack_queue_failure()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_process_combat_attack_start_new_combat()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_validate_and_get_npc_instance_not_found()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **Unit tests for NPC combat integration service - player-initiated combat paths.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **Test handle_player_attack_on_npc queues action when combat exists.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **Test handle_player_attack_on_npc blocks attack when player is in login grace per** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **Test handle_player_attack_on_npc continues when grace period check fails.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **Test handle_player_attack_on_npc returns False when NPC not found.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **Test handle_player_attack_on_npc handles exceptions gracefully.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **Test _setup_combat_uuids_and_mappings handles ValueError.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **Test _setup_combat_uuids_and_mappings with valid UUID.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **Test store_npc_xp_mapping_for_mixin when NPC definition is not found.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **Test store_npc_xp_mapping_for_mixin when base_stats is not a dict.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
-- [inventory commands command](inventory_commands_command.md) (5 shared connections)
-- [commands inventory command](commands_inventory_command.md) (5 shared connections)
-- [container inventory helpers](container_inventory_helpers.md) (4 shared connections)
-- [commands admin mute](commands_admin_mute.md) (3 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [container find inventory](container_find_inventory.md) (2 shared connections)
-- [commands inventory pickup](commands_inventory_pickup.md) (2 shared connections)
-- [world models rationale](world_models_rationale.md) (1 shared connections)
-- [combat models rationale](combat_models_rationale.md) (1 shared connections)
+- [Spell Validation](Spell_Validation.md) (3 shared connections)
+- [player event realtime](player_event_realtime.md) (3 shared connections)
+- [models npc rationale](models_npc_rationale.md) (1 shared connections)
+- [look helpers commands](look_helpers_commands.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/inventory_command_helpers.py`
-- `server/commands/inventory_put_command.py`
-- `server/tests/unit/commands/test_inventory_commands.py`
+- `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
 
 ## Audit Trail
 
-- EXTRACTED: 81 (91%)
-- INFERRED: 8 (9%)
+- EXTRACTED: 65 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

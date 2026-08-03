@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_get_wearable_containers_for_player_filters_non_equipment()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test get_wearable_containers_for_player filters out non-equipment containers.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **game_state_provider()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Create a GameStateProvider instance.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Relationships
 
-- [wearable container service](wearable_container_service.md) (1 shared connections)
+- [command utility models](command_utility_models.md) (1 shared connections)
+- [game state provider](game_state_provider.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -34,7 +34,7 @@
 ## Relationships
 
 - [containers stores containerStore](containers_stores_containerStore.md) (3 shared connections)
-- [zone configuration npc](zone_configuration_npc.md) (2 shared connections)
+- [commands rescue rationale](commands_rescue_rationale.md) (2 shared connections)
 - [mythosApp useMythosAppState useStatsRoll](mythosApp_useMythosAppState_useStatsRoll.md) (2 shared connections)
 
 ## Source Files

@@ -4,21 +4,22 @@
 
 ## Key Concepts
 
-- **__init__.py** (1 connections) — `server/tests/unit/realtime/maintenance/__init__.py`
-- **Realtime maintenance unit tests.** (1 connections) — `server/tests/unit/realtime/maintenance/__init__.py`
+- **test_remove_player_invalid_params()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
+- **Test remove_player_from_room validates empty player_id.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [command inventory models](command_inventory_models.md) (1 shared connections)
+- [movement service game](movement_service_game.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/maintenance/__init__.py`
+- `server/tests/unit/game/test_movement_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

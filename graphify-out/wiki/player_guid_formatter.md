@@ -33,9 +33,8 @@
 
 ## Relationships
 
-- [logging setup structured](logging_setup_structured.md) (3 shared connections)
-- [logging structured utilities](logging_structured_utilities.md) (2 shared connections)
-- [logging processors structured](logging_processors_structured.md) (1 shared connections)
+- [manager subject services](manager_subject_services.md) (5 shared connections)
+- [Magic Spell Service](Magic_Spell_Service.md) (1 shared connections)
 - [logging handlers structured](logging_handlers_structured.md) (1 shared connections)
 
 ## Source Files

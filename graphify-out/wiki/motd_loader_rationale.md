@@ -1,36 +1,40 @@
 # motd loader rationale
 
-> 12 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **load_motd()** (8 connections) — `server/utils/motd_loader.py`
-- **test_motd_loader.py** (7 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **test_load_motd_file_exists()** (3 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **test_load_motd_file_not_exists()** (3 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **test_load_motd_file_read_error()** (3 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **test_load_motd_empty_file()** (3 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **Unit tests for motd_loader utilities.  Tests the MOTD loading functions.** (1 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **Test load_motd() loads MOTD from file.** (1 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **Test load_motd() returns default when file doesn't exist.** (1 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **Test load_motd() handles file read errors.** (1 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **Test load_motd() handles empty file.** (1 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **Load the Message of the Day from the configured file.      Returns:         str:** (1 connections) — `server/utils/motd_loader.py`
+- **NATSRequestError** (11 connections) — `server/services/nats_exceptions.py`
+- **.__init__()** (7 connections) — `server/services/nats_exceptions.py`
+- **Exception** (6 connections)
+- **.__init__()** (3 connections) — `server/services/nats_exceptions.py`
+- **.__init__()** (3 connections) — `server/services/nats_exceptions.py`
+- **.__init__()** (3 connections) — `server/services/nats_exceptions.py`
+- **.__init__()** (3 connections) — `server/services/nats_exceptions.py`
+- **test_request_not_connected()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_request_timeout()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_request_error()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **Raised when request/response operations fail.** (1 connections) — `server/services/nats_exceptions.py`
+- **Test request() raises NATSRequestError when not connected.** (1 connections) — `server/tests/unit/services/test_nats_service.py`
+- **Test request() raises NATSRequestError on timeout.** (1 connections) — `server/tests/unit/services/test_nats_service.py`
+- **Test request() raises NATSRequestError on errors.** (1 connections) — `server/tests/unit/services/test_nats_service.py`
 
 ## Relationships
 
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [Item Instances](Item_Instances.md) (1 shared connections)
+- [nats exceptions services](nats_exceptions_services.md) (5 shared connections)
+- [combat validator validators](combat_validator_validators.md) (4 shared connections)
+- [nats services service](nats_services_service.md) (4 shared connections)
+- [message filtering realtime](message_filtering_realtime.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_motd_loader.py`
-- `server/utils/motd_loader.py`
+- `server/services/nats_exceptions.py`
+- `server/tests/unit/services/test_nats_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 33 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 42 (86%)
+- INFERRED: 7 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

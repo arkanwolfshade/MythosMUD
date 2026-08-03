@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_perform_recovery_action_string_player_id()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **Test perform_recovery_action() handles string player_id.** (1 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_move_player_success()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
+- **Test move_player completes a valid room transfer.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
 
 ## Relationships
 
-- [lucidity active service](lucidity_active_service.md) (1 shared connections)
+- [movement service game](movement_service_game.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_active_lucidity_service.py`
+- `server/tests/unit/game/test_movement_service.py`
 
 ## Audit Trail
 

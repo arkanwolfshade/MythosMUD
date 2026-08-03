@@ -1,29 +1,39 @@
 # envelope event game
 
-> 6 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **TestGetPassiveLucidityFluxService** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_passive_lucidity_flux_service_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_passive_lucidity_flux_service_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Tests for get_passive_lucidity_flux_service dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_passive_lucidity_flux_service returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_passive_lucidity_flux_service raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **test_player_spell_repository.py** (19 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **_mock_session_with_rows()** (9 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **_spell_row()** (6 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **test_get_player_spells()** (3 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **test_get_player_spell_found()** (3 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **test_learn_spell()** (3 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **test_learn_spell_no_row_raises()** (3 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **test_update_mastery()** (3 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **test_record_spell_cast()** (3 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **test_row_to_player_spell_maps_fields()** (2 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **repo()** (2 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **test_get_player_spells_db_error()** (2 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **test_get_player_spell_missing()** (2 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **test_update_mastery_not_found()** (2 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **Unit tests for PlayerSpellRepository.** (1 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
 
 ## Relationships
 
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (3 shared connections)
-- [command inventory models](command_inventory_models.md) (1 shared connections)
+- [Database Config](Database_Config.md) (6 shared connections)
+- [coercion int inventory](coercion_int_inventory.md) (2 shared connections)
+- [command inventory factories](command_inventory_factories.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_dependencies.py`
+- `server/tests/unit/persistence/test_player_spell_repository.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (93%)
-- INFERRED: 1 (7%)
+- EXTRACTED: 61 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

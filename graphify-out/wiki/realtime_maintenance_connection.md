@@ -1,25 +1,41 @@
 # realtime maintenance connection
 
-> 3 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **metadata** (3 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **additionalProperties** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **.error()** (17 connections) — `client/src/utils/logger.ts`
+- **ClientLogger** (13 connections) — `client/src/utils/logger.ts`
+- **.info()** (6 connections) — `client/src/utils/logger.ts`
+- **.initializeLogging()** (5 connections) — `client/src/utils/logger.ts`
+- **.createLogEntry()** (5 connections) — `client/src/utils/logger.ts`
+- **.addToBuffer()** (5 connections) — `client/src/utils/logger.ts`
+- **.warn()** (4 connections) — `client/src/utils/logger.ts`
+- **.flushLogs()** (4 connections) — `client/src/utils/logger.ts`
+- **.debug()** (3 connections) — `client/src/utils/logger.ts`
+- **.constructor()** (2 connections) — `client/src/utils/logger.ts`
+- **.downloadLogs()** (2 connections) — `client/src/utils/logger.ts`
+- **.clearLogs()** (2 connections) — `client/src/utils/logger.ts`
+- **.getLogBuffer()** (1 connections) — `client/src/utils/logger.ts`
 
 ## Relationships
 
-- [schemas items item](schemas_items_item.md) (1 shared connections)
+- [roomHandlers eventHandlers calculateOccu](roomHandlers_eventHandlers_calculateOccu.md) (3 shared connections)
+- [mythosApp security submitAuth](mythosApp_security_submitAuth.md) (3 shared connections)
+- [Game Terminal UI](Game_Terminal_UI.md) (2 shared connections)
+- [lucidityEventUtils mythosTime MythosTime](lucidityEventUtils_mythosTime_MythosTime.md) (2 shared connections)
+- [commands rescue rationale](commands_rescue_rationale.md) (1 shared connections)
+- [eventHandlers messageHandlers statusPars](eventHandlers_messageHandlers_statusPars.md) (1 shared connections)
+- [GameClientV2Container emptyOccupantsDiag](GameClientV2Container_emptyOccupantsDiag.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/items/item_prototype.schema.json`
+- `client/src/utils/logger.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 57 (83%)
+- INFERRED: 12 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

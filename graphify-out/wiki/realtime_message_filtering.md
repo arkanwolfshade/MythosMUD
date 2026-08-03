@@ -1,48 +1,53 @@
 # realtime message filtering
 
-> 23 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **.is_player_in_room()** (7 connections) — `server/realtime/message_filtering.py`
-- **.check_player_mute_status()** (6 connections) — `server/realtime/message_filtering.py`
-- **.filter_target_players()** (6 connections) — `server/realtime/message_filtering.py`
-- **Any** (4 connections)
-- **.is_player_muted_by_receiver_with_user_manager()** (4 connections) — `server/realtime/message_filtering.py`
-- **.__init__()** (3 connections) — `server/realtime/message_filtering.py`
-- **.extract_chat_event_info()** (3 connections) — `server/realtime/message_filtering.py`
-- **.should_apply_mute_check()** (3 connections) — `server/realtime/message_filtering.py`
-- **.compare_canonical_rooms()** (3 connections) — `server/realtime/message_filtering.py`
-- **.get_player_room_from_online_players()** (3 connections) — `server/realtime/message_filtering.py`
-- **.get_player_room_from_persistence()** (3 connections) — `server/realtime/message_filtering.py`
-- **._is_player_muted_by_receiver()** (3 connections) — `server/realtime/nats_message_handler_broadcast.py`
-- **Initialize message filtering helper.          Args:             connection_manag** (1 connections) — `server/realtime/message_filtering.py`
-- **Extract information from chat event.          Args:             chat_event: Chat** (1 connections) — `server/realtime/message_filtering.py`
-- **Determine if mute check should be applied for a channel.          Args:** (1 connections) — `server/realtime/message_filtering.py`
-- **Compare two room IDs using canonical room ID resolution.          Args:** (1 connections) — `server/realtime/message_filtering.py`
-- **Get player's current room ID from online players cache.          Args:** (1 connections) — `server/realtime/message_filtering.py`
-- **Get player's current room ID from async persistence layer.          Args:** (1 connections) — `server/realtime/message_filtering.py`
-- **Check if a player is currently in the specified room.          Args:** (1 connections) — `server/realtime/message_filtering.py`
-- **Check if a receiving player has muted the sender using a provided UserManager in** (1 connections) — `server/realtime/message_filtering.py`
-- **Check if a player has muted the sender.          Args:             user_manager:** (1 connections) — `server/realtime/message_filtering.py`
-- **Filter target players based on room location and mute status.          Args:** (1 connections) — `server/realtime/message_filtering.py`
-- **Check if a receiving player has muted the sender.** (1 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **subscribe_to_room_events_impl()** (13 connections) — `server/realtime/connection_event_helpers.py`
+- **unsubscribe_from_room_events_impl()** (13 connections) — `server/realtime/connection_event_helpers.py`
+- **test_connection_event_helpers.py** (13 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **connection_event_helpers.py** (10 connections) — `server/realtime/connection_event_helpers.py`
+- **test_subscribe_to_room_events_impl_database_error()** (4 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_subscribe_to_room_events_impl_attribute_error()** (4 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_unsubscribe_from_room_events_impl_database_error()** (4 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_unsubscribe_from_room_events_impl_attribute_error()** (4 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_subscribe_to_room_events_impl_success()** (3 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_subscribe_to_room_events_impl_no_event_bus()** (3 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_unsubscribe_from_room_events_impl_success()** (3 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_unsubscribe_from_room_events_impl_no_event_bus()** (3 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Any** (2 connections)
+- **Event subscription helpers for connection manager.  This module provides helper** (1 connections) — `server/realtime/connection_event_helpers.py`
+- **Subscribe to room movement events for occupant broadcasting.** (1 connections) — `server/realtime/connection_event_helpers.py`
+- **Unsubscribe from room movement events.** (1 connections) — `server/realtime/connection_event_helpers.py`
+- **Unit tests for connection event helpers.  Tests the connection_event_helpers mod** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test subscribe_to_room_events_impl() successfully subscribes to events.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test subscribe_to_room_events_impl() handles missing event bus.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test subscribe_to_room_events_impl() handles DatabaseError.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test subscribe_to_room_events_impl() handles AttributeError.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test unsubscribe_from_room_events_impl() successfully unsubscribes from events.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test unsubscribe_from_room_events_impl() handles missing event bus.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test unsubscribe_from_room_events_impl() handles DatabaseError.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test unsubscribe_from_room_events_impl() handles AttributeError.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
 
 ## Relationships
 
-- [circuit breaker realtime](circuit_breaker_realtime.md) (10 shared connections)
-- [nats exceptions services](nats_exceptions_services.md) (2 shared connections)
-- [message broadcast realtime](message_broadcast_realtime.md) (1 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (6 shared connections)
+- [Database Config](Database_Config.md) (6 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (4 shared connections)
+- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [look helpers commands](look_helpers_commands.md) (2 shared connections)
+- [command inventory factories](command_inventory_factories.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/message_filtering.py`
-- `server/realtime/nats_message_handler_broadcast.py`
+- `server/realtime/connection_event_helpers.py`
+- `server/tests/unit/realtime/test_connection_event_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 55 (93%)
-- INFERRED: 4 (7%)
+- EXTRACTED: 83 (91%)
+- INFERRED: 8 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

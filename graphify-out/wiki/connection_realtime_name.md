@@ -23,10 +23,10 @@
 
 ## Relationships
 
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [models npc rationale](models_npc_rationale.md) (2 shared connections)
 - [Room Broadcast](Room_Broadcast.md) (1 shared connections)
-- [commands npc admin](commands_npc_admin.md) (1 shared connections)
-- [room websocket updates](room_websocket_updates.md) (1 shared connections)
+- [AppRouter main AppRouter()](AppRouter_main_AppRouter%28%29.md) (1 shared connections)
+- [look helpers commands](look_helpers_commands.md) (1 shared connections)
 
 ## Source Files
 

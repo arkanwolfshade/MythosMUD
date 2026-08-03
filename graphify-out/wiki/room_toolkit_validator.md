@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_profession_meets_stat_requirements_multiple_not_met()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **Test meets_stat_requirements returns False when multiple requirements are not me** (1 connections) — `server/tests/unit/models/test_profession.py`
+- **test_handle_event_async_no_subscribers()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test _handle_event_async() when no subscribers.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- [persistence core infrastructure](persistence_core_infrastructure.md) (1 shared connections)
-- [profession models rationale](profession_models_rationale.md) (1 shared connections)
+- [event bus events](event_bus_events.md) (1 shared connections)
+- [services exploration service](services_exploration_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/models/test_profession.py`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 

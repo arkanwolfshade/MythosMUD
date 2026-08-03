@@ -16,7 +16,7 @@
 
 ## Relationships
 
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [models npc rationale](models_npc_rationale.md) (2 shared connections)
 
 ## Source Files
 

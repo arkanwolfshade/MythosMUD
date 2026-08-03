@@ -33,7 +33,8 @@
 
 ## Relationships
 
-- [nats exceptions services](nats_exceptions_services.md) (4 shared connections)
+- [message filtering realtime](message_filtering_realtime.md) (3 shared connections)
+- [nats exceptions services](nats_exceptions_services.md) (1 shared connections)
 
 ## Source Files
 

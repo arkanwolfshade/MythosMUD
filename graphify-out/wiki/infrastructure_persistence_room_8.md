@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_create_command_object_pydantic_validation_error()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **Test _create_command_object handles Pydantic validation errors.** (1 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_send_initial_game_state_no_player()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test send_initial_game_state() handles None player.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Relationships
 
-- [command parser rationale](command_parser_rationale.md) (1 shared connections)
-- [player effects endpoints](player_effects_endpoints.md) (1 shared connections)
+- [game state provider](game_state_provider.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_parser.py`
+- `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,52 +1,59 @@
 # schedule services service
 
-> 27 nodes
+> 52 nodes
 
 ## Key Concepts
 
-- **_get_enum_value()** (9 connections) — `server/services/wearable_container_service.py`
-- **_filter_container_data()** (9 connections) — `server/services/wearable_container_service.py`
-- **Any** (8 connections)
-- **.add_items_to_wearable_container()** (8 connections) — `server/services/wearable_container_service.py`
-- **.update_wearable_container_items()** (8 connections) — `server/services/wearable_container_service.py`
-- **UUID** (7 connections)
-- **.handle_equip_wearable_container()** (6 connections) — `server/services/wearable_container_service.py`
-- **.handle_unequip_wearable_container()** (6 connections) — `server/services/wearable_container_service.py`
-- **.handle_container_overflow()** (6 connections) — `server/services/wearable_container_service.py`
-- **.get_wearable_containers_for_player()** (5 connections) — `server/services/wearable_container_service.py`
-- **.__init__()** (3 connections) — `server/services/wearable_container_service.py`
-- **test_get_enum_value_with_enum()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_get_enum_value_with_string()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_filter_container_data()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **ContainerComponent** (1 connections)
-- **Safely get enum value, handling both enum instances and string values.      When** (1 connections) — `server/services/wearable_container_service.py`
-- **Filter out database-only fields from container data before validation.      The** (1 connections) — `server/services/wearable_container_service.py`
-- **Initialize the wearable container service.          Args:             persistenc** (1 connections) — `server/services/wearable_container_service.py`
-- **Handle equipping a wearable container item.          Creates a container in Post** (1 connections) — `server/services/wearable_container_service.py`
-- **Handle unequipping a wearable container item.          Preserves the container a** (1 connections) — `server/services/wearable_container_service.py`
-- **Get all wearable containers for a player.          Args:             player_id:** (1 connections) — `server/services/wearable_container_service.py`
-- **Add items to a wearable container.          Args:             player_id: UUID of** (1 connections) — `server/services/wearable_container_service.py`
-- **Update items in a wearable container.          Args:             player_id: UUID** (1 connections) — `server/services/wearable_container_service.py`
-- **Handle container overflow by spilling items to inventory or ground.          Arg** (1 connections) — `server/services/wearable_container_service.py`
-- **Test _get_enum_value returns value from enum instance.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- *... and 2 more nodes in this community*
+- **MovementService** (43 connections) — `server/game/movement_service.py`
+- **UUID** (16 connections)
+- **.move_player()** (14 connections) — `server/game/movement_service.py`
+- **._validate_movement()** (9 connections) — `server/game/movement_service.py`
+- **._handle_movement_error()** (8 connections) — `server/game/movement_service.py`
+- **._validate_move_params()** (6 connections) — `server/game/movement_service.py`
+- **._resolve_player_for_movement()** (6 connections) — `server/game/movement_service.py`
+- **._get_rooms_for_movement()** (6 connections) — `server/game/movement_service.py`
+- **._validate_player_room_membership()** (6 connections) — `server/game/movement_service.py`
+- **.add_player_to_room()** (6 connections) — `server/game/movement_service.py`
+- **._validate_remove_player_params()** (6 connections) — `server/game/movement_service.py`
+- **.remove_player_from_room()** (6 connections) — `server/game/movement_service.py`
+- **.get_player_room()** (6 connections) — `server/game/movement_service.py`
+- **.__init__()** (5 connections) — `server/game/movement_service.py`
+- **._execute_room_transfer()** (5 connections) — `server/game/movement_service.py`
+- **._mark_room_explored()** (5 connections) — `server/game/movement_service.py`
+- **._check_combat_state()** (5 connections) — `server/game/movement_service.py`
+- **._check_player_posture()** (5 connections) — `server/game/movement_service.py`
+- **Any** (4 connections)
+- **Room** (4 connections)
+- **._persist_player_location()** (4 connections) — `server/game/movement_service.py`
+- **._handle_tutorial_exit_if_applicable()** (4 connections) — `server/game/movement_service.py`
+- **._extract_player_id()** (4 connections) — `server/game/movement_service.py`
+- **._validate_exit()** (4 connections) — `server/game/movement_service.py`
+- **.get_room_players()** (4 connections) — `server/game/movement_service.py`
+- *... and 27 more nodes in this community*
 
 ## Relationships
 
-- [Database Config](Database_Config.md) (7 shared connections)
-- [commands inventory command](commands_inventory_command.md) (7 shared connections)
-- [wearable container service](wearable_container_service.md) (5 shared connections)
-- [rate limiter rationale](rate_limiter_rationale.md) (4 shared connections)
+- [Database Config](Database_Config.md) (18 shared connections)
+- [command inventory models](command_inventory_models.md) (8 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (3 shared connections)
+- [commands command rationale](commands_command_rationale.md) (2 shared connections)
+- [holiday service services](holiday_service_services.md) (2 shared connections)
+- [spell game magic](spell_game_magic.md) (2 shared connections)
+- [coercion int inventory](coercion_int_inventory.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [movement service game](movement_service_game.md) (2 shared connections)
+- [events event bus](events_event_bus.md) (2 shared connections)
+- [npc population control](npc_population_control.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/wearable_container_service.py`
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `server/game/movement_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 93 (96%)
-- INFERRED: 4 (4%)
+- EXTRACTED: 203 (91%)
+- INFERRED: 19 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

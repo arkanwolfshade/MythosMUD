@@ -1,29 +1,42 @@
 # connection models realtime
 
-> 6 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **TestGetCombatService** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_combat_service_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_combat_service_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Tests for get_combat_service dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_combat_service returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_combat_service raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Any** (7 connections)
+- **.__init__()** (6 connections) — `server/services/room_sync_service.py`
+- **._handle_stale_room_data()** (6 connections) — `server/services/room_sync_service.py`
+- **._process_room_update_with_validation()** (4 connections) — `server/services/room_sync_service.py`
+- **._fetch_fresh_room_data()** (4 connections) — `server/services/room_sync_service.py`
+- **.set_room_service()** (3 connections) — `server/services/room_sync_service.py`
+- **._invalidate_stale_cache()** (3 connections) — `server/services/room_sync_service.py`
+- **._process_room_transition()** (3 connections) — `server/services/room_sync_service.py`
+- **.get_room_data_cache_stats()** (3 connections) — `server/services/room_sync_service.py`
+- **Initialize the room synchronization service.          Args:             room_ser** (1 connections) — `server/services/room_sync_service.py`
+- **Set the room service for fetching fresh room data.          Args:             ro** (1 connections) — `server/services/room_sync_service.py`
+- **Process room update with comprehensive validation.          Args:             ro** (1 connections) — `server/services/room_sync_service.py`
+- **Invalidate stale room cache entry.          Args:             room_id: Room ID t** (1 connections) — `server/services/room_sync_service.py`
+- **Fetch fresh room data from room service.          Args:             room_id: Roo** (1 connections) — `server/services/room_sync_service.py`
+- **Handle stale room data by requesting fresh data.          Args:             room** (1 connections) — `server/services/room_sync_service.py`
+- **Process room transition with proper ordering and validation.          Args:** (1 connections) — `server/services/room_sync_service.py`
+- **Get statistics about the room data cache.          Returns:             Dict[str** (1 connections) — `server/services/room_sync_service.py`
 
 ## Relationships
 
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (3 shared connections)
-- [command inventory models](command_inventory_models.md) (1 shared connections)
+- [room service sync](room_service_sync.md) (8 shared connections)
+- [room fixer services](room_fixer_services.md) (1 shared connections)
+- [rate limiter rationale](rate_limiter_rationale.md) (1 shared connections)
+- [room validator services](room_validator_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_dependencies.py`
+- `server/services/room_sync_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (93%)
-- INFERRED: 1 (7%)
+- EXTRACTED: 47 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

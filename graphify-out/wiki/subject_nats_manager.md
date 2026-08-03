@@ -1,52 +1,56 @@
 # subject nats manager
 
-> 32 nodes
+> 54 nodes
 
 ## Key Concepts
 
-- **validate_message_content()** (21 connections) — `server/validators/security_validator.py`
-- **.validate_message()** (3 connections) — `server/models/command_communication.py`
-- **.validate_message()** (3 connections) — `server/models/command_communication.py`
-- **.validate_message()** (3 connections) — `server/models/command_communication.py`
-- **.validate_message()** (3 connections) — `server/models/command_communication.py`
-- **.validate_message()** (3 connections) — `server/models/command_communication.py`
-- **test_validate_message_content_empty()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_validate_message_content_normal()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_validate_message_content_rejects_html_tags()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_validate_message_content_rejects_angle_brackets()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_validate_message_content_rejects_sql_injection()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_validate_message_content_rejects_shell_metacharacters()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_validate_message_content_rejects_xss_patterns()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_validate_message_content_rejects_javascript_urls()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_validate_message_content_rejects_path_traversal()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_validate_message_content_allows_safe_special_chars()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **Validate message content for security using centralized validation.** (1 connections) — `server/models/command_communication.py`
-- **Validate message content for security using centralized validation.** (1 connections) — `server/models/command_communication.py`
-- **Validate system message content for security using centralized validation.** (1 connections) — `server/models/command_communication.py`
-- **Validate message content for security using centralized validation.** (1 connections) — `server/models/command_communication.py`
-- **Validate message content for security using centralized validation.** (1 connections) — `server/models/command_communication.py`
-- **Test validating empty message content.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **Test validating normal message content.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **Test that validate_message_content rejects HTML tags.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **Test that validate_message_content rejects angle brackets.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
-- *... and 7 more nodes in this community*
+- **_MagicServiceCore** (42 connections) — `server/game/magic/magic_service.py`
+- **UUID** (20 connections)
+- **Any** (18 connections)
+- **.can_cast_spell()** (10 connections) — `server/game/magic/magic_service.py`
+- **.cast_spell()** (10 connections) — `server/game/magic/magic_service.py`
+- **._execute_instant_or_delayed_cast()** (8 connections) — `server/game/magic/magic_service.py`
+- **._get_spell_and_validate_target()** (7 connections) — `server/game/magic/magic_service.py`
+- **._validate_spell_casting()** (6 connections) — `server/game/magic/magic_service.py`
+- **._start_delayed_cast()** (6 connections) — `server/game/magic/magic_service.py`
+- **._casting_roll_or_fail_result()** (6 connections) — `server/game/magic/magic_service.py`
+- **._send_spell_completion_message()** (6 connections) — `server/game/magic/magic_service.py`
+- **._get_player_and_normalized_stats()** (5 connections) — `server/game/magic/magic_service.py`
+- **._check_mp_sufficient()** (5 connections) — `server/game/magic/magic_service.py`
+- **._check_lucidity_sufficient()** (5 connections) — `server/game/magic/magic_service.py`
+- **._check_player_knows_spell()** (5 connections) — `server/game/magic/magic_service.py`
+- **._check_materials_available()** (5 connections) — `server/game/magic/magic_service.py`
+- **._check_already_casting()** (5 connections) — `server/game/magic/magic_service.py`
+- **._handle_instant_cast()** (5 connections) — `server/game/magic/magic_service.py`
+- **._consume_materials_if_required()** (5 connections) — `server/game/magic/magic_service.py`
+- **._casting_roll()** (5 connections) — `server/game/magic/magic_service.py`
+- **.send_spell_execution_notifications()** (5 connections) — `server/game/magic/magic_service.py`
+- **.interrupt_casting()** (5 connections) — `server/game/magic/magic_service.py`
+- **._get_spell_from_registry()** (4 connections) — `server/game/magic/magic_service.py`
+- **._calculate_initiative_tick()** (4 connections) — `server/game/magic/magic_service.py`
+- **.restore_mp()** (4 connections) — `server/game/magic/magic_service.py`
+- *... and 29 more nodes in this community*
 
 ## Relationships
 
-- [Security Validator Tests](Security_Validator_Tests.md) (11 shared connections)
-- [command communication models](command_communication_models.md) (8 shared connections)
-- [npc behavior engine](npc_behavior_engine.md) (1 shared connections)
+- [spell game magic](spell_game_magic.md) (9 shared connections)
+- [game models player](game_models_player.md) (4 shared connections)
+- [magic completion game](magic_completion_game.md) (4 shared connections)
+- [player respawn event](player_respawn_event.md) (2 shared connections)
+- [coercion int inventory](coercion_int_inventory.md) (2 shared connections)
+- [player service game](player_service_game.md) (1 shared connections)
+- [NPC Combat](NPC_Combat.md) (1 shared connections)
+- [tracked app task](tracked_app_task.md) (1 shared connections)
+- [combat services messaging](combat_services_messaging.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/command_communication.py`
-- `server/tests/unit/validators/test_security_validator.py`
-- `server/validators/security_validator.py`
+- `server/game/magic/magic_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 80 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 228 (95%)
+- INFERRED: 13 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

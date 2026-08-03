@@ -1,35 +1,49 @@
 # eventLog eventStore projector
 
-> 10 nodes
+> 27 nodes
 
 ## Key Concepts
 
-- **validate_help_topic()** (8 connections) — `server/validators/security_validator.py`
-- **.validate_topic()** (3 connections) — `server/models/command_utility.py`
-- **test_validate_help_topic_empty()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_validate_help_topic_valid()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_validate_help_topic_rejects_invalid_format()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **Validate help topic format using centralized validation.** (1 connections) — `server/models/command_utility.py`
-- **Test validating empty help topic.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **Test validating valid help topic.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **Test that validate_help_topic rejects invalid format.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **Centralized validation for help topic fields.      This function provides consis** (1 connections) — `server/validators/security_validator.py`
+- **test_chat_moderation.py** (30 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_normalize_player_id_accepts_uuid()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **player_service()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **user_manager()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_mute_channel_delegates_to_user_manager()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_mute_player_returns_false_when_target_missing()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_is_channel_muted()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_add_admin_returns_true()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_can_send_message()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_format_mute_duration_permanent()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_format_mute_duration_remaining_minutes()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_format_mute_duration_expired()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_get_mute_status_player_not_found()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_get_mute_status_invalid_player_id()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_unmute_channel()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_mute_player_success()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_unmute_player_success()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_mute_global_success()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_unmute_global_success()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_is_player_muted_and_global()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_remove_admin()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_get_player_mutes_and_stats()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_format_mute_entry_and_section()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_get_mute_status_with_personal_mutes()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_get_mute_status_includes_player_name()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [Security Validator Tests](Security_Validator_Tests.md) (4 shared connections)
-- [command factories create](command_factories_create.md) (2 shared connections)
-- [command communication models](command_communication_models.md) (1 shared connections)
+- [chat moderation game](chat_moderation_game.md) (2 shared connections)
+- [dialogue schemas tree](dialogue_schemas_tree.md) (2 shared connections)
+- [services ascii map](services_ascii_map.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/command_utility.py`
-- `server/tests/unit/validators/test_security_validator.py`
-- `server/validators/security_validator.py`
+- `server/tests/unit/game/test_chat_moderation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (100%)
+- EXTRACTED: 57 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

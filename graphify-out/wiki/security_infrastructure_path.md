@@ -33,7 +33,7 @@
 
 - [security infrastructure secure](security_infrastructure_secure.md) (12 shared connections)
 - [player repository persistence](player_repository_persistence.md) (2 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [models npc rationale](models_npc_rationale.md) (1 shared connections)
 
 ## Source Files
 

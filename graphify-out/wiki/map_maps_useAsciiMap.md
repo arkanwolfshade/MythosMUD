@@ -34,12 +34,11 @@
 ## Relationships
 
 - [apiTypeGuards FIELDS SHARED](apiTypeGuards_FIELDS_SHARED.md) (6 shared connections)
-- [panels chat ChatPanelRuntimeViewParts](panels_chat_ChatPanelRuntimeViewParts.md) (4 shared connections)
-- [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (2 shared connections)
+- [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (4 shared connections)
+- [command parser rationale](command_parser_rationale.md) (4 shared connections)
 - [MapView GameClientV2ContainerView Tabbed](MapView_GameClientV2ContainerView_Tabbed.md) (2 shared connections)
-- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (2 shared connections)
 - [PanelSystem PanelManager panelLayoutClam](PanelSystem_PanelManager_panelLayoutClam.md) (2 shared connections)
-- [mythosApp appLazyScreens mythosAppViewMo](mythosApp_appLazyScreens_mythosAppViewMo.md) (1 shared connections)
+- [commands rescue rationale](commands_rescue_rationale.md) (1 shared connections)
 
 ## Source Files
 

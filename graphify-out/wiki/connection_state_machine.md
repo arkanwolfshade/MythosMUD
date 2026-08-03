@@ -33,10 +33,10 @@
 
 ## Relationships
 
-- [nats services service](nats_services_service.md) (4 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [nats exceptions services](nats_exceptions_services.md) (2 shared connections)
-- [realtime game state](realtime_game_state.md) (2 shared connections)
+- [combat validator validators](combat_validator_validators.md) (3 shared connections)
+- [nats services service](nats_services_service.md) (3 shared connections)
+- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [command utility models](command_utility_models.md) (2 shared connections)
 
 ## Source Files
 

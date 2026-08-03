@@ -1,70 +1,73 @@
 # NATS Messaging
 
-> 264 nodes
+> 377 nodes
 
 ## Key Concepts
 
+- **RealTimeEventHandler** (44 connections) — `server/realtime/event_handler.py`
 - **PlayerEventHandlerUtils** (42 connections) — `server/realtime/player_event_handlers_utils.py`
+- **PlayerDPUpdated** (39 connections) — `server/events/event_types.py`
 - **test_player_event_handlers_respawn.py** (34 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
 - **player_event_handlers_respawn.py** (33 connections) — `server/realtime/player_event_handlers_respawn.py`
 - **PlayerRespawnEventHandler** (33 connections) — `server/realtime/player_event_handlers_respawn.py`
 - **test_player_event_handlers_state.py** (33 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **MessageBuilder** (26 connections) — `server/realtime/message_builders.py`
+- **player_event_handlers.py** (26 connections) — `server/realtime/player_event_handlers.py`
 - **PlayerEventHandler** (26 connections) — `server/realtime/player_event_handlers.py`
-- **PlayerRespawnedEvent** (19 connections) — `server/events/event_types.py`
+- **player_event_handlers_state.py** (23 connections) — `server/realtime/player_event_handlers_state.py`
+- **RoomOccupantManager** (22 connections) — `server/realtime/room_occupant_manager.py`
+- **conftest.py** (22 connections) — `server/tests/unit/realtime/conftest.py`
+- **PlayerRespawnedEvent** (20 connections) — `server/events/event_types.py`
+- **player_event_handlers_room.py** (17 connections) — `server/realtime/player_event_handlers_room.py`
+- **player_event_handlers_utils.py** (16 connections) — `server/realtime/player_event_handlers_utils.py`
 - **PlayerStateEventHandler** (14 connections) — `server/realtime/player_event_handlers_state.py`
 - **RespawnPlayerEventPayload** (13 connections) — `server/realtime/player_event_handlers_respawn.py`
 - **UUID** (11 connections)
+- **_dispatch_player_dp_updated_payload()** (10 connections) — `server/realtime/player_event_handlers_state.py`
+- **.__init__()** (9 connections) — `server/realtime/event_handler.py`
 - **Any** (9 connections)
 - **.get_player_data_for_respawn()** (9 connections) — `server/realtime/player_event_handlers_respawn.py`
 - **.handle_player_respawned()** (9 connections) — `server/realtime/player_event_handlers_respawn.py`
 - **._extract_occupant_names()** (9 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **._fetch_delirium_respawn_player_snapshot()** (9 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **test_player_event_handlers_utils_grace_period.py** (9 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils_grace_period.py`
-- **.__init__()** (8 connections) — `server/realtime/player_event_handlers.py`
-- **._resolve_player_data_for_respawn_event()** (8 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **._initialize_handlers()** (7 connections) — `server/realtime/player_event_handlers.py`
-- **._build_respawn_player_payload()** (7 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **.send_respawn_event_with_retry()** (7 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **._fetch_fallback_player_data_for_respawn()** (7 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **._prepare_room_data_for_respawn()** (7 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **.handle_player_delirium_respawned()** (7 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **Any** (7 connections)
-- *... and 239 more nodes in this community*
+- *... and 352 more nodes in this community*
 
 ## Relationships
 
-- [item models rationale](item_models_rationale.md) (37 shared connections)
-- [Player Name Validation](Player_Name_Validation.md) (23 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (8 shared connections)
-- [inventory mutation guard](inventory_mutation_guard.md) (6 shared connections)
-- [combat services messaging](combat_services_messaging.md) (6 shared connections)
-- [realtime websocket initial](realtime_websocket_initial.md) (6 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (60 shared connections)
+- [item models rationale](item_models_rationale.md) (17 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (12 shared connections)
+- [inventory mutation guard](inventory_mutation_guard.md) (12 shared connections)
+- [look helpers commands](look_helpers_commands.md) (12 shared connections)
+- [Player Name Validation](Player_Name_Validation.md) (11 shared connections)
+- [combat services messaging](combat_services_messaging.md) (10 shared connections)
+- [health monitor realtime](health_monitor_realtime.md) (9 shared connections)
+- [services combat sync](services_combat_sync.md) (8 shared connections)
+- [realtime websocket initial](realtime_websocket_initial.md) (7 shared connections)
+- [combat models rationale](combat_models_rationale.md) (6 shared connections)
 - [models player rationale](models_player_rationale.md) (6 shared connections)
-- [command inventory factories](command_inventory_factories.md) (4 shared connections)
-- [player occupant processor](player_occupant_processor.md) (2 shared connections)
-- [combat commands handler](combat_commands_handler.md) (2 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (2 shared connections)
-- [lucidity services helpers](lucidity_services_helpers.md) (2 shared connections)
 
 ## Source Files
 
 - `server/events/event_types.py`
 - `server/realtime/event_handler.py`
+- `server/realtime/message_builders.py`
 - `server/realtime/player_event_handlers.py`
 - `server/realtime/player_event_handlers_respawn.py`
+- `server/realtime/player_event_handlers_room.py`
 - `server/realtime/player_event_handlers_state.py`
 - `server/realtime/player_event_handlers_utils.py`
+- `server/realtime/room_occupant_manager.py`
+- `server/services/combat_hp_sync.py`
+- `server/tests/unit/realtime/conftest.py`
 - `server/tests/unit/realtime/test_event_handler.py`
-- `server/tests/unit/realtime/test_player_event_handlers.py`
 - `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
 - `server/tests/unit/realtime/test_player_event_handlers_state.py`
 - `server/tests/unit/realtime/test_player_event_handlers_utils_grace_period.py`
-- `server/tests/unit/services/test_player_respawn_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 805 (96%)
-- INFERRED: 32 (4%)
+- EXTRACTED: 1249 (95%)
+- INFERRED: 68 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

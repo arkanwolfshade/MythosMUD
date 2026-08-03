@@ -1,42 +1,50 @@
 # room validator path
 
-> 20 nodes
+> 23 nodes
 
 ## Key Concepts
 
-- **TestPathValidator** (11 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **.validator()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **test_path_validator.py** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **.zone_transition_rooms()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **.test_zone_transition_detection()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **.test_broken_zone_transition()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **.test_get_room_zone()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **.test_missing_zone_info()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **.test_one_way_zone_transition()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **.test_mismatched_return_path()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **Tests for path validator functionality.  Validates room connectivity analysis wi** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **Test suite for path validation functionality.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **Create a path validator instance.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **Sample rooms with zone transitions.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **Test detection of zone transitions in room connections.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **Test detection of broken zone transitions.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **Test extraction of zone information from room data.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **Test handling of rooms with missing zone information.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **Test one-way exits across zone boundaries.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **Test detection of mismatched return paths across zones.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **test_npc_spawn_rules_api.py** (16 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
+- **get_npc_spawn_rules()** (14 connections) — `server/api/admin/npc_spawn_rules_api.py`
+- **create_npc_spawn_rule()** (14 connections) — `server/api/admin/npc_spawn_rules_api.py`
+- **delete_npc_spawn_rule()** (11 connections) — `server/api/admin/npc_spawn_rules_api.py`
+- **NPCSpawnRuleResponse** (7 connections) — `server/api/admin/npc_schemas.py`
+- **.from_orm()** (6 connections) — `server/api/admin/npc_schemas.py`
+- **Request** (3 connections)
+- **AsyncSession** (3 connections)
+- **test_get_npc_spawn_rules_generic_error()** (3 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
+- **test_create_npc_spawn_rule_rolls_back()** (3 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
+- **test_delete_npc_spawn_rule_not_found()** (3 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
+- **test_get_npc_spawn_rules_success()** (2 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
+- **test_get_npc_spawn_rules_http_exception_propagates()** (2 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
+- **test_create_npc_spawn_rule_success()** (2 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
+- **test_delete_npc_spawn_rule_success()** (2 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
+- **Model for NPC spawn rule responses.** (1 connections) — `server/api/admin/npc_schemas.py`
+- **Create response from ORM object.** (1 connections) — `server/api/admin/npc_schemas.py`
+- **Get all NPC spawn rules.** (1 connections) — `server/api/admin/npc_spawn_rules_api.py`
+- **Create a new NPC spawn rule.** (1 connections) — `server/api/admin/npc_spawn_rules_api.py`
+- **Delete an NPC spawn rule.** (1 connections) — `server/api/admin/npc_spawn_rules_api.py`
+- **mock_user()** (1 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
+- **mock_session()** (1 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
+- **Unit tests for NPC spawn rules admin API.** (1 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
 
 ## Relationships
 
-- [player service mutations](player_service_mutations.md) (2 shared connections)
+- [admin auth service](admin_auth_service.md) (15 shared connections)
+- [Exception Containers](Exception_Containers.md) (10 shared connections)
+- [models npc rationale](models_npc_rationale.md) (1 shared connections)
+- [command inventory factories](command_inventory_factories.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- `server/api/admin/npc_schemas.py`
+- `server/api/admin/npc_spawn_rules_api.py`
+- `server/tests/unit/api/test_npc_spawn_rules_api.py`
 
 ## Audit Trail
 
-- EXTRACTED: 38 (95%)
-- INFERRED: 2 (5%)
+- EXTRACTED: 96 (97%)
+- INFERRED: 3 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

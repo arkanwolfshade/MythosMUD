@@ -1,35 +1,40 @@
 # startup services npc
 
-> 12 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **_errors_len()** (7 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_required_npcs_no_spawn_room()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_required_npcs_exception()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_optional_npcs_exception()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_npcs_on_startup_exception_in_session()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_npcs_on_startup_critical_exception()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Narrow spawn/startup result dict for len(results['errors']) without propagating** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test _spawn_required_npcs() handles missing spawn room.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test _spawn_required_npcs() handles exceptions during spawning.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test _spawn_optional_npcs() handles exceptions during spawning.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test spawn_npcs_on_startup() handles exceptions during session processing.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test spawn_npcs_on_startup() handles critical exceptions.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **.send_message()** (8 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **UUID** (7 connections)
+- **._prepare_payload()** (7 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **Any** (6 connections)
+- **._send_to_websocket()** (6 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **._queue_message_if_needed()** (6 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **.__init__()** (4 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **.get_delivery_stats()** (4 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **Initialize the personal message sender.          Args:             message_queue** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **Prepare and optimize the payload for sending.** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **Send message to a single WebSocket connection. Returns True if successful.** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **Queue message if no active connections.** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **Send a personal message to a player via WebSocket.          Args:             pl** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **Get message delivery statistics for a player.** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
 
 ## Relationships
 
-- [startup npc service](startup_npc_service.md) (6 shared connections)
-- [player respawn event](player_respawn_event.md) (5 shared connections)
+- [services npc startup](services_npc_startup.md) (6 shared connections)
+- [connection disconnection realtime](connection_disconnection_realtime.md) (2 shared connections)
+- [Database Config](Database_Config.md) (2 shared connections)
+- [npc event handlers](npc_event_handlers.md) (1 shared connections)
+- [room look commands](room_look_commands.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_npc_startup_service.py`
+- `server/realtime/messaging/personal_message_sender.py`
 
 ## Audit Trail
 
-- EXTRACTED: 33 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 51 (94%)
+- INFERRED: 3 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,56 +1,54 @@
 # npc look commands
 
-> 146 nodes
+> 35 nodes
 
 ## Key Concepts
 
 - **test_look_npc.py** (59 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_look_npc_helpers.py** (34 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **look_npc.py** (25 connections) — `server/commands/look_npc.py`
-- **_parse_stat_datetime()** (16 connections) — `server/commands/look_npc.py`
-- **_format_npc_description()** (15 connections) — `server/commands/look_npc.py`
-- **Any** (14 connections)
-- **_parse_npc_stats_dict()** (14 connections) — `server/commands/look_npc.py`
-- **_get_npc_room_id()** (14 connections) — `server/commands/look_npc.py`
-- **_format_npc_stats_for_admin()** (12 connections) — `server/commands/look_npc.py`
-- **_try_lookup_npc_implicit()** (12 connections) — `server/commands/look_npc.py`
-- **_find_matching_npcs()** (11 connections) — `server/commands/look_npc.py`
-- **_format_lifecycle_info()** (11 connections) — `server/commands/look_npc.py`
-- **_format_core_attributes()** (10 connections) — `server/commands/look_npc.py`
-- **_format_other_stats()** (10 connections) — `server/commands/look_npc.py`
-- **_format_single_npc_result()** (10 connections) — `server/commands/look_npc.py`
-- **_format_multiple_npcs_result()** (6 connections) — `server/commands/look_npc.py`
-- **test_parse_npc_stats_dict_from_dict()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_parse_npc_stats_dict_from_json_string()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_parse_npc_stats_dict_invalid_json()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_parse_npc_stats_dict_non_dict_non_string()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
 - **test_format_core_attributes_success()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
 - **test_format_core_attributes_empty()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
 - **test_format_other_stats_success()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
 - **test_format_other_stats_empty()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_parse_stat_datetime_from_timestamp()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- *... and 121 more nodes in this community*
+- **test_format_lifecycle_info_empty()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_find_matching_npcs_no_match()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_find_matching_npcs_no_lifecycle_manager()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_format_npc_stats_for_admin_success()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_format_npc_stats_for_admin_no_npc_id()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_format_single_npc_result_success()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_format_single_npc_result_with_admin_stats()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_format_multiple_npcs_result()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_try_lookup_npc_implicit_success()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_try_lookup_npc_implicit_no_npcs()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_try_lookup_npc_implicit_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **mock_lifecycle_manager()** (2 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **mock_npc()** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Unit tests for NPC look functionality.  Tests the helper functions for looking a** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Create a mock lifecycle manager.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test formatting core attributes.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test formatting core attributes when none present.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test formatting other stats.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test formatting other stats when none present.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test formatting lifecycle information when not present.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- *... and 10 more nodes in this community*
 
 ## Relationships
 
-- [commands quest rationale](commands_quest_rationale.md) (23 shared connections)
-- [look command commands](look_command_commands.md) (3 shared connections)
-- [commands npc admin](commands_npc_admin.md) (3 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
-- [look helpers commands](look_helpers_commands.md) (1 shared connections)
-- [shutdown admin command](shutdown_admin_command.md) (1 shared connections)
+- [services service hallucination](services_service_hallucination.md) (26 shared connections)
+- [commands admin helpers](commands_admin_helpers.md) (7 shared connections)
+- [dead letter realtime](dead_letter_realtime.md) (6 shared connections)
+- [message filtering helpers](message_filtering_helpers.md) (5 shared connections)
+- [cache caching lru](cache_caching_lru.md) (4 shared connections)
+- [config rationale config()](config_rationale_config%28%29.md) (4 shared connections)
+- [schemas calendar rationale](schemas_calendar_rationale.md) (4 shared connections)
 
 ## Source Files
 
-- `server/commands/look_npc.py`
 - `server/tests/unit/commands/test_look_npc.py`
-- `server/tests/unit/commands/test_look_npc_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 515 (100%)
-- INFERRED: 1 (0%)
+- EXTRACTED: 124 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -34,7 +34,7 @@
 
 - [command validation commands](command_validation_commands.md) (5 shared connections)
 - [commands logout rationale](commands_logout_rationale.md) (5 shared connections)
-- [realtime game state](realtime_game_state.md) (1 shared connections)
+- [command utility models](command_utility_models.md) (1 shared connections)
 
 ## Source Files
 

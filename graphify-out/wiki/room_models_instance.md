@@ -34,17 +34,17 @@
 ## Relationships
 
 - [event events serialization](event_events_serialization.md) (8 shared connections)
-- [item models rationale](item_models_rationale.md) (6 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (7 shared connections)
 - [status game spell](status_game_spell.md) (5 shared connections)
-- [Database Config](Database_Config.md) (4 shared connections)
+- [NPC Combat](NPC_Combat.md) (3 shared connections)
 - [realtime websocket initial](realtime_websocket_initial.md) (3 shared connections)
 - [persistence protocols rationale](persistence_protocols_rationale.md) (2 shared connections)
+- [Database Config](Database_Config.md) (2 shared connections)
 - [argon2 auth rationale](argon2_auth_rationale.md) (2 shared connections)
 - [uuid npc combat](uuid_npc_combat.md) (2 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (1 shared connections)
-- [persistence rationale players](persistence_rationale_players.md) (1 shared connections)
+- [combat npc services](combat_npc_services.md) (1 shared connections)
+- [persistence container helpers](persistence_container_helpers.md) (1 shared connections)
 - [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
-- [player realtime event](player_realtime_event.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,10 +1,11 @@
 # commands recovery lucidity
 
-> 58 nodes
+> 60 nodes
 
 ## Key Concepts
 
 - **validate_room_data()** (16 connections) — `server/world_loader.py`
+- **world_loader.py** (14 connections) — `server/world_loader.py`
 - **get_room_environment()** (13 connections) — `server/world_loader.py`
 - **TestGetRoomEnvironment** (12 connections) — `server/tests/unit/test_world_loader.py`
 - **TestValidateRoomData** (11 connections) — `server/tests/unit/test_world_loader.py`
@@ -28,17 +29,16 @@
 - **.test_get_room_environment_zone_none()** (3 connections) — `server/tests/unit/test_world_loader.py`
 - **.test_get_room_environment_empty_string_in_room_data()** (3 connections) — `server/tests/unit/test_world_loader.py`
 - **.test_validate_room_data_validation_not_available()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_validate_room_data_with_validator()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- *... and 33 more nodes in this community*
+- *... and 35 more nodes in this community*
 
 ## Relationships
 
-- [command inventory models](command_inventory_models.md) (9 shared connections)
+- [command inventory models](command_inventory_models.md) (10 shared connections)
+- [schemas validator rationale](schemas_validator_rationale.md) (6 shared connections)
 - [command inventory factories](command_inventory_factories.md) (5 shared connections)
-- [commands admin mute](commands_admin_mute.md) (3 shared connections)
-- [Database Config](Database_Config.md) (1 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (1 shared connections)
-- [persistence rationale players](persistence_rationale_players.md) (1 shared connections)
+- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [combat npc services](combat_npc_services.md) (1 shared connections)
+- [persistence container helpers](persistence_container_helpers.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,8 +47,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 168 (94%)
-- INFERRED: 10 (6%)
+- EXTRACTED: 183 (95%)
+- INFERRED: 10 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

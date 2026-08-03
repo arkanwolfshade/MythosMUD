@@ -1,49 +1,58 @@
 # handler realtime nats
 
-> 55 nodes
+> 66 nodes
 
 ## Key Concepts
 
-- **NATSMessageSubscriptionMixin** (31 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **Any** (12 connections)
-- **.handle_player_movement()** (6 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **.unsubscribe_from_subzone()** (4 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **.cleanup_empty_subzone_subscriptions()** (4 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **.subscribe_to_subzone()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **.track_player_subzone_subscription()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **.get_players_in_subzone()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **._get_event_handler_map()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **._validate_event_message()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **._handle_event_message()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **._handle_player_entered_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **._handle_player_left_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **._handle_game_tick_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **._handle_combat_started_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **._handle_combat_ended_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **._handle_player_attacked_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **._handle_npc_attacked_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **._handle_npc_took_damage_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **._handle_npc_died_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **.subscribe_to_room()** (2 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **.unsubscribe_from_room()** (2 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **.get_subscription_count()** (2 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **.get_active_subjects()** (2 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **.subscribe_to_event_subjects()** (2 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- *... and 30 more nodes in this community*
+- **StandardizedErrorResponse** (46 connections) — `server/error_handlers/standardized_responses.py`
+- **test_standardized_responses.py** (29 connections) — `server/tests/unit/error_handlers/test_standardized_responses.py`
+- **.handle_exception()** (14 connections) — `server/error_handlers/standardized_responses.py`
+- **._handle_generic_exception()** (10 connections) — `server/error_handlers/standardized_responses.py`
+- **handle_api_error()** (10 connections) — `server/error_handlers/standardized_responses.py`
+- **TestStandardizedResponsesSecurity** (10 connections) — `server/tests/unit/error_handlers/test_standardized_responses_security.py`
+- **._extract_context_from_request()** (8 connections) — `server/error_handlers/standardized_responses.py`
+- **._handle_http_exception()** (8 connections) — `server/error_handlers/standardized_responses.py`
+- **._create_fallback_response()** (8 connections) — `server/error_handlers/standardized_responses.py`
+- **._handle_pydantic_validation_error()** (7 connections) — `server/error_handlers/standardized_responses.py`
+- **create_standardized_error_response()** (7 connections) — `server/error_handlers/standardized_responses.py`
+- **_SampleModel** (7 connections) — `server/tests/unit/error_handlers/test_standardized_responses_security.py`
+- **Request** (5 connections)
+- **._extract_user_id_from_state()** (5 connections) — `server/error_handlers/standardized_responses.py`
+- **._create_error_details()** (5 connections) — `server/error_handlers/standardized_responses.py`
+- **._sanitize_http_detail()** (5 connections) — `server/error_handlers/standardized_responses.py`
+- **._sanitize_exception_message()** (5 connections) — `server/error_handlers/standardized_responses.py`
+- **.test_pydantic_validation_error_does_not_expose_str_error_in_message()** (5 connections) — `server/tests/unit/error_handlers/test_standardized_responses_security.py`
+- **_contains_sensitive_exception_pattern()** (4 connections) — `server/error_handlers/standardized_responses.py`
+- **_contains_file_path_in_exception()** (4 connections) — `server/error_handlers/standardized_responses.py`
+- **.__init__()** (4 connections) — `server/error_handlers/standardized_responses.py`
+- **._extract_request_metadata()** (4 connections) — `server/error_handlers/standardized_responses.py`
+- **Exception** (4 connections)
+- **test_handle_mythos_error_response()** (4 connections) — `server/tests/unit/error_handlers/test_standardized_responses.py`
+- **test_handle_logged_http_exception()** (4 connections) — `server/tests/unit/error_handlers/test_standardized_responses.py`
+- *... and 41 more nodes in this community*
 
 ## Relationships
 
-- [circuit breaker realtime](circuit_breaker_realtime.md) (4 shared connections)
-- [room rationale subzone](room_rationale_subzone.md) (1 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (53 shared connections)
+- [middleware error handling](middleware_error_handling.md) (4 shared connections)
+- [Exception Containers](Exception_Containers.md) (3 shared connections)
+- [command inventory models](command_inventory_models.md) (3 shared connections)
+- [room look commands](room_look_commands.md) (2 shared connections)
+- [websocket realtime handler](websocket_realtime_handler.md) (2 shared connections)
+- [Database Config](Database_Config.md) (2 shared connections)
+- [command inventory factories](command_inventory_factories.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/nats_message_handler_subscriptions.py`
+- `server/error_handlers/standardized_responses.py`
+- `server/tests/unit/error_handlers/test_standardized_responses.py`
+- `server/tests/unit/error_handlers/test_standardized_responses_security.py`
+- `server/tests/unit/realtime/test_websocket_handler_core.py`
 
 ## Audit Trail
 
-- EXTRACTED: 143 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 273 (93%)
+- INFERRED: 21 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

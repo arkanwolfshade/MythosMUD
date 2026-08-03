@@ -19,7 +19,7 @@
 ## Relationships
 
 - [room models instance](room_models_instance.md) (5 shared connections)
-- [item models rationale](item_models_rationale.md) (3 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (3 shared connections)
 - [websocket helpers realtime](websocket_helpers_realtime.md) (2 shared connections)
 
 ## Source Files

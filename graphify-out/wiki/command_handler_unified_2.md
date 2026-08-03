@@ -33,11 +33,11 @@
 
 ## Relationships
 
-- [Memory Task Runtime](Memory_Task_Runtime.md) (5 shared connections)
-- [Database Config](Database_Config.md) (2 shared connections)
-- [Loot Generation](Loot_Generation.md) (2 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (5 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [Exception Containers](Exception_Containers.md) (2 shared connections)
 - [profession game service](profession_game_service.md) (1 shared connections)
-- [time service rationale](time_service_rationale.md) (1 shared connections)
+- [models npc rationale](models_npc_rationale.md) (1 shared connections)
 
 ## Source Files
 

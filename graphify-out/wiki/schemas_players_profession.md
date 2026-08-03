@@ -1,30 +1,44 @@
 # schemas players profession
 
-> 6 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **._despawn_npc()** (4 connections) — `server/services/npc_combat_lifecycle.py`
-- **.despawn_npc_safely()** (3 connections) — `server/services/npc_combat_lifecycle.py`
-- **.get_npc_lifecycle_manager()** (3 connections) — `server/services/player_combat_service_support.py`
-- **Despawn NPC with defensive error handling.          Args:             npc_id: ID** (1 connections) — `server/services/npc_combat_lifecycle.py`
-- **Despawn an NPC.          Args:             npc_id: ID of the NPC to despawn** (1 connections) — `server/services/npc_combat_lifecycle.py`
-- **Return lifecycle manager (sync); may be wrapped by asyncio.to_thread.** (1 connections) — `server/services/player_combat_service_support.py`
+- **get_npc_engine()** (14 connections) — `server/npc_database.py`
+- **TestNPCDatabaseInitialization** (8 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_get_npc_engine_raises_on_invalid_url()** (4 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **TestEventLoopHandling** (4 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_get_npc_engine_initializes_engine()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_get_npc_engine_uses_existing_engine()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_get_npc_engine_env_fallback()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_get_npc_engine_uses_nullpool_for_test()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_get_npc_engine_recreates_on_loop_change()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **AsyncEngine** (2 connections)
+- **Get the NPC database engine, initializing if necessary.      Returns:         As** (1 connections) — `server/npc_database.py`
+- **Test NPC database initialization.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test get_npc_engine() initializes engine when None.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test get_npc_engine() returns existing engine if already initialized.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test get_npc_engine() raises ValidationError for non-PostgreSQL URL.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test get_npc_engine() uses environment fallback when config fails.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test get_npc_engine() uses NullPool for test databases.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test event loop change detection and handling.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test get_npc_engine() recreates engine when event loop changes.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [combat attack handler](combat_attack_handler.md) (1 shared connections)
+- [player effects endpoints](player_effects_endpoints.md) (7 shared connections)
+- [command inventory models](command_inventory_models.md) (4 shared connections)
+- [commands command validation](commands_command_validation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/npc_combat_lifecycle.py`
-- `server/services/player_combat_service_support.py`
+- `server/npc_database.py`
+- `server/tests/unit/infrastructure/test_npc_database.py`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (85%)
-- INFERRED: 2 (15%)
+- EXTRACTED: 52 (93%)
+- INFERRED: 4 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

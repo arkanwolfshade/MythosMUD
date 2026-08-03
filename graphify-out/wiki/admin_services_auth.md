@@ -1,24 +1,27 @@
 # admin services auth
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_find_item_in_equipped_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test finding item in equipped items when not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **_is_npc_follow_value()** (6 connections) — `server/game/follow_service.py`
+- **_FollowTargetValue** (1 connections)
+- **TypeGuard** (1 connections)
+- **True when v is the 3-tuple (target_id, 'npc', display_name).** (1 connections) — `server/game/follow_service.py`
 
 ## Relationships
 
-- [health service services](health_service_services.md) (1 shared connections)
-- [Item Lookup](Item_Lookup.md) (1 shared connections)
+- [combat services messaging](combat_services_messaging.md) (1 shared connections)
+- [follow game service](follow_game_service.md) (1 shared connections)
+- [NPC Combat](NPC_Combat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_item.py`
+- `server/game/follow_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

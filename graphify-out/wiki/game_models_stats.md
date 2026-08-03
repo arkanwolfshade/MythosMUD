@@ -1,16 +1,17 @@
 # game models stats
 
-> 100 nodes
+> 132 nodes
 
 ## Key Concepts
 
-- **__init__.py** (38 connections) — `server/schemas/players/__init__.py`
 - **player_effects.py** (30 connections) — `server/api/player_effects.py`
 - **test_player_requests.py** (29 connections) — `server/tests/unit/schemas/test_player_requests.py`
 - **test_player_effects_endpoints.py** (28 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
+- **roll_character_stats()** (23 connections) — `server/api/character_creation.py`
+- **test_character_creation.py** (22 connections) — `server/tests/unit/api/test_character_creation.py`
 - **RollStatsRequest** (20 connections) — `server/schemas/players/player_requests.py`
-- **CreateCharacterRequest** (17 connections) — `server/schemas/players/player_requests.py`
-- **player_requests.py** (14 connections) — `server/schemas/players/player_requests.py`
+- **player_requests.py** (15 connections) — `server/schemas/players/player_requests.py`
+- **TestRollCharacterStats** (13 connections) — `server/tests/unit/api/test_character_creation.py`
 - **apply_lucidity_loss()** (12 connections) — `server/api/player_effects.py`
 - **EffectResponse** (12 connections) — `server/schemas/players/player_effects.py`
 - **LucidityLossRequest** (12 connections) — `server/schemas/players/player_requests.py`
@@ -25,40 +26,40 @@
 - **CorruptionRequest** (11 connections) — `server/schemas/players/player_requests.py`
 - **OccultKnowledgeRequest** (11 connections) — `server/schemas/players/player_requests.py`
 - **HealRequest** (11 connections) — `server/schemas/players/player_requests.py`
-- **SelectCharacterRequest** (8 connections) — `server/schemas/players/player_requests.py`
-- **_user()** (8 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
-- **UUID** (7 connections)
-- **FastAPIRequest** (6 connections)
-- *... and 75 more nodes in this community*
+- **SelectCharacterRequest** (10 connections) — `server/schemas/players/player_requests.py`
+- **TestCreateCharacterWithStats** (10 connections) — `server/tests/unit/api/test_character_creation.py`
+- **TestValidateCharacterStats** (9 connections) — `server/tests/unit/api/test_character_creation.py`
+- *... and 107 more nodes in this community*
 
 ## Relationships
 
-- [profession game service](profession_game_service.md) (20 shared connections)
-- [command inventory models](command_inventory_models.md) (18 shared connections)
-- [command inventory factories](command_inventory_factories.md) (16 shared connections)
-- [Exception Containers](Exception_Containers.md) (12 shared connections)
-- [logging file setup](logging_file_setup.md) (7 shared connections)
-- [ascii map renderer](ascii_map_renderer.md) (7 shared connections)
-- [Error Handling Core](Error_Handling_Core.md) (4 shared connections)
-- [Database Config](Database_Config.md) (2 shared connections)
-- [admin auth service](admin_auth_service.md) (2 shared connections)
-- [room game service](room_game_service.md) (2 shared connections)
-- [schemas unified room](schemas_unified_room.md) (2 shared connections)
-- [auth users rationale](auth_users_rationale.md) (1 shared connections)
+- [profession game service](profession_game_service.md) (42 shared connections)
+- [Exception Containers](Exception_Containers.md) (38 shared connections)
+- [command inventory models](command_inventory_models.md) (15 shared connections)
+- [player service game](player_service_game.md) (11 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (10 shared connections)
+- [Player Stats](Player_Stats.md) (6 shared connections)
+- [admin auth service](admin_auth_service.md) (3 shared connections)
+- [command inventory factories](command_inventory_factories.md) (3 shared connections)
+- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [models profession rationale](models_profession_rationale.md) (1 shared connections)
+- [shutdown admin command](shutdown_admin_command.md) (1 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (1 shared connections)
 
 ## Source Files
 
+- `server/api/character_creation.py`
 - `server/api/player_effects.py`
-- `server/schemas/players/__init__.py`
 - `server/schemas/players/player_effects.py`
 - `server/schemas/players/player_requests.py`
+- `server/tests/unit/api/test_character_creation.py`
 - `server/tests/unit/api/test_player_effects_endpoints.py`
 - `server/tests/unit/schemas/test_player_requests.py`
 
 ## Audit Trail
 
-- EXTRACTED: 505 (98%)
-- INFERRED: 8 (2%)
+- EXTRACTED: 588 (96%)
+- INFERRED: 27 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

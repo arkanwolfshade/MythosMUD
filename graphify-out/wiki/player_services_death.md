@@ -4,22 +4,21 @@
 
 ## Key Concepts
 
-- **test_perform_recovery_action_on_cooldown()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **Test perform_recovery_action() raises error when on cooldown.** (1 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_validate_player_location_false()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
+- **Test validate_player_location() returns False when player is not in room.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
 
 ## Relationships
 
-- [commands admin mute](commands_admin_mute.md) (1 shared connections)
-- [lucidity active service](lucidity_active_service.md) (1 shared connections)
+- [movement service game](movement_service_game.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_active_lucidity_service.py`
+- `server/tests/unit/game/test_movement_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

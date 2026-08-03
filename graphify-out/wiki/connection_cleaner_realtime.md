@@ -1,51 +1,58 @@
 # connection cleaner realtime
 
-> 36 nodes
+> 41 nodes
 
 ## Key Concepts
 
-- **test_connection_cleaner.py** (22 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **connection_cleaner()** (3 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **test_check_and_cleanup()** (3 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **mock_memory_monitor()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **mock_rate_limiter()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **mock_message_queue()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **mock_room_manager()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **mock_cleanup_dead_websocket()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **mock_has_websocket_connection()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **mock_get_async_persistence()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **test_connection_cleaner_init()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **test_prune_stale_players()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **test_prune_stale_players_not_stale()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **test_prune_stale_players_with_websockets()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **test_cleanup_orphaned_data()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **test_cleanup_dead_connections()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **test_cleanup_ghost_players()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **test_force_cleanup()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **Unit tests for connection cleaner.  Tests the ConnectionCleaner class.** (1 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **Create a mock memory monitor.** (1 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **Create a mock rate limiter.** (1 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **Create a mock message queue.** (1 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **Create a mock room manager.** (1 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **Create a mock cleanup_dead_websocket callback.** (1 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **Create a mock has_websocket_connection callback.** (1 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- *... and 11 more nodes in this community*
+- **ItemPrototypeModel** (39 connections) — `server/game/items/models.py`
+- **test_item_prototype_models.py** (13 connections) — `server/tests/unit/game/items/test_item_prototype_models.py`
+- **test_combat_weapon_resolution.py** (12 connections) — `server/tests/integration/test_combat_weapon_resolution.py`
+- **._initialize_item_services()** (10 connections) — `server/container/bundles/game.py`
+- **models.py** (9 connections) — `server/game/items/models.py`
+- **_valid_payload()** (9 connections) — `server/tests/unit/game/items/test_item_prototype_models.py`
+- **._handle_item_prototypes_db_error()** (4 connections) — `server/container/bundles/game.py`
+- **test_item_prototype_rejects_invalid_item_type()** (4 connections) — `server/tests/unit/game/items/test_item_prototype_models.py`
+- **test_item_prototype_rejects_invalid_flags()** (4 connections) — `server/tests/unit/game/items/test_item_prototype_models.py`
+- **test_item_prototype_rejects_invalid_wear_slots()** (4 connections) — `server/tests/unit/game/items/test_item_prototype_models.py`
+- **test_item_prototype_rejects_empty_effect_components()** (4 connections) — `server/tests/unit/game/items/test_item_prototype_models.py`
+- **constants.py** (3 connections) — `server/game/items/constants.py`
+- **.all()** (3 connections) — `server/game/items/prototype_registry.py`
+- **switchblade_prototype()** (3 connections) — `server/tests/integration/test_combat_weapon_resolution.py`
+- **test_weapon_resolution_switchblade_no_main_hand_returns_none()** (3 connections) — `server/tests/integration/test_combat_weapon_resolution.py`
+- **test_item_prototype_valid_minimal()** (3 connections) — `server/tests/unit/game/items/test_item_prototype_models.py`
+- **test_item_prototype_accepts_valid_flags()** (3 connections) — `server/tests/unit/game/items/test_item_prototype_models.py`
+- **test_item_prototype_accepts_valid_wear_slots()** (3 connections) — `server/tests/unit/game/items/test_item_prototype_models.py`
+- **test_item_prototype_normalizes_effect_components_and_tags()** (3 connections) — `server/tests/unit/game/items/test_item_prototype_models.py`
+- **.validate_item_type()** (2 connections) — `server/game/items/models.py`
+- **.validate_flags()** (2 connections) — `server/game/items/models.py`
+- **.validate_wear_slots()** (2 connections) — `server/game/items/models.py`
+- **.validate_effect_components()** (2 connections) — `server/game/items/models.py`
+- **.validate_tags()** (2 connections) — `server/game/items/models.py`
+- **Exception** (1 connections)
+- *... and 16 more nodes in this community*
 
 ## Relationships
 
-- [container service services](container_service_services.md) (2 shared connections)
-- [realtime maintenance connection](realtime_maintenance_connection.md) (2 shared connections)
-- [time service rationale](time_service_rationale.md) (1 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (1 shared connections)
+- [npc spawn validator](npc_spawn_validator.md) (19 shared connections)
+- [combat npc mixin](combat_npc_mixin.md) (12 shared connections)
+- [Error Conversion](Error_Conversion.md) (5 shared connections)
+- [command inventory models](command_inventory_models.md) (4 shared connections)
+- [holiday service services](holiday_service_services.md) (2 shared connections)
+- [world models rationale](world_models_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- `server/container/bundles/game.py`
+- `server/game/items/constants.py`
+- `server/game/items/models.py`
+- `server/game/items/prototype_registry.py`
+- `server/tests/integration/test_combat_weapon_resolution.py`
+- `server/tests/unit/game/items/test_item_prototype_models.py`
 
 ## Audit Trail
 
-- EXTRACTED: 76 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 150 (92%)
+- INFERRED: 13 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

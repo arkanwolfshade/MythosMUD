@@ -28,10 +28,10 @@
 
 ## Relationships
 
-- [connection realtime delegates](connection_realtime_delegates.md) (11 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (8 shared connections)
+- [connection realtime delegates](connection_realtime_delegates.md) (12 shared connections)
+- [connection disconnection realtime](connection_disconnection_realtime.md) (6 shared connections)
 - [Database Config](Database_Config.md) (2 shared connections)
-- [combat npc mixin](combat_npc_mixin.md) (1 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (2 shared connections)
 - [auth rationale access](auth_rationale_access.md) (1 shared connections)
 
 ## Source Files

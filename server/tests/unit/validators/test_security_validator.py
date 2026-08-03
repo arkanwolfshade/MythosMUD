@@ -422,9 +422,16 @@ def test_validate_combat_target_rejects_dangerous_chars():
 
 def test_validate_combat_target_rejects_too_long():
     """Test that validate_combat_target rejects names that are too long."""
-    long_name = "A" * 51
-    with pytest.raises(ValueError, match="must be 50 characters or less"):
+    long_name = "A" * 201
+    with pytest.raises(ValueError, match="must be 200 characters or less"):
         validate_combat_target(long_name)
+
+
+def test_validate_combat_target_allows_npc_instance_id():
+    """Regression: spawned NPC instance IDs exceed the old 50-char display-name limit."""
+    npc_id = "cultist_of_the_yellow_sign_earth_arkhamcity_sanitarium_room_foyer_001_1785797241_5351"
+    assert len(npc_id) > 50
+    assert validate_combat_target(npc_id) == npc_id
 
 
 def test_validate_help_topic_empty():

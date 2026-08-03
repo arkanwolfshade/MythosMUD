@@ -1,26 +1,36 @@
 # game magic regeneration
 
-> 4 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **._build_health_trends()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._build_health_stats_response()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **Build health trends statistics.          Args:             connection_ages: List** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **Build connection health statistics response.          Args:             total_co** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **_validate_app_state_for_status_effects()** (12 connections) — `server/app/game_tick_processing.py`
+- **test_validate_app_state_for_status_effects_no_container()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_validate_app_state_for_status_effects_no_async_persistence()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_validate_app_state_for_status_effects_no_connection_manager()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_validate_app_state_for_status_effects_valid()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_validate_app_state_for_status_effects_container_is_none()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_validate_app_state_for_status_effects_connection_manager_is_none()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **Validate app state has required components for status effect processing.      Re** (1 connections) — `server/app/game_tick_processing.py`
+- **Test _validate_app_state_for_status_effects returns False when no container.** (1 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **Test _validate_app_state_for_status_effects returns False when no async_persiste** (1 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **Test _validate_app_state_for_status_effects returns False when no connection_man** (1 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **Test _validate_app_state_for_status_effects returns True when all required compo** (1 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **Test _validate_app_state_for_status_effects returns False when container is None** (1 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **Test _validate_app_state_for_status_effects returns False when connection_manage** (1 connections) — `server/tests/unit/app/test_game_tick_processing.py`
 
 ## Relationships
 
-- [target services resolution](target_services_resolution.md) (3 shared connections)
-- [persistence container helpers](persistence_container_helpers.md) (1 shared connections)
+- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (11 shared connections)
 
 ## Source Files
 
-- `server/realtime/monitoring/statistics_aggregator.py`
+- `server/app/game_tick_processing.py`
+- `server/tests/unit/app/test_game_tick_processing.py`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
+- EXTRACTED: 37 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

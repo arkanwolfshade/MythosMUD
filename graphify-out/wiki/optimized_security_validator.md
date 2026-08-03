@@ -33,12 +33,14 @@
 
 ## Relationships
 
-- [optimized validators security](optimized_validators_security.md) (43 shared connections)
+- [optimized validators security](optimized_validators_security.md) (38 shared connections)
 - [realtime message handler](realtime_message_handler.md) (5 shared connections)
 - [optimized security validators](optimized_security_validators.md) (5 shared connections)
 - [optimized security validator](optimized_security_validator.md) (4 shared connections)
 - [npc aggressive mob](npc_aggressive_mob.md) (4 shared connections)
 - [metadata rationale npc](metadata_rationale_npc.md) (4 shared connections)
+- [archive MODERNIZATION PLAN](archive_MODERNIZATION_PLAN.md) (3 shared connections)
+- [models npc rationale](models_npc_rationale.md) (2 shared connections)
 
 ## Source Files
 

@@ -1,29 +1,23 @@
 # services chat logger
 
-> 25 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **DraggablePanelCore.tsx** (15 connections) — `client/src/components/DraggablePanelCore.tsx`
 - **useDraggablePanelInteractions.ts** (11 connections) — `client/src/components/useDraggablePanelInteractions.ts`
 - **DraggablePanel()** (10 connections) — `client/src/components/DraggablePanelCore.tsx`
 - **DraggablePanel.tsx** (8 connections) — `client/src/components/DraggablePanel.tsx`
 - **draggablePanelUtils.ts** (7 connections) — `client/src/components/draggablePanelUtils.ts`
 - **useDraggablePanelInteractions()** (7 connections) — `client/src/components/useDraggablePanelInteractions.ts`
-- **DraggablePanelResizeHandles.tsx** (5 connections) — `client/src/components/DraggablePanelResizeHandles.tsx`
 - **relativeToAbsolute()** (3 connections) — `client/src/components/draggablePanelUtils.ts`
 - **relativeSizeToAbsolute()** (3 connections) — `client/src/components/draggablePanelUtils.ts`
 - **isPanelDragBlockedTarget()** (3 connections) — `client/src/components/draggablePanelUtils.ts`
 - **isMouseEventOnHeader()** (3 connections) — `client/src/components/draggablePanelUtils.ts`
 - **DraggablePanelProps** (2 connections) — `client/src/components/DraggablePanelCore.tsx`
-- **DraggablePanelResizeHandles()** (2 connections) — `client/src/components/DraggablePanelResizeHandles.tsx`
 - **DraggablePanel.grid-positioning.test.tsx** (2 connections) — `client/src/components/__tests__/DraggablePanel.grid-positioning.test.tsx`
 - **DraggablePanel.test.tsx** (2 connections) — `client/src/components/__tests__/DraggablePanel.test.tsx`
 - **updateDragPosition()** (2 connections) — `client/src/components/useDraggablePanelInteractions.ts`
 - **updateResizePosition()** (2 connections) — `client/src/components/useDraggablePanelInteractions.ts`
-- **DraggablePanelResizeHandlesProps** (1 connections) — `client/src/components/DraggablePanelResizeHandles.tsx`
-- **HandleConfig** (1 connections) — `client/src/components/DraggablePanelResizeHandles.tsx`
-- **HANDLE_CONFIGS** (1 connections) — `client/src/components/DraggablePanelResizeHandles.tsx`
 - **PANEL_DRAG_BLOCK_SELECTORS** (1 connections) — `client/src/components/draggablePanelUtils.ts`
 - **Size** (1 connections) — `client/src/components/useDraggablePanelInteractions.ts`
 - **Position** (1 connections) — `client/src/components/useDraggablePanelInteractions.ts`
@@ -32,15 +26,14 @@
 
 ## Relationships
 
-- [panels chat ChatPanelRuntimeViewParts](panels_chat_ChatPanelRuntimeViewParts.md) (7 shared connections)
+- [panels chat ChatPanelRuntimeViewParts](panels_chat_ChatPanelRuntimeViewParts.md) (10 shared connections)
 - [game terminal lucidity](game_terminal_lucidity.md) (2 shared connections)
-- [panels GameClientV2Dock gameLogPanelUtil](panels_GameClientV2Dock_gameLogPanelUtil.md) (2 shared connections)
+- [stores connectionStore commandStore](stores_connectionStore_commandStore.md) (2 shared connections)
 
 ## Source Files
 
 - `client/src/components/DraggablePanel.tsx`
 - `client/src/components/DraggablePanelCore.tsx`
-- `client/src/components/DraggablePanelResizeHandles.tsx`
 - `client/src/components/__tests__/DraggablePanel.grid-positioning.test.tsx`
 - `client/src/components/__tests__/DraggablePanel.test.tsx`
 - `client/src/components/draggablePanelUtils.ts`
@@ -48,7 +41,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 95 (100%)
+- EXTRACTED: 70 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

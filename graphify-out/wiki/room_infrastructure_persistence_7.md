@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_build_room_objects_with_non_dict_attributes()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _build_room_objects handles non-dict attributes.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_get_room_occupants_with_online_players()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test get_room_occupants() with online players.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Relationships
 
-- [room persistence loading](room_persistence_loading.md) (1 shared connections)
+- [game state provider](game_state_provider.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Audit Trail
 

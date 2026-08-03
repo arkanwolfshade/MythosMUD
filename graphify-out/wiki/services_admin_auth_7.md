@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **test_create_unequip_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_unequip_command delegates to inventory factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_create_unmute_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_unmute_command delegates to moderation factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 

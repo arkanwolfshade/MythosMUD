@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_handle_container_overflow_room_id_empty_string()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test handle_container_overflow handles empty string room_id.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **mock_room_manager()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Create a mock room manager.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Relationships
 
-- [wearable container service](wearable_container_service.md) (1 shared connections)
+- [game state provider](game_state_provider.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Audit Trail
 

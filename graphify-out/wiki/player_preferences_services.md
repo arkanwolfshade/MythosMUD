@@ -1,55 +1,56 @@
 # player preferences services
 
-> 41 nodes
+> 40 nodes
 
 ## Key Concepts
 
-- **PlayerChannelPreferences** (30 connections) — `server/models/player.py`
-- **PlayerPreferencesService** (19 connections) — `server/services/player_preferences_service.py`
-- **._is_valid_player_id()** (11 connections) — `server/services/player_preferences_service.py`
-- **UUID** (10 connections)
-- **player_preferences_service.py** (9 connections) — `server/services/player_preferences_service.py`
-- **AsyncSession** (8 connections)
-- **Any** (8 connections)
-- **.update_default_channel()** (8 connections) — `server/services/player_preferences_service.py`
-- **.mute_channel()** (8 connections) — `server/services/player_preferences_service.py`
-- **.unmute_channel()** (8 connections) — `server/services/player_preferences_service.py`
-- **.is_channel_muted()** (8 connections) — `server/services/player_preferences_service.py`
-- **.create_player_preferences()** (7 connections) — `server/services/player_preferences_service.py`
-- **.get_player_preferences()** (7 connections) — `server/services/player_preferences_service.py`
-- **.get_muted_channels()** (7 connections) — `server/services/player_preferences_service.py`
-- **.delete_player_preferences()** (7 connections) — `server/services/player_preferences_service.py`
-- **._is_valid_channel()** (6 connections) — `server/services/player_preferences_service.py`
-- **test_player_channel_preferences_creation()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_channel_preferences_defaults()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_channel_preferences_with_muted_channels()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_channel_preferences_repr()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **.__init__()** (2 connections) — `server/services/player_preferences_service.py`
-- **._is_valid_json_array()** (2 connections) — `server/services/player_preferences_service.py`
-- **Player channel preferences model for Advanced Chat Channels.      Stores player** (1 connections) — `server/models/player.py`
-- **Player Preferences Service for Advanced Chat Channels.  This module provides fun** (1 connections) — `server/services/player_preferences_service.py`
-- **Service for managing player channel preferences.      This service handles:** (1 connections) — `server/services/player_preferences_service.py`
-- *... and 16 more nodes in this community*
+- **test_dialogue_definitions_api.py** (26 connections) — `server/tests/unit/api/test_dialogue_definitions_api.py`
+- **list_dialogue_definitions()** (13 connections) — `server/api/admin/dialogue_definitions_api.py`
+- **upsert_dialogue_definition()** (13 connections) — `server/api/admin/dialogue_definitions_api.py`
+- **create_dialogue_definition()** (13 connections) — `server/api/admin/dialogue_definitions_api.py`
+- **get_dialogue_definition()** (12 connections) — `server/api/admin/dialogue_definitions_api.py`
+- **delete_dialogue_definition()** (11 connections) — `server/api/admin/dialogue_definitions_api.py`
+- **to_response()** (10 connections) — `server/api/admin/dialogue_definitions_api.py`
+- **DialogueDefinitionResponse** (9 connections) — `server/api/admin/dialogue_schemas.py`
+- **dialogue_schemas.py** (7 connections) — `server/api/admin/dialogue_schemas.py`
+- **DialogueDefinitionCreate** (7 connections) — `server/api/admin/dialogue_schemas.py`
+- **DialogueDefinitionUpdate** (7 connections) — `server/api/admin/dialogue_schemas.py`
+- **Request** (5 connections)
+- **test_create_dialogue_definition_upserts()** (5 connections) — `server/tests/unit/api/test_dialogue_definitions_api.py`
+- **test_upsert_dialogue_definition()** (5 connections) — `server/tests/unit/api/test_dialogue_definitions_api.py`
+- **test_dialogue_tree_schema_rejects_bad_start()** (4 connections) — `server/tests/unit/api/test_dialogue_definitions_api.py`
+- **_dialogue_row()** (4 connections) — `server/tests/unit/api/test_dialogue_definitions_api.py`
+- **BaseModel** (3 connections)
+- **test_dialogue_tree_schema_accepts_nav_only()** (3 connections) — `server/tests/unit/api/test_dialogue_definitions_api.py`
+- **test_to_response_maps_row()** (3 connections) — `server/tests/unit/api/test_dialogue_definitions_api.py`
+- **test_list_dialogue_definitions_returns_rows()** (3 connections) — `server/tests/unit/api/test_dialogue_definitions_api.py`
+- **test_list_dialogue_definitions_db_error()** (3 connections) — `server/tests/unit/api/test_dialogue_definitions_api.py`
+- **test_get_dialogue_definition_found()** (3 connections) — `server/tests/unit/api/test_dialogue_definitions_api.py`
+- **test_get_dialogue_definition_not_found()** (3 connections) — `server/tests/unit/api/test_dialogue_definitions_api.py`
+- **test_delete_dialogue_definition_not_found()** (3 connections) — `server/tests/unit/api/test_dialogue_definitions_api.py`
+- **test_delete_dialogue_definition_success()** (2 connections) — `server/tests/unit/api/test_dialogue_definitions_api.py`
+- *... and 15 more nodes in this community*
 
 ## Relationships
 
-- [world models rationale](world_models_rationale.md) (15 shared connections)
-- [player preferences service](player_preferences_service.md) (5 shared connections)
-- [command inventory factories](command_inventory_factories.md) (3 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (3 shared connections)
-- [lucidity services helpers](lucidity_services_helpers.md) (1 shared connections)
-- [ascii map renderer](ascii_map_renderer.md) (1 shared connections)
+- [admin auth service](admin_auth_service.md) (20 shared connections)
+- [Exception Containers](Exception_Containers.md) (14 shared connections)
+- [dialogue service game](dialogue_service_game.md) (6 shared connections)
+- [Database Config](Database_Config.md) (5 shared connections)
+- [commands quest rationale](commands_quest_rationale.md) (1 shared connections)
+- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [command inventory models](command_inventory_models.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/player.py`
-- `server/services/player_preferences_service.py`
-- `server/tests/unit/models/test_player_related_models.py`
+- `server/api/admin/dialogue_definitions_api.py`
+- `server/api/admin/dialogue_schemas.py`
+- `server/tests/unit/api/test_dialogue_definitions_api.py`
 
 ## Audit Trail
 
-- EXTRACTED: 167 (85%)
-- INFERRED: 29 (15%)
+- EXTRACTED: 187 (97%)
+- INFERRED: 5 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

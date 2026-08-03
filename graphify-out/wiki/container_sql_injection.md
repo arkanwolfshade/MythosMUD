@@ -1,54 +1,50 @@
 # container sql injection
 
-> 41 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **test_container_persistence_extended_crud.py** (41 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **get_container()** (19 connections) — `server/persistence/container_persistence.py`
-- **delete_container()** (14 connections) — `server/persistence/container_persistence.py`
-- **test_create_container_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_container_success()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_container_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_containers_by_room_id_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_containers_by_entity_id_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_update_container_success()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_decayed_containers_success()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_decayed_containers_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_delete_container_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_container_not_found()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_containers_by_room_id_empty()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_decayed_containers_none_time()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_delete_container_success()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_delete_container_not_found()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_delete_container_uuid_string_conversion()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_fetch_container_items_uuid_string_conversion()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_container_wraps_psycopg2_error()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
-- **test_delete_container_false_and_psycopg_error()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
-- **test_get_container_returns_none_when_row_missing()** (2 connections) — `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
-- **Load one container by id, or None. Raises DatabaseError on psycopg failure.** (1 connections) — `server/persistence/container_persistence.py`
-- **Delete by id; True if a row was removed. Raises DatabaseError on failure.** (1 connections) — `server/persistence/container_persistence.py`
-- **Unit tests for container persistence: CRUD, queries, and UUID conversion paths.** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- *... and 16 more nodes in this community*
+- **OccupantFormatter** (37 connections) — `server/realtime/occupant_formatter.py`
+- **.__init__()** (3 connections) — `server/realtime/occupant_formatter.py`
+- **test_occupant_formatter_is_valid_name_for_occupant_empty()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_occupant_formatter_add_valid_name_to_lists()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_occupant_formatter_process_player_name_for_update_uuid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_occupant_formatter_process_npc_name_for_update_uuid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_occupant_formatter_process_dict_occupant_for_update_npc()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_occupant_formatter_separate_occupants_by_type_dict_players()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **Formats and separates occupants by type.** (1 connections) — `server/realtime/occupant_formatter.py`
+- **Initialize occupant formatter.** (1 connections) — `server/realtime/occupant_formatter.py`
+- **Test OccupantFormatter._is_valid_name_for_occupant() returns False for empty str** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **Test OccupantFormatter._add_valid_name_to_lists() adds name to both lists.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **Test OccupantFormatter._process_player_name_for_update() skips UUID player name.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **Test OccupantFormatter._process_npc_name_for_update() skips UUID NPC name.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **Test OccupantFormatter._process_dict_occupant_for_update() processes NPC dict.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **Test OccupantFormatter.separate_occupants_by_type() separates dict players.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
 
 ## Relationships
 
-- [persistence container item](persistence_container_item.md) (21 shared connections)
-- [Database Config](Database_Config.md) (15 shared connections)
-- [follow service game](follow_service_game.md) (11 shared connections)
-- [auth endpoints rationale](auth_endpoints_rationale.md) (11 shared connections)
-- [monitoring dashboard rationale](monitoring_dashboard_rationale.md) (6 shared connections)
+- [occupant formatter realtime](occupant_formatter_realtime.md) (15 shared connections)
+- [player schemas requests](player_schemas_requests.md) (6 shared connections)
+- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [npc populate databases](npc_populate_databases.md) (2 shared connections)
+- [look helpers commands](look_helpers_commands.md) (2 shared connections)
+- [NATS Messaging](NATS_Messaging.md) (1 shared connections)
+- [test_occupant_formatter_init](test_occupant_formatter_init.md) (1 shared connections)
+- [test_occupant_formatter_is_valid_name_for_occupant_non_string](test_occupant_formatter_is_valid_name_for_occupant_non_string.md) (1 shared connections)
+- [test_occupant_formatter_is_valid_name_for_occupant_none](test_occupant_formatter_is_valid_name_for_occupant_none.md) (1 shared connections)
+- [test_occupant_formatter_is_valid_name_for_occupant_uuid](test_occupant_formatter_is_valid_name_for_occupant_uuid.md) (1 shared connections)
+- [test_occupant_formatter_process_dict_occupant_for_update_fallback_name](test_occupant_formatter_process_dict_occupant_for_update_fallback_name.md) (1 shared connections)
+- [npc behavior engine](npc_behavior_engine.md) (1 shared connections)
 
 ## Source Files
 
-- `server/persistence/container_persistence.py`
-- `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
+- `server/realtime/occupant_formatter.py`
+- `server/tests/unit/realtime/test_occupant_formatter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 144 (91%)
-- INFERRED: 14 (9%)
+- EXTRACTED: 65 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

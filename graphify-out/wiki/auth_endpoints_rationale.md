@@ -1,55 +1,54 @@
 # auth endpoints rationale
 
-> 27 nodes
+> 86 nodes
 
 ## Key Concepts
 
-- **ContainerData** (34 connections) — `server/persistence/container_data.py`
-- **ContainerDataCore** (24 connections) — `server/persistence/container_data.py`
-- **ContainerDataExtras** (18 connections) — `server/persistence/container_data.py`
-- **container_data.py** (12 connections) — `server/persistence/container_data.py`
-- **test_update_container_uuid_string_conversion()** (5 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_update_container_items_missing_item_instance_id()** (5 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_update_container_items_only_prototype_id()** (5 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_container_data_to_dict()** (5 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **test_container_data_to_dict_none_values()** (5 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **test_get_containers_by_room_id_success()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_containers_by_entity_id_success()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_container_data_init()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **.__init__()** (3 connections) — `server/persistence/container_data.py`
-- **.to_dict()** (2 connections) — `server/persistence/container_data.py`
-- **Container data class for persistence operations.** (1 connections) — `server/persistence/container_data.py`
-- **Identity and placement fields for a container row.** (1 connections) — `server/persistence/container_data.py`
-- **Optional payload and timestamps for a container row.** (1 connections) — `server/persistence/container_data.py`
-- **Data class for container information.** (1 connections) — `server/persistence/container_data.py`
-- **Convert container data to dictionary.          Returns dictionary with model fie** (1 connections) — `server/persistence/container_data.py`
-- **Test get_containers_by_room_id successfully retrieves containers.** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **Test get_containers_by_entity_id successfully retrieves containers.** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **Test update_container handles UUID to string conversion.** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **Test update_container skips items without item_instance_id or prototype_id.** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **Test update_container handles items with only prototype_id (no item_instance_id)** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **Test ContainerData initialization.** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- *... and 2 more nodes in this community*
+- **test_command_admin.py** (42 connections) — `server/tests/unit/models/test_command_admin.py`
+- **SummonCommand** (21 connections) — `server/models/command_admin.py`
+- **TeleportCommand** (18 connections) — `server/models/command_admin.py`
+- **NPCCommand** (13 connections) — `server/models/command_admin.py`
+- **GotoCommand** (13 connections) — `server/models/command_admin.py`
+- **ShutdownCommand** (12 connections) — `server/models/command_admin.py`
+- **test_npc_command_subcommand_min_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_npc_command_subcommand_max_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_summon_command_validate_prototype_id_invalid_characters()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_summon_command_quantity_validation_min()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_summon_command_quantity_validation_max()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_summon_command_prototype_id_min_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_summon_command_prototype_id_max_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_teleport_command_validate_direction_invalid()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_teleport_command_player_name_min_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_teleport_command_player_name_max_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_goto_command_player_name_min_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_goto_command_player_name_max_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
+- **.validate_player_name_field()** (3 connections) — `server/models/command_admin.py`
+- **.validate_direction_field()** (3 connections) — `server/models/command_admin.py`
+- **.validate_player_name_field()** (3 connections) — `server/models/command_admin.py`
+- **test_npc_command_default_values()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_npc_command_with_subcommand()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_npc_command_with_args()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_summon_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- *... and 61 more nodes in this community*
 
 ## Relationships
 
-- [Database Config](Database_Config.md) (20 shared connections)
-- [persistence container item](persistence_container_item.md) (19 shared connections)
-- [follow service game](follow_service_game.md) (11 shared connections)
-- [container sql injection](container_sql_injection.md) (11 shared connections)
-- [persistence container extended](persistence_container_extended.md) (7 shared connections)
-- [monitoring dashboard rationale](monitoring_dashboard_rationale.md) (3 shared connections)
+- [container persistence rationale](container_persistence_rationale.md) (17 shared connections)
+- [command inventory models](command_inventory_models.md) (12 shared connections)
+- [taunt combat commands](taunt_combat_commands.md) (7 shared connections)
+- [command factories create](command_factories_create.md) (5 shared connections)
+- [exceptions rationale error](exceptions_rationale_error.md) (5 shared connections)
+- [Security Validator Tests](Security_Validator_Tests.md) (2 shared connections)
 
 ## Source Files
 
-- `server/persistence/container_data.py`
-- `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- `server/models/command_admin.py`
+- `server/tests/unit/models/test_command_admin.py`
 
 ## Audit Trail
 
-- EXTRACTED: 128 (90%)
-- INFERRED: 15 (10%)
+- EXTRACTED: 257 (90%)
+- INFERRED: 27 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,44 +1,60 @@
 # taunt combat commands
 
-> 20 nodes
+> 73 nodes
 
 ## Key Concepts
 
-- **.get_player_aliases()** (8 connections) — `server/alias_storage.py`
-- **.save_player_aliases()** (7 connections) — `server/alias_storage.py`
-- **.create_alias()** (7 connections) — `server/alias_storage.py`
-- **.add_alias()** (6 connections) — `server/alias_storage.py`
-- **.remove_alias()** (4 connections) — `server/alias_storage.py`
-- **.get_alias()** (4 connections) — `server/alias_storage.py`
-- **.get_alias_count()** (4 connections) — `server/alias_storage.py`
-- **.clear_aliases()** (3 connections) — `server/alias_storage.py`
-- **.validate_alias_name()** (3 connections) — `server/alias_storage.py`
-- **.validate_alias_command()** (3 connections) — `server/alias_storage.py`
-- **Get all aliases for a player.** (1 connections) — `server/alias_storage.py`
-- **Save aliases for a player.** (1 connections) — `server/alias_storage.py`
-- **Add or update an alias for a player.** (1 connections) — `server/alias_storage.py`
-- **Remove an alias for a player.** (1 connections) — `server/alias_storage.py`
-- **Get a specific alias for a player.** (1 connections) — `server/alias_storage.py`
-- **Clear all aliases for a player.** (1 connections) — `server/alias_storage.py`
-- **Get the number of aliases for a player.** (1 connections) — `server/alias_storage.py`
-- **Validate alias name format.** (1 connections) — `server/alias_storage.py`
-- **Validate alias command.** (1 connections) — `server/alias_storage.py`
-- **Create and save a new alias for a player.** (1 connections) — `server/alias_storage.py`
+- **Direction** (22 connections) — `server/models/command_base.py`
+- **test_command_exploration.py** (20 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **LookCommand** (19 connections) — `server/models/command_exploration.py`
+- **.create_look_command()** (18 connections) — `server/utils/command_factories_exploration.py`
+- **GoCommand** (14 connections) — `server/models/command_exploration.py`
+- **test_look_command_validate_direction_invalid()** (4 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_look_command_instance_number_validation_min()** (4 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_go_command_validate_direction_invalid()** (4 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_go_command_missing_direction()** (4 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **.validate_direction()** (3 connections) — `server/models/command_exploration.py`
+- **.validate_direction()** (3 connections) — `server/models/command_exploration.py`
+- **test_direction_enum_inheritance()** (3 connections) — `server/tests/unit/models/test_command_base.py`
+- **test_look_command_default_values()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_look_command_with_direction()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_look_command_validate_direction_valid()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_look_command_validate_direction_none()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_look_command_with_target()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_look_command_with_look_in()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_look_command_with_instance_number()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_go_command_required_direction()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_go_command_validate_direction_valid()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_go_command_all_directions()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_create_look_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- **test_create_look_command_with_target()** (3 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- **test_create_look_command_with_explicit_player_type()** (3 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- *... and 48 more nodes in this community*
 
 ## Relationships
 
-- [commands admin mute](commands_admin_mute.md) (10 shared connections)
-- [alias models rationale](alias_models_rationale.md) (5 shared connections)
-- [services admin auth](services_admin_auth.md) (2 shared connections)
+- [Inventory Equip](Inventory_Equip.md) (16 shared connections)
+- [container persistence rationale](container_persistence_rationale.md) (13 shared connections)
+- [auth endpoints rationale](auth_endpoints_rationale.md) (7 shared connections)
+- [command inventory models](command_inventory_models.md) (4 shared connections)
+- [room sync service](room_sync_service.md) (2 shared connections)
+- [command factories create](command_factories_create.md) (2 shared connections)
+- [exceptions rationale error](exceptions_rationale_error.md) (1 shared connections)
+- [memory profiler rationale](memory_profiler_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/alias_storage.py`
+- `server/models/command_base.py`
+- `server/models/command_exploration.py`
+- `server/tests/unit/models/test_command_base.py`
+- `server/tests/unit/models/test_command_exploration.py`
+- `server/tests/unit/utils/test_command_factories_exploration.py`
+- `server/utils/command_factories_exploration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 59 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 205 (90%)
+- INFERRED: 23 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

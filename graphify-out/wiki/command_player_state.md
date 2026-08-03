@@ -1,11 +1,16 @@
 # command player state
 
-> 30 nodes
+> 41 nodes
 
 ## Key Concepts
 
+- **NPCCombatLucidity** (30 connections) — `server/services/npc_combat_lucidity.py`
 - **TestNPCCombatLucidity** (17 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **.apply_encounter_lucidity_effect()** (6 connections) — `server/services/npc_combat_lucidity.py`
+- **._resolve_lucidity_category()** (4 connections) — `server/services/npc_combat_lucidity.py`
+- **test_npc_combat_lucidity.py** (4 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
 - **.test_resolve_lucidity_category_get_behavior_config_exception()** (4 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **.get_lucidity_service()** (3 connections) — `server/services/npc_combat_integration_service.py`
 - **.test_init()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
 - **.test_resolve_lucidity_category_none_npc()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
 - **.test_resolve_lucidity_category_from_base_stats()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
@@ -19,31 +24,32 @@
 - **.test_apply_encounter_lucidity_effect_success()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
 - **.test_apply_encounter_lucidity_effect_with_npc_name()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
 - **.test_apply_encounter_lucidity_effect_without_npc_name()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **Test suite for NPCCombatLucidity class.** (1 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **Test NPCCombatLucidity initialization.** (1 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **Test _resolve_lucidity_category returns 'disturbing' for None NPC.** (1 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **Test _resolve_lucidity_category gets category from base_stats.** (1 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **Test _resolve_lucidity_category gets category from mythos_tier.** (1 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **Test _resolve_lucidity_category gets category from behavior_config.** (1 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **Test _resolve_lucidity_category returns 'horrific' for aggressive_mob.** (1 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **Test _resolve_lucidity_category returns 'disturbing' for passive_mob.** (1 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **Test _resolve_lucidity_category returns 'disturbing' as default.** (1 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **Test _resolve_lucidity_category handles get_base_stats exception.** (1 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- *... and 5 more nodes in this community*
+- **Any** (2 connections)
+- **Return lucidity dependency for integration collaborators.** (1 connections) — `server/services/npc_combat_integration_service.py`
+- **Manages lucidity effects for NPC encounters.** (1 connections) — `server/services/npc_combat_lucidity.py`
+- **Apply lucidity loss when a player engages an eldritch entity.          Args:** (1 connections) — `server/services/npc_combat_lucidity.py`
+- **Determine encounter category based on NPC definition metadata.          Args:** (1 connections) — `server/services/npc_combat_lucidity.py`
+- *... and 16 more nodes in this community*
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (16 shared connections)
-- [room websocket updates](room_websocket_updates.md) (1 shared connections)
+- [models npc rationale](models_npc_rationale.md) (4 shared connections)
+- [Spell Validation](Spell_Validation.md) (3 shared connections)
+- [combat services persistence](combat_services_persistence.md) (3 shared connections)
+- [persistence services combat](persistence_services_combat.md) (3 shared connections)
+- [combat npc services](combat_npc_services.md) (1 shared connections)
+- [look helpers commands](look_helpers_commands.md) (1 shared connections)
 
 ## Source Files
 
+- `server/services/npc_combat_integration_service.py`
+- `server/services/npc_combat_lucidity.py`
 - `server/tests/unit/services/test_npc_combat_lucidity.py`
 
 ## Audit Trail
 
-- EXTRACTED: 73 (97%)
-- INFERRED: 2 (3%)
+- EXTRACTED: 121 (94%)
+- INFERRED: 8 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,24 +1,25 @@
 # lucidity services npc
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_get_item_description_from_prototype_no_registry()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test getting item description when prototype registry is None.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **id** (4 connections) — `schemas/calendar/schedule.schema.json`
+- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **pattern** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **minLength** (1 connections) — `schemas/calendar/schedule.schema.json`
 
 ## Relationships
 
-- [health service services](health_service_services.md) (1 shared connections)
-- [Item Lookup](Item_Lookup.md) (1 shared connections)
+- [schemas calendar schedule](schemas_calendar_schedule.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_item.py`
+- `schemas/calendar/schedule.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

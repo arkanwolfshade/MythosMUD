@@ -1,25 +1,47 @@
 # dead letter realtime
 
-> 4 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **.__init__()** (4 connections) — `server/game/level_service.py`
-- **Any** (1 connections)
-- **LevelUpHook** (1 connections)
-- **Initialize the level service.          Args:             async_persistence: Asyn** (1 connections) — `server/game/level_service.py`
+- **_parse_stat_datetime()** (16 connections) — `server/commands/look_npc.py`
+- **test_parse_stat_datetime_from_timestamp()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_parse_stat_datetime_from_datetime()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_parse_stat_datetime_from_iso_string()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_parse_stat_datetime_invalid()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_parse_stat_datetime_none()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_parse_stat_datetime_from_datetime()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_parse_stat_datetime_from_timestamp()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_parse_stat_datetime_from_iso_string()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_parse_stat_datetime_none()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_parse_stat_datetime_invalid()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **Parse datetime value from various formats and return formatted string.** (1 connections) — `server/commands/look_npc.py`
+- **Test parsing datetime from timestamp.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test parsing datetime from datetime object.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test parsing datetime from ISO string.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test parsing datetime with invalid value.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test parsing datetime with None.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test _parse_stat_datetime() handles datetime object.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **Test _parse_stat_datetime() handles timestamp.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **Test _parse_stat_datetime() handles ISO string.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **Test _parse_stat_datetime() returns 'Unknown' for None.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **Test _parse_stat_datetime() returns string representation for invalid input.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
 
 ## Relationships
 
-- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [npc look commands](npc_look_commands.md) (6 shared connections)
+- [schemas calendar rationale](schemas_calendar_rationale.md) (6 shared connections)
+- [services service hallucination](services_service_hallucination.md) (3 shared connections)
 
 ## Source Files
 
-- `server/game/level_service.py`
+- `server/commands/look_npc.py`
+- `server/tests/unit/commands/test_look_npc.py`
+- `server/tests/unit/commands/test_look_npc_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 57 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

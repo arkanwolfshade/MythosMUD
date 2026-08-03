@@ -1,45 +1,60 @@
 # player effects endpoints
 
-> 15 nodes
+> 33 nodes
 
 ## Key Concepts
 
-- **CommandParser** (19 connections) — `server/utils/command_parser.py`
-- **.parse_command()** (7 connections) — `server/utils/command_parser.py`
-- **._create_command_object()** (7 connections) — `server/utils/command_parser.py`
-- **Command** (4 connections)
-- **._parse_command_parts()** (4 connections) — `server/utils/command_parser.py`
-- **._invoke_create_method()** (4 connections) — `server/utils/command_parser.py`
-- **._normalize_command()** (3 connections) — `server/utils/command_parser.py`
-- **._resolve_command_alias()** (3 connections) — `server/utils/command_parser.py`
-- **Secure command parser using Click for parsing and Pydantic for validation.** (1 connections) — `server/utils/command_parser.py`
-- **Parse and validate a command string.          Args:             command_string:** (1 connections) — `server/utils/command_parser.py`
-- **Normalize command string by removing slash prefix and cleaning whitespace.** (1 connections) — `server/utils/command_parser.py`
-- **Parse command string into command and arguments.          Args:             comm** (1 connections) — `server/utils/command_parser.py`
-- **Resolve single-letter aliases to full command names.** (1 connections) — `server/utils/command_parser.py`
-- **Invoke the appropriate factory method for the command.** (1 connections) — `server/utils/command_parser.py`
-- **Create and validate a Command; raise MythosValidationError on failure.** (1 connections) — `server/utils/command_parser.py`
+- **npc_database.py** (27 connections) — `server/npc_database.py`
+- **get_npc_session()** (24 connections) — `server/npc_database.py`
+- **test_npc_database.py** (22 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **_initialize_npc_database()** (12 connections) — `server/npc_database.py`
+- **init_npc_db()** (11 connections) — `server/npc_database.py`
+- **get_npc_database_path()** (11 connections) — `server/npc_database.py`
+- **get_npc_session_maker()** (9 connections) — `server/npc_database.py`
+- **close_npc_db()** (9 connections) — `server/npc_database.py`
+- **ensure_npc_database_directory()** (6 connections) — `server/npc_database.py`
+- **reset_npc_database()** (5 connections) — `server/npc_database.py`
+- **TestNPCSessionMaker** (4 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **TestResetNPCDatabase** (4 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **async_sessionmaker** (3 connections)
+- **AsyncSession** (3 connections)
+- **reset_state()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_get_npc_session_maker()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_reset_npc_database_resets_state()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Path** (2 connections)
+- **Dependency to get NPC database session.      Yields:         AsyncSession: Datab** (2 connections) — `server/npc_database.py`
+- **NPC Database configuration for MythosMUD.  This module provides database connect** (1 connections) — `server/npc_database.py`
+- **Initialize NPC database engine and session maker from configuration.      CRITIC** (1 connections) — `server/npc_database.py`
+- **Get the NPC async session maker, initializing if necessary.      Returns:** (1 connections) — `server/npc_database.py`
+- **Initialize NPC database connection and verify configuration.      NOTE: DDL (tab** (1 connections) — `server/npc_database.py`
+- **Close NPC database connections.** (1 connections) — `server/npc_database.py`
+- **Reset NPC database state for testing.      This function resets all global NPC d** (1 connections) — `server/npc_database.py`
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [command inventory factories](command_inventory_factories.md) (4 shared connections)
-- [command factories create](command_factories_create.md) (3 shared connections)
-- [command parser rationale](command_parser_rationale.md) (2 shared connections)
-- [npc behavior engine](npc_behavior_engine.md) (2 shared connections)
-- [skill game service](skill_game_service.md) (1 shared connections)
-- [infrastructure persistence room](infrastructure_persistence_room.md) (1 shared connections)
-- [command parser helpers](command_parser_helpers.md) (1 shared connections)
-- [infrastructure persistence core](infrastructure_persistence_core.md) (1 shared connections)
-- [command processor rationale](command_processor_rationale.md) (1 shared connections)
+- [command inventory models](command_inventory_models.md) (10 shared connections)
+- [models npc rationale](models_npc_rationale.md) (7 shared connections)
+- [schemas players profession](schemas_players_profession.md) (7 shared connections)
+- [commands lucidity recovery](commands_lucidity_recovery.md) (4 shared connections)
+- [Database Config](Database_Config.md) (4 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (4 shared connections)
+- [shutdown commands admin](shutdown_commands_admin.md) (4 shared connections)
+- [commands command validation](commands_command_validation.md) (4 shared connections)
+- [admin auth service](admin_auth_service.md) (3 shared connections)
+- [Magic Spell Service](Magic_Spell_Service.md) (3 shared connections)
+- [commands npc admin](commands_npc_admin.md) (3 shared connections)
+- [command inventory factories](command_inventory_factories.md) (3 shared connections)
 
 ## Source Files
 
-- `server/utils/command_parser.py`
+- `server/npc_database.py`
+- `server/tests/unit/infrastructure/test_npc_database.py`
 
 ## Audit Trail
 
-- EXTRACTED: 56 (97%)
-- INFERRED: 2 (3%)
+- EXTRACTED: 167 (94%)
+- INFERRED: 10 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

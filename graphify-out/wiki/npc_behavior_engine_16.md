@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_validate_player_name_sanitizes_unicode()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **Test that validate_player_name sanitizes Unicode.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_subscribe_to_room_multiple_players()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **Test subscribe_to_room() with multiple players.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
 
 ## Relationships
 
-- [Security Validator Tests](Security_Validator_Tests.md) (1 shared connections)
-- [command models moderation](command_models_moderation.md) (1 shared connections)
+- [room subscription manager](room_subscription_manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_security_validator.py`
+- `server/tests/unit/realtime/test_room_subscription_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

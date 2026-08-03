@@ -23,8 +23,8 @@
 
 ## Relationships
 
-- [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (5 shared connections)
-- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (5 shared connections)
+- [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (8 shared connections)
+- [stores connectionStore commandStore](stores_connectionStore_commandStore.md) (2 shared connections)
 
 ## Source Files
 

@@ -1,11 +1,10 @@
 # occupants npc commands
 
-> 19 nodes
+> 17 nodes
 
 ## Key Concepts
 
 - **test_occupants.py** (14 connections) — `server/commands/npc_admin/test_occupants.py`
-- **handle_npc_test_occupants_command()** (11 connections) — `server/commands/npc_admin/test_occupants.py`
 - **Any** (7 connections)
 - **_resolve_room_and_handler_for_test_occupants()** (6 connections) — `server/commands/npc_admin/test_occupants.py`
 - **_resolve_test_occupants_context()** (6 connections) — `server/commands/npc_admin/test_occupants.py`
@@ -22,14 +21,13 @@
 - **Resolve application and player object for NPC test occupants command.** (1 connections) — `server/commands/npc_admin/test_occupants.py`
 - **Resolve room_id and event handler for NPC test occupants command.** (1 connections) — `server/commands/npc_admin/test_occupants.py`
 - **Resolve application, player, room_id, and event handler for NPC test occupants c** (1 connections) — `server/commands/npc_admin/test_occupants.py`
-- **Handle NPC test occupants command - manually trigger occupant query for debuggin** (1 connections) — `server/commands/npc_admin/test_occupants.py`
 
 ## Relationships
 
-- [commands npc admin](commands_npc_admin.md) (5 shared connections)
-- [commands admin mute](commands_admin_mute.md) (3 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [Player Name Validation](Player_Name_Validation.md) (1 shared connections)
+- [commands npc admin](commands_npc_admin.md) (7 shared connections)
+- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [commands position system](commands_position_system.md) (1 shared connections)
+- [NATS Messaging](NATS_Messaging.md) (1 shared connections)
 
 ## Source Files
 
@@ -37,8 +35,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 71 (97%)
-- INFERRED: 2 (3%)
+- EXTRACTED: 60 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

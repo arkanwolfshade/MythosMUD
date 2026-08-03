@@ -1,76 +1,60 @@
 # map RoomMapViewer mapUtils
 
-> 49 nodes
+> 57 nodes
 
 ## Key Concepts
 
-- **gameStore.ts** (35 connections) — `client/src/stores/gameStore.ts`
-- **mapUtils.ts** (27 connections) — `client/src/components/map/utils/mapUtils.ts`
-- **RoomMapViewer.tsx** (25 connections) — `client/src/components/map/RoomMapViewer.tsx`
-- **useRoomMapData.ts** (18 connections) — `client/src/components/map/hooks/useRoomMapData.ts`
-- **RoomMapViewer.test-utils.tsx** (17 connections) — `client/src/components/map/__tests__/RoomMapViewer.test-utils.tsx`
-- **RoomMapViewer.map-controls.test.tsx** (16 connections) — `client/src/components/map/__tests__/RoomMapViewer.map-controls.test.tsx`
-- **createEdgesFromRooms()** (16 connections) — `client/src/components/map/utils/mapUtils.ts`
-- **Room** (16 connections) — `client/src/stores/gameStore.ts`
-- **useMapLayout()** (15 connections) — `client/src/components/map/hooks/useMapLayout.ts`
-- **roomsToNodes()** (15 connections) — `client/src/components/map/utils/mapUtils.ts`
-- **RoomMapViewer.rendering.test.tsx** (14 connections) — `client/src/components/map/__tests__/RoomMapViewer.rendering.test.tsx`
-- **useRoomMapData()** (14 connections) — `client/src/components/map/hooks/useRoomMapData.ts`
-- **RoomMapViewer.interactions.test.tsx** (12 connections) — `client/src/components/map/__tests__/RoomMapViewer.interactions.test.tsx`
-- **RoomMapViewer()** (10 connections) — `client/src/components/map/RoomMapViewer.tsx`
-- **RoomMapViewer.data-loading.test.tsx** (10 connections) — `client/src/components/map/__tests__/RoomMapViewer.data-loading.test.tsx`
-- **MapControls.tsx** (9 connections) — `client/src/components/map/MapControls.tsx`
-- **RoomDetailsPanel.tsx** (9 connections) — `client/src/components/map/RoomDetailsPanel.tsx`
-- **setupDefaultMocks()** (9 connections) — `client/src/components/map/__tests__/RoomMapViewer.test-utils.tsx`
-- **mapUtils.test.ts** (7 connections) — `client/src/components/map/utils/__tests__/mapUtils.test.ts`
-- **MapControls()** (6 connections) — `client/src/components/map/MapControls.tsx`
-- **theme.test.tsx** (6 connections) — `client/src/components/map/__tests__/theme.test.tsx`
-- **RoomDetailsPanel()** (5 connections) — `client/src/components/map/RoomDetailsPanel.tsx`
-- **useRoomMapData.test.ts** (5 connections) — `client/src/components/map/hooks/__tests__/useRoomMapData.test.ts`
-- **isApiErrorWithDetail()** (5 connections) — `client/src/utils/apiTypeGuards.ts`
-- **RoomDetailsPanel.test.tsx** (4 connections) — `client/src/components/map/__tests__/RoomDetailsPanel.test.tsx`
-- *... and 24 more nodes in this community*
+- **test_game_tick_processing.py** (69 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **game_tick_processing.py** (68 connections) — `server/app/game_tick_processing.py`
+- **FastAPI** (16 connections)
+- **game_tick_loop()** (16 connections) — `server/app/game_tick_processing.py`
+- **process_status_effects()** (12 connections) — `server/app/game_tick_processing.py`
+- **broadcast_tick_event()** (11 connections) — `server/app/game_tick_processing.py`
+- **cleanup_decayed_corpses()** (10 connections) — `server/app/game_tick_processing.py`
+- **process_player_effects_expiration()** (9 connections) — `server/app/game_tick_processing.py`
+- **process_combat_tick()** (9 connections) — `server/app/game_tick_processing.py`
+- **process_dp_decay_and_death()** (9 connections) — `server/app/game_tick_processing.py`
+- **get_tick_interval()** (8 connections) — `server/app/game_tick_processing.py`
+- **_process_all_status_effects()** (8 connections) — `server/app/game_tick_processing.py`
+- **_create_corpse_lifecycle_service()** (8 connections) — `server/app/game_tick_processing.py`
+- **_validate_and_get_player()** (7 connections) — `server/app/game_tick_processing.py`
+- **_process_player_status_effects()** (7 connections) — `server/app/game_tick_processing.py`
+- **process_npc_maintenance()** (7 connections) — `server/app/game_tick_processing.py`
+- **UUID** (6 connections)
+- **process_casting_progress()** (6 connections) — `server/app/game_tick_processing.py`
+- **_log_cleanup_results()** (6 connections) — `server/app/game_tick_processing.py`
+- **test_get_tick_interval()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_log_cleanup_results()** (2 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_validate_and_get_player_invalid_id()** (2 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_validate_and_get_player_success()** (2 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_process_all_status_effects_empty()** (2 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_process_status_effects_no_online_players()** (2 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- *... and 32 more nodes in this community*
 
 ## Relationships
 
-- [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (26 shared connections)
-- [map layout useMapLayout](map_layout_useMapLayout.md) (13 shared connections)
-- [stores connectionStore commandStore](stores_connectionStore_commandStore.md) (5 shared connections)
-- [containers stores containerStore](containers_stores_containerStore.md) (5 shared connections)
-- [RoomEditModal map buildInitialFormData()](RoomEditModal_map_buildInitialFormData%28%29.md) (5 shared connections)
-- [mapPageRenderer mapPageState MapPage](mapPageRenderer_mapPageState_MapPage.md) (4 shared connections)
-- [panels GameClientV2Dock gameLogPanelUtil](panels_GameClientV2Dock_gameLogPanelUtil.md) (4 shared connections)
-- [map ExitEdge nodes](map_ExitEdge_nodes.md) (3 shared connections)
-- [apiTypeGuards FIELDS SHARED](apiTypeGuards_FIELDS_SHARED.md) (3 shared connections)
-- [map maps useAsciiMap](map_maps_useAsciiMap.md) (2 shared connections)
-- [performanceTester performance ExtendedPe](performanceTester_performance_ExtendedPe.md) (2 shared connections)
-- [performance map debounce()](performance_map_debounce%28%29.md) (1 shared connections)
+- [tick game processing](tick_game_processing.md) (24 shared connections)
+- [realtime message nats](realtime_message_nats.md) (14 shared connections)
+- [player persistence repository](player_persistence_repository.md) (14 shared connections)
+- [game magic regeneration](game_magic_regeneration.md) (11 shared connections)
+- [command utility models](command_utility_models.md) (7 shared connections)
+- [tracked app task](tracked_app_task.md) (6 shared connections)
+- [models npc rationale](models_npc_rationale.md) (5 shared connections)
+- [combat services messaging](combat_services_messaging.md) (5 shared connections)
+- [Player Stats](Player_Stats.md) (3 shared connections)
+- [combat npc services](combat_npc_services.md) (3 shared connections)
+- [combat commands handler](combat_commands_handler.md) (3 shared connections)
+- [time service rationale](time_service_rationale.md) (3 shared connections)
 
 ## Source Files
 
-- `client/src/components/map/MapControls.tsx`
-- `client/src/components/map/RoomDetailsPanel.tsx`
-- `client/src/components/map/RoomMapViewer.tsx`
-- `client/src/components/map/__tests__/MapControls.test.tsx`
-- `client/src/components/map/__tests__/RoomDetailsPanel.test.tsx`
-- `client/src/components/map/__tests__/RoomMapViewer.data-loading.test.tsx`
-- `client/src/components/map/__tests__/RoomMapViewer.interactions.test.tsx`
-- `client/src/components/map/__tests__/RoomMapViewer.map-controls.test.tsx`
-- `client/src/components/map/__tests__/RoomMapViewer.rendering.test.tsx`
-- `client/src/components/map/__tests__/RoomMapViewer.test-utils.tsx`
-- `client/src/components/map/__tests__/theme.test.tsx`
-- `client/src/components/map/hooks/__tests__/useRoomMapData.test.ts`
-- `client/src/components/map/hooks/useMapLayout.ts`
-- `client/src/components/map/hooks/useRoomMapData.ts`
-- `client/src/components/map/utils/__tests__/mapUtils.test.ts`
-- `client/src/components/map/utils/mapUtils.ts`
-- `client/src/stores/gameStore.ts`
-- `client/src/utils/apiTypeGuards.ts`
+- `server/app/game_tick_processing.py`
+- `server/tests/unit/app/test_game_tick_processing.py`
 
 ## Audit Trail
 
-- EXTRACTED: 362 (98%)
-- INFERRED: 8 (2%)
+- EXTRACTED: 349 (100%)
+- INFERRED: 1 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

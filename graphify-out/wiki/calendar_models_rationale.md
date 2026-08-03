@@ -27,8 +27,8 @@
 
 - [message formatters realtime](message_formatters_realtime.md) (3 shared connections)
 - [quests players rationale](quests_players_rationale.md) (2 shared connections)
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (2 shared connections)
+- [models npc rationale](models_npc_rationale.md) (1 shared connections)
 
 ## Source Files
 

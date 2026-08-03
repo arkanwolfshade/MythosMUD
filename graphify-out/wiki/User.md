@@ -1,8 +1,8 @@
 # User
 
-> God node · 319 connections · `server/models/user.py`
+> God node · 325 connections · `server/models/user.py`
 
-**Community:** [ascii map renderer](ascii_map_renderer.md)
+**Community:** [Exception Containers](Exception_Containers.md)
 
 ## Connections by Relation
 
@@ -39,8 +39,9 @@
 - endpoints.py `EXTRACTED`
 - test_admin_auth_service.py `EXTRACTED`
 - maps.py `EXTRACTED`
-- container_endpoints_basic.py `EXTRACTED`
 - test_users.py `EXTRACTED`
+- test_maps.py `EXTRACTED`
+- container_endpoints_basic.py `EXTRACTED`
 - users.py `EXTRACTED`
 - character_creation.py `EXTRACTED`
 - container_helpers.py `EXTRACTED`
@@ -49,25 +50,27 @@
 - test_metrics_endpoints.py `EXTRACTED`
 - container_endpoints_loot.py `EXTRACTED`
 - rooms.py `EXTRACTED`
-- test_maps.py `EXTRACTED`
 - test_container_exception_handlers.py `EXTRACTED`
 - test_containers.py `EXTRACTED`
 
 ### indirect_call
 - _admin_user() `INFERRED`
+- generate_unique_bogus_email() `INFERRED`
 - _check_username_exists() `INFERRED`
 - test_apply_exploration_filter_if_needed_calls_for_normal_user() `INFERRED`
 - test_apply_exploration_filter_if_needed_skips_for_superuser() `INFERRED`
-- generate_unique_bogus_email() `INFERRED`
+- test_get_ascii_minimap_success() `INFERRED`
 - test_db_connectivity_create_and_read_user() `INFERRED`
 - test_get_current_room_id_none_when_persistence_errors() `INFERRED`
 - test_get_player_and_exploration_returns_none_when_no_player() `INFERRED`
+- test_set_map_origin_success() `INFERRED`
 - test_get_all_professions_requires_auth() `INFERRED`
 - mock_user_and_player() `INFERRED`
 - test_get_current_room_id_from_player() `INFERRED`
 - test_get_current_room_id_from_query_param() `INFERRED`
+- test_get_minimap_player_and_room_id_success() `INFERRED`
+- test_recalculate_coordinates_admin() `INFERRED`
 - _plain_user() `INFERRED`
-- mock_user() `INFERRED`
 - mock_user() `INFERRED`
 - mock_user() `INFERRED`
 - mock_user() `INFERRED`
@@ -101,10 +104,10 @@
 - create_error_context() `EXTRACTED`
 - get_container_and_player_for_loot_all() `EXTRACTED`
 - _prepare_ascii_map_context() `EXTRACTED`
-- start_login_grace_period_endpoint() `EXTRACTED`
-- _roll_stats_with_profession_preview() `EXTRACTED`
-- _ensure_coordinates_generated() `EXTRACTED`
 - get_player_quests() `EXTRACTED`
+- _update_npc_definition_internal() `EXTRACTED`
+- _ensure_coordinates_generated() `EXTRACTED`
+- get_ascii_minimap() `EXTRACTED`
 
 ### uses
 - [Player](Player.md) `INFERRED`

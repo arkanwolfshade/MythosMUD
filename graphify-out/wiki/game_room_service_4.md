@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_idle_movement_handler_init()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **Test IdleMovementHandler initialization.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_move_player_same_room()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
+- **Test move_player() when from and to rooms are the same.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
 
 ## Relationships
 
-- [config models player](config_models_player.md) (1 shared connections)
-- [idle movement npc](idle_movement_npc.md) (1 shared connections)
+- [movement service game](movement_service_game.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_idle_movement.py`
+- `server/tests/unit/game/test_movement_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

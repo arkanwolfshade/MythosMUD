@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_get_room_occupants_error()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **Test get_room_occupants() handles errors gracefully.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_time_until_retry_returns_zero_when_not_open()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **Test _time_until_retry() returns 0 when not OPEN.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
 
 ## Relationships
 
-- [room subscription manager](room_subscription_manager.md) (1 shared connections)
+- [config rationale reset](config_rationale_reset.md) (1 shared connections)
+- [websocket handler realtime](websocket_handler_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager.py`
+- `server/tests/unit/realtime/test_circuit_breaker.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

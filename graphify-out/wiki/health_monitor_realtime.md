@@ -1,35 +1,43 @@
 # health monitor realtime
 
-> 12 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **_occupation_slots_9()** (11 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_duplicate_occupation_skill_ids_raises()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_cthulhu_mythos_in_personal_rejected()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_personal_interest_not_four_raises()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_duplicate_personal_skill_ids_raises()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_overlap_occupation_and_personal_raises()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **Valid 9 slots: one 70, two 60, three 50, three 40; 9 distinct skill_ids (no over** (1 connections) — `server/tests/unit/game/test_skill_service.py`
-- **Personal interest with Cthulhu Mythos raises ValueError.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
-- **personal_interest must have exactly 4 entries.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
-- **occupation_slots with duplicate skill_id raises ValueError.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
-- **personal_interest with duplicate skill_id raises ValueError.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
-- **Occupation and personal interest sharing a skill_id raises ValueError.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **get_npc_lifecycle_manager_from_connection_manager()** (8 connections) — `server/realtime/websocket_initial_state.py`
+- **Protocol** (7 connections)
+- **_AppWithState** (7 connections) — `server/realtime/websocket_initial_state.py`
+- **_AppStateForEventHandler** (6 connections) — `server/realtime/websocket_initial_state.py`
+- **_NpcLifecycleManagerForOccupants** (6 connections) — `server/realtime/websocket_initial_state.py`
+- **_AppStateWithNpcLifecycle** (6 connections) — `server/realtime/websocket_initial_state.py`
+- **_RealTimeHandlerContainer** (5 connections) — `server/realtime/websocket_initial_state.py`
+- **_NpcOccupantDisplay** (5 connections) — `server/realtime/websocket_initial_state.py`
+- **_ContainerWithNpcLifecycle** (5 connections) — `server/realtime/websocket_initial_state.py`
+- **_get_event_handler_from_app_host()** (5 connections) — `server/realtime/websocket_initial_state.py`
+- **Minimal app.state.container shape for resolving the real-time event handler.** (1 connections) — `server/realtime/websocket_initial_state.py`
+- **Minimal FastAPI/Starlette app shape for reading ``state``.** (1 connections) — `server/realtime/websocket_initial_state.py`
+- **Minimal app.state shape for resolving the real-time event handler.** (1 connections) — `server/realtime/websocket_initial_state.py`
+- **Minimal NPC instance shape for room occupant name display.** (1 connections) — `server/realtime/websocket_initial_state.py`
+- **Minimal lifecycle manager shape for listing NPC names in a room.** (1 connections) — `server/realtime/websocket_initial_state.py`
+- **Minimal app.state.container shape for resolving the NPC lifecycle manager.** (1 connections) — `server/realtime/websocket_initial_state.py`
+- **Minimal app.state shape for resolving the NPC lifecycle manager.** (1 connections) — `server/realtime/websocket_initial_state.py`
+- **Resolve NPC lifecycle manager from connection manager app state.** (1 connections) — `server/realtime/websocket_initial_state.py`
+- **Resolve real-time event handler from a connection manager or websocket app.** (1 connections) — `server/realtime/websocket_initial_state.py`
 
 ## Relationships
 
-- [skill service game](skill_service_game.md) (6 shared connections)
-- [realtime monitoring performance](realtime_monitoring_performance.md) (5 shared connections)
+- [realtime websocket initial](realtime_websocket_initial.md) (11 shared connections)
+- [NATS Messaging](NATS_Messaging.md) (9 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (7 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_skill_service.py`
+- `server/realtime/websocket_initial_state.py`
 
 ## Audit Trail
 
-- EXTRACTED: 33 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 47 (68%)
+- INFERRED: 22 (32%)
 - AMBIGUOUS: 0 (0%)
 
 ---

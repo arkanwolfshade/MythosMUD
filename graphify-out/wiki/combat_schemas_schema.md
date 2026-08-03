@@ -1,58 +1,55 @@
 # combat schemas schema
 
-> 43 nodes
+> 78 nodes
 
 ## Key Concepts
 
 - **test_websocket_handler_coverage_gaps.py** (24 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **handle_chat_message()** (18 connections) — `server/realtime/websocket_handler.py`
-- **UUID** (3 connections)
-- **test_handle_chat_message()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **test_websocket_handler_app_state_connection.py** (23 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **handle_websocket_connection()** (21 connections) — `server/realtime/websocket_handler.py`
+- **test_resolve_and_setup_app_state_services_services_already_set()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_missing_services()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_no_app_state()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_container_no_services()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_no_container_attribute()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_only_player_service()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_only_user_manager()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_player_service_already_set()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_user_manager_already_set()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_player_service_no_hasattr()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_user_manager_no_hasattr()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_handle_websocket_connection_shutdown_rejected()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_handle_websocket_connection_connect_failure()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_handle_websocket_connection_initial_state_exit()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_handle_websocket_connection_with_room_and_death()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_handle_websocket_connection_initial_setup_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
 - **test_handle_websocket_connection_full_flow()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_handle_game_command_exception_handling()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
 - **test_process_websocket_command_resolve_connection_manager_from_app()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
 - **test_handle_chat_message_resolve_connection_manager_from_app()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
 - **test_handle_chat_message_exception_handling()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
 - **test_handle_chat_message_runtime_error_handling()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_handle_websocket_connection_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_handle_websocket_connection_connect_failed()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_handle_websocket_connection_setup_fails()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_handle_websocket_connection_welcome_fails()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_handle_chat_message_no_player()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_message_loop_should_raise_exception()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_process_exception_in_message_loop()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_setup_initial_connection_state_should_exit()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_setup_initial_connection_state_with_room()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_setup_initial_connection_state_websocket_disconnect()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_send_welcome_event_already_disconnected()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_send_welcome_event_close_message_sent()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_send_welcome_event_cannot_call_error()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **Handle a chat message from a player.      Args:         websocket: The WebSocket** (1 connections) — `server/realtime/websocket_handler.py`
-- **Test handle_chat_message handles chat message.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **Unit tests to fill coverage gaps in websocket_handler.py.  These tests target sp** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- *... and 18 more nodes in this community*
+- *... and 53 more nodes in this community*
 
 ## Relationships
 
-- [combat commands handler](combat_commands_handler.md) (7 shared connections)
-- [websocket validation realtime](websocket_validation_realtime.md) (6 shared connections)
-- [websocket realtime handler](websocket_realtime_handler.md) (3 shared connections)
-- [room look commands](room_look_commands.md) (3 shared connections)
-- [combat services messaging](combat_services_messaging.md) (2 shared connections)
-- [websocket handler realtime](websocket_handler_realtime.md) (2 shared connections)
-- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [models npc rationale](models_npc_rationale.md) (13 shared connections)
+- [room look commands](room_look_commands.md) (10 shared connections)
+- [realtime player connection](realtime_player_connection.md) (3 shared connections)
+- [combat commands handler](combat_commands_handler.md) (2 shared connections)
+- [room websocket updates](room_websocket_updates.md) (2 shared connections)
+- [command utility models](command_utility_models.md) (1 shared connections)
 
 ## Source Files
 
 - `server/realtime/websocket_handler.py`
-- `server/tests/unit/realtime/test_websocket_handler_core.py`
+- `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
 - `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
 
 ## Audit Trail
 
-- EXTRACTED: 114 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 203 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,30 +1,37 @@
 # error logging rationale
 
-> 8 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **test_error_logging.py** (5 connections) — `server/tests/unit/utils/test_error_logging.py`
-- **test_create_error_context()** (2 connections) — `server/tests/unit/utils/test_error_logging.py`
-- **test_create_error_context_with_metadata()** (2 connections) — `server/tests/unit/utils/test_error_logging.py`
-- **test_error_context_to_dict()** (2 connections) — `server/tests/unit/utils/test_error_logging.py`
-- **Unit tests for error_logging utilities.  Tests error logging helper functions.** (1 connections) — `server/tests/unit/utils/test_error_logging.py`
-- **Test create_error_context() creates error context.** (1 connections) — `server/tests/unit/utils/test_error_logging.py`
-- **Test create_error_context() can include metadata.** (1 connections) — `server/tests/unit/utils/test_error_logging.py`
-- **Test error context to_dict() method.** (1 connections) — `server/tests/unit/utils/test_error_logging.py`
+- **broadcast_message()** (13 connections) — `server/api/game.py`
+- **TestBroadcastMessage** (6 connections) — `server/tests/unit/api/test_game.py`
+- **.test_broadcast_message_success()** (4 connections) — `server/tests/unit/api/test_game.py`
+- **.test_broadcast_message_no_recipients()** (3 connections) — `server/tests/unit/api/test_game.py`
+- **.test_broadcast_message_broadcast_error()** (3 connections) — `server/tests/unit/api/test_game.py`
+- **Broadcast a message to all connected players (admin only).      Requires superus** (1 connections) — `server/api/game.py`
+- **Test broadcast_message endpoint.** (1 connections) — `server/tests/unit/api/test_game.py`
+- **Test broadcast_message successfully broadcasts message.** (1 connections) — `server/tests/unit/api/test_game.py`
+- **Test broadcast_message handles no recipients.** (1 connections) — `server/tests/unit/api/test_game.py`
+- **Test broadcast_message handles broadcast errors gracefully.** (1 connections) — `server/tests/unit/api/test_game.py`
 
 ## Relationships
 
-- [Database Config](Database_Config.md) (1 shared connections)
+- [invite models create](invite_models_create.md) (3 shared connections)
+- [room realtime occupant](room_realtime_occupant.md) (3 shared connections)
+- [realtime player presence](realtime_player_presence.md) (3 shared connections)
+- [Exception Containers](Exception_Containers.md) (2 shared connections)
+- [models npc rationale](models_npc_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_error_logging.py`
+- `server/api/game.py`
+- `server/tests/unit/api/test_game.py`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 32 (94%)
+- INFERRED: 2 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

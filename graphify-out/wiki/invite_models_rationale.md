@@ -26,7 +26,7 @@
 
 ## Relationships
 
-- [command inventory factories](command_inventory_factories.md) (3 shared connections)
+- [lucidity npc combat](lucidity_npc_combat.md) (3 shared connections)
 - [player event handlers](player_event_handlers.md) (2 shared connections)
 
 ## Source Files

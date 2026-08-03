@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_validate_action_content_normal()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **Test validating normal action content.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_occupant_formatter_process_player_name_for_update_valid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **Test OccupantFormatter._process_player_name_for_update() adds valid player name.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
 
 ## Relationships
 
-- [Security Validator Tests](Security_Validator_Tests.md) (1 shared connections)
-- [command communication models](command_communication_models.md) (1 shared connections)
+- [container sql injection](container_sql_injection.md) (1 shared connections)
+- [occupant formatter realtime](occupant_formatter_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_security_validator.py`
+- `server/tests/unit/realtime/test_occupant_formatter.py`
 
 ## Audit Trail
 

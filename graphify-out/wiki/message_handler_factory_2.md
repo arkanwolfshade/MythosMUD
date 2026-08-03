@@ -30,13 +30,12 @@
 ## Relationships
 
 - [dead letter queue](dead_letter_queue.md) (6 shared connections)
-- [Error Handling Core](Error_Handling_Core.md) (2 shared connections)
+- [tsconfig src/**/* spec](tsconfig_src-__-__spec.md) (3 shared connections)
+- [combat services messaging](combat_services_messaging.md) (2 shared connections)
 - [command commands aliases](command_commands_aliases.md) (2 shared connections)
 - [combat models rationale](combat_models_rationale.md) (2 shared connections)
 - [occupant formatter realtime](occupant_formatter_realtime.md) (2 shared connections)
-- [realtime message nats](realtime_message_nats.md) (2 shared connections)
 - [game chat moderation](game_chat_moderation.md) (1 shared connections)
-- [tsconfig src/**/* spec](tsconfig_src-__-__spec.md) (1 shared connections)
 
 ## Source Files
 

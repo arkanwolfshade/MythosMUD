@@ -1,58 +1,59 @@
 # realtime player connection
 
-> 25 nodes
+> 29 nodes
 
 ## Key Concepts
 
-- **player_connection_setup.py** (24 connections) — `server/realtime/player_connection_setup.py`
-- **handle_new_connection_setup()** (17 connections) — `server/realtime/player_connection_setup.py`
-- **_broadcast_player_entered_game()** (9 connections) — `server/realtime/player_connection_setup.py`
-- **_trigger_quests_for_room_on_spawn()** (8 connections) — `server/realtime/player_connection_setup.py`
-- **UUID** (7 connections)
-- **_send_room_occupants_update_after_connection()** (7 connections) — `server/realtime/player_connection_setup.py`
-- **_update_player_last_active()** (6 connections) — `server/realtime/player_connection_setup.py`
-- **Any** (6 connections)
-- **_add_player_to_room_silently()** (5 connections) — `server/realtime/player_connection_setup.py`
-- **test_player_connection_setup_grace_period.py** (5 connections) — `server/tests/unit/realtime/test_player_connection_setup_grace_period.py`
-- **_stable_room_id_for_quest()** (3 connections) — `server/realtime/player_connection_setup.py`
-- **test_reconnection_cancels_grace_period()** (3 connections) — `server/tests/unit/realtime/test_player_connection_setup_grace_period.py`
-- **test_reconnection_no_grace_period()** (3 connections) — `server/tests/unit/realtime/test_player_connection_setup_grace_period.py`
-- **Player** (2 connections)
-- **Player connection setup functions.  This module handles the setup tasks when a p** (1 connections) — `server/realtime/player_connection_setup.py`
-- **Update last_active timestamp in database when player connects.      Args:** (1 connections) — `server/realtime/player_connection_setup.py`
-- **Return stable room id for quest_offers lookup; strip instance_<uuid>_ prefix if** (1 connections) — `server/realtime/player_connection_setup.py`
-- **On spawn, explicitly start quests offered by this room (e.g. Leave the Tutorial)** (1 connections) — `server/realtime/player_connection_setup.py`
-- **Add player to the Room object without triggering PlayerEnteredRoom.      Movemen** (1 connections) — `server/realtime/player_connection_setup.py`
-- **Broadcast a structured entry event to other occupants (excluding the newcomer).** (1 connections) — `server/realtime/player_connection_setup.py`
-- **Send room_occupants update so other players see the new occupant.      Args:** (1 connections) — `server/realtime/player_connection_setup.py`
-- **Handle setup tasks for a new player connection.      Args:         player_id: Th** (1 connections) — `server/realtime/player_connection_setup.py`
-- **Unit tests for player connection setup grace period integration.  Tests that rec** (1 connections) — `server/tests/unit/realtime/test_player_connection_setup_grace_period.py`
-- **Test that reconnection cancels grace period.** (1 connections) — `server/tests/unit/realtime/test_player_connection_setup_grace_period.py`
-- **Test that reconnection does nothing if player not in grace period.** (1 connections) — `server/tests/unit/realtime/test_player_connection_setup_grace_period.py`
+- **handle_game_command()** (29 connections) — `server/realtime/websocket_handler_commands.py`
+- **_send_invalid_command_empty()** (4 connections) — `server/realtime/websocket_handler_commands.py`
+- **test_handle_game_command()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **test_handle_game_command_empty_command()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **test_handle_game_command_whitespace_only()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **test_handle_game_command_single_word_no_args()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **test_handle_game_command_with_provided_args()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **test_handle_game_command_resolve_connection_manager_from_app()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_handle_game_command_runtime_error_handling()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_handle_game_command_with_broadcast()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_handle_game_command_broadcast_no_player()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_handle_game_command_broadcast_no_current_room_id()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_handle_game_command_with_args()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_handle_game_command_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **WebSocket** (2 connections)
+- **test_handle_game_command_empty_sends_invalid_error()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
+- **Handle a game command from a player.      Args:         websocket: The WebSoc** (1 connections) — `server/realtime/websocket_handler_commands.py`
+- **Test handle_game_command processes game command.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **Test handle_game_command handles empty command.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **Test handle_game_command handles whitespace-only command.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **Test handle_game_command handles single word command with no args.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **Test handle_game_command processes command with provided args.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **Test handle_game_command resolves connection_manager from app when None (lines 4** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **Test handle_game_command RuntimeError handling path (lines 472-480).** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **Test handle_game_command handles broadcast.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
-- [Database Config](Database_Config.md) (5 shared connections)
-- [grace period disconnect](grace_period_disconnect.md) (3 shared connections)
+- [room look commands](room_look_commands.md) (7 shared connections)
+- [websocket handler realtime](websocket_handler_realtime.md) (5 shared connections)
+- [websocket validation realtime](websocket_validation_realtime.md) (5 shared connections)
 - [combat services messaging](combat_services_messaging.md) (3 shared connections)
-- [command utility models](command_utility_models.md) (3 shared connections)
-- [help content websocket](help_content_websocket.md) (3 shared connections)
-- [player presence tracker](player_presence_tracker.md) (3 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [world models rationale](world_models_rationale.md) (1 shared connections)
-- [realtime game state](realtime_game_state.md) (1 shared connections)
-- [quest service game](quest_service_game.md) (1 shared connections)
-- [Player Name Validation](Player_Name_Validation.md) (1 shared connections)
+- [combat schemas schema](combat_schemas_schema.md) (3 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (2 shared connections)
+- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [room websocket updates](room_websocket_updates.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/player_connection_setup.py`
-- `server/tests/unit/realtime/test_player_connection_setup_grace_period.py`
+- `server/realtime/websocket_handler_commands.py`
+- `server/tests/unit/realtime/test_websocket_handler_commands.py`
+- `server/tests/unit/realtime/test_websocket_handler_core.py`
+- `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
 
 ## Audit Trail
 
-- EXTRACTED: 110 (95%)
-- INFERRED: 6 (5%)
+- EXTRACTED: 60 (70%)
+- INFERRED: 26 (30%)
 - AMBIGUOUS: 0 (0%)
 
 ---

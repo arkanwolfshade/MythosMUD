@@ -33,7 +33,8 @@
 
 ## Relationships
 
-- [services user manager](services_user_manager.md) (3 shared connections)
+- [services user manager](services_user_manager.md) (2 shared connections)
+- [circuit breaker realtime](circuit_breaker_realtime.md) (1 shared connections)
 
 ## Source Files
 

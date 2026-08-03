@@ -1,23 +1,31 @@
 # MagicPointsMeter magic formatDelta()
 
-> 2 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **test_handle_spells_command_no_spells()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test spells command when player has no spells.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **check_invites.py** (6 connections) — `tools/invite_tools/check_invites.py`
+- **main()** (5 connections) — `tools/invite_tools/check_invites.py`
+- **list_all_invites()** (4 connections) — `tools/invite_tools/check_invites.py`
+- **check_invite_status()** (4 connections) — `tools/invite_tools/check_invites.py`
+- **count_invites()** (4 connections) — `tools/invite_tools/check_invites.py`
+- **List all invite codes in the database with their status.** (1 connections) — `tools/invite_tools/check_invites.py`
+- **Check the status of a specific invite code.** (1 connections) — `tools/invite_tools/check_invites.py`
+- **Count invite codes by status.** (1 connections) — `tools/invite_tools/check_invites.py`
+- **Main function to handle command line arguments.** (1 connections) — `tools/invite_tools/check_invites.py`
 
 ## Relationships
 
-- [commands magic rationale](commands_magic_rationale.md) (1 shared connections)
+- [Database Config](Database_Config.md) (4 shared connections)
+- [combat npc services](combat_npc_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `tools/invite_tools/check_invites.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 27 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

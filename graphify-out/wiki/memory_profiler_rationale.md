@@ -1,45 +1,45 @@
 # memory profiler rationale
 
-> 61 nodes
+> 73 nodes
 
 ## Key Concepts
 
-- **MemoryProfiler** (32 connections) — `server/utils/memory_profiler.py`
-- **test_memory_profiler.py** (15 connections) — `server/tests/unit/utils/test_memory_profiler.py`
+- **MemoryProfiler** (38 connections) — `server/utils/memory_profiler.py`
+- **test_memory_profiler.py** (21 connections) — `server/tests/unit/utils/test_memory_profiler.py`
 - **benchmark_model_memory_usage()** (13 connections) — `server/utils/memory_profiler.py`
 - **memory_profiler.py** (10 connections) — `server/utils/memory_profiler.py`
+- **SampleModel** (9 connections) — `server/tests/unit/utils/test_memory_profiler.py`
 - **.measure_model_instantiation()** (8 connections) — `server/utils/memory_profiler.py`
 - **Any** (8 connections)
 - **.measure_model_deserialization()** (8 connections) — `server/utils/memory_profiler.py`
 - **.measure_model_serialization()** (7 connections) — `server/utils/memory_profiler.py`
-- **SampleModel** (6 connections) — `server/tests/unit/utils/test_memory_profiler.py`
 - **.get_current_memory_usage()** (6 connections) — `server/utils/memory_profiler.py`
 - **.get_memory_delta()** (6 connections) — `server/utils/memory_profiler.py`
+- **OtherModel** (5 connections) — `server/tests/unit/utils/test_memory_profiler.py`
+- **test_memory_profiler_compare_models_memory_usage()** (5 connections) — `server/tests/unit/utils/test_memory_profiler.py`
 - **.start_profiling()** (5 connections) — `server/utils/memory_profiler.py`
 - **.stop_profiling()** (5 connections) — `server/utils/memory_profiler.py`
 - **.compare_models_memory_usage()** (5 connections) — `server/utils/memory_profiler.py`
 - **.print_comparison_results()** (5 connections) — `server/utils/memory_profiler.py`
 - **test_memory_profiler_measure_model_instantiation()** (4 connections) — `server/tests/unit/utils/test_memory_profiler.py`
 - **test_memory_profiler_measure_model_instantiation_zero_iterations()** (4 connections) — `server/tests/unit/utils/test_memory_profiler.py`
+- **test_memory_profiler_measure_model_serialization()** (4 connections) — `server/tests/unit/utils/test_memory_profiler.py`
+- **test_memory_profiler_measure_model_deserialization()** (4 connections) — `server/tests/unit/utils/test_memory_profiler.py`
 - **.get_memory_usage_summary()** (4 connections) — `server/utils/memory_profiler.py`
 - **.print_memory_summary()** (4 connections) — `server/utils/memory_profiler.py`
 - **.print_model_memory_usage()** (4 connections) — `server/utils/memory_profiler.py`
 - **test_memory_profiler_init()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **test_memory_profiler_start_profiling()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **test_memory_profiler_stop_profiling()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **test_memory_profiler_get_current_memory_usage()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **test_memory_profiler_get_memory_delta()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- *... and 36 more nodes in this community*
+- *... and 48 more nodes in this community*
 
 ## Relationships
 
 - [grace period login](grace_period_login.md) (5 shared connections)
 - [alias models rationale](alias_models_rationale.md) (3 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [schemas unified room](schemas_unified_room.md) (2 shared connections)
-- [command factories exploration](command_factories_exploration.md) (1 shared connections)
+- [models invite Any](models_invite_Any.md) (2 shared connections)
+- [player service game](player_service_game.md) (2 shared connections)
+- [character creation service](character_creation_service.md) (1 shared connections)
 - [command communication models](command_communication_models.md) (1 shared connections)
-- [command factories create](command_factories_create.md) (1 shared connections)
+- [taunt combat commands](taunt_combat_commands.md) (1 shared connections)
 
 ## Source Files
 
@@ -48,8 +48,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 204 (93%)
-- INFERRED: 15 (7%)
+- EXTRACTED: 242 (91%)
+- INFERRED: 23 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

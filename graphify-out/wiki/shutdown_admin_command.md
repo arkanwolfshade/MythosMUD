@@ -1,6 +1,6 @@
 # shutdown admin command
 
-> 130 nodes
+> 121 nodes
 
 ## Key Concepts
 
@@ -9,7 +9,6 @@
 - **Any** (20 connections)
 - **is_shutdown_pending()** (14 connections) — `server/commands/admin_shutdown_command.py`
 - **_await_shutdown_result()** (14 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **get_shutdown_blocking_message()** (13 connections) — `server/commands/admin_shutdown_command.py`
 - **initiate_shutdown_countdown()** (13 connections) — `server/commands/admin_shutdown_command.py`
 - **handle_shutdown_command()** (13 connections) — `server/commands/admin_shutdown_command.py`
 - **cancel_shutdown_countdown()** (11 connections) — `server/commands/admin_shutdown_command.py`
@@ -29,31 +28,33 @@
 - **_handle_shutdown_cancel()** (5 connections) — `server/commands/admin_shutdown_command.py`
 - **_handle_shutdown_initiate()** (5 connections) — `server/commands/admin_shutdown_command.py`
 - **_ShutdownContainerStub** (5 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- *... and 105 more nodes in this community*
+- **test_initiate_shutdown_countdown_success()** (5 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- *... and 96 more nodes in this community*
 
 ## Relationships
 
-- [commands admin mute](commands_admin_mute.md) (12 shared connections)
-- [profession game service](profession_game_service.md) (6 shared connections)
-- [auth users rationale](auth_users_rationale.md) (4 shared connections)
-- [websocket helpers realtime](websocket_helpers_realtime.md) (4 shared connections)
+- [commands position system](commands_position_system.md) (6 shared connections)
+- [models profession rationale](models_profession_rationale.md) (5 shared connections)
+- [commands npc admin](commands_npc_admin.md) (4 shared connections)
+- [models npc rationale](models_npc_rationale.md) (4 shared connections)
 - [shutdown commands sequence](shutdown_commands_sequence.md) (3 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [time service rationale](time_service_rationale.md) (2 shared connections)
+- [profession game service](profession_game_service.md) (2 shared connections)
+- [npc service services](npc_service_services.md) (1 shared connections)
 - [admin structured logging](admin_structured_logging.md) (1 shared connections)
-- [npc commands admin](npc_commands_admin.md) (1 shared connections)
-- [npc look commands](npc_look_commands.md) (1 shared connections)
+- [game models stats](game_models_stats.md) (1 shared connections)
+- [player requests schemas](player_requests_schemas.md) (1 shared connections)
+- [ascii map renderer](ascii_map_renderer.md) (1 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (1 shared connections)
 
 ## Source Files
 
 - `server/commands/admin_shutdown_command.py`
-- `server/commands/communication_commands_support.py`
 - `server/tests/unit/commands/test_admin_shutdown_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 492 (99%)
-- INFERRED: 4 (1%)
+- EXTRACTED: 465 (100%)
+- INFERRED: 1 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **test_create_who_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_who_command delegates to player_state factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_create_kick_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_kick_command delegates to combat factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 

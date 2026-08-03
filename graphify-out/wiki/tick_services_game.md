@@ -12,7 +12,7 @@
 ## Relationships
 
 - [tick service services](tick_service_services.md) (2 shared connections)
-- [time service rationale](time_service_rationale.md) (1 shared connections)
+- [schemas player rationale](schemas_player_rationale.md) (1 shared connections)
 
 ## Source Files
 

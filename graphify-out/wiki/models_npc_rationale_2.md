@@ -1,60 +1,74 @@
 # models npc rationale
 
-> 95 nodes
+> 343 nodes
 
 ## Key Concepts
 
-- **CombatParticipantData** (38 connections) — `server/services/combat_types.py`
-- **.create_combat_instance()** (17 connections) — `server/services/combat_initialization.py`
-- **combat_initialization.py** (15 connections) — `server/services/combat_initialization.py`
-- **TestCombatInitializer** (15 connections) — `server/tests/unit/services/test_combat_initialization.py`
-- **test_npc_combat_data_provider.py** (14 connections) — `server/tests/unit/services/test_npc_combat_data_provider.py`
-- **TestCombatParticipantData** (12 connections) — `server/tests/unit/services/test_combat_types.py`
-- **combat_types.py** (11 connections) — `server/services/combat_types.py`
-- **CombatInitializer** (8 connections) — `server/services/combat_initialization.py`
-- **test_combat_initialization.py** (8 connections) — `server/tests/unit/services/test_combat_initialization.py`
-- **test_combat_types.py** (6 connections) — `server/tests/unit/services/test_combat_types.py`
-- **_build_participant()** (5 connections) — `server/services/combat_initialization.py`
-- **_compute_turn_order()** (5 connections) — `server/services/combat_initialization.py`
-- **.start_combat()** (5 connections) — `server/services/combat_service.py`
-- **.get_npc_definition()** (5 connections) — `server/services/npc_combat_data_provider.py`
-- **UUID** (5 connections)
-- **.get_npc_combat_data()** (5 connections) — `server/services/npc_combat_data_provider.py`
-- **_build_combat_instance()** (4 connections) — `server/services/combat_initialization.py`
-- **Any** (4 connections)
-- **.get_npc_instance()** (4 connections) — `server/services/npc_combat_data_provider.py`
-- **.get_player_combat_data()** (4 connections) — `server/services/npc_combat_data_provider.py`
-- **test_get_player_combat_data_uses_get_combat_stats()** (4 connections) — `server/tests/unit/services/test_npc_combat_data_provider.py`
-- **test_get_npc_combat_data_uses_get_combat_stats()** (4 connections) — `server/tests/unit/services/test_npc_combat_data_provider.py`
-- **.__init__()** (3 connections) — `server/services/npc_combat_data_provider.py`
-- **.get_player_name()** (3 connections) — `server/services/npc_combat_data_provider.py`
-- **.get_player_room_id()** (3 connections) — `server/services/npc_combat_data_provider.py`
-- *... and 70 more nodes in this community*
+- **NPCDefinition** (121 connections) — `server/models/npc.py`
+- **NPCSpawnRule** (55 connections) — `server/models/npc.py`
+- **test_npc_service.py** (49 connections) — `server/tests/unit/services/test_npc_service.py`
+- **npc.py** (38 connections) — `server/models/npc.py`
+- **test_npc_models.py** (33 connections) — `server/tests/unit/models/test_npc_models.py`
+- **_mock_result_mappings_all()** (29 connections) — `server/tests/unit/services/test_npc_service.py`
+- **test_spawn_validator.py** (24 connections) — `server/tests/unit/npc/test_spawn_validator.py`
+- **should_spawn_npc()** (22 connections) — `server/npc/spawn_validator.py`
+- **NPCDefinitionCRUDMixin** (18 connections) — `server/services/npc_service/definition_crud.py`
+- **_def_row()** (18 connections) — `server/tests/unit/services/test_npc_service.py`
+- **npc_startup_service.py** (16 connections) — `server/services/npc_startup_service.py`
+- **__init__.py** (15 connections) — `server/services/npc_service/__init__.py`
+- **definition_crud.py** (15 connections) — `server/services/npc_service/definition_crud.py`
+- **NPCService** (14 connections) — `server/services/npc_service/__init__.py`
+- **npc_service_models.py** (13 connections) — `server/services/npc_service_models.py`
+- **_row_to_npc_definition()** (12 connections) — `server/services/npc_service_models.py`
+- **spawn_validator.py** (11 connections) — `server/npc/spawn_validator.py`
+- **queries.py** (11 connections) — `server/services/npc_service/queries.py`
+- **spawn_rule_crud.py** (11 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **NPCDefinitionUpdateParams** (11 connections) — `server/services/npc_service_models.py`
+- **_JSONDict** (10 connections)
+- **NPCSpawnRuleCRUDMixin** (10 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **NPCRelationship** (9 connections) — `server/models/npc.py`
+- **._evaluate_spawn_requirements()** (9 connections) — `server/npc/spawning_service.py`
+- **.update_npc_definition()** (9 connections) — `server/services/npc_service/definition_crud.py`
+- *... and 318 more nodes in this community*
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (28 shared connections)
-- [Item Instances](Item_Instances.md) (15 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [commands npc admin](commands_npc_admin.md) (2 shared connections)
-- [combat models rationale](combat_models_rationale.md) (2 shared connections)
-- [npc shopkeeper rationale](npc_shopkeeper_rationale.md) (2 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (47 shared connections)
+- [models npc rationale](models_npc_rationale.md) (18 shared connections)
+- [realtime monitoring statistics](realtime_monitoring_statistics.md) (16 shared connections)
+- [Database Config](Database_Config.md) (13 shared connections)
+- [player realtime event](player_realtime_event.md) (10 shared connections)
+- [spell game magic](spell_game_magic.md) (8 shared connections)
+- [admin auth service](admin_auth_service.md) (7 shared connections)
+- [commands npc admin](commands_npc_admin.md) (6 shared connections)
+- [combat services rationale](combat_services_rationale.md) (6 shared connections)
+- [world models rationale](world_models_rationale.md) (5 shared connections)
+- [tools generate invite](tools_generate_invite.md) (5 shared connections)
+- [npc shopkeeper rationale](npc_shopkeeper_rationale.md) (5 shared connections)
 
 ## Source Files
 
-- `server/services/combat_initialization.py`
-- `server/services/combat_service.py`
-- `server/services/combat_types.py`
-- `server/services/npc_combat_data_provider.py`
-- `server/tests/unit/services/test_combat_initialization.py`
-- `server/tests/unit/services/test_combat_types.py`
-- `server/tests/unit/services/test_npc_combat_data_provider.py`
+- `server/models/npc.py`
+- `server/npc/lifecycle_manager.py`
+- `server/npc/npc_base.py`
+- `server/npc/population_control.py`
+- `server/npc/spawn_validator.py`
+- `server/npc/spawning_models.py`
+- `server/npc/spawning_service.py`
+- `server/services/npc_service/__init__.py`
+- `server/services/npc_service/definition_crud.py`
+- `server/services/npc_service/queries.py`
+- `server/services/npc_service/spawn_rule_crud.py`
+- `server/services/npc_service_models.py`
+- `server/services/npc_startup_service.py`
+- `server/tests/unit/models/test_npc_models.py`
+- `server/tests/unit/npc/test_spawn_validator.py`
+- `server/tests/unit/services/test_npc_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 306 (95%)
-- INFERRED: 16 (5%)
+- EXTRACTED: 1285 (96%)
+- INFERRED: 49 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

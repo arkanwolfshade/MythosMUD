@@ -1,64 +1,72 @@
 # command utility models
 
-> 100 nodes
+> 178 nodes
 
 ## Key Concepts
 
 - **is_player_in_login_grace_period()** (52 connections) — `server/realtime/login_grace_period.py`
 - **start_login_grace_period()** (42 connections) — `server/realtime/login_grace_period.py`
+- **.state()** (36 connections) — `server/realtime/connection_state_machine.py`
 - **login_grace_period.py** (32 connections) — `server/realtime/login_grace_period.py`
+- **GameStateProvider** (26 connections) — `server/realtime/integration/game_state_provider.py`
 - **test_login_grace_period.py** (24 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
+- **game_state_provider.py** (21 connections) — `server/realtime/integration/game_state_provider.py`
 - **get_login_grace_period_remaining()** (21 connections) — `server/realtime/login_grace_period.py`
 - **test_login_grace_period_flow.py** (18 connections) — `server/tests/integration/test_login_grace_period_flow.py`
+- **UUID** (15 connections)
+- **npc_combat_grace.py** (14 connections) — `server/services/npc_combat_grace.py`
+- **Any** (13 connections)
 - **cancel_login_grace_period()** (13 connections) — `server/realtime/login_grace_period.py`
+- **.send_initial_game_state()** (12 connections) — `server/realtime/integration/game_state_provider.py`
 - **_grace_period_expiration_handler()** (11 connections) — `server/realtime/login_grace_period.py`
+- **is_player_attack_blocked_by_login_grace_period()** (11 connections) — `server/services/npc_combat_grace.py`
 - **test_combat_grace_period.py** (11 connections) — `server/tests/unit/commands/test_combat_grace_period.py`
+- **websocket_endpoint()** (10 connections) — `server/api/real_time.py`
+- **is_npc_attack_on_player_blocked_by_login_grace_period()** (10 connections) — `server/services/npc_combat_grace.py`
+- **._get_player_data_for_client()** (9 connections) — `server/realtime/integration/game_state_provider.py`
 - **UUID** (9 connections)
-- **Any** (8 connections)
-- **_remove_from_grace_period_tracking()** (7 connections) — `server/realtime/login_grace_period.py`
-- **_grace_period_task()** (7 connections) — `server/realtime/login_grace_period.py`
-- **_trigger_room_occupants_update()** (5 connections) — `server/realtime/login_grace_period.py`
-- **test_grace_period_expires_after_duration()** (5 connections) — `server/tests/integration/test_login_grace_period_flow.py`
-- **test_multiple_players_independent_grace_periods()** (5 connections) — `server/tests/integration/test_login_grace_period_flow.py`
-- **test_grace_period_can_be_cancelled()** (5 connections) — `server/tests/integration/test_login_grace_period_flow.py`
-- **test_effect_based_grace_start_then_tick_expiration_clears_in_memory()** (5 connections) — `server/tests/integration/test_login_grace_period_flow.py`
-- **test_warded_indicator_in_game_state_provider()** (5 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
-- **test_start_grace_period_removes_from_combat()** (4 connections) — `server/tests/integration/test_login_grace_period_flow.py`
-- **test_grace_period_blocks_combat_initiation()** (4 connections) — `server/tests/integration/test_login_grace_period_flow.py`
-- **test_grace_period_remaining_time_decreases()** (4 connections) — `server/tests/integration/test_login_grace_period_flow.py`
-- **test_grace_period_start_time_tracking()** (4 connections) — `server/tests/integration/test_login_grace_period_flow.py`
-- **test_attack_command_blocked_during_grace_period()** (4 connections) — `server/tests/unit/commands/test_combat_grace_period.py`
-- **test_attack_command_works_when_not_in_grace_period()** (4 connections) — `server/tests/unit/commands/test_combat_grace_period.py`
-- *... and 75 more nodes in this community*
+- **.connection_manager()** (9 connections) — `server/realtime/nats_message_handler.py`
+- **test_npc_combat_grace.py** (9 connections) — `server/tests/unit/services/test_npc_combat_grace.py`
+- **.apply_combat_effects()** (8 connections) — `server/npc/combat_integration_base.py`
+- **._apply_player_combat_effects()** (8 connections) — `server/npc/combat_integration_base.py`
+- *... and 153 more nodes in this community*
 
 ## Relationships
 
-- [player occupant processor](player_occupant_processor.md) (12 shared connections)
-- [NPC Combat](NPC_Combat.md) (10 shared connections)
-- [tick game processing](tick_game_processing.md) (9 shared connections)
-- [Item Instances](Item_Instances.md) (7 shared connections)
-- [command inventory factories](command_inventory_factories.md) (6 shared connections)
-- [realtime game state](realtime_game_state.md) (5 shared connections)
+- [look helpers commands](look_helpers_commands.md) (29 shared connections)
+- [models npc rationale](models_npc_rationale.md) (22 shared connections)
+- [combat commands handler](combat_commands_handler.md) (15 shared connections)
+- [npc combat base](npc_combat_base.md) (13 shared connections)
+- [combat services messaging](combat_services_messaging.md) (8 shared connections)
+- [NPC Combat](NPC_Combat.md) (7 shared connections)
+- [Player Stats](Player_Stats.md) (7 shared connections)
+- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (7 shared connections)
+- [connection disconnection realtime](connection_disconnection_realtime.md) (5 shared connections)
 - [combat services turn](combat_services_turn.md) (4 shared connections)
-- [look helpers commands](look_helpers_commands.md) (4 shared connections)
-- [room websocket updates](room_websocket_updates.md) (4 shared connections)
-- [room realtime rationale](room_realtime_rationale.md) (4 shared connections)
-- [command factories exploration](command_factories_exploration.md) (3 shared connections)
+- [character creation service](character_creation_service.md) (3 shared connections)
 - [Room Broadcast](Room_Broadcast.md) (3 shared connections)
 
 ## Source Files
 
+- `server/api/real_time.py`
+- `server/config/__init__.py`
+- `server/npc/combat_integration.py`
+- `server/npc/combat_integration_base.py`
+- `server/realtime/connection_state_machine.py`
+- `server/realtime/integration/game_state_provider.py`
 - `server/realtime/login_grace_period.py`
+- `server/realtime/nats_message_handler.py`
+- `server/services/npc_combat_grace.py`
 - `server/tests/integration/test_login_grace_period_flow.py`
 - `server/tests/unit/commands/test_combat_grace_period.py`
 - `server/tests/unit/realtime/test_login_grace_period.py`
 - `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
-- `server/tests/unit/services/test_damage_grace_period.py`
+- `server/tests/unit/services/test_npc_combat_grace.py`
 
 ## Audit Trail
 
-- EXTRACTED: 426 (99%)
-- INFERRED: 5 (1%)
+- EXTRACTED: 767 (93%)
+- INFERRED: 57 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_remove_room_occupant_not_occupant()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **Test remove_room_occupant() when player is not an occupant.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_get_player_data_for_client_with_service()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test _get_player_data_for_client() uses PlayerService when available.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Relationships
 
-- [room subscription manager](room_subscription_manager.md) (1 shared connections)
+- [game state provider](game_state_provider.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager.py`
+- `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Audit Trail
 

@@ -1,23 +1,29 @@
 # schemas items item
 
-> 2 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **test_announce_spell_cast_no_chat_service()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test announce spell cast when chat service is not available.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **._get_npc_display_name()** (5 connections) — `server/npc/combat_integration.py`
+- **._get_npc_name_from_lifecycle()** (4 connections) — `server/npc/combat_integration.py`
+- **._derive_npc_name_from_id()** (3 connections) — `server/npc/combat_integration.py`
+- **Resolve NPC instance display name from lifecycle manager, or derive from npc_id.** (1 connections) — `server/npc/combat_integration.py`
+- **Best-effort lookup of NPC name from the lifecycle manager.** (1 connections) — `server/npc/combat_integration.py`
+- **Fallback name derivation: first segment of npc_id (e.g. nightgaunt_limbo_... ->** (1 connections) — `server/npc/combat_integration.py`
 
 ## Relationships
 
-- [commands magic rationale](commands_magic_rationale.md) (1 shared connections)
+- [services nats service](services_nats_service.md) (3 shared connections)
+- [message queue realtime](message_queue_realtime.md) (1 shared connections)
+- [command utility models](command_utility_models.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `server/npc/combat_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

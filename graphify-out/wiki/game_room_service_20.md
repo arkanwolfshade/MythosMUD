@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_handle_equip_wearable_container_with_lock_state()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test handle_equip_wearable_container with lock_state and allowed_roles.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_cleanup_failed_connection_error()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **Test _cleanup_failed_connection() handles errors during cleanup.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
 
 ## Relationships
 
-- [wearable container service](wearable_container_service.md) (1 shared connections)
+- [player event state](player_event_state.md) (1 shared connections)
+- [connection establishment realtime](connection_establishment_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `server/tests/unit/realtime/test_connection_establishment.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

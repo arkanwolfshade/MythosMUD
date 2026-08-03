@@ -1,50 +1,34 @@
 # security headers middleware
 
-> 55 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **test_security_headers.py** (20 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **SecurityHeadersMiddleware** (13 connections) — `server/middleware/security_headers.py`
-- **MutableHeaders** (6 connections)
-- **middleware()** (6 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **.__call__()** (5 connections) — `server/middleware/security_headers.py`
-- **.dispatch()** (5 connections) — `server/middleware/security_headers.py`
-- **._add_security_headers_to_response()** (4 connections) — `server/middleware/security_headers.py`
-- **.__init__()** (3 connections) — `server/middleware/security_headers.py`
-- **._add_security_headers()** (3 connections) — `server/middleware/security_headers.py`
-- **test_security_headers_middleware_init()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **test_security_headers_middleware_init_with_env_vars()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **test_security_headers_middleware_non_http_scope()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **test_security_headers_middleware_adds_headers()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **test_security_headers_middleware_error_handling()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **test_add_security_headers()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **test_add_security_headers_hsts_value()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **test_add_security_headers_permissions_policy()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **test_add_security_headers_csp_policy()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **test_add_security_headers_referrer_policy()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **Any** (2 connections)
-- **mock_app()** (2 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **test_add_security_headers_to_response()** (2 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **test_add_security_headers_to_response_hsts_with_subdomains()** (2 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **test_add_security_headers_to_response_hsts_without_subdomains()** (2 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **test_dispatch_method()** (2 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- *... and 30 more nodes in this community*
+- **needs_rehash()** (7 connections) — `server/auth/argon2_utils.py`
+- **test_needs_rehash_valid_hash()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **test_needs_rehash_error_handling()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **test_needs_rehash_invalid_hash()** (3 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **Check if a hash needs to be rehashed due to parameter changes.** (1 connections) — `server/auth/argon2_utils.py`
+- **Test needs_rehash with valid hash that doesn't need rehashing.** (1 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **Test needs_rehash with invalid hash returns True.** (1 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **Test needs_rehash handles errors and returns True.** (1 connections) — `server/tests/unit/auth/test_argon2_utils.py`
 
 ## Relationships
 
-- [command inventory factories](command_inventory_factories.md) (3 shared connections)
-- [app factory rationale](app_factory_rationale.md) (1 shared connections)
+- [respawn player handlers](respawn_player_handlers.md) (4 shared connections)
+- [auth users rationale](auth_users_rationale.md) (2 shared connections)
+- [models npc rationale](models_npc_rationale.md) (1 shared connections)
+- [persistence constants rationale](persistence_constants_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/middleware/security_headers.py`
-- `server/tests/unit/middleware/test_security_headers.py`
+- `server/auth/argon2_utils.py`
+- `server/tests/unit/auth/test_argon2_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 127 (92%)
-- INFERRED: 11 (8%)
+- EXTRACTED: 22 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

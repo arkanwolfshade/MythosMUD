@@ -1,41 +1,54 @@
 # npc realtime occupant
 
-> 14 nodes
+> 33 nodes
 
 ## Key Concepts
 
-- **get_player_service_for_testing()** (9 connections) — `server/dependencies.py`
-- **TestGetPlayerServiceForTesting** (7 connections) — `server/tests/unit/test_dependency_injection.py`
-- **TestGetPlayerServiceForTesting** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_player_service_for_testing_creates_mock()** (4 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_player_service_for_testing_with_injection()** (4 connections) — `server/tests/unit/test_dependency_injection.py`
-- **.test_get_player_service_for_testing_without_injection()** (4 connections) — `server/tests/unit/test_dependency_injection.py`
-- **.test_get_player_service_for_testing_with_provided_service()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Get a PlayerService instance for testing purposes.      This function allows tes** (1 connections) — `server/dependencies.py`
-- **Tests for get_player_service_for_testing helper function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_player_service_for_testing returns provided service.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_player_service_for_testing creates PlayerService when None provided.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_player_service_for_testing() function.** (1 connections) — `server/tests/unit/test_dependency_injection.py`
-- **Test get_player_service_for_testing() with injected service.** (1 connections) — `server/tests/unit/test_dependency_injection.py`
-- **Test get_player_service_for_testing() creates mock when None.** (1 connections) — `server/tests/unit/test_dependency_injection.py`
+- **test_zone_config_loader.py** (35 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **process_zone_rows()** (13 connections) — `server/npc/zone_config_loader.py`
+- **async_load_zone_configurations()** (13 connections) — `server/npc/zone_config_loader.py`
+- **_empty_zone_load_result()** (13 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **process_subzone_rows()** (9 connections) — `server/npc/zone_config_loader.py`
+- **test_process_zone_rows()** (5 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_process_subzone_rows()** (5 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_async_load_zone_configurations_converts_url()** (5 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_async_load_zone_configurations_passes_search_path_for_mythos_e2e()** (5 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_process_zone_rows_empty()** (4 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_process_zone_rows_json_strings()** (4 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_process_subzone_rows_empty()** (4 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_async_load_zone_configurations_success()** (4 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_async_load_zone_configurations_no_database_url()** (4 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_async_load_zone_configurations_error()** (4 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_async_load_zone_configurations_closes_connection()** (4 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **Connection** (2 connections)
+- **MonkeyPatch** (2 connections)
+- **Process zone rows from database and populate zone configurations.      Args:** (1 connections) — `server/npc/zone_config_loader.py`
+- **Process subzone rows from database and populate subzone configurations.      Arg** (1 connections) — `server/npc/zone_config_loader.py`
+- **Async helper to load zone configurations from PostgreSQL database.** (1 connections) — `server/npc/zone_config_loader.py`
+- **Unit tests for zone configuration loader.  Tests the zone_config_loader module f** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **Test process_zone_rows() processes zone rows.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **Test process_zone_rows() handles empty result.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **Test process_zone_rows() parses JSON string fields.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [command inventory models](command_inventory_models.md) (6 shared connections)
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (5 shared connections)
-- [room game service](room_game_service.md) (1 shared connections)
-- [profession game service](profession_game_service.md) (1 shared connections)
+- [npc idle movement](npc_idle_movement.md) (12 shared connections)
+- [security headers middleware](security_headers_middleware.md) (7 shared connections)
+- [models lucidity rationale](models_lucidity_rationale.md) (6 shared connections)
+- [spell game magic](spell_game_magic.md) (4 shared connections)
+- [services npc combat](services_npc_combat.md) (4 shared connections)
+- [commands lucidity recovery](commands_lucidity_recovery.md) (1 shared connections)
 
 ## Source Files
 
-- `server/dependencies.py`
-- `server/tests/unit/infrastructure/test_dependencies.py`
-- `server/tests/unit/test_dependency_injection.py`
+- `server/npc/zone_config_loader.py`
+- `server/tests/unit/npc/test_zone_config_loader.py`
 
 ## Audit Trail
 
-- EXTRACTED: 36 (84%)
-- INFERRED: 7 (16%)
+- EXTRACTED: 148 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

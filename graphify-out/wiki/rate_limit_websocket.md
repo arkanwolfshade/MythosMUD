@@ -19,7 +19,7 @@
 
 ## Relationships
 
-- [websocket realtime handler](websocket_realtime_handler.md) (1 shared connections)
+- [room look commands](room_look_commands.md) (1 shared connections)
 
 ## Source Files
 

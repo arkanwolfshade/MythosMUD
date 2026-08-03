@@ -1,60 +1,56 @@
 # Game Terminal UI
 
-> 125 nodes
+> 78 nodes
 
 ## Key Concepts
 
-- **types.ts** (79 connections) — `client/src/components/ui-v2/types.ts`
 - **types.ts** (44 connections) — `client/src/components/ui-v2/eventHandlers/types.ts`
 - **stateUpdateUtils.ts** (41 connections) — `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
-- **Room** (36 connections) — `client/src/components/ui-v2/types.ts`
-- **logger.ts** (36 connections) — `client/src/utils/logger.ts`
-- **logger** (33 connections) — `client/src/utils/logger.ts`
-- **Player** (32 connections) — `client/src/components/ui-v2/types.ts`
 - **ChatMessage** (32 connections) — `client/src/components/ui-v2/types.ts`
 - **GameState** (26 connections) — `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
-- **LucidityStatus** (26 connections) — `client/src/types/lucidity.ts`
-- **useGameClientV2ContainerRefsAndBootstrap.ts** (25 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerRefsAndBootstrap.ts`
-- **HealthStatus** (25 connections) — `client/src/types/health.ts`
-- **projectorHandlersState.ts** (23 connections) — `client/src/components/ui-v2/eventLog/projectorHandlersState.ts`
-- **MythosTimeState** (23 connections) — `client/src/types/mythosTime.ts`
+- **sanitizeChatMessageForState()** (24 connections) — `client/src/components/ui-v2/utils/messageUtils.ts`
 - **GameEvent** (21 connections) — `client/src/components/ui-v2/eventHandlers/types.ts`
 - **projector.ts** (21 connections) — `client/src/components/ui-v2/eventLog/projector.ts`
 - **useRespawnHandlers.ts** (21 connections) — `client/src/components/ui-v2/hooks/useRespawnHandlers.ts`
+- **messageUtils.ts** (18 connections) — `client/src/components/ui-v2/utils/messageUtils.ts`
 - **index.ts** (17 connections) — `client/src/components/ui-v2/eventHandlers/index.ts`
-- **CharacterInfoPanel.tsx** (17 connections) — `client/src/components/ui-v2/panels/CharacterInfoPanel.tsx`
-- **RescueState** (17 connections) — `client/src/types/lucidity.ts`
-- **EventHandlerContext** (15 connections) — `client/src/components/ui-v2/eventHandlers/types.ts`
-- **useGameConnectionManagement.ts** (15 connections) — `client/src/components/ui-v2/hooks/useGameConnectionManagement.ts`
-- **useEventProcessing.test.ts** (14 connections) — `client/src/components/ui-v2/hooks/__tests__/useEventProcessing.test.ts`
-- **useRefSynchronization.ts** (14 connections) — `client/src/components/ui-v2/hooks/useRefSynchronization.ts`
+- **combatHandlers.ts** (14 connections) — `client/src/components/ui-v2/eventHandlers/combatHandlers.ts`
 - **stateUpdateUtils.test.ts** (14 connections) — `client/src/components/ui-v2/utils/__tests__/stateUpdateUtils.test.ts`
-- *... and 100 more nodes in this community*
+- **useEventProcessing.ts** (13 connections) — `client/src/components/ui-v2/hooks/useEventProcessing.ts`
+- **combatHandlers.test.ts** (12 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/combatHandlers.test.ts`
+- **projector.projectEvent.test.ts** (12 connections) — `client/src/components/ui-v2/eventLog/__tests__/projector.projectEvent.test.ts`
+- **projector.test.ts** (12 connections) — `client/src/components/ui-v2/eventLog/__tests__/projector.test.ts`
+- **index.ts** (11 connections) — `client/src/components/ui-v2/eventLog/index.ts`
+- **types.ts** (11 connections) — `client/src/components/ui-v2/eventLog/types.ts`
+- **GameStateUpdates** (10 connections) — `client/src/components/ui-v2/eventHandlers/types.ts`
+- **projector.projectState.test.ts** (10 connections) — `client/src/components/ui-v2/eventLog/__tests__/projector.projectState.test.ts`
+- **projectState()** (10 connections) — `client/src/components/ui-v2/eventLog/projector.ts`
+- **EventLog** (10 connections) — `client/src/components/ui-v2/eventLog/types.ts`
+- **eventStore.ts** (9 connections) — `client/src/components/ui-v2/eventLog/eventStore.ts`
+- **EventStore** (9 connections) — `client/src/components/ui-v2/eventLog/eventStore.ts`
+- **index.test.ts** (8 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/index.test.ts`
+- *... and 53 more nodes in this community*
 
 ## Relationships
 
-- [PanelSystem PanelManager panelLayoutClam](PanelSystem_PanelManager_panelLayoutClam.md) (68 shared connections)
-- [lucidityEventUtils mythosTime MythosTime](lucidityEventUtils_mythosTime_MythosTime.md) (66 shared connections)
-- [GameClientV2Container emptyOccupantsDiag](GameClientV2Container_emptyOccupantsDiag.md) (47 shared connections)
 - [game terminal lucidity](game_terminal_lucidity.md) (33 shared connections)
-- [playerHandlers eventHandlers healthEvent](playerHandlers_eventHandlers_healthEvent.md) (13 shared connections)
-- [project paths rationale](project_paths_rationale.md) (13 shared connections)
-- [eventHandlers messageHandlers statusPars](eventHandlers_messageHandlers_statusPars.md) (12 shared connections)
-- [roomHandlers eventHandlers calculateOccu](roomHandlers_eventHandlers_calculateOccu.md) (12 shared connections)
-- [eventLog projectorRoom roomMergeUtils](eventLog_projectorRoom_roomMergeUtils.md) (9 shared connections)
-- [panels chat ChatPanelRuntimeViewParts](panels_chat_ChatPanelRuntimeViewParts.md) (9 shared connections)
-- [mythosApp useMythosAppState useStatsRoll](mythosApp_useMythosAppState_useStatsRoll.md) (6 shared connections)
-- [mythosApp appLazyScreens mythosAppViewMo](mythosApp_appLazyScreens_mythosAppViewMo.md) (4 shared connections)
+- [eventLog projectorRoom roomMergeUtils](eventLog_projectorRoom_roomMergeUtils.md) (20 shared connections)
+- [GameClientV2Container emptyOccupantsDiag](GameClientV2Container_emptyOccupantsDiag.md) (18 shared connections)
+- [lucidityEventUtils mythosTime MythosTime](lucidityEventUtils_mythosTime_MythosTime.md) (16 shared connections)
+- [roomHandlers eventHandlers calculateOccu](roomHandlers_eventHandlers_calculateOccu.md) (15 shared connections)
+- [PanelSystem PanelManager panelLayoutClam](PanelSystem_PanelManager_panelLayoutClam.md) (13 shared connections)
+- [character creation service](character_creation_service.md) (10 shared connections)
+- [eventHandlers messageHandlers statusPars](eventHandlers_messageHandlers_statusPars.md) (5 shared connections)
+- [playerHandlers eventHandlers healthEvent](playerHandlers_eventHandlers_healthEvent.md) (5 shared connections)
+- [project paths rationale](project_paths_rationale.md) (4 shared connections)
+- [realtime maintenance connection](realtime_maintenance_connection.md) (2 shared connections)
+- [apiTypeGuards FIELDS SHARED](apiTypeGuards_FIELDS_SHARED.md) (2 shared connections)
 
 ## Source Files
 
-- `client/src/components/GameTerminal.tsx`
-- `client/src/components/magic/MagicPointsMeter.tsx`
-- `client/src/components/magic/__tests__/MagicPointsMeter.test.tsx`
-- `client/src/components/ui-v2/GameClientV2.tsx`
-- `client/src/components/ui-v2/GameClientV2AuxiliaryPanels.tsx`
-- `client/src/components/ui-v2/__tests__/GameClientV2.test.tsx`
+- `client/src/components/ui-v2/eventHandlers/__tests__/combatHandlers.test.ts`
 - `client/src/components/ui-v2/eventHandlers/__tests__/index.test.ts`
+- `client/src/components/ui-v2/eventHandlers/combatHandlers.ts`
 - `client/src/components/ui-v2/eventHandlers/index.ts`
 - `client/src/components/ui-v2/eventHandlers/types.ts`
 - `client/src/components/ui-v2/eventLog/__tests__/eventStore.test.ts`
@@ -65,14 +61,18 @@
 - `client/src/components/ui-v2/eventLog/index.ts`
 - `client/src/components/ui-v2/eventLog/projector.ts`
 - `client/src/components/ui-v2/eventLog/projectorConstants.ts`
-- `client/src/components/ui-v2/eventLog/projectorHandlersState.ts`
 - `client/src/components/ui-v2/eventLog/types.ts`
-- `client/src/components/ui-v2/hooks/__tests__/useCommandHandlers.test.ts`
+- `client/src/components/ui-v2/hooks/__tests__/useRespawnHandlers.test.ts`
+- `client/src/components/ui-v2/hooks/useEventProcessing.ts`
+- `client/src/components/ui-v2/hooks/useGameConnectionManagement.ts`
+- `client/src/components/ui-v2/hooks/useRespawnHandlers.ts`
+- `client/src/components/ui-v2/types.ts`
+- `client/src/components/ui-v2/utils/__tests__/messageUtils.test.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 1122 (100%)
-- INFERRED: 4 (0%)
+- EXTRACTED: 583 (99%)
+- INFERRED: 6 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

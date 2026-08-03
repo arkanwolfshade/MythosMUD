@@ -1,24 +1,41 @@
 # realtime monitoring performance
 
-> 2 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **test_profession_get_mechanical_effects_valid_json()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **Test get_mechanical_effects returns dict for valid JSON.** (1 connections) — `server/tests/unit/models/test_profession.py`
+- **test_message_builders.py** (15 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **_builder()** (8 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **test_create_player_entered_message()** (4 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **test_create_player_left_message()** (4 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **test_get_next_sequence_uses_callable()** (3 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **test_get_next_sequence_non_callable_returns_zero()** (3 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **test_create_npc_movement_message_variants()** (3 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **test_build_occupants_update_message()** (3 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **test_build_room_update_message()** (3 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **test_build_room_state_message()** (3 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **Unit tests for MessageBuilder.** (1 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **Sequence counter callable is invoked.** (1 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **Non-callable sequence counter returns 0.** (1 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **Player entered message includes ids and player name.** (1 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **Player left message includes ids and player name.** (1 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **NPC movement messages cover direction and movement type branches.** (1 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **Occupants update includes structured and legacy fields.** (1 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **Room update wraps room data without occupants.** (1 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **Room state includes occupants from room_data.** (1 connections) — `server/tests/unit/realtime/test_message_builders.py`
 
 ## Relationships
 
-- [persistence core infrastructure](persistence_core_infrastructure.md) (1 shared connections)
-- [profession models rationale](profession_models_rationale.md) (1 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (6 shared connections)
+- [NATS Messaging](NATS_Messaging.md) (4 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/models/test_profession.py`
+- `server/tests/unit/realtime/test_message_builders.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 58 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

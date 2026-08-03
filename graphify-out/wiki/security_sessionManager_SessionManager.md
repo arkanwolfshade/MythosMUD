@@ -1,29 +1,39 @@
 # security sessionManager SessionManager
 
-> 6 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **TestGetNPCLifecycleManager** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_npc_lifecycle_manager_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_npc_lifecycle_manager_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Tests for get_npc_lifecycle_manager dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_npc_lifecycle_manager returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_npc_lifecycle_manager raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **format_combat_status()** (6 connections) — `server/commands/combat_helpers.py`
+- **get_combat_target()** (6 connections) — `server/commands/combat_helpers.py`
+- **test_combat_helpers.py** (6 connections) — `server/tests/unit/commands/test_combat_helpers.py`
+- **test_format_combat_status_in_combat()** (3 connections) — `server/tests/unit/commands/test_combat_helpers.py`
+- **test_format_combat_status_not_in_combat()** (3 connections) — `server/tests/unit/commands/test_combat_helpers.py`
+- **test_get_combat_target()** (3 connections) — `server/tests/unit/commands/test_combat_helpers.py`
+- **test_get_combat_target_not_found()** (3 connections) — `server/tests/unit/commands/test_combat_helpers.py`
+- **Any** (2 connections)
+- **Produce a human-readable combat status string.      This helper is retained for** (1 connections) — `server/commands/combat_helpers.py`
+- **Resolve a combat target by name.      The current implementation is intentionall** (1 connections) — `server/commands/combat_helpers.py`
+- **Unit tests for combat command helper functions.  Tests helper functions in comba** (1 connections) — `server/tests/unit/commands/test_combat_helpers.py`
+- **Test format_combat_status() formats combat status.** (1 connections) — `server/tests/unit/commands/test_combat_helpers.py`
+- **Test format_combat_status() handles player not in combat.** (1 connections) — `server/tests/unit/commands/test_combat_helpers.py`
+- **Test get_combat_target() finds target.** (1 connections) — `server/tests/unit/commands/test_combat_helpers.py`
+- **Test get_combat_target() returns None when target not found.** (1 connections) — `server/tests/unit/commands/test_combat_helpers.py`
 
 ## Relationships
 
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (3 shared connections)
-- [command inventory models](command_inventory_models.md) (1 shared connections)
+- [NPC Combat](NPC_Combat.md) (3 shared connections)
+- [combat flee commands](combat_flee_commands.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_dependencies.py`
+- `server/commands/combat_helpers.py`
+- `server/tests/unit/commands/test_combat_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (93%)
-- INFERRED: 1 (7%)
+- EXTRACTED: 31 (79%)
+- INFERRED: 8 (21%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,26 +1,25 @@
 # rename used active
 
-> 5 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **rename_used_to_is_active.py** (4 connections) — `server/scripts/rename_used_to_is_active.py`
-- **apply_migration()** (3 connections) — `server/scripts/rename_used_to_is_active.py`
-- **main()** (3 connections) — `server/scripts/rename_used_to_is_active.py`
-- **Apply the migration to rename used back to is_active.      Args:         databas** (1 connections) — `server/scripts/rename_used_to_is_active.py`
-- **Main entry point for the migration script.** (1 connections) — `server/scripts/rename_used_to_is_active.py`
+- **Python Code Coverage Status** (3 connections) — `docs/PYTHON_COVERAGE_STATUS.md`
+- **PYTHON_COVERAGE_STATUS.md** (1 connections) — `docs/PYTHON_COVERAGE_STATUS.md`
+- **Summary** (1 connections) — `docs/PYTHON_COVERAGE_STATUS.md`
+- **Priority Recommendations** (1 connections) — `docs/PYTHON_COVERAGE_STATUS.md`
 
 ## Relationships
 
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/scripts/rename_used_to_is_active.py`
+- `docs/PYTHON_COVERAGE_STATUS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

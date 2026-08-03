@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_get_limit_default()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **Test get_limit returns default for unknown channel.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_evaluate_numeric_comparison_false()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test _evaluate_numeric_comparison() returns False when condition not met.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [rate limiter services](rate_limiter_services.md) (1 shared connections)
+- [lucidity active service](lucidity_active_service.md) (1 shared connections)
+- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_rate_limiter.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

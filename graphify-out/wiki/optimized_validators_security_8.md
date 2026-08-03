@@ -16,7 +16,7 @@
 ## Relationships
 
 - [optimized security validator](optimized_security_validator.md) (4 shared connections)
-- [optimized validators security](optimized_validators_security.md) (1 shared connections)
+- [models npc rationale](models_npc_rationale.md) (1 shared connections)
 
 ## Source Files
 

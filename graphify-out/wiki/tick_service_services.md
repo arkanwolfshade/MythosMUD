@@ -27,7 +27,7 @@
 - [tick services game](tick_services_game.md) (6 shared connections)
 - [services game tick](services_game_tick.md) (4 shared connections)
 - [npc realtime event](npc_realtime_event.md) (2 shared connections)
-- [time service rationale](time_service_rationale.md) (1 shared connections)
+- [models npc rationale](models_npc_rationale.md) (1 shared connections)
 - [player realtime event](player_realtime_event.md) (1 shared connections)
 
 ## Source Files

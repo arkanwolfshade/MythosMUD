@@ -1,56 +1,56 @@
 # follow service game
 
-> 23 nodes
+> 78 nodes
 
 ## Key Concepts
 
-- **__init__.py** (32 connections) — `server/persistence/__init__.py`
-- **container_query_helpers.py** (21 connections) — `server/persistence/container_query_helpers.py`
-- **get_decayed_containers()** (13 connections) — `server/persistence/container_query_helpers.py`
-- **_build_container_data_from_row()** (12 connections) — `server/persistence/container_query_helpers.py`
-- **get_containers_by_room_id()** (12 connections) — `server/persistence/container_query_helpers.py`
-- **get_containers_by_entity_id()** (12 connections) — `server/persistence/container_query_helpers.py`
-- **parse_jsonb_column()** (11 connections) — `server/persistence/container_helpers.py`
-- **fetch_container_items()** (9 connections) — `server/persistence/container_helpers.py`
-- **Any** (4 connections)
-- **ContainerData** (4 connections)
-- **PsycopgConnection** (2 connections)
-- **UUID** (2 connections)
-- **datetime** (2 connections)
-- **Persistence package for MythosMUD.  This package contains persistence utilities** (1 connections) — `server/persistence/__init__.py`
-- **# NOTE: PersistenceLayer and get_persistence removed - all code now uses AsyncPe** (1 connections) — `server/persistence/__init__.py`
-- **# NOTE: Removed PersistenceLayer, get_persistence, and reset_persistence from __** (1 connections) — `server/persistence/__init__.py`
-- **Parse a JSONB column value from database.      JSONB columns may be returned a** (1 connections) — `server/persistence/container_helpers.py`
-- **Fetch container items directly from normalized tables.      Queries container_** (1 connections) — `server/persistence/container_helpers.py`
-- **Query helper functions for container persistence operations.** (1 connections) — `server/persistence/container_query_helpers.py`
-- **Build ContainerData object from database row.      Args:         conn: Database** (1 connections) — `server/persistence/container_query_helpers.py`
-- **Get all containers in a room.      Args:         conn: Database connection** (1 connections) — `server/persistence/container_query_helpers.py`
-- **Get all containers owned by an entity (player/NPC).      Args:         conn: Dat** (1 connections) — `server/persistence/container_query_helpers.py`
-- **Get all containers that have decayed (decay_at < current_time).      Args:** (1 connections) — `server/persistence/container_query_helpers.py`
+- **TaskRegistry** (49 connections) — `server/app/task_registry.py`
+- **test_task_registry.py** (23 connections) — `server/tests/unit/app/test_task_registry.py`
+- **task_registry.py** (11 connections) — `server/app/task_registry.py`
+- **Any** (10 connections)
+- **._setup_task_tracking()** (9 connections) — `server/app/task_registry.py`
+- **get_registry()** (9 connections) — `server/app/task_registry.py`
+- **_sleep_briefly()** (9 connections) — `server/tests/unit/app/test_task_registry.py`
+- **Task** (8 connections)
+- **TaskMetadata** (7 connections) — `server/app/task_registry.py`
+- **.register_task()** (7 connections) — `server/app/task_registry.py`
+- **.shutdown_all()** (7 connections) — `server/app/task_registry.py`
+- **unregister_task()** (7 connections) — `server/app/task_registry.py`
+- **register_task()** (6 connections) — `server/app/task_registry.py`
+- **._create_task_completion_callback()** (5 connections) — `server/app/task_registry.py`
+- **.get_task_lifecycle_metrics()** (5 connections) — `server/app/task_registry.py`
+- **test_module_level_helpers()** (5 connections) — `server/tests/unit/app/test_task_registry.py`
+- **.__init__()** (4 connections) — `server/app/task_registry.py`
+- **.unregister_task()** (4 connections) — `server/app/task_registry.py`
+- **.cancel_task()** (4 connections) — `server/app/task_registry.py`
+- **._cleanup_registry_collections()** (4 connections) — `server/app/task_registry.py`
+- **test_register_closes_coro_when_create_task_fails()** (4 connections) — `server/tests/unit/app/test_task_registry.py`
+- **._ensure_unique_task_name()** (3 connections) — `server/app/task_registry.py`
+- **._track_task_creation_metrics()** (3 connections) — `server/app/task_registry.py`
+- **._extract_service_name()** (3 connections) — `server/app/task_registry.py`
+- **._cancel_lifecycle_tasks()** (3 connections) — `server/app/task_registry.py`
+- *... and 53 more nodes in this community*
 
 ## Relationships
 
-- [Database Config](Database_Config.md) (32 shared connections)
-- [auth endpoints rationale](auth_endpoints_rationale.md) (11 shared connections)
-- [container sql injection](container_sql_injection.md) (11 shared connections)
-- [persistence container item](persistence_container_item.md) (8 shared connections)
-- [persistence protocols rationale](persistence_protocols_rationale.md) (2 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [monitoring dashboard rationale](monitoring_dashboard_rationale.md) (1 shared connections)
-- [config models game](config_models_game.md) (1 shared connections)
-- [dialogue definitions admin](dialogue_definitions_admin.md) (1 shared connections)
-- [argon2 auth rationale](argon2_auth_rationale.md) (1 shared connections)
+- [schemas player rationale](schemas_player_rationale.md) (5 shared connections)
+- [time service rationale](time_service_rationale.md) (4 shared connections)
+- [models npc rationale](models_npc_rationale.md) (3 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [memory lifespan app](memory_lifespan_app.md) (1 shared connections)
+- [command combat models](command_combat_models.md) (1 shared connections)
+- [health models rationale](health_models_rationale.md) (1 shared connections)
+- [message nats handler](message_nats_handler.md) (1 shared connections)
 
 ## Source Files
 
-- `server/persistence/__init__.py`
-- `server/persistence/container_helpers.py`
-- `server/persistence/container_query_helpers.py`
+- `server/app/task_registry.py`
+- `server/tests/unit/app/test_task_registry.py`
 
 ## Audit Trail
 
-- EXTRACTED: 143 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 297 (98%)
+- INFERRED: 5 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

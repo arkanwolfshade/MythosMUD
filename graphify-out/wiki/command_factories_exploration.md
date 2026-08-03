@@ -1,65 +1,68 @@
 # command factories exploration
 
-> 77 nodes
+> 160 nodes
 
 ## Key Concepts
 
-- **spell_effects_status.py** (24 connections) — `server/game/magic/spell_effects_status.py`
+- **CombatInstance** (186 connections) — `server/models/combat.py`
+- **test_combat_flee_handler.py** (33 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
 - **combat_flee_handler.py** (22 connections) — `server/services/combat_flee_handler.py`
-- **run_flee_effect()** (18 connections) — `server/game/magic/spell_effect_flee.py`
-- **StatusEffectType** (18 connections) — `server/models/game.py`
-- **spell_effect_flee.py** (17 connections) — `server/game/magic/spell_effect_flee.py`
-- **test_combat_flee_handler.py** (17 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
-- **execute_voluntary_flee()** (15 connections) — `server/services/combat_flee_handler.py`
+- **execute_voluntary_flee()** (20 connections) — `server/services/combat_flee_handler.py`
+- **_make_participant()** (20 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
 - **try_voluntary_flee_roll()** (11 connections) — `server/services/combat_flee_handler.py`
-- **_make_participant()** (11 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
-- **Any** (10 connections)
-- **_apply_player_status_with_grace_check()** (10 connections) — `server/game/magic/spell_effects_status.py`
-- **_handle_player_status_effect()** (10 connections) — `server/game/magic/spell_effects_status.py`
-- **run_status_effect()** (10 connections) — `server/game/magic/spell_effects_status.py`
-- **_apply_status_effect_to_player()** (9 connections) — `server/game/magic/spell_effects_status.py`
-- **Any** (8 connections)
-- **_check_involuntary_flee_with_session()** (8 connections) — `server/services/combat_flee_handler.py`
-- **_grace_period_blocks_negative_status_effect()** (7 connections) — `server/game/magic/spell_effects_status.py`
-- **_maybe_run_force_flee_effect()** (7 connections) — `server/game/magic/spell_effects_status.py`
-- **_remove_player_status_effect()** (7 connections) — `server/game/magic/spell_effects_status.py`
-- **UUID** (6 connections)
-- **_parse_status_effect_metadata()** (6 connections) — `server/game/magic/spell_effects_status.py`
-- **check_involuntary_flee()** (6 connections) — `server/services/combat_flee_handler.py`
-- **_flee_effect_validate_room_exits()** (5 connections) — `server/game/magic/spell_effect_flee.py`
-- **_involuntary_flee_on_cooldown()** (5 connections) — `server/services/combat_flee_handler.py`
+- **_check_involuntary_flee_with_session()** (11 connections) — `server/services/combat_flee_handler.py`
+- **_involuntary_flee_on_cooldown()** (10 connections) — `server/services/combat_flee_handler.py`
+- **check_involuntary_flee()** (9 connections) — `server/services/combat_flee_handler.py`
+- **.validate_and_get_combat_participants()** (6 connections) — `server/services/combat_attack_handler.py`
+- **test_process_npc_turn_calls_process_attack_when_target_resolved()** (6 connections) — `server/tests/unit/services/test_combat_turn_participant_actions.py`
+- **._handle_player_dp_update()** (5 connections) — `server/services/combat_service.py`
+- **.validate_and_get_combat_participants()** (5 connections) — `server/services/combat_service.py`
+- **.apply_attack_damage()** (5 connections) — `server/services/combat_service.py`
+- **.handle_attack_events_and_xp()** (5 connections) — `server/services/combat_service.py`
 - **test_try_voluntary_flee_roll_zero_exits_returns_false()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
-- *... and 52 more nodes in this community*
+- **test_try_voluntary_flee_roll_roll_above_chance_fails()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
+- **test_try_voluntary_flee_roll_roll_below_chance_succeeds()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
+- **test_try_voluntary_flee_roll_opponents_reduce_chance()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
+- **test_try_voluntary_flee_roll_dead_opponent_not_counted()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
+- **test_execute_voluntary_flee_no_room_returns_false()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
+- **test_execute_voluntary_flee_no_exits_returns_false()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
+- **test_execute_voluntary_flee_missing_participant_returns_false()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
+- **test_execute_voluntary_flee_roll_fail_consumes_action()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
+- **test_execute_voluntary_flee_success_moves_player()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
+- *... and 135 more nodes in this community*
 
 ## Relationships
 
-- [Item Instances](Item_Instances.md) (22 shared connections)
-- [target resolution service](target_resolution_service.md) (15 shared connections)
-- [game models player](game_models_player.md) (15 shared connections)
-- [command inventory factories](command_inventory_factories.md) (11 shared connections)
-- [lucidity services helpers](lucidity_services_helpers.md) (4 shared connections)
-- [command utility models](command_utility_models.md) (3 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (3 shared connections)
-- [movement monitor game](movement_monitor_game.md) (2 shared connections)
-- [command factories communication](command_factories_communication.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [combat flee commands](combat_flee_commands.md) (2 shared connections)
-- [spell game magic](spell_game_magic.md) (1 shared connections)
+- [combat commands handler](combat_commands_handler.md) (47 shared connections)
+- [Item Instances](Item_Instances.md) (46 shared connections)
+- [NPC Combat](NPC_Combat.md) (23 shared connections)
+- [room validator toolkit](room_validator_toolkit.md) (13 shared connections)
+- [models npc rationale](models_npc_rationale.md) (12 shared connections)
+- [services combat sync](services_combat_sync.md) (10 shared connections)
+- [npc database infrastructure](npc_database_infrastructure.md) (10 shared connections)
+- [combat flee commands](combat_flee_commands.md) (8 shared connections)
+- [websocket handler realtime](websocket_handler_realtime.md) (6 shared connections)
+- [Memory Task Runtime](Memory_Task_Runtime.md) (5 shared connections)
+- [movement monitor game](movement_monitor_game.md) (5 shared connections)
+- [scripts worktree ops](scripts_worktree_ops.md) (5 shared connections)
 
 ## Source Files
 
-- `server/game/magic/spell_effect_flee.py`
-- `server/game/magic/spell_effects.py`
-- `server/game/magic/spell_effects_status.py`
-- `server/models/game.py`
+- `server/models/combat.py`
+- `server/services/combat_attack_handler.py`
+- `server/services/combat_cleanup_handler.py`
 - `server/services/combat_flee_handler.py`
-- `server/services/lucidity_command_disruption.py`
+- `server/services/combat_service.py`
+- `server/tests/unit/models/test_combat.py`
+- `server/tests/unit/services/test_combat_attack_handler.py`
+- `server/tests/unit/services/test_combat_cleanup_handler.py`
 - `server/tests/unit/services/test_combat_flee_handler.py`
+- `server/tests/unit/services/test_combat_turn_participant_actions.py`
 
 ## Audit Trail
 
-- EXTRACTED: 377 (99%)
-- INFERRED: 3 (1%)
+- EXTRACTED: 648 (96%)
+- INFERRED: 28 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

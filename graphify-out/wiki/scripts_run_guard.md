@@ -1,48 +1,45 @@
 # scripts run guard
 
-> 55 nodes
+> 39 nodes
 
 ## Key Concepts
 
 - **safe_subprocess.py** (21 connections) — `scripts/utils/safe_subprocess.py`
 - **safe_run()** (19 connections) — `scripts/utils/safe_subprocess.py`
-- **safe_run_static()** (16 connections) — `scripts/utils/safe_subprocess.py`
-- **worktree-ops.py** (9 connections) — `scripts/worktree-ops.py`
-- **get_project_root()** (8 connections) — `scripts/worktree-ops.py`
-- **get_current_worktree()** (7 connections) — `scripts/worktree-ops.py`
-- **run_test_ci.py** (6 connections) — `scripts/run_test_ci.py`
-- **install_dependencies()** (6 connections) — `scripts/worktree-ops.py`
-- **run_tests()** (6 connections) — `scripts/worktree-ops.py`
-- **run_lint()** (6 connections) — `scripts/worktree-ops.py`
-- **run_format()** (6 connections) — `scripts/worktree-ops.py`
-- **show_status()** (6 connections) — `scripts/worktree-ops.py`
-- **main()** (6 connections) — `scripts/worktree-ops.py`
+- **run_quality_fragmentation_guard.py** (12 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **main()** (6 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **_run_git()** (5 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **_resolved_changed_files()** (5 connections) — `scripts/run_quality_fragmentation_guard.py`
 - **validate_path()** (5 connections) — `scripts/utils/safe_subprocess.py`
 - **run_psql_command()** (4 connections) — `scripts/load_seed_data.py`
-- **sqlint.py** (4 connections) — `scripts/sqlint.py`
-- **_resolve_sqlint_cmd()** (4 connections) — `scripts/sqlint.py`
+- **_git_executable()** (4 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **_changed_files_between()** (4 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **_local_changed_files()** (4 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **_build_guard_command()** (4 connections) — `scripts/run_quality_fragmentation_guard.py`
 - **validate_command()** (4 connections) — `scripts/utils/safe_subprocess.py`
-- **run_command()** (4 connections) — `scripts/worktree-ops.py`
 - **main()** (3 connections) — `scripts/load_seed_data.py`
-- **_is_tool_crash()** (3 connections) — `scripts/sqlint.py`
+- **_resolve_base_sha()** (3 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **_is_graphify_path()** (3 connections) — `scripts/run_quality_fragmentation_guard.py`
 - **Path** (3 connections)
 - **install.py** (2 connections) — `scripts/install.py`
 - **get_project_root()** (2 connections) — `scripts/install.py`
 - **load_seed_data.py** (2 connections) — `scripts/load_seed_data.py`
-- *... and 30 more nodes in this community*
+- **_argv_char_len()** (2 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **Any** (2 connections)
+- **CompletedProcess** (2 connections)
+- **bandit.py** (1 connections) — `scripts/bandit.py`
+- **build.py** (1 connections) — `scripts/build.py`
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
-- [admin commands setstat](admin_commands_setstat.md) (6 shared connections)
+- [auth dependencies rationale](auth_dependencies_rationale.md) (7 shared connections)
 - [quality fragmentation scripts](quality_fragmentation_scripts.md) (3 shared connections)
-- [dependency scripts analyzer](dependency_scripts_analyzer.md) (3 shared connections)
-- [compare linting results](compare_linting_results.md) (2 shared connections)
-- [grype scripts rationale](grype_scripts_rationale.md) (2 shared connections)
 - [runner scripts rationale](runner_scripts_rationale.md) (2 shared connections)
-- [logging setup structured](logging_setup_structured.md) (1 shared connections)
-- [player preferences service](player_preferences_service.md) (1 shared connections)
-- [npc shopkeeper rationale](npc_shopkeeper_rationale.md) (1 shared connections)
-- [time service rationale](time_service_rationale.md) (1 shared connections)
+- [compare linting results](compare_linting_results.md) (1 shared connections)
+- [dependency scripts analyzer](dependency_scripts_analyzer.md) (1 shared connections)
+- [grype scripts rationale](grype_scripts_rationale.md) (1 shared connections)
+- [models npc rationale](models_npc_rationale.md) (1 shared connections)
 - [fragmentation quality scripts](fragmentation_quality_scripts.md) (1 shared connections)
 
 ## Source Files
@@ -55,16 +52,14 @@
 - `scripts/load_seed_data.py`
 - `scripts/pylint.py`
 - `scripts/run.py`
-- `scripts/run_test_ci.py`
+- `scripts/run_quality_fragmentation_guard.py`
 - `scripts/sqlfluff.py`
-- `scripts/sqlint.py`
 - `scripts/utils/safe_subprocess.py`
-- `scripts/worktree-ops.py`
 
 ## Audit Trail
 
-- EXTRACTED: 174 (89%)
-- INFERRED: 21 (11%)
+- EXTRACTED: 133 (97%)
+- INFERRED: 4 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

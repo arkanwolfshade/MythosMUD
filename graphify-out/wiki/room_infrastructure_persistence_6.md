@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_build_room_objects_success()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _build_room_objects successfully builds room objects.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_convert_room_uuids_to_names_no_player_ids()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test convert_room_uuids_to_names() when room_data has no player_ids.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Relationships
 
-- [room persistence loading](room_persistence_loading.md) (1 shared connections)
+- [game state provider](game_state_provider.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Audit Trail
 

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_handle_container_overflow_save_player_error()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test handle_container_overflow handles save_player error gracefully.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **mock_persistence()** (2 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **Persistence mock with async get_player_by_id for integration tests.** (1 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
 
 ## Relationships
 
-- [wearable container service](wearable_container_service.md) (1 shared connections)
+- [services nats service](services_nats_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `server/tests/unit/npc/test_npc_combat_integration_class.py`
 
 ## Audit Trail
 

@@ -1,6 +1,6 @@
 # websocket handler realtime
 
-> 68 nodes
+> 58 nodes
 
 ## Key Concepts
 
@@ -13,46 +13,49 @@
 - **_resolve_taunt_combat_and_participant()** (9 connections) — `server/commands/combat_taunt.py`
 - **_apply_taunt_and_maybe_broadcast()** (9 connections) — `server/commands/combat_taunt.py`
 - **test_run_handle_taunt_success()** (7 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **Any** (6 connections)
 - **_resolve_taunt_room_and_player()** (6 connections) — `server/commands/combat_taunt.py`
 - **UUID** (6 connections)
 - **_validate_taunt_target_name()** (6 connections) — `server/commands/combat_taunt.py`
 - **_RoomWithIdOnly** (6 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **.handle_attack_command()** (5 connections) — `server/commands/combat_handler.py`
-- **.handle_taunt_command()** (5 connections) — `server/commands/combat_handler.py`
 - **test_validate_taunt_target_not_npc()** (5 connections) — `server/tests/unit/commands/test_combat_taunt.py`
 - **test_validate_taunt_target_dead()** (5 connections) — `server/tests/unit/commands/test_combat_taunt.py`
 - **test_run_handle_taunt_no_combat_service()** (5 connections) — `server/tests/unit/commands/test_combat_taunt.py`
 - **test_run_handle_taunt_not_in_combat()** (5 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **.extract_combat_command_data()** (4 connections) — `server/commands/combat_handler.py`
-- **.handle_flee_command()** (4 connections) — `server/commands/combat_handler.py`
 - **.get_player_and_room()** (4 connections) — `server/commands/combat_taunt.py`
 - **AppWithState** (4 connections)
 - **.resolve_combat_target()** (4 connections) — `server/commands/combat_taunt.py`
-- *... and 43 more nodes in this community*
+- **.check_and_interrupt_rest()** (4 connections) — `server/commands/combat_taunt.py`
+- **.is_alive()** (4 connections) — `server/models/combat.py`
+- **test_resolve_taunt_room_and_player_falls_back_to_id()** (4 connections) — `server/tests/unit/commands/test_combat_taunt.py`
+- **test_validate_taunt_target_name_from_target_key()** (4 connections) — `server/tests/unit/commands/test_combat_taunt.py`
+- **.combat_service()** (3 connections) — `server/commands/combat_taunt.py`
+- *... and 33 more nodes in this community*
 
 ## Relationships
 
-- [Item Instances](Item_Instances.md) (22 shared connections)
-- [target resolution service](target_resolution_service.md) (16 shared connections)
-- [NPC Combat](NPC_Combat.md) (14 shared connections)
-- [commands admin mute](commands_admin_mute.md) (10 shared connections)
-- [combat flee commands](combat_flee_commands.md) (3 shared connections)
+- [NPC Combat](NPC_Combat.md) (13 shared connections)
+- [spell game magic](spell_game_magic.md) (12 shared connections)
+- [Item Instances](Item_Instances.md) (7 shared connections)
+- [command factories exploration](command_factories_exploration.md) (6 shared connections)
+- [commands npc admin](commands_npc_admin.md) (5 shared connections)
+- [room validator toolkit](room_validator_toolkit.md) (5 shared connections)
+- [combat commands handler](combat_commands_handler.md) (4 shared connections)
 - [npc database infrastructure](npc_database_infrastructure.md) (3 shared connections)
-- [attack combat commands](attack_combat_commands.md) (1 shared connections)
+- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [Spell Validation](Spell_Validation.md) (2 shared connections)
+- [commands position system](commands_position_system.md) (1 shared connections)
 - [room realtime rationale](room_realtime_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/combat_handler.py`
 - `server/commands/combat_taunt.py`
 - `server/models/combat.py`
 - `server/tests/unit/commands/test_combat_taunt.py`
 
 ## Audit Trail
 
-- EXTRACTED: 271 (95%)
-- INFERRED: 15 (5%)
+- EXTRACTED: 244 (95%)
+- INFERRED: 13 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

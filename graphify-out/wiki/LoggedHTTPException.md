@@ -1,6 +1,6 @@
 # LoggedHTTPException
 
-> God node · 409 connections · `server/exceptions.py`
+> God node · 474 connections · `server/exceptions.py`
 
 **Community:** [Exception Containers](Exception_Containers.md)
 
@@ -16,17 +16,17 @@
 - handle_container_service_error() `EXTRACTED`
 - create_character_with_stats() `EXTRACTED`
 - get_container_and_player_for_loot_all() `EXTRACTED`
-- start_login_grace_period_endpoint() `EXTRACTED`
-- _roll_stats_with_profession_preview() `EXTRACTED`
 - get_player_quests() `EXTRACTED`
-- update_room_position() `EXTRACTED`
-- create_dialogue_definition() `EXTRACTED`
 - _update_npc_definition_internal() `EXTRACTED`
-- _execute_create_character() `EXTRACTED`
-- validate_character_stats() `EXTRACTED`
 - get_ascii_minimap() `EXTRACTED`
-- replay_dlq_message() `EXTRACTED`
-- _validate_character_access() `EXTRACTED`
+- start_login_grace_period_endpoint() `EXTRACTED`
+- update_room_position() `EXTRACTED`
+- respawn_player() `EXTRACTED`
+- get_npc_definitions() `EXTRACTED`
+- get_npc_spawn_rules() `EXTRACTED`
+- create_npc_spawn_rule() `EXTRACTED`
+- _roll_stats_with_profession_preview() `EXTRACTED`
+- set_map_origin() `EXTRACTED`
 
 ### contains
 - exceptions.py `EXTRACTED`
@@ -36,7 +36,9 @@
 - monitoring.py `EXTRACTED`
 - endpoints.py `EXTRACTED`
 - test_monitoring_endpoints.py `EXTRACTED`
+- test_players_api_coverage.py `EXTRACTED`
 - maps.py `EXTRACTED`
+- test_maps.py `EXTRACTED`
 - legacy_error_handlers.py `EXTRACTED`
 - character_creation.py `EXTRACTED`
 - container_helpers.py `EXTRACTED`
@@ -50,8 +52,6 @@
 - test_exceptions_comprehensive.py `EXTRACTED`
 - standardized_responses.py `EXTRACTED`
 - test_container_exception_handlers.py `EXTRACTED`
-- test_containers.py `EXTRACTED`
-- player_effects.py `EXTRACTED`
 
 ### indirect_call
 - loot_all_items() `INFERRED`
@@ -70,10 +70,10 @@
 - test_register_user_generic_constraint_violation() `INFERRED`
 - test_register_user_integrity_error() `INFERRED`
 - test_register_user_username_constraint_violation() `INFERRED`
+- test_register_pattern_invalid() `INFERRED`
 - .test_create_character_rate_limit() `INFERRED`
 - .test_roll_character_stats_profession_not_found() `INFERRED`
 - .test_roll_character_stats_rate_limit() `INFERRED`
-- .test_loot_all_items_emit_event_failure() `INFERRED`
 
 ### inherits
 - LoggedException `EXTRACTED`

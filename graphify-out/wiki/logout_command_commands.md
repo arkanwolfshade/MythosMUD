@@ -34,7 +34,7 @@
 ## Relationships
 
 - [commands logout rationale](commands_logout_rationale.md) (8 shared connections)
-- [commands emote rationale](commands_emote_rationale.md) (1 shared connections)
+- [commands who rationale](commands_who_rationale.md) (1 shared connections)
 
 ## Source Files
 

@@ -33,8 +33,9 @@
 
 ## Relationships
 
-- [subject validation services](subject_validation_services.md) (3 shared connections)
+- [subject validation services](subject_validation_services.md) (2 shared connections)
 - [manager subject services](manager_subject_services.md) (1 shared connections)
+- [manager services nats](manager_services_nats.md) (1 shared connections)
 
 ## Source Files
 

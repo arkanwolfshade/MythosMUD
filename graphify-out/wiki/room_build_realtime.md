@@ -1,24 +1,32 @@
 # room build realtime
 
-> 2 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **test_handle_cast_command_cast_failure()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test cast command when casting fails.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **bench_cache.py** (6 connections) — `scripts/bench_cache.py`
+- **_FakePersistence** (6 connections) — `scripts/bench_cache.py`
+- **bench_room_cache()** (5 connections) — `scripts/bench_cache.py`
+- **.async_get_room()** (2 connections) — `scripts/bench_cache.py`
+- **Any** (2 connections)
+- **main()** (2 connections) — `scripts/bench_cache.py`
+- **.__init__()** (1 connections) — `scripts/bench_cache.py`
+- **Lightweight cache benchmark for CI artifacts.  Measures miss vs. hit timings for** (1 connections) — `scripts/bench_cache.py`
+- **Fake persistence layer providing async_get_room with simulated latency.** (1 connections) — `scripts/bench_cache.py`
 
 ## Relationships
 
-- [commands magic rationale](commands_magic_rationale.md) (1 shared connections)
+- [startup npc service](startup_npc_service.md) (3 shared connections)
+- [models npc rationale](models_npc_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `scripts/bench_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 23 (88%)
+- INFERRED: 3 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

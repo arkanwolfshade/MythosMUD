@@ -1,30 +1,47 @@
 # game models enums
 
-> 6 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **get_database_url()** (6 connections) — `server/database_helpers.py`
-- **test_get_database_url()** (4 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **test_get_database_url_returns_none()** (4 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **Get the database URL, initializing if necessary.      Returns:         str | Non** (1 connections) — `server/database_helpers.py`
-- **Test get_database_url returns URL from DatabaseManager.** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **Test get_database_url returns None when not configured.** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **generate_invites_db.py** (14 connections) — `tools/invite_tools/generate_invites_db.py`
+- **set_test_database_url()** (9 connections) — `server/database_config_helpers.py`
+- **main()** (7 connections) — `tools/invite_tools/generate_invites_db.py`
+- **normalize_database_url()** (6 connections) — `server/database_config_helpers.py`
+- **create_invite_in_db()** (6 connections) — `tools/invite_tools/generate_invites_db.py`
+- **_set_database_url_from_env()** (5 connections) — `tools/invite_tools/generate_invites_db.py`
+- **parse_expires_date()** (4 connections) — `tools/invite_tools/generate_invites_db.py`
+- **generate_unique_codes()** (4 connections) — `tools/invite_tools/generate_invites_db.py`
+- **get_existing_codes()** (4 connections) — `tools/invite_tools/generate_invites_db.py`
+- **datetime** (3 connections)
+- **generate_invite_code()** (3 connections) — `tools/invite_tools/generate_invites_db.py`
+- **Set test override database URL.** (1 connections) — `server/database_config_helpers.py`
+- **Normalize database URL for asyncpg.      Args:         database_url: Original da** (1 connections) — `server/database_config_helpers.py`
+- **Parse YYYY-MM-DD to end-of-day UTC (naive). Invite valid through that date.** (1 connections) — `tools/invite_tools/generate_invites_db.py`
+- **Generate a unique Mythos-themed invite code.** (1 connections) — `tools/invite_tools/generate_invites_db.py`
+- **Generate a list of unique invite codes.** (1 connections) — `tools/invite_tools/generate_invites_db.py`
+- **Get existing invite codes from the database.** (1 connections) — `tools/invite_tools/generate_invites_db.py`
+- **Create an invite in the database.** (1 connections) — `tools/invite_tools/generate_invites_db.py`
+- **Use DATABASE_URL so scripts can run without full AppConfig.** (1 connections) — `tools/invite_tools/generate_invites_db.py`
+- **Generate invite codes and store them in the database.** (1 connections) — `tools/invite_tools/generate_invites_db.py`
 
 ## Relationships
 
-- [Database Access Layer](Database_Access_Layer.md) (3 shared connections)
-- [lucidity npc combat](lucidity_npc_combat.md) (3 shared connections)
-- [command commands talk](command_commands_talk.md) (1 shared connections)
+- [commands lucidity recovery](commands_lucidity_recovery.md) (4 shared connections)
+- [combat npc services](combat_npc_services.md) (3 shared connections)
+- [Database Config](Database_Config.md) (3 shared connections)
+- [player requests schemas](player_requests_schemas.md) (3 shared connections)
+- [manager subject services](manager_subject_services.md) (2 shared connections)
+- [conftest mock rationale](conftest_mock_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/database_helpers.py`
-- `server/tests/unit/infrastructure/test_database_helpers.py`
+- `server/database_config_helpers.py`
+- `tools/invite_tools/generate_invites_db.py`
 
 ## Audit Trail
 
-- EXTRACTED: 17 (100%)
+- EXTRACTED: 74 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

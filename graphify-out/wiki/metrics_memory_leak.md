@@ -1,11 +1,10 @@
 # metrics memory leak
 
-> 42 nodes
+> 40 nodes
 
 ## Key Concepts
 
 - **test_memory_leak_metrics.py** (23 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
-- **collector()** (3 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
 - **test_collector_initialization()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
 - **test_collect_connection_metrics()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
 - **test_collect_connection_metrics_no_manager()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
@@ -26,15 +25,16 @@
 - **test_metrics_history_bounded()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
 - **test_collect_all_metrics_error_handling()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
 - **Unit tests for memory leak metrics collector.  Tests the MemoryLeakMetricsCollec** (1 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
-- **Create a MemoryLeakMetricsCollector instance.** (1 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
 - **Test MemoryLeakMetricsCollector initialization.** (1 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
 - **Test collection of connection metrics.** (1 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
-- *... and 17 more nodes in this community*
+- **Test collection of connection metrics when manager is not available.** (1 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **Test collection of event metrics.** (1 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- *... and 15 more nodes in this community*
 
 ## Relationships
 
-- [command combat models](command_combat_models.md) (2 shared connections)
-- [time service rationale](time_service_rationale.md) (1 shared connections)
+- [message nats handler](message_nats_handler.md) (2 shared connections)
+- [models npc rationale](models_npc_rationale.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,7 +42,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 85 (100%)
+- EXTRACTED: 81 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

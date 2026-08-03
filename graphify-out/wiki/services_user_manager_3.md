@@ -1,47 +1,34 @@
 # services user manager
 
-> 71 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **UserManager** (59 connections) — `server/services/user_manager.py`
-- **UUID** (39 connections)
-- **._normalize_to_uuid()** (26 connections) — `server/services/user_manager.py`
-- **.save_player_mutes()** (14 connections) — `server/services/user_manager.py`
-- **.load_player_mutes()** (12 connections) — `server/services/user_manager.py`
-- **.is_admin_sync()** (7 connections) — `server/services/user_manager.py`
-- **._get_player_mute_file()** (7 connections) — `server/services/user_manager.py`
-- **.load_player_mutes_async()** (7 connections) — `server/services/user_manager.py`
-- **.add_admin()** (6 connections) — `server/services/user_manager.py`
-- **.remove_admin()** (6 connections) — `server/services/user_manager.py`
-- **.mute_player()** (6 connections) — `server/services/user_manager.py`
-- **.unmute_player()** (6 connections) — `server/services/user_manager.py`
-- **.mute_global()** (6 connections) — `server/services/user_manager.py`
-- **.unmute_global()** (6 connections) — `server/services/user_manager.py`
-- **.is_player_muted()** (6 connections) — `server/services/user_manager.py`
-- **.can_send_message()** (6 connections) — `server/services/user_manager.py`
-- **._load_player_mutes_from_data()** (6 connections) — `server/services/user_manager.py`
-- **._load_global_mutes_from_data()** (6 connections) — `server/services/user_manager.py`
-- **.load_player_mutes_batch()** (6 connections) — `server/services/user_manager.py`
-- **.mute_channel()** (5 connections) — `server/services/user_manager.py`
-- **.unmute_channel()** (5 connections) — `server/services/user_manager.py`
-- **.is_player_muted_async()** (5 connections) — `server/services/user_manager.py`
-- **.is_channel_muted()** (5 connections) — `server/services/user_manager.py`
-- **.is_globally_muted()** (5 connections) — `server/services/user_manager.py`
-- **._convert_mute_info_timestamps()** (5 connections) — `server/services/user_manager.py`
-- *... and 46 more nodes in this community*
+- **._cleanup_player_mutes()** (8 connections) — `server/services/user_manager.py`
+- **datetime** (7 connections)
+- **.get_player_mutes()** (7 connections) — `server/services/user_manager.py`
+- **._cleanup_expired_mutes()** (6 connections) — `server/services/user_manager.py`
+- **._get_active_player_mutes()** (5 connections) — `server/services/user_manager.py`
+- **._get_active_channel_mutes()** (5 connections) — `server/services/user_manager.py`
+- **._get_active_global_mutes()** (5 connections) — `server/services/user_manager.py`
+- **._cleanup_channel_mutes()** (4 connections) — `server/services/user_manager.py`
+- **._cleanup_global_mutes()** (4 connections) — `server/services/user_manager.py`
+- **.get_system_stats()** (3 connections) — `server/services/user_manager.py`
+- **Get active player mutes for a player.** (1 connections) — `server/services/user_manager.py`
+- **Get active channel mutes for a player.** (1 connections) — `server/services/user_manager.py`
+- **Get active global mutes applied by a player.** (1 connections) — `server/services/user_manager.py`
+- **Get all mutes applied by a player.          Args:             player_id: Play** (1 connections) — `server/services/user_manager.py`
+- **Get system-wide user management statistics.          Returns:             Dic** (1 connections) — `server/services/user_manager.py`
+- **Clean up expired player mutes.** (1 connections) — `server/services/user_manager.py`
+- **Clean up expired channel mutes.** (1 connections) — `server/services/user_manager.py`
+- **Clean up expired global mutes.** (1 connections) — `server/services/user_manager.py`
+- **Clean up expired mutes from all storage.** (1 connections) — `server/services/user_manager.py`
+- **Remove mute data for a player from memory and optionally delete their file.** (1 connections) — `server/services/user_manager.py`
 
 ## Relationships
 
-- [services user manager](services_user_manager.md) (21 shared connections)
-- [Error Conversion](Error_Conversion.md) (5 shared connections)
-- [circuit breaker realtime](circuit_breaker_realtime.md) (3 shared connections)
-- [alias storage commands](alias_storage_commands.md) (3 shared connections)
-- [follow game service](follow_game_service.md) (2 shared connections)
-- [user manager services](user_manager_services.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [nats exceptions services](nats_exceptions_services.md) (1 shared connections)
-- [chat services logger](chat_services_logger.md) (1 shared connections)
+- [services user manager](services_user_manager.md) (17 shared connections)
+- [circuit breaker realtime](circuit_breaker_realtime.md) (1 shared connections)
 
 ## Source Files
 
@@ -49,8 +36,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 349 (99%)
-- INFERRED: 5 (1%)
+- EXTRACTED: 64 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

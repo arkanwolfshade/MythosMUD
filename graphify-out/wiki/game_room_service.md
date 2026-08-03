@@ -4,21 +4,22 @@
 
 ## Key Concepts
 
-- **test_run_improvement_rolls_previous_level_under_1_no_op()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
-- **run_improvement_rolls with new_level 1 does nothing (previous level 0).** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_event_bus_get_subscriber_count()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test EventBus.get_subscriber_count() returns count.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- [skill service game](skill_service_game.md) (1 shared connections)
+- [event bus events](event_bus_events.md) (1 shared connections)
+- [services exploration service](services_exploration_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_skill_service.py`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

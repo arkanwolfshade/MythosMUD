@@ -1,23 +1,31 @@
 # archive QUALITY AUDIT
 
-> 2 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **test_handle_stop_command_success()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test stop command success.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **get_hash_info()** (6 connections) — `server/auth/argon2_utils.py`
+- **test_get_hash_info_valid()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **test_get_hash_info_invalid()** (3 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **Extract parameters from an Argon2 hash string.** (1 connections) — `server/auth/argon2_utils.py`
+- **Test get_hash_info with valid Argon2 hash.** (1 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **Test get_hash_info with invalid hash returns None.** (1 connections) — `server/tests/unit/auth/test_argon2_utils.py`
 
 ## Relationships
 
-- [commands magic rationale](commands_magic_rationale.md) (1 shared connections)
+- [respawn player handlers](respawn_player_handlers.md) (3 shared connections)
+- [models npc rationale](models_npc_rationale.md) (1 shared connections)
+- [persistence constants rationale](persistence_constants_rationale.md) (1 shared connections)
+- [auth users rationale](auth_users_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `server/auth/argon2_utils.py`
+- `server/tests/unit/auth/test_argon2_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 16 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

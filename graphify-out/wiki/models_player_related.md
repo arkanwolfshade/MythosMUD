@@ -1,60 +1,61 @@
 # models player related
 
-> 37 nodes
+> 53 nodes
 
 ## Key Concepts
 
 - **player_service()** (23 connections) — `docs/examples/logging/fastapi_integration.py`
-- **party_commands.py** (19 connections) — `server/commands/party_commands.py`
-- **handle_party_command()** (11 connections) — `server/commands/party_commands.py`
+- **test_party_commands.py** (22 connections) — `server/tests/unit/commands/test_party_commands.py`
+- **handle_party_command()** (21 connections) — `server/commands/party_commands.py`
+- **party_commands.py** (20 connections) — `server/commands/party_commands.py`
+- **_party_request()** (11 connections) — `server/tests/unit/commands/test_party_commands.py`
 - **Any** (9 connections)
-- **HTTPException** (6 connections)
-- **upload_avatar()** (6 connections) — `docs/examples/logging/fastapi_integration.py`
+- **_handle_party_chat()** (8 connections) — `server/commands/party_commands.py`
 - **_get_party_command_context()** (6 connections) — `server/commands/party_commands.py`
 - **_handle_party_invite()** (6 connections) — `server/commands/party_commands.py`
 - **_handle_party_kick()** (6 connections) — `server/commands/party_commands.py`
-- **create_player()** (5 connections) — `docs/examples/logging/fastapi_integration.py`
-- **list_players()** (5 connections) — `docs/examples/logging/fastapi_integration.py`
-- **_handle_party_chat()** (5 connections) — `server/commands/party_commands.py`
+- **_get_member_display()** (6 connections) — `server/commands/party_commands.py`
+- **_handle_party_leave()** (5 connections) — `server/commands/party_commands.py`
 - **_handle_party_list()** (5 connections) — `server/commands/party_commands.py`
-- **get_player()** (4 connections) — `docs/examples/logging/fastapi_integration.py`
-- **get_current_user()** (4 connections) — `docs/examples/logging/fastapi_integration.py`
 - **_get_container()** (4 connections) — `server/commands/party_commands.py`
-- **_get_member_display()** (4 connections) — `server/commands/party_commands.py`
-- **_handle_party_leave()** (3 connections) — `server/commands/party_commands.py`
-- **.create_player()** (2 connections) — `docs/examples/logging/fastapi_integration.py`
-- **.get_player()** (2 connections) — `docs/examples/logging/fastapi_integration.py`
-- **.list_players()** (2 connections) — `docs/examples/logging/fastapi_integration.py`
-- **.upload_avatar()** (2 connections) — `docs/examples/logging/fastapi_integration.py`
-- **Create a new player with enhanced logging.** (1 connections) — `docs/examples/logging/fastapi_integration.py`
-- **Get player information with enhanced logging.** (1 connections) — `docs/examples/logging/fastapi_integration.py`
-- **Get current user with enhanced logging.** (1 connections) — `docs/examples/logging/fastapi_integration.py`
-- *... and 12 more nodes in this community*
+- **test_handle_party_command_player_not_in_game()** (4 connections) — `server/tests/unit/commands/test_party_commands.py`
+- **test_handle_party_command_list_not_in_party()** (4 connections) — `server/tests/unit/commands/test_party_commands.py`
+- **test_handle_party_command_list_with_members()** (4 connections) — `server/tests/unit/commands/test_party_commands.py`
+- **test_handle_party_command_leave()** (4 connections) — `server/tests/unit/commands/test_party_commands.py`
+- **test_handle_party_command_invite_no_target()** (4 connections) — `server/tests/unit/commands/test_party_commands.py`
+- **test_handle_party_command_invite_success()** (4 connections) — `server/tests/unit/commands/test_party_commands.py`
+- **test_handle_party_command_kick_not_leader()** (4 connections) — `server/tests/unit/commands/test_party_commands.py`
+- **test_handle_party_command_unknown_subcommand()** (4 connections) — `server/tests/unit/commands/test_party_commands.py`
+- **test_handle_party_command_no_party_service()** (3 connections) — `server/tests/unit/commands/test_party_commands.py`
+- **test_handle_party_leave_not_in_party()** (3 connections) — `server/tests/unit/commands/test_party_commands.py`
+- **test_handle_party_chat_no_party()** (3 connections) — `server/tests/unit/commands/test_party_commands.py`
+- *... and 28 more nodes in this community*
 
 ## Relationships
 
-- [middleware correlation rationale](middleware_correlation_rationale.md) (10 shared connections)
-- [commands admin mute](commands_admin_mute.md) (8 shared connections)
-- [target resolution service](target_resolution_service.md) (6 shared connections)
-- [command inventory factories](command_inventory_factories.md) (5 shared connections)
-- [command commands handler](command_commands_handler.md) (2 shared connections)
-- [websocket handler realtime](websocket_handler_realtime.md) (2 shared connections)
-- [command factories create](command_factories_create.md) (2 shared connections)
-- [admin command setstat](admin_command_setstat.md) (1 shared connections)
-- [npc commands admin](npc_commands_admin.md) (1 shared connections)
+- [middleware correlation rationale](middleware_correlation_rationale.md) (6 shared connections)
+- [NPC Combat](NPC_Combat.md) (6 shared connections)
+- [commands position system](commands_position_system.md) (4 shared connections)
+- [models npc rationale](models_npc_rationale.md) (4 shared connections)
+- [commands admin mute](commands_admin_mute.md) (2 shared connections)
+- [commands npc admin](commands_npc_admin.md) (2 shared connections)
+- [command commands handler](command_commands_handler.md) (1 shared connections)
+- [commands command validation](commands_command_validation.md) (1 shared connections)
+- [container schemas containers](container_schemas_containers.md) (1 shared connections)
+- [commands communication flows](commands_communication_flows.md) (1 shared connections)
 - [commands emote rationale](commands_emote_rationale.md) (1 shared connections)
-- [realtime game state](realtime_game_state.md) (1 shared connections)
-- [request context realtime](request_context_realtime.md) (1 shared connections)
+- [services ascii map](services_ascii_map.md) (1 shared connections)
 
 ## Source Files
 
 - `docs/examples/logging/fastapi_integration.py`
 - `server/commands/party_commands.py`
+- `server/tests/unit/commands/test_party_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 134 (87%)
-- INFERRED: 20 (13%)
+- EXTRACTED: 206 (91%)
+- INFERRED: 20 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

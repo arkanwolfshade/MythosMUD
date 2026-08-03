@@ -1,25 +1,35 @@
 # commands rest command
 
-> 2 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **test_perform_recovery_action_unknown_action()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **Test perform_recovery_action() raises error for unknown action.** (1 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **Any** (6 connections)
+- **._handle_event()** (6 connections) — `server/npc/event_reaction_system.py`
+- **.should_trigger()** (5 connections) — `server/npc/event_reaction_system.py`
+- **.execute()** (5 connections) — `server/npc/event_reaction_system.py`
+- **._get_npc_context()** (4 connections) — `server/npc/event_reaction_system.py`
+- **.set_npc_context()** (3 connections) — `server/npc/event_reaction_system.py`
+- **.get_npc_reaction_stats()** (3 connections) — `server/npc/event_reaction_system.py`
+- **Check if this reaction should trigger for the given event.          Args:** (1 connections) — `server/npc/event_reaction_system.py`
+- **Execute the reaction action.          Args:             event: The event that tr** (1 connections) — `server/npc/event_reaction_system.py`
+- **Handle an incoming event and trigger appropriate NPC reactions.          Args:** (1 connections) — `server/npc/event_reaction_system.py`
+- **Update stored NPC context used by reaction conditions (room, name, alive).** (1 connections) — `server/npc/event_reaction_system.py`
+- **Get context information for an NPC.          Args:             npc_id: The ID of** (1 connections) — `server/npc/event_reaction_system.py`
+- **Get statistics about an NPC's reactions.          Args:             npc_id: The** (1 connections) — `server/npc/event_reaction_system.py`
 
 ## Relationships
 
-- [commands admin mute](commands_admin_mute.md) (1 shared connections)
-- [lucidity active service](lucidity_active_service.md) (1 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (10 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_active_lucidity_service.py`
+- `server/npc/event_reaction_system.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 38 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

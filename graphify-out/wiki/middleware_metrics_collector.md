@@ -1,10 +1,11 @@
 # middleware metrics collector
 
-> 23 nodes
+> 29 nodes
 
 ## Key Concepts
 
-- **MetricsCollector** (13 connections) — `server/middleware/metrics_collector.py`
+- **MetricsCollector** (18 connections) — `server/middleware/metrics_collector.py`
+- **test_metrics_collector.py** (7 connections) — `server/tests/unit/middleware/test_metrics_collector.py`
 - **.__init__()** (3 connections) — `server/middleware/metrics_collector.py`
 - **.get_metrics()** (3 connections) — `server/middleware/metrics_collector.py`
 - **.get_summary()** (3 connections) — `server/middleware/metrics_collector.py`
@@ -16,6 +17,10 @@
 - **.record_processing_time()** (2 connections) — `server/middleware/metrics_collector.py`
 - **Any** (2 connections)
 - **.reset_metrics()** (2 connections) — `server/middleware/metrics_collector.py`
+- **test_record_and_get_metrics()** (2 connections) — `server/tests/unit/middleware/test_metrics_collector.py`
+- **test_get_summary()** (2 connections) — `server/tests/unit/middleware/test_metrics_collector.py`
+- **test_reset_metrics()** (2 connections) — `server/tests/unit/middleware/test_metrics_collector.py`
+- **test_circuit_state_change_trims_history()** (2 connections) — `server/tests/unit/middleware/test_metrics_collector.py`
 - **Simple metrics collector for NATS message delivery.      Thread-safe metrics col** (1 connections) — `server/middleware/metrics_collector.py`
 - **Initialize metrics collector.          AI: Uses Lock for thread-safety in async** (1 connections) — `server/middleware/metrics_collector.py`
 - **Record a successfully processed message.          Args:             channel: Mes** (1 connections) — `server/middleware/metrics_collector.py`
@@ -24,23 +29,22 @@
 - **Record a message added to dead letter queue.          Args:             channel:** (1 connections) — `server/middleware/metrics_collector.py`
 - **Record a circuit breaker state change.          Args:             old_state: Pre** (1 connections) — `server/middleware/metrics_collector.py`
 - **Record message processing time.          Args:             duration_ms: Processi** (1 connections) — `server/middleware/metrics_collector.py`
-- **Get current metrics snapshot.          Returns:             Dictionary containin** (1 connections) — `server/middleware/metrics_collector.py`
-- **Reset all metrics counters.          Useful for clearing metrics after a deploym** (1 connections) — `server/middleware/metrics_collector.py`
-- **Get concise metrics summary.          Returns:             High-level metrics su** (1 connections) — `server/middleware/metrics_collector.py`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
-- [circuit breaker realtime](circuit_breaker_realtime.md) (2 shared connections)
+- [circuit breaker realtime](circuit_breaker_realtime.md) (3 shared connections)
 - [container helpers endpoints](container_helpers_endpoints.md) (1 shared connections)
 
 ## Source Files
 
 - `server/middleware/metrics_collector.py`
+- `server/tests/unit/middleware/test_metrics_collector.py`
 
 ## Audit Trail
 
-- EXTRACTED: 48 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 69 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

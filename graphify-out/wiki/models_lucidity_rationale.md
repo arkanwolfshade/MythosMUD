@@ -1,54 +1,60 @@
 # models lucidity rationale
 
-> 34 nodes
+> 51 nodes
 
 ## Key Concepts
 
-- **test_look_container_helpers.py** (45 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **_format_container_contents()** (11 connections) — `server/commands/look_container.py`
-- **test_format_container_contents_with_quantity()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_find_container_via_inner_container_no_inner_container()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_via_inner_container_invalid_uuid()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_via_inner_container_no_get_container()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_matches_item_instance_id_true()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_matches_item_instance_id_false()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_matches_item_instance_id_none()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_matches_name_or_slot_slot_match()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_matches_name_or_slot_name_match()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_matches_name_or_slot_no_match()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_get_container_data_from_component_no_container_id()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_get_container_data_from_component_no_get_container()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_extract_container_metadata_no_metadata()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_format_container_contents_empty()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_format_container_contents_with_quantity()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Format container contents as list of lines.** (1 connections) — `server/commands/look_container.py`
-- **Test formatting container contents with quantity > 1.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Unit tests for look container helper functions.  Tests the helper functions in l** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _find_container_via_inner_container() when item has no inner_container.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _find_container_via_inner_container() with invalid UUID.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _find_container_via_inner_container() when persistence has no get_container** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _matches_item_instance_id() returns True when IDs match.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _matches_item_instance_id() returns False when IDs don't match.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- *... and 9 more nodes in this community*
+- **PerformanceMonitor** (32 connections) — `server/monitoring/performance_monitor.py`
+- **measure_performance()** (22 connections) — `server/monitoring/performance_monitor.py`
+- **performance_monitor.py** (21 connections) — `server/monitoring/performance_monitor.py`
+- **test_performance_monitor.py** (18 connections) — `server/tests/unit/monitoring/test_performance_monitor.py`
+- **get_performance_monitor()** (15 connections) — `server/monitoring/performance_monitor.py`
+- **PerformanceMetric** (9 connections) — `server/monitoring/performance_monitor.py`
+- **get_performance_stats()** (9 connections) — `server/monitoring/performance_monitor.py`
+- **.record_metric()** (8 connections) — `server/monitoring/performance_monitor.py`
+- **record_performance_metric()** (8 connections) — `server/monitoring/performance_monitor.py`
+- **reset_performance_metrics()** (7 connections) — `server/monitoring/performance_monitor.py`
+- **Any** (6 connections)
+- **.get_operation_stats()** (6 connections) — `server/monitoring/performance_monitor.py`
+- **.get_all_stats()** (5 connections) — `server/monitoring/performance_monitor.py`
+- **._trigger_alert()** (5 connections) — `server/monitoring/performance_monitor.py`
+- **.export_metrics()** (5 connections) — `server/monitoring/performance_monitor.py`
+- **.__init__()** (4 connections) — `server/monitoring/performance_monitor.py`
+- **.get_recent_metrics()** (4 connections) — `server/monitoring/performance_monitor.py`
+- **.add_alert_callback()** (4 connections) — `server/monitoring/performance_monitor.py`
+- **test_module_level_helpers_use_global_monitor()** (4 connections) — `server/tests/unit/monitoring/test_performance_monitor.py`
+- **.get_slow_operations()** (3 connections) — `server/monitoring/performance_monitor.py`
+- **.get_failed_operations()** (3 connections) — `server/monitoring/performance_monitor.py`
+- **.reset_metrics()** (3 connections) — `server/monitoring/performance_monitor.py`
+- **test_measure_performance_success_and_failure()** (3 connections) — `server/tests/unit/monitoring/test_performance_monitor.py`
+- **test_record_metric_and_stats()** (2 connections) — `server/tests/unit/monitoring/test_performance_monitor.py`
+- **test_get_operation_stats_missing_returns_none()** (2 connections) — `server/tests/unit/monitoring/test_performance_monitor.py`
+- *... and 26 more nodes in this community*
 
 ## Relationships
 
-- [schemas player rationale](schemas_player_rationale.md) (20 shared connections)
-- [websocket realtime handler](websocket_realtime_handler.md) (10 shared connections)
-- [npc combat service](npc_combat_service.md) (8 shared connections)
-- [commands party examples](commands_party_examples.md) (6 shared connections)
-- [DI Container Format](DI_Container_Format.md) (4 shared connections)
+- [room cache services](room_cache_services.md) (8 shared connections)
+- [middleware correlation rationale](middleware_correlation_rationale.md) (6 shared connections)
+- [examples logging testing](examples_logging_testing.md) (4 shared connections)
+- [websocket examples logging](websocket_examples_logging.md) (4 shared connections)
+- [lucidity flux passive](lucidity_flux_passive.md) (4 shared connections)
+- [correct patterns examples](correct_patterns_examples.md) (3 shared connections)
+- [models npc rationale](models_npc_rationale.md) (3 shared connections)
+- [Error Conversion](Error_Conversion.md) (3 shared connections)
+- [Magic Spell Service](Magic_Spell_Service.md) (2 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [connection disconnection realtime](connection_disconnection_realtime.md) (1 shared connections)
+- [message broadcaster realtime](message_broadcaster_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/look_container.py`
-- `server/tests/unit/commands/test_look_container.py`
-- `server/tests/unit/commands/test_look_container_helpers.py`
+- `server/monitoring/performance_monitor.py`
+- `server/tests/unit/monitoring/test_performance_monitor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 118 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 230 (96%)
+- INFERRED: 9 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

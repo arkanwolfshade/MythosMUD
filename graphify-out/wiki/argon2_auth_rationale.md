@@ -1,12 +1,13 @@
 # argon2 auth rationale
 
-> 10 nodes
+> 12 nodes
 
 ## Key Concepts
 
 - **seed_e2e_users.py** (9 connections) — `scripts/seed_e2e_users.py`
 - **_ensure_player_for_user()** (5 connections) — `scripts/seed_e2e_users.py`
 - **_seed_e2e_users()** (4 connections) — `scripts/seed_e2e_users.py`
+- **spawn_defaults.py** (4 connections) — `server/constants/spawn_defaults.py`
 - **main()** (3 connections) — `scripts/seed_e2e_users.py`
 - **E2eUserSpec** (2 connections) — `scripts/seed_e2e_users.py`
 - **UUID** (2 connections)
@@ -14,21 +15,24 @@
 - **Connection** (1 connections)
 - **One row in users plus optional default character for login E2E.** (1 connections) — `scripts/seed_e2e_users.py`
 - **Entry point: run E2E user seed via anyio.** (1 connections) — `scripts/seed_e2e_users.py`
+- **Shared spawn / respawn room identifiers used by gameplay and E2E seed scripts.** (1 connections) — `server/constants/spawn_defaults.py`
 
 ## Relationships
 
 - [auth users rationale](auth_users_rationale.md) (2 shared connections)
-- [Database Config](Database_Config.md) (1 shared connections)
+- [models npc rationale](models_npc_rationale.md) (1 shared connections)
 - [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
+- [combat models rationale](combat_models_rationale.md) (1 shared connections)
 
 ## Source Files
 
 - `scripts/seed_e2e_users.py`
+- `server/constants/spawn_defaults.py`
 
 ## Audit Trail
 
-- EXTRACTED: 28 (93%)
-- INFERRED: 2 (7%)
+- EXTRACTED: 33 (94%)
+- INFERRED: 2 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

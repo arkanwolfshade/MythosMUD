@@ -1,52 +1,54 @@
 # npc combat service
 
-> 28 nodes
+> 51 nodes
 
 ## Key Concepts
 
-- **_find_container_wearable()** (20 connections) — `server/commands/look_container.py`
-- **test_find_container_wearable_success()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_find_container_wearable_by_prototype_id()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_find_container_wearable_not_found()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_find_container_wearable_with_inner_container()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_find_container_wearable_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_find_container_wearable_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_find_container_wearable_found()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_wearable_not_found()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_wearable_empty()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_wearable_no_match()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_wearable_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_wearable_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_wearable_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Find a wearable container in equipped items by name or prototype_id.      This f** (1 connections) — `server/commands/look_container.py`
-- **Test finding wearable container by name.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test finding wearable container by prototype_id.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test finding wearable container when not found.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test finding wearable container with inner_container.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test finding wearable container with instance number.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test finding wearable container with invalid instance number.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test _find_container_wearable() finds wearable container.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _find_container_wearable() returns None when container not found.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _find_container_wearable() with empty dict.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _find_container_wearable() with no matching containers.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- *... and 3 more nodes in this community*
+- **Result** (54 connections) — `scripts/run_test_ci.py`
+- **test_create_player_preferences_success()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_create_player_preferences_with_string_id()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_create_player_preferences_already_exists()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_get_player_preferences_success()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_get_player_preferences_not_found()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_update_default_channel_success()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_update_default_channel_not_found()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_mute_channel_success()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_mute_channel_already_muted()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_unmute_channel_success()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_unmute_channel_not_muted()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_get_muted_channels_success()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_get_muted_channels_not_found()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_is_channel_muted_true()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_is_channel_muted_false()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_delete_player_preferences_success()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_delete_player_preferences_not_found()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_delete_player_preferences_database_error()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_update_default_channel_database_error()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_mute_channel_not_found()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_unmute_channel_not_found()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_unmute_channel_database_error()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_mute_channel_database_error()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_is_channel_muted_not_found()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- *... and 26 more nodes in this community*
 
 ## Relationships
 
-- [models lucidity rationale](models_lucidity_rationale.md) (8 shared connections)
-- [DI Container Format](DI_Container_Format.md) (7 shared connections)
-- [schemas player rationale](schemas_player_rationale.md) (4 shared connections)
+- [player preferences service](player_preferences_service.md) (24 shared connections)
+- [ascii map renderer](ascii_map_renderer.md) (14 shared connections)
+- [player service game](player_service_game.md) (11 shared connections)
+- [correct patterns examples](correct_patterns_examples.md) (1 shared connections)
+- [examples migration logging](examples_migration_logging.md) (1 shared connections)
+- [models npc rationale](models_npc_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/look_container.py`
-- `server/tests/unit/commands/test_look_container.py`
-- `server/tests/unit/commands/test_look_container_helpers.py`
+- `scripts/run_test_ci.py`
+- `server/tests/unit/services/test_player_preferences_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 73 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 77 (51%)
+- INFERRED: 75 (49%)
 - AMBIGUOUS: 0 (0%)
 
 ---

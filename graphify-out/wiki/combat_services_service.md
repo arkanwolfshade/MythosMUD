@@ -24,7 +24,7 @@
 
 ## Relationships
 
-- [corpse lifecycle service](corpse_lifecycle_service.md) (7 shared connections)
+- [maps handle ascii](maps_handle_ascii.md) (7 shared connections)
 - [Database Config](Database_Config.md) (4 shared connections)
 - [Database Access Layer](Database_Access_Layer.md) (1 shared connections)
 - [room game service](room_game_service.md) (1 shared connections)

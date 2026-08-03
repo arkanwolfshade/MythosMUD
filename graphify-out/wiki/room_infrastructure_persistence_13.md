@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_profession_get_mechanical_effects_none()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **Test get_mechanical_effects returns empty dict for invalid value.** (1 connections) — `server/tests/unit/models/test_profession.py`
+- **test_process_occupants_with_grace_periods()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test _process_occupants_with_grace_periods() splits players and NPCs.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Relationships
 
-- [persistence core infrastructure](persistence_core_infrastructure.md) (1 shared connections)
-- [profession models rationale](profession_models_rationale.md) (1 shared connections)
+- [game state provider](game_state_provider.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/models/test_profession.py`
+- `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

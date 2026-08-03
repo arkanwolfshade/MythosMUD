@@ -1,18 +1,14 @@
 # payload realtime optimizer
 
-> 13 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **PayloadOptimizer** (8 connections) — `server/realtime/payload_optimizer.py`
 - **.optimize_payload()** (5 connections) — `server/realtime/payload_optimizer.py`
 - **.get_payload_size()** (4 connections) — `server/realtime/payload_optimizer.py`
 - **Any** (4 connections)
 - **.compress_payload()** (4 connections) — `server/realtime/payload_optimizer.py`
 - **.create_incremental_update()** (3 connections) — `server/realtime/payload_optimizer.py`
-- **.__init__()** (2 connections) — `server/realtime/payload_optimizer.py`
-- **Optimizes payloads for WebSocket transmission.      Features:     - Size limit e** (1 connections) — `server/realtime/payload_optimizer.py`
-- **Initialize the payload optimizer.          Args:             max_payload_size: M** (1 connections) — `server/realtime/payload_optimizer.py`
 - **Calculate the size of a payload in bytes.          Args:             payload: Th** (1 connections) — `server/realtime/payload_optimizer.py`
 - **Compress a large payload using gzip compression.          Args:             payl** (1 connections) — `server/realtime/payload_optimizer.py`
 - **Optimize a payload by applying size limits and compression if needed.          A** (1 connections) — `server/realtime/payload_optimizer.py`
@@ -20,8 +16,7 @@
 
 ## Relationships
 
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (1 shared connections)
+- [npc event handlers](npc_event_handlers.md) (4 shared connections)
 
 ## Source Files
 
@@ -29,7 +24,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 36 (100%)
+- EXTRACTED: 24 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

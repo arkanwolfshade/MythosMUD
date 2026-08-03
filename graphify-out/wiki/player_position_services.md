@@ -1,23 +1,25 @@
 # player position services
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_validate_combat_command_no_target()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test validate_combat_command with no target.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **Recommendations Summary** (4 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **High Priority Decisions** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **Medium Priority Enhancements** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **Low Priority (Future Considerations)** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
 
 ## Relationships
 
-- [emote models rationale](emote_models_rationale.md) (1 shared connections)
+- [grace period disconnect](grace_period_disconnect.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `.cursor/plans/disconnect_grace_period_comparison.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

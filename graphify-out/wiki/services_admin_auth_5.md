@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **test_create_put_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_put_command delegates to inventory factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_create_equip_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_equip_command delegates to inventory factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 

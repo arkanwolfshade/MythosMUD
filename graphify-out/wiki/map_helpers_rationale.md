@@ -35,7 +35,7 @@
 
 - [maps handle ascii](maps_handle_ascii.md) (6 shared connections)
 - [database helpers infrastructure](database_helpers_infrastructure.md) (6 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [models npc rationale](models_npc_rationale.md) (2 shared connections)
 
 ## Source Files
 

@@ -1,35 +1,47 @@
 # realtime circuit breaker
 
-> 8 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **alias_commands.py** (15 connections) — `server/commands/alias_commands.py`
-- **_create_alias()** (5 connections) — `server/commands/alias_commands.py`
-- **_view_alias()** (4 connections) — `server/commands/alias_commands.py`
-- **_validate_alias_params()** (3 connections) — `server/commands/alias_commands.py`
-- **Alias management commands for MythosMUD.  This module contains handlers for alia** (1 connections) — `server/commands/alias_commands.py`
-- **View an existing alias. Returns result dict.** (1 connections) — `server/commands/alias_commands.py`
-- **Validate alias name and command. Returns error dict if invalid, None if valid.** (1 connections) — `server/commands/alias_commands.py`
-- **Create or update an alias. Returns result dict.** (1 connections) — `server/commands/alias_commands.py`
+- **test_quest_definition_repository.py** (20 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **_make_session_context()** (11 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **_row_for_quest_definition()** (4 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **test_get_by_id_success()** (4 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **test_get_by_id_database_error()** (4 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **test_get_by_name_success()** (4 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **test_get_by_name_database_error()** (4 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **test_list_quest_ids_offered_by_database_error()** (4 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **test_get_by_id_not_found()** (3 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **test_get_by_name_not_found()** (3 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **test_list_quest_ids_offered_by_success()** (3 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **test_list_quest_ids_offered_by_empty()** (3 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **Unit tests for QuestDefinitionRepository.  Tests get_by_id, get_by_name, and lis** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **Return context manager that yields mock_session for async with.** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **Build a procedure result row (mappings().first() return value) for QuestDefiniti** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **Test get_by_id returns definition when found (procedure returns row, repo maps t** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **Test get_by_id returns None when not found.** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **Test get_by_id raises DatabaseError on DB failure.** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **Test get_by_name returns definition when found by common name.** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **Test get_by_name returns None when not found.** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **Test get_by_name raises DatabaseError on DB failure.** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **Test list_quest_ids_offered_by returns quest IDs for entity (procedure returns r** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **Test list_quest_ids_offered_by returns empty list when no offers.** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **Test list_quest_ids_offered_by raises DatabaseError on DB failure.** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
 
 ## Relationships
 
-- [commands admin mute](commands_admin_mute.md) (6 shared connections)
-- [commands alias rationale](commands_alias_rationale.md) (4 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [schemas calendar rationale](schemas_calendar_rationale.md) (1 shared connections)
-- [emote game service](emote_game_service.md) (1 shared connections)
-- [scripts worktree ops](scripts_worktree_ops.md) (1 shared connections)
+- [Database Config](Database_Config.md) (10 shared connections)
+- [command inventory factories](command_inventory_factories.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/alias_commands.py`
+- `server/tests/unit/persistence/test_quest_definition_repository.py`
 
 ## Audit Trail
 
-- EXTRACTED: 31 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 76 (96%)
+- INFERRED: 3 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

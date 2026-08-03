@@ -1,49 +1,43 @@
 # event bus events
 
-> 80 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **test_event_bus.py** (45 connections) — `server/tests/unit/events/test_event_bus.py`
-- **MockEventClass** (29 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_subscribe()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_subscribe_multiple()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_unsubscribe()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_unsubscribe_not_found()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_get_subscriber_count()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_get_subscriber_count_none()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_get_all_subscriber_counts()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_publish()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_unsubscribe_multiple_handlers()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_get_all_subscriber_counts_multiple_types()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_publish_no_subscribers()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_inject_dispatches_to_subscribers()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_publish_multiple_subscribers()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_subscribe_invalid_handler()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_handle_event_async_no_subscribers()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_handle_event_async_sync_subscriber_error()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_handle_event_async_async_subscriber_error()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_handle_task_result_async_no_error()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_handle_task_result_async_with_error()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_subscribe_with_service_id()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_unsubscribe_all_for_service()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_unsubscribe_all_for_service_partial_cleanup()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_get_subscriber_stats()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- *... and 55 more nodes in this community*
+- **NPCOccupantProcessor** (31 connections) — `server/realtime/npc_occupant_processor.py`
+- **test_npc_occupant_processor.py** (17 connections) — `server/tests/unit/realtime/test_npc_occupant_processor.py`
+- **processor()** (3 connections) — `server/tests/unit/realtime/test_npc_occupant_processor.py`
+- **test_get_npc_room_id_prefers_current_room()** (2 connections) — `server/tests/unit/realtime/test_npc_occupant_processor.py`
+- **test_should_include_npc_dead()** (2 connections) — `server/tests/unit/realtime/test_npc_occupant_processor.py`
+- **test_should_include_npc_matching_room()** (2 connections) — `server/tests/unit/realtime/test_npc_occupant_processor.py`
+- **test_scan_active_npcs_for_room()** (2 connections) — `server/tests/unit/realtime/test_npc_occupant_processor.py`
+- **test_query_npcs_for_room_uses_lifecycle_manager()** (2 connections) — `server/tests/unit/realtime/test_npc_occupant_processor.py`
+- **test_query_npcs_fallback_to_room()** (2 connections) — `server/tests/unit/realtime/test_npc_occupant_processor.py`
+- **test_process_npcs_for_occupants()** (2 connections) — `server/tests/unit/realtime/test_npc_occupant_processor.py`
+- **test_filter_fallback_npcs_dead()** (2 connections) — `server/tests/unit/realtime/test_npc_occupant_processor.py`
+- **test_get_npc_lifecycle_manager_unavailable()** (2 connections) — `server/tests/unit/realtime/test_npc_occupant_processor.py`
+- **test_get_npc_lifecycle_manager_no_active_npcs()** (2 connections) — `server/tests/unit/realtime/test_npc_occupant_processor.py`
+- **test_query_npcs_handles_exception()** (2 connections) — `server/tests/unit/realtime/test_npc_occupant_processor.py`
+- **Processes NPC occupants for rooms.** (1 connections) — `server/realtime/npc_occupant_processor.py`
+- **Unit tests for NPCOccupantProcessor.** (1 connections) — `server/tests/unit/realtime/test_npc_occupant_processor.py`
 
 ## Relationships
 
-- [Realtime Subscribers](Realtime_Subscribers.md) (4 shared connections)
-- [item models rationale](item_models_rationale.md) (3 shared connections)
+- [message realtime messaging](message_realtime_messaging.md) (9 shared connections)
+- [magic healing game](magic_healing_game.md) (6 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (3 shared connections)
+- [look helpers commands](look_helpers_commands.md) (2 shared connections)
+- [NATS Messaging](NATS_Messaging.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/events/test_event_bus.py`
+- `server/realtime/npc_occupant_processor.py`
+- `server/tests/unit/realtime/test_npc_occupant_processor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 171 (80%)
-- INFERRED: 44 (20%)
+- EXTRACTED: 73 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

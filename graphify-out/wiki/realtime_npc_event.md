@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_apply_encounter_lucidity_loss_acclimated()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **Test apply_encounter_lucidity_loss() for acclimated encounter.** (1 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **mock_persistence()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
+- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
 
 ## Relationships
 
-- [lucidity active service](lucidity_active_service.md) (1 shared connections)
+- [movement service game](movement_service_game.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_active_lucidity_service.py`
+- `server/tests/unit/game/test_movement_service.py`
 
 ## Audit Trail
 

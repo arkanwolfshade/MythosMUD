@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_reset_player_limits_specific_channel()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **Test reset_player_limits resets specific channel.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_evaluate_equality_invalid_format()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test _evaluate_equality() returns None for invalid format.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [rate limiter services](rate_limiter_services.md) (1 shared connections)
+- [lucidity active service](lucidity_active_service.md) (1 shared connections)
+- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_rate_limiter.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

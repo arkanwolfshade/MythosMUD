@@ -1,43 +1,50 @@
 # commands communication channels
 
-> 18 nodes
+> 37 nodes
 
 ## Key Concepts
 
-- **test_metadata.py** (11 connections) — `server/tests/unit/test_metadata.py`
-- **metadata.py** (3 connections) — `server/metadata.py`
-- **npc_metadata.py** (3 connections) — `server/npc_metadata.py`
-- **test_base_is_declarative_base()** (3 connections) — `server/tests/unit/test_metadata.py`
-- **test_base_has_metadata()** (3 connections) — `server/tests/unit/test_metadata.py`
-- **test_base_can_be_instantiated()** (3 connections) — `server/tests/unit/test_metadata.py`
-- **test_metadata_is_metadata_instance()** (2 connections) — `server/tests/unit/test_metadata.py`
-- **test_npc_metadata_is_metadata_instance()** (2 connections) — `server/tests/unit/test_metadata.py`
-- **test_metadata_and_npc_metadata_are_different()** (2 connections) — `server/tests/unit/test_metadata.py`
-- **Shared SQLAlchemy metadata for MythosMUD models.  This module provides the share** (1 connections) — `server/metadata.py`
-- **NPC Database metadata for MythosMUD.  This module defines the SQLAlchemy metadat** (1 connections) — `server/npc_metadata.py`
-- **Unit tests for metadata modules.  Tests the shared SQLAlchemy metadata instances** (1 connections) — `server/tests/unit/test_metadata.py`
-- **Test that metadata is a MetaData instance.** (1 connections) — `server/tests/unit/test_metadata.py`
-- **Test that npc_metadata is a MetaData instance.** (1 connections) — `server/tests/unit/test_metadata.py`
-- **Test that metadata and npc_metadata are separate instances.** (1 connections) — `server/tests/unit/test_metadata.py`
-- **Test that Base is a DeclarativeBase subclass.** (1 connections) — `server/tests/unit/test_metadata.py`
-- **Test that Base has metadata attribute set to shared metadata.** (1 connections) — `server/tests/unit/test_metadata.py`
-- **Test that Base can be instantiated (though meant to be subclassed).** (1 connections) — `server/tests/unit/test_metadata.py`
+- **MemoryMonitor** (27 connections) — `server/realtime/memory_monitor.py`
+- **test_memory_monitor.py** (21 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
+- **_max_connection_age_seconds()** (7 connections) — `server/realtime/memory_monitor.py`
+- **.get_memory_usage()** (4 connections) — `server/realtime/memory_monitor.py`
+- **.get_memory_alerts()** (4 connections) — `server/realtime/memory_monitor.py`
+- **.__init__()** (3 connections) — `server/realtime/memory_monitor.py`
+- **.should_cleanup()** (3 connections) — `server/realtime/memory_monitor.py`
+- **.get_memory_stats()** (3 connections) — `server/realtime/memory_monitor.py`
+- **Any** (2 connections)
+- **.update_cleanup_time()** (2 connections) — `server/realtime/memory_monitor.py`
+- **.force_garbage_collection()** (2 connections) — `server/realtime/memory_monitor.py`
+- **test_max_connection_age_local()** (2 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
+- **test_max_connection_age_default()** (2 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
+- **test_should_cleanup_time_based()** (2 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
+- **test_should_cleanup_memory_threshold()** (2 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
+- **test_get_memory_usage_success()** (2 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
+- **test_get_memory_usage_error_returns_zero()** (2 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
+- **test_get_memory_stats()** (2 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
+- **test_get_memory_alerts()** (2 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
+- **test_update_cleanup_time_and_gc()** (2 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
+- **test_should_cleanup_returns_false()** (2 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
+- **test_max_connection_age_e2e()** (2 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
+- **test_get_memory_stats_error_returns_empty()** (2 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
+- **test_get_memory_alerts_warning_and_info_levels()** (2 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
+- **test_get_memory_alerts_error_path()** (2 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
+- *... and 12 more nodes in this community*
 
 ## Relationships
 
-- [world models rationale](world_models_rationale.md) (6 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
+- [connection disconnection realtime](connection_disconnection_realtime.md) (7 shared connections)
+- [models npc rationale](models_npc_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/metadata.py`
-- `server/npc_metadata.py`
-- `server/tests/unit/test_metadata.py`
+- `server/realtime/memory_monitor.py`
+- `server/tests/unit/realtime/test_memory_monitor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 39 (95%)
-- INFERRED: 2 (5%)
+- EXTRACTED: 120 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

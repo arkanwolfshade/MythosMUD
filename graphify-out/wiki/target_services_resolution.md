@@ -1,45 +1,48 @@
 # target services resolution
 
-> 18 nodes
+> 49 nodes
 
 ## Key Concepts
 
-- **StatisticsAggregator** (29 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **.get_connection_health_stats()** (8 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._analyze_connection_health()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._analyze_connection_ages()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._analyze_connection_types()** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._analyze_session_health()** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._calculate_session_health_percentages()** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **.__init__()** (2 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **.get_memory_alerts()** (2 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **Aggregates statistics from connection management components.      This class pro** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **Initialize the statistics aggregator.          Args:             memory_monitor:** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **Analyze connection health distribution.          Args:             connection_me** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **Analyze connection types.          Args:             connection_metadata: Connec** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **Analyze connection ages.          Args:             connection_metadata: Connect** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **Analyze session health.          Args:             connection_metadata: Connecti** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **Calculate session health percentages.          Args:             session_health:** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **Get comprehensive connection health statistics.          Args:             conne** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **Get memory-related alerts.          Args:             connection_timestamps: Con** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **test_connection_manager_methods.py** (49 connections) — `server/tests/unit/realtime/test_connection_manager_methods.py`
+- **mock_manager()** (1 connections) — `server/tests/unit/realtime/test_connection_manager_methods.py`
+- **test_get_active_connection_count_impl()** (1 connections) — `server/tests/unit/realtime/test_connection_manager_methods.py`
+- **test_get_memory_stats_impl()** (1 connections) — `server/tests/unit/realtime/test_connection_manager_methods.py`
+- **test_is_websocket_open_impl()** (1 connections) — `server/tests/unit/realtime/test_connection_manager_methods.py`
+- **test_get_rate_limit_info_impl()** (1 connections) — `server/tests/unit/realtime/test_connection_manager_methods.py`
+- **test_get_dual_connection_stats_impl()** (1 connections) — `server/tests/unit/realtime/test_connection_manager_methods.py`
+- **test_get_error_statistics_impl_no_handler()** (1 connections) — `server/tests/unit/realtime/test_connection_manager_methods.py`
+- **test_get_performance_stats_impl()** (1 connections) — `server/tests/unit/realtime/test_connection_manager_methods.py`
+- **test_get_connection_health_stats_impl()** (1 connections) — `server/tests/unit/realtime/test_connection_manager_methods.py`
+- **test_get_memory_alerts_impl()** (1 connections) — `server/tests/unit/realtime/test_connection_manager_methods.py`
+- **test_get_message_delivery_stats_impl()** (1 connections) — `server/tests/unit/realtime/test_connection_manager_methods.py`
+- **test_get_player_presence_info_method()** (1 connections) — `server/tests/unit/realtime/test_connection_manager_methods.py`
+- **test_get_connection_count_impl()** (1 connections) — `server/tests/unit/realtime/test_connection_manager_methods.py`
+- **test_has_websocket_connection_impl()** (1 connections) — `server/tests/unit/realtime/test_connection_manager_methods.py`
+- **test_get_next_sequence_impl()** (1 connections) — `server/tests/unit/realtime/test_connection_manager_methods.py`
+- **test_get_pending_messages_impl()** (1 connections) — `server/tests/unit/realtime/test_connection_manager_methods.py`
+- **test_validate_session_impl()** (1 connections) — `server/tests/unit/realtime/test_connection_manager_methods.py`
+- **test_stop_health_checks_impl()** (1 connections) — `server/tests/unit/realtime/test_connection_manager_methods.py`
+- **test_get_player_websocket_connection_id_impl()** (1 connections) — `server/tests/unit/realtime/test_connection_manager_methods.py`
+- **test_get_online_players_impl_with_data()** (1 connections) — `server/tests/unit/realtime/test_connection_manager_methods.py`
+- **test_get_player_session_impl()** (1 connections) — `server/tests/unit/realtime/test_connection_manager_methods.py`
+- **test_convert_uuids_to_strings_impl()** (1 connections) — `server/tests/unit/realtime/test_connection_manager_methods.py`
+- **test_get_session_connections_impl()** (1 connections) — `server/tests/unit/realtime/test_connection_manager_methods.py`
+- **test_validate_player_presence_method()** (1 connections) — `server/tests/unit/realtime/test_connection_manager_methods.py`
+- *... and 24 more nodes in this community*
 
 ## Relationships
 
-- [persistence container helpers](persistence_container_helpers.md) (6 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (5 shared connections)
-- [player game schema](player_game_schema.md) (4 shared connections)
-- [game magic regeneration](game_magic_regeneration.md) (3 shared connections)
-- [subject admin controller](subject_admin_controller.md) (3 shared connections)
-- [services nats service](services_nats_service.md) (2 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/monitoring/statistics_aggregator.py`
+- `server/tests/unit/realtime/test_connection_manager_methods.py`
 
 ## Audit Trail
 
-- EXTRACTED: 66 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 97 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

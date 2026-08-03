@@ -1,23 +1,33 @@
 # command parser build
 
-> 2 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **test_handle_cast_command_with_target()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test cast command with target.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Any** (8 connections)
+- **._format_mute_entry()** (5 connections) — `server/game/chat_moderation.py`
+- **._format_mute_section()** (5 connections) — `server/game/chat_moderation.py`
+- **.get_user_management_stats()** (4 connections) — `server/game/chat_moderation.py`
+- **.get_system_stats()** (3 connections) — `server/game/chat_moderation.py`
+- **.get_player_mutes()** (2 connections) — `server/game/chat_moderation.py`
+- **Get user management system statistics.** (1 connections) — `server/game/chat_moderation.py`
+- **Format a single mute entry for display.** (1 connections) — `server/game/chat_moderation.py`
+- **Format a section of mutes (personal or global) for display.** (1 connections) — `server/game/chat_moderation.py`
 
 ## Relationships
 
-- [commands magic rationale](commands_magic_rationale.md) (1 shared connections)
+- [services ascii map](services_ascii_map.md) (3 shared connections)
+- [dialogue schemas tree](dialogue_schemas_tree.md) (3 shared connections)
+- [chat moderation game](chat_moderation_game.md) (2 shared connections)
+- [player helpers error](player_helpers_error.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `server/game/chat_moderation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 30 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

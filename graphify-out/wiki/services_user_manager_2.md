@@ -1,43 +1,58 @@
 # services user manager
 
-> 9 nodes
+> 71 nodes
 
 ## Key Concepts
 
-- **user_manager.py** (20 connections) — `server/services/user_manager.py`
-- **chat_logger()** (7 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **.__init__()** (4 connections) — `server/services/user_manager.py`
-- **_get_proper_data_dir()** (4 connections) — `server/services/user_manager.py`
-- **Path** (3 connections)
-- **User management service for MythosMUD chat system.  This module provides compr** (1 connections) — `server/services/user_manager.py`
-- **Initialize the user manager.          Args:             data_dir: Directory f** (1 connections) — `server/services/user_manager.py`
-- **Get the proper environment-aware data directory for user management.      Uses** (1 connections) — `server/services/user_manager.py`
-- **Create a ChatLogger instance with temp directory.** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **UserManager** (59 connections) — `server/services/user_manager.py`
+- **UUID** (39 connections)
+- **._normalize_to_uuid()** (26 connections) — `server/services/user_manager.py`
+- **.save_player_mutes()** (14 connections) — `server/services/user_manager.py`
+- **.load_player_mutes()** (12 connections) — `server/services/user_manager.py`
+- **.is_admin_sync()** (7 connections) — `server/services/user_manager.py`
+- **._get_player_mute_file()** (7 connections) — `server/services/user_manager.py`
+- **.load_player_mutes_async()** (7 connections) — `server/services/user_manager.py`
+- **.add_admin()** (6 connections) — `server/services/user_manager.py`
+- **.remove_admin()** (6 connections) — `server/services/user_manager.py`
+- **.mute_player()** (6 connections) — `server/services/user_manager.py`
+- **.unmute_player()** (6 connections) — `server/services/user_manager.py`
+- **.mute_global()** (6 connections) — `server/services/user_manager.py`
+- **.unmute_global()** (6 connections) — `server/services/user_manager.py`
+- **.is_player_muted()** (6 connections) — `server/services/user_manager.py`
+- **.can_send_message()** (6 connections) — `server/services/user_manager.py`
+- **._load_player_mutes_from_data()** (6 connections) — `server/services/user_manager.py`
+- **._load_global_mutes_from_data()** (6 connections) — `server/services/user_manager.py`
+- **.load_player_mutes_batch()** (6 connections) — `server/services/user_manager.py`
+- **.mute_channel()** (5 connections) — `server/services/user_manager.py`
+- **.unmute_channel()** (5 connections) — `server/services/user_manager.py`
+- **.is_player_muted_async()** (5 connections) — `server/services/user_manager.py`
+- **.is_channel_muted()** (5 connections) — `server/services/user_manager.py`
+- **.is_globally_muted()** (5 connections) — `server/services/user_manager.py`
+- **._convert_mute_info_timestamps()** (5 connections) — `server/services/user_manager.py`
+- *... and 46 more nodes in this community*
 
 ## Relationships
 
-- [services user manager](services_user_manager.md) (5 shared connections)
-- [circuit breaker realtime](circuit_breaker_realtime.md) (3 shared connections)
-- [Item Instances](Item_Instances.md) (2 shared connections)
-- [chat game message](chat_game_message.md) (2 shared connections)
-- [chat services logger](chat_services_logger.md) (2 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [Database Config](Database_Config.md) (1 shared connections)
-- [NPC Combat](NPC_Combat.md) (1 shared connections)
-- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [services user manager](services_user_manager.md) (17 shared connections)
+- [circuit breaker realtime](circuit_breaker_realtime.md) (7 shared connections)
+- [Error Conversion](Error_Conversion.md) (3 shared connections)
+- [alias storage commands](alias_storage_commands.md) (3 shared connections)
+- [holiday service services](holiday_service_services.md) (2 shared connections)
+- [user manager services](user_manager_services.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [combat services messaging](combat_services_messaging.md) (1 shared connections)
 - [follow game service](follow_game_service.md) (1 shared connections)
-- [nats exceptions services](nats_exceptions_services.md) (1 shared connections)
-- [user manager services](user_manager_services.md) (1 shared connections)
+- [chat services logger](chat_services_logger.md) (1 shared connections)
+- [chat logger services](chat_logger_services.md) (1 shared connections)
 
 ## Source Files
 
 - `server/services/user_manager.py`
-- `server/tests/unit/services/test_chat_logger.py`
 
 ## Audit Trail
 
-- EXTRACTED: 37 (88%)
-- INFERRED: 5 (12%)
+- EXTRACTED: 349 (99%)
+- INFERRED: 5 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

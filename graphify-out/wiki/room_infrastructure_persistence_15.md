@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_room_subscribers_empty()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **Test get_room_subscribers() returns empty set when no subscribers.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_get_following_for_client()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test _get_following_for_client() returns target name for player follow.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Relationships
 
-- [room subscription manager](room_subscription_manager.md) (1 shared connections)
+- [game state provider](game_state_provider.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager.py`
+- `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Audit Trail
 

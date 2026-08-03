@@ -33,8 +33,9 @@
 
 ## Relationships
 
-- [nats exceptions services](nats_exceptions_services.md) (3 shared connections)
-- [room websocket updates](room_websocket_updates.md) (2 shared connections)
+- [spawn npc services](spawn_npc_services.md) (2 shared connections)
+- [look helpers commands](look_helpers_commands.md) (2 shared connections)
+- [persistence combat handler](persistence_combat_handler.md) (1 shared connections)
 
 ## Source Files
 

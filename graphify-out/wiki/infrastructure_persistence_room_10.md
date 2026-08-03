@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_parse_command_parts_lowercases_command()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **Test _parse_command_parts() lowercases command.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_add_grace_period_indicators()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test _add_grace_period_indicators() appends linkdead marker.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Relationships
 
-- [command parser helpers](command_parser_helpers.md) (1 shared connections)
+- [game state provider](game_state_provider.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_parser_helpers.py`
+- `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Audit Trail
 

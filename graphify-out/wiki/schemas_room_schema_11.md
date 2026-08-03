@@ -1,23 +1,27 @@
 # schemas room schema
 
-> 2 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **test_announce_spell_cast_no_player_id()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test announce spell cast when player has no ID.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **.execute_behavior()** (4 connections) — `server/npc/npc_base.py`
+- **.schedule_idle_movement()** (3 connections) — `server/npc/npc_base.py`
+- **._enrich_behavior_context()** (3 connections) — `server/npc/npc_base.py`
+- **Schedule idle movement; default False. Override in subclasses (e.g. PassiveMobNP** (1 connections) — `server/npc/npc_base.py`
+- **Hook for subclasses to add context before behavior rules run.         Override i** (1 connections) — `server/npc/npc_base.py`
+- **Execute NPC behavior based on context.** (1 connections) — `server/npc/npc_base.py`
 
 ## Relationships
 
-- [commands magic rationale](commands_magic_rationale.md) (1 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (3 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `server/npc/npc_base.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

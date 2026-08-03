@@ -1,27 +1,29 @@
 # add fastapi users
 
-> 5 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **add_fastapi_users_columns.py** (4 connections) — `server/scripts/add_fastapi_users_columns.py`
-- **apply_migration()** (3 connections) — `server/scripts/add_fastapi_users_columns.py`
-- **main()** (3 connections) — `server/scripts/add_fastapi_users_columns.py`
-- **Apply the migration to add FastAPI Users columns.      Args:         database_ur** (1 connections) — `server/scripts/add_fastapi_users_columns.py`
-- **Main entry point for the migration script.** (1 connections) — `server/scripts/add_fastapi_users_columns.py`
+- **TestEnsureNPCDatabaseDirectory** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_ensure_npc_database_directory_no_op_for_postgresql()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_ensure_npc_database_directory_creates_directory()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test ensure_npc_database_directory() function.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test ensure_npc_database_directory() is no-op for PostgreSQL.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test ensure_npc_database_directory() creates directory if needed.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
 
 ## Relationships
 
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [player effects endpoints](player_effects_endpoints.md) (3 shared connections)
+- [command inventory models](command_inventory_models.md) (1 shared connections)
 
 ## Source Files
 
-- `server/scripts/add_fastapi_users_columns.py`
+- `server/tests/unit/infrastructure/test_npc_database.py`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 13 (93%)
+- INFERRED: 1 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

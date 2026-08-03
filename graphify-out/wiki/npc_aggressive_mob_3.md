@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_run_improvement_rolls_improvement_applied_when_roll_exceeds_value()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
-- **When roll > current value, update_value called with new value (gain 1 or 1d10).** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **.should_run_maintenance()** (3 connections) — `server/config/npc_config.py`
+- **Check if NPC maintenance should run on this tick.          Args:             tic** (1 connections) — `server/config/npc_config.py`
 
 ## Relationships
 
-- [skill service game](skill_service_game.md) (1 shared connections)
+- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (1 shared connections)
+- [npc combat services](npc_combat_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_skill_service.py`
+- `server/config/npc_config.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

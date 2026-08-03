@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_handle_equip_wearable_container_no_inner_container()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test handle_equip_wearable_container returns None when no inner_container.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_evaluate_condition_unknown()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test evaluate_condition() returns False for unknown condition.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [wearable container service](wearable_container_service.md) (1 shared connections)
+- [lucidity active service](lucidity_active_service.md) (1 shared connections)
+- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

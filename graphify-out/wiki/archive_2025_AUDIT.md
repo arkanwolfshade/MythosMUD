@@ -1,24 +1,26 @@
 # archive 2025 AUDIT
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_handle_item_look_in_room_drops()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look when item is in room drops.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **.handle_player_attack_on_npc()** (4 connections) — `server/services/npc_combat_integration_service.py`
+- **._complete_player_attack_on_npc_after_grace()** (3 connections) — `server/services/npc_combat_integration_service.py`
+- **Player attack path after login grace check passes.** (1 connections) — `server/services/npc_combat_integration_service.py`
+- **Handle a player attacking an NPC using auto-progression combat system.** (1 connections) — `server/services/npc_combat_integration_service.py`
 
 ## Relationships
 
-- [health service services](health_service_services.md) (1 shared connections)
-- [Item Lookup](Item_Lookup.md) (1 shared connections)
+- [Spell Validation](Spell_Validation.md) (2 shared connections)
+- [command utility models](command_utility_models.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_item.py`
+- `server/services/npc_combat_integration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

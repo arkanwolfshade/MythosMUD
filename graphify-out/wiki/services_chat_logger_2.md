@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_run_improvement_rolls_roll_under_current_no_change()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
-- **When roll <= current value, no update_value call.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_event_bus_set_main_loop()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test EventBus.set_main_loop() sets main loop.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- [skill service game](skill_service_game.md) (1 shared connections)
+- [event bus events](event_bus_events.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_skill_service.py`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 

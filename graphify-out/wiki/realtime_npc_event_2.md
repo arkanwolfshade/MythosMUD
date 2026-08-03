@@ -4,22 +4,21 @@
 
 ## Key Concepts
 
-- **test_apply_encounter_lucidity_loss_unknown_category()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **Test apply_encounter_lucidity_loss() raises error for unknown category.** (1 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_add_player_to_room_player_not_found()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
+- **Test add_player_to_room() when player is not found.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (1 shared connections)
-- [lucidity active service](lucidity_active_service.md) (1 shared connections)
+- [movement service game](movement_service_game.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_active_lucidity_service.py`
+- `server/tests/unit/game/test_movement_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

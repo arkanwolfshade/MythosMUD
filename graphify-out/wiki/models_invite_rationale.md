@@ -1,23 +1,24 @@
 # models invite rationale
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_record_successful_skill_use_calls_repo()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
-- **record_successful_skill_use delegates to repo.record_use with correct args.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **.turn_interval_seconds()** (3 connections) — `server/services/combat_service.py`
+- **Return the turn interval in seconds.** (1 connections) — `server/services/combat_service.py`
+- **Set the turn interval in seconds.** (1 connections) — `server/services/combat_service.py`
 
 ## Relationships
 
-- [skill service game](skill_service_game.md) (1 shared connections)
+- [NPC Combat](NPC_Combat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_skill_service.py`
+- `server/services/combat_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

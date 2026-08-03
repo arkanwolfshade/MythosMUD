@@ -1,62 +1,46 @@
 # websocket handler realtime
 
-> 77 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **websocket_handler_commands.py** (32 connections) — `server/realtime/websocket_handler_commands.py`
-- **test_websocket_handler_commands.py** (28 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
-- **test_websocket_handler_app_state_connection.py** (23 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
-- **resolve_and_setup_app_state_services()** (20 connections) — `server/realtime/websocket_handler_app_state.py`
-- **process_websocket_command()** (19 connections) — `server/realtime/websocket_handler_commands.py`
-- **websocket_handler_app_state.py** (11 connections) — `server/realtime/websocket_handler_app_state.py`
-- **resolve_websocket_connection_manager()** (11 connections) — `server/realtime/websocket_handler_commands.py`
-- **_websocket_unified_command_result()** (10 connections) — `server/realtime/websocket_handler_commands.py`
-- **validate_player_and_persistence()** (9 connections) — `server/realtime/websocket_handler_commands.py`
-- **parse_game_command_tokens()** (8 connections) — `server/realtime/websocket_handler_commands.py`
-- **_attach_room_state_to_result()** (8 connections) — `server/realtime/websocket_handler_commands.py`
-- **_resolve_get_room_state_callable()** (6 connections) — `server/realtime/websocket_handler_commands.py`
-- **test_process_websocket_command_attaches_room_state()** (5 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
-- **test_process_websocket_command_room_state_get_room_fails_softly()** (5 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
-- **_services_from_container()** (4 connections) — `server/realtime/websocket_handler_app_state.py`
-- **_cm_with_player_and_app()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
-- **Path** (4 connections)
-- **test_process_websocket_command_room_changed_no_player_handler_skips_room_state()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
-- **_mirror_service_to_app_state()** (3 connections) — `server/realtime/websocket_handler_app_state.py`
-- **_invoke_get_room_state_event()** (3 connections) — `server/realtime/websocket_handler_commands.py`
-- **test_resolve_and_setup_app_state_services_services_already_set()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
-- **test_resolve_and_setup_app_state_services_missing_services()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
-- **test_resolve_and_setup_app_state_services_no_app_state()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
-- **test_resolve_and_setup_app_state_services_container_no_services()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
-- **test_resolve_and_setup_app_state_services_no_container_attribute()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
-- *... and 52 more nodes in this community*
+- **test_circuit_breaker.py** (31 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_circuit_breaker_init_defaults()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_call_opens_circuit_after_threshold()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_call_reopens_from_half_open_on_failure()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_on_success_increments_success_count_half_open()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_on_failure_increments_failure_count()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_time_until_retry_returns_remaining_time()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_get_state()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_get_stats()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_reset()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **Unit tests for circuit breaker.  Tests the CircuitBreaker class and CircuitBreak** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **Test CircuitBreaker initialization with defaults.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **Test call() opens circuit after failure threshold.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **Test call() reopens circuit from HALF_OPEN on failure.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **Test _on_success() increments success count in HALF_OPEN state.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **Test _on_failure() increments failure count.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **Test _time_until_retry() returns remaining time.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **Test get_state() returns current state.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **Test get_stats() returns comprehensive statistics.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **Test reset() manually resets circuit breaker.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
 
 ## Relationships
 
-- [websocket validation realtime](websocket_validation_realtime.md) (11 shared connections)
-- [websocket realtime handler](websocket_realtime_handler.md) (7 shared connections)
-- [room look commands](room_look_commands.md) (6 shared connections)
-- [combat commands handler](combat_commands_handler.md) (6 shared connections)
-- [request context realtime](request_context_realtime.md) (4 shared connections)
-- [command inventory factories](command_inventory_factories.md) (4 shared connections)
-- [Error Handling Core](Error_Handling_Core.md) (4 shared connections)
-- [realtime game state](realtime_game_state.md) (3 shared connections)
-- [models player related](models_player_related.md) (2 shared connections)
-- [commands admin mute](commands_admin_mute.md) (2 shared connections)
-- [command commands handler](command_commands_handler.md) (2 shared connections)
-- [Item Instances](Item_Instances.md) (2 shared connections)
+- [config rationale reset](config_rationale_reset.md) (15 shared connections)
+- [npc behavior engine](npc_behavior_engine.md) (9 shared connections)
+- [container main rationale](container_main_rationale.md) (3 shared connections)
+- [service services rescue](service_services_rescue.md) (2 shared connections)
+- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/websocket_handler_app_state.py`
-- `server/realtime/websocket_handler_commands.py`
-- `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
-- `server/tests/unit/realtime/test_websocket_handler_commands.py`
+- `server/tests/unit/realtime/test_circuit_breaker.py`
 
 ## Audit Trail
 
-- EXTRACTED: 299 (96%)
-- INFERRED: 14 (4%)
+- EXTRACTED: 68 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

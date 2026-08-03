@@ -36,15 +36,12 @@
 - [container find inventory](container_find_inventory.md) (15 shared connections)
 - [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (6 shared connections)
 - [container inventory display](container_inventory_display.md) (4 shared connections)
-- [persistence rationale player](persistence_rationale_player.md) (4 shared connections)
+- [inventory commands command](inventory_commands_command.md) (4 shared connections)
 - [alias storage commands](alias_storage_commands.md) (3 shared connections)
-- [inventory commands command](inventory_commands_command.md) (2 shared connections)
-- [commands communication flows](commands_communication_flows.md) (2 shared connections)
-- [commands inventory command](commands_inventory_command.md) (1 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
-- [world models rationale](world_models_rationale.md) (1 shared connections)
-- [combat models rationale](combat_models_rationale.md) (1 shared connections)
-- [realtime game state](realtime_game_state.md) (1 shared connections)
+- [commands inventory pickup](commands_inventory_pickup.md) (3 shared connections)
+- [world models rationale](world_models_rationale.md) (2 shared connections)
+- [models npc rationale](models_npc_rationale.md) (1 shared connections)
+- [command utility models](command_utility_models.md) (1 shared connections)
 
 ## Source Files
 
@@ -55,7 +52,7 @@
 ## Audit Trail
 
 - EXTRACTED: 413 (97%)
-- INFERRED: 14 (3%)
+- INFERRED: 12 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

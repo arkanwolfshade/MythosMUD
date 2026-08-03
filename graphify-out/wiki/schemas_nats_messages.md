@@ -33,10 +33,10 @@
 
 ## Relationships
 
-- [combat commands handler](combat_commands_handler.md) (5 shared connections)
+- [auth users rationale](auth_users_rationale.md) (5 shared connections)
 - [command inventory models](command_inventory_models.md) (4 shared connections)
 - [circuit breaker realtime](circuit_breaker_realtime.md) (2 shared connections)
-- [admin auth service](admin_auth_service.md) (1 shared connections)
+- [profession game service](profession_game_service.md) (1 shared connections)
 - [broker infrastructure nats](broker_infrastructure_nats.md) (1 shared connections)
 - [infrastructure nats broker](infrastructure_nats_broker.md) (1 shared connections)
 

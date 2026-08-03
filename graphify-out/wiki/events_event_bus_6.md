@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **mock_config()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **Create a mock config with chat rate limits.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_validate_exit_target_missing_in_persistence()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
+- **Test _validate_exit logs when target room missing from persistence.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
 
 ## Relationships
 
-- [rate limiter services](rate_limiter_services.md) (1 shared connections)
+- [movement service game](movement_service_game.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_rate_limiter.py`
+- `server/tests/unit/game/test_movement_service.py`
 
 ## Audit Trail
 

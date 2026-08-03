@@ -34,13 +34,11 @@
 ## Relationships
 
 - [container inventory helpers](container_inventory_helpers.md) (15 shared connections)
-- [commands inventory command](commands_inventory_command.md) (5 shared connections)
-- [commands communication flows](commands_communication_flows.md) (5 shared connections)
-- [persistence rationale player](persistence_rationale_player.md) (2 shared connections)
+- [retry nats handler](retry_nats_handler.md) (5 shared connections)
+- [world models rationale](world_models_rationale.md) (2 shared connections)
+- [commands inventory pickup](commands_inventory_pickup.md) (2 shared connections)
 - [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (2 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
-- [world models rationale](world_models_rationale.md) (1 shared connections)
-- [combat models rationale](combat_models_rationale.md) (1 shared connections)
+- [models npc rationale](models_npc_rationale.md) (1 shared connections)
 - [event events serialization](event_events_serialization.md) (1 shared connections)
 - [Exception Containers](Exception_Containers.md) (1 shared connections)
 
@@ -52,8 +50,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 412 (96%)
-- INFERRED: 16 (4%)
+- EXTRACTED: 412 (97%)
+- INFERRED: 11 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

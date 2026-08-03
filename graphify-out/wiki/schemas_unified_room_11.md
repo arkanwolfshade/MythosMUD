@@ -1,24 +1,48 @@
 # schemas unified room
 
-> 2 nodes
+> 56 nodes
 
 ## Key Concepts
 
-- **test_handle_stop_command_wrapper_success()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test handle_stop_command wrapper success.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **test_game_stats_methods.py** (31 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_validate_current_vs_max_stats_caps_dp()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_validate_current_vs_max_stats_caps_magic_points()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_validate_current_vs_max_stats_caps_lucidity()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_validate_current_vs_max_stats_allows_valid_values()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_get_attribute_modifier_negative()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_get_attribute_modifier_zero()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_get_attribute_modifier_different_attribute()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_max_dp_calculation()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_max_dp_calculation_alternative()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_max_dp_with_none()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_max_magic_points_calculation()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_max_magic_points_calculation_alternative()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_max_lucidity_calculation()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_max_lucidity_calculation_alternative()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_is_lucid_true()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_is_lucid_false()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_is_corrupted_true()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_is_corrupted_false()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_is_delirious_true()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_is_delirious_false()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_get_attribute_modifier_positive()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_get_attribute_modifier_none()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_validate_current_vs_max_stats_valid()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_validate_current_vs_max_stats_exceeds_dp_alternative()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- *... and 31 more nodes in this community*
 
 ## Relationships
 
-- [commands admin mute](commands_admin_mute.md) (1 shared connections)
-- [commands magic rationale](commands_magic_rationale.md) (1 shared connections)
+- [player service game](player_service_game.md) (28 shared connections)
+- [combat models rationale](combat_models_rationale.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `server/tests/unit/models/test_game_stats_methods.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 140 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

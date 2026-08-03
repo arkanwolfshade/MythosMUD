@@ -1,35 +1,47 @@
 # startup npc services
 
-> 14 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **.learn_spell()** (8 connections) — `server/game/magic/spell_learning_service.py`
-- **UUID** (7 connections)
-- **._validate_prerequisites()** (6 connections) — `server/game/magic/spell_learning_service.py`
-- **Any** (5 connections)
-- **.learn_spell_from_book()** (5 connections) — `server/game/magic/spell_learning_service.py`
-- **.learn_spell_from_npc()** (5 connections) — `server/game/magic/spell_learning_service.py`
-- **.learn_spell_from_quest()** (5 connections) — `server/game/magic/spell_learning_service.py`
-- **.increase_mastery_on_cast()** (3 connections) — `server/game/magic/spell_learning_service.py`
-- **Learn a spell for a player.          Args:             player_id: Player ID** (1 connections) — `server/game/magic/spell_learning_service.py`
-- **Validate prerequisites for learning a spell.          Args:             player_i** (1 connections) — `server/game/magic/spell_learning_service.py`
-- **Learn a spell from a spellbook item.          Args:             player_id: Playe** (1 connections) — `server/game/magic/spell_learning_service.py`
-- **Learn a spell from an NPC teacher.          Args:             player_id: Player** (1 connections) — `server/game/magic/spell_learning_service.py`
-- **Learn a spell as a quest reward.          Args:             player_id: Player ID** (1 connections) — `server/game/magic/spell_learning_service.py`
-- **Increase mastery level after casting a spell.          Args:             player_** (1 connections) — `server/game/magic/spell_learning_service.py`
+- **test_message_formatters.py** (16 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **test_format_message_content_nats_error()** (4 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **test_format_message_content_say()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **test_format_message_content_local()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **test_format_message_content_global()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **test_format_message_content_emote()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **test_format_message_content_pose()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **test_format_message_content_whisper()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **test_format_message_content_whisper_for_recipient()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **test_format_message_content_system()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **test_format_message_content_admin()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **test_format_message_content_unknown_channel()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **Unit tests for message formatters.  Tests the message_formatters module function** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **Test format_message_content() formats 'say' channel messages.** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **Test format_message_content() formats 'local' channel messages.** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **Test format_message_content() formats 'global' channel messages.** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **Test format_message_content() formats 'emote' channel messages.** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **Test format_message_content() formats 'pose' channel messages.** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **Test format_message_content() formats 'whisper' channel messages (default).** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **Test format_message_content() formats 'whisper' for recipient as 'X whispers to** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **Test format_message_content() formats 'system' channel messages.** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **Test format_message_content() formats 'admin' channel messages.** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **Test format_message_content() formats unknown channel messages.** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **Test format_message_content() handles NATSError.** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
 
 ## Relationships
 
-- [game models player](game_models_player.md) (8 shared connections)
+- [circuit breaker realtime](circuit_breaker_realtime.md) (13 shared connections)
+- [message filtering realtime](message_filtering_realtime.md) (2 shared connections)
+- [nats exceptions services](nats_exceptions_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/magic/spell_learning_service.py`
+- `server/tests/unit/realtime/test_message_formatters.py`
 
 ## Audit Trail
 
-- EXTRACTED: 50 (100%)
+- EXTRACTED: 62 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

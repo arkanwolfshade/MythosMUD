@@ -1,24 +1,29 @@
 # schemas calendar schedule
 
-> 2 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **test_handle_item_look_player_no_get_inventory()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test _handle_item_look() when player has no get_inventory method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **enum** (8 connections) — `schemas/calendar/schedule.schema.json`
+- **Monday** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **Tuesday** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **Wednesday** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **Thursday** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **Friday** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **Saturday** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **Sunday** (1 connections) — `schemas/calendar/schedule.schema.json`
 
 ## Relationships
 
-- [health service services](health_service_services.md) (1 shared connections)
-- [Item Lookup](Item_Lookup.md) (1 shared connections)
+- [schemas calendar schedule](schemas_calendar_schedule.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_item.py`
+- `schemas/calendar/schedule.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

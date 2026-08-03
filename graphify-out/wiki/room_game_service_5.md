@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_execute_idle_movement_no_valid_exits()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **Test execute_idle_movement() when no valid exits.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_evaluate_equality_string()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test _evaluate_equality() handles string values.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [config models player](config_models_player.md) (1 shared connections)
-- [idle movement npc](idle_movement_npc.md) (1 shared connections)
+- [lucidity active service](lucidity_active_service.md) (1 shared connections)
+- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_idle_movement.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 

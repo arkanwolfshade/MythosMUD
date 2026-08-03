@@ -1,17 +1,17 @@
 # container helpers endpoints
 
-> 201 nodes
+> 197 nodes
 
 ## Key Concepts
 
 - **__init__.py** (47 connections) — `server/services/__init__.py`
+- **InventoryService** (43 connections) — `server/services/inventory_service.py`
 - **InventoryMutationGuard** (42 connections) — `server/services/inventory_mutation_guard.py`
 - **InventoryStack** (34 connections) — `server/services/inventory_service.py`
 - **inventory_service.py** (29 connections) — `server/services/inventory_service.py`
-- **InventoryCapacityError** (29 connections) — `server/services/inventory_service.py`
 - **inventory_mutation_guard.py** (20 connections) — `server/services/inventory_mutation_guard.py`
 - **test_inventory_service.py** (20 connections) — `server/tests/unit/services/test_inventory_service.py`
-- **MutationDecision** (18 connections) — `server/services/inventory_mutation_guard.py`
+- **MutationDecision** (19 connections) — `server/services/inventory_mutation_guard.py`
 - **test_inventory_mutation_guard.py** (17 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
 - **test_inventory_mutation_guard_internal.py** (15 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
 - **InventoryValidationError** (13 connections) — `server/services/inventory_service.py`
@@ -29,22 +29,22 @@
 - **Any** (7 connections)
 - **._validate_and_clone_optional_fields()** (7 connections) — `server/services/inventory_service.py`
 - **._clone_with_quantity()** (7 connections) — `server/services/inventory_service.py`
-- *... and 176 more nodes in this community*
+- *... and 172 more nodes in this community*
 
 ## Relationships
 
-- [commands inventory command](commands_inventory_command.md) (45 shared connections)
-- [Exception Containers](Exception_Containers.md) (26 shared connections)
-- [commands admin mute](commands_admin_mute.md) (5 shared connections)
-- [inventory commands command](inventory_commands_command.md) (5 shared connections)
-- [alias storage commands](alias_storage_commands.md) (4 shared connections)
-- [command inventory factories](command_inventory_factories.md) (4 shared connections)
-- [time service rationale](time_service_rationale.md) (4 shared connections)
-- [Loot Generation](Loot_Generation.md) (4 shared connections)
-- [Error Conversion](Error_Conversion.md) (3 shared connections)
+- [retry nats handler](retry_nats_handler.md) (39 shared connections)
+- [Exception Containers](Exception_Containers.md) (35 shared connections)
+- [models npc rationale](models_npc_rationale.md) (9 shared connections)
+- [inventory commands command](inventory_commands_command.md) (8 shared connections)
+- [combat services persistence](combat_services_persistence.md) (6 shared connections)
+- [commands inventory command](commands_inventory_command.md) (5 shared connections)
+- [commands inventory pickup](commands_inventory_pickup.md) (4 shared connections)
+- [holiday service services](holiday_service_services.md) (3 shared connections)
 - [Realtime Subscribers](Realtime_Subscribers.md) (3 shared connections)
+- [room cache services](room_cache_services.md) (3 shared connections)
 - [System Metrics](System_Metrics.md) (3 shared connections)
-- [npc shopkeeper rationale](npc_shopkeeper_rationale.md) (3 shared connections)
+- [container inventory display](container_inventory_display.md) (3 shared connections)
 
 ## Source Files
 
@@ -61,8 +61,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 640 (88%)
-- INFERRED: 91 (12%)
+- EXTRACTED: 654 (89%)
+- INFERRED: 84 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

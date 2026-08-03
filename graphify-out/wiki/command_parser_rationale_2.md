@@ -1,64 +1,70 @@
 # command parser rationale
 
-> 177 nodes
+> 118 nodes
 
 ## Key Concepts
 
-- **test_command_parser.py** (45 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_command_service.py** (36 connections) — `server/tests/unit/commands/test_command_service.py`
-- **parse_command()** (24 connections) — `server/utils/command_parser.py`
-- **CommandService** (20 connections) — `server/commands/command_service.py`
-- **MythosValidationError** (8 connections)
-- **test_command_parser_smoke.py** (8 connections) — `server/tests/unit/test_command_parser_smoke.py`
-- **._extract_parsed_fields()** (7 connections) — `server/commands/command_service.py`
-- **.process_command()** (6 connections) — `server/commands/command_service.py`
-- **._parse_command_string()** (5 connections) — `server/commands/command_service.py`
-- **Command** (5 connections)
-- **._prepare_command_data()** (5 connections) — `server/commands/command_service.py`
-- **._execute_command_handler()** (5 connections) — `server/commands/command_service.py`
-- **._fallback_parsed_fields()** (4 connections) — `server/commands/command_service.py`
-- **._log_parsed_command_inspection()** (4 connections) — `server/commands/command_service.py`
-- **test_parse_command_string_validation_error()** (4 connections) — `server/tests/unit/commands/test_command_service.py`
-- **test_create_command_object_re_raises_mythos_validation_error()** (4 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_process_command_string_mythos_validation_error()** (4 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **._log_model_dump_result()** (3 connections) — `server/commands/command_service.py`
-- **.register_command_handler()** (3 connections) — `server/commands/command_service.py`
-- **command_service()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
-- **test_process_validated_command_validation_error()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
-- **test_parse_command_basic()** (3 connections) — `server/tests/unit/test_command_parser_smoke.py`
-- **test_parse_command_with_args()** (3 connections) — `server/tests/unit/test_command_parser_smoke.py`
-- **test_parse_command_with_pipes()** (3 connections) — `server/tests/unit/test_command_parser_smoke.py`
-- **test_parse_command_empty_string()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- *... and 152 more nodes in this community*
+- **NPCDied** (35 connections) — `server/events/event_types.py`
+- **test_lifecycle_manager.py** (27 connections) — `server/tests/unit/npc/test_lifecycle_manager.py`
+- **lifecycle_death.py** (24 connections) — `server/npc/lifecycle_death.py`
+- **NPCLifecycleRecord** (19 connections) — `server/npc/lifecycle_types.py`
+- **_make_manager()** (18 connections) — `server/tests/unit/npc/test_lifecycle_manager.py`
+- **RoomOccupantsRefreshRequested** (17 connections) — `server/events/event_types.py`
+- **_LifecycleManagerForDeath** (16 connections) — `server/npc/lifecycle_death.py`
+- **test_quest_events.py** (16 connections) — `server/tests/unit/game/test_quest_events.py`
+- **test_lifecycle_death.py** (16 connections) — `server/tests/unit/npc/test_lifecycle_death.py`
+- **quest_events.py** (15 connections) — `server/game/quest/quest_events.py`
+- **subscribe_quest_events()** (15 connections) — `server/game/quest/quest_events.py`
+- **test_lifespan_event_subscriptions.py** (15 connections) — `server/tests/unit/app/test_lifespan_event_subscriptions.py`
+- **subscribe_quest_events()** (13 connections) — `server/app/lifespan_event_subscriptions.py`
+- **.event_bus()** (12 connections) — `server/realtime/connection_manager.py`
+- **subscribe_room_occupants_refresh()** (11 connections) — `server/app/lifespan_event_subscriptions.py`
+- **handle_npc_died_impl()** (11 connections) — `server/npc/lifecycle_death.py`
+- **_mark_despawned_and_queue_respawn()** (9 connections) — `server/npc/lifecycle_death.py`
+- **_remove_active_npc_and_notify()** (8 connections) — `server/npc/lifecycle_death.py`
+- **_make_on_player_entered()** (7 connections) — `server/game/quest/quest_events.py`
+- **_make_on_npc_died()** (6 connections) — `server/game/quest/quest_events.py`
+- **._move_with_integration()** (6 connections) — `server/npc/npc_base.py`
+- **_make_on_player_left()** (5 connections) — `server/game/quest/quest_events.py`
+- **._get_integration_dependencies()** (5 connections) — `server/npc/npc_base.py`
+- **.move_to_room()** (5 connections) — `server/npc/npc_base.py`
+- **test_quest_log_updated_event_envelope_shape()** (5 connections) — `server/tests/unit/app/test_lifespan_event_subscriptions.py`
+- *... and 93 more nodes in this community*
 
 ## Relationships
 
-- [commands admin mute](commands_admin_mute.md) (7 shared connections)
-- [command factories create](command_factories_create.md) (6 shared connections)
-- [command inventory models](command_inventory_models.md) (5 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [Error Handling Core](Error_Handling_Core.md) (2 shared connections)
-- [Database Config](Database_Config.md) (2 shared connections)
-- [player effects endpoints](player_effects_endpoints.md) (2 shared connections)
-- [command processor rationale](command_processor_rationale.md) (2 shared connections)
-- [command commands handler](command_commands_handler.md) (1 shared connections)
-- [Exception Containers](Exception_Containers.md) (1 shared connections)
-- [inventory commands command](inventory_commands_command.md) (1 shared connections)
-- [room websocket updates](room_websocket_updates.md) (1 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (64 shared connections)
+- [models npc rationale](models_npc_rationale.md) (24 shared connections)
+- [quest game service](quest_game_service.md) (5 shared connections)
+- [NPC Combat](NPC_Combat.md) (5 shared connections)
+- [Magic Spell Service](Magic_Spell_Service.md) (4 shared connections)
+- [combat services messaging](combat_services_messaging.md) (4 shared connections)
+- [circuit breaker realtime](circuit_breaker_realtime.md) (4 shared connections)
+- [Error Conversion](Error_Conversion.md) (3 shared connections)
+- [command service commands](command_service_commands.md) (2 shared connections)
+- [player realtime event](player_realtime_event.md) (2 shared connections)
+- [look helpers commands](look_helpers_commands.md) (1 shared connections)
+- [channel broadcasting strategies](channel_broadcasting_strategies.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/command_service.py`
-- `server/tests/unit/commands/test_command_service.py`
-- `server/tests/unit/test_command_parser_smoke.py`
-- `server/tests/unit/utils/test_command_parser.py`
-- `server/tests/unit/utils/test_command_processor.py`
-- `server/utils/command_parser.py`
+- `server/app/lifespan_event_subscriptions.py`
+- `server/events/event_types.py`
+- `server/game/quest/quest_events.py`
+- `server/npc/lifecycle_death.py`
+- `server/npc/lifecycle_manager.py`
+- `server/npc/lifecycle_types.py`
+- `server/npc/npc_base.py`
+- `server/realtime/connection_manager.py`
+- `server/tests/unit/app/test_lifespan_event_subscriptions.py`
+- `server/tests/unit/game/test_quest_events.py`
+- `server/tests/unit/npc/test_lifecycle_death.py`
+- `server/tests/unit/npc/test_lifecycle_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 436 (98%)
-- INFERRED: 10 (2%)
+- EXTRACTED: 481 (91%)
+- INFERRED: 48 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

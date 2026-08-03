@@ -1,6 +1,6 @@
 # Async Query Helpers
 
-> 75 nodes
+> 70 nodes
 
 ## Key Concepts
 
@@ -15,7 +15,6 @@
 - **._clear_respawn_combat_state()** (8 connections) — `server/services/player_respawn_service.py`
 - **._publish_standard_respawn_event()** (8 connections) — `server/services/player_respawn_service.py`
 - **._prepare_delirium_respawn()** (8 connections) — `server/services/player_respawn_service.py`
-- **_utc_now()** (7 connections) — `server/services/player_respawn_service.py`
 - **AsyncSession** (7 connections)
 - **.move_player_to_limbo()** (7 connections) — `server/services/player_respawn_service.py`
 - **.get_respawn_room()** (7 connections) — `server/services/player_respawn_service.py`
@@ -29,22 +28,23 @@
 - **._can_move_to_limbo()** (5 connections) — `server/services/player_respawn_service.py`
 - **._apply_standard_respawn_state()** (5 connections) — `server/services/player_respawn_service.py`
 - **._log_standard_respawn()** (5 connections) — `server/services/player_respawn_service.py`
-- *... and 50 more nodes in this community*
+- **._log_sanitarium_respawn()** (5 connections) — `server/services/player_respawn_service.py`
+- *... and 45 more nodes in this community*
 
 ## Relationships
 
-- [command inventory factories](command_inventory_factories.md) (16 shared connections)
-- [lucidity services helpers](lucidity_services_helpers.md) (15 shared connections)
+- [combat models rationale](combat_models_rationale.md) (16 shared connections)
+- [combat services persistence](combat_services_persistence.md) (6 shared connections)
 - [Database Config](Database_Config.md) (6 shared connections)
-- [combat models rationale](combat_models_rationale.md) (5 shared connections)
-- [command base models](command_base_models.md) (3 shared connections)
-- [NPC Combat](NPC_Combat.md) (3 shared connections)
-- [item models rationale](item_models_rationale.md) (2 shared connections)
+- [world models rationale](world_models_rationale.md) (5 shared connections)
+- [NPC Combat](NPC_Combat.md) (4 shared connections)
+- [lucidity services helpers](lucidity_services_helpers.md) (4 shared connections)
+- [aggro threat services](aggro_threat_services.md) (3 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (2 shared connections)
 - [Magic Spell Service](Magic_Spell_Service.md) (2 shared connections)
 - [NPC Definitions Admin](NPC_Definitions_Admin.md) (2 shared connections)
 - [models player rationale](models_player_rationale.md) (2 shared connections)
-- [command inventory models](command_inventory_models.md) (1 shared connections)
-- [alias command models](alias_command_models.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
 
 ## Source Files
 
@@ -54,7 +54,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 288 (90%)
+- EXTRACTED: 274 (90%)
 - INFERRED: 31 (10%)
 - AMBIGUOUS: 0 (0%)
 

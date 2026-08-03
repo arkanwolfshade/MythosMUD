@@ -31,7 +31,7 @@
 
 - [logging examples fastapi](logging_examples_fastapi.md) (3 shared connections)
 - [room models instance](room_models_instance.md) (2 shared connections)
-- [item models rationale](item_models_rationale.md) (1 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
 - [player presence tracker](player_presence_tracker.md) (1 shared connections)
 
 ## Source Files

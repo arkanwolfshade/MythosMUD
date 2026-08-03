@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_create_command_object_with_alias_g()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **Test _create_command_object() handles 'g' alias.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_add_room_occupant_existing_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **Test add_room_occupant() adds occupant to existing room.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
 
 ## Relationships
 
-- [command parser helpers](command_parser_helpers.md) (1 shared connections)
+- [room subscription manager](room_subscription_manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_parser_helpers.py`
+- `server/tests/unit/realtime/test_room_subscription_manager.py`
 
 ## Audit Trail
 

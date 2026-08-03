@@ -1,53 +1,53 @@
 # map layout useMapLayout
 
-> 24 nodes
+> 28 nodes
 
 ## Key Concepts
 
-- **layout.ts** (26 connections) — `client/src/components/map/utils/layout.ts`
-- **useMapLayout.ts** (22 connections) — `client/src/components/map/hooks/useMapLayout.ts`
-- **applyForceLayout()** (10 connections) — `client/src/components/map/utils/layout.ts`
-- **applyGridLayout()** (7 connections) — `client/src/components/map/utils/layout.ts`
-- **applyForceLayout.test.ts** (6 connections) — `client/src/components/map/utils/__tests__/applyForceLayout.test.ts`
-- **applyGridLayout.test.ts** (6 connections) — `client/src/components/map/utils/__tests__/applyGridLayout.test.ts`
-- **calculateGridPosition.test.ts** (6 connections) — `client/src/components/map/utils/__tests__/calculateGridPosition.test.ts`
-- **GridLayoutConfig** (6 connections) — `client/src/components/map/utils/layout.ts`
-- **defaultGridLayoutConfig** (5 connections) — `client/src/components/map/utils/layout.ts`
-- **UseMapLayoutOptions** (4 connections) — `client/src/components/map/hooks/useMapLayout.ts`
-- **ForceLayoutConfig** (4 connections) — `client/src/components/map/utils/layout.ts`
-- **defaultForceLayoutConfig** (4 connections) — `client/src/components/map/utils/layout.ts`
-- **applyCrossingMinimizationForces()** (4 connections) — `client/src/components/map/utils/layout.ts`
-- **layout-config.test.ts** (3 connections) — `client/src/components/map/utils/__tests__/layout-config.test.ts`
-- **calculateGridPosition()** (3 connections) — `client/src/components/map/utils/layout.ts`
-- **applyChargeForces()** (3 connections) — `client/src/components/map/utils/layout.ts`
-- **doLineSegmentsIntersect()** (3 connections) — `client/src/components/map/utils/layout.ts`
-- **doesEdgeCrossNode()** (3 connections) — `client/src/components/map/utils/layout.ts`
-- **initializeNodePositions()** (2 connections) — `client/src/components/map/utils/layout.ts`
-- **applyLinkForces()** (2 connections) — `client/src/components/map/utils/layout.ts`
-- **applyCollisionForces()** (2 connections) — `client/src/components/map/utils/layout.ts`
-- **applyCenterForce()** (2 connections) — `client/src/components/map/utils/layout.ts`
-- **updateNodePositions()** (2 connections) — `client/src/components/map/utils/layout.ts`
-- **NodeState** (1 connections) — `client/src/components/map/utils/layout.ts`
+- **test_npc_instances_api.py** (21 connections) — `server/tests/unit/api/test_npc_instances_api.py`
+- **spawn_npc_instance()** (13 connections) — `server/api/admin/npc_instances_api.py`
+- **despawn_npc_instance()** (12 connections) — `server/api/admin/npc_instances_api.py`
+- **move_npc_instance()** (12 connections) — `server/api/admin/npc_instances_api.py`
+- **get_npc_instances()** (11 connections) — `server/api/admin/npc_instances_api.py`
+- **get_npc_stats()** (11 connections) — `server/api/admin/npc_instances_api.py`
+- **NPCSpawnRequest** (7 connections) — `server/api/admin/npc_schemas.py`
+- **NPCMoveRequest** (7 connections) — `server/api/admin/npc_schemas.py`
+- **Request** (5 connections)
+- **Any** (5 connections)
+- **test_spawn_npc_instance_not_found()** (4 connections) — `server/tests/unit/api/test_npc_instances_api.py`
+- **test_spawn_npc_instance_success()** (3 connections) — `server/tests/unit/api/test_npc_instances_api.py`
+- **test_move_npc_instance_success()** (3 connections) — `server/tests/unit/api/test_npc_instances_api.py`
+- **test_get_npc_instances_server_error()** (3 connections) — `server/tests/unit/api/test_npc_instances_api.py`
+- **test_despawn_npc_instance_not_found()** (3 connections) — `server/tests/unit/api/test_npc_instances_api.py`
+- **test_get_npc_instances_success()** (2 connections) — `server/tests/unit/api/test_npc_instances_api.py`
+- **test_despawn_npc_instance_success()** (2 connections) — `server/tests/unit/api/test_npc_instances_api.py`
+- **test_get_npc_stats_success()** (2 connections) — `server/tests/unit/api/test_npc_instances_api.py`
+- **NPCSpawnRequest** (1 connections)
+- **Get all active NPC instances.** (1 connections) — `server/api/admin/npc_instances_api.py`
+- **Spawn a new NPC instance.** (1 connections) — `server/api/admin/npc_instances_api.py`
+- **Despawn an NPC instance.** (1 connections) — `server/api/admin/npc_instances_api.py`
+- **Move an NPC instance to a different room.** (1 connections) — `server/api/admin/npc_instances_api.py`
+- **Get stats for a specific NPC instance.** (1 connections) — `server/api/admin/npc_instances_api.py`
+- **Model for NPC spawn requests.** (1 connections) — `server/api/admin/npc_schemas.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (15 shared connections)
-- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (13 shared connections)
-- [performance map debounce()](performance_map_debounce%28%29.md) (2 shared connections)
+- [admin auth service](admin_auth_service.md) (23 shared connections)
+- [Exception Containers](Exception_Containers.md) (9 shared connections)
+- [AppRouter main AppRouter()](AppRouter_main_AppRouter%28%29.md) (9 shared connections)
+- [command inventory factories](command_inventory_factories.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/map/hooks/useMapLayout.ts`
-- `client/src/components/map/utils/__tests__/applyForceLayout.test.ts`
-- `client/src/components/map/utils/__tests__/applyGridLayout.test.ts`
-- `client/src/components/map/utils/__tests__/calculateGridPosition.test.ts`
-- `client/src/components/map/utils/__tests__/layout-config.test.ts`
-- `client/src/components/map/utils/layout.ts`
+- `server/api/admin/npc_instances_api.py`
+- `server/api/admin/npc_schemas.py`
+- `server/tests/unit/api/test_npc_instances_api.py`
 
 ## Audit Trail
 
-- EXTRACTED: 136 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 133 (98%)
+- INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

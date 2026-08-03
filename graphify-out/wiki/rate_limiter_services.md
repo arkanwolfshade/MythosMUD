@@ -1,42 +1,56 @@
 # rate limiter services
 
-> 14 nodes
+> 35 nodes
 
 ## Key Concepts
 
-- **RateLimiter** (17 connections) — `server/services/rate_limiter.py`
-- **.__init__()** (4 connections) — `server/services/rate_limiter.py`
-- **rate_limiter()** (3 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_rate_limiter_initialization()** (3 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_rate_limiter_legacy_config()** (3 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **.set_limit()** (2 connections) — `server/services/rate_limiter.py`
-- **.reset_player_limits()** (2 connections) — `server/services/rate_limiter.py`
-- **Sliding window rate limiter for chat channels.      Implements per-user, per-cha** (1 connections) — `server/services/rate_limiter.py`
-- **Initialize the rate limiter with configuration-based limits.** (1 connections) — `server/services/rate_limiter.py`
-- **Set a custom rate limit for a channel.          Args:             channel: Chann** (1 connections) — `server/services/rate_limiter.py`
-- **Reset rate limiting for a player.          Args:             player_id: Player I** (1 connections) — `server/services/rate_limiter.py`
-- **Create a RateLimiter instance with mocked config.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **Test RateLimiter initializes with correct limits.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **Test RateLimiter handles legacy dict config format.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **CorpseLifecycleService** (23 connections) — `server/services/corpse_lifecycle_service.py`
+- **.cleanup_decayed_corpse()** (10 connections) — `server/services/corpse_lifecycle_service.py`
+- **_get_enum_value()** (8 connections) — `server/services/corpse_lifecycle_service.py`
+- **.create_corpse_on_death()** (7 connections) — `server/services/corpse_lifecycle_service.py`
+- **_filter_container_data()** (6 connections) — `server/services/corpse_lifecycle_service.py`
+- **.get_decayed_corpses_in_room()** (6 connections) — `server/services/corpse_lifecycle_service.py`
+- **ContainerComponent** (5 connections)
+- **.get_all_decayed_corpses()** (5 connections) — `server/services/corpse_lifecycle_service.py`
+- **UUID** (4 connections)
+- **.can_access_corpse()** (4 connections) — `server/services/corpse_lifecycle_service.py`
+- **.is_corpse_decayed()** (4 connections) — `server/services/corpse_lifecycle_service.py`
+- **.cleanup_decayed_corpses_in_room()** (4 connections) — `server/services/corpse_lifecycle_service.py`
+- **.cleanup_all_decayed_corpses()** (4 connections) — `server/services/corpse_lifecycle_service.py`
+- **Any** (3 connections)
+- **.__init__()** (3 connections) — `server/services/corpse_lifecycle_service.py`
+- **test_get_enum_value_enum()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **test_get_enum_value_string()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **corpse_service()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **test_corpse_lifecycle_service_init_no_persistence()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **Safely get enum value, handling both enum instances and string values.      When** (1 connections) — `server/services/corpse_lifecycle_service.py`
+- **Filter out database-specific fields that are not part of the ContainerComponent** (1 connections) — `server/services/corpse_lifecycle_service.py`
+- **Service for managing corpse container lifecycle.      Handles creation on death,** (1 connections) — `server/services/corpse_lifecycle_service.py`
+- **Initialize the corpse lifecycle service.          Args:             persistence:** (1 connections) — `server/services/corpse_lifecycle_service.py`
+- **Create a corpse container when a player dies.          Args:             player_** (1 connections) — `server/services/corpse_lifecycle_service.py`
+- **Check if a player can access a corpse container.          During grace period, o** (1 connections) — `server/services/corpse_lifecycle_service.py`
+- *... and 10 more nodes in this community*
 
 ## Relationships
 
-- [schedule service services](schedule_service_services.md) (6 shared connections)
-- [rate limiter services](rate_limiter_services.md) (4 shared connections)
-- [realtime maintenance connection](realtime_maintenance_connection.md) (2 shared connections)
-- [chat game message](chat_game_message.md) (1 shared connections)
-- [Item Instances](Item_Instances.md) (1 shared connections)
-- [services user manager](services_user_manager.md) (1 shared connections)
+- [task registry app](task_registry_app.md) (9 shared connections)
+- [command inventory factories](command_inventory_factories.md) (4 shared connections)
+- [Memory Task Runtime](Memory_Task_Runtime.md) (4 shared connections)
+- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (2 shared connections)
+- [Database Config](Database_Config.md) (2 shared connections)
+- [realtime message nats](realtime_message_nats.md) (1 shared connections)
+- [NPC Combat](NPC_Combat.md) (1 shared connections)
+- [character creation validate](character_creation_validate.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/rate_limiter.py`
-- `server/tests/unit/services/test_rate_limiter.py`
+- `server/services/corpse_lifecycle_service.py`
+- `server/tests/unit/services/test_corpse_lifecycle_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 40 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 117 (94%)
+- INFERRED: 7 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

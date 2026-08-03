@@ -1,23 +1,24 @@
 # persistence heal player()
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **mock_player_skill_repo()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
-- **Mock PlayerSkillRepository.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **.validate_duration()** (3 connections) — `server/schemas/calendar/calendar.py`
+- **Any** (1 connections)
+- **Ensure the schedule window moves time forward like the Chronology Tablets prescr** (1 connections) — `server/schemas/calendar/calendar.py`
 
 ## Relationships
 
-- [skill service game](skill_service_game.md) (1 shared connections)
+- [holiday service services](holiday_service_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_skill_service.py`
+- `server/schemas/calendar/calendar.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

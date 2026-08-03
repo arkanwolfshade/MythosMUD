@@ -1,38 +1,53 @@
 # persistence services combat
 
-> 14 nodes
+> 32 nodes
 
 ## Key Concepts
 
-- **test_follow_flow.py** (13 connections) — `server/tests/integration/test_follow_flow.py`
-- **event_bus()** (3 connections) — `server/tests/integration/test_follow_flow.py`
-- **follow_service()** (3 connections) — `server/tests/integration/test_follow_flow.py`
-- **test_follow_accept_then_move_propagates_then_restricted_exit_unfollows()** (3 connections) — `server/tests/integration/test_follow_flow.py`
-- **movement_service()** (2 connections) — `server/tests/integration/test_follow_flow.py`
-- **user_manager()** (2 connections) — `server/tests/integration/test_follow_flow.py`
-- **connection_manager()** (2 connections) — `server/tests/integration/test_follow_flow.py`
-- **Integration tests for follow feature.  Flow: Player A requests follow B; B accep** (1 connections) — `server/tests/integration/test_follow_flow.py`
-- **Real EventBus for integration.** (1 connections) — `server/tests/integration/test_follow_flow.py`
-- **Mock MovementService; move_player returns True then we can set False for restric** (1 connections) — `server/tests/integration/test_follow_flow.py`
-- **Mock UserManager; not muted.** (1 connections) — `server/tests/integration/test_follow_flow.py`
-- **Mock ConnectionManager (optional for this flow).** (1 connections) — `server/tests/integration/test_follow_flow.py`
-- **FollowService wired to real EventBus and mock MovementService.** (1 connections) — `server/tests/integration/test_follow_flow.py`
-- **A requests follow B; B accepts. B moves room_a -> room_b: A moves too.     B mov** (1 connections) — `server/tests/integration/test_follow_flow.py`
+- **_NPCCombatIntegrationValidationDeps** (19 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **NPCCombatIntegrationValidationMixin** (15 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **.store_npc_xp_mapping_for_mixin()** (10 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **.get_data_provider()** (6 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **.get_uuid_mapping()** (6 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **UUID** (6 connections)
+- **._setup_combat_uuids_and_mappings()** (6 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **._validate_and_get_npc_instance()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **._validate_combat_location()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **._end_combat_if_participant_in_combat()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **._setup_combat_uuids_npc_attacker()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **.get_combat_service()** (4 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **.get_lucidity_service()** (4 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **_coerce_xp_mapping_value()** (3 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **_warn_attacked_dead_npc()** (3 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **.store_npc_xp_mapping_for_mixin()** (3 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **Protocol** (1 connections)
+- **Parse xp_value from NPC base_stats JSON; bool maps to 0 (avoid True -> 1).** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **Log when a player targets an NPC that exists but is not alive.** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **Attributes supplied by NPCCombatIntegrationService (mixin cannot initialize them** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **Return combat service dependency.** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **Return data provider dependency.** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **Return UUID mapping dependency.** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **Return lucidity dependency.** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **Store XP mapping for NPC combat setup from validation mixin.** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [Realtime Subscribers](Realtime_Subscribers.md) (3 shared connections)
-- [item models rationale](item_models_rationale.md) (3 shared connections)
-- [follow game service](follow_game_service.md) (3 shared connections)
+- [models npc rationale](models_npc_rationale.md) (10 shared connections)
+- [NPC Combat](NPC_Combat.md) (3 shared connections)
+- [command player state](command_player_state.md) (3 shared connections)
+- [room occupant manager](room_occupant_manager.md) (3 shared connections)
+- [room validator services](room_validator_services.md) (3 shared connections)
+- [Spell Validation](Spell_Validation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/integration/test_follow_flow.py`
+- `server/services/npc_combat_integration_validation_mixin.py`
 
 ## Audit Trail
 
-- EXTRACTED: 35 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 109 (90%)
+- INFERRED: 12 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

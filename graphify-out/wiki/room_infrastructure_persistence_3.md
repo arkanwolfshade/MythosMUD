@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_process_room_rows_with_none_attributes()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _process_room_rows handles None attributes.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_get_players_batch()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test get_players_batch() retrieves multiple players.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Relationships
 
-- [room persistence loading](room_persistence_loading.md) (1 shared connections)
+- [game state provider](game_state_provider.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Audit Trail
 

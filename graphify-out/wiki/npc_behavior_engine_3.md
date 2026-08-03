@@ -4,21 +4,22 @@
 
 ## Key Concepts
 
-- **test_subscribe_to_room_multiple_players()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **Test subscribe_to_room() with multiple players.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_event_bus_get_all_subscriber_counts()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test EventBus.get_all_subscriber_counts() returns all counts.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- [room subscription manager](room_subscription_manager.md) (1 shared connections)
+- [event bus events](event_bus_events.md) (1 shared connections)
+- [services exploration service](services_exploration_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager.py`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

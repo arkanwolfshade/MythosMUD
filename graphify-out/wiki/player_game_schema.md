@@ -1,33 +1,46 @@
 # player game schema
 
-> 9 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **UUID** (6 connections)
-- **._memory_connections_section()** (6 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._memory_sessions_section()** (5 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._safe_ratio()** (5 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._count_orphaned_connections()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **Count active connections not tied to any online player.** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **Build the connections subsection of memory stats.** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **Build the sessions subsection of memory stats.** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **Return numerator/denominator, or 0 when denominator is empty.** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **Any** (12 connections)
+- **._try_evaluators()** (7 connections) — `server/npc/behavior_engine.py`
+- **.evaluate_condition()** (6 connections) — `server/npc/behavior_engine.py`
+- **.get_applicable_rules()** (5 connections) — `server/npc/behavior_engine.py`
+- **.execute_applicable_rules()** (5 connections) — `server/npc/behavior_engine.py`
+- **._evaluate_equality()** (4 connections) — `server/npc/behavior_engine.py`
+- **._evaluate_inequality()** (4 connections) — `server/npc/behavior_engine.py`
+- **._evaluate_numeric_comparison()** (4 connections) — `server/npc/behavior_engine.py`
+- **._evaluate_boolean_condition()** (4 connections) — `server/npc/behavior_engine.py`
+- **.execute_action()** (4 connections) — `server/npc/behavior_engine.py`
+- **.add_rule()** (3 connections) — `server/npc/behavior_engine.py`
+- **.get_rules()** (3 connections) — `server/npc/behavior_engine.py`
+- **.register_action_handler()** (3 connections) — `server/npc/behavior_engine.py`
+- **Add a behavior rule to the engine.          Args:             rule: Rule diction** (1 connections) — `server/npc/behavior_engine.py`
+- **Get all behavior rules.** (1 connections) — `server/npc/behavior_engine.py`
+- **Evaluate equality condition (==).          Returns:             bool if conditio** (1 connections) — `server/npc/behavior_engine.py`
+- **Evaluate inequality condition (!=).          Returns:             bool if condit** (1 connections) — `server/npc/behavior_engine.py`
+- **Evaluate numeric comparison conditions (>=, <=, >, <).          Args:** (1 connections) — `server/npc/behavior_engine.py`
+- **Try multiple evaluator methods in sequence.          Args:             condition** (1 connections) — `server/npc/behavior_engine.py`
+- **Evaluate boolean conditions and variable lookups.          Args:             con** (1 connections) — `server/npc/behavior_engine.py`
+- **Evaluate a condition string against context.          Args:             conditio** (1 connections) — `server/npc/behavior_engine.py`
+- **Get rules that are applicable given the current context.          Args:** (1 connections) — `server/npc/behavior_engine.py`
+- **Register an action handler for a specific action.          Args:             act** (1 connections) — `server/npc/behavior_engine.py`
+- **Execute a specific action.          Args:             action_name: Name of the a** (1 connections) — `server/npc/behavior_engine.py`
+- **Execute all applicable rules based on context.          Args:             contex** (1 connections) — `server/npc/behavior_engine.py`
 
 ## Relationships
 
-- [target services resolution](target_services_resolution.md) (4 shared connections)
-- [persistence container helpers](persistence_container_helpers.md) (3 shared connections)
-- [subject admin controller](subject_admin_controller.md) (2 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (1 shared connections)
+- [lucidity active service](lucidity_active_service.md) (12 shared connections)
 
 ## Source Files
 
-- `server/realtime/monitoring/statistics_aggregator.py`
+- `server/npc/behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 30 (100%)
+- EXTRACTED: 76 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

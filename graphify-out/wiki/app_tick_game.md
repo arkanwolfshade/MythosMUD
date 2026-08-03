@@ -1,34 +1,51 @@
 # app tick game
 
-> 10 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **check_injection_patterns()** (6 connections) — `server/validators/security_validator.py`
-- **get_injection_patterns()** (5 connections) — `server/validators/security_validator.py`
-- **test_get_injection_patterns()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_check_injection_patterns_no_patterns()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_check_injection_patterns_has_patterns()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **Test getting injection patterns list.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **Test checking for injection patterns when none present.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **Test checking for injection patterns when present.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **Get the list of injection patterns used in validation.      Returns:         Lis** (1 connections) — `server/validators/security_validator.py`
-- **Check if text matches injection patterns.      Args:         text: The text to c** (1 connections) — `server/validators/security_validator.py`
+- **test_chat_validator.py** (21 connections) — `server/tests/unit/game/test_chat_validator.py`
+- **validate_chat_message()** (12 connections) — `server/game/chat_validator.py`
+- **chat_validator.py** (10 connections) — `server/game/chat_validator.py`
+- **validate_room_access()** (9 connections) — `server/game/chat_validator.py`
+- **_message()** (8 connections) — `server/tests/unit/game/test_chat_validator.py`
+- **contains_malicious_content()** (7 connections) — `server/game/chat_validator.py`
+- **test_validate_chat_message_accepts_valid_message()** (3 connections) — `server/tests/unit/game/test_chat_validator.py`
+- **test_validate_chat_message_rejects_empty_content()** (3 connections) — `server/tests/unit/game/test_chat_validator.py`
+- **test_validate_chat_message_rejects_too_long_content()** (3 connections) — `server/tests/unit/game/test_chat_validator.py`
+- **test_validate_chat_message_rejects_missing_sender()** (3 connections) — `server/tests/unit/game/test_chat_validator.py`
+- **test_validate_chat_message_rejects_malicious_script()** (3 connections) — `server/tests/unit/game/test_chat_validator.py`
+- **test_validate_chat_message_handles_invalid_object()** (3 connections) — `server/tests/unit/game/test_chat_validator.py`
+- **test_validate_room_access_allows_none_room_for_system()** (2 connections) — `server/tests/unit/game/test_chat_validator.py`
+- **test_validate_room_access_rejects_empty_sender()** (2 connections) — `server/tests/unit/game/test_chat_validator.py`
+- **test_validate_room_access_rejects_blank_room_id()** (2 connections) — `server/tests/unit/game/test_chat_validator.py`
+- **test_validate_room_access_accepts_valid_room()** (2 connections) — `server/tests/unit/game/test_chat_validator.py`
+- **test_contains_malicious_content_detects_patterns()** (2 connections) — `server/tests/unit/game/test_chat_validator.py`
+- **test_contains_malicious_content_allows_safe_text()** (2 connections) — `server/tests/unit/game/test_chat_validator.py`
+- **test_contains_malicious_content_fails_safe_on_type_error()** (2 connections) — `server/tests/unit/game/test_chat_validator.py`
+- **Chat message validation utilities.  This module provides validation functions fo** (1 connections) — `server/game/chat_validator.py`
+- **Validate chat message before transmission.      Args:         chat_message: The** (1 connections) — `server/game/chat_validator.py`
+- **Validate sender has access to the room.      Args:         sender_id: ID of the** (1 connections) — `server/game/chat_validator.py`
+- **Check for malicious content patterns.      Args:         content: The message co** (1 connections) — `server/game/chat_validator.py`
+- **ChatMessage** (1 connections)
+- **Unit tests for chat message validation helpers.** (1 connections) — `server/tests/unit/game/test_chat_validator.py`
 
 ## Relationships
 
-- [Security Validator Tests](Security_Validator_Tests.md) (5 shared connections)
-- [command communication models](command_communication_models.md) (2 shared connections)
+- [chat game message](chat_game_message.md) (5 shared connections)
+- [alias command models](alias_command_models.md) (5 shared connections)
+- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [look helpers commands](look_helpers_commands.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_security_validator.py`
-- `server/validators/security_validator.py`
+- `server/game/chat_validator.py`
+- `server/tests/unit/game/test_chat_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 104 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

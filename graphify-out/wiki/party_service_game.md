@@ -1,15 +1,17 @@
 # party service game
 
-> 66 nodes
+> 76 nodes
 
 ## Key Concepts
 
-- **test_follow_service.py** (41 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_follow_service.py** (47 connections) — `server/tests/unit/game/test_follow_service.py`
 - **follow_service()** (3 connections) — `server/tests/unit/game/test_follow_service.py`
 - **test_on_player_entered_room_moves_followers()** (3 connections) — `server/tests/unit/game/test_follow_service.py`
 - **test_on_player_entered_room_move_failure_auto_unfollow()** (3 connections) — `server/tests/unit/game/test_follow_service.py`
 - **test_on_npc_entered_room_moves_followers()** (3 connections) — `server/tests/unit/game/test_follow_service.py`
 - **test_on_player_entered_room_no_from_room_id_skips_propagation()** (3 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_expire_pending_requests_removes_stale()** (3 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_str_id_accepts_uuid()** (3 connections) — `server/tests/unit/game/test_follow_service.py`
 - **event_bus()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
 - **movement_service()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
 - **user_manager()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
@@ -27,15 +29,13 @@
 - **test_get_followers_empty()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
 - **test_get_followers_multiple()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
 - **test_get_following_none()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_get_following_returns_tuple()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_get_following_display_not_following()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
-- *... and 41 more nodes in this community*
+- *... and 51 more nodes in this community*
 
 ## Relationships
 
-- [item models rationale](item_models_rationale.md) (7 shared connections)
-- [follow game service](follow_game_service.md) (3 shared connections)
-- [combat messaging services](combat_messaging_services.md) (3 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (7 shared connections)
+- [follow game service](follow_game_service.md) (5 shared connections)
+- [combat services messaging](combat_services_messaging.md) (4 shared connections)
 
 ## Source Files
 
@@ -43,7 +43,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 143 (100%)
+- EXTRACTED: 166 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

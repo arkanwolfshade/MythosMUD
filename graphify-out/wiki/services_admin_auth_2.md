@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **test_command_factory_init()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test CommandFactory initialization.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_create_pickup_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_pickup_command delegates to inventory factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 

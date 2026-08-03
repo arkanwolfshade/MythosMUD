@@ -1,45 +1,50 @@
 # movement monitor game
 
-> 19 nodes
+> 39 nodes
 
 ## Key Concepts
 
-- **test_game_enums.py** (11 connections) — `server/tests/unit/models/test_game_enums.py`
-- **AttributeType** (8 connections) — `server/models/game.py`
-- **StrEnum** (3 connections)
-- **.get_attribute_modifier()** (3 connections) — `server/models/game.py`
-- **test_attribute_type_enum_values()** (2 connections) — `server/tests/unit/models/test_game_enums.py`
-- **test_attribute_type_enum_all_types()** (2 connections) — `server/tests/unit/models/test_game_enums.py`
-- **test_status_effect_type_enum_values()** (2 connections) — `server/tests/unit/models/test_game_enums.py`
-- **test_status_effect_type_enum_all_types()** (2 connections) — `server/tests/unit/models/test_game_enums.py`
-- **test_position_state_enum_values()** (2 connections) — `server/tests/unit/models/test_game_enums.py`
-- **test_position_state_enum_all_states()** (2 connections) — `server/tests/unit/models/test_game_enums.py`
-- **Core attribute types for the character system .** (1 connections) — `server/models/game.py`
-- **Get the modifier for a given attribute (standard D&D-style calculation).** (1 connections) — `server/models/game.py`
-- **Unit tests for game model enums.  Tests AttributeType, StatusEffectType, and Pos** (1 connections) — `server/tests/unit/models/test_game_enums.py`
-- **Test AttributeType enum contains expected values.** (1 connections) — `server/tests/unit/models/test_game_enums.py`
-- **Test AttributeType enum contains all expected types.** (1 connections) — `server/tests/unit/models/test_game_enums.py`
-- **Test StatusEffectType enum contains expected values.** (1 connections) — `server/tests/unit/models/test_game_enums.py`
-- **Test StatusEffectType enum contains all expected types.** (1 connections) — `server/tests/unit/models/test_game_enums.py`
-- **Test PositionState enum contains expected values.** (1 connections) — `server/tests/unit/models/test_game_enums.py`
-- **Test PositionState enum contains all expected states.** (1 connections) — `server/tests/unit/models/test_game_enums.py`
+- **test_admin_setlucidity_command.py** (44 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
+- **test_apply_lucidity_change_adjustment_error()** (2 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
+- **_async_session_gen()** (2 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
+- **test_execute_lucidity_change_success()** (2 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
+- **test_extract_command_args_from_fields()** (1 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
+- **test_extract_command_args_from_args_list()** (1 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
+- **test_validate_lcd_value_none()** (1 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
+- **test_validate_lcd_value_out_of_range()** (1 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
+- **test_validate_lcd_value_valid()** (1 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
+- **test_get_player_service_from_container()** (1 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
+- **test_handle_admin_setlucidity_missing_app()** (1 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
+- **test_handle_admin_setlucidity_missing_target()** (1 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
+- **test_get_player_service_missing()** (1 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
+- **test_get_player_service_legacy_app_state()** (1 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
+- **test_get_catatonia_registry_from_container()** (1 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
+- **test_validate_lcd_value_invalid_int()** (1 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
+- **test_check_admin_permissions_no_user_manager()** (1 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
+- **test_check_admin_permissions_current_player_missing()** (1 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
+- **test_check_admin_permissions_denied()** (1 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
+- **test_check_admin_permissions_ok()** (1 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
+- **test_resolve_target_player_not_found()** (1 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
+- **test_resolve_target_player_success()** (1 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
+- **test_get_current_lcd_default_when_missing()** (1 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
+- **test_get_current_lcd_from_record()** (1 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
+- **test_execute_lucidity_change_empty_session()** (1 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
-- [command inventory factories](command_inventory_factories.md) (4 shared connections)
-- [schemas unified room](schemas_unified_room.md) (2 shared connections)
-- [command factories exploration](command_factories_exploration.md) (2 shared connections)
-- [profession game service](profession_game_service.md) (1 shared connections)
-- [world models rationale](world_models_rationale.md) (1 shared connections)
+- [lucidity services helpers](lucidity_services_helpers.md) (3 shared connections)
+- [Database Config](Database_Config.md) (2 shared connections)
+- [container schemas containers](container_schemas_containers.md) (1 shared connections)
+- [command inventory factories](command_inventory_factories.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/game.py`
-- `server/tests/unit/models/test_game_enums.py`
+- `server/tests/unit/commands/test_admin_setlucidity_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 46 (100%)
+- EXTRACTED: 85 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

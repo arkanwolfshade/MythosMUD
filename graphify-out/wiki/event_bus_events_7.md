@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_setup_player_and_room_no_player()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _setup_player_and_room() returns False when player not found.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_move_player_player_not_found()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
+- **Test move_player returns False when player is missing.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
 
 ## Relationships
 
-- [player event state](player_event_state.md) (1 shared connections)
-- [connection establishment realtime](connection_establishment_realtime.md) (1 shared connections)
+- [movement service game](movement_service_game.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_connection_establishment.py`
+- `server/tests/unit/game/test_movement_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

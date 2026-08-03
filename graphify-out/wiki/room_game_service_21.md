@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_handle_equip_wearable_container_filters_non_equipment()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test handle_equip_wearable_container filters out non-equipment containers.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_establish_websocket_connection_cancels_rest_countdown()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **Reconnect cancels an in-progress rest countdown so it cannot poison the new sess** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
 
 ## Relationships
 
-- [wearable container service](wearable_container_service.md) (1 shared connections)
+- [player event state](player_event_state.md) (1 shared connections)
+- [connection establishment realtime](connection_establishment_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `server/tests/unit/realtime/test_connection_establishment.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

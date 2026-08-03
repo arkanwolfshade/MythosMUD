@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **test_remove_room_occupant_removes_empty_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **Test remove_room_occupant() removes room when last occupant leaves.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_room_subscription_manager_init()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **Test RoomSubscriptionManager initialization.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
 
 ## Relationships
 

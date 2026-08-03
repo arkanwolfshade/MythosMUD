@@ -1,35 +1,58 @@
 # auth users rationale
 
-> 10 nodes
+> 122 nodes
 
 ## Key Concepts
 
-- **validate_target_player()** (8 connections) — `server/validators/security_validator.py`
-- **.validate_target()** (3 connections) — `server/models/command_communication.py`
-- **test_validate_target_player_empty()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_validate_target_player_valid()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_validate_target_player_rejects_invalid_format()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **Validate target player name format using centralized validation.** (1 connections) — `server/models/command_communication.py`
-- **Test validating empty target player name.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **Test validating valid target player name.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **Test that validate_target_player rejects invalid format.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **Centralized validation for target player fields.      This function provides con** (1 connections) — `server/validators/security_validator.py`
+- **test_users.py** (53 connections) — `server/tests/unit/auth/test_users.py`
+- **UserManager** (46 connections) — `server/auth/users.py`
+- **get_user_manager()** (13 connections) — `server/auth/users.py`
+- **get_auth_backend()** (12 connections) — `server/auth/users.py`
+- **get_user_db()** (11 connections) — `server/auth/users.py`
+- **UsernameAuthenticationBackend** (9 connections) — `server/auth/users.py`
+- **get_username_auth_backend()** (9 connections) — `server/auth/users.py`
+- **UUID** (7 connections)
+- **validate_jwt_secret()** (6 connections) — `server/auth/users.py`
+- **.login()** (6 connections) — `server/auth/users.py`
+- **.__init__()** (5 connections) — `server/auth/users.py`
+- **.on_after_register()** (5 connections) — `server/auth/users.py`
+- **.on_after_forgot_password()** (4 connections) — `server/auth/users.py`
+- **.on_after_request_verify()** (4 connections) — `server/auth/users.py`
+- **test_user_manager_on_after_register_bogus_email()** (4 connections) — `server/tests/unit/auth/test_users.py`
+- **test_user_manager_on_after_register_non_bogus_email()** (4 connections) — `server/tests/unit/auth/test_users.py`
+- **test_user_manager_on_after_register_no_email()** (4 connections) — `server/tests/unit/auth/test_users.py`
+- **test_user_manager_on_after_register_with_request()** (4 connections) — `server/tests/unit/auth/test_users.py`
+- **test_user_manager_on_after_forgot_password()** (4 connections) — `server/tests/unit/auth/test_users.py`
+- **test_user_manager_on_after_request_verify()** (4 connections) — `server/tests/unit/auth/test_users.py`
+- **test_get_user_manager()** (4 connections) — `server/tests/unit/auth/test_users.py`
+- **test_username_authentication_backend_login()** (4 connections) — `server/tests/unit/auth/test_users.py`
+- **test_user_manager_on_after_forgot_password_with_request()** (4 connections) — `server/tests/unit/auth/test_users.py`
+- **test_user_manager_on_after_request_verify_with_request()** (4 connections) — `server/tests/unit/auth/test_users.py`
+- **test_get_username_auth_backend_returns_username_authentication_backend()** (4 connections) — `server/tests/unit/auth/test_users.py`
+- *... and 97 more nodes in this community*
 
 ## Relationships
 
-- [Security Validator Tests](Security_Validator_Tests.md) (4 shared connections)
-- [command communication models](command_communication_models.md) (3 shared connections)
+- [Exception Containers](Exception_Containers.md) (17 shared connections)
+- [admin auth service](admin_auth_service.md) (10 shared connections)
+- [Magic Spell Service](Magic_Spell_Service.md) (7 shared connections)
+- [player requests schemas](player_requests_schemas.md) (6 shared connections)
+- [ascii map renderer](ascii_map_renderer.md) (4 shared connections)
+- [player service game](player_service_game.md) (3 shared connections)
+- [channel broadcasting strategies](channel_broadcasting_strategies.md) (2 shared connections)
+- [auth users rationale](auth_users_rationale.md) (1 shared connections)
+- [models npc rationale](models_npc_rationale.md) (1 shared connections)
+- [skill service game](skill_service_game.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/command_communication.py`
-- `server/tests/unit/validators/test_security_validator.py`
-- `server/validators/security_validator.py`
+- `server/auth/users.py`
+- `server/tests/unit/auth/test_users.py`
 
 ## Audit Trail
 
-- EXTRACTED: 24 (96%)
-- INFERRED: 1 (4%)
+- EXTRACTED: 384 (96%)
+- INFERRED: 16 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

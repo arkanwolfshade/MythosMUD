@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_get_wearable_containers_for_player()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test get_wearable_containers_for_player returns containers.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_execute_action_success()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test execute_action() successfully executes action.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [wearable container service](wearable_container_service.md) (1 shared connections)
+- [lucidity active service](lucidity_active_service.md) (1 shared connections)
+- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

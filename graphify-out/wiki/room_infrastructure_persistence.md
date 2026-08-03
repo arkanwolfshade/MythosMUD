@@ -4,21 +4,22 @@
 
 ## Key Concepts
 
-- **test_process_room_rows_with_full_room_id()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _process_room_rows with stable_id that already contains full hierarchical p** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_event_bus_inject_dispatches_to_subscribers()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test EventBus.inject() delivers event to subscribers (used by distributed bridge** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- [room persistence loading](room_persistence_loading.md) (1 shared connections)
+- [event bus events](event_bus_events.md) (1 shared connections)
+- [services exploration service](services_exploration_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

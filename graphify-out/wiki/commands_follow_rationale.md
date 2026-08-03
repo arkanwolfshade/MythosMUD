@@ -1,46 +1,55 @@
 # commands follow rationale
 
-> 23 nodes
+> 44 nodes
 
 ## Key Concepts
 
-- **test_logging_file_setup.py** (14 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **test_queue_listener_has_aggregator_handlers()** (7 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **test_warning_and_error_reach_aggregator_files()** (7 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **get_queue_listener()** (6 connections) — `server/structured_logging/logging_file_setup.py`
-- **stop_queue_listener()** (6 connections) — `server/structured_logging/logging_file_setup.py`
-- **_root_handlers_snapshot()** (6 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **_restore_root_handlers()** (6 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **test_aggregator_handlers_on_root_when_async()** (6 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **test_log_directory_under_env()** (5 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **QueueListener** (2 connections)
-- **temp_log_base()** (2 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **default_log_config()** (2 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **Return the global QueueListener if running (for tests and shutdown).      Return** (1 connections) — `server/structured_logging/logging_file_setup.py`
-- **Stop the global QueueListener and reset state (for tests and shutdown).      All** (1 connections) — `server/structured_logging/logging_file_setup.py`
-- **Unit tests for logging file setup.  Verifies aggregator handlers attached to roo** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **Temporary directory used as log_base for setup.** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **Default log config with rotation.** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **Return a copy of root logger handlers (for restore).** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **Replace root logger handlers with the given list.** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **H1: With async enabled, root logger has a QueueHandler for the aggregator path (** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **H3: QueueListener is started and includes aggregator handlers.** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **H2/H5: WARNING and ERROR logged from root appear in warnings.log and errors.log.** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **H4 (setup): Log files are created under env_log_dir (e.g. .../test/).** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **test_container_websocket_events.py** (23 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **container_websocket_events.py** (17 connections) — `server/services/container_websocket_events.py`
+- **emit_container_opened()** (14 connections) — `server/services/container_websocket_events.py`
+- **emit_container_opened_to_room()** (12 connections) — `server/services/container_websocket_events.py`
+- **emit_container_updated()** (10 connections) — `server/services/container_websocket_events.py`
+- **emit_container_closed()** (9 connections) — `server/services/container_websocket_events.py`
+- **emit_container_decayed()** (8 connections) — `server/services/container_websocket_events.py`
+- **UUID** (6 connections)
+- **Any** (5 connections)
+- **datetime** (3 connections)
+- **test_emit_container_opened()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_opened_with_owner()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_opened_to_room()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_closed()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_opened_with_owner_id()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_opened_to_room_with_owner()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_updated()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_updated_empty_diff()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_decayed()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_opened_returns_delivery_status()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_opened_to_room_returns_stats()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_closed_returns_stats()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **ContainerComponent** (2 connections)
+- **mock_connection_manager()** (2 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **Container WebSocket event emission for unified container system.  As documented** (1 connections) — `server/services/container_websocket_events.py`
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [logging setup structured](logging_setup_structured.md) (9 shared connections)
-- [time service rationale](time_service_rationale.md) (1 shared connections)
+- [container events rationale](container_events_rationale.md) (10 shared connections)
+- [combat services messaging](combat_services_messaging.md) (3 shared connections)
+- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (2 shared connections)
+- [Exception Containers](Exception_Containers.md) (2 shared connections)
+- [task registry app](task_registry_app.md) (2 shared connections)
+- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [realtime message nats](realtime_message_nats.md) (1 shared connections)
+- [services npc startup](services_npc_startup.md) (1 shared connections)
 
 ## Source Files
 
-- `server/structured_logging/logging_file_setup.py`
-- `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- `server/services/container_websocket_events.py`
+- `server/tests/unit/services/test_container_websocket_events.py`
 
 ## Audit Trail
 
-- EXTRACTED: 80 (100%)
+- EXTRACTED: 167 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

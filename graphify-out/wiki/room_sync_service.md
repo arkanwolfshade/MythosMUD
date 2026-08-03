@@ -1,41 +1,51 @@
 # room sync service
 
-> 15 nodes
+> 34 nodes
 
 ## Key Concepts
 
-- **__init__.py** (9 connections) — `server/schemas/quest/__init__.py`
-- **quest.py** (8 connections) — `server/schemas/quest/quest.py`
-- **QuestLogEntryResponse** (7 connections) — `server/schemas/quest/quest.py`
-- **QuestLogResponse** (7 connections) — `server/schemas/quest/quest.py`
-- **BaseModel** (6 connections)
-- **QuestGoalSchema** (4 connections) — `server/schemas/quest/quest.py`
-- **QuestRewardSchema** (4 connections) — `server/schemas/quest/quest.py`
-- **QuestTriggerSchema** (4 connections) — `server/schemas/quest/quest.py`
-- **Quest subsystem schemas: definition, progress, API responses.** (1 connections) — `server/schemas/quest/__init__.py`
-- **Quest subsystem Pydantic schemas for MythosMUD server.  Defines schemas for ques** (1 connections) — `server/schemas/quest/quest.py`
-- **Single goal in a quest definition (complete_activity, kill_n, collect_n, etc.).** (1 connections) — `server/schemas/quest/quest.py`
-- **Single reward in a quest definition (xp, item, spell).** (1 connections) — `server/schemas/quest/quest.py`
-- **Single trigger that can start a quest (room, npc, item).** (1 connections) — `server/schemas/quest/quest.py`
-- **Single quest entry in GET /quests (quest log) response.** (1 connections) — `server/schemas/quest/quest.py`
-- **Response model for GET /quests (quest log).** (1 connections) — `server/schemas/quest/quest.py`
+- **test_command_base.py** (22 connections) — `server/tests/unit/models/test_command_base.py`
+- **test_base_command_rejects_extra_fields()** (4 connections) — `server/tests/unit/models/test_command_base.py`
+- **test_base_command_instantiation()** (3 connections) — `server/tests/unit/models/test_command_base.py`
+- **test_base_command_model_config()** (3 connections) — `server/tests/unit/models/test_command_base.py`
+- **test_base_command_slots()** (3 connections) — `server/tests/unit/models/test_command_base.py`
+- **test_command_type_enum_inheritance()** (3 connections) — `server/tests/unit/models/test_command_base.py`
+- **test_direction_enum_values()** (2 connections) — `server/tests/unit/models/test_command_base.py`
+- **test_direction_enum_all_directions()** (2 connections) — `server/tests/unit/models/test_command_base.py`
+- **test_direction_enum_string_comparison()** (2 connections) — `server/tests/unit/models/test_command_base.py`
+- **test_command_type_enum_contains_look()** (2 connections) — `server/tests/unit/models/test_command_base.py`
+- **test_command_type_enum_contains_communication_commands()** (2 connections) — `server/tests/unit/models/test_command_base.py`
+- **test_command_type_enum_contains_exploration_commands()** (2 connections) — `server/tests/unit/models/test_command_base.py`
+- **test_command_type_enum_contains_admin_commands()** (2 connections) — `server/tests/unit/models/test_command_base.py`
+- **test_command_type_enum_contains_inventory_commands()** (2 connections) — `server/tests/unit/models/test_command_base.py`
+- **test_command_type_enum_contains_combat_commands()** (2 connections) — `server/tests/unit/models/test_command_base.py`
+- **test_command_type_enum_contains_magic_commands()** (2 connections) — `server/tests/unit/models/test_command_base.py`
+- **test_command_type_enum_string_comparison()** (2 connections) — `server/tests/unit/models/test_command_base.py`
+- **Unit tests for base command models and enums.  Tests the Direction and CommandTy** (1 connections) — `server/tests/unit/models/test_command_base.py`
+- **Test Direction enum contains all expected values.** (1 connections) — `server/tests/unit/models/test_command_base.py`
+- **Test Direction enum contains all 10 expected directions.** (1 connections) — `server/tests/unit/models/test_command_base.py`
+- **Test Direction enum values can be compared to strings.** (1 connections) — `server/tests/unit/models/test_command_base.py`
+- **Test CommandType enum contains LOOK.** (1 connections) — `server/tests/unit/models/test_command_base.py`
+- **Test CommandType enum contains communication commands.** (1 connections) — `server/tests/unit/models/test_command_base.py`
+- **Test CommandType enum contains exploration commands.** (1 connections) — `server/tests/unit/models/test_command_base.py`
+- **Test CommandType enum contains admin commands.** (1 connections) — `server/tests/unit/models/test_command_base.py`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [admin auth service](admin_auth_service.md) (3 shared connections)
-- [quest game service](quest_game_service.md) (3 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [Player Stats](Player_Stats.md) (2 shared connections)
+- [command factories create](command_factories_create.md) (5 shared connections)
+- [container persistence rationale](container_persistence_rationale.md) (3 shared connections)
+- [taunt combat commands](taunt_combat_commands.md) (2 shared connections)
+- [command inventory models](command_inventory_models.md) (1 shared connections)
 
 ## Source Files
 
-- `server/schemas/quest/__init__.py`
-- `server/schemas/quest/quest.py`
+- `server/tests/unit/models/test_command_base.py`
 
 ## Audit Trail
 
-- EXTRACTED: 56 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 74 (96%)
+- INFERRED: 3 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

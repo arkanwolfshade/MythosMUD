@@ -1,28 +1,33 @@
 # commands exploration rationale
 
-> 6 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **._calculate_exit_weights()** (5 connections) — `server/npc/idle_movement.py`
-- **._calculate_exit_weight()** (3 connections) — `server/npc/idle_movement.py`
-- **._calculate_distance_to_room()** (3 connections) — `server/npc/idle_movement.py`
-- **Calculate weight for an exit based on distance from spawn.          Args:** (1 connections) — `server/npc/idle_movement.py`
-- **Calculate weights for all exits.          Args:             valid_exits: Dict** (1 connections) — `server/npc/idle_movement.py`
-- **Calculate approximate distance between two rooms.          This is a simplifie** (1 connections) — `server/npc/idle_movement.py`
+- **test_monitoring_init.py** (6 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
+- **test_monitoring_eager_imports()** (2 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
+- **test_monitoring_getattr_lazy_dashboard_symbols()** (2 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
+- **test_monitoring_getattr_lazy_performance_symbols()** (2 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
+- **test_monitoring_getattr_unknown_raises()** (2 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
+- **test_monitoring_getattr_direct_call()** (2 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
+- **Unit tests for server.monitoring lazy __getattr__ re-exports.** (1 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
+- **Exception tracker symbols import without triggering numpy lazy paths.** (1 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
+- **__getattr__ resolves MonitoringDashboard and get_monitoring_dashboard.** (1 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
+- **__getattr__ resolves PerformanceStats and get_performance_monitor.** (1 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
+- **Unknown attribute names raise AttributeError.** (1 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
+- **Direct __getattr__ covers both branch returns for dashboard imports.** (1 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
 
 ## Relationships
 
-- [config models player](config_models_player.md) (3 shared connections)
-- [idle npc movement](idle_npc_movement.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/npc/idle_movement.py`
+- `server/tests/unit/monitoring/test_monitoring_init.py`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
+- EXTRACTED: 22 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

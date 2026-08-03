@@ -5,7 +5,7 @@
 ## Key Concepts
 
 - **properties** (12 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **sub_zone** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **id** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 - **field1** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 - **field2** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 - **field3** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
@@ -20,7 +20,7 @@
 
 - [room toolkit validator](room_toolkit_validator.md) (6 shared connections)
 - [room hierarchy schema](room_hierarchy_schema.md) (1 shared connections)
-- [npc populate databases](npc_populate_databases.md) (1 shared connections)
+- [game level service](game_level_service.md) (1 shared connections)
 
 ## Source Files
 

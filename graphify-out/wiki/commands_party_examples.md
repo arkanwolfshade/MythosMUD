@@ -1,52 +1,51 @@
 # commands party examples
 
-> 26 nodes
+> 48 nodes
 
 ## Key Concepts
 
-- **_format_container_display()** (19 connections) — `server/commands/look_container.py`
-- **test_format_container_display_basic()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_format_container_display_with_description()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_format_container_display_locked()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_format_container_display_sealed()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_format_container_display_with_contents()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_format_container_display_with_target_type()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_format_container_display_with_metadata_name()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_format_container_display_fallback_name()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_format_container_display_locked()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_format_container_display_sealed()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_format_container_display_with_look_in()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_format_container_display_with_target_type_container()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Format the complete container display text.** (1 connections) — `server/commands/look_container.py`
-- **Test formatting container display with basic info.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test formatting container display with description.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test formatting container display when locked.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test formatting container display when sealed.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test formatting container display with look_in flag.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test formatting container display with target_type container.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test formatting container display uses metadata name.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test formatting container display uses fallback when no metadata name.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test _format_container_display() with locked container.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _format_container_display() with sealed container.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _format_container_display() with look_in flag.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- *... and 1 more nodes in this community*
+- **AdminAuthService** (19 connections) — `server/services/admin_auth_service.py`
+- **.validate_permission()** (11 connections) — `server/services/admin_auth_service.py`
+- **AdminRole** (7 connections) — `server/services/admin_auth_service.py`
+- **AdminSession** (6 connections) — `server/services/admin_auth_service.py`
+- **.get_user_role()** (6 connections) — `server/services/admin_auth_service.py`
+- **._update_session()** (6 connections) — `server/services/admin_auth_service.py`
+- **._has_permission()** (5 connections) — `server/services/admin_auth_service.py`
+- **._log_audit_event()** (5 connections) — `server/services/admin_auth_service.py`
+- **_HasIsSuperuser** (4 connections) — `server/services/admin_auth_service.py`
+- **Protocol** (4 connections)
+- **_HasIsAdmin** (4 connections) — `server/services/admin_auth_service.py`
+- **_HasUsername** (4 connections) — `server/services/admin_auth_service.py`
+- **_HasId** (4 connections) — `server/services/admin_auth_service.py`
+- **.get_username()** (4 connections) — `server/services/admin_auth_service.py`
+- **.get_user_id()** (4 connections) — `server/services/admin_auth_service.py`
+- **Request** (4 connections)
+- **._check_rate_limit()** (4 connections) — `server/services/admin_auth_service.py`
+- **admin_auth_service()** (4 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_get_admin_auth_service()** (4 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **.get_active_sessions()** (3 connections) — `server/services/admin_auth_service.py`
+- **.get_audit_log()** (3 connections) — `server/services/admin_auth_service.py`
+- **test_admin_session_init()** (3 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **.__init__()** (2 connections) — `server/services/admin_auth_service.py`
+- **.__init__()** (2 connections) — `server/services/admin_auth_service.py`
+- **Any** (2 connections)
+- *... and 23 more nodes in this community*
 
 ## Relationships
 
-- [DI Container Format](DI_Container_Format.md) (9 shared connections)
-- [models lucidity rationale](models_lucidity_rationale.md) (6 shared connections)
-- [schemas player rationale](schemas_player_rationale.md) (3 shared connections)
+- [admin auth service](admin_auth_service.md) (13 shared connections)
+- [inventory schemas schema](inventory_schemas_schema.md) (6 shared connections)
+- [container helpers endpoints](container_helpers_endpoints.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/look_container.py`
-- `server/tests/unit/commands/test_look_container.py`
-- `server/tests/unit/commands/test_look_container_helpers.py`
+- `server/services/admin_auth_service.py`
+- `server/tests/unit/services/test_admin_auth_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 68 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 137 (93%)
+- INFERRED: 11 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

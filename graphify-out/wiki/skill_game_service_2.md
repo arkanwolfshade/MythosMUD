@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_handle_unequip_wearable_container_no_allowed_roles()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test handle_unequip_wearable_container when container has no allowed_roles.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_remove_rule_success()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test remove_rule() successfully removes rule.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [wearable container service](wearable_container_service.md) (1 shared connections)
+- [lucidity active service](lucidity_active_service.md) (1 shared connections)
+- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

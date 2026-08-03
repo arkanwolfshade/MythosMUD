@@ -1,6 +1,6 @@
 # quest chat game
 
-> 87 nodes
+> 99 nodes
 
 ## Key Concepts
 
@@ -21,29 +21,28 @@
 - **notify_quest_abandoned()** (8 connections) — `server/game/quest/quest_chat_notify.py`
 - **_ChatDeliveryService** (7 connections) — `server/game/chat_npc_system.py`
 - **deliver_personal_system()** (7 connections) — `server/game/chat_npc_system.py`
+- **emit_quest_npc_say()** (7 connections) — `server/game/quest/quest_chat_notify.py`
 - **title_from_quest_result()** (7 connections) — `server/game/quest/quest_chat_notify.py`
+- **register_npc_display_name()** (7 connections) — `server/npc/npc_display_names.py`
 - **_mock_chat_service()** (7 connections) — `server/tests/unit/game/test_chat_npc_system.py`
+- **quest_ask_npc_line()** (6 connections) — `server/game/quest/quest_chat_notify.py`
+- **quest_turnin_npc_line()** (6 connections) — `server/game/quest/quest_chat_notify.py`
 - **resolve_npc_display_name()** (6 connections) — `server/npc/npc_display_names.py`
 - **test_send_npc_say_to_room_publishes_say_with_npc_name()** (6 connections) — `server/tests/unit/game/test_chat_npc_system.py`
-- **test_deliver_npc_room_speech_uses_registered_name()** (6 connections) — `server/tests/unit/game/test_chat_npc_system.py`
-- **test_notify_quest_lifecycle_schedules_personal_system()** (6 connections) — `server/tests/unit/game/test_chat_npc_system.py`
-- **npc_sender_id()** (5 connections) — `server/game/chat_npc_system.py`
-- **_on_npc_spoke()** (5 connections) — `server/game/chat_npc_system.py`
-- *... and 62 more nodes in this community*
+- *... and 74 more nodes in this community*
 
 ## Relationships
 
-- [chat game message](chat_game_message.md) (20 shared connections)
+- [chat game message](chat_game_message.md) (17 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (13 shared connections)
 - [quest game service](quest_game_service.md) (13 shared connections)
-- [commands quest rationale](commands_quest_rationale.md) (11 shared connections)
-- [item models rationale](item_models_rationale.md) (8 shared connections)
-- [rate limiter realtime](rate_limiter_realtime.md) (5 shared connections)
+- [commands quest rationale](commands_quest_rationale.md) (9 shared connections)
+- [alias command models](alias_command_models.md) (4 shared connections)
 - [Error Conversion](Error_Conversion.md) (4 shared connections)
-- [message broadcaster realtime](message_broadcaster_realtime.md) (3 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (3 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [commands communication flows](commands_communication_flows.md) (3 shared connections)
+- [models npc rationale](models_npc_rationale.md) (2 shared connections)
 - [chat service game](chat_service_game.md) (2 shared connections)
-- [room rationale subzone](room_rationale_subzone.md) (1 shared connections)
+- [conftest eslint config](conftest_eslint_config.md) (1 shared connections)
 
 ## Source Files
 
@@ -54,8 +53,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 388 (98%)
-- INFERRED: 6 (2%)
+- EXTRACTED: 428 (98%)
+- INFERRED: 8 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

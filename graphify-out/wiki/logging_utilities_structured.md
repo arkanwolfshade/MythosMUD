@@ -1,23 +1,32 @@
 # logging utilities structured
 
-> 2 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **test_handle_cast_command_no_spell_name()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test cast command when no spell name is provided.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **test_websocket_handler_validation.py** (7 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
+- **test_validate_message_failure()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
+- **mock_websocket()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
+- **mock_validator()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
+- **test_validate_message_success()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
+- **Unit tests for websocket handler message validation.  Tests the message validati** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
+- **Create a mock WebSocket.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
+- **Create a mock message validator.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
+- **Test _validate_message() returns message when validation succeeds.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
+- **Test _validate_message() returns None when validation fails.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
 
 ## Relationships
 
-- [commands magic rationale](commands_magic_rationale.md) (1 shared connections)
+- [realtime message validator](realtime_message_validator.md) (2 shared connections)
+- [room look commands](room_look_commands.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `server/tests/unit/realtime/test_websocket_handler_validation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 21 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,52 +1,50 @@
 # combat npc service
 
-> 26 nodes
+> 67 nodes
 
 ## Key Concepts
 
-- **_find_item_in_room_drops()** (23 connections) — `server/commands/look_item.py`
-- **test_find_item_in_room_drops_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_room_drops_by_prototype_id()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_room_drops_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_room_drops_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_room_drops_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_room_drops_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_room_drops_by_item_id()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_room_drops_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_room_drops_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_room_drops_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_room_drops_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_room_drops_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Find an item in room drops by name or prototype_id.      Args:         room_drop** (1 connections) — `server/commands/look_item.py`
-- **Test finding item in room drops by name.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test finding item in room drops by prototype_id.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test finding item in room drops when not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test finding item in room drops with multiple matches.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test finding item in room drops with instance number.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test finding item in room drops with invalid instance number.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test finding item in room drops by item_id.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test _find_item_in_room_drops() finds item by name.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_room_drops() returns None when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_room_drops() with instance number.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_room_drops() with multiple matches (ambiguous).** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- *... and 1 more nodes in this community*
+- **test_player_repository.py** (40 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **_make_mock_row()** (10 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_get_player_by_name_success()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **UUID** (3 connections)
+- **player_repository()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **mock_player()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_player_repository_initialization()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_player_repository_initialization_with_cache()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_player_repository_initialization_with_event_bus()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_get_player_by_name_database_error()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_save_player_database_error()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_list_players_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_list_players_database_error()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_get_player_by_id_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_get_players_by_user_id_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_get_active_players_by_user_id_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_get_player_by_user_id_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_get_players_in_room_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_save_players_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_get_players_batch_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_validate_and_fix_player_room_valid()** (2 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_validate_and_fix_player_room_invalid()** (2 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_get_player_by_name_not_found()** (2 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_save_player_success()** (2 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_save_player_with_bool_is_admin()** (2 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- *... and 42 more nodes in this community*
 
 ## Relationships
 
-- [connection realtime statistics](connection_realtime_statistics.md) (10 shared connections)
-- [Item Lookup](Item_Lookup.md) (8 shared connections)
-- [health service services](health_service_services.md) (4 shared connections)
+- [Database Config](Database_Config.md) (11 shared connections)
+- [world models rationale](world_models_rationale.md) (6 shared connections)
+- [command inventory factories](command_inventory_factories.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/look_item.py`
-- `server/tests/unit/commands/test_look_item.py`
-- `server/tests/unit/commands/test_look_item_helpers.py`
+- `server/tests/unit/persistence/test_player_repository.py`
 
 ## Audit Trail
 
-- EXTRACTED: 72 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 158 (95%)
+- INFERRED: 8 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

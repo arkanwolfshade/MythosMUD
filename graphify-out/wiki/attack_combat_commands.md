@@ -33,12 +33,11 @@
 
 ## Relationships
 
-- [Error Conversion](Error_Conversion.md) (3 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (3 shared connections)
-- [Item Instances](Item_Instances.md) (2 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [websocket handler realtime](websocket_handler_realtime.md) (1 shared connections)
+- [models npc rationale](models_npc_rationale.md) (4 shared connections)
+- [npc spawn validator](npc_spawn_validator.md) (3 shared connections)
+- [NPC Combat](NPC_Combat.md) (3 shared connections)
+- [services nats service](services_nats_service.md) (2 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
 
 ## Source Files
 

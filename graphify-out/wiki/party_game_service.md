@@ -1,11 +1,12 @@
 # party game service
 
-> 50 nodes
+> 48 nodes
 
 ## Key Concepts
 
 - **PartyService** (36 connections) — `server/game/party_service.py`
 - **UUID** (17 connections)
+- **party_service.py** (16 connections) — `server/game/party_service.py`
 - **_str_id()** (16 connections) — `server/game/party_service.py`
 - **Any** (10 connections)
 - **._emit_party_updated()** (9 connections) — `server/game/party_service.py`
@@ -28,28 +29,27 @@
 - **.is_leader()** (5 connections) — `server/game/party_service.py`
 - **.is_in_same_party()** (5 connections) — `server/game/party_service.py`
 - **.get_party_members()** (4 connections) — `server/game/party_service.py`
-- **.get_party()** (3 connections) — `server/game/party_service.py`
-- *... and 25 more nodes in this community*
+- *... and 23 more nodes in this community*
 
 ## Relationships
 
-- [commands inventory helpers](commands_inventory_helpers.md) (14 shared connections)
-- [Error Conversion](Error_Conversion.md) (3 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (2 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (2 shared connections)
-- [combat messaging services](combat_messaging_services.md) (1 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
-- [connection manager realtime](connection_manager_realtime.md) (1 shared connections)
-- [combat services messaging](combat_services_messaging.md) (1 shared connections)
+- [skill game service](skill_game_service.md) (8 shared connections)
+- [combat services messaging](combat_services_messaging.md) (5 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (4 shared connections)
+- [commands admin shutdown](commands_admin_shutdown.md) (4 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (4 shared connections)
+- [models npc rationale](models_npc_rationale.md) (3 shared connections)
+- [commands inventory helpers](commands_inventory_helpers.md) (3 shared connections)
+- [holiday service services](holiday_service_services.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
 
 ## Source Files
 
 - `server/game/party_service.py`
-- `server/tests/unit/game/test_party_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 241 (98%)
+- EXTRACTED: 250 (98%)
 - INFERRED: 4 (2%)
 - AMBIGUOUS: 0 (0%)
 

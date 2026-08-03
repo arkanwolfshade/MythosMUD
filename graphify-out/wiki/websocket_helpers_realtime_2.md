@@ -1,62 +1,52 @@
 # websocket helpers realtime
 
-> 72 nodes
+> 74 nodes
 
 ## Key Concepts
 
-- **websocket_helpers.py** (37 connections) — `server/realtime/websocket_helpers.py`
-- **test_websocket_helpers_player.py** (23 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **get_player_and_room()** (14 connections) — `server/realtime/websocket_helpers.py`
-- **check_shutdown_and_reject()** (12 connections) — `server/realtime/websocket_helpers.py`
-- **prepare_player_data()** (12 connections) — `server/realtime/websocket_helpers.py`
-- **get_player_service_from_connection_manager()** (9 connections) — `server/realtime/websocket_helpers.py`
-- **get_player_stats_data()** (9 connections) — `server/realtime/websocket_helpers.py`
-- **convert_schema_to_dict()** (7 connections) — `server/realtime/websocket_helpers.py`
-- **build_basic_player_data()** (7 connections) — `server/realtime/websocket_helpers.py`
-- **UUID** (6 connections)
-- **_ensure_player_in_room_occupancy()** (6 connections) — `server/realtime/websocket_helpers.py`
-- **_get_tracked_player_from_connection_manager()** (5 connections) — `server/realtime/websocket_helpers.py`
-- **_fetch_room_for_tracked_player()** (4 connections) — `server/realtime/websocket_helpers.py`
-- **.get_room_by_id()** (3 connections) — `server/realtime/websocket_handler_connection.py`
-- **_AppStateForPlayerService** (3 connections) — `server/realtime/websocket_helpers.py`
-- **test_check_shutdown_and_reject_not_shutting_down()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_check_shutdown_and_reject_shutting_down()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_check_shutdown_and_reject_websocket_disconnect()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_convert_schema_to_dict_with_model_dump()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_convert_schema_to_dict_with_dict()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_get_player_service_from_connection_manager_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_get_player_service_from_connection_manager_no_app()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_get_player_service_from_connection_manager_no_state()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_get_player_stats_data_with_get_stats()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_get_player_stats_data_string_stats()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- *... and 47 more nodes in this community*
+- **test_npc_instance_service.py** (53 connections) — `server/tests/unit/services/test_npc_instance_service.py`
+- **sample_lifecycle_record()** (4 connections) — `server/tests/unit/services/test_npc_instance_service.py`
+- **test_initialize_npc_instance_service()** (4 connections) — `server/tests/unit/services/test_npc_instance_service.py`
+- **mock_lifecycle_manager()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
+- **mock_spawning_service()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
+- **mock_population_controller()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
+- **mock_event_bus()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
+- **npc_instance_service()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
+- **sample_npc_definition()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
+- **test_npc_instance_service_init()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
+- **test_get_npc_instances_get_stats_exception()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
+- **sample_npc_instance()** (2 connections) — `server/tests/unit/services/test_npc_instance_service.py`
+- **test_spawn_npc_instance_success()** (2 connections) — `server/tests/unit/services/test_npc_instance_service.py`
+- **test_spawn_npc_instance_definition_not_found()** (2 connections) — `server/tests/unit/services/test_npc_instance_service.py`
+- **test_spawn_npc_instance_spawn_fails()** (2 connections) — `server/tests/unit/services/test_npc_instance_service.py`
+- **test_despawn_npc_instance_success()** (2 connections) — `server/tests/unit/services/test_npc_instance_service.py`
+- **test_despawn_npc_instance_not_found()** (2 connections) — `server/tests/unit/services/test_npc_instance_service.py`
+- **test_despawn_npc_instance_despawn_fails()** (2 connections) — `server/tests/unit/services/test_npc_instance_service.py`
+- **test_move_npc_instance_success()** (2 connections) — `server/tests/unit/services/test_npc_instance_service.py`
+- **test_move_npc_instance_no_move_method()** (2 connections) — `server/tests/unit/services/test_npc_instance_service.py`
+- **test_move_npc_instance_blocked_when_in_combat()** (2 connections) — `server/tests/unit/services/test_npc_instance_service.py`
+- **test_move_npc_instance_not_found()** (2 connections) — `server/tests/unit/services/test_npc_instance_service.py`
+- **test_get_npc_instances_success()** (2 connections) — `server/tests/unit/services/test_npc_instance_service.py`
+- **test_get_npc_instances_no_lifecycle_record()** (2 connections) — `server/tests/unit/services/test_npc_instance_service.py`
+- **test_get_npc_instances_no_get_stats()** (2 connections) — `server/tests/unit/services/test_npc_instance_service.py`
+- *... and 49 more nodes in this community*
 
 ## Relationships
 
-- [realtime websocket initial](realtime_websocket_initial.md) (18 shared connections)
-- [websocket realtime handler](websocket_realtime_handler.md) (6 shared connections)
-- [shutdown admin command](shutdown_admin_command.md) (4 shared connections)
-- [combat commands handler](combat_commands_handler.md) (3 shared connections)
-- [combat models rationale](combat_models_rationale.md) (2 shared connections)
-- [room websocket updates](room_websocket_updates.md) (2 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [realtime game state](realtime_game_state.md) (2 shared connections)
-- [status game spell](status_game_spell.md) (2 shared connections)
-- [world models rationale](world_models_rationale.md) (1 shared connections)
-- [websocket handler realtime](websocket_handler_realtime.md) (1 shared connections)
-- [websocket validation realtime](websocket_validation_realtime.md) (1 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (18 shared connections)
+- [models npc rationale](models_npc_rationale.md) (4 shared connections)
+- [AppRouter main AppRouter()](AppRouter_main_AppRouter%28%29.md) (4 shared connections)
+- [command parser rationale](command_parser_rationale.md) (1 shared connections)
+- [look helpers commands](look_helpers_commands.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/websocket_handler_connection.py`
-- `server/realtime/websocket_helpers.py`
-- `server/tests/unit/realtime/test_websocket_helpers.py`
-- `server/tests/unit/realtime/test_websocket_helpers_player.py`
+- `server/tests/unit/services/test_npc_instance_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 248 (96%)
-- INFERRED: 10 (4%)
+- EXTRACTED: 166 (95%)
+- INFERRED: 8 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

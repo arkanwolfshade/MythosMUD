@@ -17,15 +17,26 @@ def extract_room_id_from_npc(npc_instance: Any) -> str:
     Returns:
         Room ID as string, or "unknown" if not found
     """
-    room_id_value = getattr(npc_instance, "current_room", None)
-    if room_id_value is None:
-        room_id_value = getattr(npc_instance, "current_room_id", None)
-    if room_id_value is None:
-        room_id_value = getattr(npc_instance, "room_id", None)
-
-    if isinstance(room_id_value, str):
-        return room_id_value
+    for attr in ("current_room", "current_room_id", "spawn_room_id", "room_id"):
+        room_id_value = getattr(npc_instance, attr, None)
+        if isinstance(room_id_value, str) and room_id_value and room_id_value != "unknown":
+            return room_id_value
     return "unknown"
+
+
+def extract_room_id_from_lifecycle_record(record: Any | None) -> str | None:
+    """Return the latest non-unknown room_id from a lifecycle record's events, if any."""
+    if record is None:
+        return None
+    events = getattr(record, "events", None) or []
+    for event in reversed(events):
+        details = event.get("details") if isinstance(event, dict) else None
+        if not isinstance(details, dict):
+            continue
+        room_id = details.get("room_id")
+        if isinstance(room_id, str) and room_id and room_id != "unknown":
+            return room_id
+    return None
 
 
 def extract_npc_metadata(npc_instance: Any) -> tuple[str, bool]:

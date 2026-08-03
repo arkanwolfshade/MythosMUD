@@ -1,24 +1,38 @@
 # character creation validate
 
-> 2 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **test_handle_learn_command_no_player()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test learn command when player is not found.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **._create_corpse_on_death()** (9 connections) — `server/services/combat_death_handler.py`
+- **._handle_player_death_events()** (7 connections) — `server/services/combat_death_handler.py`
+- **.handle_target_state_changes()** (6 connections) — `server/services/combat_death_handler.py`
+- **._resolve_connection_manager_for_corpse_creation()** (5 connections) — `server/services/combat_death_handler.py`
+- **Return connection manager from CombatService getter when exposed.** (1 connections) — `server/services/combat_death_handler.py`
+- **Handle player death events including mortally wounded, death, and corpse creatio** (1 connections) — `server/services/combat_death_handler.py`
+- **Create corpse container when player dies.** (1 connections) — `server/services/combat_death_handler.py`
+- **Handle mortally wounded and death state changes for target.          Args:** (1 connections) — `server/services/combat_death_handler.py`
 
 ## Relationships
 
-- [commands magic rationale](commands_magic_rationale.md) (1 shared connections)
+- [NPC Combat](NPC_Combat.md) (4 shared connections)
+- [Item Instances](Item_Instances.md) (3 shared connections)
+- [command factories exploration](command_factories_exploration.md) (3 shared connections)
+- [message filtering realtime](message_filtering_realtime.md) (2 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (1 shared connections)
+- [Memory Task Runtime](Memory_Task_Runtime.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [models npc rationale](models_npc_rationale.md) (1 shared connections)
+- [rate limiter services](rate_limiter_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `server/services/combat_death_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 27 (87%)
+- INFERRED: 4 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

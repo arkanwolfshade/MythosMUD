@@ -1,28 +1,45 @@
 # commands admin helpers
 
-> 6 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **StatsRollingScreen.test.tsx** (8 connections) — `client/src/components/StatsRollingScreen.test.tsx`
-- **mockFetch** (1 connections) — `client/src/components/StatsRollingScreen.test.tsx`
-- **RolledStatsInput** (1 connections) — `client/src/components/StatsRollingScreen.test.tsx`
-- **createJsonMock()** (1 connections) — `client/src/components/StatsRollingScreen.test.tsx`
-- **mockFetchResolvedValue()** (1 connections) — `client/src/components/StatsRollingScreen.test.tsx`
-- **mockFetchResolvedValueOnce()** (1 connections) — `client/src/components/StatsRollingScreen.test.tsx`
+- **_format_npc_description()** (15 connections) — `server/commands/look_npc.py`
+- **test_format_npc_description_success()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_format_npc_description_fallback_long_description()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_format_npc_description_fallback_short_description()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_format_npc_description_fallback_desc()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_format_npc_description_no_description()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_format_npc_description_empty_string()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_format_npc_description()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_format_npc_description_fallback()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_format_npc_description_no_description()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **Format NPC description with fallback.** (1 connections) — `server/commands/look_npc.py`
+- **Test formatting NPC description successfully.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test formatting NPC description with long_description fallback.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test formatting NPC description with short_description fallback.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test formatting NPC description with desc fallback.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test formatting NPC description when no description available.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test formatting NPC description when description is empty string.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test _format_npc_description() returns description from definition.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **Test _format_npc_description() uses fallback when description is empty.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **Test _format_npc_description() uses alternative attributes.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
 
 ## Relationships
 
-- [mythosApp useMythosAppState useStatsRoll](mythosApp_useMythosAppState_useStatsRoll.md) (2 shared connections)
-- [panels GameClientV2Dock gameLogPanelUtil](panels_GameClientV2Dock_gameLogPanelUtil.md) (1 shared connections)
+- [npc look commands](npc_look_commands.md) (7 shared connections)
+- [schemas calendar rationale](schemas_calendar_rationale.md) (4 shared connections)
+- [services service hallucination](services_service_hallucination.md) (3 shared connections)
 
 ## Source Files
 
-- `client/src/components/StatsRollingScreen.test.tsx`
+- `server/commands/look_npc.py`
+- `server/tests/unit/commands/test_look_npc.py`
+- `server/tests/unit/commands/test_look_npc_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 52 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

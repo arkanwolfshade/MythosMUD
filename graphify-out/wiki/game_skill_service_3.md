@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_wearable_containers_for_player_exception_in_validation()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test get_wearable_containers_for_player handles validation errors gracefully.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **mock_get_app()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Create a mock get_app callback.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Relationships
 
-- [wearable container service](wearable_container_service.md) (1 shared connections)
+- [game state provider](game_state_provider.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Audit Trail
 

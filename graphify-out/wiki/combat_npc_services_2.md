@@ -1,24 +1,34 @@
 # combat npc services
 
-> 2 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **test_handle_cast_command_blocked_when_incapacitated()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Cast command returns incapacitated message when player has 0 to -9 DP (prone, ca** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **test_spell_repository.py** (14 connections) — `server/tests/unit/persistence/repositories/test_spell_repository.py`
+- **_mock_session()** (4 connections) — `server/tests/unit/persistence/repositories/test_spell_repository.py`
+- **_spell_row()** (3 connections) — `server/tests/unit/persistence/repositories/test_spell_repository.py`
+- **test_get_all_spells()** (3 connections) — `server/tests/unit/persistence/repositories/test_spell_repository.py`
+- **test_get_spell_by_id_found()** (3 connections) — `server/tests/unit/persistence/repositories/test_spell_repository.py`
+- **test_row_to_spell_dict_maps_fields()** (2 connections) — `server/tests/unit/persistence/repositories/test_spell_repository.py`
+- **repo()** (2 connections) — `server/tests/unit/persistence/repositories/test_spell_repository.py`
+- **test_get_spell_by_id_not_found()** (2 connections) — `server/tests/unit/persistence/repositories/test_spell_repository.py`
+- **test_get_all_spells_db_error()** (2 connections) — `server/tests/unit/persistence/repositories/test_spell_repository.py`
+- **Unit tests for SpellRepository.** (1 connections) — `server/tests/unit/persistence/repositories/test_spell_repository.py`
 
 ## Relationships
 
-- [commands magic rationale](commands_magic_rationale.md) (1 shared connections)
+- [Database Config](Database_Config.md) (5 shared connections)
+- [coercion int inventory](coercion_int_inventory.md) (2 shared connections)
+- [command inventory factories](command_inventory_factories.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `server/tests/unit/persistence/repositories/test_spell_repository.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 35 (97%)
+- INFERRED: 1 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

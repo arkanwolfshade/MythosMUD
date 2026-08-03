@@ -33,9 +33,8 @@
 
 ## Relationships
 
-- [room websocket updates](room_websocket_updates.md) (5 shared connections)
-- [look helpers commands](look_helpers_commands.md) (4 shared connections)
-- [look command commands](look_command_commands.md) (3 shared connections)
+- [look helpers commands](look_helpers_commands.md) (9 shared connections)
+- [connection realtime statistics](connection_realtime_statistics.md) (3 shared connections)
 
 ## Source Files
 

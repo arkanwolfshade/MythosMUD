@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_unsubscribe_from_room_removes_empty_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **Test unsubscribe_from_room() removes room when last subscriber leaves.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_call_failure_closed_state()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **Test call() handles failure in CLOSED state.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
 
 ## Relationships
 
-- [room subscription manager](room_subscription_manager.md) (1 shared connections)
+- [config rationale reset](config_rationale_reset.md) (1 shared connections)
+- [websocket handler realtime](websocket_handler_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager.py`
+- `server/tests/unit/realtime/test_circuit_breaker.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

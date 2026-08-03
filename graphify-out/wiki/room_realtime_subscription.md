@@ -1,49 +1,50 @@
 # room realtime subscription
 
-> 41 nodes
+> 56 nodes
 
 ## Key Concepts
 
-- **Any** (13 connections)
-- **._canonical_room_id()** (13 connections) — `server/realtime/room_subscription_manager.py`
-- **.get_room_occupants()** (8 connections) — `server/realtime/room_subscription_manager.py`
-- **._get_fallback_npcs_from_room()** (7 connections) — `server/realtime/room_subscription_manager.py`
-- **._query_npcs_from_lifecycle_manager()** (6 connections) — `server/realtime/room_subscription_manager.py`
-- **._add_npc_to_occupants()** (5 connections) — `server/realtime/room_subscription_manager.py`
-- **.list_room_drops()** (4 connections) — `server/realtime/room_subscription_manager.py`
-- **.add_room_drop()** (4 connections) — `server/realtime/room_subscription_manager.py`
-- **.take_room_drop()** (4 connections) — `server/realtime/room_subscription_manager.py`
-- **._get_online_player_occupants()** (4 connections) — `server/realtime/room_subscription_manager.py`
-- **._get_npc_name_from_lifecycle_manager()** (4 connections) — `server/realtime/room_subscription_manager.py`
-- **._filter_fallback_npcs()** (4 connections) — `server/realtime/room_subscription_manager.py`
-- **.reconcile_room_presence()** (4 connections) — `server/realtime/room_subscription_manager.py`
-- **.set_async_persistence()** (3 connections) — `server/realtime/room_subscription_manager.py`
-- **.subscribe_to_room()** (3 connections) — `server/realtime/room_subscription_manager.py`
-- **.unsubscribe_from_room()** (3 connections) — `server/realtime/room_subscription_manager.py`
-- **.get_room_subscribers()** (3 connections) — `server/realtime/room_subscription_manager.py`
-- **.adjust_room_drop()** (3 connections) — `server/realtime/room_subscription_manager.py`
-- **.add_room_occupant()** (3 connections) — `server/realtime/room_subscription_manager.py`
-- **.remove_room_occupant()** (3 connections) — `server/realtime/room_subscription_manager.py`
-- **.get_stats()** (3 connections) — `server/realtime/room_subscription_manager.py`
-- **Set the async persistence layer reference.** (1 connections) — `server/realtime/room_subscription_manager.py`
-- **Subscribe a player to a room.          Args:             player_id: The player's** (1 connections) — `server/realtime/room_subscription_manager.py`
-- **Unsubscribe a player from a room.          Args:             player_id: The play** (1 connections) — `server/realtime/room_subscription_manager.py`
-- **Get all players subscribed to a room.          Args:             room_id: The ro** (1 connections) — `server/realtime/room_subscription_manager.py`
-- *... and 16 more nodes in this community*
+- **test_player_service_mutations.py** (34 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **player_service()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_delete_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_update_player_location_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_soft_delete_character_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_soft_delete_character_wrong_user()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_apply_lucidity_loss_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_apply_fear_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_apply_corruption_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_gain_occult_knowledge_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_heal_player_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_damage_player_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **mock_persistence()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_delete_player_success()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_update_player_location_success()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_apply_lucidity_loss()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_apply_fear()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_apply_corruption()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_gain_occult_knowledge()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_heal_player()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_damage_player()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_get_user_characters()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_soft_delete_character_success()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_validate_player_name_empty()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_validate_player_name_whitespace()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- *... and 31 more nodes in this community*
 
 ## Relationships
 
-- [Room Broadcast](Room_Broadcast.md) (20 shared connections)
-- [commands npc admin](commands_npc_admin.md) (2 shared connections)
+- [command inventory models](command_inventory_models.md) (11 shared connections)
+- [Database Config](Database_Config.md) (3 shared connections)
+- [player service game](player_service_game.md) (3 shared connections)
 
 ## Source Files
 
-- `server/realtime/room_subscription_manager.py`
+- `server/tests/unit/game/test_player_service_mutations.py`
 
 ## Audit Trail
 
-- EXTRACTED: 124 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 117 (92%)
+- INFERRED: 10 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,64 +1,67 @@
 # combat models rationale
 
-> 168 nodes
+> 214 nodes
 
 ## Key Concepts
 
-- **Player** (203 connections) — `server/models/player.py`
+- **PlayerLucidity** (78 connections) — `server/models/lucidity.py`
+- **test_player_respawn_service.py** (54 connections) — `server/tests/unit/services/test_player_respawn_service.py`
 - **test_player_model.py** (48 connections) — `server/tests/unit/models/test_player_model.py`
-- **.get_stats()** (13 connections) — `server/models/player.py`
-- **.set_stats()** (6 connections) — `server/models/player.py`
-- **.apply_dp_decay()** (5 connections) — `server/models/player.py`
-- **.restore_to_full_health()** (5 connections) — `server/models/player.py`
-- **.apply_dp_change()** (5 connections) — `server/models/player.py`
-- **.is_alive()** (4 connections) — `server/models/player.py`
-- **.is_mortally_wounded()** (4 connections) — `server/models/player.py`
-- **.is_dead()** (4 connections) — `server/models/player.py`
-- **.get_health_state()** (4 connections) — `server/models/player.py`
-- **.get_combat_stats()** (4 connections) — `server/models/player.py`
-- **.get_health_percentage()** (4 connections) — `server/models/player.py`
-- **test_get_player_by_name_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_player_by_id_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_players_by_user_id_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_active_players_by_user_id_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_save_player_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_list_players_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_players_in_room_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_save_players_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_player_creation()** (3 connections) — `server/tests/unit/models/test_player_model.py`
-- **test_player_defaults()** (3 connections) — `server/tests/unit/models/test_player_model.py`
-- **test_player_get_stats()** (3 connections) — `server/tests/unit/models/test_player_model.py`
-- **test_player_get_stats_default()** (3 connections) — `server/tests/unit/models/test_player_model.py`
-- *... and 143 more nodes in this community*
+- **player_respawn_service.py** (44 connections) — `server/services/player_respawn_service.py`
+- **game.py** (32 connections) — `server/models/game.py`
+- **PositionState** (20 connections) — `server/models/game.py`
+- **player_respawn_wrapper.py** (15 connections) — `server/game/player_respawn_wrapper.py`
+- **test_game_enums.py** (11 connections) — `server/tests/unit/models/test_game_enums.py`
+- **AttributeType** (8 connections) — `server/models/game.py`
+- **._calculate_max_lcd()** (8 connections) — `server/services/lucidity_service.py`
+- **.respawn_player_from_delirium_by_user_id()** (7 connections) — `server/game/player_respawn_wrapper.py`
+- **_utc_now()** (7 connections) — `server/services/player_respawn_service.py`
+- **test_lucidity_service_smoke.py** (6 connections) — `server/tests/unit/test_lucidity_service_smoke.py`
+- **.__init__()** (5 connections) — `server/models/lucidity.py`
+- **.__init__()** (4 connections) — `server/models/lucidity.py`
+- **.__init__()** (4 connections) — `server/models/lucidity.py`
+- **._get_player_from_record_inspect()** (4 connections) — `server/services/lucidity_service.py`
+- **test_respawn_player_from_delirium_success()** (4 connections) — `server/tests/unit/services/test_player_respawn_service.py`
+- **test_respawn_player_from_delirium_database_error()** (4 connections) — `server/tests/unit/services/test_player_respawn_service.py`
+- **test_respawn_player_from_delirium_combat_clear_error()** (4 connections) — `server/tests/unit/services/test_player_respawn_service.py`
+- **test_respawn_player_from_sanitarium_success()** (4 connections) — `server/tests/unit/services/test_player_respawn_service.py`
+- **test_lucidity_service_apply_adjustment()** (4 connections) — `server/tests/unit/test_lucidity_service_smoke.py`
+- **StrEnum** (3 connections)
+- **.get_attribute_modifier()** (3 connections) — `server/models/game.py`
+- **Any** (3 connections)
+- *... and 189 more nodes in this community*
 
 ## Relationships
 
-- [Database Config](Database_Config.md) (21 shared connections)
-- [world models rationale](world_models_rationale.md) (21 shared connections)
-- [command inventory factories](command_inventory_factories.md) (19 shared connections)
-- [schemas invite user](schemas_invite_user.md) (10 shared connections)
-- [models player rationale](models_player_rationale.md) (9 shared connections)
-- [realtime websocket initial](realtime_websocket_initial.md) (6 shared connections)
-- [lucidity services helpers](lucidity_services_helpers.md) (5 shared connections)
-- [alias command models](alias_command_models.md) (5 shared connections)
-- [Async Query Helpers](Async_Query_Helpers.md) (5 shared connections)
-- [commands inventory command](commands_inventory_command.md) (4 shared connections)
-- [inventory commands command](inventory_commands_command.md) (3 shared connections)
-- [target resolution service](target_resolution_service.md) (3 shared connections)
+- [world models rationale](world_models_rationale.md) (91 shared connections)
+- [Async Query Helpers](Async_Query_Helpers.md) (16 shared connections)
+- [command helpers functions](command_helpers_functions.md) (11 shared connections)
+- [lucidity services helpers](lucidity_services_helpers.md) (9 shared connections)
+- [combat services persistence](combat_services_persistence.md) (9 shared connections)
+- [Database Config](Database_Config.md) (8 shared connections)
+- [command inventory models](command_inventory_models.md) (7 shared connections)
+- [player service game](player_service_game.md) (7 shared connections)
+- [command inventory factories](command_inventory_factories.md) (6 shared connections)
+- [models npc rationale](models_npc_rationale.md) (6 shared connections)
+- [NATS Messaging](NATS_Messaging.md) (6 shared connections)
+- [player room realtime](player_room_realtime.md) (6 shared connections)
 
 ## Source Files
 
-- `server/models/player.py`
-- `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- `server/game/player_respawn_wrapper.py`
+- `server/models/game.py`
+- `server/models/lucidity.py`
+- `server/services/lucidity_service.py`
+- `server/services/player_respawn_service.py`
+- `server/tests/unit/models/test_game_enums.py`
 - `server/tests/unit/models/test_player_model.py`
-- `server/tests/unit/persistence/test_player_repository.py`
-- `server/tests/unit/services/test_player_death_service.py`
 - `server/tests/unit/services/test_player_respawn_service.py`
+- `server/tests/unit/test_lucidity_service_smoke.py`
 
 ## Audit Trail
 
-- EXTRACTED: 505 (85%)
-- INFERRED: 92 (15%)
+- EXTRACTED: 660 (92%)
+- INFERRED: 55 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

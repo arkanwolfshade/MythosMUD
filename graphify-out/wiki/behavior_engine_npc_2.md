@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_validate_player_name_valid()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **Test validating valid player name.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_on_failure_resets_success_count()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **Test _on_failure() resets success count.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
 
 ## Relationships
 
-- [Security Validator Tests](Security_Validator_Tests.md) (1 shared connections)
-- [command models moderation](command_models_moderation.md) (1 shared connections)
+- [config rationale reset](config_rationale_reset.md) (1 shared connections)
+- [websocket handler realtime](websocket_handler_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_security_validator.py`
+- `server/tests/unit/realtime/test_circuit_breaker.py`
 
 ## Audit Trail
 

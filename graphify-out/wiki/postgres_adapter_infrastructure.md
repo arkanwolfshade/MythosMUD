@@ -1,37 +1,40 @@
 # postgres adapter infrastructure
 
-> 22 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **test_postgres_adapter.py** (14 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **postgres_adapter.py** (12 connections) — `server/postgres_adapter.py`
-- **TestUtilityFunctions** (11 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **PostgresConnectionPool** (10 connections) — `server/postgres_adapter.py`
-- **connect_postgres()** (6 connections) — `server/postgres_adapter.py`
-- **convert_sqlite_to_postgres_query()** (6 connections) — `server/postgres_adapter.py`
-- **.test_connect_postgres()** (4 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_connect_postgres_with_driver_prefix()** (4 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_convert_sqlite_to_postgres_query_basic()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_convert_sqlite_to_postgres_query_no_params()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_convert_sqlite_to_postgres_query_insert_replace()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **PostgreSQL adapter for persistence layer.  Provides a PostgreSQL connection inte** (1 connections) — `server/postgres_adapter.py`
-- **Thread-safe PostgreSQL connection pool.** (1 connections) — `server/postgres_adapter.py`
-- **Create a PostgreSQL connection.      Args:         database_url: PostgreSQL conn** (1 connections) — `server/postgres_adapter.py`
-- **Convert legacy SQLite query syntax to PostgreSQL syntax.      Note: This functio** (1 connections) — `server/postgres_adapter.py`
-- **Unit tests for PostgreSQL adapter.  Tests PostgresRow, PostgresConnection, Postg** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test utility functions.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test connect_postgres().** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test connect_postgres() with driver prefix.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test convert_sqlite_to_postgres_query() basic conversion.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test convert_sqlite_to_postgres_query() with no parameters.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test convert_sqlite_to_postgres_query() with INSERT OR REPLACE.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **PostgresRow** (28 connections) — `server/postgres_adapter.py`
+- **TestPostgresRow** (15 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **.test_postgres_row_initialization()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **.test_postgres_row_getitem_string_key()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **.test_postgres_row_getitem_int_key()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **.test_postgres_row_getitem_int_key_out_of_range()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **.test_postgres_row_iter()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **.test_postgres_row_keys()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **.test_postgres_row_contains()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **.test_postgres_row_len()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **.test_postgres_row_repr()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **.__contains__()** (1 connections) — `server/postgres_adapter.py`
+- **.__len__()** (1 connections) — `server/postgres_adapter.py`
+- **.__repr__()** (1 connections) — `server/postgres_adapter.py`
+- **Row-like object for PostgreSQL query results.** (1 connections) — `server/postgres_adapter.py`
+- **Test PostgresRow class.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **Test PostgresRow initialization.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **Test PostgresRow.__getitem__ with string key.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **Test PostgresRow.__getitem__ with integer index.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **Test PostgresRow.__getitem__ with out-of-range integer index.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **Test PostgresRow.__iter__.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **Test PostgresRow.keys().** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **Test PostgresRow.__contains__.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **Test PostgresRow.__len__.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **Test PostgresRow.__repr__.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
 
 ## Relationships
 
-- [postgres adapter infrastructure](postgres_adapter_infrastructure.md) (24 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [npc shopkeeper rationale](npc_shopkeeper_rationale.md) (1 shared connections)
+- [postgres adapter infrastructure](postgres_adapter_infrastructure.md) (13 shared connections)
+- [postgres adapter rationale](postgres_adapter_rationale.md) (4 shared connections)
+- [models npc rationale](models_npc_rationale.md) (1 shared connections)
 
 ## Source Files
 
@@ -40,7 +43,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 76 (87%)
+- EXTRACTED: 73 (87%)
 - INFERRED: 11 (13%)
 - AMBIGUOUS: 0 (0%)
 

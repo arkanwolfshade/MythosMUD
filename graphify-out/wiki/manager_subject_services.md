@@ -1,62 +1,63 @@
 # manager subject services
 
-> 55 nodes
+> 75 nodes
 
 ## Key Concepts
 
 - **NATSSubjectManager** (56 connections) — `server/services/nats_subject_manager/manager.py`
+- **subject_controller.py** (27 connections) — `server/api/admin/subject_controller.py`
+- **test_subject_controller.py** (21 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
+- **InvalidPatternError** (19 connections) — `server/services/nats_subject_manager/exceptions.py`
+- **register_pattern()** (12 connections) — `server/api/admin/subject_controller.py`
+- **validate_subject()** (10 connections) — `server/api/admin/subject_controller.py`
+- **get_subject_statistics()** (8 connections) — `server/api/admin/subject_controller.py`
+- **get_patterns()** (8 connections) — `server/api/admin/subject_controller.py`
+- **ValidateSubjectRequest** (7 connections) — `server/api/admin/subject_controller.py`
+- **RegisterPatternRequest** (7 connections) — `server/api/admin/subject_controller.py`
+- **require_admin_user()** (7 connections) — `server/api/admin/subject_controller.py`
 - **.build_subject()** (7 connections) — `server/services/nats_subject_manager/manager.py`
 - **Any** (7 connections)
+- **_admin_user()** (7 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
+- **BaseModel** (6 connections)
+- **test_register_pattern_invalid()** (6 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
 - **._ensure_pattern_exists()** (5 connections) — `server/services/nats_subject_manager/manager.py`
 - **._ensure_required_params()** (5 connections) — `server/services/nats_subject_manager/manager.py`
 - **._format_subject()** (5 connections) — `server/services/nats_subject_manager/manager.py`
 - **.get_pattern_info()** (5 connections) — `server/services/nats_subject_manager/manager.py`
+- **ValidateSubjectResponse** (4 connections) — `server/api/admin/subject_controller.py`
+- **RegisterPatternResponse** (4 connections) — `server/api/admin/subject_controller.py`
+- **SubjectStatisticsResponse** (4 connections) — `server/api/admin/subject_controller.py`
+- **PatternsResponse** (4 connections) — `server/api/admin/subject_controller.py`
 - **._ensure_subject_length()** (4 connections) — `server/services/nats_subject_manager/manager.py`
-- **.validate_subject()** (4 connections) — `server/services/nats_subject_manager/manager.py`
-- **.get_all_patterns()** (4 connections) — `server/services/nats_subject_manager/manager.py`
-- **test_build_subject_subject_too_long()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- **get_subject_manager_dependency()** (3 connections) — `server/api/admin/subject_controller.py`
-- **.__init__()** (3 connections) — `server/services/combat_event_publisher.py`
-- **._record_validation_metrics()** (3 connections) — `server/services/nats_subject_manager/manager.py`
-- **.register_pattern()** (3 connections) — `server/services/nats_subject_manager/manager.py`
-- **.get_subscription_pattern()** (3 connections) — `server/services/nats_subject_manager/manager.py`
-- **.get_performance_metrics()** (3 connections) — `server/services/nats_subject_manager/manager.py`
-- **._cache_result()** (3 connections) — `server/services/nats_subject_manager/manager.py`
-- **subject_manager_no_metrics()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- **subject_manager_no_cache()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- **test_nats_subject_manager_init()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- **test_nats_subject_manager_init_no_metrics()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- **test_nats_subject_manager_init_no_cache()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- **test_nats_subject_manager_init_strict_validation()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- **test_nats_subject_manager_init_custom_max_length()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- *... and 30 more nodes in this community*
+- *... and 50 more nodes in this community*
 
 ## Relationships
 
-- [subject validation services](subject_validation_services.md) (18 shared connections)
-- [manager subject services](manager_subject_services.md) (9 shared connections)
-- [commands lucidity recovery](commands_lucidity_recovery.md) (5 shared connections)
-- [NPC Combat](NPC_Combat.md) (4 shared connections)
-- [nats services service](nats_services_service.md) (3 shared connections)
-- [event publisher realtime](event_publisher_realtime.md) (2 shared connections)
-- [broker infrastructure nats](broker_infrastructure_nats.md) (1 shared connections)
-- [infrastructure nats broker](infrastructure_nats_broker.md) (1 shared connections)
-- [circuit breaker realtime](circuit_breaker_realtime.md) (1 shared connections)
-- [nats exceptions services](nats_exceptions_services.md) (1 shared connections)
-- [pattern matcher services](pattern_matcher_services.md) (1 shared connections)
-- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [commands communication support](commands_communication_support.md) (14 shared connections)
+- [manager subject services](manager_subject_services.md) (14 shared connections)
+- [Exception Containers](Exception_Containers.md) (10 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (6 shared connections)
+- [zone npc config](zone_npc_config.md) (6 shared connections)
+- [models npc rationale](models_npc_rationale.md) (5 shared connections)
+- [admin auth service](admin_auth_service.md) (2 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [Memory Task Runtime](Memory_Task_Runtime.md) (2 shared connections)
+- [subject validation services](subject_validation_services.md) (2 shared connections)
+- [combat validator validators](combat_validator_validators.md) (2 shared connections)
+- [manager services nats](manager_services_nats.md) (2 shared connections)
 
 ## Source Files
 
 - `server/api/admin/subject_controller.py`
 - `server/services/combat_event_publisher.py`
+- `server/services/nats_subject_manager/exceptions.py`
 - `server/services/nats_subject_manager/manager.py`
-- `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- `server/tests/unit/api/admin/test_subject_controller.py`
 
 ## Audit Trail
 
-- EXTRACTED: 173 (96%)
-- INFERRED: 8 (4%)
+- EXTRACTED: 326 (95%)
+- INFERRED: 16 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

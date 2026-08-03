@@ -1,11 +1,10 @@
 # player model models
 
-> 54 nodes
+> 52 nodes
 
 ## Key Concepts
 
 - **test_movement_monitor.py** (33 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_get_movement_monitor_returns_singleton()** (3 connections) — `server/tests/unit/game/test_movement_monitor.py`
 - **sample_player_id()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
 - **test_movement_monitor_init()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
 - **test_record_movement_attempt_success()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
@@ -29,12 +28,13 @@
 - **test_get_alerts_high_failure_rate()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
 - **test_get_alerts_slow_movement_time()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
 - **test_reset_metrics()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- *... and 29 more nodes in this community*
+- **test_log_performance_summary()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- *... and 27 more nodes in this community*
 
 ## Relationships
 
-- [npc population control](npc_population_control.md) (5 shared connections)
-- [health models rationale](health_models_rationale.md) (2 shared connections)
+- [npc population control](npc_population_control.md) (6 shared connections)
+- [models npc rationale](models_npc_rationale.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,7 +42,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 113 (100%)
+- EXTRACTED: 109 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

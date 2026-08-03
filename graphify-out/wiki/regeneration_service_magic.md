@@ -1,10 +1,13 @@
 # regeneration service magic
 
-> 56 nodes
+> 62 nodes
 
 ## Key Concepts
 
 - **test_mp_regeneration_service.py** (33 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **mp_regeneration_service()** (4 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **test_mp_regeneration_service_init()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **test_mp_regeneration_service_init_custom_rate()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 - **mock_player_service()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 - **sample_player_id()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 - **mock_player()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
@@ -26,15 +29,12 @@
 - **test_restore_mp_from_meditation_restores_mp()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 - **test_restore_mp_from_meditation_higher_than_rest()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 - **test_restore_mp_from_item_player_not_found()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_restore_mp_from_item_restores_mp()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_restore_mp_from_item_respects_max()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_restore_mp_from_item_uses_magic_service()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- *... and 31 more nodes in this community*
+- *... and 37 more nodes in this community*
 
 ## Relationships
 
-- [coercion int inventory](coercion_int_inventory.md) (4 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [coercion int inventory](coercion_int_inventory.md) (5 shared connections)
+- [realtime real time](realtime_real_time.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,8 +42,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 115 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 127 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

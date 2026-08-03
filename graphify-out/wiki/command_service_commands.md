@@ -1,6 +1,6 @@
 # command service commands
 
-> 39 nodes
+> 37 nodes
 
 ## Key Concepts
 
@@ -22,22 +22,24 @@
 - **.__post_init__()** (3 connections) — `server/events/event_types.py`
 - **.__post_init__()** (3 connections) — `server/events/event_types.py`
 - **.__post_init__()** (3 connections) — `server/events/event_types.py`
-- **.__post_init__()** (3 connections) — `server/events/event_types.py`
 - **.__post_init__()** (2 connections) — `server/events/event_types.py`
 - **.__post_init__()** (2 connections) — `server/events/event_types.py`
 - **Initialize the event with proper type.** (1 connections) — `server/events/event_types.py`
 - **Initialize the event with proper type.** (1 connections) — `server/events/event_types.py`
 - **Initialize the event with proper type.** (1 connections) — `server/events/event_types.py`
 - **Initialize the event with proper type.** (1 connections) — `server/events/event_types.py`
-- *... and 14 more nodes in this community*
+- **Initialize the event with proper type.** (1 connections) — `server/events/event_types.py`
+- *... and 12 more nodes in this community*
 
 ## Relationships
 
-- [item models rationale](item_models_rationale.md) (16 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (2 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (1 shared connections)
-- [time service rationale](time_service_rationale.md) (1 shared connections)
-- [commands inventory helpers](commands_inventory_helpers.md) (1 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (13 shared connections)
+- [command parser rationale](command_parser_rationale.md) (2 shared connections)
+- [NATS Messaging](NATS_Messaging.md) (2 shared connections)
+- [player death service](player_death_service.md) (1 shared connections)
+- [websocket realtime handler](websocket_realtime_handler.md) (1 shared connections)
+- [skill game service](skill_game_service.md) (1 shared connections)
+- [quest game service](quest_game_service.md) (1 shared connections)
 
 ## Source Files
 
@@ -45,7 +47,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 97 (100%)
+- EXTRACTED: 93 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

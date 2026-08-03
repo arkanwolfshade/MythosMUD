@@ -1,29 +1,38 @@
 # services rescue service
 
-> 6 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **TestGetMythosTimeConsumer** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_mythos_time_consumer_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_mythos_time_consumer_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Tests for get_mythos_time_consumer dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_mythos_time_consumer returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_mythos_time_consumer raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **lucidityEventUtils.ts** (19 connections) — `client/src/utils/lucidityEventUtils.ts`
+- **buildLucidityStatus()** (10 connections) — `client/src/utils/lucidityEventUtils.ts`
+- **lucidityEventUtils.test.ts** (5 connections) — `client/src/utils/__tests__/lucidityEventUtils.test.ts`
+- **parseNumber()** (5 connections) — `client/src/utils/lucidityEventUtils.ts`
+- **resolveCurrentLucidity()** (4 connections) — `client/src/utils/lucidityEventUtils.ts`
+- **resolveMaxLucidity()** (3 connections) — `client/src/utils/lucidityEventUtils.ts`
+- **createHallucinationEntry()** (3 connections) — `client/src/utils/lucidityEventUtils.ts`
+- **createRescueState()** (3 connections) — `client/src/utils/lucidityEventUtils.ts`
+- **sanitizeTier()** (2 connections) — `client/src/utils/lucidityEventUtils.ts`
+- **resolveCurrentRawValue()** (2 connections) — `client/src/utils/lucidityEventUtils.ts`
+- **resolveLiabilities()** (2 connections) — `client/src/utils/lucidityEventUtils.ts`
+- **resolveOptionalText()** (2 connections) — `client/src/utils/lucidityEventUtils.ts`
+- **buildLucidityChangeMessage()** (2 connections) — `client/src/utils/lucidityEventUtils.ts`
+- **createHallucinationId()** (2 connections) — `client/src/utils/lucidityEventUtils.ts`
 
 ## Relationships
 
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (3 shared connections)
-- [command inventory models](command_inventory_models.md) (1 shared connections)
+- [game terminal lucidity](game_terminal_lucidity.md) (5 shared connections)
+- [lucidityEventUtils mythosTime MythosTime](lucidityEventUtils_mythosTime_MythosTime.md) (3 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_dependencies.py`
+- `client/src/utils/__tests__/lucidityEventUtils.test.ts`
+- `client/src/utils/lucidityEventUtils.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (93%)
-- INFERRED: 1 (7%)
+- EXTRACTED: 64 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

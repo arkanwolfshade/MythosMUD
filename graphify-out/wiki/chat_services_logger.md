@@ -33,11 +33,10 @@
 
 ## Relationships
 
-- [services user manager](services_user_manager.md) (3 shared connections)
-- [chat logger services](chat_logger_services.md) (2 shared connections)
-- [chat game message](chat_game_message.md) (1 shared connections)
-- [Item Instances](Item_Instances.md) (1 shared connections)
-- [room rationale subzone](room_rationale_subzone.md) (1 shared connections)
+- [chat logger services](chat_logger_services.md) (3 shared connections)
+- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [circuit breaker realtime](circuit_breaker_realtime.md) (2 shared connections)
+- [services user manager](services_user_manager.md) (1 shared connections)
 
 ## Source Files
 

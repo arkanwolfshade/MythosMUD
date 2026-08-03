@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_get_wearable_containers_for_player_error()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test get_wearable_containers_for_player handles errors gracefully.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_establish_websocket_connection_player_not_found()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **Test establish_websocket_connection() returns False when player not found.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
 
 ## Relationships
 
-- [wearable container service](wearable_container_service.md) (1 shared connections)
+- [player event state](player_event_state.md) (1 shared connections)
+- [connection establishment realtime](connection_establishment_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `server/tests/unit/realtime/test_connection_establishment.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

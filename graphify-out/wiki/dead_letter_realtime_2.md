@@ -1,29 +1,33 @@
 # dead letter realtime
 
-> 8 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **TestHandleSpecialCommandRouting** (5 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **.test_handle_special_command_routing_alias_command()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **.test_handle_special_command_routing_alias_command_no_storage()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **.test_handle_special_command_routing_emote_conversion()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _handle_special_command_routing function.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _handle_special_command_routing handles alias management commands.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _handle_special_command_routing returns error when alias storage unavailabl** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _handle_special_command_routing converts single-word emotes.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.check_normalized_room_matches()** (5 connections) — `server/realtime/room_id_utils.py`
+- **.check_npc_room_match()** (5 connections) — `server/realtime/room_id_utils.py`
+- **.check_fallback_room_matches()** (4 connections) — `server/realtime/room_id_utils.py`
+- **test_check_normalized_room_matches()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_check_fallback_room_matches()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **Check if normalized NPC room IDs match normalized target room IDs.          Args** (1 connections) — `server/realtime/room_id_utils.py`
+- **Check if NPC room IDs match target room IDs using fallback comparison.** (1 connections) — `server/realtime/room_id_utils.py`
+- **Check if NPC room matches target room using normalized comparison.          Args** (1 connections) — `server/realtime/room_id_utils.py`
+- **Test check_normalized_room_matches checks all combinations.** (1 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **Test check_fallback_room_matches checks fallback matches.** (1 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
 
 ## Relationships
 
-- [command commands handler](command_commands_handler.md) (4 shared connections)
+- [time service rationale](time_service_rationale.md) (4 shared connections)
+- [magic healing game](magic_healing_game.md) (3 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_aliases.py`
+- `server/realtime/room_id_utils.py`
+- `server/tests/unit/realtime/test_room_id_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
+- EXTRACTED: 25 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

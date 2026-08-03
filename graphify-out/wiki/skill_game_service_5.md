@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_add_alias_updates_existing()** (3 connections) — `server/tests/unit/test_alias_storage.py`
-- **Test add_alias updates existing alias.** (1 connections) — `server/tests/unit/test_alias_storage.py`
+- **mock_send_personal_message()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Create a mock send_personal_message callback.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Relationships
 
-- [alias models rationale](alias_models_rationale.md) (1 shared connections)
-- [alias storage rationale](alias_storage_rationale.md) (1 shared connections)
+- [game state provider](game_state_provider.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/test_alias_storage.py`
+- `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

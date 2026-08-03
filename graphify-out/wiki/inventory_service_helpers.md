@@ -13,7 +13,7 @@
 
 ## Relationships
 
-- [commands inventory command](commands_inventory_command.md) (1 shared connections)
+- [retry nats handler](retry_nats_handler.md) (1 shared connections)
 
 ## Source Files
 

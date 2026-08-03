@@ -1,54 +1,52 @@
 # spawn npc services
 
-> 37 nodes
+> 23 nodes
 
 ## Key Concepts
 
-- **NPCDefinitionCRUDMixin** (18 connections) — `server/services/npc_service/definition_crud.py`
-- **_row_to_npc_definition()** (12 connections) — `server/services/npc_service_models.py`
-- **.update_npc_definition()** (9 connections) — `server/services/npc_service/definition_crud.py`
-- **AsyncSession** (8 connections)
-- **.create_npc_definition()** (8 connections) — `server/services/npc_service/definition_crud.py`
-- **._execute_create_npc_definition()** (8 connections) — `server/services/npc_service/definition_crud.py`
-- **._execute_npc_update()** (8 connections) — `server/services/npc_service/definition_crud.py`
-- **.get_npc_definitions()** (7 connections) — `server/services/npc_service/definition_crud.py`
-- **.get_npc_definition()** (7 connections) — `server/services/npc_service/definition_crud.py`
-- **._build_npc_update_data()** (7 connections) — `server/services/npc_service/definition_crud.py`
-- **.get_npc_definition_by_name()** (5 connections) — `server/services/npc_service/definition_crud.py`
-- **.get_npc_definitions_by_sub_zone()** (5 connections) — `server/services/npc_service/queries.py`
-- **._log_npc_definition_created()** (4 connections) — `server/services/npc_service/definition_crud.py`
-- **._add_simple_field()** (4 connections) — `server/services/npc_service/definition_crud.py`
-- **Any** (4 connections)
-- **._add_json_field()** (4 connections) — `server/services/npc_service/definition_crud.py`
-- **.delete_npc_definition()** (4 connections) — `server/services/npc_service/definition_crud.py`
-- **._validate_create_npc_definition_params()** (3 connections) — `server/services/npc_service/definition_crud.py`
-- **._validate_npc_update_params()** (3 connections) — `server/services/npc_service/definition_crud.py`
-- **AsyncSession** (3 connections)
-- **Mixin providing NPC definition CRUD operations.** (1 connections) — `server/services/npc_service/definition_crud.py`
-- **Get all NPC definitions.** (1 connections) — `server/services/npc_service/definition_crud.py`
-- **Get a specific NPC definition by ID.** (1 connections) — `server/services/npc_service/definition_crud.py`
-- **Get an NPC definition by name (case-insensitive).** (1 connections) — `server/services/npc_service/definition_crud.py`
-- **Create a new NPC definition.** (1 connections) — `server/services/npc_service/definition_crud.py`
-- *... and 12 more nodes in this community*
+- **CombatPersistenceHandler** (22 connections) — `server/services/combat_persistence_handler.py`
+- **UUID** (8 connections)
+- **._persist_player_dp_sync()** (7 connections) — `server/services/combat_persistence_handler.py`
+- **._get_persistence_layer()** (6 connections) — `server/services/combat_persistence_handler.py`
+- **._publish_player_dp_update_event_impl()** (6 connections) — `server/services/combat_persistence_handler.py`
+- **._verify_player_save()** (5 connections) — `server/services/combat_persistence_handler.py`
+- **._publish_player_dp_correction_event()** (5 connections) — `server/services/combat_persistence_handler.py`
+- **._log_death_state_changes()** (4 connections) — `server/services/combat_persistence_handler.py`
+- **._persist_player_dp_background()** (4 connections) — `server/services/combat_persistence_handler.py`
+- **.publish_player_dp_update_event()** (4 connections) — `server/services/combat_persistence_handler.py`
+- **.__init__()** (3 connections) — `server/services/combat_persistence_handler.py`
+- **Any** (3 connections)
+- **Handles combat-related persistence operations.** (1 connections) — `server/services/combat_persistence_handler.py`
+- **Initialize the persistence handler.          Args:             combat_service: R** (1 connections) — `server/services/combat_persistence_handler.py`
+- **Get persistence layer from application container.          Returns:** (1 connections) — `server/services/combat_persistence_handler.py`
+- **Verify that player save was successful by reading back from database.          A** (1 connections) — `server/services/combat_persistence_handler.py`
+- **Log death state changes (death threshold or mortally wounded).          Args:** (1 connections) — `server/services/combat_persistence_handler.py`
+- **Synchronously persist player DP to database.          This is the actual persist** (1 connections) — `server/services/combat_persistence_handler.py`
+- **Persist player DP to database in background (fire-and-forget).          This met** (1 connections) — `server/services/combat_persistence_handler.py`
+- **Persist player DP to database in background (fire-and-forget).          Public A** (1 connections) — `server/services/combat_persistence_handler.py`
+- **Publish a PlayerDPUpdated event for real-time UI updates.          Args:** (1 connections) — `server/services/combat_persistence_handler.py`
+- **Internal implementation of player DP update event publishing.          Args:** (1 connections) — `server/services/combat_persistence_handler.py`
+- **Publish a correction event when database persistence fails.          This sends** (1 connections) — `server/services/combat_persistence_handler.py`
 
 ## Relationships
 
-- [command inventory factories](command_inventory_factories.md) (13 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (10 shared connections)
-- [Database Config](Database_Config.md) (3 shared connections)
-- [Magic Spell Service](Magic_Spell_Service.md) (1 shared connections)
+- [message filtering realtime](message_filtering_realtime.md) (5 shared connections)
+- [persistence combat handler](persistence_combat_handler.md) (4 shared connections)
+- [NATS Messaging](NATS_Messaging.md) (3 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [commands communication say](commands_communication_say.md) (2 shared connections)
+- [persistence combat services](persistence_combat_services.md) (2 shared connections)
 - [models npc rationale](models_npc_rationale.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/npc_service/definition_crud.py`
-- `server/services/npc_service/queries.py`
-- `server/services/npc_service_models.py`
+- `server/services/combat_persistence_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 147 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 81 (92%)
+- INFERRED: 7 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

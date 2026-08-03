@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_ensure_room_cache_loaded_os_error()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _ensure_room_cache_loaded handles OSError gracefully.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **.get_effective_spawn_probability()** (2 connections) — `server/npc/zone_configuration.py`
+- **Calculate effective spawn probability based on zone modifiers.          Args:** (1 connections) — `server/npc/zone_configuration.py`
 
 ## Relationships
 
-- [room persistence loading](room_persistence_loading.md) (1 shared connections)
+- [spell game magic](spell_game_magic.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- `server/npc/zone_configuration.py`
 
 ## Audit Trail
 

@@ -33,11 +33,10 @@
 
 ## Relationships
 
+- [models npc rationale](models_npc_rationale.md) (4 shared connections)
 - [combat monitoring service](combat_monitoring_service.md) (3 shared connections)
 - [connection helpers realtime](connection_helpers_realtime.md) (3 shared connections)
 - [service feature services](service_feature_services.md) (3 shared connections)
-- [Item Instances](Item_Instances.md) (2 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
 
 ## Source Files
 

@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_update_wearable_container_items()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test update_wearable_container_items updates items.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_execute_applicable_rules_executes_highest_priority()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test execute_applicable_rules() executes highest priority rule.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [wearable container service](wearable_container_service.md) (1 shared connections)
+- [lucidity active service](lucidity_active_service.md) (1 shared connections)
+- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

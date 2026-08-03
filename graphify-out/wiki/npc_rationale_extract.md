@@ -34,10 +34,9 @@
 ## Relationships
 
 - [command commands handler](command_commands_handler.md) (6 shared connections)
+- [models npc rationale](models_npc_rationale.md) (5 shared connections)
 - [command validation commands](command_validation_commands.md) (4 shared connections)
-- [command inventory factories](command_inventory_factories.md) (4 shared connections)
-- [commands admin mute](commands_admin_mute.md) (3 shared connections)
-- [Item Instances](Item_Instances.md) (1 shared connections)
+- [schemas validator rationale](schemas_validator_rationale.md) (3 shared connections)
 
 ## Source Files
 

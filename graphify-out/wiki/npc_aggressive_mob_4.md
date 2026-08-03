@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_process_exit_rows_multiple_exits_same_room()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _process_exit_rows with multiple exits from same room.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **._get_npc_stats()** (2 connections) — `server/npc/combat_integration.py`
+- **Get NPC stats or use defaults.** (1 connections) — `server/npc/combat_integration.py`
 
 ## Relationships
 
-- [room persistence loading](room_persistence_loading.md) (1 shared connections)
+- [services nats service](services_nats_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- `server/npc/combat_integration.py`
 
 ## Audit Trail
 

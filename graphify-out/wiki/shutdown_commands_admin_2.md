@@ -1,24 +1,31 @@
 # shutdown commands admin
 
-> 2 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **test_handle_learn_command_no_spell_name()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test learn command when no spell name is provided.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **TestNPCSession** (6 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_get_npc_session_yields_session()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_get_npc_session_rollback_on_error()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_get_npc_session_inits_db_for_unit_test()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test NPC session management.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test get_npc_session() yields session.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test get_npc_session() rolls back on error during yield.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test get_npc_session() calls init_npc_db() for unit_test databases.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
 
 ## Relationships
 
-- [commands magic rationale](commands_magic_rationale.md) (1 shared connections)
+- [player effects endpoints](player_effects_endpoints.md) (4 shared connections)
+- [command inventory models](command_inventory_models.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `server/tests/unit/infrastructure/test_npc_database.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 18 (95%)
+- INFERRED: 1 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

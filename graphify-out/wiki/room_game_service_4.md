@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_select_exit_weighted_home_disabled()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **Test select_exit() with weighted_home disabled.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_add_rule_success()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test add_rule() successfully adds rule.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [config models player](config_models_player.md) (1 shared connections)
-- [idle movement npc](idle_movement_npc.md) (1 shared connections)
+- [lucidity active service](lucidity_active_service.md) (1 shared connections)
+- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_idle_movement.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 

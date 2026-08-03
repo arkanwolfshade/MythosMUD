@@ -33,8 +33,7 @@
 
 ## Relationships
 
-- [command inventory factories](command_inventory_factories.md) (3 shared connections)
-- [player event handlers](player_event_handlers.md) (2 shared connections)
+- [models npc rationale](models_npc_rationale.md) (5 shared connections)
 
 ## Source Files
 

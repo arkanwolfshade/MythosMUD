@@ -1,29 +1,49 @@
 # argon2 auth rationale
 
-> 5 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **.apply_encounter_lucidity_effect()** (6 connections) — `server/services/npc_combat_lucidity.py`
-- **._resolve_lucidity_category()** (4 connections) — `server/services/npc_combat_lucidity.py`
-- **Any** (2 connections)
-- **Apply lucidity loss when a player engages an eldritch entity.          Args:** (1 connections) — `server/services/npc_combat_lucidity.py`
-- **Determine encounter category based on NPC definition metadata.          Args:** (1 connections) — `server/services/npc_combat_lucidity.py`
+- **RoomRepository** (17 connections) — `server/persistence/repositories/room_repository.py`
+- **room_repository.py** (8 connections) — `server/persistence/repositories/room_repository.py`
+- **test_room_repository.py** (7 connections) — `server/tests/unit/persistence/test_room_repository.py`
+- **.__init__()** (3 connections) — `server/persistence/repositories/room_repository.py`
+- **.get_room_by_id()** (2 connections) — `server/persistence/repositories/room_repository.py`
+- **.list_rooms()** (2 connections) — `server/persistence/repositories/room_repository.py`
+- **.save_room()** (2 connections) — `server/persistence/repositories/room_repository.py`
+- **.save_rooms()** (2 connections) — `server/persistence/repositories/room_repository.py`
+- **test_get_room_by_id_from_cache()** (2 connections) — `server/tests/unit/persistence/test_room_repository.py`
+- **test_list_rooms_returns_cache_values()** (2 connections) — `server/tests/unit/persistence/test_room_repository.py`
+- **test_save_room_updates_cache()** (2 connections) — `server/tests/unit/persistence/test_room_repository.py`
+- **test_save_rooms_updates_cache()** (2 connections) — `server/tests/unit/persistence/test_room_repository.py`
+- **Room repository for async persistence operations.  This module provides async da** (1 connections) — `server/persistence/repositories/room_repository.py`
+- **Repository for room persistence operations.      Handles room caching and retrie** (1 connections) — `server/persistence/repositories/room_repository.py`
+- **Initialize the room repository.          Args:             room_cache: Shared ro** (1 connections) — `server/persistence/repositories/room_repository.py`
+- **Get a room by ID from cache.          Args:             room_id: Room identifier** (1 connections) — `server/persistence/repositories/room_repository.py`
+- **List all cached rooms.          Returns:             list[Room]: List of all roo** (1 connections) — `server/persistence/repositories/room_repository.py`
+- **Save a room to the cache.          Args:             room: Room object to save** (1 connections) — `server/persistence/repositories/room_repository.py`
+- **Save multiple rooms to the cache.          Args:             rooms: List of room** (1 connections) — `server/persistence/repositories/room_repository.py`
+- **Unit tests for RoomRepository.** (1 connections) — `server/tests/unit/persistence/test_room_repository.py`
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (1 shared connections)
-- [commands admin mute](commands_admin_mute.md) (1 shared connections)
+- [models npc rationale](models_npc_rationale.md) (3 shared connections)
+- [room models instance](room_models_instance.md) (2 shared connections)
+- [Database Config](Database_Config.md) (2 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
+- [NPC Combat](NPC_Combat.md) (1 shared connections)
+- [command admin setlucidity](command_admin_setlucidity.md) (1 shared connections)
+- [persistence container item](persistence_container_item.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/npc_combat_lucidity.py`
+- `server/persistence/repositories/room_repository.py`
+- `server/tests/unit/persistence/test_room_repository.py`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 58 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

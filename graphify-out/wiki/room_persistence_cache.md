@@ -33,8 +33,7 @@
 
 ## Relationships
 
-- [combat models rationale](combat_models_rationale.md) (2 shared connections)
-- [world models rationale](world_models_rationale.md) (1 shared connections)
+- [world models rationale](world_models_rationale.md) (3 shared connections)
 
 ## Source Files
 

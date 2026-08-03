@@ -1,24 +1,25 @@
 # game level service
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_check_equipped_item_no_get_equipped_items_method()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test checking equipped item when player has no get_equipped_items method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **sub_zone** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **pattern** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 
 ## Relationships
 
-- [health service services](health_service_services.md) (1 shared connections)
-- [Item Lookup](Item_Lookup.md) (1 shared connections)
+- [room toolkit validator](room_toolkit_validator.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_item.py`
+- `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

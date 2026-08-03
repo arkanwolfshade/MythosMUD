@@ -1,40 +1,39 @@
 # postgres adapter infrastructure
 
-> 38 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **PostgresConnection** (31 connections) — `server/postgres_adapter.py`
-- **TestPostgresConnection** (18 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.__exit__()** (5 connections) — `server/postgres_adapter.py`
-- **.test_postgres_connection_execute()** (4 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_postgres_connection_execute_no_params()** (4 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.commit()** (3 connections) — `server/postgres_adapter.py`
-- **.rollback()** (3 connections) — `server/postgres_adapter.py`
-- **.close()** (3 connections) — `server/postgres_adapter.py`
-- **.test_postgres_connection_initialization()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_postgres_connection_cursor()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_postgres_connection_cursor_with_factory()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_postgres_connection_commit()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_postgres_connection_rollback()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_postgres_connection_close()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_postgres_connection_context_manager_success()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_postgres_connection_context_manager_exception()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.__init__()** (2 connections) — `server/postgres_adapter.py`
-- **.mock_connection()** (2 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **PostgresCursor** (21 connections) — `server/postgres_adapter.py`
+- **TestPostgresCursor** (13 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **.rowcount()** (4 connections) — `server/postgres_adapter.py`
+- **.test_postgres_cursor_fetchone_with_row()** (4 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **.test_postgres_cursor_fetchall_with_rows()** (4 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **.test_postgres_cursor_initialization()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **.test_postgres_cursor_fetchone_none()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **.test_postgres_cursor_fetchall_empty()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **.test_postgres_cursor_rowcount()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **.fetchone()** (2 connections) — `server/postgres_adapter.py`
+- **.fetchall()** (2 connections) — `server/postgres_adapter.py`
 - **.mock_cursor()** (2 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **connection** (1 connections)
-- **.__enter__()** (1 connections) — `server/postgres_adapter.py`
-- **PostgreSQL connection wrapper for persistence layer operations.** (1 connections) — `server/postgres_adapter.py`
-- **Commit the current transaction.** (1 connections) — `server/postgres_adapter.py`
-- **Rollback the current transaction.** (1 connections) — `server/postgres_adapter.py`
-- **Close the connection.** (1 connections) — `server/postgres_adapter.py`
-- *... and 13 more nodes in this community*
+- **PostgreSQL cursor wrapper for query result access.** (1 connections) — `server/postgres_adapter.py`
+- **Get the number of rows affected.** (1 connections) — `server/postgres_adapter.py`
+- **Test PostgresCursor class.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **Create a mock psycopg2 cursor.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **Test PostgresCursor initialization.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **Test PostgresCursor.fetchone() with row.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **Test PostgresCursor.fetchone() with None.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **Test PostgresCursor.fetchall() with rows.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **Test PostgresCursor.fetchall() with empty result.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **Test PostgresCursor.rowcount().** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
 
 ## Relationships
 
-- [postgres adapter infrastructure](postgres_adapter_infrastructure.md) (17 shared connections)
-- [postgres adapter rationale](postgres_adapter_rationale.md) (3 shared connections)
+- [postgres adapter infrastructure](postgres_adapter_infrastructure.md) (15 shared connections)
+- [postgres adapter rationale](postgres_adapter_rationale.md) (2 shared connections)
+- [models npc rationale](models_npc_rationale.md) (1 shared connections)
+- [room game service](room_game_service.md) (1 shared connections)
+- [world models rationale](world_models_rationale.md) (1 shared connections)
 
 ## Source Files
 
@@ -43,8 +42,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 104 (87%)
-- INFERRED: 16 (13%)
+- EXTRACTED: 59 (80%)
+- INFERRED: 15 (20%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -2,7 +2,7 @@
 
 > God node · 231 connections · `server/alias_storage.py`
 
-**Community:** [commands admin mute](commands_admin_mute.md)
+**Community:** [commands npc admin](commands_npc_admin.md)
 
 ## Connections by Relation
 
@@ -25,19 +25,19 @@
 - combat_handler.py `EXTRACTED`
 - inventory_equip_command.py `EXTRACTED`
 - player_service.py `EXTRACTED`
-- quest_commands.py `EXTRACTED`
 - admin_teleport_commands.py `EXTRACTED`
+- quest_commands.py `EXTRACTED`
 - look_command.py `EXTRACTED`
 - admin_shutdown_command.py `EXTRACTED`
-- inventory_pickup_command.py `EXTRACTED`
 - admin_summon_command.py `EXTRACTED`
+- inventory_pickup_command.py `EXTRACTED`
 - admin_commands.py `EXTRACTED`
-- combat_taunt.py `EXTRACTED`
 - inventory_unequip_command.py `EXTRACTED`
+- combat_taunt.py `EXTRACTED`
 - websocket_handler_commands.py `EXTRACTED`
 - communication_commands.py `EXTRACTED`
 - rescue_commands.py `EXTRACTED`
-- router.py `EXTRACTED`
+- inventory_get_command.py `EXTRACTED`
 
 ### indirect_call
 - .test_ensure_alias_storage_provided() `INFERRED`
@@ -67,25 +67,25 @@
 
 ### references
 - _handle_admin_set_stat_command() `EXTRACTED`
+- handle_teleport_command() `EXTRACTED`
 - handle_ground_command() `EXTRACTED`
 - handle_read_command() `EXTRACTED`
 - handle_logout_command() `EXTRACTED`
 - handle_alias_command() `EXTRACTED`
 - _prepare_command_for_processing() `EXTRACTED`
+- handle_goto_command() `EXTRACTED`
 - handle_pray_command() `EXTRACTED`
+- handle_party_command() `EXTRACTED`
 - handle_rest_command() `EXTRACTED`
 - handle_whisper_command() `EXTRACTED`
 - handle_quest_command() `EXTRACTED`
 - _process_alias_expansion() `EXTRACTED`
 - process_command_unified() `EXTRACTED`
 - handle_mute_command() `EXTRACTED`
-- handle_teleport_command() `EXTRACTED`
+- handle_debrief_command() `EXTRACTED`
 - handle_go_command() `EXTRACTED`
 - _handle_special_command_routing() `EXTRACTED`
 - handle_follow_command() `EXTRACTED`
-- handle_pickup_command() `EXTRACTED`
-- handle_status_command() `EXTRACTED`
-- handle_say_command() `EXTRACTED`
 
 ### uses
 - CombatCommandHandler `INFERRED`

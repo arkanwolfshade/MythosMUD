@@ -16,7 +16,7 @@
 ## Relationships
 
 - [room realtime subscription](room_realtime_subscription.md) (20 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (2 shared connections)
+- [connection disconnection realtime](connection_disconnection_realtime.md) (2 shared connections)
 - [infrastructure persistence room](infrastructure_persistence_room.md) (2 shared connections)
 - [room infrastructure persistence](room_infrastructure_persistence.md) (2 shared connections)
 - [room drops realtime](room_drops_realtime.md) (2 shared connections)

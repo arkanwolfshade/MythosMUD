@@ -14,7 +14,7 @@
 
 ## Relationships
 
-- [Item Instances](Item_Instances.md) (2 shared connections)
+- [models npc rationale](models_npc_rationale.md) (2 shared connections)
 
 ## Source Files
 

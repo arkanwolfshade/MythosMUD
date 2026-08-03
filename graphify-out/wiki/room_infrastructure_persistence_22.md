@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_normalize_command_strips_whitespace()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **Test _normalize_command() strips leading/trailing whitespace.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_remove_room_occupant_removes_empty_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **Test remove_room_occupant() removes room when last occupant leaves.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
 
 ## Relationships
 
-- [command parser helpers](command_parser_helpers.md) (1 shared connections)
+- [room subscription manager](room_subscription_manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_parser_helpers.py`
+- `server/tests/unit/realtime/test_room_subscription_manager.py`
 
 ## Audit Trail
 

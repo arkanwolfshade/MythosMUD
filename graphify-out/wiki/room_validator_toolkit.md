@@ -1,51 +1,56 @@
 # room validator toolkit
 
-> 55 nodes
+> 90 nodes
 
 ## Key Concepts
 
 - **test_aggro_threat.py** (29 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **aggro_threat.py** (28 connections) — `server/services/aggro_threat.py`
+- **update_aggro()** (24 connections) — `server/services/aggro_threat.py`
 - **_make_combat()** (23 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **add_damage_threat()** (20 connections) — `server/services/aggro_threat.py`
 - **get_or_create_hate_list()** (19 connections) — `server/services/aggro_threat.py`
+- **add_heal_threat()** (14 connections) — `server/services/aggro_threat.py`
+- **test_aggro_flow.py** (14 connections) — `server/tests/integration/test_aggro_flow.py`
 - **_make_participant()** (13 connections) — `server/tests/unit/services/test_aggro_threat.py`
-- **combat_service_end.py** (11 connections) — `server/services/combat_service_end.py`
-- **clear_aggro_for_combat()** (6 connections) — `server/services/aggro_threat.py`
+- **apply_taunt()** (12 connections) — `server/services/aggro_threat.py`
+- **UUID** (11 connections)
+- **_make_participant()** (9 connections) — `server/tests/integration/test_aggro_flow.py`
+- **get_npc_current_target()** (8 connections) — `server/services/aggro_threat.py`
+- **_make_combat()** (8 connections) — `server/tests/integration/test_aggro_flow.py`
+- **_get_aggro_config()** (7 connections) — `server/services/aggro_threat.py`
+- **apply_stealth_wipe()** (7 connections) — `server/services/aggro_threat.py`
+- **on_player_entered_stealth()** (7 connections) — `server/services/aggro_threat.py`
+- **test_aggro_healer_overpull_switches_target()** (7 connections) — `server/tests/integration/test_aggro_flow.py`
+- **test_aggro_taunt_from_next_room_no_effect()** (7 connections) — `server/tests/integration/test_aggro_flow.py`
+- **test_aggro_stealth_wipe_switches_to_next()** (7 connections) — `server/tests/integration/test_aggro_flow.py`
+- **test_aggro_passive_mob_no_damage_threat_taunt_switches()** (7 connections) — `server/tests/integration/test_aggro_flow.py`
+- **test_aggro_nightgaunt_like_damage_and_heal_threat()** (7 connections) — `server/tests/integration/test_aggro_flow.py`
+- **test_aggro_tank_swap_taunt_sequence()** (6 connections) — `server/tests/integration/test_aggro_flow.py`
 - **test_update_aggro_one_entity_sets_target()** (6 connections) — `server/tests/unit/services/test_aggro_threat.py`
 - **test_update_aggro_stability_no_switch_when_below_threshold()** (6 connections) — `server/tests/unit/services/test_aggro_threat.py`
-- **test_update_aggro_stability_switch_when_at_or_above_threshold()** (6 connections) — `server/tests/unit/services/test_aggro_threat.py`
-- **test_update_aggro_excludes_dead_from_candidate()** (6 connections) — `server/tests/unit/services/test_aggro_threat.py`
-- **test_on_player_entered_stealth_wipes_from_all_npcs()** (6 connections) — `server/tests/unit/services/test_aggro_threat.py`
-- **end_combat()** (5 connections) — `server/services/combat_service_end.py`
-- **test_apply_taunt_same_room_sets_threat_above_top()** (5 connections) — `server/tests/unit/services/test_aggro_threat.py`
-- **test_apply_taunt_different_room_no_op()** (5 connections) — `server/tests/unit/services/test_aggro_threat.py`
-- **test_apply_stealth_wipe_removes_entity()** (5 connections) — `server/tests/unit/services/test_aggro_threat.py`
-- **test_update_aggro_no_hate_list_clears_target()** (5 connections) — `server/tests/unit/services/test_aggro_threat.py`
-- **test_add_damage_threat_passive_mob_skipped()** (5 connections) — `server/tests/unit/services/test_aggro_threat.py`
-- **test_add_damage_threat_aggressive_mob_adds()** (5 connections) — `server/tests/unit/services/test_aggro_threat.py`
-- **test_aggression_level_scales_damage_threat()** (5 connections) — `server/tests/unit/services/test_aggro_threat.py`
-- **test_aggression_level_scales_heal_threat()** (5 connections) — `server/tests/unit/services/test_aggro_threat.py`
-- **test_get_or_create_hate_list_creates_empty()** (4 connections) — `server/tests/unit/services/test_aggro_threat.py`
-- **test_add_damage_threat_accumulates()** (4 connections) — `server/tests/unit/services/test_aggro_threat.py`
-- **test_add_damage_threat_ignores_zero()** (4 connections) — `server/tests/unit/services/test_aggro_threat.py`
-- **test_add_heal_threat_accumulates_with_factor()** (4 connections) — `server/tests/unit/services/test_aggro_threat.py`
-- **test_apply_stealth_wipe_no_list_no_op()** (4 connections) — `server/tests/unit/services/test_aggro_threat.py`
-- *... and 30 more nodes in this community*
+- *... and 65 more nodes in this community*
 
 ## Relationships
 
-- [Item Instances](Item_Instances.md) (41 shared connections)
-- [NPC Combat](NPC_Combat.md) (3 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [command factories exploration](command_factories_exploration.md) (13 shared connections)
+- [combat commands handler](combat_commands_handler.md) (11 shared connections)
+- [Item Instances](Item_Instances.md) (10 shared connections)
+- [websocket handler realtime](websocket_handler_realtime.md) (5 shared connections)
+- [NPC Combat](NPC_Combat.md) (5 shared connections)
+- [models npc rationale](models_npc_rationale.md) (4 shared connections)
+- [spell game magic](spell_game_magic.md) (4 shared connections)
+- [services combat sync](services_combat_sync.md) (3 shared connections)
 
 ## Source Files
 
 - `server/services/aggro_threat.py`
-- `server/services/combat_service_end.py`
+- `server/tests/integration/test_aggro_flow.py`
 - `server/tests/unit/services/test_aggro_threat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 236 (100%)
+- EXTRACTED: 453 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

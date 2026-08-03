@@ -1,29 +1,41 @@
 # countdown rest task
 
-> 6 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **TestGetPlayerRespawnService** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_player_respawn_service_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_player_respawn_service_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Tests for get_player_respawn_service dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_player_respawn_service returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_player_respawn_service raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **create_hasher_with_params()** (11 connections) — `server/auth/argon2_utils.py`
+- **test_create_hasher_with_params_valid()** (3 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **test_create_hasher_with_params_invalid_time_cost()** (3 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **test_create_hasher_with_params_invalid_memory_cost()** (3 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **test_create_hasher_with_params_invalid_parallelism()** (3 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **test_create_hasher_with_params_invalid_hash_len()** (3 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **test_create_hasher_with_params_low_time_cost_warning()** (3 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **test_create_hasher_with_params_low_memory_cost_warning()** (3 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **PasswordHasher** (1 connections)
+- **Create a PasswordHasher with custom parameters.** (1 connections) — `server/auth/argon2_utils.py`
+- **Test creating hasher with valid parameters.** (1 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **Test creating hasher with invalid time_cost.** (1 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **Test creating hasher with invalid memory_cost.** (1 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **Test creating hasher with invalid parallelism.** (1 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **Test creating hasher with invalid hash_len.** (1 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **Test that create_hasher_with_params logs warning for low time_cost.** (1 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **Test that create_hasher_with_params logs warning for low memory_cost.** (1 connections) — `server/tests/unit/auth/test_argon2_utils.py`
 
 ## Relationships
 
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (3 shared connections)
-- [command inventory models](command_inventory_models.md) (1 shared connections)
+- [respawn player handlers](respawn_player_handlers.md) (8 shared connections)
+- [models npc rationale](models_npc_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_dependencies.py`
+- `server/auth/argon2_utils.py`
+- `server/tests/unit/auth/test_argon2_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (93%)
-- INFERRED: 1 (7%)
+- EXTRACTED: 41 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

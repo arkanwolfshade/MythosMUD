@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_parse_command_parts_with_args()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **Test _parse_command_parts() parses command with arguments.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_get_room_data_with_conversion()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test _get_room_data_with_conversion() loads room and converts UUIDs.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Relationships
 
-- [command parser helpers](command_parser_helpers.md) (1 shared connections)
+- [game state provider](game_state_provider.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_parser_helpers.py`
+- `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Audit Trail
 

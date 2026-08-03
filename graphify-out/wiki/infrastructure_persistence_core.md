@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **command_parser()** (3 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **Create a CommandParser instance.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_get_npcs_batch_empty()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test get_npcs_batch() returns empty dict for empty input.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Relationships
 
-- [command parser helpers](command_parser_helpers.md) (1 shared connections)
-- [player effects endpoints](player_effects_endpoints.md) (1 shared connections)
+- [game state provider](game_state_provider.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_parser_helpers.py`
+- `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

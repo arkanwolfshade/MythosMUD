@@ -27,7 +27,7 @@
 ## Relationships
 
 - [Realtime Subscribers](Realtime_Subscribers.md) (9 shared connections)
-- [command inventory models](command_inventory_models.md) (1 shared connections)
+- [player effects endpoints](player_effects_endpoints.md) (1 shared connections)
 
 ## Source Files
 

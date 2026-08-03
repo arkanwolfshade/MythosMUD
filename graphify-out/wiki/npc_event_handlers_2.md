@@ -1,46 +1,53 @@
 # npc event handlers
 
-> 24 nodes
+> 27 nodes
 
 ## Key Concepts
 
-- **test_npc_event_handlers_helpers.py** (14 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **npc_event_handler()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **mock_message_builder()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **test_extract_spawn_message_from_config()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **test_extract_spawn_message_from_config_none()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **test_get_npc_spawn_message()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **test_get_npc_spawn_message_custom()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **test_get_npc_name()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **test_determine_direction_from_rooms()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **test_determine_direction_from_rooms_not_found()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **test_get_npc_departure_message()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **Unit tests for NPC event handlers helper functions.  Tests the helper functions** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **Create a mock connection manager.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **Create a mock message builder.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **Create an NPCEventHandler instance.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **Test _extract_spawn_message_from_config() extracts spawn message.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **Test _extract_spawn_message_from_config() returns None when not found.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **Test _get_npc_spawn_message() returns spawn message.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **Test _get_npc_spawn_message() returns custom spawn message.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **Test _get_npc_name() returns NPC name.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **Test _determine_direction_from_rooms() determines direction.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **Test _determine_direction_from_rooms() returns None when direction not found.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **Test _get_npc_departure_message() returns departure message.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
+- **PayloadOptimizer** (23 connections) — `server/realtime/payload_optimizer.py`
+- **test_payload_optimizer.py** (19 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **get_payload_optimizer()** (9 connections) — `server/realtime/payload_optimizer.py`
+- **payload_optimizer.py** (6 connections) — `server/realtime/payload_optimizer.py`
+- **_CompareExplodes** (4 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **optimizer()** (3 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **test_create_incremental_update_fallback_on_error()** (3 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **.__init__()** (2 connections) — `server/realtime/payload_optimizer.py`
+- **test_get_payload_size_returns_byte_length()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **test_get_payload_size_returns_zero_on_serialization_error()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **test_compress_payload_round_trip_metadata()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **test_optimize_payload_returns_small_payload_unchanged()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **test_optimize_payload_compresses_large_payload()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **test_optimize_payload_force_compression_when_beneficial()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **test_optimize_payload_raises_when_uncompressible_and_oversized()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **test_optimize_payload_raises_when_compressed_still_too_large()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **test_create_incremental_update_no_previous_returns_full()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **test_create_incremental_update_detects_changes()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **test_create_incremental_update_empty_when_unchanged()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **test_get_payload_optimizer_returns_singleton()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **Payload optimization for WebSocket messages.  This module provides utilities for** (1 connections) — `server/realtime/payload_optimizer.py`
+- **Optimizes payloads for WebSocket transmission.      Features:     - Size limit e** (1 connections) — `server/realtime/payload_optimizer.py`
+- **Initialize the payload optimizer.          Args:             max_payload_size: M** (1 connections) — `server/realtime/payload_optimizer.py`
+- **Get the global payload optimizer instance.** (1 connections) — `server/realtime/payload_optimizer.py`
+- **.__eq__()** (1 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [Player Name Validation](Player_Name_Validation.md) (3 shared connections)
+- [payload realtime optimizer](payload_realtime_optimizer.md) (4 shared connections)
+- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (2 shared connections)
+- [connection disconnection realtime](connection_disconnection_realtime.md) (1 shared connections)
+- [startup services npc](startup_services_npc.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
+- `server/realtime/payload_optimizer.py`
+- `server/tests/unit/realtime/test_payload_optimizer.py`
 
 ## Audit Trail
 
-- EXTRACTED: 49 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 98 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

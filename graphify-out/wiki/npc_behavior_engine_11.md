@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **active_lucidity_service()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **Create an ActiveLucidityService instance.** (1 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_time_until_retry_returns_zero_after_timeout()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **Test _time_until_retry() returns 0 after timeout.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
 
 ## Relationships
 
-- [commands admin mute](commands_admin_mute.md) (1 shared connections)
-- [lucidity active service](lucidity_active_service.md) (1 shared connections)
+- [config rationale reset](config_rationale_reset.md) (1 shared connections)
+- [websocket handler realtime](websocket_handler_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_active_lucidity_service.py`
+- `server/tests/unit/realtime/test_circuit_breaker.py`
 
 ## Audit Trail
 

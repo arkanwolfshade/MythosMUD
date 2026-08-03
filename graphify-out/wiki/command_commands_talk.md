@@ -1,48 +1,57 @@
 # command commands talk
 
-> 13 nodes
+> 30 nodes
 
 ## Key Concepts
 
-- **database_helpers.py** (30 connections) — `server/database_helpers.py`
-- **reset_database()** (8 connections) — `server/database_helpers.py`
-- **_reset_database_url_state()** (5 connections) — `server/database.py`
-- **_get_database_url_state()** (4 connections) — `server/database.py`
-- **test_reset_database()** (4 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **reset_db()** (3 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **Get database URL state for testing.      This is a public function to access the** (1 connections) — `server/database.py`
-- **Reset database URL state for testing.      This is a public function to reset th** (1 connections) — `server/database.py`
-- **Database utility functions.  This module provides module-level utility functions** (1 connections) — `server/database_helpers.py`
-- **Reset database state for testing.      This function resets the DatabaseManager** (1 connections) — `server/database_helpers.py`
-- **# NOTE: NPC models are NOT imported here - they belong to the NPC database** (1 connections) — `server/database_helpers.py`
-- **Reset database state before each test.** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **Test reset_database resets DatabaseManager singleton and module state.** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **InventorySchemaValidationError** (20 connections) — `server/schemas/shared/inventory_schema.py`
+- **validate_inventory_payload()** (13 connections) — `server/schemas/shared/inventory_schema.py`
+- **__init__.py** (12 connections) — `server/schemas/shared/__init__.py`
+- **test_inventory_schema.py** (11 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **validate_inventory_items()** (9 connections) — `server/schemas/shared/inventory_schema.py`
+- **inventory_schema.py** (7 connections) — `server/schemas/shared/inventory_schema.py`
+- **_build_validator()** (5 connections) — `server/schemas/shared/inventory_schema.py`
+- **test_persist_player_error()** (4 connections) — `server/tests/unit/commands/test_inventory_commands_persistence_helpers.py`
+- **test_validate_inventory_payload_missing_required()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **test_validate_inventory_payload_invalid_inventory()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **test_validate_inventory_items_missing_required()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **test_validate_inventory_items_invalid_quantity()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **Any** (3 connections)
+- **test_validate_inventory_payload_valid()** (3 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **test_validate_inventory_items_valid()** (3 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **Shared schemas: base models, target resolution, inventory validation.** (1 connections) — `server/schemas/shared/__init__.py`
+- **Exception** (1 connections)
+- **Inventory JSON schema validation utilities.  As recorded in the restricted stack** (1 connections) — `server/schemas/shared/inventory_schema.py`
+- **Raised when inventory payloads fail schema validation.** (1 connections) — `server/schemas/shared/inventory_schema.py`
+- **Internal helper to construct a Draft7 validator instance.** (1 connections) — `server/schemas/shared/inventory_schema.py`
+- **Validate a complete inventory payload against the canonical schema.      Raises:** (1 connections) — `server/schemas/shared/inventory_schema.py`
+- **Validate only the inventory portion to simplify testing workflows.      Raises:** (1 connections) — `server/schemas/shared/inventory_schema.py`
+- **Test _persist_player() handles save errors.** (1 connections) — `server/tests/unit/commands/test_inventory_commands_persistence_helpers.py`
+- **Unit tests for inventory_schema validation functions.  Tests the validation func** (1 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **Test validate_inventory_payload() accepts valid payload.** (1 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
-- [Database Access Layer](Database_Access_Layer.md) (11 shared connections)
-- [lucidity npc combat](lucidity_npc_combat.md) (6 shared connections)
-- [world models rationale](world_models_rationale.md) (3 shared connections)
-- [manager subject services](manager_subject_services.md) (2 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [commands inventory put](commands_inventory_put.md) (1 shared connections)
-- [memory lifespan app](memory_lifespan_app.md) (1 shared connections)
-- [game models enums](game_models_enums.md) (1 shared connections)
-- [npc idle movement](npc_idle_movement.md) (1 shared connections)
-- [room persistence loader](room_persistence_loader.md) (1 shared connections)
-- [Database Config](Database_Config.md) (1 shared connections)
-- [command inventory models](command_inventory_models.md) (1 shared connections)
+- [inventory commands command](inventory_commands_command.md) (6 shared connections)
+- [npc population stats](npc_population_stats.md) (5 shared connections)
+- [command factories moderation](command_factories_moderation.md) (3 shared connections)
+- [NPC Combat](NPC_Combat.md) (3 shared connections)
+- [world models rationale](world_models_rationale.md) (2 shared connections)
+- [spell game magic](spell_game_magic.md) (1 shared connections)
+- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (1 shared connections)
 
 ## Source Files
 
-- `server/database.py`
-- `server/database_helpers.py`
-- `server/tests/unit/infrastructure/test_database_helpers.py`
+- `server/schemas/shared/__init__.py`
+- `server/schemas/shared/inventory_schema.py`
+- `server/tests/unit/commands/test_inventory_commands_persistence_helpers.py`
+- `server/tests/unit/schemas/test_inventory_schema.py`
 
 ## Audit Trail
 
-- EXTRACTED: 61 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 113 (93%)
+- INFERRED: 8 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

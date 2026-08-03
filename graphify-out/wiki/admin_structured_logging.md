@@ -1,12 +1,15 @@
 # admin structured logging
 
-> 22 nodes
+> 42 nodes
 
 ## Key Concepts
 
-- **AdminActionsLogger** (13 connections) — `server/structured_logging/admin_actions_logger.py`
+- **AdminActionsLogger** (29 connections) — `server/structured_logging/admin_actions_logger.py`
+- **test_admin_actions_logger.py** (21 connections) — `server/tests/unit/structured_logging/test_admin_actions_logger.py`
 - **._log_entry()** (8 connections) — `server/structured_logging/admin_actions_logger.py`
+- **_read_log_entries()** (7 connections) — `server/tests/unit/structured_logging/test_admin_actions_logger.py`
 - **Any** (6 connections)
+- **Path** (6 connections)
 - **.__init__()** (5 connections) — `server/structured_logging/admin_actions_logger.py`
 - **._get_log_file_path()** (5 connections) — `server/structured_logging/admin_actions_logger.py`
 - **.log_teleport_action()** (4 connections) — `server/structured_logging/admin_actions_logger.py`
@@ -14,32 +17,34 @@
 - **.log_permission_check()** (4 connections) — `server/structured_logging/admin_actions_logger.py`
 - **.get_recent_actions()** (4 connections) — `server/structured_logging/admin_actions_logger.py`
 - **.get_teleport_statistics()** (4 connections) — `server/structured_logging/admin_actions_logger.py`
+- **test_log_teleport_action_success()** (4 connections) — `server/tests/unit/structured_logging/test_admin_actions_logger.py`
+- **test_get_admin_actions_logger_singleton()** (4 connections) — `server/tests/unit/structured_logging/test_admin_actions_logger.py`
 - **._ensure_log_file_exists()** (3 connections) — `server/structured_logging/admin_actions_logger.py`
+- **admin_logger()** (3 connections) — `server/tests/unit/structured_logging/test_admin_actions_logger.py`
+- **test_log_teleport_action_failure()** (3 connections) — `server/tests/unit/structured_logging/test_admin_actions_logger.py`
+- **test_log_admin_command()** (3 connections) — `server/tests/unit/structured_logging/test_admin_actions_logger.py`
+- **test_log_admin_command_failure()** (3 connections) — `server/tests/unit/structured_logging/test_admin_actions_logger.py`
+- **test_log_permission_check_denied()** (3 connections) — `server/tests/unit/structured_logging/test_admin_actions_logger.py`
+- **test_admin_logger_init_from_config()** (3 connections) — `server/tests/unit/structured_logging/test_admin_actions_logger.py`
 - **Path** (2 connections)
-- **Logger for admin actions with structured logging and file persistence.      Prov** (1 connections) — `server/structured_logging/admin_actions_logger.py`
-- **Initialize the admin actions logger.          Args:             log_directory: D** (1 connections) — `server/structured_logging/admin_actions_logger.py`
-- **Get the log file path for the current date.** (1 connections) — `server/structured_logging/admin_actions_logger.py`
-- **Ensure the current log file exists and create if necessary.** (1 connections) — `server/structured_logging/admin_actions_logger.py`
-- **Log a teleport action with comprehensive details.          Args:             adm** (1 connections) — `server/structured_logging/admin_actions_logger.py`
-- **Log a general admin command action.          Args:             admin_name: Name** (1 connections) — `server/structured_logging/admin_actions_logger.py`
-- **Log permission check attempts.          Args:             player_name: Name of t** (1 connections) — `server/structured_logging/admin_actions_logger.py`
-- **Write a log entry to the current log file.          Args:             log_entry:** (1 connections) — `server/structured_logging/admin_actions_logger.py`
-- **Retrieve recent admin actions from the log files.          Args:             hou** (1 connections) — `server/structured_logging/admin_actions_logger.py`
-- **Get statistics about teleport actions.          Args:             hours: Number** (1 connections) — `server/structured_logging/admin_actions_logger.py`
+- **log_dir()** (2 connections) — `server/tests/unit/structured_logging/test_admin_actions_logger.py`
+- **test_get_recent_actions_filters()** (2 connections) — `server/tests/unit/structured_logging/test_admin_actions_logger.py`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [commands admin mute](commands_admin_mute.md) (2 shared connections)
+- [npc service services](npc_service_services.md) (5 shared connections)
 - [shutdown admin command](shutdown_admin_command.md) (1 shared connections)
-- [Item Instances](Item_Instances.md) (1 shared connections)
+- [models npc rationale](models_npc_rationale.md) (1 shared connections)
 
 ## Source Files
 
 - `server/structured_logging/admin_actions_logger.py`
+- `server/tests/unit/structured_logging/test_admin_actions_logger.py`
 
 ## Audit Trail
 
-- EXTRACTED: 72 (100%)
+- EXTRACTED: 165 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

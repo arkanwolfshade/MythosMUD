@@ -1,53 +1,52 @@
 # rate limiter rationale
 
-> 28 nodes
+> 53 nodes
 
 ## Key Concepts
 
-- **WearableContainerServiceError** (22 connections) — `server/services/wearable_container_service.py`
-- **test_handle_equip_wearable_container_capacity_exceeded()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_add_items_to_wearable_container_not_found()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_add_items_to_wearable_container_capacity_exceeded()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_handle_container_overflow_player_not_found()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_handle_equip_wearable_container_creation_error()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_add_items_to_wearable_container_wrong_player()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_add_items_to_wearable_container_wrong_source_type()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_add_items_to_wearable_container_update_fails()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_update_wearable_container_items_not_found()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_update_wearable_container_items_capacity_exceeded()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_update_wearable_container_items_update_fails()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_update_wearable_container_items_wrong_player()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_update_wearable_container_items_wrong_source_type()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Base exception for wearable container service operations.** (1 connections) — `server/services/wearable_container_service.py`
-- **Test handle_equip_wearable_container raises error when capacity exceeded.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test add_items_to_wearable_container raises error when container not found.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test add_items_to_wearable_container raises error when capacity exceeded.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test handle_container_overflow raises error when player not found.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test handle_equip_wearable_container handles container creation error.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test add_items_to_wearable_container raises error when container belongs to diff** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test add_items_to_wearable_container raises error when container is not equipmen** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test add_items_to_wearable_container raises error when update fails.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test update_wearable_container_items raises error when container not found.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test update_wearable_container_items raises error when capacity exceeded.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- *... and 3 more nodes in this community*
+- **TestRoomDataFixer** (20 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **RoomDataFixer** (14 connections) — `server/services/room_data_fixer.py`
+- **.apply_room_data_fixes()** (13 connections) — `server/services/room_data_fixer.py`
+- **.fix_missing_name()** (7 connections) — `server/services/room_data_fixer.py`
+- **.fix_occupant_count_mismatch()** (7 connections) — `server/services/room_data_fixer.py`
+- **.fix_missing_description()** (6 connections) — `server/services/room_data_fixer.py`
+- **.fix_missing_timestamp()** (6 connections) — `server/services/room_data_fixer.py`
+- **Any** (5 connections)
+- **.count_applied_fixes()** (5 connections) — `server/services/room_data_fixer.py`
+- **.test_apply_room_data_fixes_exception_handling()** (5 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **test_room_data_fixer.py** (4 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_missing_name()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_missing_name_no_error()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_missing_name_unknown_id()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_missing_description()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_missing_description_no_error()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_occupant_count_mismatch()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_occupant_count_mismatch_no_error()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_occupant_count_mismatch_no_occupants()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_missing_timestamp()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_missing_timestamp_existing()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_count_applied_fixes()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_count_applied_fixes_no_fixable()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_apply_room_data_fixes_all_fixes()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_apply_room_data_fixes_no_errors()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- *... and 28 more nodes in this community*
 
 ## Relationships
 
-- [wearable container service](wearable_container_service.md) (14 shared connections)
-- [schedule services service](schedule_services_service.md) (4 shared connections)
-- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
-- [container helpers endpoints](container_helpers_endpoints.md) (1 shared connections)
-- [Database Config](Database_Config.md) (1 shared connections)
+- [models npc rationale](models_npc_rationale.md) (3 shared connections)
+- [room service sync](room_service_sync.md) (1 shared connections)
+- [connection models realtime](connection_models_realtime.md) (1 shared connections)
+- [look helpers commands](look_helpers_commands.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/wearable_container_service.py`
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `server/services/room_data_fixer.py`
+- `server/tests/unit/services/test_room_data_fixer.py`
 
 ## Audit Trail
 
-- EXTRACTED: 45 (60%)
-- INFERRED: 30 (40%)
+- EXTRACTED: 160 (96%)
+- INFERRED: 6 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

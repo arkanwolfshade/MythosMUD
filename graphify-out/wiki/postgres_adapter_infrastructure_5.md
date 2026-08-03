@@ -1,36 +1,32 @@
 # postgres adapter infrastructure
 
-> 23 nodes
+> 18 nodes
 
 ## Key Concepts
 
-- **TestPostgresConnectionPool** (13 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.get_pool()** (7 connections) — `server/postgres_adapter.py`
-- **.get_connection()** (6 connections) — `server/postgres_adapter.py`
-- **is_postgres_url()** (5 connections) — `server/postgres_adapter.py`
-- **.test_get_connection_context_manager()** (4 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_is_postgres_url_true()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_is_postgres_url_false()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_get_pool_creates_new_pool()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_get_pool_reuses_existing_pool()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_get_pool_normalizes_url()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_get_connection_context_manager_exception()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **ThreadedConnectionPool** (1 connections)
-- **Get or create a connection pool for the given database URL.** (1 connections) — `server/postgres_adapter.py`
-- **Get a connection from the pool.** (1 connections) — `server/postgres_adapter.py`
-- **Check if the database URL is PostgreSQL.** (1 connections) — `server/postgres_adapter.py`
-- **Test PostgresConnectionPool class.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test is_postgres_url() with PostgreSQL URL.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test is_postgres_url() with non-PostgreSQL URL.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test get_pool() creates new pool.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test get_pool() reuses existing pool.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test get_pool() normalizes database URL.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test get_connection() context manager.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test get_connection() context manager with exception.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **test_postgres_adapter.py** (14 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **TestUtilityFunctions** (11 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **connect_postgres()** (6 connections) — `server/postgres_adapter.py`
+- **convert_sqlite_to_postgres_query()** (6 connections) — `server/postgres_adapter.py`
+- **.test_connect_postgres()** (4 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **.test_connect_postgres_with_driver_prefix()** (4 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **.test_convert_sqlite_to_postgres_query_basic()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **.test_convert_sqlite_to_postgres_query_no_params()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **.test_convert_sqlite_to_postgres_query_insert_replace()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **Create a PostgreSQL connection.      Args:         database_url: PostgreSQL conn** (1 connections) — `server/postgres_adapter.py`
+- **Convert legacy SQLite query syntax to PostgreSQL syntax.      Note: This functio** (1 connections) — `server/postgres_adapter.py`
+- **Unit tests for PostgreSQL adapter.  Tests PostgresRow, PostgresConnection, Postg** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **Test utility functions.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **Test connect_postgres().** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **Test connect_postgres() with driver prefix.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **Test convert_sqlite_to_postgres_query() basic conversion.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **Test convert_sqlite_to_postgres_query() with no parameters.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **Test convert_sqlite_to_postgres_query() with INSERT OR REPLACE.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
 
 ## Relationships
 
-- [postgres adapter infrastructure](postgres_adapter_infrastructure.md) (11 shared connections)
+- [postgres adapter infrastructure](postgres_adapter_infrastructure.md) (16 shared connections)
+- [models npc rationale](models_npc_rationale.md) (3 shared connections)
 
 ## Source Files
 
@@ -39,8 +35,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 60 (92%)
-- INFERRED: 5 (8%)
+- EXTRACTED: 57 (90%)
+- INFERRED: 6 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

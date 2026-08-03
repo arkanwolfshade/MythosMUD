@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_sanitize_unicode_input_mojibake()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **Test sanitizing mojibake (double-encoded text).** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_transition_to_updates_state()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **Test _transition_to() updates state.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
 
 ## Relationships
 
-- [Security Validator Tests](Security_Validator_Tests.md) (1 shared connections)
-- [command communication models](command_communication_models.md) (1 shared connections)
+- [config rationale reset](config_rationale_reset.md) (1 shared connections)
+- [websocket handler realtime](websocket_handler_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_security_validator.py`
+- `server/tests/unit/realtime/test_circuit_breaker.py`
 
 ## Audit Trail
 

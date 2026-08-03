@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_profession_meets_stat_requirements_one_not_met()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **Test meets_stat_requirements returns False when one requirement is not met.** (1 connections) — `server/tests/unit/models/test_profession.py`
+- **test_stop_processing_not_running()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test _stop_processing() when not running.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- [persistence core infrastructure](persistence_core_infrastructure.md) (1 shared connections)
-- [profession models rationale](profession_models_rationale.md) (1 shared connections)
+- [event bus events](event_bus_events.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/models/test_profession.py`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

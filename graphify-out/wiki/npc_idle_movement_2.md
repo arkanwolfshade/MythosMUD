@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_get_valid_exits_all_exits_invalid_subzone_returns_empty()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **When every target fails boundary validation, valid exits dict is empty.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_normalize_event_ids_both_provided()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test normalize_event_ids() with both player_id and room_id.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [config models player](config_models_player.md) (1 shared connections)
-- [idle movement npc](idle_movement_npc.md) (1 shared connections)
+- [player event handlers](player_event_handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_idle_movement.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

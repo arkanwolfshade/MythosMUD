@@ -1,27 +1,25 @@
 # realtime maintenance connection
 
-> 5 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **.get_player_stats()** (5 connections) — `server/services/rate_limiter.py`
-- **.get_system_stats()** (3 connections) — `server/services/rate_limiter.py`
-- **Any** (2 connections)
-- **Get rate limiting statistics for a player.          Args:             player_id:** (1 connections) — `server/services/rate_limiter.py`
-- **Get system-wide rate limiting statistics.          Returns:             Dictiona** (1 connections) — `server/services/rate_limiter.py`
+- **.__init__()** (4 connections) — `server/realtime/messaging/message_broadcaster.py`
+- **SendPersonalMessage** (1 connections)
+- **Initialize the message broadcaster.          Args:             room_manager: Roo** (1 connections) — `server/realtime/messaging/message_broadcaster.py`
 
 ## Relationships
 
-- [rate limiter services](rate_limiter_services.md) (2 shared connections)
-- [schedule service services](schedule_service_services.md) (2 shared connections)
+- [realtime messaging message](realtime_messaging_message.md) (1 shared connections)
+- [connection disconnection realtime](connection_disconnection_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/rate_limiter.py`
+- `server/realtime/messaging/message_broadcaster.py`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,48 +1,61 @@
 # connection realtime statistics
 
-> 24 nodes
+> 61 nodes
 
 ## Key Concepts
 
-- **test_look_item_helpers.py** (28 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_equipped_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_equipped_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_room_drops_empty()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_room_drops_no_match()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_room_drops_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_room_drops_instance_number_zero()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_equipped_empty()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_equipped_no_match()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_equipped_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_equipped_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_equipped_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Unit tests for look item helper functions.  Tests the helper functions in look_i** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_equipped() finds item by name.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_equipped() returns None when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_room_drops() with empty list.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_room_drops() with no matching items.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_room_drops() with instance number out of range.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_room_drops() with instance number zero.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_equipped() with empty dict.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_equipped() with no matching items.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_equipped() with multiple matches (ambiguous).** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_equipped() with instance number.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_equipped() with instance number out of range.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **look_command.py** (38 connections) — `server/commands/look_command.py`
+- **test_look_command.py** (22 connections) — `server/tests/unit/commands/test_look_command.py`
+- **look_helpers.py** (16 connections) — `server/commands/look_helpers.py`
+- **Any** (12 connections)
+- **handle_look_command()** (12 connections) — `server/commands/look_command.py`
+- **_is_direction()** (11 connections) — `server/commands/look_helpers.py`
+- **_route_look_command()** (10 connections) — `server/commands/look_command.py`
+- **_validate_look_prerequisites()** (9 connections) — `server/commands/look_command.py`
+- **_get_room_drops()** (9 connections) — `server/commands/look_command.py`
+- **_setup_look_command()** (9 connections) — `server/commands/look_command.py`
+- **_handle_implicit_target_lookup()** (9 connections) — `server/commands/look_command.py`
+- **_get_app_and_persistence()** (7 connections) — `server/commands/look_command.py`
+- **_try_direction_look()** (7 connections) — `server/commands/look_command.py`
+- **_try_explicit_player_look()** (5 connections) — `server/commands/look_command.py`
+- **_try_explicit_item_look()** (5 connections) — `server/commands/look_command.py`
+- **_try_explicit_container_look()** (5 connections) — `server/commands/look_command.py`
+- **_try_implicit_target_lookup()** (5 connections) — `server/commands/look_command.py`
+- **test_get_app_and_persistence_from_container()** (3 connections) — `server/tests/unit/commands/test_look_command.py`
+- **test_get_app_and_persistence_state_fallback()** (3 connections) — `server/tests/unit/commands/test_look_command.py`
+- **test_validate_look_prerequisites_no_persistence()** (3 connections) — `server/tests/unit/commands/test_look_command.py`
+- **test_validate_look_prerequisites_room_missing()** (3 connections) — `server/tests/unit/commands/test_look_command.py`
+- **test_get_room_drops_from_room_manager()** (3 connections) — `server/tests/unit/commands/test_look_command.py`
+- **test_get_room_drops_no_connection_manager()** (3 connections) — `server/tests/unit/commands/test_look_command.py`
+- **test_setup_look_command_success()** (3 connections) — `server/tests/unit/commands/test_look_command.py`
+- **test_handle_look_command_setup_failure()** (3 connections) — `server/tests/unit/commands/test_look_command.py`
+- *... and 36 more nodes in this community*
 
 ## Relationships
 
-- [combat npc service](combat_npc_service.md) (10 shared connections)
-- [health service services](health_service_services.md) (9 shared connections)
-- [movement monitor game](movement_monitor_game.md) (8 shared connections)
+- [look command commands](look_command_commands.md) (13 shared connections)
+- [combat services turn](combat_services_turn.md) (7 shared connections)
+- [DI Container Format](DI_Container_Format.md) (6 shared connections)
+- [Item Lookup](Item_Lookup.md) (5 shared connections)
+- [look helpers commands](look_helpers_commands.md) (5 shared connections)
+- [models npc rationale](models_npc_rationale.md) (4 shared connections)
+- [commands position system](commands_position_system.md) (3 shared connections)
+- [services service hallucination](services_service_hallucination.md) (3 shared connections)
+- [room renderer functions](room_renderer_functions.md) (3 shared connections)
+- [commands npc admin](commands_npc_admin.md) (2 shared connections)
+- [command factories create](command_factories_create.md) (1 shared connections)
+- [connection realtime manager](connection_realtime_manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_item_helpers.py`
+- `server/commands/look_command.py`
+- `server/commands/look_helpers.py`
+- `server/tests/unit/commands/test_look_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 73 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 262 (100%)
+- INFERRED: 1 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_unsubscribe_from_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **Test unsubscribe_from_room() unsubscribes player from room.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_get_players_batch_no_persistence()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test get_players_batch() returns empty dict when persistence is None.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Relationships
 
-- [room subscription manager](room_subscription_manager.md) (1 shared connections)
+- [game state provider](game_state_provider.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager.py`
+- `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Audit Trail
 

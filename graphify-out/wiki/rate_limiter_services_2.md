@@ -1,54 +1,50 @@
 # rate limiter services
 
-> 26 nodes
+> 89 nodes
 
 ## Key Concepts
 
 - **test_rate_limiter.py** (35 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **RateLimiter** (17 connections) — `server/services/rate_limiter.py`
+- **.get_limit()** (6 connections) — `server/services/rate_limiter.py`
+- **._cleanup_old_entries()** (6 connections) — `server/services/rate_limiter.py`
+- **.check_rate_limit()** (5 connections) — `server/services/rate_limiter.py`
+- **.get_player_stats()** (5 connections) — `server/services/rate_limiter.py`
+- **.__init__()** (4 connections) — `server/services/rate_limiter.py`
+- **.record_message()** (4 connections) — `server/services/rate_limiter.py`
+- **.get_remaining_messages()** (4 connections) — `server/services/rate_limiter.py`
+- **.get_system_stats()** (3 connections) — `server/services/rate_limiter.py`
+- **.is_player_rate_limited()** (3 connections) — `server/services/rate_limiter.py`
+- **rate_limiter()** (3 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_rate_limiter_initialization()** (3 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_rate_limiter_legacy_config()** (3 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **.set_limit()** (2 connections) — `server/services/rate_limiter.py`
+- **Any** (2 connections)
+- **.reset_player_limits()** (2 connections) — `server/services/rate_limiter.py`
+- **mock_config()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_set_limit()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_get_limit_existing()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_get_limit_default()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
 - **test_cleanup_old_entries()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
 - **test_check_rate_limit_within_limits()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
 - **test_check_rate_limit_exceeds_limit()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_check_rate_limit_error_handling()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_record_message_error_handling()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_get_player_stats_empty()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_reset_player_limits_nonexistent_player()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_get_system_stats()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_is_player_rate_limited_false()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_get_remaining_messages_zero()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_rate_limit_different_channels()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_check_rate_limit_logs_violation()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **Unit tests for rate limiter service.  Tests the RateLimiter class which provides** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **Test _cleanup_old_entries removes old timestamps.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **Test check_rate_limit returns True when within limits.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **Test check_rate_limit returns False when limit exceeded.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **Test check_rate_limit handles errors gracefully (fails open).** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **Test record_message handles errors gracefully.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **Test get_player_stats handles player with no messages.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **Test reset_player_limits handles nonexistent player.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **Test get_system_stats returns system-wide statistics.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **Test is_player_rate_limited returns False when not rate limited.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **Test get_remaining_messages returns 0 when at limit.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **Test rate limiting is per-channel.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- *... and 1 more nodes in this community*
+- **test_check_rate_limit_disabled()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- *... and 64 more nodes in this community*
 
 ## Relationships
 
-- [game room service](game_room_service.md) (8 shared connections)
-- [room game service](room_game_service.md) (5 shared connections)
-- [rate limiter services](rate_limiter_services.md) (4 shared connections)
-- [events event bus](events_event_bus.md) (2 shared connections)
-- [time service rationale](time_service_rationale.md) (1 shared connections)
-- [chat game message](chat_game_message.md) (1 shared connections)
-- [event bus events](event_bus_events.md) (1 shared connections)
+- [models npc rationale](models_npc_rationale.md) (4 shared connections)
+- [chat logger services](chat_logger_services.md) (1 shared connections)
 
 ## Source Files
 
+- `server/services/rate_limiter.py`
 - `server/tests/unit/services/test_rate_limiter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 72 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 206 (100%)
+- INFERRED: 1 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

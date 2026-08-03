@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_apply_encounter_lucidity_loss_repeat_encounter()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **Test apply_encounter_lucidity_loss() for repeat encounter.** (1 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_move_player_validation_fails()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
+- **Test move_player returns False when validation fails.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
 
 ## Relationships
 
-- [lucidity active service](lucidity_active_service.md) (1 shared connections)
+- [movement service game](movement_service_game.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_active_lucidity_service.py`
+- `server/tests/unit/game/test_movement_service.py`
 
 ## Audit Trail
 

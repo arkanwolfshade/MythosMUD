@@ -12,7 +12,7 @@
 ## Relationships
 
 - [message handler factory](message_handler_factory.md) (2 shared connections)
-- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
+- [combat services messaging](combat_services_messaging.md) (1 shared connections)
 - [command commands aliases](command_commands_aliases.md) (1 shared connections)
 - [tsconfig src/**/* spec](tsconfig_src-__-__spec.md) (1 shared connections)
 - [game chat moderation](game_chat_moderation.md) (1 shared connections)

@@ -33,10 +33,11 @@
 
 ## Relationships
 
-- [logging setup structured](logging_setup_structured.md) (15 shared connections)
+- [logging setup structured](logging_setup_structured.md) (7 shared connections)
+- [logging structured utilities](logging_structured_utilities.md) (5 shared connections)
+- [manager subject services](manager_subject_services.md) (4 shared connections)
 - [windows safe rotation](windows_safe_rotation.md) (4 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [logging structured utilities](logging_structured_utilities.md) (1 shared connections)
+- [models npc rationale](models_npc_rationale.md) (2 shared connections)
 - [player guid formatter](player_guid_formatter.md) (1 shared connections)
 
 ## Source Files

@@ -1,19 +1,14 @@
 # auth rationale access
 
-> 100 nodes
+> 70 nodes
 
 ## Key Concepts
 
 - **test_auth_utils.py** (52 connections) — `server/tests/unit/auth/test_auth_utils.py`
 - **create_access_token()** (32 connections) — `server/auth_utils.py`
 - **decode_access_token()** (25 connections) — `server/auth_utils.py`
-- **hash_password()** (18 connections) — `server/auth_utils.py`
-- **verify_password()** (9 connections) — `server/auth_utils.py`
 - **test_create_access_token_attribute_error()** (5 connections) — `server/tests/unit/auth/test_auth_utils.py`
 - **test_decode_access_token_attribute_error()** (5 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_verify_password_success()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_verify_password_failure()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_hash_password_raises_on_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
 - **test_decode_access_token_success()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
 - **test_decode_access_token_expired()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
 - **test_create_access_token_with_custom_secret()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
@@ -25,21 +20,30 @@
 - **test_decode_access_token_value_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
 - **test_decode_access_token_type_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
 - **test_decode_access_token_runtime_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_hash_password_authentication_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_hash_password_value_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_hash_password_type_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_hash_password_runtime_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- *... and 75 more nodes in this community*
+- **test_decode_access_token_with_custom_algorithm()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_decode_access_token_with_wrong_algorithm()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_create_access_token_runtime_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_create_access_token_with_audience()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_decode_access_token_with_expired_token_immediately()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **setup_jwt_secret()** (3 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_verify_password_returns_false_on_error()** (3 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_create_access_token_success()** (3 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_create_access_token_with_expires_delta()** (3 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- *... and 45 more nodes in this community*
 
 ## Relationships
 
-- [Error Handling Core](Error_Handling_Core.md) (19 shared connections)
-- [Database Config](Database_Config.md) (8 shared connections)
-- [auth users rationale](auth_users_rationale.md) (4 shared connections)
+- [npc lifecycle combat](npc_lifecycle_combat.md) (13 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (9 shared connections)
+- [models npc rationale](models_npc_rationale.md) (6 shared connections)
 - [combat commands handler](combat_commands_handler.md) (3 shared connections)
-- [room websocket updates](room_websocket_updates.md) (3 shared connections)
+- [look helpers commands](look_helpers_commands.md) (3 shared connections)
+- [player requests schemas](player_requests_schemas.md) (1 shared connections)
+- [ascii map renderer](ascii_map_renderer.md) (1 shared connections)
+- [Database Config](Database_Config.md) (1 shared connections)
 - [connection realtime delegates](connection_realtime_delegates.md) (1 shared connections)
 - [persistence container rationale](persistence_container_rationale.md) (1 shared connections)
+- [command inventory factories](command_inventory_factories.md) (1 shared connections)
 
 ## Source Files
 
@@ -48,8 +52,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 334 (95%)
-- INFERRED: 19 (5%)
+- EXTRACTED: 251 (97%)
+- INFERRED: 9 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

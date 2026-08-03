@@ -1,78 +1,76 @@
 # Error Conversion
 
-> 387 nodes
+> 215 nodes
 
 ## Key Concepts
 
-- **ApplicationContainer** (140 connections) — `server/container/main.py`
-- **game.py** (42 connections) — `server/container/bundles/game.py`
-- **GameBundle** (41 connections) — `server/container/bundles/game.py`
-- **.initialize()** (35 connections) — `server/container/bundles/game.py`
+- **ApplicationContainer** (151 connections) — `server/container/main.py`
+- **test_container_bundles.py** (64 connections) — `server/tests/unit/container/test_container_bundles.py`
+- **GameBundle** (50 connections) — `server/container/bundles/game.py`
 - **.get_instance()** (35 connections) — `server/container/main.py`
-- **PrototypeRegistry** (35 connections) — `server/game/items/prototype_registry.py`
-- **main.py** (33 connections) — `server/container/main.py`
-- **ItemPrototypeModel** (28 connections) — `server/game/items/models.py`
-- **ScheduleEntry** (28 connections) — `server/schemas/calendar/calendar.py`
-- **ScheduleService** (28 connections) — `server/services/schedule_service.py`
+- **main.py** (34 connections) — `server/container/main.py`
+- **CombatBundle** (28 connections) — `server/container/bundles/combat.py`
 - **test_application_container.py** (26 connections) — `server/tests/unit/test_application_container.py`
-- **schedule_service.py** (25 connections) — `server/services/schedule_service.py`
-- **resolve_weapon_attack_from_equipped()** (22 connections) — `server/game/weapons.py`
+- **RealtimeBundle** (25 connections) — `server/container/bundles/realtime.py`
 - **__init__.py** (19 connections) — `server/container/bundles/__init__.py`
-- **magic.py** (19 connections) — `server/container/bundles/magic.py`
-- **prototype_registry.py** (19 connections) — `server/game/items/prototype_registry.py`
-- **PrototypeRegistryError** (19 connections) — `server/game/items/prototype_registry.py`
-- **core.py** (18 connections) — `server/container/bundles/core.py`
-- **MagicBundle** (18 connections) — `server/container/bundles/magic.py`
-- **test_weapons.py** (18 connections) — `server/tests/unit/game/test_weapons.py`
-- **RealtimeBundle** (17 connections) — `server/container/bundles/realtime.py`
-- **get_container()** (17 connections) — `server/container/main.py`
-- **normalize_environment()** (15 connections) — `server/utils/project_paths.py`
-- **CoreBundle** (14 connections) — `server/container/bundles/core.py`
-- **npc.py** (14 connections) — `server/container/bundles/npc.py`
-- *... and 362 more nodes in this community*
+- **core.py** (19 connections) — `server/container/bundles/core.py`
+- **get_container()** (19 connections) — `server/container/main.py`
+- **CoreBundle** (18 connections) — `server/container/bundles/core.py`
+- **test_application_container_main.py** (17 connections) — `server/tests/unit/container/test_application_container_main.py`
+- **NPCBundle** (16 connections) — `server/container/bundles/npc.py`
+- **MonitoringBundle** (15 connections) — `server/container/bundles/monitoring.py`
+- **monitoring.py** (12 connections) — `server/container/bundles/monitoring.py`
+- **.initialize()** (12 connections) — `server/container/main.py`
+- **chat.py** (11 connections) — `server/container/bundles/chat.py`
+- **ChatBundle** (10 connections) — `server/container/bundles/chat.py`
+- **reset_container()** (10 connections) — `server/container/main.py`
+- **utils.py** (8 connections) — `server/container/utils.py`
+- **__init__.py** (8 connections) — `server/tests/fixtures/unit/__init__.py`
+- **__init__.py** (7 connections) — `server/container/__init__.py`
+- **.initialize()** (7 connections) — `server/container/bundles/chat.py`
+- **.initialize_nats_combat()** (7 connections) — `server/container/bundles/combat.py`
+- *... and 190 more nodes in this community*
 
 ## Relationships
 
-- [command inventory factories](command_inventory_factories.md) (45 shared connections)
-- [time service rationale](time_service_rationale.md) (32 shared connections)
-- [game models player](game_models_player.md) (26 shared connections)
-- [holiday service services](holiday_service_services.md) (25 shared connections)
-- [NPC Combat](NPC_Combat.md) (20 shared connections)
-- [Database Config](Database_Config.md) (20 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (19 shared connections)
+- [models npc rationale](models_npc_rationale.md) (34 shared connections)
+- [coercion int inventory](coercion_int_inventory.md) (27 shared connections)
+- [holiday service services](holiday_service_services.md) (19 shared connections)
+- [NPC Combat](NPC_Combat.md) (16 shared connections)
 - [Magic Spell Service](Magic_Spell_Service.md) (16 shared connections)
-- [command base models](command_base_models.md) (12 shared connections)
-- [Item Instances](Item_Instances.md) (11 shared connections)
-- [command inventory models](command_inventory_models.md) (8 shared connections)
-- [item models rationale](item_models_rationale.md) (8 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (15 shared connections)
+- [time service rationale](time_service_rationale.md) (9 shared connections)
+- [event publisher realtime](event_publisher_realtime.md) (7 shared connections)
+- [connection cleaner realtime](connection_cleaner_realtime.md) (5 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (5 shared connections)
+- [Database Config](Database_Config.md) (5 shared connections)
+- [combat services messaging](combat_services_messaging.md) (5 shared connections)
 
 ## Source Files
 
 - `server/container/__init__.py`
 - `server/container/bundles/__init__.py`
 - `server/container/bundles/chat.py`
+- `server/container/bundles/combat.py`
 - `server/container/bundles/core.py`
 - `server/container/bundles/game.py`
 - `server/container/bundles/magic.py`
 - `server/container/bundles/monitoring.py`
 - `server/container/bundles/npc.py`
 - `server/container/bundles/realtime.py`
-- `server/container/bundles/time.py`
 - `server/container/main.py`
 - `server/container/utils.py`
-- `server/events/distributed_event_bus.py`
-- `server/game/items/__init__.py`
-- `server/game/items/component_hooks.py`
-- `server/game/items/constants.py`
-- `server/game/items/item_factory.py`
-- `server/game/items/item_instance.py`
-- `server/game/items/models.py`
-- `server/game/items/prototype_registry.py`
+- `server/services/combat_cleanup_handler.py`
+- `server/tests/fixtures/unit/__init__.py`
+- `server/tests/unit/container/test_application_container_main.py`
+- `server/tests/unit/container/test_container_bundles.py`
+- `server/tests/unit/infrastructure/test_dependencies.py`
+- `server/tests/unit/test_application_container.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1624 (91%)
-- INFERRED: 160 (9%)
+- EXTRACTED: 951 (92%)
+- INFERRED: 81 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

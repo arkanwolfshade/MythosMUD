@@ -1,33 +1,54 @@
 # subject admin controller
 
-> 9 nodes
+> 26 nodes
 
 ## Key Concepts
 
-- **._compose_memory_stats()** (7 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **MemoryStatsSnapshot** (6 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **.get_memory_stats()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._memory_monitor_config_section()** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **TypedDict** (1 connections)
-- **Connection-manager snapshot consumed by get_memory_stats.** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **Get comprehensive memory and connection statistics.          Args:             s** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **Assemble memory stats from a snapshot dict (keeps call sites param-stable).** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **Expose memory monitor configuration knobs for stats payload.** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **RoomEventHandler** (21 connections) — `server/realtime/integration/room_event_handler.py`
+- **room_event_handler.py** (13 connections) — `server/realtime/integration/room_event_handler.py`
+- **test_room_event_handler.py** (13 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
+- **__init__.py** (5 connections) — `server/realtime/integration/__init__.py`
+- **.__init__()** (4 connections) — `server/realtime/integration/room_event_handler.py`
+- **.handle_player_entered_room()** (4 connections) — `server/realtime/integration/room_event_handler.py`
+- **.handle_player_left_room()** (4 connections) — `server/realtime/integration/room_event_handler.py`
+- **Any** (3 connections)
+- **UUID** (2 connections)
+- **room_handler()** (2 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
+- **test_subscribe_to_events()** (2 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
+- **test_subscribe_to_events_no_bus()** (2 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
+- **test_unsubscribe_from_events()** (2 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
+- **test_handle_player_entered_room_broadcasts()** (2 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
+- **test_handle_player_entered_room_missing_room_id()** (2 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
+- **test_handle_player_entered_skips_uuid_player_names()** (2 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
+- **test_handle_player_left_room_broadcasts()** (2 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
+- **test_handle_player_entered_nats_publish_failure()** (2 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
+- **test_subscribe_handles_exception()** (2 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
+- **Integration components for connection management.  This package provides integra** (1 connections) — `server/realtime/integration/__init__.py`
+- **Room event handling for connection management.  This module provides integration** (1 connections) — `server/realtime/integration/room_event_handler.py`
+- **Handles room movement events and broadcasts occupant updates.      This class pr** (1 connections) — `server/realtime/integration/room_event_handler.py`
+- **Initialize the room event handler.          Args:             room_manager: Room** (1 connections) — `server/realtime/integration/room_event_handler.py`
+- **Handle PlayerEnteredRoom events by broadcasting updated occupant count.** (1 connections) — `server/realtime/integration/room_event_handler.py`
+- **Handle PlayerLeftRoom events by broadcasting updated occupant count.** (1 connections) — `server/realtime/integration/room_event_handler.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [target services resolution](target_services_resolution.md) (3 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (2 shared connections)
-- [player game schema](player_game_schema.md) (2 shared connections)
+- [connection disconnection realtime](connection_disconnection_realtime.md) (5 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (4 shared connections)
+- [combat services messaging](combat_services_messaging.md) (3 shared connections)
+- [command utility models](command_utility_models.md) (2 shared connections)
+- [models npc rationale](models_npc_rationale.md) (2 shared connections)
 
 ## Source Files
 
-- `server/realtime/monitoring/statistics_aggregator.py`
+- `server/realtime/integration/__init__.py`
+- `server/realtime/integration/room_event_handler.py`
+- `server/tests/unit/realtime/integration/test_room_event_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 24 (96%)
-- INFERRED: 1 (4%)
+- EXTRACTED: 96 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

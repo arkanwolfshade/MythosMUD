@@ -1,40 +1,55 @@
 # argon2 auth rationale
 
-> 14 nodes
+> 41 nodes
 
 ## Key Concepts
 
-- **RoomRepository** (12 connections) — `server/persistence/repositories/room_repository.py`
-- **room_repository.py** (7 connections) — `server/persistence/repositories/room_repository.py`
-- **.__init__()** (3 connections) — `server/persistence/repositories/room_repository.py`
-- **.get_room_by_id()** (2 connections) — `server/persistence/repositories/room_repository.py`
-- **.list_rooms()** (2 connections) — `server/persistence/repositories/room_repository.py`
-- **.save_room()** (2 connections) — `server/persistence/repositories/room_repository.py`
-- **.save_rooms()** (2 connections) — `server/persistence/repositories/room_repository.py`
-- **Room repository for async persistence operations.  This module provides async da** (1 connections) — `server/persistence/repositories/room_repository.py`
-- **Repository for room persistence operations.      Handles room caching and retrie** (1 connections) — `server/persistence/repositories/room_repository.py`
-- **Initialize the room repository.          Args:             room_cache: Shared ro** (1 connections) — `server/persistence/repositories/room_repository.py`
-- **Get a room by ID from cache.          Args:             room_id: Room identifier** (1 connections) — `server/persistence/repositories/room_repository.py`
-- **List all cached rooms.          Returns:             list[Room]: List of all roo** (1 connections) — `server/persistence/repositories/room_repository.py`
-- **Save a room to the cache.          Args:             room: Room object to save** (1 connections) — `server/persistence/repositories/room_repository.py`
-- **Save multiple rooms to the cache.          Args:             rooms: List of room** (1 connections) — `server/persistence/repositories/room_repository.py`
+- **test_channel_commands.py** (20 connections) — `server/tests/unit/commands/test_channel_commands.py`
+- **channel_commands.py** (17 connections) — `server/commands/channel_commands.py`
+- **handle_channel_command()** (14 connections) — `server/commands/channel_commands.py`
+- **_handle_default_channel_setting()** (10 connections) — `server/commands/channel_commands.py`
+- **_get_persistence_and_player()** (8 connections) — `server/commands/channel_commands.py`
+- **_extract_channel_from_command()** (8 connections) — `server/commands/channel_commands.py`
+- **_validate_channel_name()** (5 connections) — `server/commands/channel_commands.py`
+- **Any** (4 connections)
+- **test_get_persistence_and_player_no_persistence()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
+- **test_get_persistence_and_player_not_found()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
+- **test_extract_channel_from_command_direct()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
+- **test_extract_channel_from_command_parsed_fallback()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
+- **test_extract_channel_from_command_missing()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
+- **test_validate_channel_name_invalid()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
+- **test_handle_channel_command_no_persistence()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
+- **test_handle_channel_command_usage_when_channel_missing()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
+- **test_handle_channel_command_switch_valid_channel()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
+- **test_handle_default_channel_setting_success()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
+- **test_handle_default_channel_setting_invalid_channel()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
+- **test_handle_default_channel_setting_sqlalchemy_error()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
+- **test_handle_channel_command_default_subcommand()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
+- **Channel management commands for Advanced Chat Channels.  This module provides ha** (1 connections) — `server/commands/channel_commands.py`
+- **Get persistence and player. Returns (persistence, player) or (None, None) if not** (1 connections) — `server/commands/channel_commands.py`
+- **Extract channel name from command_data. Returns channel name or None.** (1 connections) — `server/commands/channel_commands.py`
+- **Handle setting default channel. Returns result dict or None if not a default com** (1 connections) — `server/commands/channel_commands.py`
+- *... and 16 more nodes in this community*
 
 ## Relationships
 
-- [Database Config](Database_Config.md) (4 shared connections)
-- [command inventory factories](command_inventory_factories.md) (3 shared connections)
-- [room models instance](room_models_instance.md) (2 shared connections)
-- [item models rationale](item_models_rationale.md) (1 shared connections)
-- [follow service game](follow_service_game.md) (1 shared connections)
+- [commands position system](commands_position_system.md) (3 shared connections)
+- [combat npc services](combat_npc_services.md) (3 shared connections)
+- [player preferences service](player_preferences_service.md) (3 shared connections)
+- [commands npc admin](commands_npc_admin.md) (2 shared connections)
+- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [command factories create](command_factories_create.md) (1 shared connections)
+- [connection realtime manager](connection_realtime_manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/persistence/repositories/room_repository.py`
+- `server/commands/channel_commands.py`
+- `server/tests/unit/commands/test_channel_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 36 (97%)
-- INFERRED: 1 (3%)
+- EXTRACTED: 144 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

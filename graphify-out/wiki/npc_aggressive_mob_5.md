@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_ensure_room_cache_loaded_concurrent_load()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _ensure_room_cache_loaded handles concurrent load scenario (double-check pa** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **._publish_attack_event()** (3 connections) — `server/npc/combat_integration.py`
+- **Publish NPC attack event to event bus.** (1 connections) — `server/npc/combat_integration.py`
 
 ## Relationships
 
-- [room persistence loading](room_persistence_loading.md) (1 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
+- [services nats service](services_nats_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- `server/npc/combat_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

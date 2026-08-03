@@ -1,24 +1,24 @@
 # schemas calendar schedule
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_handle_spell_command_wrapper_success()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test handle_spell_command wrapper success.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Testing Logging** (3 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Unit Tests for Logging** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Integration Tests** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
 
 ## Relationships
 
-- [commands admin mute](commands_admin_mute.md) (1 shared connections)
-- [commands magic rationale](commands_magic_rationale.md) (1 shared connections)
+- [archive LOGGING BEST](archive_LOGGING_BEST.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `docs/archive/LOGGING_BEST_PRACTICES.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

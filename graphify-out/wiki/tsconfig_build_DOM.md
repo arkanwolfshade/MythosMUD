@@ -1,24 +1,26 @@
 # tsconfig build DOM
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_check_equipped_item_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test checking equipped item when not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **.heal()** (4 connections) — `server/npc/npc_base.py`
+- **._sync_dp_stats()** (3 connections) — `server/npc/npc_base.py`
+- **Heal and update determination points (DP).** (1 connections) — `server/npc/npc_base.py`
+- **Write new_dp to determination_points and dp for backward compatibility.** (1 connections) — `server/npc/npc_base.py`
 
 ## Relationships
 
-- [health service services](health_service_services.md) (1 shared connections)
-- [Item Lookup](Item_Lookup.md) (1 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (2 shared connections)
+- [rate limiter realtime](rate_limiter_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_item.py`
+- `server/npc/npc_base.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

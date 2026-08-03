@@ -1,24 +1,24 @@
 # persistence damage player()
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_try_lookup_item_implicit_player_no_get_inventory()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test _try_lookup_item_implicit() when player has no get_inventory method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **.__init__()** (3 connections) — `server/realtime/message_validator.py`
+- **.__init__()** (2 connections) — `server/realtime/message_validator.py`
+- **Initialize the message validator.          Args:             max_message_size** (1 connections) — `server/realtime/message_validator.py`
 
 ## Relationships
 
-- [health service services](health_service_services.md) (1 shared connections)
-- [Item Lookup](Item_Lookup.md) (1 shared connections)
+- [realtime message validator](realtime_message_validator.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_item.py`
+- `server/realtime/message_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

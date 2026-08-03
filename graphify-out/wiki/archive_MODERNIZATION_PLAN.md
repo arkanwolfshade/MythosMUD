@@ -1,24 +1,27 @@
 # archive MODERNIZATION PLAN
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_try_lookup_item_implicit_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test trying implicit lookup when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **benchmark_validation_performance()** (5 connections) — `server/validators/optimized_security_validator.py`
+- **test_benchmark_validation_performance()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test benchmark function runs without errors.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Benchmark the performance of optimized vs original validation functions.** (1 connections) — `server/validators/optimized_security_validator.py`
 
 ## Relationships
 
-- [health service services](health_service_services.md) (1 shared connections)
-- [Item Lookup](Item_Lookup.md) (1 shared connections)
+- [optimized security validator](optimized_security_validator.md) (3 shared connections)
+- [models npc rationale](models_npc_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_item.py`
+- `server/tests/unit/validators/test_optimized_security_validator.py`
+- `server/validators/optimized_security_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 10 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

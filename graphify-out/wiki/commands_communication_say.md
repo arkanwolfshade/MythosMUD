@@ -1,50 +1,50 @@
 # commands communication say
 
-> 35 nodes
+> 42 nodes
 
 ## Key Concepts
 
-- **test_communication_commands_say_me_pose.py** (22 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **handle_say_command()** (16 connections) — `server/commands/communication_commands.py`
-- **handle_me_command()** (7 connections) — `server/commands/communication_commands.py`
-- **test_handle_say_command_player_not_found()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_say_command_success()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_say_command_delegates_broadcast_to_chat_service_with_ids()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_pose_command_player_not_found()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_pose_command_clear_pose()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_pose_command_set_pose()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_say_command_no_room()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_say_command_no_player_id()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_say_command_chat_service_failure()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_say_command_exception()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_say_command_no_message()** (3 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_say_command_no_services()** (3 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_me_command_no_action()** (3 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_me_command_success()** (3 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_pose_command_no_persistence()** (3 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **Room-wide say; returns user-facing result dict.** (1 connections) — `server/commands/communication_commands.py`
-- **Unit tests for say, me, and pose communication command handlers.** (1 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **Test handle_say_command with no message.** (1 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **Test handle_say_command when services are not available.** (1 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **Test handle_say_command when player is not found.** (1 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **Test handle_say_command successful execution.** (1 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **Room say must call chat_service.send_say_message(player_id, message) for broadca** (1 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- *... and 10 more nodes in this community*
+- **test_combat_persistence_handler_events.py** (25 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **persistence_handler()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event_impl_event_bus_publish_error()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **mock_combat_service()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event_impl()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event_impl_no_event_bus()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event_impl_error()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event_impl_with_nats()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event_impl_legacy_subject()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event_impl_nats_error()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event_impl_no_nats()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event_impl_all_parameters()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_correction_event()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_correction_event_error()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_correction_event_no_event_bus()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_correction_event_all_parameters()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_correction_event_success_new()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_correction_event_publish_error_new()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_correction_event_all_parameters_new()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_correction_event_outer_exception()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **Unit tests for combat persistence handler - event publishing.  Tests DP update a** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **Create mock combat service.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **Create CombatPersistenceHandler instance.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **Test publish_player_dp_update_event publishes event.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [commands whisper command](commands_whisper_command.md) (12 shared connections)
-- [commands admin mute](commands_admin_mute.md) (11 shared connections)
-- [commands communication flows](commands_communication_flows.md) (4 shared connections)
+- [spawn npc services](spawn_npc_services.md) (2 shared connections)
+- [message filtering realtime](message_filtering_realtime.md) (2 shared connections)
+- [persistence combat handler](persistence_combat_handler.md) (1 shared connections)
+- [nats exceptions services](nats_exceptions_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/communication_commands.py`
-- `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- `server/tests/unit/services/test_combat_persistence_handler_events.py`
 
 ## Audit Trail
 
-- EXTRACTED: 117 (100%)
+- EXTRACTED: 88 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

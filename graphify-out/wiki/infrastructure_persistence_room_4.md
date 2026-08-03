@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_add_room_occupant_new_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **Test add_room_occupant() adds occupant to new room.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_get_player_not_found()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test get_player() returns None when player not found.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Relationships
 
-- [room subscription manager](room_subscription_manager.md) (1 shared connections)
+- [game state provider](game_state_provider.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager.py`
+- `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Audit Trail
 

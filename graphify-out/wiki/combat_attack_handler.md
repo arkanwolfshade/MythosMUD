@@ -1,53 +1,52 @@
 # combat attack handler
 
-> 35 nodes
+> 62 nodes
 
 ## Key Concepts
 
-- **player_combat_service_support.py** (19 connections) — `server/services/player_combat_service_support.py`
-- **NPCCombatIntegrationReadApi** (10 connections) — `server/services/player_combat_service_support.py`
-- **PlayerXpLike** (9 connections) — `server/services/player_combat_service_support.py`
-- **Protocol** (6 connections)
-- **NPCCombatRewardsLike** (6 connections) — `server/services/player_combat_service_support.py`
-- **UUIDMappingXP** (6 connections) — `server/services/player_combat_service_support.py`
-- **PersistenceWithNpcLifecycleManager** (6 connections) — `server/services/player_combat_service_support.py`
-- **original_string_id_for_npc()** (5 connections) — `server/services/player_combat_service_support.py`
-- **lifecycle_lookup_id()** (5 connections) — `server/services/player_combat_service_support.py`
-- **async_load_lifecycle_manager()** (5 connections) — `server/services/player_combat_service_support.py`
-- **log_missing_lifecycle_npc()** (5 connections) — `server/services/player_combat_service_support.py`
-- **UUID** (4 connections)
-- **available_lifecycle_npc_ids()** (4 connections) — `server/services/player_combat_service_support.py`
-- **.get_xp_value()** (3 connections) — `server/services/player_combat_service_support.py`
-- **.get_rewards_service()** (3 connections) — `server/services/player_combat_service_support.py`
-- **.get_uuid_mapping()** (3 connections) — `server/services/player_combat_service_support.py`
-- **xp_int_from_base_stats_mapping()** (3 connections) — `server/services/player_combat_service_support.py`
-- **.award_xp_to_killer()** (2 connections) — `server/services/player_combat_service_support.py`
-- **.add_experience()** (1 connections) — `server/services/player_combat_service_support.py`
-- **Protocols and module-level helpers for player combat XP and lifecycle lookup.** (1 connections) — `server/services/player_combat_service_support.py`
-- **NPC combat rewards helper.** (1 connections) — `server/services/player_combat_service_support.py`
-- **Award XP to the killer for an NPC defeat.** (1 connections) — `server/services/player_combat_service_support.py`
-- **UUID mapping helper with XP lookup (NPCCombatUUIDMapping).** (1 connections) — `server/services/player_combat_service_support.py`
-- **Return stored XP for npc_id when present.** (1 connections) — `server/services/player_combat_service_support.py`
-- **Public read API from NPC combat integration.** (1 connections) — `server/services/player_combat_service_support.py`
-- *... and 10 more nodes in this community*
+- **test_command_magic.py** (27 connections) — `server/tests/unit/models/test_command_magic.py`
+- **CastCommand** (20 connections) — `server/models/command_magic.py`
+- **SpellCommand** (13 connections) — `server/models/command_magic.py`
+- **LearnCommand** (13 connections) — `server/models/command_magic.py`
+- **command_magic.py** (10 connections) — `server/models/command_magic.py`
+- **SpellsCommand** (8 connections) — `server/models/command_magic.py`
+- **test_cast_command_validate_spell_name_empty()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_cast_command_validate_spell_name_whitespace_only()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_cast_command_spell_name_max_length()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_cast_command_target_max_length()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_spell_command_validate_spell_name_empty()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_spell_command_validate_spell_name_whitespace_only()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_spell_command_spell_name_max_length()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_learn_command_validate_spell_name_empty()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_learn_command_validate_spell_name_whitespace_only()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_learn_command_spell_name_max_length()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_cast_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_cast_command_with_target()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_cast_command_validate_spell_name_valid()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_cast_command_validate_target_empty_string()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_cast_command_validate_target_whitespace()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_cast_command_validate_target_strips()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_spell_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_spell_command_validate_spell_name_valid()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_spells_command_no_fields()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- *... and 37 more nodes in this community*
 
 ## Relationships
 
-- [item models rationale](item_models_rationale.md) (12 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (10 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [player service game](player_service_game.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [schemas players profession](schemas_players_profession.md) (1 shared connections)
+- [container persistence rationale](container_persistence_rationale.md) (11 shared connections)
+- [command inventory models](command_inventory_models.md) (10 shared connections)
+- [command factories create](command_factories_create.md) (5 shared connections)
+- [exceptions rationale error](exceptions_rationale_error.md) (5 shared connections)
 
 ## Source Files
 
-- `server/services/player_combat_service_support.py`
+- `server/models/command_magic.py`
+- `server/tests/unit/models/test_command_magic.py`
 
 ## Audit Trail
 
-- EXTRACTED: 108 (89%)
-- INFERRED: 13 (11%)
+- EXTRACTED: 185 (91%)
+- INFERRED: 18 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,43 +1,57 @@
 # command parser rationale
 
-> 16 nodes
+> 86 nodes
 
 ## Key Concepts
 
-- **quest_events.py** (14 connections) — `server/game/quest/quest_events.py`
-- **subscribe_quest_events()** (13 connections) — `server/game/quest/quest_events.py`
-- **_make_on_player_entered()** (5 connections) — `server/game/quest/quest_events.py`
-- **Any** (4 connections)
-- **_make_on_player_left()** (4 connections) — `server/game/quest/quest_events.py`
-- **_make_on_npc_died()** (4 connections) — `server/game/quest/quest_events.py`
-- **_parse_player_id()** (3 connections) — `server/game/quest/quest_events.py`
-- **_entity_id_for_quest_offer()** (2 connections) — `server/game/quest/quest_events.py`
-- **UUID** (2 connections)
-- **Quest event subscriptions: room entry (trigger start), room exit (complete_activ** (1 connections) — `server/game/quest/quest_events.py`
-- **Return entity_id for quest_offers lookup: strip instance_<uuid>_ prefix if prese** (1 connections) — `server/game/quest/quest_events.py`
-- **Subscribe to room events for quest triggers and progress.      - PlayerEnteredRo** (1 connections) — `server/game/quest/quest_events.py`
-- **Return an async handler for PlayerEnteredRoom (entering via exit); starts room-o** (1 connections) — `server/game/quest/quest_events.py`
-- **Return an async handler for PlayerLeftRoom that records exit_<room_id> activity.** (1 connections) — `server/game/quest/quest_events.py`
-- **Return an async handler for NPCDied that records kill for kill_N goals when kill** (1 connections) — `server/game/quest/quest_events.py`
-- **Parse player_id string to UUID. Returns None if invalid.** (1 connections) — `server/game/quest/quest_events.py`
+- **test_command_parser.py** (45 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **parse_command()** (24 connections) — `server/utils/command_parser.py`
+- **test_command_parser_smoke.py** (8 connections) — `server/tests/unit/test_command_parser_smoke.py`
+- **test_parse_command_basic()** (3 connections) — `server/tests/unit/test_command_parser_smoke.py`
+- **test_parse_command_with_args()** (3 connections) — `server/tests/unit/test_command_parser_smoke.py`
+- **test_parse_command_with_pipes()** (3 connections) — `server/tests/unit/test_command_parser_smoke.py`
+- **command_parser()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_empty_string()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_whitespace_only()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_too_long()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_unknown_command()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_valid_look()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_valid_go()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_with_slash_prefix()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_spawn_alias()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_alias_l()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_alias_g()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_create_command_object_pydantic_validation_error()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_global_function()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_global_function_with_args()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_command_parser_initialization()** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_normalize_command_removes_slash()** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_normalize_command_cleans_whitespace()** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_normalize_command_no_slash()** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_parts_basic()** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
+- *... and 61 more nodes in this community*
 
 ## Relationships
 
-- [item models rationale](item_models_rationale.md) (7 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (2 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [commands logout helpers](commands_logout_helpers.md) (1 shared connections)
-- [quest service game](quest_service_game.md) (1 shared connections)
-- [follow game service](follow_game_service.md) (1 shared connections)
+- [command inventory factories](command_inventory_factories.md) (5 shared connections)
+- [container persistence rationale](container_persistence_rationale.md) (3 shared connections)
+- [command factories create](command_factories_create.md) (3 shared connections)
+- [command processor rationale](command_processor_rationale.md) (2 shared connections)
+- [command inventory models](command_inventory_models.md) (1 shared connections)
+- [health service services](health_service_services.md) (1 shared connections)
+- [commands position system](commands_position_system.md) (1 shared connections)
+- [combat services initialization](combat_services_initialization.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/quest/quest_events.py`
+- `server/tests/unit/test_command_parser_smoke.py`
+- `server/tests/unit/utils/test_command_parser.py`
+- `server/utils/command_parser.py`
 
 ## Audit Trail
 
-- EXTRACTED: 52 (90%)
-- INFERRED: 6 (10%)
+- EXTRACTED: 217 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

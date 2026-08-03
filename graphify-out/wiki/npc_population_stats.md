@@ -1,58 +1,52 @@
 # npc population stats
 
-> 56 nodes
+> 30 nodes
 
 ## Key Concepts
 
-- **InventorySchemaValidationError** (20 connections) — `server/schemas/shared/inventory_schema.py`
 - **PlayerSavePreparer** (16 connections) — `server/persistence/repositories/player_repository_save.py`
-- **validate_inventory_payload()** (13 connections) — `server/schemas/shared/inventory_schema.py`
-- **__init__.py** (12 connections) — `server/schemas/shared/__init__.py`
 - **player_repository_save.py** (11 connections) — `server/persistence/repositories/player_repository_save.py`
-- **test_inventory_schema.py** (11 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
 - **.prepare()** (10 connections) — `server/persistence/repositories/player_repository_save.py`
-- **validate_inventory_items()** (9 connections) — `server/schemas/shared/inventory_schema.py`
 - **Any** (7 connections)
 - **Player** (7 connections)
 - **._prepare_inventory_payload()** (7 connections) — `server/persistence/repositories/player_repository_save.py`
-- **inventory_schema.py** (7 connections) — `server/schemas/shared/inventory_schema.py`
 - **_parse_inventory_raw()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
 - **_parse_equipped_raw()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
 - **._ensure_inventory_record()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
 - **._normalize_timestamps()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
 - **._upsert_string_defaults()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
 - **._upsert_numeric_defaults()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
-- **_build_validator()** (5 connections) — `server/schemas/shared/inventory_schema.py`
+- **.__init__()** (4 connections) — `server/persistence/repositories/player_repository.py`
 - **._normalize_is_admin()** (4 connections) — `server/persistence/repositories/player_repository_save.py`
-- **test_validate_inventory_payload_missing_required()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **test_validate_inventory_payload_invalid_inventory()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **test_validate_inventory_items_missing_required()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **test_validate_inventory_items_invalid_quantity()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
 - **.execute()** (3 connections) — `server/persistence/repositories/player_repository_save.py`
-- *... and 31 more nodes in this community*
+- **.__init__()** (2 connections) — `server/persistence/repositories/player_repository_save.py`
+- **datetime** (2 connections)
+- **Initialize the player repository.          Args:             room_cache: Shared** (1 connections) — `server/persistence/repositories/player_repository.py`
+- **Player save/upsert helpers for PlayerRepository.  Handles inventory validation,** (1 connections) — `server/persistence/repositories/player_repository_save.py`
+- **Parse inventory from string or list. Raises InventorySchemaValidationError if in** (1 connections) — `server/persistence/repositories/player_repository_save.py`
+- **Parse equipped from string or dict. Raises InventorySchemaValidationError if inv** (1 connections) — `server/persistence/repositories/player_repository_save.py`
+- **Prepares Player objects for upsert_player procedure calls.      Handles normaliz** (1 connections) — `server/persistence/repositories/player_repository_save.py`
+- **Ensure is_admin is an integer (PostgreSQL requires integer, not boolean).** (1 connections) — `server/persistence/repositories/player_repository_save.py`
+- **Ensure player has inventory_record and update with current payload.** (1 connections) — `server/persistence/repositories/player_repository_save.py`
+- **Normalize last_active, created_at, deleted_at to UTC for procedure call.** (1 connections) — `server/persistence/repositories/player_repository_save.py`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
-- [inventory commands command](inventory_commands_command.md) (7 shared connections)
-- [world models rationale](world_models_rationale.md) (4 shared connections)
-- [target resolution service](target_resolution_service.md) (4 shared connections)
-- [Database Config](Database_Config.md) (3 shared connections)
-- [command factories moderation](command_factories_moderation.md) (3 shared connections)
-- [combat models rationale](combat_models_rationale.md) (2 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
-- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (1 shared connections)
+- [world models rationale](world_models_rationale.md) (6 shared connections)
+- [command commands talk](command_commands_talk.md) (5 shared connections)
+- [Database Config](Database_Config.md) (4 shared connections)
+- [models npc rationale](models_npc_rationale.md) (1 shared connections)
 
 ## Source Files
 
+- `server/persistence/repositories/player_repository.py`
 - `server/persistence/repositories/player_repository_save.py`
-- `server/schemas/shared/__init__.py`
-- `server/schemas/shared/inventory_schema.py`
-- `server/tests/unit/schemas/test_inventory_schema.py`
 
 ## Audit Trail
 
-- EXTRACTED: 216 (95%)
-- INFERRED: 11 (5%)
+- EXTRACTED: 113 (97%)
+- INFERRED: 3 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

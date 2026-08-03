@@ -1,23 +1,33 @@
 # services npc combat
 
-> 2 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **test_handle_learn_command_no_service()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test learn command when spell learning service is not available.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **load_zone_configurations()** (9 connections) — `server/npc/zone_config_loader.py`
+- **test_load_zone_configurations_success()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_load_zone_configurations_merges_zone_and_subzone()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_load_zone_configurations_error()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **Load zone and sub-zone configurations from PostgreSQL database.      Returns:** (1 connections) — `server/npc/zone_config_loader.py`
+- **Test load_zone_configurations() loads configurations.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **Test load_zone_configurations() merges zone and subzone configs.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **Test load_zone_configurations() raises RuntimeError on failure.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
 
 ## Relationships
 
-- [commands magic rationale](commands_magic_rationale.md) (1 shared connections)
+- [npc realtime occupant](npc_realtime_occupant.md) (4 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (2 shared connections)
+- [npc idle movement](npc_idle_movement.md) (1 shared connections)
+- [spell game magic](spell_game_magic.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `server/npc/zone_config_loader.py`
+- `server/tests/unit/npc/test_zone_config_loader.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 22 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

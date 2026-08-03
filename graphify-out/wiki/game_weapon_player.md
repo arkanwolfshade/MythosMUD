@@ -34,7 +34,7 @@
 ## Relationships
 
 - [command commands handler](command_commands_handler.md) (15 shared connections)
-- [commands admin mute](commands_admin_mute.md) (1 shared connections)
+- [commands npc admin](commands_npc_admin.md) (1 shared connections)
 
 ## Source Files
 

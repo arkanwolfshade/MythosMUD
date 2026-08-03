@@ -1,10 +1,20 @@
 # middleware command rate
 
-> 20 nodes
+> 32 nodes
 
 ## Key Concepts
 
-- **CommandRateLimiter** (10 connections) — `server/middleware/command_rate_limiter.py`
+- **CommandRateLimiter** (17 connections) — `server/middleware/command_rate_limiter.py`
+- **test_command_rate_limiter.py** (11 connections) — `server/tests/unit/middleware/test_command_rate_limiter.py`
+- **_fixed_clock()** (8 connections) — `server/tests/unit/middleware/test_command_rate_limiter.py`
+- **datetime** (8 connections)
+- **command_rate_limiter.py** (7 connections) — `server/middleware/command_rate_limiter.py`
+- **test_is_allowed_under_limit()** (4 connections) — `server/tests/unit/middleware/test_command_rate_limiter.py`
+- **test_is_allowed_blocks_at_limit()** (4 connections) — `server/tests/unit/middleware/test_command_rate_limiter.py`
+- **test_sliding_window_expires_old_commands()** (4 connections) — `server/tests/unit/middleware/test_command_rate_limiter.py`
+- **test_get_wait_time_when_rate_limited()** (4 connections) — `server/tests/unit/middleware/test_command_rate_limiter.py`
+- **test_reset_player_and_all()** (4 connections) — `server/tests/unit/middleware/test_command_rate_limiter.py`
+- **test_get_stats_and_cleanup_inactive()** (4 connections) — `server/tests/unit/middleware/test_command_rate_limiter.py`
 - **.__init__()** (3 connections) — `server/middleware/command_rate_limiter.py`
 - **.get_stats()** (3 connections) — `server/middleware/command_rate_limiter.py`
 - **datetime** (2 connections)
@@ -15,27 +25,25 @@
 - **.reset_all()** (2 connections) — `server/middleware/command_rate_limiter.py`
 - **.cleanup_inactive_players()** (2 connections) — `server/middleware/command_rate_limiter.py`
 - **Any** (1 connections)
+- **Per-player command rate limiting.  Prevents command flooding and denial-of-servi** (1 connections) — `server/middleware/command_rate_limiter.py`
 - **Per-player command rate limiting using sliding window algorithm.      Tracks com** (1 connections) — `server/middleware/command_rate_limiter.py`
 - **Initialize command rate limiter.          Args:             max_commands: Maximu** (1 connections) — `server/middleware/command_rate_limiter.py`
 - **Check if player can execute a command now.          Implements sliding window ra** (1 connections) — `server/middleware/command_rate_limiter.py`
-- **Get seconds until rate limit resets for this player.          Calculates when th** (1 connections) — `server/middleware/command_rate_limiter.py`
-- **Get number of commands player can still execute.          Args:             play** (1 connections) — `server/middleware/command_rate_limiter.py`
-- **Reset rate limit for a specific player.          Useful for admin commands or wh** (1 connections) — `server/middleware/command_rate_limiter.py`
-- **Reset rate limit for all players.          Clears all accumulated timestamp data** (1 connections) — `server/middleware/command_rate_limiter.py`
-- **Get system-wide rate limiting statistics.          Returns:             Dictiona** (1 connections) — `server/middleware/command_rate_limiter.py`
-- **Remove timestamp data for players who haven't been active recently.          Pre** (1 connections) — `server/middleware/command_rate_limiter.py`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [command commands handler](command_commands_handler.md) (1 shared connections)
 
 ## Source Files
 
 - `server/middleware/command_rate_limiter.py`
+- `server/tests/unit/middleware/test_command_rate_limiter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 40 (100%)
+- EXTRACTED: 107 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

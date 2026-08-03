@@ -1,23 +1,32 @@
 # commands combat handler
 
-> 2 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **test_handle_spell_command_no_spell_name()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test spell command when no spell name is provided.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **reset_async_persistence()** (6 connections) — `server/async_persistence.py`
+- **test_get_async_persistence_creates_instance()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_get_async_persistence_returns_same_instance()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_reset_async_persistence()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **Reset the global async persistence instance for testing.      DEPRECATED: Use Ap** (1 connections) — `server/async_persistence.py`
+- **Test get_async_persistence creates singleton instance.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **Test get_async_persistence returns same instance on multiple calls.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **Test reset_async_persistence resets the singleton.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
 
 ## Relationships
 
-- [commands magic rationale](commands_magic_rationale.md) (1 shared connections)
+- [schemas invite user](schemas_invite_user.md) (4 shared connections)
+- [realtime websocket initial](realtime_websocket_initial.md) (3 shared connections)
+- [NPC Combat](NPC_Combat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `server/async_persistence.py`
+- `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 22 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

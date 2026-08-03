@@ -1,64 +1,60 @@
 # combat commands handler
 
-> 75 nodes
+> 58 nodes
 
 ## Key Concepts
 
-- **real_time.py** (35 connections) — `server/api/real_time.py`
-- **handle_websocket_connection()** (21 connections) — `server/realtime/websocket_handler.py`
-- **get_async_persistence()** (19 connections) — `server/async_persistence.py`
-- **realtime.py** (13 connections) — `server/schemas/realtime/realtime.py`
-- **_resolve_player_id()** (10 connections) — `server/api/real_time.py`
-- **websocket_endpoint()** (10 connections) — `server/api/real_time.py`
-- **PresenceStatistics** (10 connections) — `server/schemas/realtime/presence_data.py`
-- **SessionStatistics** (10 connections) — `server/schemas/realtime/presence_data.py`
-- **ErrorStatistics** (10 connections) — `server/schemas/realtime/presence_data.py`
-- **PlayerConnectionsResponse** (10 connections) — `server/schemas/realtime/realtime.py`
-- **NewGameSessionResponse** (10 connections) — `server/schemas/realtime/realtime.py`
-- **ConnectionStatisticsResponse** (10 connections) — `server/schemas/realtime/realtime.py`
+- **real_time.py** (36 connections) — `server/api/real_time.py`
+- **test_real_time_helpers.py** (31 connections) — `server/tests/unit/api/test_real_time_helpers.py`
+- **_resolve_player_id()** (11 connections) — `server/api/real_time.py`
+- **handle_new_game_session()** (11 connections) — `server/api/real_time.py`
+- **_ensure_connection_manager()** (10 connections) — `server/api/real_time.py`
+- **_resolve_player_id_from_token()** (10 connections) — `server/api/real_time.py`
 - **Any** (9 connections)
-- **_ensure_connection_manager()** (9 connections) — `server/api/real_time.py`
-- **SessionInfo** (9 connections) — `server/schemas/realtime/realtime.py`
+- **_parse_websocket_token()** (9 connections) — `server/api/real_time.py`
+- **_resolve_player_id_from_test()** (9 connections) — `server/api/real_time.py`
+- **get_player_connections()** (9 connections) — `server/api/real_time.py`
+- **websocket_endpoint_route()** (9 connections) — `server/api/real_time.py`
 - **WebSocket** (8 connections)
-- **_resolve_player_id_from_test()** (8 connections) — `server/api/real_time.py`
-- **_resolve_player_id_from_token()** (8 connections) — `server/api/real_time.py`
-- **get_player_connections()** (8 connections) — `server/api/real_time.py`
-- **handle_new_game_session()** (8 connections) — `server/api/real_time.py`
-- **websocket_endpoint_route()** (8 connections) — `server/api/real_time.py`
+- **_validate_websocket_connection_manager()** (8 connections) — `server/api/real_time.py`
+- **_resolve_player_id_from_path_or_token()** (8 connections) — `server/api/real_time.py`
+- **_resolve_connection_manager_from_state()** (7 connections) — `server/api/real_time.py`
+- **_validate_and_accept_websocket()** (7 connections) — `server/api/real_time.py`
 - **UUID** (7 connections)
-- **_validate_websocket_connection_manager()** (7 connections) — `server/api/real_time.py`
-- **_resolve_connection_manager_from_state()** (6 connections) — `server/api/real_time.py`
-- **_parse_websocket_token()** (6 connections) — `server/api/real_time.py`
-- *... and 50 more nodes in this community*
+- **_extract_bearer_token()** (6 connections) — `server/api/real_time.py`
+- **_parse_subprotocol_token()** (5 connections) — `server/api/real_time.py`
+- **Request** (4 connections)
+- **test_ensure_connection_manager_missing()** (3 connections) — `server/tests/unit/api/test_real_time_helpers.py`
+- **test_resolve_player_id_from_token_no_player()** (3 connections) — `server/tests/unit/api/test_real_time_helpers.py`
+- **test_resolve_player_id_missing_token_and_player_id()** (3 connections) — `server/tests/unit/api/test_real_time_helpers.py`
+- **test_handle_new_game_session_missing_session_id()** (3 connections) — `server/tests/unit/api/test_real_time_helpers.py`
+- **test_handle_new_game_session_invalid_json()** (3 connections) — `server/tests/unit/api/test_real_time_helpers.py`
+- *... and 33 more nodes in this community*
 
 ## Relationships
 
-- [command inventory factories](command_inventory_factories.md) (8 shared connections)
-- [Exception Containers](Exception_Containers.md) (7 shared connections)
-- [combat schemas schema](combat_schemas_schema.md) (7 shared connections)
-- [websocket handler realtime](websocket_handler_realtime.md) (6 shared connections)
-- [schemas nats messages](schemas_nats_messages.md) (5 shared connections)
-- [realtime websocket initial](realtime_websocket_initial.md) (4 shared connections)
-- [schemas invite user](schemas_invite_user.md) (4 shared connections)
-- [Database Config](Database_Config.md) (3 shared connections)
+- [auth users rationale](auth_users_rationale.md) (14 shared connections)
+- [Exception Containers](Exception_Containers.md) (14 shared connections)
+- [models npc rationale](models_npc_rationale.md) (7 shared connections)
+- [command utility models](command_utility_models.md) (7 shared connections)
+- [realtime websocket initial](realtime_websocket_initial.md) (3 shared connections)
 - [auth rationale access](auth_rationale_access.md) (3 shared connections)
-- [websocket helpers realtime](websocket_helpers_realtime.md) (3 shared connections)
-- [admin auth service](admin_auth_service.md) (3 shared connections)
-- [command combat models](command_combat_models.md) (2 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (3 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [combat schemas schema](combat_schemas_schema.md) (2 shared connections)
+- [room look commands](room_look_commands.md) (1 shared connections)
+- [player service game](player_service_game.md) (1 shared connections)
+- [look helpers commands](look_helpers_commands.md) (1 shared connections)
 
 ## Source Files
 
 - `server/api/real_time.py`
-- `server/async_persistence.py`
-- `server/realtime/websocket_handler.py`
-- `server/schemas/realtime/presence_data.py`
-- `server/schemas/realtime/realtime.py`
-- `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- `server/tests/unit/api/test_real_time_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 334 (90%)
-- INFERRED: 38 (10%)
+- EXTRACTED: 274 (97%)
+- INFERRED: 8 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

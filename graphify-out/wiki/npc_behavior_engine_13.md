@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_strip_ansi_codes_empty()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **Test stripping ANSI codes from empty string.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_get_stats_with_failure_time()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **Test get_stats() includes failure time when set.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
 
 ## Relationships
 
-- [Security Validator Tests](Security_Validator_Tests.md) (1 shared connections)
-- [commands admin mute](commands_admin_mute.md) (1 shared connections)
+- [config rationale reset](config_rationale_reset.md) (1 shared connections)
+- [websocket handler realtime](websocket_handler_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_security_validator.py`
+- `server/tests/unit/realtime/test_circuit_breaker.py`
 
 ## Audit Trail
 
