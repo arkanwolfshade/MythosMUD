@@ -14,6 +14,10 @@ from server.schemas.calendar import ScheduleCollection, ScheduleEntry
 from server.services.schedule_service import (
     ScheduleService,
     _DatabaseLoadResult,
+    _lower_string_list_from_row,
+    _resolve_asyncpg_database_url,
+    _schedule_entry_from_row,
+    _string_list_from_row,
     normalize_weekday_names,
 )
 
@@ -273,3 +277,78 @@ class TestScheduleService:
         # Accessing protected member to inject test data
         service._entries = [entry1, entry2]  # pylint: disable=protected-access
         assert service.entry_count == 2
+
+    def test_string_list_from_row(self):
+        """Helper normalizes PostgreSQL array columns."""
+        assert _string_list_from_row(None) == []
+        assert _string_list_from_row("not-a-list") == []
+        assert _string_list_from_row(["A", "B"]) == ["A", "B"]
+
+    def test_lower_string_list_from_row(self):
+        """Helper lowercases slug strings from row arrays."""
+        assert _lower_string_list_from_row(["Foo", "BAR"]) == ["foo", "bar"]
+
+    def test_resolve_asyncpg_database_url(self, monkeypatch: pytest.MonkeyPatch):
+        """DATABASE_URL is converted to asyncpg-compatible form."""
+        monkeypatch.setenv("DATABASE_URL", "postgresql+asyncpg://u:p@localhost/db")
+        assert _resolve_asyncpg_database_url() == "postgresql://u:p@localhost/db"
+        monkeypatch.setenv("DATABASE_URL", "postgresql://u:p@localhost/db")
+        assert _resolve_asyncpg_database_url() == "postgresql://u:p@localhost/db"
+
+    def test_resolve_asyncpg_database_url_missing(self, monkeypatch: pytest.MonkeyPatch):
+        """Missing DATABASE_URL raises ValueError."""
+        monkeypatch.delenv("DATABASE_URL", raising=False)
+        with pytest.raises(ValueError, match="DATABASE_URL"):
+            _ = _resolve_asyncpg_database_url()
+
+    def test_schedule_entry_from_row(self):
+        """Row dict maps to ScheduleEntry with Latin weekday normalization."""
+        row = {
+            "stable_id": "npc_morning",
+            "name": "Morning Shift",
+            "category": "npc",
+            "start_hour": 8,
+            "end_hour": 12,
+            "days": ["Primus"],
+            "applies_to": ["GUARD"],
+            "effects": ["ALERT"],
+            "notes": "test",
+        }
+        entry = _schedule_entry_from_row(row)
+        assert entry.id == "npc_morning"
+        assert entry.days == ["Monday"]
+        assert entry.applies_to == ["guard"]
+        assert entry.effects == ["alert"]
+
+    @patch("server.services.schedule_service.get_calendar_paths_for_environment")
+    def test_init_database_load_failure_raises(self, mock_get_paths: MagicMock) -> None:
+        """Failed database load raises RuntimeError."""
+        mock_get_paths.return_value = (Path("/holidays"), Path("/schedules"))
+        mock_persistence = MagicMock()
+        with patch.object(ScheduleService, "_load_from_database", return_value=None):
+            with pytest.raises(RuntimeError, match="Failed to load schedules"):
+                _ = ScheduleService(async_persistence=mock_persistence, environment="test")
+
+    @patch("server.services.schedule_service.get_calendar_paths_for_environment")
+    def test_load_from_database_success(self, mock_get_paths: MagicMock) -> None:
+        """_load_from_database returns entries from async helper."""
+        mock_get_paths.return_value = (Path("/holidays"), Path("/schedules"))
+        sample_entry = ScheduleEntry(
+            id="sched_x",
+            name="X",
+            category="npc",
+            start_hour=0,
+            end_hour=1,
+            days=["Monday"],
+            applies_to=[],
+            effects=[],
+            notes=None,
+        )
+
+        async def fake_async_load(_self, container: _DatabaseLoadResult) -> None:
+            container["entries"] = [sample_entry]
+
+        with patch.object(ScheduleService, "_async_load_from_database", fake_async_load):
+            svc = object.__new__(ScheduleService)
+            entries = ScheduleService._load_from_database(svc)
+            assert entries == [sample_entry]

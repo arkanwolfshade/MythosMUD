@@ -104,11 +104,17 @@ uv run pytest server/tests/unit/path/to/test_file.py::TestClassName::test_method
 
 ### Coverage Requirements
 
-**Overall Coverage**: 80% minimum (enforced in CI), 82%+ target
+**Global floor (`.coveragerc` `fail_under`)**: 70% line coverage for measured server code
 
-**Critical Coverage**: 98% minimum (security, core features)
+**Normal files**: 70% minimum per file (`scripts/check_coverage_thresholds.py`, hard-fail)
+
+**Critical files**: 90% minimum per listed path (or a justified lowered threshold in
+`CRITICAL_FILES` / `docs/PYTHON_COVERAGE_STATUS.md`)
 
 **Test Quality**: Focus on high-value tests preventing regressions
+
+Keep `CRITICAL_FILES` in `scripts/check_coverage_thresholds.py` and
+`scripts/analyze_coverage_gaps.py` in sync when editing the list.
 
 ### Test Markers
 

@@ -1,103 +1,126 @@
-"""
-Unit tests for NPCCombatDataProvider.
+"""Unit tests for server.services.npc_combat_data_provider."""
 
-Tests get_player_combat_data and get_npc_combat_data use model get_combat_stats.
-"""
+from __future__ import annotations
 
 import uuid
-from unittest.mock import AsyncMock, MagicMock
+from types import SimpleNamespace
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
 from server.models.combat import CombatParticipantType
-from server.services.combat_types import CombatParticipantData
 from server.services.npc_combat_data_provider import NPCCombatDataProvider
 
 
 @pytest.fixture
-def mock_persistence():
-    """Create mock persistence layer."""
+def persistence() -> MagicMock:
     return MagicMock()
 
 
-@pytest.fixture
-def data_provider(mock_persistence):
-    """Create NPCCombatDataProvider instance."""
-    return NPCCombatDataProvider(mock_persistence)
+def test_get_npc_instance_from_lifecycle(persistence: MagicMock) -> None:
+    npc = SimpleNamespace(name="Rat")
+    lifecycle = MagicMock()
+    lifecycle.active_npcs = {"npc-1": npc}
+    svc = MagicMock(lifecycle_manager=lifecycle)
+    with patch("server.services.npc_instance_service.get_npc_instance_service", return_value=svc):
+        provider = NPCCombatDataProvider(persistence)
+        assert provider.get_npc_instance("npc-1") is npc
+
+
+def test_get_npc_instance_returns_none_on_error(persistence: MagicMock) -> None:
+    with patch(
+        "server.services.npc_instance_service.get_npc_instance_service",
+        side_effect=ImportError("missing"),
+    ):
+        provider = NPCCombatDataProvider(persistence)
+        assert provider.get_npc_instance("npc-1") is None
 
 
 @pytest.mark.asyncio
-async def test_get_player_combat_data_uses_get_combat_stats(data_provider, mock_persistence):
-    """Test get_player_combat_data delegates to Player.get_combat_stats()."""
-    from server.models.player import Player
+async def test_get_npc_definition_from_persistence(persistence: MagicMock) -> None:
+    definition = SimpleNamespace(name="Goblin")
+    record = SimpleNamespace(definition=definition)
+    lifecycle = MagicMock()
+    lifecycle.lifecycle_records = {"npc-1": record}
+    persistence.get_npc_lifecycle_manager = MagicMock(return_value=lifecycle)
+    provider = NPCCombatDataProvider(persistence)
+    result = await provider.get_npc_definition("npc-1")
+    assert result is definition
 
+
+@pytest.mark.asyncio
+async def test_get_player_name_found(persistence: MagicMock) -> None:
     player_id = uuid.uuid4()
-    player = Player(
-        player_id=str(player_id),
-        user_id=str(uuid.uuid4()),
-        name="TestPlayer",
-        stats={"current_dp": 60, "max_dp": 80, "dexterity": 14},
-    )
-    mock_persistence.get_player_by_id = AsyncMock(return_value=player)
-
-    result = await data_provider.get_player_combat_data(
-        player_id=str(player_id), attacker_uuid=player_id, player_name="TestPlayer"
-    )
-
-    assert isinstance(result, CombatParticipantData)
-    assert result.participant_id == player_id
-    assert result.name == "TestPlayer"
-    assert result.current_dp == 60
-    assert result.max_dp == 80
-    assert result.dexterity == 14
-    assert result.participant_type == CombatParticipantType.PLAYER
+    player = MagicMock()
+    player.name = "Arkan"
+    persistence.get_player_by_id = AsyncMock(return_value=player)
+    provider = NPCCombatDataProvider(persistence)
+    assert await provider.get_player_name(str(player_id)) == "Arkan"
 
 
-def test_get_npc_combat_data_uses_get_combat_stats(data_provider):
-    """Test get_npc_combat_data delegates to NPC get_combat_stats()."""
-    from server.npc.passive_mob_npc import PassiveMobNPC
-
-    definition = MagicMock()
-    definition.name = "TestMob"
-    definition.room_id = "room_001"
-    definition.base_stats = '{"determination_points": 45, "max_dp": 50, "dexterity": 11}'
-    definition.behavior_config = "{}"
-    definition.ai_integration_stub = "{}"
-    definition.npc_type = "passive_mob"
-
-    npc = PassiveMobNPC(definition=definition, npc_id="test-npc-001")
-    target_uuid = uuid.uuid4()
-
-    result = data_provider.get_npc_combat_data(npc_instance=npc, target_uuid=target_uuid)
-
-    assert isinstance(result, CombatParticipantData)
-    assert result.participant_id == target_uuid
-    assert result.name == "TestMob"
-    assert result.current_dp == 45
-    assert result.max_dp == 50
-    assert result.dexterity == 11
-    assert result.participant_type == CombatParticipantType.NPC
+@pytest.mark.asyncio
+async def test_get_player_name_unknown(persistence: MagicMock) -> None:
+    persistence.get_player_by_id = AsyncMock(return_value=None)
+    provider = NPCCombatDataProvider(persistence)
+    assert await provider.get_player_name(str(uuid.uuid4())) == "Unknown Player"
 
 
-def test_get_npc_combat_data_fallback_without_get_combat_stats(data_provider):
-    """Test get_npc_combat_data falls back to get_stats when get_combat_stats absent."""
+@pytest.mark.asyncio
+async def test_get_player_room_id_invalid_uuid(persistence: MagicMock) -> None:
+    provider = NPCCombatDataProvider(persistence)
+    assert await provider.get_player_room_id("not-a-uuid") is None
 
-    class LegacyNPC:
-        """Minimal NPC-like object without get_combat_stats."""
 
-        name = "LegacyNPC"
+@pytest.mark.asyncio
+async def test_get_player_room_id_found(persistence: MagicMock) -> None:
+    player_id = uuid.uuid4()
+    player = MagicMock(current_room_id="room_001")
+    persistence.get_player_by_id = AsyncMock(return_value=player)
+    provider = NPCCombatDataProvider(persistence)
+    assert await provider.get_player_room_id(str(player_id)) == "room_001"
 
-        def get_stats(self):
-            return {
-                "determination_points": 30,
-                "max_dp": 40,
-                "dexterity": 9,
-            }
 
-    legacy_npc = LegacyNPC()
-    target_uuid = uuid.uuid4()
-    result = data_provider.get_npc_combat_data(npc_instance=legacy_npc, target_uuid=target_uuid)
+@pytest.mark.asyncio
+async def test_get_player_combat_data(persistence: MagicMock) -> None:
+    player_id = uuid.uuid4()
+    player = MagicMock()
+    player.get_combat_stats.return_value = {
+        "current_dp": 80,
+        "max_dp": 100,
+        "dexterity": 12,
+    }
+    persistence.get_player_by_id = AsyncMock(return_value=player)
+    provider = NPCCombatDataProvider(persistence)
+    data = await provider.get_player_combat_data(str(player_id), uuid.uuid4(), "Hero")
+    assert data.current_dp == 80
+    assert data.participant_type == CombatParticipantType.PLAYER
 
-    assert result.current_dp == 30
-    assert result.max_dp == 40
-    assert result.dexterity == 9
+
+@pytest.mark.asyncio
+async def test_get_player_combat_data_missing_player(persistence: MagicMock) -> None:
+    persistence.get_player_by_id = AsyncMock(return_value=None)
+    provider = NPCCombatDataProvider(persistence)
+    with pytest.raises(ValueError, match="not found"):
+        await provider.get_player_combat_data(str(uuid.uuid4()), uuid.uuid4(), "Hero")
+
+
+def test_get_npc_combat_data_with_get_combat_stats(persistence: MagicMock) -> None:
+    npc = MagicMock()
+    npc.name = "Shoggoth"
+    npc.npc_type = "mob"
+    npc.get_combat_stats.return_value = {"current_dp": 50, "max_dp": 50, "dexterity": 8}
+    provider = NPCCombatDataProvider(persistence)
+    data = provider.get_npc_combat_data(npc, uuid.uuid4())
+    assert data.name == "Shoggoth"
+    assert data.participant_type == CombatParticipantType.NPC
+
+
+def test_get_npc_combat_data_fallback_stats(persistence: MagicMock) -> None:
+    npc = MagicMock(spec=["name", "get_stats", "id"])
+    npc.name = "Cultist"
+    npc.id = "c1"
+    npc.get_stats.return_value = {"determination_points": 30, "max_dp": 40, "dexterity": 11}
+    provider = NPCCombatDataProvider(persistence)
+    data = provider.get_npc_combat_data(npc, uuid.uuid4())
+    assert data.current_dp == 30
+    assert data.max_dp == 40

@@ -7,8 +7,16 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 from pydantic import ValidationError
 
-from server.api.admin.dialogue_definitions_api import create_dialogue_definition, to_response
-from server.api.admin.dialogue_schemas import DialogueDefinitionCreate
+from server.api.admin.dialogue_definitions_api import (
+    create_dialogue_definition,
+    delete_dialogue_definition,
+    get_dialogue_definition,
+    list_dialogue_definitions,
+    to_response,
+    upsert_dialogue_definition,
+)
+from server.api.admin.dialogue_schemas import DialogueDefinitionCreate, DialogueDefinitionUpdate
+from server.exceptions import LoggedHTTPException
 from server.schemas.dialogue import DialogueTree
 
 VALID_TREE = {
@@ -83,3 +91,124 @@ async def test_create_dialogue_definition_upserts():
     validate.assert_called_once()
     assert result.id == "t1"
     upsert.assert_awaited_once()
+
+
+def _dialogue_row():
+    row = MagicMock()
+    row.id = "t1"
+    row.definition = VALID_TREE
+    row.npc_definition_id = 53
+    row.created_at = None
+    row.updated_at = None
+    return row
+
+
+@pytest.mark.asyncio
+async def test_list_dialogue_definitions_returns_rows():
+    request = MagicMock()
+    user = MagicMock()
+    row = _dialogue_row()
+    with (
+        patch("server.api.admin.dialogue_definitions_api.validate_admin_permission"),
+        patch("server.api.admin.dialogue_definitions_api.DialogueDefinitionRepository") as repo_cls,
+        patch("server.api.admin.dialogue_definitions_api.get_admin_auth_service") as auth_svc,
+    ):
+        auth_svc.return_value.get_username = MagicMock(return_value="admin")
+        repo_cls.return_value.list_all = AsyncMock(return_value=[row])
+        result = await list_dialogue_definitions(request, user)
+    assert len(result) == 1
+    assert result[0].id == "t1"
+
+
+@pytest.mark.asyncio
+async def test_list_dialogue_definitions_db_error():
+    request = MagicMock()
+    user = MagicMock()
+    with (
+        patch("server.api.admin.dialogue_definitions_api.validate_admin_permission"),
+        patch("server.api.admin.dialogue_definitions_api.DialogueDefinitionRepository") as repo_cls,
+        patch("server.api.admin.dialogue_definitions_api.get_admin_auth_service") as auth_svc,
+    ):
+        auth_svc.return_value.get_username = MagicMock(return_value="admin")
+        repo_cls.return_value.list_all = AsyncMock(side_effect=RuntimeError("db down"))
+        with pytest.raises(LoggedHTTPException) as exc:
+            await list_dialogue_definitions(request, user)
+    assert exc.value.status_code == 500
+
+
+@pytest.mark.asyncio
+async def test_get_dialogue_definition_found():
+    request = MagicMock()
+    user = MagicMock()
+    row = _dialogue_row()
+    with (
+        patch("server.api.admin.dialogue_definitions_api.validate_admin_permission"),
+        patch("server.api.admin.dialogue_definitions_api.DialogueDefinitionRepository") as repo_cls,
+    ):
+        repo_cls.return_value.get_by_id = AsyncMock(return_value=row)
+        result = await get_dialogue_definition("t1", request, user)
+    assert result.id == "t1"
+
+
+@pytest.mark.asyncio
+async def test_get_dialogue_definition_not_found():
+    request = MagicMock()
+    user = MagicMock()
+    with (
+        patch("server.api.admin.dialogue_definitions_api.validate_admin_permission"),
+        patch("server.api.admin.dialogue_definitions_api.DialogueDefinitionRepository") as repo_cls,
+    ):
+        repo_cls.return_value.get_by_id = AsyncMock(return_value=None)
+        with pytest.raises(LoggedHTTPException) as exc:
+            await get_dialogue_definition("missing", request, user)
+    assert exc.value.status_code == 404
+
+
+@pytest.mark.asyncio
+async def test_upsert_dialogue_definition():
+    request = MagicMock()
+    user = MagicMock()
+    body = DialogueDefinitionUpdate(
+        definition=DialogueTree.model_validate(VALID_TREE),
+        npc_definition_id=53,
+    )
+    row = _dialogue_row()
+    with (
+        patch("server.api.admin.dialogue_definitions_api.validate_admin_permission"),
+        patch("server.api.admin.dialogue_definitions_api.DialogueDefinitionRepository") as repo_cls,
+        patch("server.api.admin.dialogue_definitions_api.get_admin_auth_service") as auth_svc,
+    ):
+        auth_svc.return_value.get_username = MagicMock(return_value="admin")
+        repo_cls.return_value.upsert = AsyncMock(return_value=row)
+        result = await upsert_dialogue_definition("t1", body, request, user)
+    assert result.id == "t1"
+
+
+@pytest.mark.asyncio
+async def test_delete_dialogue_definition_success():
+    request = MagicMock()
+    user = MagicMock()
+    with (
+        patch("server.api.admin.dialogue_definitions_api.validate_admin_permission"),
+        patch("server.api.admin.dialogue_definitions_api.DialogueDefinitionRepository") as repo_cls,
+        patch("server.api.admin.dialogue_definitions_api.get_admin_auth_service") as auth_svc,
+    ):
+        auth_svc.return_value.get_username = MagicMock(return_value="admin")
+        repo_cls.return_value.delete = AsyncMock(return_value=True)
+        await delete_dialogue_definition("t1", request, user)
+
+
+@pytest.mark.asyncio
+async def test_delete_dialogue_definition_not_found():
+    request = MagicMock()
+    user = MagicMock()
+    with (
+        patch("server.api.admin.dialogue_definitions_api.validate_admin_permission"),
+        patch("server.api.admin.dialogue_definitions_api.DialogueDefinitionRepository") as repo_cls,
+        patch("server.api.admin.dialogue_definitions_api.get_admin_auth_service") as auth_svc,
+    ):
+        auth_svc.return_value.get_username = MagicMock(return_value="admin")
+        repo_cls.return_value.delete = AsyncMock(return_value=False)
+        with pytest.raises(LoggedHTTPException) as exc:
+            await delete_dialogue_definition("missing", request, user)
+    assert exc.value.status_code == 404
