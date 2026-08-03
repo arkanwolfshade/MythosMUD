@@ -20,6 +20,7 @@ from server.api.players import (
     list_players,
 )
 from server.exceptions import LoggedHTTPException, ValidationError
+from server.schemas.players.player_requests import SelectCharacterRequest
 
 
 def _user() -> MagicMock:
@@ -164,3 +165,185 @@ async def test_list_players_returns_list() -> None:
     svc.list_players = AsyncMock(return_value=[MagicMock()])
     out = await list_players(MagicMock(spec=Request), _user(), svc)
     assert len(out) == 1
+
+
+@pytest.mark.asyncio
+async def test_get_available_classes() -> None:
+    from server.api.players import get_available_classes
+
+    gen = MagicMock()
+    gen.CLASS_PREREQUISITES = {"investigator": {}}
+    gen.MIN_STAT = 1
+    gen.MAX_STAT = 99
+    out = await get_available_classes(_user(), gen)
+    assert "investigator" in out.classes
+
+
+@pytest.mark.asyncio
+async def test_get_player_not_found() -> None:
+    from server.api.players import get_player
+
+    svc = MagicMock()
+    svc.get_player_by_id = AsyncMock(return_value=None)
+    with pytest.raises(LoggedHTTPException) as ei:
+        await get_player(uuid.uuid4(), MagicMock(spec=Request), _user(), svc)
+    assert ei.value.status_code == 404
+
+
+@pytest.mark.asyncio
+async def test_get_player_success() -> None:
+    from server.api.players import get_player
+
+    player = MagicMock()
+    svc = MagicMock()
+    svc.get_player_by_id = AsyncMock(return_value=player)
+    out = await get_player(uuid.uuid4(), MagicMock(spec=Request), _user(), svc)
+    assert out is player
+
+
+@pytest.mark.asyncio
+async def test_get_player_by_name_success() -> None:
+    from server.api.players import get_player_by_name
+
+    player = MagicMock()
+    svc = MagicMock()
+    svc.get_player_by_name = AsyncMock(return_value=player)
+    out = await get_player_by_name("Hero", MagicMock(spec=Request), _user(), svc)
+    assert out is player
+
+
+@pytest.mark.asyncio
+async def test_get_user_characters_success() -> None:
+    from server.api.players import get_user_characters
+
+    svc = MagicMock()
+    svc.get_user_characters = AsyncMock(return_value=[MagicMock()])
+    out = await get_user_characters(MagicMock(spec=Request), _user(), svc)
+    assert len(out) == 1
+
+
+@pytest.mark.asyncio
+async def test_get_player_skills_success() -> None:
+    from server.api.players import get_player_skills
+
+    svc = MagicMock()
+    svc.get_player_skills = AsyncMock(return_value=[{"skill_id": 1, "skill_key": "k", "skill_name": "N", "value": 1}])
+    out = await get_player_skills(uuid.uuid4(), MagicMock(spec=Request), _user(), svc)
+    assert len(out.skills) == 1
+
+
+@pytest.mark.asyncio
+async def test_get_player_skills_forbidden() -> None:
+    from server.api.players import get_player_skills
+
+    svc = MagicMock()
+    svc.get_player_skills = AsyncMock(return_value=None)
+    with pytest.raises(LoggedHTTPException) as ei:
+        await get_player_skills(uuid.uuid4(), MagicMock(spec=Request), _user(), svc)
+    assert ei.value.status_code == 403
+
+
+@pytest.mark.asyncio
+async def test_get_player_quests_success() -> None:
+    from server.api.players import get_player_quests
+
+    player_svc = MagicMock()
+    player_svc.validate_character_access = AsyncMock(return_value=(True, MagicMock(), ""))
+    quest_svc = MagicMock()
+    quest_svc.get_quest_log = AsyncMock(
+        return_value=[
+            {
+                "quest_id": "quest-1",
+                "name": "q",
+                "title": "T",
+                "description": "d",
+                "goals_with_progress": [],
+                "state": "active",
+            }
+        ]
+    )
+    out = await get_player_quests(uuid.uuid4(), MagicMock(spec=Request), _user(), player_svc, quest_svc)
+    assert len(out.quests) == 1
+
+
+@pytest.mark.asyncio
+async def test_get_player_quests_forbidden() -> None:
+    from server.api.players import get_player_quests
+
+    player_svc = MagicMock()
+    player_svc.validate_character_access = AsyncMock(return_value=(False, None, "does not belong"))
+    quest_svc = MagicMock()
+    with pytest.raises(LoggedHTTPException) as ei:
+        await get_player_quests(uuid.uuid4(), MagicMock(spec=Request), _user(), player_svc, quest_svc)
+    assert ei.value.status_code == 403
+
+
+@pytest.mark.asyncio
+async def test_delete_player_success() -> None:
+    from server.api.players import delete_player
+
+    svc = MagicMock()
+    svc.delete_player = AsyncMock(return_value=(True, "deleted"))
+    out = await delete_player(uuid.uuid4(), MagicMock(spec=Request), _user(), svc)
+    assert out.message == "deleted"
+
+
+@pytest.mark.asyncio
+async def test_delete_player_not_found() -> None:
+    from server.api.players import delete_player
+
+    svc = MagicMock()
+    svc.delete_player = AsyncMock(return_value=(False, "missing"))
+    with pytest.raises(LoggedHTTPException) as ei:
+        await delete_player(uuid.uuid4(), MagicMock(spec=Request), _user(), svc)
+    assert ei.value.status_code == 404
+
+
+@pytest.mark.asyncio
+async def test_delete_player_validation_error() -> None:
+    from server.api.players import delete_player
+
+    svc = MagicMock()
+    svc.delete_player = AsyncMock(side_effect=ValidationError("bad"))
+    with pytest.raises(LoggedHTTPException) as ei:
+        await delete_player(uuid.uuid4(), MagicMock(spec=Request), _user(), svc)
+    assert ei.value.status_code == 404
+
+
+@pytest.mark.asyncio
+async def test_delete_character_success() -> None:
+    from server.api.players import delete_character
+
+    svc = MagicMock()
+    svc.soft_delete_character = AsyncMock(return_value=(True, "gone"))
+    out = await delete_character(str(uuid.uuid4()), MagicMock(spec=Request), _user(), svc)
+    assert out.success is True
+
+
+@pytest.mark.asyncio
+async def test_delete_character_invalid_id() -> None:
+    from server.api.players import delete_character
+
+    svc = MagicMock()
+    with pytest.raises(LoggedHTTPException) as ei:
+        await delete_character("not-uuid", MagicMock(spec=Request), _user(), svc)
+    assert ei.value.status_code == 400
+
+
+@pytest.mark.asyncio
+async def test_select_character_success() -> None:
+    from server.api.players import select_character
+
+    char_id = uuid.uuid4()
+    character = MagicMock()
+    svc = MagicMock()
+    svc.validate_character_access = AsyncMock(return_value=(True, character, ""))
+    req = MagicMock(spec=Request)
+    req.app.state.container = None
+    out = await select_character(
+        SelectCharacterRequest(character_id=str(char_id)),
+        req,
+        _user(),
+        svc,
+    )
+    assert out is character

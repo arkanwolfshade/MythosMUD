@@ -16,13 +16,16 @@ from starlette.datastructures import QueryParams
 from server.api.map_helpers import MapZoneContext
 from server.api.maps import (
     _apply_exploration_filter_if_needed,
+    _ensure_coordinates_generated,
     _filter_explored_rooms,
     _get_current_room_id,
+    _get_minimap_player_and_room_id,
     _get_player_and_exploration_service,
+    _handle_ascii_map_error,
     _needs_coordinate_generation,
     _prepare_ascii_map_context,
 )
-from server.exceptions import DatabaseError
+from server.exceptions import DatabaseError, LoggedHTTPException
 from server.game.room_service import RoomService
 from server.models.user import User
 from server.services.exploration_service import ExplorationService
@@ -238,3 +241,223 @@ def test_needs_coordinate_generation_true_when_missing() -> None:
 def test_needs_coordinate_generation_false_when_present() -> None:
     rooms: _MapRooms = [{"id": "a", "map_x": 1, "map_y": 2}]
     assert _needs_coordinate_generation(rooms) is False
+
+
+def test_handle_ascii_map_error_raises_logged_http() -> None:
+    with pytest.raises(LoggedHTTPException) as ei:
+        _handle_ascii_map_error(RuntimeError("boom"), "p", "z", None)
+    assert ei.value.status_code == 500
+
+
+@pytest.mark.asyncio
+async def test_get_minimap_player_and_room_id_requires_auth(mock_request: MagicMock) -> None:
+    with pytest.raises(LoggedHTTPException) as ei:
+        await _get_minimap_player_and_room_id(mock_request, None, MagicMock())
+    assert ei.value.status_code == 401
+
+
+@pytest.mark.asyncio
+async def test_get_minimap_player_and_room_id_success(mock_request: MagicMock) -> None:
+    user = MagicMock(spec=User)
+    user.id = uuid.uuid4()
+    player = MagicMock()
+    player.current_room_id = "room_from_db"
+    persistence = MagicMock()
+    persistence.get_player_by_user_id = AsyncMock(return_value=player)
+    player_out, room_id = await _get_minimap_player_and_room_id(mock_request, user, persistence)
+    assert player_out is player
+    assert room_id == "room_from_db"
+
+
+@pytest.mark.asyncio
+async def test_ensure_coordinates_generated_when_missing(
+    mock_user_and_player: tuple[MagicMock, MagicMock, uuid.UUID],
+) -> None:
+    user, player, player_id = mock_user_and_player
+    rooms: _MapRooms = [{"id": "a", "map_x": None, "map_y": None}]
+    zone_ctx = MapZoneContext(plane="p", zone="z", sub_zone=None)
+    reloaded: _MapRooms = [{"id": "a", "map_x": 1, "map_y": 2}]
+    generator = MagicMock()
+    generator.generate_coordinates_for_zone = AsyncMock()
+    with (
+        patch("server.api.maps.CoordinateGenerator", return_value=generator),
+        patch("server.api.maps.load_rooms_with_coordinates", new_callable=AsyncMock, return_value=reloaded),
+        patch("server.api.maps._apply_exploration_filter_if_needed", new_callable=AsyncMock, return_value=reloaded),
+    ):
+        out = await _ensure_coordinates_generated(
+            AsyncMock(spec=AsyncSession),
+            zone_ctx,
+            rooms,
+            player,
+            player_id,
+            MagicMock(spec=ExplorationService),
+            user,
+            MagicMock(spec=RoomService),
+        )
+    assert out == reloaded
+    generator.generate_coordinates_for_zone.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_get_ascii_map_renders_html(mock_request: MagicMock) -> None:
+    rooms: _MapRooms = [{"id": "a", "map_x": 1, "map_y": 2, "exits": {}}]
+    with (
+        patch("server.api.maps._prepare_ascii_map_context", new_callable=AsyncMock, return_value=(rooms, "a")),
+        patch("server.api.maps.AsciiMapRenderer") as renderer_cls,
+    ):
+        renderer_cls.return_value.render_map.return_value = "<pre>map</pre>"
+        from server.api.maps import get_ascii_map
+
+        response = await get_ascii_map(
+            mock_request,
+            plane="p",
+            zone="z",
+            sub_zone=None,
+            viewport_x=0,
+            viewport_y=0,
+            viewport_width=80,
+            viewport_height=24,
+            current_user=None,
+            session=AsyncMock(spec=AsyncSession),
+            persistence=MagicMock(),
+            exploration_service=MagicMock(spec=ExplorationService),
+            room_service=MagicMock(spec=RoomService),
+        )
+    assert "map" in response.map_html
+
+
+@pytest.mark.asyncio
+async def test_get_ascii_minimap_requires_auth(mock_request: MagicMock) -> None:
+    from server.api.maps import get_ascii_minimap
+
+    with pytest.raises(LoggedHTTPException) as ei:
+        await get_ascii_minimap(
+            mock_request,
+            plane="p",
+            zone="z",
+            sub_zone=None,
+            current_user=None,
+            session=AsyncMock(spec=AsyncSession),
+            persistence=MagicMock(),
+            exploration_service=MagicMock(spec=ExplorationService),
+            room_service=MagicMock(spec=RoomService),
+        )
+    assert ei.value.status_code == 401
+
+
+@pytest.mark.asyncio
+async def test_get_ascii_minimap_success(mock_request: MagicMock) -> None:
+    user = MagicMock(spec=User)
+    user.id = uuid.uuid4()
+    user.is_admin = False
+    user.is_superuser = False
+    player = MagicMock()
+    player.player_id = uuid.uuid4()
+    player.current_room_id = "room_a"
+    persistence = MagicMock()
+    persistence.get_player_by_user_id = AsyncMock(return_value=player)
+    with patch("server.api.maps.generate_minimap_html", new_callable=AsyncMock, return_value="<pre>mini</pre>"):
+        from server.api.maps import get_ascii_minimap
+
+        response = await get_ascii_minimap(
+            mock_request,
+            plane="p",
+            zone="z",
+            sub_zone=None,
+            size=5,
+            current_user=user,
+            session=AsyncMock(spec=AsyncSession),
+            persistence=persistence,
+            exploration_service=MagicMock(spec=ExplorationService),
+            room_service=MagicMock(spec=RoomService),
+        )
+    assert "mini" in response.map_html
+
+
+@pytest.mark.asyncio
+async def test_recalculate_coordinates_admin(mock_request: MagicMock) -> None:
+    user = MagicMock(spec=User)
+    user.id = uuid.uuid4()
+    auth = MagicMock()
+    auth.get_username.return_value = "admin"
+    generator = MagicMock()
+    generator.generate_coordinates_for_zone = AsyncMock(return_value={"coordinates": [{"x": 1}]})
+    validator = MagicMock()
+    validator.validate_coordinates = AsyncMock(return_value={"conflicts": [], "conflict_count": 0, "valid": True})
+    with (
+        patch("server.api.maps.get_admin_auth_service", return_value=auth),
+        patch("server.api.maps.CoordinateGenerator", return_value=generator),
+        patch("server.api.maps.CoordinateValidator", return_value=validator),
+    ):
+        from server.api.maps import recalculate_coordinates
+
+        response = await recalculate_coordinates(
+            mock_request,
+            plane="p",
+            zone="z",
+            sub_zone=None,
+            current_user=user,
+            session=AsyncMock(spec=AsyncSession),
+        )
+    assert response.coordinates_generated == 1
+
+
+@pytest.mark.asyncio
+async def test_recalculate_coordinates_requires_auth(mock_request: MagicMock) -> None:
+    from server.api.maps import recalculate_coordinates
+
+    with pytest.raises(LoggedHTTPException) as ei:
+        await recalculate_coordinates(
+            mock_request,
+            plane="p",
+            zone="z",
+            sub_zone=None,
+            current_user=None,
+            session=AsyncMock(spec=AsyncSession),
+        )
+    assert ei.value.status_code == 401
+
+
+@pytest.mark.asyncio
+async def test_set_map_origin_requires_auth(mock_request: MagicMock) -> None:
+    from server.api.maps import SetOriginRequest, set_map_origin
+
+    with pytest.raises(LoggedHTTPException) as ei:
+        await set_map_origin(
+            "room-a",
+            SetOriginRequest(plane="p", zone="z", sub_zone=None),
+            mock_request,
+            current_user=None,
+            session=AsyncMock(spec=AsyncSession),
+        )
+    assert ei.value.status_code == 401
+
+
+@pytest.mark.asyncio
+async def test_set_map_origin_success(mock_request: MagicMock) -> None:
+    user = MagicMock(spec=User)
+    auth = MagicMock()
+    auth.get_username.return_value = "admin"
+    session = AsyncMock(spec=AsyncSession)
+    session.execute = AsyncMock(side_effect=[MagicMock(scalar=lambda: True), MagicMock()])
+    session.commit = AsyncMock()
+    generator = MagicMock()
+    generator.generate_coordinates_for_zone = AsyncMock(return_value={"coordinates": [{"x": 1}, {"x": 2}]})
+    validator = MagicMock()
+    validator.validate_coordinates = AsyncMock(return_value={"conflicts": [], "conflict_count": 0, "valid": True})
+    with (
+        patch("server.api.maps.get_admin_auth_service", return_value=auth),
+        patch("server.api.maps.CoordinateGenerator", return_value=generator),
+        patch("server.api.maps.CoordinateValidator", return_value=validator),
+    ):
+        from server.api.maps import SetOriginRequest, set_map_origin
+
+        response = await set_map_origin(
+            "room-a",
+            SetOriginRequest(plane="p", zone="z", sub_zone="sz"),
+            mock_request,
+            current_user=user,
+            session=session,
+        )
+    assert response.room_id == "room-a"
+    assert response.coordinates_generated == 2
