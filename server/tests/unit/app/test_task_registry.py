@@ -1,6 +1,7 @@
 """Unit tests for asyncio TaskRegistry lifecycle management."""
 
 import asyncio
+from inspect import CORO_CLOSED, getcoroutinestate
 from unittest.mock import patch
 
 import pytest
@@ -57,7 +58,21 @@ async def test_register_during_shutdown_raises(registry: TaskRegistry) -> None:
     coro = _sleep_briefly()
     with pytest.raises(RuntimeError, match="denied during shutdown"):
         registry.register_task(coro, "late", "unknown")
-    coro.close()
+    assert getcoroutinestate(coro) == CORO_CLOSED
+
+
+@pytest.mark.asyncio
+async def test_register_closes_coro_when_create_task_fails(
+    registry: TaskRegistry, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    def _boom(*_args: object, **_kwargs: object) -> None:
+        raise RuntimeError("no running event loop")
+
+    monkeypatch.setattr(asyncio, "create_task", _boom)
+    coro = _sleep_briefly()
+    with pytest.raises(RuntimeError, match="Task registration failed"):
+        registry.register_task(coro, "no_loop", "unknown")
+    assert getcoroutinestate(coro) == CORO_CLOSED
 
 
 @pytest.mark.asyncio

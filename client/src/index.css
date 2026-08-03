@@ -22,6 +22,32 @@ body {
 
 /* ui-v2 TentacleBackdrop: sepia line-art; tune in one place (reads on #0a0a0a). */
 :root {
+  /* Canonical mythos-terminal palette (matches client/tailwind.config.js) */
+  --color-mythos-terminal-background: #0a0a0a;
+  --color-mythos-terminal-surface: #1a1a1a;
+  --color-mythos-terminal-border: #333333;
+  --color-mythos-terminal-primary: #00ff00;
+  --color-mythos-terminal-secondary: #ff9800;
+  --color-mythos-terminal-text: #00ff00;
+  --color-mythos-terminal-text-secondary: #4caf50;
+  --color-mythos-terminal-error: #f44336;
+  --color-mythos-terminal-warning: #ff9800;
+  --color-mythos-terminal-success: #4caf50;
+  /* Sepia ink accents (scholarly occult; pairs with tentacle backdrop) */
+  --color-mythos-sepia: #a88e76;
+  --color-mythos-sepia-muted: #84705c;
+  /* Aliases used by MonitoringPanel.css and similar islands */
+  --mythos-bg-primary: var(--color-mythos-terminal-background);
+  --mythos-bg-secondary: var(--color-mythos-terminal-surface);
+  --mythos-bg-tertiary: #121212;
+  --mythos-border-primary: var(--color-mythos-terminal-border);
+  --mythos-border-secondary: #2a2a2a;
+  --mythos-border-tertiary: #222222;
+  --mythos-text-primary: var(--color-mythos-terminal-text);
+  --mythos-text-secondary: var(--color-mythos-terminal-text-secondary);
+  --mythos-accent-primary: var(--color-mythos-terminal-primary);
+  --mythos-accent-secondary: var(--color-mythos-terminal-secondary);
+
   --mythos-tentacle-sepia: rgba(168, 142, 118, 0.48);
   --mythos-tentacle-sepia-mid: rgba(150, 128, 104, 0.4);
   --mythos-tentacle-sepia-soft: rgba(132, 112, 92, 0.34);
@@ -101,6 +127,25 @@ body {
   }
 
   .mythos-tentacle-dash-path {
+    animation: none !important;
+  }
+
+  .animate-eldritch-glow,
+  .animate-eldritch-pulse,
+  .animate-eldritch-shimmer,
+  .animate-eldritch-fade,
+  .animate-eldritch-slide,
+  .animate-eldritch-scale,
+  .animate-eldritch-rotate,
+  .animate-eldritch-blur,
+  .animate-eldritch-shadow,
+  .animate-eldritch-border,
+  .animate-mythos-glow-emerald,
+  .animate-mythos-glow-amber,
+  .animate-mythos-glow-orange,
+  .animate-mythos-glow-danger,
+  .animate-mythos-glow-combat,
+  .animate-fade-in {
     animation: none !important;
   }
 }
@@ -535,8 +580,8 @@ body {
 
 body {
   font-family: 'Courier New', monospace;
-  background: #0a0a0a;
-  color: #0f0;
+  background: var(--color-mythos-terminal-background, #0a0a0a);
+  color: var(--color-mythos-terminal-text, #0f0);
   line-height: 1.6;
 }
 
@@ -548,7 +593,7 @@ body {
   flex: 1;
 }
 
-/* Login Screen */
+/* Login Screen — quiet terminal + sepia (canonical; keep in sync with App.css) */
 .login-container {
   display: flex;
   flex-direction: column;
@@ -556,29 +601,31 @@ body {
   justify-content: center;
   min-height: 100vh;
   padding: 2rem;
-  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+  background: var(--color-mythos-terminal-background, #0a0a0a);
 }
 
 .login-container h1 {
-  font-size: 3.5rem;
+  font-size: 2.75rem;
   margin-bottom: 0.5rem;
-  text-shadow: 0 0 10px #0f0;
-  color: #0f0;
+  text-shadow: none;
+  color: var(--color-mythos-sepia, #a88e76);
+  letter-spacing: 0.12em;
+  font-weight: 600;
 }
 
 .subtitle {
-  font-size: 1.4rem;
+  font-size: 1.1rem;
   margin-bottom: 2rem;
-  color: #888;
+  color: var(--color-mythos-sepia-muted, #84705c);
   font-style: italic;
 }
 
 .login-form {
-  background: rgba(0, 0, 0, 0.8);
+  background: var(--color-mythos-terminal-surface, #1a1a1a);
   padding: 2rem;
-  border-radius: 8px;
-  border: 1px solid #0f0;
-  box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+  border-radius: 4px;
+  border: 1px solid var(--color-mythos-terminal-border, #333);
+  box-shadow: none;
   width: 100%;
   max-width: 400px;
 }
@@ -590,50 +637,53 @@ body {
 .form-group label {
   display: block;
   margin-bottom: 0.5rem;
-  color: #0f0;
+  color: var(--color-mythos-terminal-text-secondary, #4caf50);
   font-weight: bold;
 }
 
 .form-group input {
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid #333;
-  border-radius: 4px;
-  background: #1a1a1a;
-  color: #0f0;
+  border: 1px solid var(--color-mythos-terminal-border, #333);
+  border-radius: 2px;
+  background: var(--color-mythos-terminal-background, #0a0a0a);
+  color: var(--color-mythos-terminal-text, #0f0);
   font-family: inherit;
   font-size: 1.125rem;
 }
 
 /* Legacy form elements: visible focus ring for a11y (align with Tailwind outline-hidden + ring). */
 .form-group input:focus {
-  outline: 2px solid transparent;
+  outline: 2px solid var(--color-mythos-terminal-primary, #0f0);
   outline-offset: 2px;
-  border-color: #0f0;
-  box-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+  border-color: var(--color-mythos-terminal-primary, #0f0);
+  box-shadow: none;
 }
 
 .login-button {
   width: 100%;
   padding: 1rem;
-  background: #0f0;
-  color: #000;
-  border: none;
-  border-radius: 4px;
-  font-size: 1.3rem;
+  background: var(--color-mythos-terminal-surface, #1a1a1a);
+  color: var(--color-mythos-terminal-primary, #0f0);
+  border: 1px solid var(--color-mythos-terminal-primary, #0f0);
+  border-radius: 2px;
+  font-size: 1.15rem;
   font-weight: bold;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
 }
 
 .login-button:hover:not(:disabled) {
-  background: #0c0;
-  box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+  background: rgba(0, 255, 0, 0.12);
+  box-shadow: none;
 }
 
 .login-button:disabled {
-  background: #333;
+  background: var(--color-mythos-terminal-surface, #1a1a1a);
   color: #666;
+  border-color: var(--color-mythos-terminal-border, #333);
   cursor: not-allowed;
 }
 
@@ -641,13 +691,13 @@ body {
   margin-top: 1.5rem;
   text-align: center;
   padding: 1rem;
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 4px;
-  border: 1px solid #333;
+  background: transparent;
+  border-radius: 2px;
+  border: 1px solid var(--color-mythos-terminal-border, #333);
 }
 
 .form-footer p {
-  color: #ccc;
+  color: var(--color-mythos-sepia-muted, #84705c);
   margin-bottom: 0.5rem;
 }
 

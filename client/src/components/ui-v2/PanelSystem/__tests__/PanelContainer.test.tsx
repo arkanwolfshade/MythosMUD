@@ -169,7 +169,7 @@ describe('PanelContainer', () => {
       const { container } = render(<PanelContainer {...defaultProps} variant="default" />);
 
       const rndContainer = container.querySelector(`[data-testid="${panelRootTestId}"]`);
-      expect(rndContainer).toHaveClass('border-gray-700');
+      expect(rndContainer).toHaveClass('border-mythos-terminal-border');
     });
 
     it('should apply eldritch variant classes', () => {
@@ -183,7 +183,7 @@ describe('PanelContainer', () => {
       const { container } = render(<PanelContainer {...defaultProps} variant="elevated" />);
 
       const rndContainer = container.querySelector(`[data-testid="${panelRootTestId}"]`);
-      expect(rndContainer).toHaveClass('border-gray-600');
+      expect(rndContainer).toHaveClass('border-mythos-terminal-border');
       expect(rndContainer).toHaveClass('shadow-lg');
     });
   });

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 from datetime import UTC, datetime, timedelta
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -38,7 +39,14 @@ def mock_event_bus() -> MagicMock:
 @pytest.fixture
 def mock_task_registry() -> MagicMock:
     registry = MagicMock()
-    registry.register_task.return_value = MagicMock()
+
+    def _register(coro: object, *_args: object, **_kwargs: object) -> MagicMock:
+        # Tests do not run the scheduler loop; close the coro so GC stays quiet.
+        if asyncio.iscoroutine(coro):
+            coro.close()
+        return MagicMock()
+
+    registry.register_task.side_effect = _register
     registry.cancel_task = AsyncMock()
     return registry
 

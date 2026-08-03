@@ -30,10 +30,10 @@ describe('designTokens', () => {
     });
 
     it('should have status colors', () => {
-      expect(colors.status.success).toBe('bg-green-500');
-      expect(colors.status.error).toBe('bg-red-500');
-      expect(colors.status.warning).toBe('bg-yellow-500');
-      expect(colors.status.info).toBe('bg-blue-500');
+      expect(colors.status.success).toBe('bg-mythos-terminal-success');
+      expect(colors.status.error).toBe('bg-mythos-terminal-error');
+      expect(colors.status.warning).toBe('bg-mythos-terminal-warning');
+      expect(colors.status.info).toBe('bg-mythos-terminal-secondary');
     });
   });
 

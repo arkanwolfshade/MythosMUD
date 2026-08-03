@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+import asyncio
+from inspect import CORO_CLOSED, getcoroutinestate
+from typing import Any
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -399,3 +402,41 @@ async def test_initialize_connection_pool_partial_success(svc: NATSService) -> N
         await svc._initialize_connection_pool()
     assert svc._pool_initialized is True
     assert len(svc.connection_pool) == 1
+
+
+def test_create_tracked_task_closes_coro_when_create_task_fails(
+    svc: NATSService, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Regression: unscheduled coro is closed when create_task has no loop."""
+
+    async def _noop() -> None:
+        return None
+
+    def _boom(*_args: object, **_kwargs: object) -> None:
+        raise RuntimeError("no running event loop")
+
+    monkeypatch.setattr(asyncio, "create_task", _boom)
+    coro = _noop()
+    with pytest.raises(RuntimeError):
+        svc._create_tracked_task(coro, task_name="no_loop")
+    assert getcoroutinestate(coro) == CORO_CLOSED
+
+
+def test_on_error_closes_coro_when_create_task_fails(svc: NATSService, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Regression: _on_error must close _handle_error_async when scheduling fails."""
+    created: list[Any] = []
+    original = svc._handle_error_async
+
+    def _tracking_handler(error: BaseException) -> Any:
+        coro = original(error)
+        created.append(coro)
+        return coro
+
+    def _boom(*_args: object, **_kwargs: object) -> None:
+        raise RuntimeError("no running event loop")
+
+    monkeypatch.setattr(asyncio, "create_task", _boom)
+    monkeypatch.setattr(svc, "_handle_error_async", _tracking_handler)
+    svc._on_error(RuntimeError("nats blew up"))
+    assert len(created) == 1
+    assert getcoroutinestate(created[0]) == CORO_CLOSED
