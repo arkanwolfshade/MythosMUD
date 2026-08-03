@@ -10,16 +10,16 @@ from server.models.spell import Spell, SpellEffectType, SpellRangeType, SpellSch
 
 
 def _spell(**kwargs) -> Spell:
-    base = dict(
-        spell_id="test",
-        name="Test",
-        description="Test spell",
-        school=SpellSchool.ELEMENTAL,
-        mp_cost=5,
-        target_type=SpellTargetType.SELF,
-        range_type=SpellRangeType.TOUCH,
-        effect_type=SpellEffectType.HEAL,
-    )
+    base = {
+        "spell_id": "test",
+        "name": "Test",
+        "description": "Test spell",
+        "school": SpellSchool.ELEMENTAL,
+        "mp_cost": 5,
+        "target_type": SpellTargetType.SELF,
+        "range_type": SpellRangeType.TOUCH,
+        "effect_type": SpellEffectType.HEAL,
+    }
     base.update(kwargs)
     return Spell(**base)
 
