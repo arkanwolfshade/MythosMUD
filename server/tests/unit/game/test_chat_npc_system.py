@@ -1,17 +1,18 @@
 """Unit tests for NPC say and personal system chat (issue #146 MVP)."""
 
 import uuid
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
 from server.events.event_types import NPCSpoke
-from server.game import chat_npc_system
 from server.game.chat_message import ChatMessage
 from server.game.chat_npc_system import (
     deliver_npc_room_speech,
     deliver_personal_system,
     npc_sender_id,
+    reset_npc_spoke_subscription_for_tests,
     send_npc_say_to_room,
     send_personal_system_message,
     set_chat_service_for_npc_system,
@@ -25,19 +26,20 @@ from server.game.quest.quest_chat_notify import (
     notify_quest_started,
     quest_ask_npc_line,
     quest_turnin_npc_line,
+    should_notify_quest_progress,
     title_from_quest_result,
 )
 from server.npc.npc_display_names import register_npc_display_name, resolve_npc_display_name
 
 
 @pytest.fixture(autouse=True)
-def _reset_chat_npc_wiring():
+def _reset_chat_npc_wiring():  # pyright: ignore[reportUnusedFunction] - pytest autouse; not called directly
     """Keep process-wide chat wiring isolated per test."""
     set_chat_service_for_npc_system(None)
-    chat_npc_system._npc_spoke_subscribed = False  # pylint: disable=protected-access
+    reset_npc_spoke_subscription_for_tests()
     yield
     set_chat_service_for_npc_system(None)
-    chat_npc_system._npc_spoke_subscribed = False  # pylint: disable=protected-access
+    reset_npc_spoke_subscription_for_tests()
 
 
 def _mock_chat_service() -> MagicMock:
@@ -68,12 +70,14 @@ async def test_send_npc_say_to_room_publishes_say_with_npc_name():
         )
 
     assert result["success"] is True
-    assert result["message"]["sender_name"] == "Daisy"
-    assert result["message"]["channel"] == "say"
-    assert result["message"]["speaker_kind"] == "npc"
-    assert result["message"]["sender_id"] == npc_sender_id("daisy_def")
+    message = cast(dict[str, object], result["message"])
+    assert message["sender_name"] == "Daisy"
+    assert message["channel"] == "say"
+    assert message["speaker_kind"] == "npc"
+    assert message["sender_id"] == npc_sender_id("daisy_def")
     publish.assert_awaited_once()
-    published_msg = publish.await_args.args[0]
+    assert publish.await_args is not None
+    published_msg = cast(ChatMessage, publish.await_args.args[0])
     assert isinstance(published_msg, ChatMessage)
     assert published_msg.speaker_kind == "npc"
 
@@ -99,7 +103,7 @@ async def test_send_npc_say_publish_failure():
     ):
         result = await send_npc_say_to_room(chat_service, npc_id="n1", npc_name="N", room_id="r1", message="Hi")
     assert result["success"] is False
-    assert "unavailable" in result["error"].lower()
+    assert "unavailable" in cast(str, result["error"]).lower()
 
 
 @pytest.mark.asyncio
@@ -116,11 +120,14 @@ async def test_send_personal_system_message_targets_player():
         result = await send_personal_system_message(chat_service, player_id, "Quest progress: Fetch")
 
     assert result["success"] is True
-    assert result["message"]["channel"] == "system"
-    assert result["message"]["target_id"] == str(player_id)
-    assert result["message"]["speaker_kind"] == "system"
+    message = cast(dict[str, object], result["message"])
+    assert message["channel"] == "system"
+    assert message["target_id"] == str(player_id)
+    assert message["speaker_kind"] == "system"
     publish.assert_awaited_once()
-    assert publish.await_args.args[0].target_id == str(player_id)
+    assert publish.await_args is not None
+    published_msg = cast(ChatMessage, publish.await_args.args[0])
+    assert published_msg.target_id == str(player_id)
     assert publish.await_args.args[1] is None  # no room for system
 
 
@@ -152,22 +159,28 @@ async def test_deliver_npc_room_speech_uses_registered_name():
         new_callable=AsyncMock,
         return_value={"success": True},
     ) as send:
-        await deliver_npc_room_speech(npc_id="npc-42", room_id="room-1", message="Hello")
+        _ = await deliver_npc_room_speech(npc_id="npc-42", room_id="room-1", message="Hello")
 
     send.assert_awaited_once()
+    assert send.await_args is not None
     assert send.await_args.kwargs["npc_name"] == "Morgan"
 
 
 def test_npc_spoke_handler_schedules_room_speech():
     """NPCSpoke bridge schedules say-shaped room speech; skips whisper."""
+    bus = MagicMock()
+    subscribe_npc_spoke_to_chat(bus)
+    assert bus.subscribe.call_args is not None
+    handler = bus.subscribe.call_args.args[1]
+
     event = NPCSpoke(npc_id="n1", room_id="r1", message="Hi", channel="say", npc_name="N")
     with patch("server.game.chat_npc_system.schedule_npc_room_speech") as schedule:
-        chat_npc_system._on_npc_spoke(event)  # pylint: disable=protected-access
+        handler(event)
     schedule.assert_called_once_with(npc_id="n1", room_id="r1", message="Hi", npc_name="N")
 
     whisper = NPCSpoke(npc_id="n1", room_id="r1", message="Psst", channel="whisper")
     with patch("server.game.chat_npc_system.schedule_npc_room_speech") as schedule:
-        chat_npc_system._on_npc_spoke(whisper)  # pylint: disable=protected-access
+        handler(whisper)
     schedule.assert_not_called()
 
 
@@ -199,6 +212,19 @@ def test_notify_quest_lifecycle_schedules_personal_system():
     assert schedule.call_args_list[1].args == (player_id, "Quest progress: Fetch")
     assert schedule.call_args_list[2].args == (player_id, "Quest completed: Fetch")
     assert schedule.call_args_list[3].args == (player_id, "Quest abandoned: Fetch")
+
+
+def test_should_notify_quest_progress_milestones():
+    """Progress chat only on first tick or newly met goal; never on completing tick."""
+    definition = MagicMock()
+    definition.goals = [
+        MagicMock(type="kill_n", config={"count": 3}),
+    ]
+    assert should_notify_quest_progress({}, {"0": 1}, definition) is True
+    assert should_notify_quest_progress({"0": 1}, {"0": 2}, definition) is False
+    assert should_notify_quest_progress({"0": 2}, {"0": 3}, definition) is True
+    assert should_notify_quest_progress({"0": 2}, {"0": 3}, definition, will_complete=True) is False
+    assert should_notify_quest_progress({"0": 1}, {"0": 1}, definition) is False
 
 
 def test_emit_quest_npc_say_and_templates():
@@ -238,12 +264,12 @@ async def test_chat_service_npc_and_personal_wrappers():
         new_callable=AsyncMock,
         return_value={"success": True},
     ) as npc:
-        await service.send_npc_say_to_room("n1", "N", "r1", "Hi")
+        _ = await service.send_npc_say_to_room("n1", "N", "r1", "Hi")
     npc.assert_awaited_once()
     with patch(
         "server.game.chat_service.send_personal_system_message_helper",
         new_callable=AsyncMock,
         return_value={"success": True},
     ) as personal:
-        await service.send_personal_system_message(uuid.uuid4(), "Quest started: X")
+        _ = await service.send_personal_system_message(uuid.uuid4(), "Quest started: X")
     personal.assert_awaited_once()

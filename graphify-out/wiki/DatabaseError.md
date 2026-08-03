@@ -1,8 +1,8 @@
 # DatabaseError
 
-> God node · 432 connections · `server/exceptions.py`
+> God node · 440 connections · `server/exceptions.py`
 
-**Community:** [real time](real_time.md)
+**Community:** [Database Config](Database_Config.md)
 
 ## Connections by Relation
 
@@ -70,9 +70,9 @@
 - get_container() `INFERRED`
 - get_container_async() `INFERRED`
 - track_player_connected_impl() `INFERRED`
-- handle_goto_command() `INFERRED`
 - validate_token_impl() `INFERRED`
 - cleanup_websocket_disconnect() `INFERRED`
+- handle_goto_command() `INFERRED`
 - get_containers_by_entity_id() `INFERRED`
 
 ### inherits
@@ -94,17 +94,17 @@
 - TestSanitization `INFERRED`
 - RoomCacheLoader `INFERRED`
 - DatabaseManager `INFERRED`
-- [ConnectionCleaner](ConnectionCleaner.md) `INFERRED`
+- ConnectionCleaner `INFERRED`
 - TestErrorHandlers `INFERRED`
 - [Player](Player.md) `INFERRED`
+- DialogueDefinitionRepository `INFERRED`
 - TestCircuitBreaker `INFERRED`
-- [UUID](UUID.md) `INFERRED`
-- [Request](Request.md) `INFERRED`
+- UUID `INFERRED`
+- Request `INFERRED`
 - MythosTimeEventConsumer `INFERRED`
 - _AppWithLegacyConfigState `INFERRED`
-- [HealthRepository](HealthRepository.md) `INFERRED`
+- HealthRepository `INFERRED`
 - TestErrorResponse `INFERRED`
-- [Any](Any.md) `INFERRED`
 
 ---
 

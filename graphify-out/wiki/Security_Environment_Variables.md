@@ -1,4 +1,4 @@
-# Security Environment Variables
+# SECURITY ENVIRONMENT VARIABLES
 
 > 1 nodes
 

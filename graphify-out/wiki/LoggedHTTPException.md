@@ -1,8 +1,8 @@
 # LoggedHTTPException
 
-> God node · 401 connections · `server/exceptions.py`
+> God node · 409 connections · `server/exceptions.py`
 
-**Community:** [AbstractContextManager](AbstractContextManager.md)
+**Community:** [Exception Containers](Exception_Containers.md)
 
 ## Connections by Relation
 
@@ -20,13 +20,13 @@
 - _roll_stats_with_profession_preview() `EXTRACTED`
 - get_player_quests() `EXTRACTED`
 - update_room_position() `EXTRACTED`
+- create_dialogue_definition() `EXTRACTED`
 - _update_npc_definition_internal() `EXTRACTED`
 - _execute_create_character() `EXTRACTED`
 - validate_character_stats() `EXTRACTED`
 - get_ascii_minimap() `EXTRACTED`
 - replay_dlq_message() `EXTRACTED`
 - _validate_character_access() `EXTRACTED`
-- get_health_status() `EXTRACTED`
 
 ### contains
 - exceptions.py `EXTRACTED`
@@ -34,10 +34,9 @@
 ### imports
 - players.py `EXTRACTED`
 - monitoring.py `EXTRACTED`
+- endpoints.py `EXTRACTED`
 - test_monitoring_endpoints.py `EXTRACTED`
 - maps.py `EXTRACTED`
-- endpoints.py `EXTRACTED`
-- test_endpoints.py `EXTRACTED`
 - legacy_error_handlers.py `EXTRACTED`
 - character_creation.py `EXTRACTED`
 - container_helpers.py `EXTRACTED`
@@ -52,16 +51,19 @@
 - standardized_responses.py `EXTRACTED`
 - test_container_exception_handlers.py `EXTRACTED`
 - test_containers.py `EXTRACTED`
+- player_effects.py `EXTRACTED`
 
 ### indirect_call
 - loot_all_items() `INFERRED`
 - .handle_exception() `INFERRED`
 - register_error_handlers() `INFERRED`
 - register_error_handlers() `INFERRED`
+- _authenticate_user_credentials() `INFERRED`
 - test_login_user_authenticate_raises_exception() `INFERRED`
 - test_login_user_authenticate_returns_none() `INFERRED`
 - test_login_user_generic_exception() `INFERRED`
 - test_login_user_id_mismatch() `INFERRED`
+- test_login_user_invalid_credentials() `INFERRED`
 - test_login_user_no_email() `INFERRED`
 - test_register_user_duplicate_username() `INFERRED`
 - test_register_user_email_constraint_violation() `INFERRED`
@@ -72,8 +74,6 @@
 - .test_roll_character_stats_profession_not_found() `INFERRED`
 - .test_roll_character_stats_rate_limit() `INFERRED`
 - .test_loot_all_items_emit_event_failure() `INFERRED`
-- .test_loot_all_items_capacity_error() `INFERRED`
-- .test_loot_all_items_container_not_found() `INFERRED`
 
 ### inherits
 - LoggedException `EXTRACTED`
@@ -89,6 +89,7 @@
 - logged_http_exception_handler() `EXTRACTED`
 - ._handle_logged_http_exception() `EXTRACTED`
 - ._get_logged_http_user_friendly_message() `EXTRACTED`
+- _invalid_credentials_exc() `EXTRACTED`
 
 ### uses
 - CircuitBreaker `INFERRED`
@@ -97,7 +98,7 @@
 - TestSanitization `INFERRED`
 - TestErrorHandlers `INFERRED`
 - TestCircuitBreaker `INFERRED`
-- [Request](Request.md) `INFERRED`
+- Request `INFERRED`
 - _AppWithLegacyConfigState `INFERRED`
 - TestTransferAllItemsFromContainer `INFERRED`
 - TestHelperFunctions `INFERRED`
@@ -109,7 +110,7 @@
 - TestCreateErrorResponse `INFERRED`
 - TestLegacyHandlerSecurity `INFERRED`
 - ErrorResponseDetailsInput `INFERRED`
-- [FastAPI](FastAPI.md) `INFERRED`
+- FastAPI `INFERRED`
 - TestHandleTransferItemsExceptions `INFERRED`
 
 ---

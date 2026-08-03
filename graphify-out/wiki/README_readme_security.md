@@ -1,0 +1,27 @@
+# README readme security
+
+> 3 nodes
+
+## Key Concepts
+
+- **Client Security and Privacy Policies** (2 connections) — `client/README.md`
+- **DOMPurify Sanitization** (1 connections) — `client/README.md`
+- **WebSocket Subprotocol Auth** (1 connections) — `client/README.md`
+
+## Relationships
+
+- No strong cross-community connections detected
+
+## Source Files
+
+- `client/README.md`
+
+## Audit Trail
+
+- EXTRACTED: 4 (100%)
+- INFERRED: 0 (0%)
+- AMBIGUOUS: 0 (0%)
+
+---
+
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

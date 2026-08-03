@@ -7,11 +7,13 @@ and router registration.
 
 import json
 import os
-from typing import Any, TypedDict, cast
+from typing import TypedDict, cast
 
 from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi_users.schemas import BaseUserCreate
 
+from ..api.admin import dialogue_router as admin_dialogue_router
 from ..api.admin import npc_router as admin_npc_router
 from ..api.admin import subject_router as admin_subject_router
 from ..api.containers import container_router
@@ -29,6 +31,7 @@ from ..auth.endpoints import UserCreate, UserRead, UserUpdate, auth_router
 from ..auth.users import auth_backend, fastapi_users
 from ..command_handler_unified import router as command_router
 from ..config import get_config
+from ..config.models.cors import CORSConfig
 
 # ARCHITECTURE FIX Phase 2.1: Removed AllowedCORSMiddleware import (duplicate functionality)
 # from ..middleware.allowed_cors import AllowedCORSMiddleware
@@ -54,6 +57,14 @@ class CORSConfigDict(TypedDict):
     expose_headers: list[str]
     allow_credentials: bool
     max_age: int
+
+
+class CORSConfigOverrides(TypedDict, total=False):
+    """Partial CORS overrides from environment variables."""
+
+    allow_origins: list[str]
+    allow_methods: list[str]
+    allow_headers: list[str]
 
 
 def _get_default_cors_config() -> CORSConfigDict:
@@ -90,21 +101,53 @@ def _get_cors_config_from_app_config() -> CORSConfigDict:
         CORSConfigDict: CORS configuration from config or defaults
     """
     try:
-        config = get_config()
-        cors_cfg: Any = config.cors
+        cors_cfg: CORSConfig = get_config().cors
+        # pylint: disable=no-member  # Reason: Pydantic model fields are dynamically accessible; pylint sees FieldInfo
         return {
-            "allow_origins": list(getattr(cors_cfg, "allow_origins", [])),
-            "allow_methods": [str(m).upper() for m in getattr(cors_cfg, "allow_methods", [])],
-            "allow_headers": [str(h) for h in getattr(cors_cfg, "allow_headers", [])],
-            "expose_headers": list(getattr(cors_cfg, "expose_headers", [])),
-            "allow_credentials": bool(getattr(cors_cfg, "allow_credentials", True)),
-            "max_age": int(getattr(cors_cfg, "max_age", 600)),
+            "allow_origins": list(cors_cfg.allow_origins),
+            "allow_methods": [m.upper() for m in cors_cfg.allow_methods],
+            "allow_headers": list(cors_cfg.allow_headers),
+            "expose_headers": list(cors_cfg.expose_headers),
+            "allow_credentials": cors_cfg.allow_credentials,
+            "max_age": cors_cfg.max_age,
         }
     except Exception:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: CORS config errors unpredictable, must fallback to environment
         return _get_default_cors_config()
 
 
-def _parse_cors_env_vars() -> dict[str, Any]:
+def _first_set_env(*keys: str) -> str | None:
+    """Return the first non-empty environment value among keys."""
+    for key in keys:
+        value = os.getenv(key)
+        if value:
+            return value
+    return None
+
+
+def _try_json_str_list(candidate: str) -> list[str] | None:
+    """Parse candidate as a JSON string list, or None on failure."""
+    try:
+        loaded = cast(object, json.loads(candidate))
+    except json.JSONDecodeError:
+        return None
+    if not isinstance(loaded, list):
+        return None
+    parsed = cast(list[object], loaded)
+    return [str(item).strip() for item in parsed if str(item).strip()]
+
+
+def _parse_cors_origin_list(raw: str) -> list[str]:
+    """Parse CORS origins env value as JSON array or comma-separated list."""
+    candidate = raw.strip()
+    if not candidate.startswith("["):
+        return [part.strip() for part in candidate.split(",") if part.strip()]
+    from_json = _try_json_str_list(candidate)
+    if from_json is not None:
+        return from_json
+    return [part.strip().strip('"').strip("'") for part in candidate.strip("[]").split(",") if part.strip()]
+
+
+def _parse_cors_env_vars() -> CORSConfigOverrides:
     """
     Parse CORS-related environment variables and return overrides.
 
@@ -114,36 +157,34 @@ def _parse_cors_env_vars() -> dict[str, Any]:
     - JSON arrays: '["origin1","origin2"]'
 
     Returns:
-        dict: Dictionary with environment variable overrides (may be empty)
+        CORSConfigOverrides: Partial CORS overrides (may be empty)
     """
-    overrides: dict[str, Any] = {}
+    overrides: CORSConfigOverrides = {}
 
-    # Parse ALLOWED_ORIGINS / CORS_ALLOW_ORIGINS / CORS_ORIGINS
-    env_origins = os.getenv("ALLOWED_ORIGINS") or os.getenv("CORS_ALLOW_ORIGINS") or os.getenv("CORS_ORIGINS")
+    env_origins = _first_set_env("ALLOWED_ORIGINS", "CORS_ALLOW_ORIGINS", "CORS_ORIGINS")
     if env_origins:
-        candidate = env_origins.strip()
-        if candidate.startswith("["):
-            try:
-                parsed = json.loads(candidate)
-                overrides["allow_origins"] = [str(o).strip() for o in parsed if str(o).strip()]
-            except json.JSONDecodeError:
-                overrides["allow_origins"] = [
-                    o.strip().strip('"').strip("'") for o in candidate.strip("[]").split(",") if o.strip()
-                ]
-        else:
-            overrides["allow_origins"] = [o.strip() for o in candidate.split(",") if o.strip()]
+        overrides["allow_origins"] = _parse_cors_origin_list(env_origins)
 
-    # Parse ALLOWED_METHODS / CORS_ALLOW_METHODS
-    env_methods = os.getenv("ALLOWED_METHODS") or os.getenv("CORS_ALLOW_METHODS")
+    env_methods = _first_set_env("ALLOWED_METHODS", "CORS_ALLOW_METHODS")
     if env_methods:
-        overrides["allow_methods"] = [m.strip().upper() for m in env_methods.split(",")]
+        overrides["allow_methods"] = [method.strip().upper() for method in env_methods.split(",")]
 
-    # Parse ALLOWED_HEADERS / CORS_ALLOW_HEADERS
-    env_headers = os.getenv("ALLOWED_HEADERS") or os.getenv("CORS_ALLOW_HEADERS")
+    env_headers = _first_set_env("ALLOWED_HEADERS", "CORS_ALLOW_HEADERS")
     if env_headers:
-        overrides["allow_headers"] = [h.strip() for h in env_headers.split(",")]
+        overrides["allow_headers"] = [header.strip() for header in env_headers.split(",")]
 
     return overrides
+
+
+def _apply_cors_env_overrides(cors_config: CORSConfigDict) -> None:
+    """Merge environment CORS overrides into the full config in place."""
+    overrides = _parse_cors_env_vars()
+    if "allow_origins" in overrides:
+        cors_config["allow_origins"] = overrides["allow_origins"]
+    if "allow_methods" in overrides:
+        cors_config["allow_methods"] = overrides["allow_methods"]
+    if "allow_headers" in overrides:
+        cors_config["allow_headers"] = overrides["allow_headers"]
 
 
 def _configure_cors() -> CORSConfigDict:
@@ -168,10 +209,7 @@ def _configure_cors() -> CORSConfigDict:
         max_age=cors_config["max_age"],
     )
 
-    # Apply environment variable overrides
-    env_overrides = _parse_cors_env_vars()
-    # Cast to CORSConfigDict for type safety - env_overrides only contains valid CORS keys
-    cors_config.update(cast(CORSConfigDict, env_overrides))
+    _apply_cors_env_overrides(cors_config)
 
     logger.info(
         "Final CORS configuration after environment overrides",
@@ -206,7 +244,37 @@ OPENAPI_TAGS = [
 ]
 
 
-def create_app() -> FastAPI:  # pylint: disable=too-many-locals,too-many-statements  # Reason: Application factory requires many intermediate variables for service configuration. Application factory legitimately requires many statements for comprehensive app setup.
+def _register_v1_routers(app: FastAPI) -> None:
+    """Mount all versioned API routers under /v1."""
+    v1_router = APIRouter(prefix="/v1")
+    v1_router.include_router(auth_router)
+    v1_router.include_router(fastapi_users.get_auth_router(auth_backend), prefix="/auth/jwt", tags=["auth"])
+    # UserCreate is Mythos-shaped (optional email); FU bound expects BaseUserCreate.
+    v1_router.include_router(
+        fastapi_users.get_register_router(UserRead, cast(type[BaseUserCreate], UserCreate)),
+        prefix="/auth",
+        tags=["auth"],
+    )
+    v1_router.include_router(fastapi_users.get_users_router(UserRead, UserUpdate), prefix="/users", tags=["users"])
+    v1_router.include_router(command_router)
+    v1_router.include_router(player_router)
+    v1_router.include_router(profession_router)
+    v1_router.include_router(skills_router)
+    v1_router.include_router(game_router)
+    v1_router.include_router(monitoring_router)
+    v1_router.include_router(system_monitoring_router)
+    v1_router.include_router(metrics_router)
+    v1_router.include_router(realtime_router)
+    v1_router.include_router(room_router, prefix="/api")
+    v1_router.include_router(map_router, prefix="/api")
+    v1_router.include_router(container_router)
+    v1_router.include_router(admin_npc_router)
+    v1_router.include_router(admin_dialogue_router)
+    v1_router.include_router(admin_subject_router, prefix="/api/admin")
+    app.include_router(v1_router)
+
+
+def create_app() -> FastAPI:
     """
     Create and configure the FastAPI application.
 
@@ -255,32 +323,6 @@ def create_app() -> FastAPI:  # pylint: disable=too-many-locals,too-many-stateme
     include_details = os.getenv("ENV", "development") != "production"
     setup_error_handling(app, include_details=include_details)
 
-    # API v1: mount all versioned API routers under /v1
-    v1_router = APIRouter(prefix="/v1")
-    v1_router.include_router(auth_router)
-    v1_router.include_router(fastapi_users.get_auth_router(auth_backend), prefix="/auth/jwt", tags=["auth"])
-    v1_router.include_router(
-        fastapi_users.get_register_router(UserRead, UserCreate),
-        prefix="/auth",
-        tags=["auth"],
-    )
-    v1_router.include_router(fastapi_users.get_users_router(UserRead, UserUpdate), prefix="/users", tags=["users"])
-    v1_router.include_router(command_router)
-    v1_router.include_router(player_router)
-    v1_router.include_router(profession_router)
-    v1_router.include_router(skills_router)
-    v1_router.include_router(game_router)
-    v1_router.include_router(monitoring_router)
-    v1_router.include_router(system_monitoring_router)
-    v1_router.include_router(metrics_router)
-    v1_router.include_router(realtime_router)
-    v1_router.include_router(room_router, prefix="/api")
-    v1_router.include_router(map_router, prefix="/api")
-    v1_router.include_router(container_router)
-    v1_router.include_router(admin_npc_router)
-    v1_router.include_router(admin_subject_router, prefix="/api/admin")
-    app.include_router(v1_router)
-
-    # CORS handled by AllowedCORSMiddleware above
+    _register_v1_routers(app)
 
     return app

@@ -190,3 +190,9 @@ def subscribe_npc_spoke_to_chat(event_bus: EventBus | None) -> None:
     event_bus.subscribe(NPCSpoke, _on_npc_spoke, service_id="chat_npc_system")
     _npc_spoke_subscribed = True
     logger.info("NPCSpoke chat bridge subscribed")
+
+
+def reset_npc_spoke_subscription_for_tests() -> None:
+    """Clear one-shot NPCSpoke subscription guard (unit tests only)."""
+    global _npc_spoke_subscribed  # pylint: disable=global-statement  # Reason: test isolation
+    _npc_spoke_subscribed = False

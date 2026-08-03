@@ -14,14 +14,39 @@ lurk in the shadows of our world.
 
 import enum
 import time
+from collections.abc import Mapping
 from datetime import UTC, datetime
-from typing import Any
+from typing import Any, Protocol, cast
 
 from fastapi import HTTPException, Request, status
 
 from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
+
+
+class _HasIsSuperuser(Protocol):
+    """Narrowing for user shapes that expose is_superuser."""
+
+    is_superuser: bool
+
+
+class _HasIsAdmin(Protocol):
+    """Narrowing for user shapes that expose is_admin."""
+
+    is_admin: bool
+
+
+class _HasUsername(Protocol):
+    """Narrowing for user shapes that expose username."""
+
+    username: object
+
+
+class _HasId(Protocol):
+    """Narrowing for user shapes that expose id."""
+
+    id: object
 
 
 class AdminRole(enum.StrEnum):
@@ -66,9 +91,23 @@ class AdminAction(enum.StrEnum):
     DELETE_SPAWN_RULE = "delete_spawn_rule"
     LIST_SPAWN_RULES = "list_spawn_rules"
 
+    # Dialogue Management (#583)
+    LIST_DIALOGUE_DEFINITIONS = "list_dialogue_definitions"
+    UPSERT_DIALOGUE_DEFINITION = "upsert_dialogue_definition"
+    DELETE_DIALOGUE_DEFINITION = "delete_dialogue_definition"
+
 
 class AdminSession:
     """Represents an admin session."""
+
+    user_id: str
+    username: str
+    role: AdminRole
+    ip_address: str
+    created_at: datetime
+    last_activity: datetime
+    action_count: int
+    is_active: bool
 
     def __init__(self, user_id: str, username: str, role: AdminRole, ip_address: str) -> None:
         self.user_id = user_id
@@ -99,7 +138,7 @@ class AdminAuthService:
 
         logger.info("Admin authentication service initialized")
 
-    def get_user_role(self, current_user: Any) -> AdminRole:
+    def get_user_role(self, current_user: object) -> AdminRole:
         """
         Determine the admin role for a user.
 
@@ -113,57 +152,58 @@ class AdminAuthService:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Authentication required")
 
         # Check for superuser status (from FastAPI Users)
-        if hasattr(current_user, "is_superuser") and current_user.is_superuser:
+        if hasattr(current_user, "is_superuser") and cast(_HasIsSuperuser, current_user).is_superuser:
             return AdminRole.SUPERUSER
 
         # Check for admin status (from Player model - for backward compatibility)
-        if hasattr(current_user, "get") and current_user.get("is_admin", False):
-            return AdminRole.ADMIN
-
+        if isinstance(current_user, Mapping):
+            user_map = cast(Mapping[str, object], current_user)
+            if user_map.get("is_admin", False):
+                return AdminRole.ADMIN
         # Check for admin status as attribute (for backward compatibility)
-        if hasattr(current_user, "is_admin") and current_user.is_admin:
+        elif hasattr(current_user, "is_admin") and cast(_HasIsAdmin, current_user).is_admin:
             return AdminRole.ADMIN
 
         # Default to viewer role for authenticated users
         return AdminRole.VIEWER
 
-    def get_username(self, current_user: Any) -> str:
+    def get_username(self, current_user: object) -> str:
         """Safely get username from current user object."""
         if not current_user:
             return "unknown"
 
         # Try to get username from User object
         if hasattr(current_user, "username"):
-            result = current_user.username
+            result = cast(_HasUsername, current_user).username
             if not isinstance(result, str):
                 raise TypeError("username must be a string")
             return result
 
         # Try to get username from dictionary
-        if hasattr(current_user, "get"):
-            result = current_user.get("username", "unknown")
+        if isinstance(current_user, Mapping):
+            result = cast(Mapping[str, object], current_user).get("username", "unknown")
             if not isinstance(result, str):
                 raise TypeError("username must be a string")
             return result
 
         return "unknown"
 
-    def get_user_id(self, current_user: Any) -> str:
+    def get_user_id(self, current_user: object) -> str:
         """Safely get user ID from current user object."""
         if not current_user:
             return "unknown"
 
         # Try to get ID from User object
         if hasattr(current_user, "id"):
-            return str(current_user.id)
+            return str(cast(_HasId, current_user).id)
 
         # Try to get ID from dictionary
-        if hasattr(current_user, "get"):
-            return str(current_user.get("id", "unknown"))
+        if isinstance(current_user, Mapping):
+            return str(cast(Mapping[str, object], current_user).get("id", "unknown"))
 
         return "unknown"
 
-    def validate_permission(self, current_user: Any, action: AdminAction, request: Request | None = None) -> None:
+    def validate_permission(self, current_user: object, action: AdminAction, request: Request | None = None) -> None:
         """
         Validate that the current user has permission to perform the action.
 
@@ -232,6 +272,9 @@ class AdminAuthService:
                 AdminAction.CREATE_SPAWN_RULE,
                 AdminAction.DELETE_SPAWN_RULE,
                 AdminAction.LIST_SPAWN_RULES,
+                AdminAction.LIST_DIALOGUE_DEFINITIONS,
+                AdminAction.UPSERT_DIALOGUE_DEFINITION,
+                AdminAction.DELETE_DIALOGUE_DEFINITION,
             ],
             AdminRole.MODERATOR: [
                 AdminAction.LIST_NPC_DEFINITIONS,
@@ -242,6 +285,7 @@ class AdminAuthService:
                 AdminAction.GET_SYSTEM_STATUS,
                 AdminAction.LIST_NPC_RELATIONSHIPS,
                 AdminAction.LIST_SPAWN_RULES,
+                AdminAction.LIST_DIALOGUE_DEFINITIONS,
             ],
             AdminRole.VIEWER: [
                 AdminAction.LIST_NPC_DEFINITIONS,
@@ -251,6 +295,7 @@ class AdminAuthService:
                 AdminAction.GET_SYSTEM_STATUS,
                 AdminAction.LIST_NPC_RELATIONSHIPS,
                 AdminAction.LIST_SPAWN_RULES,
+                AdminAction.LIST_DIALOGUE_DEFINITIONS,
             ],
         }
 

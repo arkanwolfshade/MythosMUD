@@ -142,7 +142,7 @@ def _format_quest_log(entries: list[dict[str, Any]]) -> str:
     return "\n".join(lines)
 
 
-def _npc_definition_id(npc: Any) -> str | None:
+def npc_definition_id(npc: Any) -> str | None:
     """Return NPC definition id as string for quest offers/triggers."""
     definition = getattr(npc, "definition", None)
     if definition is None:
@@ -162,7 +162,7 @@ def _active_npc_ids_in_room(lifecycle: Any, room_id: Any) -> list[Any]:
     ]
 
 
-def _resolve_npc_in_player_room(player: Any, npc_name: str) -> tuple[Any | None, str | None]:
+def resolve_npc_in_player_room(player: Any, npc_name: str) -> tuple[Any | None, str | None]:
     """
     Find a single matching NPC in the player's current room.
 
@@ -270,10 +270,10 @@ async def _handle_quest_npc_sub(
     remainder: str,
 ) -> dict[str, str]:
     """Run quest ask or turnin against an NPC in the player's room."""
-    npc, npc_error = _resolve_npc_in_player_room(player, remainder)
+    npc, npc_error = resolve_npc_in_player_room(player, remainder)
     if npc_error:
         return {"result": npc_error}
-    definition_id = _npc_definition_id(npc)
+    definition_id = npc_definition_id(npc)
     if not definition_id:
         return {"result": "That person has nothing to discuss."}
 

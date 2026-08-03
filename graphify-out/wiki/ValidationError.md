@@ -1,8 +1,8 @@
 # ValidationError
 
-> God node · 538 connections · `server/exceptions.py`
+> God node · 541 connections · `server/exceptions.py`
 
-**Community:** [.initialize()](initialize%28%29.md)
+**Community:** [command inventory models](command_inventory_models.md)
 
 ## Connections by Relation
 
@@ -45,9 +45,9 @@
 - test_command_factories_inventory.py `EXTRACTED`
 - character_creation.py `EXTRACTED`
 - test_database_helpers.py `EXTRACTED`
+- command_parser.py `EXTRACTED`
 - player_service.py `EXTRACTED`
 - test_command_parser.py `EXTRACTED`
-- command_parser.py `EXTRACTED`
 - test_database_extended.py `EXTRACTED`
 - test_exceptions.py `EXTRACTED`
 - test_database_error_handling.py `EXTRACTED`
@@ -93,14 +93,14 @@
 - DatabaseManager `INFERRED`
 - TestErrorHandlers `INFERRED`
 - TestCircuitBreaker `INFERRED`
-- [Request](Request.md) `INFERRED`
+- Request `INFERRED`
 - _AppWithLegacyConfigState `INFERRED`
 - TestErrorResponse `INFERRED`
 - _AppStateWithLegacyConfig `INFERRED`
 - TestCreateErrorResponse `INFERRED`
 - TestLegacyHandlerSecurity `INFERRED`
 - ErrorResponseDetailsInput `INFERRED`
-- [FastAPI](FastAPI.md) `INFERRED`
+- FastAPI `INFERRED`
 - TestHandleTransferItemsExceptions `INFERRED`
 - TestGracefulDegradation `INFERRED`
 - _CircuitBreakerResult `INFERRED`

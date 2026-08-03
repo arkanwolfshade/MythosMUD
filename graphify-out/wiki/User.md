@@ -1,8 +1,8 @@
 # User
 
-> God node · 306 connections · `server/models/user.py`
+> God node · 319 connections · `server/models/user.py`
 
-**Community:** [Connection Manager](Connection_Manager.md)
+**Community:** [ascii map renderer](ascii_map_renderer.md)
 
 ## Connections by Relation
 
@@ -13,14 +13,14 @@
 - test_login_user_authenticate_returns_none() `EXTRACTED`
 - test_login_user_generic_exception() `EXTRACTED`
 - test_login_user_id_mismatch() `EXTRACTED`
+- test_login_user_invalid_credentials() `EXTRACTED`
 - test_login_user_no_email() `EXTRACTED`
 - test_register_user_duplicate_username() `EXTRACTED`
-- test_login_user_http_exception_re_raised() `EXTRACTED`
-- test_login_user_invalid_credentials() `EXTRACTED`
 - test_login_user_player_no_profession_id() `EXTRACTED`
 - test_login_user_profession_lookup_error() `EXTRACTED`
 - test_login_user_profession_lookup_none() `EXTRACTED`
 - test_login_user_profession_lookup_success() `EXTRACTED`
+- test_login_user_http_exception_re_raised() `EXTRACTED`
 - test_login_user_success() `EXTRACTED`
 - test_login_user_with_characters() `EXTRACTED`
 - test_register_user_success() `EXTRACTED`
@@ -36,14 +36,13 @@
 - async_persistence.py `EXTRACTED`
 - __init__.py `EXTRACTED`
 - players.py `EXTRACTED`
-- test_users.py `EXTRACTED`
+- endpoints.py `EXTRACTED`
 - test_admin_auth_service.py `EXTRACTED`
 - maps.py `EXTRACTED`
-- endpoints.py `EXTRACTED`
-- test_endpoints.py `EXTRACTED`
 - container_endpoints_basic.py `EXTRACTED`
-- character_creation.py `EXTRACTED`
+- test_users.py `EXTRACTED`
 - users.py `EXTRACTED`
+- character_creation.py `EXTRACTED`
 - container_helpers.py `EXTRACTED`
 - test_container_helpers.py `EXTRACTED`
 - test_async_persistence_core.py `EXTRACTED`
@@ -52,11 +51,11 @@
 - rooms.py `EXTRACTED`
 - test_maps.py `EXTRACTED`
 - test_container_exception_handlers.py `EXTRACTED`
+- test_containers.py `EXTRACTED`
 
 ### indirect_call
 - _admin_user() `INFERRED`
 - _check_username_exists() `INFERRED`
-- get_user_db() `INFERRED`
 - test_apply_exploration_filter_if_needed_calls_for_normal_user() `INFERRED`
 - test_apply_exploration_filter_if_needed_skips_for_superuser() `INFERRED`
 - generate_unique_bogus_email() `INFERRED`
@@ -74,7 +73,7 @@
 - mock_user() `INFERRED`
 
 ### inherits
-- [Base](Base.md) `EXTRACTED`
+- Base `EXTRACTED`
 - SQLAlchemyBaseUserTableUUID `EXTRACTED`
 
 ### method
@@ -87,8 +86,8 @@
 
 ### references
 - loot_all_items() `EXTRACTED`
-- handle_transfer_items_exceptions() `EXTRACTED`
 - validate_admin_permission() `EXTRACTED`
+- handle_transfer_items_exceptions() `EXTRACTED`
 - handle_open_container_exceptions() `EXTRACTED`
 - transfer_items() `EXTRACTED`
 - handle_loot_all_exceptions() `EXTRACTED`
@@ -109,9 +108,9 @@
 
 ### uses
 - [Player](Player.md) `INFERRED`
-- [Base](Base.md) `INFERRED`
+- Base `INFERRED`
 - Invite `INFERRED`
-- [PlayerChannelPreferences](PlayerChannelPreferences.md) `INFERRED`
+- PlayerChannelPreferences `INFERRED`
 - PlayerInventory `INFERRED`
 - TestTransferAllItemsFromContainer `INFERRED`
 - TestHelperFunctions `INFERRED`

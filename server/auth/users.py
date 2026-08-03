@@ -8,14 +8,18 @@ for user authentication and management.
 import os
 import uuid
 from collections.abc import AsyncGenerator
-from typing import Any, cast
+from typing import Annotated, override
 
 from fastapi import Depends, HTTPException, Request
+from fastapi.params import Depends as DependsParam
 from fastapi_users import BaseUserManager, FastAPIUsers, UUIDIDMixin
 from fastapi_users.authentication import AuthenticationBackend, BearerTransport
+from fastapi_users.authentication.strategy.base import Strategy
 from fastapi_users.db import SQLAlchemyUserDatabase
 from fastapi_users.exceptions import InvalidID
+from fastapi_users.jwt import SecretType
 from sqlalchemy.ext.asyncio import AsyncSession
+from starlette.responses import Response
 
 from server.auth.jwt_strategy import RestartInvalidatingJWTStrategy
 
@@ -36,7 +40,11 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
     user creation and validation logic with Argon2 password hashing.
     """
 
-    def __init__(self, user_db: SQLAlchemyUserDatabase) -> None:
+    # Class annotations required: basedpyright reportUnannotatedClassAttribute (not @final).
+    reset_password_token_secret: SecretType
+    verification_token_secret: SecretType
+
+    def __init__(self, user_db: SQLAlchemyUserDatabase[User, uuid.UUID]) -> None:
         """Initialize UserManager with validated secrets."""
         super().__init__(user_db)
         # Validate and set token secrets from environment
@@ -60,6 +68,7 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
         """Verify password using Argon2 instead of bcrypt."""
         return verify_password(plain_password, hashed_password)
 
+    @override
     async def on_after_register(self, user: User, request: Request | None = None) -> None:
         """Handle post-registration logic."""
         logger.info("User has registered", username=user.username)
@@ -69,45 +78,49 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
             user.is_verified = True
             logger.info("Auto-verified bogus email for user", username=user.username, email=user.email)
 
+    @override
     async def on_after_forgot_password(self, user: User, token: str, request: Request | None = None) -> None:
         """Handle forgot password logic."""
         logger.info("User has forgot their password", username=user.username, reset_token=token)
 
+    @override
     async def on_after_request_verify(self, user: User, token: str, request: Request | None = None) -> None:
         """Handle username verification logic."""
         logger.info("Verification requested for user", username=user.username, verification_token=token)
 
-    def parse_id(self, value: Any) -> uuid.UUID:
+    @override
+    def parse_id(self, value: object) -> uuid.UUID:
         """Parse a value into a UUID instance."""
         if isinstance(value, uuid.UUID):
             return value
-        # Convert non-string values to string first
-        if not isinstance(value, str):
+        if isinstance(value, str):
+            id_str = value
+        else:
             try:
-                value = str(value)
+                id_str = str(value)
             except Exception as err:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: String conversion errors unpredictable, must raise InvalidID
                 raise InvalidID() from err
         try:
-            return uuid.UUID(value)
+            return uuid.UUID(id_str)
         except (ValueError, TypeError, AttributeError) as err:
             raise InvalidID() from err
 
 
 async def get_user_db(
-    session: AsyncSession = Depends(get_async_session),
-) -> AsyncGenerator[SQLAlchemyUserDatabase, None]:
+    session: Annotated[AsyncSession, Depends(get_async_session)],
+) -> AsyncGenerator[SQLAlchemyUserDatabase[User, uuid.UUID], None]:
     """Get user database dependency."""
     yield SQLAlchemyUserDatabase(session, User)
 
 
 async def get_user_manager(
-    user_db: SQLAlchemyUserDatabase = Depends(get_user_db),
+    user_db: Annotated[SQLAlchemyUserDatabase[User, uuid.UUID], Depends(get_user_db)],
 ) -> AsyncGenerator[UserManager, None]:
     """Get user manager dependency."""
     yield UserManager(user_db)
 
 
-def _validate_jwt_secret() -> str:
+def validate_jwt_secret() -> str:
     """
     Validate and return JWT secret from environment.
 
@@ -117,46 +130,46 @@ def _validate_jwt_secret() -> str:
     if not jwt_secret:
         raise ValueError(
             "MYTHOSMUD_JWT_SECRET environment variable must be set. "
-            "Generate a secure random key for production deployment."
+            + "Generate a secure random key for production deployment."
         )
     if jwt_secret.startswith("dev-"):
         raise ValueError(
             "MYTHOSMUD_JWT_SECRET must not start with 'dev-'. "
-            "This indicates an insecure development secret. "
-            "Generate a secure random key for production deployment."
+            + "This indicates an insecure development secret. "
+            + "Generate a secure random key for production deployment."
         )
     return jwt_secret
 
 
-def get_auth_backend() -> AuthenticationBackend[User, uuid.UUID]:  # type: ignore[type-var]
+def get_auth_backend() -> AuthenticationBackend[User, uuid.UUID]:
     """Get authentication backend configuration."""
 
     # Bearer token transport
     bearer_transport = BearerTransport(tokenUrl="auth/jwt/login")
 
     # JWT strategy - invalidates all tokens after server restart
-    def get_jwt_strategy() -> RestartInvalidatingJWTStrategy[User, uuid.UUID]:  # type: ignore[type-var]
-        jwt_secret = _validate_jwt_secret()
+    def get_jwt_strategy() -> RestartInvalidatingJWTStrategy[User, uuid.UUID]:
+        jwt_secret = validate_jwt_secret()
         return RestartInvalidatingJWTStrategy(
             secret=jwt_secret,
             lifetime_seconds=3600,  # 1 hour
             token_audience=["fastapi-users:auth"],
         )
 
-    return AuthenticationBackend(  # type: ignore[type-var]
+    return AuthenticationBackend(
         name="jwt",
         transport=bearer_transport,
         get_strategy=get_jwt_strategy,
     )
 
 
-class UsernameAuthenticationBackend(AuthenticationBackend):  # type: ignore[type-arg]
+class UsernameAuthenticationBackend(  # pylint: disable=too-few-public-methods  # Reason: Thin override of FastAPI Users backend
+    AuthenticationBackend[User, uuid.UUID]
+):
     """Custom authentication backend that uses username instead of email."""
 
-    def __init__(self, name: str, transport: Any, get_strategy: Any) -> None:
-        super().__init__(name, transport, get_strategy)
-
-    async def login(self, strategy: Any, user: Any) -> Any:
+    @override
+    async def login(self, strategy: Strategy[User, uuid.UUID], user: User) -> Response:
         """Custom login that uses username."""
         # Note: Parent class login signature is (strategy, user), not (strategy, user_manager, user)
         return await super().login(strategy, user)
@@ -169,8 +182,8 @@ def get_username_auth_backend() -> UsernameAuthenticationBackend:
     bearer_transport = BearerTransport(tokenUrl="auth/jwt/login")
 
     # JWT strategy - invalidates all tokens after server restart
-    def get_jwt_strategy() -> RestartInvalidatingJWTStrategy[User, uuid.UUID]:  # type: ignore[type-var]
-        jwt_secret = _validate_jwt_secret()
+    def get_jwt_strategy() -> RestartInvalidatingJWTStrategy[User, uuid.UUID]:
+        jwt_secret = validate_jwt_secret()
         return RestartInvalidatingJWTStrategy(
             secret=jwt_secret,
             lifetime_seconds=3600,  # 1 hour
@@ -199,10 +212,10 @@ get_current_active_user = fastapi_users.current_user(active=True)
 
 
 # Enhanced logging wrapper for get_current_user (returns FastAPI Depends dependency)
-def get_current_user_with_logging() -> Any:
+def get_current_user_with_logging() -> DependsParam:
     """Enhanced get_current_user with detailed logging."""
 
-    async def _get_current_user_with_logging(request: Request | None = None) -> dict[str, Any] | None:
+    async def _get_current_user_with_logging(request: Request | None = None) -> User | None:
         try:
             # Log the request details
             auth_header = request.headers.get("Authorization", "Not provided") if request else "No request"
@@ -219,8 +232,7 @@ def get_current_user_with_logging() -> Any:
             else:
                 logger.warning("Authentication failed: No user returned from get_current_user")
 
-            result: dict[Any, Any] | None = cast(dict[Any, Any] | None, user)
-            return result
+            return user
         except HTTPException as e:
             logger.warning("Authentication HTTP error", status_code=e.status_code, detail=e.detail)
             return None
@@ -229,4 +241,4 @@ def get_current_user_with_logging() -> Any:
             logger.debug("Authentication error details", error_type=type(e).__name__, error=str(e))
             return None
 
-    return Depends(_get_current_user_with_logging)
+    return DependsParam(dependency=_get_current_user_with_logging)

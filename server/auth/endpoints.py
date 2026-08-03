@@ -7,27 +7,31 @@ custom invite code validation.
 """
 
 import uuid
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Annotated, NoReturn, TypedDict, cast
 
 from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi.security import OAuth2PasswordRequestForm
 from fastapi_users import schemas
 from pydantic import BaseModel, Field, field_validator
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from ..async_persistence import AsyncPersistenceLayer
+from ..auth_utils import create_access_token
 from ..database import get_async_session
 from ..dependencies import get_container
 from ..exceptions import LoggedHTTPException
+from ..models.invite import Invite
 from ..models.user import User
 from ..schemas.auth import InviteRead
+from ..schemas.players import CharacterInfo
 from ..structured_logging.enhanced_logging_config import get_logger
 from .dependencies import get_current_active_user, get_current_superuser
 from .invites import InviteManager, get_invite_manager
 from .token_epoch import get_auth_epoch
-from .users import UserManager, get_user_manager
+from .users import UserManager, get_user_manager, validate_jwt_secret
 
 if TYPE_CHECKING:
-    from ..async_persistence import AsyncPersistenceLayer
     from ..container import ApplicationContainer
 logger = get_logger("auth.endpoints")
 
@@ -51,11 +55,10 @@ class UserUpdate(schemas.BaseUserUpdate):
     username: str | None = None
 
 
-# Define user creation schema
+# Mythos registration allows optional email (generated in _ensure_user_email). FastAPI Users
+# get_register_router requires BaseUserCreate; factory.py casts at the call site.
 class UserCreate(BaseModel):
     """Schema for user creation with invite code validation."""
-
-    __slots__ = ()  # Performance optimization
 
     username: str
     password: str
@@ -81,8 +84,6 @@ class UserCreate(BaseModel):
 class LoginRequest(BaseModel):
     """Schema for login requests."""
 
-    __slots__ = ()  # Performance optimization
-
     username: str
     password: str
 
@@ -94,19 +95,27 @@ class LoginResponse(BaseModel):
     MULTI-CHARACTER: Updated to return list of characters instead of single character.
     """
 
-    __slots__ = ()  # Performance optimization
-
     access_token: str
     token_type: str = "bearer"
     user_id: str
-    characters: list[dict[str, Any]] = Field(default_factory=list, description="List of active characters")
+    characters: list[CharacterInfo] = Field(default_factory=list, description="List of active characters")
+
+
+class CurrentUserInfo(TypedDict):
+    """Payload for GET /auth/me."""
+
+    id: str
+    email: str | None
+    username: str
+    is_superuser: bool
 
 
 def _check_shutdown_status(request: Request, operation: str = "register_user") -> None:
     """Check if server is shutting down and raise exception if so."""
     from ..commands.admin_shutdown_command import get_shutdown_blocking_message, is_shutdown_pending
 
-    if is_shutdown_pending(request.app):
+    # Starlette types Request.app as Any; cast so reportAny does not fire at the call site.
+    if is_shutdown_pending(cast(object, request.app)):
         raise LoggedHTTPException(
             status_code=503,
             detail=get_shutdown_blocking_message("login"),
@@ -122,7 +131,9 @@ def _ensure_user_email(user_create: UserCreate) -> None:
         logger.info("Generated simple bogus email", username=user_create.username, email=user_create.email)
 
 
-async def _validate_invite_code(user_create: UserCreate, invite_manager: InviteManager, request: Request) -> Any:
+async def _validate_invite_code(
+    user_create: UserCreate, invite_manager: InviteManager, request: Request
+) -> Invite | None:
     """Validate invite code. Returns validated invite or None."""
     if not user_create.invite_code:
         return None
@@ -161,7 +172,8 @@ def _create_user_object(user_create_clean: UserCreate) -> User:
     user = User()
     user.username = user_create_clean.username
     user.display_name = user_create_clean.username
-    user.email = user_create_clean.email
+    # User.email is non-null; UserCreate.email is optional (filled by _ensure_user_email).
+    user.email = user_create_clean.email or f"{user_create_clean.username}@wolfshade.org"
     user.hashed_password = hashed_password
     user.is_active = True
     user.is_superuser = False
@@ -174,7 +186,7 @@ def _create_user_object(user_create_clean: UserCreate) -> User:
 
 
 async def _mark_invite_as_used(
-    session: AsyncSession, user: User, invite_code: str | None, validated_invite: Any
+    session: AsyncSession, user: User, invite_code: str | None, validated_invite: Invite | None
 ) -> None:
     """Mark invite as used after successful registration."""
     if not validated_invite or not invite_code:
@@ -183,7 +195,7 @@ async def _mark_invite_as_used(
     try:
         from sqlalchemy import text
 
-        await session.execute(
+        _ = await session.execute(
             text("""
                 UPDATE invites
                 SET is_active = :is_active, used_by_user_id = CAST(:used_by_user_id AS UUID)
@@ -212,7 +224,7 @@ async def _mark_invite_as_used(
         )
 
 
-def _handle_integrity_error(e: IntegrityError, username: str, _request: Request) -> None:
+def _handle_integrity_error(e: IntegrityError, username: str, _request: Request) -> NoReturn:
     """Handle IntegrityError during registration."""
     error_str = str(e).lower()
     orig_error_str = str(e.orig).lower() if hasattr(e, "orig") else ""
@@ -237,28 +249,13 @@ def _handle_integrity_error(e: IntegrityError, username: str, _request: Request)
 
 def _generate_jwt_token(user: User) -> str:
     """Generate JWT token for user. Includes server auth epoch so tokens are invalid after restart."""
-    import os
-
-    from fastapi_users.jwt import generate_jwt
-
-    data = {
+    data: dict[str, object] = {
         "sub": str(user.id),
         "aud": ["fastapi-users:auth"],
         "srv": get_auth_epoch(),
     }
-    jwt_secret = os.getenv("MYTHOSMUD_JWT_SECRET")
-    if not jwt_secret:
-        raise ValueError(
-            "MYTHOSMUD_JWT_SECRET environment variable must be set. "
-            "Generate a secure random key for production deployment."
-        )
-    if jwt_secret.startswith("dev-"):
-        raise ValueError(
-            "MYTHOSMUD_JWT_SECRET must not start with 'dev-'. "
-            "This indicates an insecure development secret. "
-            "Generate a secure random key for production deployment."
-        )
-    access_token = generate_jwt(data, jwt_secret, lifetime_seconds=3600)
+    jwt_secret = validate_jwt_secret()
+    access_token = create_access_token(data, secret_key=jwt_secret)
     logger.debug(
         "JWT token generated for user",
         username=user.username,
@@ -273,8 +270,8 @@ def _generate_jwt_token(user: User) -> str:
 async def register_user(
     user_create: UserCreate,
     request: Request,
-    invite_manager: InviteManager = Depends(get_invite_manager),
-    session: AsyncSession = Depends(get_async_session),
+    invite_manager: Annotated[InviteManager, Depends(get_invite_manager)],
+    session: Annotated[AsyncSession, Depends(get_async_session)],
 ) -> LoginResponse:
     """
     Register a new user with invite code validation.
@@ -290,8 +287,12 @@ async def register_user(
 
     validated_invite = await _validate_invite_code(user_create, invite_manager, request)
 
-    user_data = {"username": user_create.username, "password": user_create.password, "email": user_create.email}
-    user_create_clean = UserCreate(**user_data)
+    # Keyword args (not **dict): mixing email (str|None) into a dict widens values to str|None.
+    user_create_clean = UserCreate(
+        username=user_create.username,
+        password=user_create.password,
+        email=user_create.email,
+    )
 
     try:
         await _check_username_exists(session, user_create_clean.username, request)
@@ -354,6 +355,17 @@ async def _find_user_by_username(session: AsyncSession, username: str, _http_req
     return user
 
 
+def _invalid_credentials_exc(username: str, **context: str) -> LoggedHTTPException:
+    """Build a 401 LoggedHTTPException for failed login credential checks."""
+    return LoggedHTTPException(
+        status_code=401,
+        detail="Invalid credentials",
+        operation="login_user",
+        username=username,
+        **context,
+    )
+
+
 async def _authenticate_user_credentials(
     user: User, password: str, username: str, user_manager: UserManager, _http_request: Request
 ) -> None:
@@ -362,15 +374,7 @@ async def _authenticate_user_credentials(
         user_email = user.email
         if not user_email:
             logger.error("User has no email address", username=username)
-            raise LoggedHTTPException(
-                status_code=401,
-                detail="Invalid credentials",
-                username=username,
-                user_id=str(user.id),
-                operation="login_user",
-            )
-
-        from fastapi.security import OAuth2PasswordRequestForm
+            raise _invalid_credentials_exc(username, user_id=str(user.id))
 
         credentials = OAuth2PasswordRequestForm(
             username=user_email,
@@ -383,44 +387,27 @@ async def _authenticate_user_credentials(
 
         authenticated_user = await user_manager.authenticate(credentials)
         if not authenticated_user:
-            raise LoggedHTTPException(
-                status_code=401,
-                detail="Invalid credentials",
-                username=username,
-                user_id=str(user.id),
-                operation="login_user",
-            )
+            raise _invalid_credentials_exc(username, user_id=str(user.id))
 
         if authenticated_user.id != user.id:
             logger.error("User ID mismatch", expected_id=user.id, got_id=authenticated_user.id)
-            raise LoggedHTTPException(
-                status_code=401,
-                detail="Invalid credentials",
-                username=username,
+            raise _invalid_credentials_exc(
+                username,
                 expected_user_id=str(user.id),
                 actual_user_id=str(authenticated_user.id),
-                operation="login_user",
             )
     except (LoggedHTTPException, HTTPException):
         raise
     except Exception as e:
         logger.error("Authentication failed", error=str(e), error_type=type(e).__name__)
-        raise LoggedHTTPException(
-            status_code=401,
-            detail="Invalid credentials",
-            username=username,
-            operation="login_user",
-            error=str(e),
-        ) from None
+        raise _invalid_credentials_exc(username, error=str(e)) from None
 
 
-async def _get_user_characters(user: User, async_persistence: "AsyncPersistenceLayer") -> list[dict[str, Any]]:
+async def _get_user_characters(user: User, async_persistence: AsyncPersistenceLayer) -> list[CharacterInfo]:
     """Get all active characters for user."""
-    from ..schemas.players import CharacterInfo
-
     active_players = await async_persistence.get_active_players_by_user_id(str(user.id))
 
-    characters = []
+    characters: list[CharacterInfo] = []
     for player in active_players:
         profession_name = None
         if player.profession_id and hasattr(async_persistence, "get_profession_by_id"):
@@ -431,16 +418,17 @@ async def _get_user_characters(user: User, async_persistence: "AsyncPersistenceL
             except SQLAlchemyError:
                 pass
 
-        character_info = CharacterInfo(
-            player_id=str(player.player_id),
-            name=player.name,
-            profession_id=player.profession_id,
-            profession_name=profession_name,
-            level=player.level,
-            created_at=player.created_at,
-            last_active=player.last_active,
+        characters.append(
+            CharacterInfo(
+                player_id=str(player.player_id),
+                name=player.name,
+                profession_id=player.profession_id,
+                profession_name=profession_name,
+                level=player.level,
+                created_at=player.created_at,
+                last_active=player.last_active,
+            )
         )
-        characters.append(character_info.model_dump())
 
     return characters
 
@@ -449,9 +437,9 @@ async def _get_user_characters(user: User, async_persistence: "AsyncPersistenceL
 async def login_user(
     request: LoginRequest,
     http_request: Request,
-    user_manager: UserManager = Depends(get_user_manager),
-    session: AsyncSession = Depends(get_async_session),
-    container: "ApplicationContainer" = Depends(get_container),
+    user_manager: Annotated[UserManager, Depends(get_user_manager)],
+    session: Annotated[AsyncSession, Depends(get_async_session)],
+    container: Annotated["ApplicationContainer", Depends(get_container)],
 ) -> LoginResponse:
     """
     Authenticate a user and return an access token.
@@ -469,11 +457,13 @@ async def login_user(
 
     access_token = _generate_jwt_token(user)
 
-    if container.async_persistence is None:
+    # Container attributes are typed Any; narrow at the use site for reportAny.
+    async_persistence = cast(AsyncPersistenceLayer | None, container.async_persistence)
+    if async_persistence is None:
         logger.error("Async persistence layer not available during login", username=user.username)
         raise RuntimeError("Database connection not available")
 
-    characters = await _get_user_characters(user, container.async_persistence)
+    characters = await _get_user_characters(user, async_persistence)
 
     logger.info("Login successful for user", username=user.username, character_count=len(characters))
 
@@ -484,10 +474,10 @@ async def login_user(
     )
 
 
-@auth_router.get("/me", response_model=dict[str, Any])
+@auth_router.get("/me", response_model=CurrentUserInfo)
 async def get_current_user_info(
-    current_user: User = Depends(get_current_active_user),
-) -> dict[str, Any]:
+    current_user: Annotated[User, Depends(get_current_active_user)],
+) -> CurrentUserInfo:
     """
     Get current user information.
 
@@ -501,44 +491,32 @@ async def get_current_user_info(
     }
 
 
-@auth_router.get("/invites")
+@auth_router.get("/invites", response_model=list[InviteRead])
 async def list_invites(
-    _current_user: User = Depends(get_current_superuser),
-    invite_manager: InviteManager = Depends(get_invite_manager),
-) -> list[dict[str, Any]]:
+    _current_user: Annotated[User, Depends(get_current_superuser)],
+    invite_manager: Annotated[InviteManager, Depends(get_invite_manager)],
+) -> list[InviteRead]:
     """
     List all invite codes.
 
     This endpoint returns all invite codes in the system.
     """
     invites = await invite_manager.list_invites()
-    return [
-        {
-            "id": str(invite.id),
-            "invite_code": invite.invite_code,
-            "is_active": invite.is_active,
-            "used_by_user_id": str(invite.used_by_user_id) if invite.used_by_user_id else None,
-            "expires_at": invite.expires_at.isoformat() if invite.expires_at else None,
-            "created_at": invite.created_at.isoformat() if invite.created_at else None,
-        }
-        for invite in invites
-    ]
+    return [InviteRead.model_validate(invite) for invite in invites]
 
 
 @auth_router.post("/invites", response_model=InviteRead)
 async def create_invite(
-    _current_user: User = Depends(get_current_superuser),
-    invite_manager: InviteManager = Depends(get_invite_manager),
-) -> dict[str, Any]:  # Return dict for better performance
+    _current_user: Annotated[User, Depends(get_current_superuser)],
+    invite_manager: Annotated[InviteManager, Depends(get_invite_manager)],
+) -> InviteRead:
     """
     Create a new invite code.
 
     This endpoint creates a new invite code for user registration.
     """
     invite = await invite_manager.create_invite()
-    # Convert SQLAlchemy model to Pydantic schema, then to dict
-    invite_read = InviteRead.model_validate(invite)
-    return invite_read.model_dump()
+    return InviteRead.model_validate(invite)
 
 
 # Note: FastAPI Users authentication endpoints are included in app/factory.py

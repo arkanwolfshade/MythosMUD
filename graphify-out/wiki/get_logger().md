@@ -1,8 +1,8 @@
 # get_logger()
 
-> God node · 511 connections · `server/structured_logging/enhanced_logging_config.py`
+> God node · 516 connections · `server/structured_logging/enhanced_logging_config.py`
 
-**Community:** [world](world.md)
+**Community:** [command inventory factories](command_inventory_factories.md)
 
 ## Connections by Relation
 
@@ -46,10 +46,10 @@
 - players.py `EXTRACTED`
 - websocket_handler.py `EXTRACTED`
 - monitoring.py `EXTRACTED`
+- endpoints.py `EXTRACTED`
 - lifespan_startup.py `EXTRACTED`
 - container_persistence.py `EXTRACTED`
 - maps.py `EXTRACTED`
-- endpoints.py `EXTRACTED`
 - command_handler_unified.py `EXTRACTED`
 - combat.py `EXTRACTED`
 

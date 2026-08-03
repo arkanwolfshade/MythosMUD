@@ -16,7 +16,7 @@
 
 ## Relationships
 
-- [world](world.md) (2 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
 
 ## Source Files
 

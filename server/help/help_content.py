@@ -237,6 +237,44 @@ suggest, communication is the first step toward understanding.</p>
 </div>
 """,
     },
+    "talk": {
+        "category": "Communication",
+        "description": "Speak with an NPC through a dialogue tree (private to you)",
+        "usage": "talk <npc> | talk <number>",
+        "examples": ["talk Armitage", "talk 1", "talk morgan"],
+        "detailed_help": """
+<div style="color: #006400;">
+<h3>TALK Command</h3>
+<p>Begin or continue a private conversation with an NPC who has a dialogue tree.
+Replies appear as personal system messages (not room chat). Leaving the room
+ends the conversation.</p>
+
+<h4>Usage:</h4>
+<ul>
+<li><strong>talk &lt;npc&gt;</strong> - Start (or restart) dialogue with an NPC in your room</li>
+<li><strong>talk &lt;number&gt;</strong> - Choose a numbered reply from the current options</li>
+</ul>
+
+<h4>Examples:</h4>
+<ul>
+<li>talk Armitage</li>
+<li>talk 1</li>
+<li>talk 2</li>
+</ul>
+
+<h4>Notes:</h4>
+<ul>
+<li>The NPC must be in the same room</li>
+<li>Not every NPC has a dialogue tree; those without will say they have nothing to say</li>
+<li>Choose an option whose next is empty (or farewell) to end the conversation</li>
+<li>Quest ask/turnin remain separate: use <strong>quest ask</strong> / <strong>quest turnin</strong></li>
+<li>For detailed help: <strong>help talk</strong></li>
+</ul>
+
+<p>As noted in the restricted stacks: conversation is a lantern in the dark.</p>
+</div>
+""",
+    },
     "me": {
         "category": "Communication",
         "description": "Perform an action or emote",

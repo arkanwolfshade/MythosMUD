@@ -1,4 +1,4 @@
-# Real Time Architecture
+# REAL TIME ARCHITECTURE
 
 > 4 nodes
 

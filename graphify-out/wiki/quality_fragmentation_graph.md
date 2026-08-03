@@ -16,7 +16,7 @@
 
 ## Relationships
 
-- [quality fragmentation ai guardrails](quality_fragmentation_ai_guardrails.md) (3 shared connections)
+- [quality fragmentation scripts](quality_fragmentation_scripts.md) (3 shared connections)
 
 ## Source Files
 

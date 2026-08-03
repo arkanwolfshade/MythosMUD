@@ -1,59 +1,52 @@
 # connection state machine
 
-> 29 nodes
+> 113 nodes
 
 ## Key Concepts
 
 - **NATSConnectionStateMachine** (58 connections) — `server/realtime/connection_state_machine.py`
+- **test_connection_state_machine.py** (39 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **connection_state_machine.py** (10 connections) — `server/realtime/connection_state_machine.py`
+- **ConnectionEvent** (4 connections) — `server/realtime/connection_state_machine.py`
+- **.on_enter_state()** (4 connections) — `server/realtime/connection_state_machine.py`
 - **.on_connection_failed()** (3 connections) — `server/realtime/connection_state_machine.py`
-- **.__init__()** (2 connections) — `server/realtime/connection_state_machine.py`
-- **.on_connect()** (2 connections) — `server/realtime/connection_state_machine.py`
-- **.on_connected_successfully()** (2 connections) — `server/realtime/connection_state_machine.py`
-- **.on_disconnect()** (2 connections) — `server/realtime/connection_state_machine.py`
-- **.on_start_reconnect()** (2 connections) — `server/realtime/connection_state_machine.py`
-- **.on_open_circuit()** (2 connections) — `server/realtime/connection_state_machine.py`
-- **.on_close_circuit()** (2 connections) — `server/realtime/connection_state_machine.py`
-- **.on_degrade()** (2 connections) — `server/realtime/connection_state_machine.py`
-- **.on_recover()** (2 connections) — `server/realtime/connection_state_machine.py`
-- **.can_attempt_connection()** (2 connections) — `server/realtime/connection_state_machine.py`
-- **.should_open_circuit()** (2 connections) — `server/realtime/connection_state_machine.py`
-- **.reset()** (2 connections) — `server/realtime/connection_state_machine.py`
-- **Exception** (1 connections)
-- **State machine for NATS connection lifecycle.      States:     - disconnected: No** (1 connections) — `server/realtime/connection_state_machine.py`
-- **Initialize connection state machine.          Args:             connection_id: U** (1 connections) — `server/realtime/connection_state_machine.py`
-- **Handler for connect transition.          Resets reconnection counter and prepare** (1 connections) — `server/realtime/connection_state_machine.py`
-- **Handler for successful connection.          Records connection time and incremen** (1 connections) — `server/realtime/connection_state_machine.py`
-- **Handler for connection failure.          Records error and increments failure co** (1 connections) — `server/realtime/connection_state_machine.py`
-- **Handler for disconnection.          Increments disconnection counter.          A** (1 connections) — `server/realtime/connection_state_machine.py`
-- **Handler for starting reconnection.          Checks if circuit breaker should be** (1 connections) — `server/realtime/connection_state_machine.py`
-- **Handler for circuit breaker opening.          Logs circuit open event for alerti** (1 connections) — `server/realtime/connection_state_machine.py`
-- **Handler for circuit breaker closing.          Resets failure counters.** (1 connections) — `server/realtime/connection_state_machine.py`
-- **Handler for connection degradation.          Logs degraded state for monitoring.** (1 connections) — `server/realtime/connection_state_machine.py`
-- *... and 4 more nodes in this community*
+- **.get_stats()** (3 connections) — `server/realtime/connection_state_machine.py`
+- **test_nats_connection_state_machine_init()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_nats_connection_state_machine_init_defaults()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_connect_transition()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_connected_successfully_from_connecting()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_connected_successfully_from_reconnecting()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_connection_failed_from_connecting()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_connection_failed_from_reconnecting()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_disconnect_from_connected()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_disconnect_from_degraded()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_start_reconnect()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_degrade()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_recover()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_open_circuit()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_close_circuit()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_can_attempt_connection_disconnected()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_can_attempt_connection_connecting()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_can_attempt_connection_connected()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- **test_can_attempt_connection_circuit_open()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
+- *... and 88 more nodes in this community*
 
 ## Relationships
 
-- [enhance player ids()](enhance_player_ids%28%29.md) (12 shared connections)
-- [Test process room rows with](Test_process_room_rows_with.md) (2 shared connections)
-- [Test build room objects handles](Test_build_room_objects_handles.md) (2 shared connections)
-- [BaseUserManager](BaseUserManager.md) (2 shared connections)
-- [.state()](state%28%29.md) (1 shared connections)
-- [Any](Any.md) (1 shared connections)
-- [FollowTargetValue](FollowTargetValue.md) (1 shared connections)
-- [test_can_attempt_connection_circuit_open](test_can_attempt_connection_circuit_open.md) (1 shared connections)
-- [test_can_attempt_connection_connected](test_can_attempt_connection_connected.md) (1 shared connections)
-- [test_can_attempt_connection_reconnecting](test_can_attempt_connection_reconnecting.md) (1 shared connections)
-- [test_close_circuit](test_close_circuit.md) (1 shared connections)
-- [Domain Model Anemic Anti Pattern](Domain_Model_Anemic_Anti_Pattern.md) (1 shared connections)
+- [nats services service](nats_services_service.md) (4 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [nats exceptions services](nats_exceptions_services.md) (2 shared connections)
+- [realtime game state](realtime_game_state.md) (2 shared connections)
 
 ## Source Files
 
 - `server/realtime/connection_state_machine.py`
+- `server/tests/unit/realtime/test_connection_state_machine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 99 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 311 (100%)
+- INFERRED: 1 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

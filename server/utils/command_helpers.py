@@ -6,7 +6,8 @@ including command safety validation, help text generation, and username extracti
 """
 
 import re
-from typing import Any
+from collections.abc import Mapping
+from typing import Protocol, cast, runtime_checkable
 
 from ..exceptions import ValidationError as MythosValidationError
 from ..models.command import CommandType
@@ -14,6 +15,22 @@ from ..structured_logging.enhanced_logging_config import get_logger
 from .enhanced_error_logging import log_and_raise_enhanced
 
 logger = get_logger(__name__)
+
+
+@runtime_checkable
+class _HasNameAndPlayerId(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
+    name: object
+    player_id: object
+
+
+@runtime_checkable
+class _HasUsername(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
+    username: object
+
+
+@runtime_checkable
+class _HasName(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
+    name: object
 
 
 def validate_command_safety(command_string: str) -> bool:
@@ -47,6 +64,7 @@ _COMMAND_HELP_TEXTS: dict[str, str] = {
     CommandType.LOOK.value: "look [direction] - Look around or in a specific direction",
     CommandType.GO.value: "go <direction> - Move in a specific direction",
     CommandType.SAY.value: "say <message> - Say something to other players",
+    CommandType.TALK.value: "talk <npc> | talk <number> - Speak with an NPC (dialogue tree)",
     CommandType.LOCAL.value: "local <message> - Send message to local channel (sub-zone)",
     CommandType.WHISPER.value: "whisper <player> <message> - Send private message to player",
     CommandType.REPLY.value: "reply <message> - Reply to last whisper received",
@@ -86,6 +104,7 @@ Available Commands:
 - look [direction] - Look around or in a specific direction
 - go <direction> - Move in a specific direction
 - say <message> - Say something to other players
+- talk <npc> | talk <number> - Speak with an NPC (dialogue tree)
 - local <message> - Send message to local channel (sub-zone)
 - whisper <player> <message> - Send private message to player
 - reply <message> - Reply to last whisper received
@@ -138,7 +157,7 @@ def get_command_help(command_type: str | None = None) -> str:
     return _GENERAL_COMMAND_HELP
 
 
-def _username_from_dict(d: dict[str, Any]) -> str | None:
+def _username_from_dict(d: Mapping[str, object]) -> str | None:
     """Extract username or name from a dict; return None if neither key present."""
     if "username" in d:
         return str(d["username"])
@@ -147,7 +166,7 @@ def _username_from_dict(d: dict[str, Any]) -> str | None:
     return None
 
 
-def get_username_from_user(user_obj: Any) -> str:
+def get_username_from_user(user_obj: object) -> str:
     """
     Safely extract username from user object or dictionary.
 
@@ -165,14 +184,14 @@ def get_username_from_user(user_obj: Any) -> str:
     Raises:
         ValueError: If no username or name can be extracted from the user object
     """
-    if hasattr(user_obj, "name") and hasattr(user_obj, "player_id"):
+    if isinstance(user_obj, _HasNameAndPlayerId):
         return str(user_obj.name)
-    if hasattr(user_obj, "username"):
+    if isinstance(user_obj, _HasUsername):
         return str(user_obj.username)
-    if hasattr(user_obj, "name"):
+    if isinstance(user_obj, _HasName):
         return str(user_obj.name)
     if isinstance(user_obj, dict):
-        result = _username_from_dict(user_obj)
+        result = _username_from_dict(cast(dict[str, object], user_obj))
         if result is not None:
             return result
     log_and_raise_enhanced(

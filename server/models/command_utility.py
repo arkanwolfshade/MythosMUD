@@ -85,3 +85,10 @@ class QuestCommand(BaseCommand):
     args: list[str] = Field(
         default_factory=list, description="Subcommand and arguments, e.g. ['abandon', 'quest_name']"
     )
+
+
+class TalkCommand(BaseCommand):  # pylint: disable=too-few-public-methods  # Reason: Pydantic command DTO
+    """Command for NPC dialogue: talk <npc> or talk <number>."""
+
+    command_type: Literal[CommandType.TALK] = CommandType.TALK
+    args: list[str] = Field(default_factory=list, description="NPC name or option number")

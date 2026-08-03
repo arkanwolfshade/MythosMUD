@@ -18,6 +18,7 @@ from typing import Any, cast
 from ..alias_storage import AliasStorage
 from ..commands.rest_command import cancel_rest_countdown, is_player_resting
 from ..exceptions import DatabaseError, ValidationError
+from ..game.dialogue import get_dialogue_service
 from ..game.movement_service import MovementService
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
@@ -332,4 +333,8 @@ async def handle_go_command(  # pylint: disable=too-many-arguments  # Reason: St
     result = await _execute_movement(player, room_id, target_room_id, app, persistence, player_name, direction)
     if rest_note and isinstance(result.get("result"), str):
         result = {**result, "result": f"{rest_note}\n{result['result']}"}
+    # Leaving the room ends any in-progress dialogue session (#583).
+    player_id = getattr(player, "player_id", None)
+    if player_id is not None:
+        get_dialogue_service().clear_cursor(player_id)
     return result

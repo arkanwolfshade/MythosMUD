@@ -1,58 +1,117 @@
 # AsyncPersistenceLayer
 
-> 43 nodes
+> God node · 184 connections · `server/async_persistence.py`
 
-## Key Concepts
+**Community:** [NPC Combat](NPC_Combat.md)
 
-- **combat_flee_handler.py** (22 connections) — `server/services/combat_flee_handler.py`
-- **test_combat_flee_handler.py** (17 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
-- **execute_voluntary_flee()** (15 connections) — `server/services/combat_flee_handler.py`
-- **try_voluntary_flee_roll()** (11 connections) — `server/services/combat_flee_handler.py`
-- **_make_participant()** (11 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
-- **_check_involuntary_flee_with_session()** (8 connections) — `server/services/combat_flee_handler.py`
-- **lucidity_command_disruption.py** (8 connections) — `server/services/lucidity_command_disruption.py`
-- **check_involuntary_flee()** (6 connections) — `server/services/combat_flee_handler.py`
-- **_involuntary_flee_on_cooldown()** (5 connections) — `server/services/combat_flee_handler.py`
-- **test_try_voluntary_flee_roll_zero_exits_returns_false()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
-- **test_try_voluntary_flee_roll_roll_above_chance_fails()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
-- **test_try_voluntary_flee_roll_roll_below_chance_succeeds()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
-- **test_try_voluntary_flee_roll_opponents_reduce_chance()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
-- **test_try_voluntary_flee_roll_dead_opponent_not_counted()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
-- **test_execute_voluntary_flee_no_room_returns_false()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
-- **test_execute_voluntary_flee_no_exits_returns_false()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
-- **UUID** (4 connections)
-- **should_involuntary_flee()** (4 connections) — `server/services/lucidity_command_disruption.py`
-- **Any** (2 connections)
-- **should_misfire_command()** (2 connections) — `server/services/lucidity_command_disruption.py`
-- **get_misfire_message()** (2 connections) — `server/services/lucidity_command_disruption.py`
-- **can_perform_action()** (2 connections) — `server/services/lucidity_command_disruption.py`
-- **UUID** (2 connections)
-- **Combat flee handler for involuntary and voluntary flee logic.  Handles checking** (1 connections) — `server/services/combat_flee_handler.py`
-- **Roll for voluntary flee success (no side effects).      Formula: base + (bonus *** (1 connections) — `server/services/combat_flee_handler.py`
-- *... and 18 more nodes in this community*
+## Connections by Relation
 
-## Relationships
+### calls
+- .initialize() `EXTRACTED`
+- test_async_persistence_layer_init_deprecated_params() `EXTRACTED`
+- test_async_persistence_layer_init_skip_room_cache() `EXTRACTED`
+- test_async_persistence_layer_init_with_room_cache() `EXTRACTED`
 
-- [close db()](close_db%28%29.md) (19 shared connections)
-- [test combat attack handler](test_combat_attack_handler.md) (5 shared connections)
-- [main()](main%28%29.md) (4 shared connections)
-- [world](world.md) (4 shared connections)
-- [ASGIApp](ASGIApp.md) (3 shared connections)
-- [. initialize handlers()](_initialize_handlers%28%29.md) (2 shared connections)
-- [combat flee](combat_flee.md) (2 shared connections)
-- [CombatService](CombatService.md) (1 shared connections)
+### contains
+- async_persistence.py `EXTRACTED`
 
-## Source Files
+### imports
+- dependencies.py `EXTRACTED`
+- monitoring.py `EXTRACTED`
+- endpoints.py `EXTRACTED`
+- maps.py `EXTRACTED`
+- container_endpoints_basic.py `EXTRACTED`
+- npc_combat_integration_service.py `EXTRACTED`
+- lifecycle_manager.py `EXTRACTED`
+- combat_handler.py `EXTRACTED`
+- combat_turn_participant_actions.py `EXTRACTED`
+- npc_base.py `EXTRACTED`
+- population_control.py `EXTRACTED`
+- test_async_persistence_core.py `EXTRACTED`
+- container_endpoints_loot.py `EXTRACTED`
+- rooms.py `EXTRACTED`
+- test_async_persistence_delegates.py `EXTRACTED`
+- player_event_handlers_respawn.py `EXTRACTED`
+- service.py `EXTRACTED`
+- movement_service.py `EXTRACTED`
+- player_disconnect_handlers.py `EXTRACTED`
+- combat_loader.py `EXTRACTED`
 
-- `server/services/combat_flee_handler.py`
-- `server/services/lucidity_command_disruption.py`
-- `server/tests/unit/services/test_combat_flee_handler.py`
+### indirect_call
+- .is_admin() `INFERRED`
+- resolve_player_attack_damage() `INFERRED`
+- ._move_with_integration() `INFERRED`
+- .add_admin() `INFERRED`
+- .remove_admin() `INFERRED`
 
-## Audit Trail
+### method
+- ._ensure_room_cache_loaded() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- .get_player_by_id() `EXTRACTED`
+- .get_players_batch() `EXTRACTED`
+- .apply_corruption() `EXTRACTED`
+- .apply_fear() `EXTRACTED`
+- .apply_lucidity_loss() `EXTRACTED`
+- .async_damage_player() `EXTRACTED`
+- .async_heal_player() `EXTRACTED`
+- .create_container() `EXTRACTED`
+- .damage_player() `EXTRACTED`
+- .get_active_player_effects() `EXTRACTED`
+- .get_active_players_by_user_id() `EXTRACTED`
+- .get_container() `EXTRACTED`
+- .get_containers_by_entity_id() `EXTRACTED`
+- .get_decayed_containers() `EXTRACTED`
+- .get_player_by_name() `EXTRACTED`
+- .get_player_by_user_id() `EXTRACTED`
+- .get_players_by_user_id() `EXTRACTED`
+- .get_players_in_room() `EXTRACTED`
 
-- EXTRACTED: 175 (99%)
-- INFERRED: 1 (1%)
-- AMBIGUOUS: 0 (0%)
+### rationale_for
+- Async persistence layer using SQLAlchemy ORM for true async PostgreSQL operation `EXTRACTED`
+
+### references
+- loot_all_items() `EXTRACTED`
+- transfer_items() `EXTRACTED`
+- open_container() `EXTRACTED`
+- close_container() `EXTRACTED`
+- get_async_persistence() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- _weapon_damage_from_equipped_player() `EXTRACTED`
+- validate_room_integrity() `EXTRACTED`
+- ._init_npc_submodules() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- _get_combat_container_services() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- _get_user_characters() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- ._get_persistence_from_app() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- .__init__() `EXTRACTED`
+
+### uses
+- [DatabaseError](DatabaseError.md) `INFERRED`
+- CombatCommandHandler `INFERRED`
+- HolidayService `INFERRED`
+- SkillService `INFERRED`
+- RoomCacheLoader `INFERRED`
+- Request `INFERRED`
+- ScheduleService `INFERRED`
+- CombatCommandHandlerExtras `INFERRED`
+- CombatDeathHandler `INFERRED`
+- _NpcWithLife `INFERRED`
+- _LifecycleManagerForDeath `INFERRED`
+- CoreBundle `INFERRED`
+- CreateItemInstanceInput `INFERRED`
+- Any `INFERRED`
+- _CombatServiceDeps `INFERRED`
+- _ConnectionManagerLike `INFERRED`
+- _NPCCombatIntegrationLike `INFERRED`
+- UUID `INFERRED`
+- datetime `INFERRED`
+- Any `INFERRED`
 
 ---
 

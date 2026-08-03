@@ -40,7 +40,8 @@ async def generate_unique_bogus_email(username: str, session: AsyncSession) -> s
     base_email = f"{clean_username}@wolfshade.org"
 
     # Check if base email exists
-    stmt = select(User).where(User.email == base_email)
+    # Stubbed fastapi-users base types email as plain str for UserProtocol; use table column for SQL ops.
+    stmt = select(User).where(User.__table__.c.email == base_email)
     result = await session.execute(stmt)
     existing_user = result.scalar_one_or_none()
 
@@ -53,7 +54,7 @@ async def generate_unique_bogus_email(username: str, session: AsyncSession) -> s
     unique_email = f"{clean_username}.{unique_suffix}@wolfshade.org"
 
     # Double-check uniqueness (very unlikely collision, but safety first)
-    stmt = select(User).where(User.email == unique_email)
+    stmt = select(User).where(User.__table__.c.email == unique_email)
     result = await session.execute(stmt)
     existing_user = result.scalar_one_or_none()
 

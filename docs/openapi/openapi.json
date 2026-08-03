@@ -134,9 +134,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "additionalProperties": true,
-                  "type": "object",
-                  "title": "Response Get Current User Info V1 Auth Me Get"
+                  "$ref": "#/components/schemas/CurrentUserInfo"
                 }
               }
             }
@@ -164,8 +162,7 @@
               "application/json": {
                 "schema": {
                   "items": {
-                    "additionalProperties": true,
-                    "type": "object"
+                    "$ref": "#/components/schemas/InviteRead"
                   },
                   "type": "array",
                   "title": "Response List Invites V1 Auth Invites Get"
@@ -4285,6 +4282,230 @@
         }
       }
     },
+    "/v1/admin/dialogue/definitions": {
+      "get": {
+        "tags": [
+          "admin",
+          "dialogue"
+        ],
+        "summary": "List Dialogue Definitions",
+        "description": "List all dialogue definitions.",
+        "operationId": "list_dialogue_definitions_v1_admin_dialogue_definitions_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/DialogueDefinitionResponse"
+                  },
+                  "type": "array",
+                  "title": "Response List Dialogue Definitions V1 Admin Dialogue Definitions Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "admin",
+          "dialogue"
+        ],
+        "summary": "Create Dialogue Definition",
+        "description": "Create a dialogue definition (upsert by id).",
+        "operationId": "create_dialogue_definition_v1_admin_dialogue_definitions_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DialogueDefinitionCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DialogueDefinitionResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/v1/admin/dialogue/definitions/{dialogue_id}": {
+      "get": {
+        "tags": [
+          "admin",
+          "dialogue"
+        ],
+        "summary": "Get Dialogue Definition",
+        "description": "Get one dialogue definition by id.",
+        "operationId": "get_dialogue_definition_v1_admin_dialogue_definitions__dialogue_id__get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "dialogue_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Dialogue Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DialogueDefinitionResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "admin",
+          "dialogue"
+        ],
+        "summary": "Upsert Dialogue Definition",
+        "description": "Create or update a dialogue definition (path id wins).",
+        "operationId": "upsert_dialogue_definition_v1_admin_dialogue_definitions__dialogue_id__put",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "dialogue_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Dialogue Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DialogueDefinitionUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DialogueDefinitionResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "admin",
+          "dialogue"
+        ],
+        "summary": "Delete Dialogue Definition",
+        "description": "Delete a dialogue definition.",
+        "operationId": "delete_dialogue_definition_v1_admin_dialogue_definitions__dialogue_id__delete",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "dialogue_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Dialogue Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/api/admin/nats/subjects/health": {
       "get": {
         "tags": [
@@ -5120,6 +5341,66 @@
         "title": "CacheMetricsResponse",
         "description": "Response model for cache metrics."
       },
+      "CharacterInfo": {
+        "properties": {
+          "player_id": {
+            "type": "string",
+            "title": "Player Id",
+            "description": "Character ID (player_id)"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "description": "Character name"
+          },
+          "profession_id": {
+            "type": "integer",
+            "title": "Profession Id",
+            "description": "Profession ID",
+            "default": 0
+          },
+          "profession_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Profession Name",
+            "description": "Profession name"
+          },
+          "level": {
+            "type": "integer",
+            "title": "Level",
+            "description": "Character level",
+            "default": 1
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At",
+            "description": "Character creation timestamp"
+          },
+          "last_active": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Last Active",
+            "description": "Character last active timestamp"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "player_id",
+          "name",
+          "created_at",
+          "last_active"
+        ],
+        "title": "CharacterInfo",
+        "description": "Schema for character information in login response.\n\nMULTI-CHARACTER: Lightweight character info for character selection screen."
+      },
       "ClassDefinition": {
         "properties": {
           "prerequisites": {
@@ -5748,6 +6029,42 @@
           }
         }
       },
+      "CurrentUserInfo": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Email"
+          },
+          "username": {
+            "type": "string",
+            "title": "Username"
+          },
+          "is_superuser": {
+            "type": "boolean",
+            "title": "Is Superuser"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "email",
+          "username",
+          "is_superuser"
+        ],
+        "title": "CurrentUserInfo",
+        "description": "Payload for GET /auth/me."
+      },
       "DLQMessage": {
         "properties": {
           "message_id": {
@@ -6035,6 +6352,189 @@
           "message": "Character deleted successfully",
           "success": true
         }
+      },
+      "DialogueDefinitionCreate": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Id"
+          },
+          "definition": {
+            "$ref": "#/components/schemas/DialogueTree"
+          },
+          "npc_definition_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Npc Definition Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "definition"
+        ],
+        "title": "DialogueDefinitionCreate",
+        "description": "Create or upsert body for a dialogue tree."
+      },
+      "DialogueDefinitionResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "definition": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Definition"
+          },
+          "npc_definition_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Npc Definition Id"
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "definition"
+        ],
+        "title": "DialogueDefinitionResponse",
+        "description": "API response for a stored dialogue definition."
+      },
+      "DialogueDefinitionUpdate": {
+        "properties": {
+          "definition": {
+            "$ref": "#/components/schemas/DialogueTree"
+          },
+          "npc_definition_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Npc Definition Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "definition"
+        ],
+        "title": "DialogueDefinitionUpdate",
+        "description": "Partial update; id comes from path."
+      },
+      "DialogueNode": {
+        "properties": {
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Text"
+          },
+          "options": {
+            "items": {
+              "$ref": "#/components/schemas/DialogueOption"
+            },
+            "type": "array",
+            "title": "Options"
+          }
+        },
+        "type": "object",
+        "required": [
+          "text"
+        ],
+        "title": "DialogueNode",
+        "description": "One NPC line plus numbered options."
+      },
+      "DialogueOption": {
+        "properties": {
+          "label": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Label"
+          },
+          "next": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next"
+          }
+        },
+        "type": "object",
+        "required": [
+          "label"
+        ],
+        "title": "DialogueOption",
+        "description": "Player-facing option; next null/omitted ends the conversation."
+      },
+      "DialogueTree": {
+        "properties": {
+          "start": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Start"
+          },
+          "nodes": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/DialogueNode"
+            },
+            "type": "object",
+            "minProperties": 1,
+            "title": "Nodes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "start",
+          "nodes"
+        ],
+        "title": "DialogueTree",
+        "description": "Root tree: start node id and nodes map."
       },
       "DualConnectionStatsResponse": {
         "properties": {
@@ -6901,8 +7401,7 @@
           },
           "characters": {
             "items": {
-              "additionalProperties": true,
-              "type": "object"
+              "$ref": "#/components/schemas/CharacterInfo"
             },
             "type": "array",
             "title": "Characters",

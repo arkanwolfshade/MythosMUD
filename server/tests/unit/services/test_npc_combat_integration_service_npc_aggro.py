@@ -79,7 +79,7 @@ async def test_handle_npc_attack_on_player_happy_path(integration_service: "NPCC
     # Skip full location validation details here; covered in dedicated tests
     integration_service._validate_combat_location = AsyncMock(return_value=True)
 
-    with patch("server.app.lifespan.get_current_tick", return_value=1):
+    with patch("server.app.game_tick_processing.get_current_tick", return_value=1):
         result = await integration_service.handle_npc_attack_on_player(
             npc_id=npc_id,
             target_id=target_id,

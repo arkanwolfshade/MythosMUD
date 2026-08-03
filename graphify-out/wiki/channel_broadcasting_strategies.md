@@ -1,32 +1,35 @@
 # channel broadcasting strategies
 
-> 14 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **test_channel_broadcasting_strategies.py** (26 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **PartyChannelStrategy** (10 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **test_global_channel_strategy_broadcast()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **test_party_channel_strategy_broadcast_sends_only_to_party_members()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **test_party_channel_strategy_broadcast_no_party_service_no_send()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **test_party_channel_strategy_broadcast_party_not_found_no_send()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **test_party_channel_strategy_broadcast_no_party_id()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Strategy for party channel broadcasting. Delivers only to current party members.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Unit tests for channel broadcasting strategies.  Tests the channel_broadcasting_** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Test GlobalChannelStrategy.broadcast() broadcasts globally.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Party chat is delivered only to current party members (visibility).** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **When party_service is missing on handler, no message is sent.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **When party does not exist, no message is sent.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Test PartyChannelStrategy.broadcast() handles missing party_id.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **channel_broadcasting_strategies.py** (14 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **ChannelBroadcastingStrategy** (12 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **UnknownChannelStrategy** (9 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **GlobalChannelStrategy** (7 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.get_strategy()** (6 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **test_unknown_channel_strategy_broadcast()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **ABC** (2 connections)
+- **.__init__()** (2 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Channel Broadcasting Strategies for NATS Message Handler.  This module implement** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Abstract base class for channel broadcasting strategies.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Strategy for global channel broadcasting.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Strategy for unknown channel types.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Initialize unknown channel strategy.          Args:             channel_type: Un** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Get strategy for channel type.          Args:             channel_type: Type of** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Test UnknownChannelStrategy.broadcast() handles unknown channel.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
 
 ## Relationships
 
-- [add fastapi users columns](add_fastapi_users_columns.md) (7 shared connections)
-- [PartyService](PartyService.md) (5 shared connections)
-- [test inventory mutation guard internal](test_inventory_mutation_guard_internal.md) (4 shared connections)
-- [admin summon command](admin_summon_command.md) (4 shared connections)
-- [BehaviorEngine](BehaviorEngine.md) (3 shared connections)
-- [.broadcast()](broadcast%28%29.md) (1 shared connections)
+- [channel realtime broadcasting](channel_realtime_broadcasting.md) (7 shared connections)
+- [npc behavior engine](npc_behavior_engine.md) (4 shared connections)
+- [realtime channel broadcasting](realtime_channel_broadcasting.md) (4 shared connections)
+- [message handler factory](message_handler_factory.md) (3 shared connections)
+- [channel broadcasting realtime](channel_broadcasting_realtime.md) (2 shared connections)
+- [world loader rationale](world_loader_rationale.md) (2 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [auth users rationale](auth_users_rationale.md) (2 shared connections)
 
 ## Source Files
 
@@ -35,8 +38,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 58 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 59 (95%)
+- INFERRED: 3 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---
