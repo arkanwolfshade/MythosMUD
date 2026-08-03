@@ -1,24 +1,25 @@
 # level curve game
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **.__init__()** (3 connections) — `server/services/coordinate_validator.py`
-- **AsyncSession** (1 connections)
-- **Initialize coordinate validator.          Args:             session: Database se** (1 connections) — `server/services/coordinate_validator.py`
+- **.is_npc_death_suppressed()** (3 connections) — `server/npc/lifecycle_manager.py`
+- **.respawn_npc()** (3 connections) — `server/npc/lifecycle_manager.py`
+- **Check if an NPC is currently under death suppression.          Args:** (1 connections) — `server/npc/lifecycle_manager.py`
+- **Schedule an NPC for respawning.          Args:             npc_id: ID of the** (1 connections) — `server/npc/lifecycle_manager.py`
 
 ## Relationships
 
-- [maps handle ascii](maps_handle_ascii.md) (1 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (2 shared connections)
 
 ## Source Files
 
-- `server/services/coordinate_validator.py`
+- `server/npc/lifecycle_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

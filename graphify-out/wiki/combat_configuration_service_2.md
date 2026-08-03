@@ -1,49 +1,49 @@
 # combat configuration service
 
-> 36 nodes
+> 28 nodes
 
 ## Key Concepts
 
-- **TestCombatConfigurationService** (26 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.service()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_get_combat_configuration()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_get_combat_configuration_for_scope_global()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_get_combat_configuration_for_scope_room()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_get_combat_configuration_for_scope_player()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_get_combat_configuration_for_scope_temporary()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_validate_configuration_custom()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.mock_config()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_init()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_get_combat_configuration_caching()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_update_combat_configuration()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_clear_scope_override()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_clear_all_overrides()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_get_active_overrides()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_validate_configuration()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_is_combat_available()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_is_combat_available_with_override()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **Test suite for CombatConfigurationService class.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **Create a mock config object.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **Create a CombatConfigurationService instance for testing.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **Test CombatConfigurationService initialization.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **Test get_combat_configuration returns configuration.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **Test get_combat_configuration caches configuration.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **Test get_combat_configuration_for_scope with global scope.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- *... and 11 more nodes in this community*
+- **test_message_broadcaster.py** (17 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **mock_room_manager()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **mock_send_personal_message()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_message_broadcaster_init()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_to_room()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_to_room_exclude_player()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_to_room_empty()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_global()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_to_room_with_uuid_exclude()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_to_room_delivery_failure()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_global_exclude_player()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_global_empty()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_room_event()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_global_event()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **Unit tests for message broadcaster.  Tests the MessageBroadcaster class.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **Create a mock room manager.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **Create a mock send_personal_message callback.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **Test MessageBroadcaster initialization.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **Test broadcast_to_room() broadcasts to room subscribers.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **Test broadcast_to_room() excludes specified player.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **Test broadcast_to_room() when room has no subscribers.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **Test broadcast_global() broadcasts globally.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **Test broadcast_to_room() with UUID exclude_player.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **Test broadcast_to_room() handles delivery failures.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **Test broadcast_global() excludes specified player.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [combat configuration service](combat_configuration_service.md) (9 shared connections)
-- [npc combat service](npc_combat_service.md) (6 shared connections)
+- [realtime maintenance connection](realtime_maintenance_connection.md) (2 shared connections)
+- [realtime messaging message](realtime_messaging_message.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_configuration_service.py`
+- `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
 
 ## Audit Trail
 
-- EXTRACTED: 76 (89%)
-- INFERRED: 9 (11%)
+- EXTRACTED: 57 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

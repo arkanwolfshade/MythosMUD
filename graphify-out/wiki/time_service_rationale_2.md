@@ -1,30 +1,34 @@
 # time service rationale
 
-> 6 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **.create_help_command()** (5 connections) — `server/utils/command_factories_utility.py`
-- **test_create_help_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
-- **test_create_help_command_no_args()** (3 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
-- **Test create_help_command() creates HelpCommand.** (1 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
-- **Test create_help_command() creates HelpCommand with no topic.** (1 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
-- **Create HelpCommand from arguments.** (1 connections) — `server/utils/command_factories_utility.py`
+- **.get_stats()** (5 connections) — `server/caching/lru_cache.py`
+- **.get_cache()** (5 connections) — `server/caching/lru_cache.py`
+- **.get_all_stats()** (5 connections) — `server/caching/lru_cache.py`
+- **Any** (4 connections)
+- **.create_cache()** (4 connections) — `server/caching/lru_cache.py`
+- **.__repr__()** (3 connections) — `server/caching/lru_cache.py`
+- **Get cache statistics.          Returns:             Dictionary containing cache** (1 connections) — `server/caching/lru_cache.py`
+- **String representation of the cache.** (1 connections) — `server/caching/lru_cache.py`
+- **Get a cache by name.          Args:             name: The name of the cache** (1 connections) — `server/caching/lru_cache.py`
+- **Create a new cache.          Args:             name: The name of the cache** (1 connections) — `server/caching/lru_cache.py`
+- **Get statistics for all caches.          Returns:             Dictionary mapping** (1 connections) — `server/caching/lru_cache.py`
 
 ## Relationships
 
-- [exceptions rationale error](exceptions_rationale_error.md) (2 shared connections)
-- [command utility models](command_utility_models.md) (1 shared connections)
-- [auth dependencies rationale](auth_dependencies_rationale.md) (1 shared connections)
+- [combat messaging service](combat_messaging_service.md) (4 shared connections)
+- [command inventory factories](command_inventory_factories.md) (3 shared connections)
+- [caching lru cache](caching_lru_cache.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories_utility.py`
-- `server/utils/command_factories_utility.py`
+- `server/caching/lru_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
+- EXTRACTED: 31 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

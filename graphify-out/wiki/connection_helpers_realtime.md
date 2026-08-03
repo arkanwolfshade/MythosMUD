@@ -13,9 +13,8 @@
 
 ## Relationships
 
-- [combat configuration service](combat_configuration_service.md) (2 shared connections)
+- [combat configuration service](combat_configuration_service.md) (3 shared connections)
 - [Item Instances](Item_Instances.md) (1 shared connections)
-- [npc combat service](npc_combat_service.md) (1 shared connections)
 
 ## Source Files
 

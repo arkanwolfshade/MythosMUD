@@ -1,38 +1,43 @@
 # calendar models rationale
 
-> 11 nodes
+> 18 nodes
 
 ## Key Concepts
 
-- **test_target_resolution.py** (16 connections) — `server/tests/unit/schemas/test_target_resolution.py`
-- **TargetMetadata** (12 connections) — `server/schemas/shared/target_metadata.py`
-- **target_metadata.py** (5 connections) — `server/schemas/shared/target_metadata.py`
-- **test_target_match()** (4 connections) — `server/tests/unit/schemas/test_target_resolution.py`
-- **test_target_type_enum()** (2 connections) — `server/tests/unit/schemas/test_target_resolution.py`
-- **BaseModel** (1 connections)
-- **Target metadata schema for MythosMUD.  This module defines Pydantic models for t** (1 connections) — `server/schemas/shared/target_metadata.py`
-- **Metadata about a target in target resolution.      This model represents additio** (1 connections) — `server/schemas/shared/target_metadata.py`
-- **Unit tests for target_resolution schemas.  Tests the Pydantic models in target_r** (1 connections) — `server/tests/unit/schemas/test_target_resolution.py`
-- **Test TargetType enum values.** (1 connections) — `server/tests/unit/schemas/test_target_resolution.py`
-- **Test TargetMatch can be instantiated.** (1 connections) — `server/tests/unit/schemas/test_target_resolution.py`
+- **test_level_service.py** (16 connections) — `server/tests/unit/game/test_level_service.py`
+- **level_service()** (3 connections) — `server/tests/unit/game/test_level_service.py`
+- **mock_persistence()** (2 connections) — `server/tests/unit/game/test_level_service.py`
+- **sample_player()** (2 connections) — `server/tests/unit/game/test_level_service.py`
+- **test_grant_xp_zero_no_op()** (2 connections) — `server/tests/unit/game/test_level_service.py`
+- **test_grant_xp_negative_raises()** (2 connections) — `server/tests/unit/game/test_level_service.py`
+- **test_grant_xp_player_not_found_raises()** (2 connections) — `server/tests/unit/game/test_level_service.py`
+- **test_grant_xp_increases_xp_and_persists()** (2 connections) — `server/tests/unit/game/test_level_service.py`
+- **test_check_level_up_player_not_found_raises()** (2 connections) — `server/tests/unit/game/test_level_service.py`
+- **Unit tests for LevelService: grant_xp, check_level_up, level-up hook.  Character** (1 connections) — `server/tests/unit/game/test_level_service.py`
+- **Mock async persistence with get_player_by_id and save_player.** (1 connections) — `server/tests/unit/game/test_level_service.py`
+- **LevelService with mocked persistence.** (1 connections) — `server/tests/unit/game/test_level_service.py`
+- **Player-like object with experience_points and level.** (1 connections) — `server/tests/unit/game/test_level_service.py`
+- **grant_xp(amount=0) does not load or save.** (1 connections) — `server/tests/unit/game/test_level_service.py`
+- **grant_xp(amount < 0) raises ValueError.** (1 connections) — `server/tests/unit/game/test_level_service.py`
+- **grant_xp when player not found raises ValueError.** (1 connections) — `server/tests/unit/game/test_level_service.py`
+- **grant_xp adds amount to experience_points and saves (level unchanged).** (1 connections) — `server/tests/unit/game/test_level_service.py`
+- **check_level_up when player not found raises ValueError.** (1 connections) — `server/tests/unit/game/test_level_service.py`
 
 ## Relationships
 
-- [combat commands handler](combat_commands_handler.md) (9 shared connections)
-- [Item Instances](Item_Instances.md) (4 shared connections)
-- [spell game magic](spell_game_magic.md) (4 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (2 shared connections)
-- [target resolution service](target_resolution_service.md) (2 shared connections)
+- [message formatters realtime](message_formatters_realtime.md) (3 shared connections)
+- [quests players rationale](quests_players_rationale.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [command inventory factories](command_inventory_factories.md) (1 shared connections)
 
 ## Source Files
 
-- `server/schemas/shared/target_metadata.py`
-- `server/tests/unit/schemas/test_target_resolution.py`
+- `server/tests/unit/game/test_level_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 40 (89%)
-- INFERRED: 5 (11%)
+- EXTRACTED: 42 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

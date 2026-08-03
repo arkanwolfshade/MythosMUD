@@ -26,11 +26,11 @@
 - [combat services npc](combat_services_npc.md) (2 shared connections)
 - [player death service](player_death_service.md) (2 shared connections)
 - [npc services combat](npc_services_combat.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
 - [player service services](player_service_services.md) (1 shared connections)
 - [position services player](position_services_player.md) (1 shared connections)
 - [player position services](player_position_services.md) (1 shared connections)
 - [services player position](services_player_position.md) (1 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (1 shared connections)
 
 ## Source Files
 

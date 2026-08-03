@@ -1,18 +1,33 @@
 # schemas items item
 
-> 5 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **durability** (3 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (3 connections) — `schemas/items/item_prototype.schema.json`
-- **integer** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **null** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **minimum** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **enum** (21 connections) — `schemas/items/item_prototype.schema.json`
+- **MAGICAL** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **CURSED** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **NO_DROP** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **NO_SALE** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **SOULBOUND** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **GLOW** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **QUEST_ITEM** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **HEAD** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **TORSO** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **LEGS** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **MAIN_HAND** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **OFF_HAND** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **FEET** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **HANDS** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **ACCESSORY** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **RING** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **AMULET** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **BELT** (1 connections) — `schemas/items/item_prototype.schema.json`
 
 ## Relationships
 
-- [schemas items item](schemas_items_item.md) (1 shared connections)
+- [items schemas item](items_schemas_item.md) (2 shared connections)
+- [item schemas items](item_schemas_items.md) (1 shared connections)
 
 ## Source Files
 
@@ -20,7 +35,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 39 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

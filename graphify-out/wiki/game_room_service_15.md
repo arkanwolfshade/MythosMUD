@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_process_single_message_event_type_empty_string()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test _process_single_message handles event_type as empty string (falsy).** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_is_player_rate_limited_true()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **Test is_player_rate_limited returns True when rate limited.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
 
 ## Relationships
 
-- [nats message handler](nats_message_handler.md) (1 shared connections)
+- [rate limiter services](rate_limiter_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/tests/unit/services/test_rate_limiter.py`
 
 ## Audit Trail
 

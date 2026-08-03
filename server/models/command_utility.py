@@ -87,7 +87,7 @@ class QuestCommand(BaseCommand):
     )
 
 
-class TalkCommand(BaseCommand):
+class TalkCommand(BaseCommand):  # pylint: disable=too-few-public-methods  # Reason: Pydantic command DTO
     """Command for NPC dialogue: talk <npc> or talk <number>."""
 
     command_type: Literal[CommandType.TALK] = CommandType.TALK

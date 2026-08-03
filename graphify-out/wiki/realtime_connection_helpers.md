@@ -1,56 +1,49 @@
 # realtime connection helpers
 
-> 85 nodes
+> 51 nodes
 
 ## Key Concepts
 
-- **test_connection_helpers_impl.py** (35 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **connection_helpers.py** (21 connections) — `server/realtime/connection_helpers.py`
-- **convert_uuids_to_strings()** (18 connections) — `server/realtime/connection_helpers.py`
-- **send_personal_message_old_impl()** (13 connections) — `server/realtime/connection_helpers.py`
-- **_optimize_payload()** (11 connections) — `server/realtime/connection_helpers.py`
-- **_send_to_websockets()** (11 connections) — `server/realtime/connection_helpers.py`
 - **Any** (10 connections)
-- **handle_new_login_impl()** (9 connections) — `server/realtime/connection_helpers.py`
-- **test_connection_helpers.py** (9 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
-- **_update_delivery_status()** (8 connections) — `server/realtime/connection_helpers.py`
-- **mark_player_seen_impl()** (8 connections) — `server/realtime/connection_helpers.py`
-- **_queue_message_if_needed()** (6 connections) — `server/realtime/connection_helpers.py`
-- **broadcast_room_event_impl()** (6 connections) — `server/realtime/connection_helpers.py`
-- **broadcast_global_event_impl()** (6 connections) — `server/realtime/connection_helpers.py`
-- **test_send_to_websockets_websocket_error()** (4 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **test_optimize_payload_optimization_failure()** (4 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **test_convert_uuids_to_strings_uuid()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
-- **test_convert_uuids_to_strings_dict()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
-- **test_convert_uuids_to_strings_list()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
-- **test_convert_uuids_to_strings_nested()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
-- **test_convert_uuids_to_strings_string()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
-- **test_convert_uuids_to_strings_int()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
-- **test_optimize_payload()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **test_send_to_websockets()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **test_send_to_websockets_no_connections()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- *... and 60 more nodes in this community*
+- **._handle_event_async()** (8 connections) — `server/events/event_bus.py`
+- **._stop_processing()** (7 connections) — `server/events/event_bus.py`
+- **._ensure_async_processing()** (6 connections) — `server/events/event_bus.py`
+- **._create_async_subscriber_tasks()** (6 connections) — `server/events/event_bus.py`
+- **.unsubscribe()** (6 connections) — `server/events/event_bus.py`
+- **._separate_subscribers()** (5 connections) — `server/events/event_bus.py`
+- **._process_sync_subscribers()** (5 connections) — `server/events/event_bus.py`
+- **._wait_for_async_subscribers()** (5 connections) — `server/events/event_bus.py`
+- **.subscribe()** (5 connections) — `server/events/event_bus.py`
+- **._process_events_async()** (4 connections) — `server/events/event_bus.py`
+- **._handle_task_result_async()** (4 connections) — `server/events/event_bus.py`
+- **.publish()** (4 connections) — `server/events/event_bus.py`
+- **.inject()** (4 connections) — `server/events/event_bus.py`
+- **.unsubscribe_all_for_service()** (4 connections) — `server/events/event_bus.py`
+- **.get_subscriber_stats()** (4 connections) — `server/events/event_bus.py`
+- **.shutdown()** (4 connections) — `server/events/event_bus.py`
+- **._ensure_processing_started()** (3 connections) — `server/events/event_bus.py`
+- **._signal_shutdown()** (3 connections) — `server/events/event_bus.py`
+- **._cancel_processing_task()** (3 connections) — `server/events/event_bus.py`
+- **._cancel_and_wait_for_active_tasks()** (3 connections) — `server/events/event_bus.py`
+- **._finalize_shutdown()** (3 connections) — `server/events/event_bus.py`
+- **Task** (3 connections)
+- **.get_all_subscriber_counts()** (3 connections) — `server/events/event_bus.py`
+- **.get_active_task_details()** (3 connections) — `server/events/event_bus.py`
+- *... and 26 more nodes in this community*
 
 ## Relationships
 
-- [Room Broadcast](Room_Broadcast.md) (9 shared connections)
-- [npc populate databases](npc_populate_databases.md) (6 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (4 shared connections)
-- [combat services messaging](combat_services_messaging.md) (3 shared connections)
-- [Item Instances](Item_Instances.md) (2 shared connections)
-- [room websocket updates](room_websocket_updates.md) (2 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (24 shared connections)
+- [item models rationale](item_models_rationale.md) (8 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_helpers.py`
-- `server/tests/unit/realtime/test_connection_helpers.py`
-- `server/tests/unit/realtime/test_connection_helpers_impl.py`
+- `server/events/event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 294 (98%)
-- INFERRED: 7 (2%)
+- EXTRACTED: 142 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

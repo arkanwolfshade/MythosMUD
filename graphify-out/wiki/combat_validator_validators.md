@@ -1,55 +1,54 @@
 # combat validator validators
 
-> 35 nodes
+> 95 nodes
 
 ## Key Concepts
 
-- **CombatValidator** (28 connections) — `server/validators/combat_validator.py`
-- **._get_random_error_message()** (8 connections) — `server/validators/combat_validator.py`
-- **.validate_combat_command()** (7 connections) — `server/validators/combat_validator.py`
-- **Any** (4 connections)
-- **._is_rate_limited()** (4 connections) — `server/validators/combat_validator.py`
-- **.__init__()** (3 connections) — `server/validators/combat_validator.py`
-- **.validate_can_attack_target()** (3 connections) — `server/validators/combat_validator.py`
-- **.validate_target_exists()** (3 connections) — `server/validators/combat_validator.py`
-- **.validate_target_alive()** (3 connections) — `server/validators/combat_validator.py`
-- **.validate_combat_state()** (3 connections) — `server/validators/combat_validator.py`
-- **.validate_attack_strength()** (3 connections) — `server/validators/combat_validator.py`
-- **._is_valid_target_name()** (3 connections) — `server/validators/combat_validator.py`
-- **._contains_suspicious_patterns()** (3 connections) — `server/validators/combat_validator.py`
-- **.get_combat_status_message()** (3 connections) — `server/validators/combat_validator.py`
-- **.get_combat_help_message()** (2 connections) — `server/validators/combat_validator.py`
-- **.get_combat_result_message()** (2 connections) — `server/validators/combat_validator.py`
-- **.get_combat_death_message()** (2 connections) — `server/validators/combat_validator.py`
-- **.get_combat_victory_message()** (2 connections) — `server/validators/combat_validator.py`
-- **Enhanced combat command validator with thematic error messages.      Provides co** (1 connections) — `server/validators/combat_validator.py`
-- **Initialize the combat validator.          Args:             party_service: Optio** (1 connections) — `server/validators/combat_validator.py`
-- **Validate that attacker is allowed to attack target (e.g. not same party).** (1 connections) — `server/validators/combat_validator.py`
-- **Validate a combat command with thematic error messages.          Args:** (1 connections) — `server/validators/combat_validator.py`
-- **Validate that a target exists with thematic error messages.          Args:** (1 connections) — `server/validators/combat_validator.py`
-- **Validate that a target is alive with thematic error messages.          Args:** (1 connections) — `server/validators/combat_validator.py`
-- **Validate combat state with thematic error messages.          Args:             i** (1 connections) — `server/validators/combat_validator.py`
-- *... and 10 more nodes in this community*
+- **NATSService** (71 connections) — `server/services/nats_service.py`
+- **Any** (17 connections)
+- **.disconnect()** (11 connections) — `server/services/nats_service.py`
+- **.publish_with_pool()** (10 connections) — `server/services/nats_service.py`
+- **._create_tracked_task()** (9 connections) — `server/services/nats_service.py`
+- **.connect()** (8 connections) — `server/services/nats_service.py`
+- **._flush_batch()** (7 connections) — `server/services/nats_service.py`
+- **._verify_subscription_cleanup()** (6 connections) — `server/services/nats_service.py`
+- **.publish_batch()** (6 connections) — `server/services/nats_service.py`
+- **._start_health_monitoring()** (5 connections) — `server/services/nats_service.py`
+- **.publish()** (5 connections) — `server/services/nats_service.py`
+- **._on_error()** (5 connections) — `server/services/nats_service.py`
+- **._get_connection()** (5 connections) — `server/services/nats_service.py`
+- **._retry_failed_batch_groups()** (5 connections) — `server/services/nats_service.py`
+- **._build_connect_options()** (4 connections) — `server/services/nats_service.py`
+- **._configure_tls()** (4 connections) — `server/services/nats_service.py`
+- **._close_all_subscriptions()** (4 connections) — `server/services/nats_service.py`
+- **._health_check_loop()** (4 connections) — `server/services/nats_service.py`
+- **.subscribe()** (4 connections) — `server/services/nats_service.py`
+- **.unsubscribe()** (4 connections) — `server/services/nats_service.py`
+- **.request()** (4 connections) — `server/services/nats_service.py`
+- **._handle_error_async()** (4 connections) — `server/services/nats_service.py`
+- **._on_disconnect()** (4 connections) — `server/services/nats_service.py`
+- **._handle_disconnect_async()** (4 connections) — `server/services/nats_service.py`
+- **._on_reconnect()** (4 connections) — `server/services/nats_service.py`
+- *... and 70 more nodes in this community*
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (3 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (2 shared connections)
-- [combat commands handler](combat_commands_handler.md) (1 shared connections)
-- [emote models rationale](emote_models_rationale.md) (1 shared connections)
-- [combat services npc](combat_services_npc.md) (1 shared connections)
-- [player death services](player_death_services.md) (1 shared connections)
-- [player services death](player_services_death.md) (1 shared connections)
-- [player death service](player_death_service.md) (1 shared connections)
+- [nats exceptions services](nats_exceptions_services.md) (12 shared connections)
+- [nats services service](nats_services_service.md) (11 shared connections)
+- [NPC Combat](NPC_Combat.md) (5 shared connections)
+- [Error Conversion](Error_Conversion.md) (3 shared connections)
+- [item models rationale](item_models_rationale.md) (2 shared connections)
+- [circuit breaker realtime](circuit_breaker_realtime.md) (1 shared connections)
+- [broker infrastructure nats](broker_infrastructure_nats.md) (1 shared connections)
 
 ## Source Files
 
-- `server/validators/combat_validator.py`
+- `server/services/nats_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 100 (97%)
-- INFERRED: 3 (3%)
+- EXTRACTED: 321 (98%)
+- INFERRED: 8 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

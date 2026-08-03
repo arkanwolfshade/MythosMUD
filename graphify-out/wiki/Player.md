@@ -2,7 +2,7 @@
 
 > God node · 203 connections · `server/models/player.py`
 
-**Community:** [Async Query Helpers](Async_Query_Helpers.md)
+**Community:** [combat models rationale](combat_models_rationale.md)
 
 ## Connections by Relation
 

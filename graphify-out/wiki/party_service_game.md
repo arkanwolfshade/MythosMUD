@@ -1,50 +1,49 @@
 # party service game
 
-> 58 nodes
+> 66 nodes
 
 ## Key Concepts
 
-- **test_party_service.py** (38 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_party_post_init_includes_leader_in_members()** (3 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_party_post_init_preserves_other_members()** (3 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_create_party_success()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_create_party_already_in_party_rejected()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_add_member_success()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_add_member_already_in_party_rejected()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_add_member_no_such_party()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_request_party_invite_creates_pending()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_accept_party_invite_success()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_decline_party_invite_success()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_request_party_invite_target_already_in_party_rejected()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_remove_member_leave_success()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_remove_member_leader_leaves_disbands()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_kick_member_leader_success()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_kick_member_non_leader_rejected()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_kick_self_rejected()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_disband_party_by_leader_success()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_disband_party_by_non_leader_rejected()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_disband_party_by_id_without_caller()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_get_party_for_player_not_in_party()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_get_party_members_empty_when_not_in_party()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_get_party_members_includes_self()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_is_leader_false_when_not_in_party()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_on_player_disconnect_member_removed()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- *... and 33 more nodes in this community*
+- **test_follow_service.py** (41 connections) — `server/tests/unit/game/test_follow_service.py`
+- **follow_service()** (3 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_on_player_entered_room_moves_followers()** (3 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_on_player_entered_room_move_failure_auto_unfollow()** (3 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_on_npc_entered_room_moves_followers()** (3 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_on_player_entered_room_no_from_room_id_skips_propagation()** (3 connections) — `server/tests/unit/game/test_follow_service.py`
+- **event_bus()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
+- **movement_service()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
+- **user_manager()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
+- **connection_manager()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_request_follow_self_rejected()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_request_follow_npc_immediate()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_request_follow_player_muted_auto_decline()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_request_follow_player_creates_pending()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_request_follow_already_following_rejected()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_accept_follow_success()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_decline_follow_success()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_accept_follow_invalid_request_id()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_unfollow_was_following()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_unfollow_was_not_following()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_get_followers_empty()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_get_followers_multiple()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_get_following_none()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_get_following_returns_tuple()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_get_following_display_not_following()** (2 connections) — `server/tests/unit/game/test_follow_service.py`
+- *... and 41 more nodes in this community*
 
 ## Relationships
 
-- [NATS Messaging](NATS_Messaging.md) (6 shared connections)
-- [envelope event game](envelope_event_game.md) (3 shared connections)
-- [models invite rationale](models_invite_rationale.md) (1 shared connections)
-- [persistence heal player()](persistence_heal_player%28%29.md) (1 shared connections)
+- [item models rationale](item_models_rationale.md) (7 shared connections)
+- [follow game service](follow_game_service.md) (3 shared connections)
+- [combat messaging services](combat_messaging_services.md) (3 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_party_service.py`
+- `server/tests/unit/game/test_follow_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 125 (100%)
+- EXTRACTED: 143 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

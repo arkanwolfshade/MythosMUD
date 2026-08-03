@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [combat npc mixin](combat_npc_mixin.md) (4 shared connections)
+- [combat services messaging](combat_services_messaging.md) (4 shared connections)
 
 ## Source Files
 

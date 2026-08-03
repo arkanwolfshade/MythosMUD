@@ -4,22 +4,22 @@
 
 ## Key Concepts
 
-- **._handle_game_tick_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **Handle game_tick event.** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **.save_player()** (3 connections) — `server/game/magic/spell_effect_types.py`
+- **Persist player after spell mutations.** (1 connections) — `server/game/magic/spell_effect_types.py`
 
 ## Relationships
 
-- [handler realtime nats](handler_realtime_nats.md) (1 shared connections)
-- [persistence services combat](persistence_services_combat.md) (1 shared connections)
+- [spell game magic](spell_game_magic.md) (1 shared connections)
+- [quest game service](quest_game_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/nats_message_handler_subscriptions.py`
+- `server/game/magic/spell_effect_types.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

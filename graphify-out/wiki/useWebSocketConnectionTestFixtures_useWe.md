@@ -1,57 +1,53 @@
 # useWebSocketConnectionTestFixtures useWe
 
-> 29 nodes
+> 36 nodes
 
 ## Key Concepts
 
-- **useWebSocketConnection.ts** (18 connections) — `client/src/hooks/useWebSocketConnection.ts`
-- **useWebSocketConnectionTestFixtures.ts** (12 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
-- **MockWebSocket** (12 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
-- **useWebSocketConnection()** (12 connections) — `client/src/hooks/useWebSocketConnection.ts`
-- **useWebSocketConnection.pingHeartbeat.test.ts** (11 connections) — `client/src/hooks/__tests__/useWebSocketConnection.pingHeartbeat.test.ts`
-- **useWebSocketConnection.connection.test.ts** (8 connections) — `client/src/hooks/__tests__/useWebSocketConnection.connection.test.ts`
-- **useWebSocketConnection.errorHandling.test.ts** (8 connections) — `client/src/hooks/__tests__/useWebSocketConnection.errorHandling.test.ts`
-- **useWebSocketConnection.callbacks.test.ts** (7 connections) — `client/src/hooks/__tests__/useWebSocketConnection.callbacks.test.ts`
-- **useWebSocketConnection.cleanup.test.ts** (7 connections) — `client/src/hooks/__tests__/useWebSocketConnection.cleanup.test.ts`
-- **useWebSocketConnection.messageHandling.test.ts** (7 connections) — `client/src/hooks/__tests__/useWebSocketConnection.messageHandling.test.ts`
-- **wsTestState** (7 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
-- **defaultOptions** (7 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
-- **wsConnectionBeforeEach()** (7 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
-- **wsConnectionAfterEach()** (7 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
-- **ThrowingWebSocket** (2 connections) — `client/src/hooks/__tests__/useWebSocketConnection.errorHandling.test.ts`
-- **connectOpenAndRunPingInterval()** (2 connections) — `client/src/hooks/__tests__/useWebSocketConnection.pingHeartbeat.test.ts`
-- **.constructor()** (1 connections) — `client/src/hooks/__tests__/useWebSocketConnection.errorHandling.test.ts`
-- **{ mockResourceManager, fetchSpy, mockedSetInterval, mockedClearInterval }** (1 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
-- **.constructor()** (1 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
-- **.send()** (1 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
-- **.close()** (1 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
-- **.simulateOpen()** (1 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
-- **.simulateMessage()** (1 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
-- **.simulateError()** (1 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
-- **.simulateClose()** (1 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
-- *... and 4 more nodes in this community*
+- **test_auth_dependencies.py** (24 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
+- **require_invite_code()** (11 connections) — `server/auth/dependencies.py`
+- **get_current_verified_user()** (8 connections) — `server/auth/dependencies.py`
+- **get_optional_current_user()** (6 connections) — `server/auth/dependencies.py`
+- **test_get_current_superuser_failure()** (5 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
+- **test_get_current_verified_user_failure()** (5 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
+- **test_get_current_superuser_with_none_user()** (5 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
+- **test_get_current_verified_user_with_none_user()** (5 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
+- **test_get_current_superuser_success()** (4 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
+- **test_get_current_verified_user_success()** (4 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
+- **test_require_invite_code_invalid()** (4 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
+- **test_require_invite_code_logged_http_exception()** (4 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
+- **test_require_invite_code_generic_exception()** (4 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
+- **test_get_optional_current_user_with_user()** (4 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
+- **test_require_invite_code_none()** (4 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
+- **test_require_invite_code_success()** (3 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
+- **test_get_optional_current_user_none()** (3 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
+- **test_require_invite_code_with_request()** (3 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
+- **Get current verified user or raise 403.** (1 connections) — `server/auth/dependencies.py`
+- **Validate invite code for registration.** (1 connections) — `server/auth/dependencies.py`
+- **Get current user if authenticated, otherwise None.** (1 connections) — `server/auth/dependencies.py`
+- **Unit tests for authentication dependencies.** (1 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
+- **Test getting current superuser when user is superuser.** (1 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
+- **Test getting current superuser when user is not superuser.** (1 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
+- **Test getting current verified user when user is verified.** (1 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
-- [roomHandlers eventHandlers calculateOccu](roomHandlers_eventHandlers_calculateOccu.md) (8 shared connections)
-- [mythosApp security submitAuth](mythosApp_security_submitAuth.md) (4 shared connections)
-- [resourceCleanup clientMetricsCollector u](resourceCleanup_clientMetricsCollector_u.md) (3 shared connections)
+- [Exception Containers](Exception_Containers.md) (11 shared connections)
+- [ascii map renderer](ascii_map_renderer.md) (10 shared connections)
+- [auth users rationale](auth_users_rationale.md) (9 shared connections)
+- [Database Config](Database_Config.md) (1 shared connections)
+- [logging file setup](logging_file_setup.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/hooks/__tests__/useWebSocketConnection.callbacks.test.ts`
-- `client/src/hooks/__tests__/useWebSocketConnection.cleanup.test.ts`
-- `client/src/hooks/__tests__/useWebSocketConnection.connection.test.ts`
-- `client/src/hooks/__tests__/useWebSocketConnection.errorHandling.test.ts`
-- `client/src/hooks/__tests__/useWebSocketConnection.messageHandling.test.ts`
-- `client/src/hooks/__tests__/useWebSocketConnection.pingHeartbeat.test.ts`
-- `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
-- `client/src/hooks/useWebSocketConnection.ts`
+- `server/auth/dependencies.py`
+- `server/tests/unit/auth/test_auth_dependencies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 146 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 116 (94%)
+- INFERRED: 8 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

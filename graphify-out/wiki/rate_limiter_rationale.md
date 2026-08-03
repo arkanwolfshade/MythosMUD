@@ -1,45 +1,53 @@
 # rate limiter rationale
 
-> 20 nodes
+> 28 nodes
 
 ## Key Concepts
 
-- **_format_npc_description()** (15 connections) — `server/commands/look_npc.py`
-- **test_format_npc_description_success()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_format_npc_description_fallback_long_description()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_format_npc_description_fallback_short_description()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_format_npc_description_fallback_desc()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_format_npc_description_no_description()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_format_npc_description_empty_string()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_format_npc_description()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_format_npc_description_fallback()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_format_npc_description_no_description()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **Format NPC description with fallback.** (1 connections) — `server/commands/look_npc.py`
-- **Test formatting NPC description successfully.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test formatting NPC description with long_description fallback.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test formatting NPC description with short_description fallback.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test formatting NPC description with desc fallback.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test formatting NPC description when no description available.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test formatting NPC description when description is empty string.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test _format_npc_description() returns description from definition.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **Test _format_npc_description() uses fallback when description is empty.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **Test _format_npc_description() uses alternative attributes.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **WearableContainerServiceError** (22 connections) — `server/services/wearable_container_service.py`
+- **test_handle_equip_wearable_container_capacity_exceeded()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_add_items_to_wearable_container_not_found()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_add_items_to_wearable_container_capacity_exceeded()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_handle_container_overflow_player_not_found()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_handle_equip_wearable_container_creation_error()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_add_items_to_wearable_container_wrong_player()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_add_items_to_wearable_container_wrong_source_type()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_add_items_to_wearable_container_update_fails()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_update_wearable_container_items_not_found()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_update_wearable_container_items_capacity_exceeded()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_update_wearable_container_items_update_fails()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_update_wearable_container_items_wrong_player()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_update_wearable_container_items_wrong_source_type()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Base exception for wearable container service operations.** (1 connections) — `server/services/wearable_container_service.py`
+- **Test handle_equip_wearable_container raises error when capacity exceeded.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test add_items_to_wearable_container raises error when container not found.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test add_items_to_wearable_container raises error when capacity exceeded.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test handle_container_overflow raises error when player not found.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test handle_equip_wearable_container handles container creation error.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test add_items_to_wearable_container raises error when container belongs to diff** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test add_items_to_wearable_container raises error when container is not equipmen** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test add_items_to_wearable_container raises error when update fails.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test update_wearable_container_items raises error when container not found.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test update_wearable_container_items raises error when capacity exceeded.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [npc look commands](npc_look_commands.md) (10 shared connections)
-- [follow service game](follow_service_game.md) (4 shared connections)
+- [wearable container service](wearable_container_service.md) (14 shared connections)
+- [schedule services service](schedule_services_service.md) (4 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
+- [container helpers endpoints](container_helpers_endpoints.md) (1 shared connections)
+- [Database Config](Database_Config.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/look_npc.py`
-- `server/tests/unit/commands/test_look_npc.py`
-- `server/tests/unit/commands/test_look_npc_helpers.py`
+- `server/services/wearable_container_service.py`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 52 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 45 (60%)
+- INFERRED: 30 (40%)
 - AMBIGUOUS: 0 (0%)
 
 ---

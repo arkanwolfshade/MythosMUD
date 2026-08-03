@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_subscribe_to_subzone_already_subscribed()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test subscribe_to_subzone increments count when already subscribed.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_get_remaining_messages_error_handling()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **Test get_remaining_messages handles errors gracefully.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
 
 ## Relationships
 
-- [nats message handler](nats_message_handler.md) (1 shared connections)
+- [rate limiter services](rate_limiter_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/tests/unit/services/test_rate_limiter.py`
 
 ## Audit Trail
 

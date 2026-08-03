@@ -1,45 +1,54 @@
 # commands recovery lucidity
 
-> 16 nodes
+> 58 nodes
 
 ## Key Concepts
 
-- **OccupantFormatter** (37 connections) — `server/realtime/occupant_formatter.py`
-- **.__init__()** (3 connections) — `server/realtime/occupant_formatter.py`
-- **test_occupant_formatter_is_valid_name_for_occupant_empty()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_add_valid_name_to_lists()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_process_player_name_for_update_uuid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_process_npc_name_for_update_uuid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_process_dict_occupant_for_update_npc()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_separate_occupants_by_type_dict_players()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Formats and separates occupants by type.** (1 connections) — `server/realtime/occupant_formatter.py`
-- **Initialize occupant formatter.** (1 connections) — `server/realtime/occupant_formatter.py`
-- **Test OccupantFormatter._is_valid_name_for_occupant() returns False for empty str** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter._add_valid_name_to_lists() adds name to both lists.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter._process_player_name_for_update() skips UUID player name.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter._process_npc_name_for_update() skips UUID NPC name.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter._process_dict_occupant_for_update() processes NPC dict.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter.separate_occupants_by_type() separates dict players.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **validate_room_data()** (16 connections) — `server/world_loader.py`
+- **get_room_environment()** (13 connections) — `server/world_loader.py`
+- **TestGetRoomEnvironment** (12 connections) — `server/tests/unit/test_world_loader.py`
+- **TestValidateRoomData** (11 connections) — `server/tests/unit/test_world_loader.py`
+- **test_world_loader.py** (10 connections) — `server/tests/unit/test_world_loader.py`
+- **generate_room_id()** (9 connections) — `server/world_loader.py`
+- **TestGenerateRoomId** (7 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_validate_room_data_strict_validation_raises()** (4 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_validate_room_data_validation_exception_strict()** (4 connections) — `server/tests/unit/test_world_loader.py`
+- **Any** (4 connections)
+- **.test_generate_room_id_basic()** (3 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_generate_room_id_with_underscores()** (3 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_generate_room_id_empty_components()** (3 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_generate_room_id_special_characters()** (3 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_get_room_environment_from_room_data()** (3 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_get_room_environment_from_subzone()** (3 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_get_room_environment_from_zone()** (3 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_get_room_environment_default()** (3 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_get_room_environment_room_takes_priority()** (3 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_get_room_environment_subzone_takes_priority_over_zone()** (3 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_get_room_environment_subzone_none()** (3 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_get_room_environment_zone_none()** (3 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_get_room_environment_empty_string_in_room_data()** (3 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_validate_room_data_validation_not_available()** (3 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_validate_room_data_with_validator()** (3 connections) — `server/tests/unit/test_world_loader.py`
+- *... and 33 more nodes in this community*
 
 ## Relationships
 
-- [occupant formatter realtime](occupant_formatter_realtime.md) (17 shared connections)
-- [occupant realtime formatter](occupant_realtime_formatter.md) (6 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (5 shared connections)
-- [skill game service](skill_game_service.md) (3 shared connections)
-- [infrastructure persistence room](infrastructure_persistence_room.md) (3 shared connections)
-- [room infrastructure persistence](room_infrastructure_persistence.md) (1 shared connections)
-- [infrastructure persistence core](infrastructure_persistence_core.md) (1 shared connections)
+- [command inventory models](command_inventory_models.md) (9 shared connections)
+- [command inventory factories](command_inventory_factories.md) (5 shared connections)
+- [commands admin mute](commands_admin_mute.md) (3 shared connections)
+- [Database Config](Database_Config.md) (1 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (1 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/occupant_formatter.py`
-- `server/tests/unit/realtime/test_occupant_formatter.py`
+- `server/tests/unit/test_world_loader.py`
+- `server/world_loader.py`
 
 ## Audit Trail
 
-- EXTRACTED: 65 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 168 (94%)
+- INFERRED: 10 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

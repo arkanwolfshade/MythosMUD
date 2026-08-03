@@ -4,16 +4,17 @@
 
 ## Key Concepts
 
-- **test_handle_admin_set_stat_command_dp_above_maximum()** (3 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **Test DP above maximum (warn but allow).** (1 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
+- **test_handle_alias_command_update_existing()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **Test handle_alias_command updating existing alias.** (1 connections) — `server/tests/unit/commands/test_alias_commands.py`
 
 ## Relationships
 
-- [admin command setstat](admin_command_setstat.md) (2 shared connections)
+- [commands alias rationale](commands_alias_rationale.md) (1 shared connections)
+- [scripts worktree ops](scripts_worktree_ops.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_admin_setstat_command.py`
+- `server/tests/unit/commands/test_alias_commands.py`
 
 ## Audit Trail
 

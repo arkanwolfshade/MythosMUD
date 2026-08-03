@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_track_player_subzone_subscription()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test track_player_subzone_subscription tracks subscription.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_rate_limit_different_players()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **Test rate limiting is per-player.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
 
 ## Relationships
 
-- [nats message handler](nats_message_handler.md) (1 shared connections)
+- [rate limiter services](rate_limiter_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/tests/unit/services/test_rate_limiter.py`
 
 ## Audit Trail
 

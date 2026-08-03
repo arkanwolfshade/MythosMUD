@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_transition_to_updates_state()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **Test _transition_to() updates state.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_active_lucidity_service_init_with_now_provider()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **Test ActiveLucidityService initialization with custom now_provider.** (1 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
 
 ## Relationships
 
-- [message broadcaster realtime](message_broadcaster_realtime.md) (1 shared connections)
-- [circuit breaker realtime](circuit_breaker_realtime.md) (1 shared connections)
+- [commands admin mute](commands_admin_mute.md) (1 shared connections)
+- [lucidity active service](lucidity_active_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_circuit_breaker.py`
+- `server/tests/unit/services/test_active_lucidity_service.py`
 
 ## Audit Trail
 

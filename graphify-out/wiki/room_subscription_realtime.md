@@ -33,8 +33,7 @@
 
 ## Relationships
 
-- [room realtime subscription](room_realtime_subscription.md) (2 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (1 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (3 shared connections)
 
 ## Source Files
 

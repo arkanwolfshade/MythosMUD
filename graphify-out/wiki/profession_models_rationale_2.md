@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_profession_set_stat_requirements_empty_dict()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **Test set_stat_requirements handles empty dict.** (1 connections) — `server/tests/unit/models/test_profession.py`
+- **test_comprehensive_sanitize_input_removes_zero_width_chars()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Test that comprehensive sanitization removes zero-width characters.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
 
 ## Relationships
 
-- [models profession available](models_profession_available.md) (1 shared connections)
-- [profession models rationale](profession_models_rationale.md) (1 shared connections)
+- [Security Validator Tests](Security_Validator_Tests.md) (1 shared connections)
+- [command communication models](command_communication_models.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/models/test_profession.py`
+- `server/tests/unit/validators/test_security_validator.py`
 
 ## Audit Trail
 

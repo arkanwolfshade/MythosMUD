@@ -22,7 +22,7 @@ from server.utils.error_logging import log_and_raise
 logger = get_logger(__name__)
 
 
-class _DialogueRow(Protocol):
+class _DialogueRow(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
     """Shape of dialogue procedure result rows (attribute access via mappings)."""
 
     id: str | None

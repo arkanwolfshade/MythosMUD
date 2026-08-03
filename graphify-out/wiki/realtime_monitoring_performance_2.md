@@ -1,24 +1,24 @@
 # realtime monitoring performance
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **.get_stats()** (3 connections) — `server/realtime/monitoring/performance_tracker.py`
-- **Any** (1 connections)
-- **Get comprehensive performance statistics with calculated averages.          Retu** (1 connections) — `server/realtime/monitoring/performance_tracker.py`
+- **test_profession_get_mechanical_effects_valid_json()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **Test get_mechanical_effects returns dict for valid JSON.** (1 connections) — `server/tests/unit/models/test_profession.py`
 
 ## Relationships
 
-- [NATS Messaging](NATS_Messaging.md) (1 shared connections)
+- [persistence core infrastructure](persistence_core_infrastructure.md) (1 shared connections)
+- [profession models rationale](profession_models_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/monitoring/performance_tracker.py`
+- `server/tests/unit/models/test_profession.py`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

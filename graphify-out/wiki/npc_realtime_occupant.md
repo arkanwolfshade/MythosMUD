@@ -1,49 +1,41 @@
 # npc realtime occupant
 
-> 27 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **NPCOccupantProcessor** (18 connections) — `server/realtime/npc_occupant_processor.py`
-- **Any** (11 connections)
-- **.query_npcs_for_room()** (6 connections) — `server/realtime/npc_occupant_processor.py`
-- **.__init__()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._get_npc_lifecycle_manager()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._validate_npc_room_tracking()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._should_include_npc_in_room()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._scan_active_npcs_for_room()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._get_lifecycle_manager_for_filtering()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._filter_fallback_npcs()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._get_fallback_npcs()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._get_npc_room_id()** (4 connections) — `server/realtime/npc_occupant_processor.py`
-- **._filter_single_fallback_npc()** (4 connections) — `server/realtime/npc_occupant_processor.py`
-- **.process_npcs_for_occupants()** (3 connections) — `server/realtime/npc_occupant_processor.py`
-- **Processes NPC occupants for rooms.** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Initialize NPC occupant processor.          Args:             connection_manager** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Get and validate NPC lifecycle manager.          Args:             room_id: The** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Get NPC's current room ID from instance.          Args:             npc_instance** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Validate NPC has room tracking and get room ID.          Args:             npc_i** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Determine if NPC should be included in room query results.          Args:** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Scan active NPCs to find those in the target room.          Args:             ac** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Query NPCs for a room from lifecycle manager.          Args:             room_id** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Get lifecycle manager for filtering fallback NPCs.          Returns:** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Check if a single fallback NPC should be included.          Args:             np** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Filter fallback NPCs to only include those in active_npcs and alive.          Ar** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- *... and 2 more nodes in this community*
+- **get_player_service_for_testing()** (9 connections) — `server/dependencies.py`
+- **TestGetPlayerServiceForTesting** (7 connections) — `server/tests/unit/test_dependency_injection.py`
+- **TestGetPlayerServiceForTesting** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_player_service_for_testing_creates_mock()** (4 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_player_service_for_testing_with_injection()** (4 connections) — `server/tests/unit/test_dependency_injection.py`
+- **.test_get_player_service_for_testing_without_injection()** (4 connections) — `server/tests/unit/test_dependency_injection.py`
+- **.test_get_player_service_for_testing_with_provided_service()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Get a PlayerService instance for testing purposes.      This function allows tes** (1 connections) — `server/dependencies.py`
+- **Tests for get_player_service_for_testing helper function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_player_service_for_testing returns provided service.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_player_service_for_testing creates PlayerService when None provided.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_player_service_for_testing() function.** (1 connections) — `server/tests/unit/test_dependency_injection.py`
+- **Test get_player_service_for_testing() with injected service.** (1 connections) — `server/tests/unit/test_dependency_injection.py`
+- **Test get_player_service_for_testing() creates mock when None.** (1 connections) — `server/tests/unit/test_dependency_injection.py`
 
 ## Relationships
 
-- [NATS Messaging](NATS_Messaging.md) (7 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (2 shared connections)
+- [command inventory models](command_inventory_models.md) (6 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (5 shared connections)
+- [room game service](room_game_service.md) (1 shared connections)
+- [profession game service](profession_game_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/npc_occupant_processor.py`
+- `server/dependencies.py`
+- `server/tests/unit/infrastructure/test_dependencies.py`
+- `server/tests/unit/test_dependency_injection.py`
 
 ## Audit Trail
 
-- EXTRACTED: 97 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 36 (84%)
+- INFERRED: 7 (16%)
 - AMBIGUOUS: 0 (0%)
 
 ---

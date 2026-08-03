@@ -20,7 +20,8 @@
 
 ## Relationships
 
-- [NATS Messaging](NATS_Messaging.md) (2 shared connections)
+- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (1 shared connections)
 
 ## Source Files
 

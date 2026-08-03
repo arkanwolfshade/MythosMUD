@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_parse_behavior_config_string()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **Test _parse_behavior_config() with JSON string.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_add_alias_updates_existing()** (3 connections) — `server/tests/unit/test_alias_storage.py`
+- **Test add_alias updates existing alias.** (1 connections) — `server/tests/unit/test_alias_storage.py`
 
 ## Relationships
 
-- [npc event handlers](npc_event_handlers.md) (1 shared connections)
+- [alias models rationale](alias_models_rationale.md) (1 shared connections)
+- [alias storage rationale](alias_storage_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_npc_event_handlers.py`
+- `server/tests/unit/test_alias_storage.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

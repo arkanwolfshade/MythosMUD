@@ -1,43 +1,29 @@
 # tools generate invite
 
-> 18 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **generate_invites_db.py** (14 connections) — `tools/invite_tools/generate_invites_db.py`
-- **main()** (7 connections) — `tools/invite_tools/generate_invites_db.py`
-- **normalize_database_url()** (6 connections) — `server/database_config_helpers.py`
-- **create_invite_in_db()** (6 connections) — `tools/invite_tools/generate_invites_db.py`
-- **_set_database_url_from_env()** (5 connections) — `tools/invite_tools/generate_invites_db.py`
-- **parse_expires_date()** (4 connections) — `tools/invite_tools/generate_invites_db.py`
-- **generate_unique_codes()** (4 connections) — `tools/invite_tools/generate_invites_db.py`
-- **get_existing_codes()** (4 connections) — `tools/invite_tools/generate_invites_db.py`
-- **datetime** (3 connections)
-- **generate_invite_code()** (3 connections) — `tools/invite_tools/generate_invites_db.py`
-- **Normalize database URL for asyncpg.      Args:         database_url: Original da** (1 connections) — `server/database_config_helpers.py`
-- **Parse YYYY-MM-DD to end-of-day UTC (naive). Invite valid through that date.** (1 connections) — `tools/invite_tools/generate_invites_db.py`
-- **Generate a unique Mythos-themed invite code.** (1 connections) — `tools/invite_tools/generate_invites_db.py`
-- **Generate a list of unique invite codes.** (1 connections) — `tools/invite_tools/generate_invites_db.py`
-- **Get existing invite codes from the database.** (1 connections) — `tools/invite_tools/generate_invites_db.py`
-- **Create an invite in the database.** (1 connections) — `tools/invite_tools/generate_invites_db.py`
-- **Use DATABASE_URL so scripts can run without full AppConfig.** (1 connections) — `tools/invite_tools/generate_invites_db.py`
-- **Generate invite codes and store them in the database.** (1 connections) — `tools/invite_tools/generate_invites_db.py`
+- **TestGetAsyncPersistence** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_async_persistence_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_async_persistence_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Tests for get_async_persistence dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_async_persistence returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_async_persistence raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Relationships
 
-- [Database Access Layer](Database_Access_Layer.md) (6 shared connections)
-- [Database Config](Database_Config.md) (3 shared connections)
-- [auth users rationale](auth_users_rationale.md) (3 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (3 shared connections)
+- [command inventory models](command_inventory_models.md) (1 shared connections)
 
 ## Source Files
 
-- `server/database_config_helpers.py`
-- `tools/invite_tools/generate_invites_db.py`
+- `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 64 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 13 (93%)
+- INFERRED: 1 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

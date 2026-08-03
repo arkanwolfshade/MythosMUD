@@ -1,64 +1,43 @@
 # taunt combat commands
 
-> 28 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **gameStore.ts** (35 connections) — `client/src/stores/gameStore.ts`
-- **ChatPanel.tsx** (9 connections) — `client/src/components/panels/ChatPanel.tsx`
-- **chat-panel.spec.tsx** (9 connections) — `client/src/components/panels/__tests__/chat-panel.spec.tsx`
-- **ChatMessage** (9 connections) — `client/src/stores/gameStore.ts`
-- **ChatPanel.test.tsx** (7 connections) — `client/src/components/__tests__/ChatPanel.test.tsx`
-- **chat-panel.test.tsx** (7 connections) — `client/src/components/panels/__tests__/chat-panel.test.tsx`
-- **ChatPanel.edgeCases.test.tsx** (6 connections) — `client/src/components/__tests__/ChatPanel.edgeCases.test.tsx`
-- **chatPanelTestHelpers.ts** (5 connections) — `client/src/components/__tests__/chatPanelTestHelpers.ts`
-- **GameTerminal.test.tsx** (4 connections) — `client/src/components/__tests__/GameTerminal.test.tsx`
-- **createChatPanelDefaultProps()** (3 connections) — `client/src/components/__tests__/chatPanelTestHelpers.ts`
-- **chatPanelTestSetup.tsx** (3 connections) — `client/src/components/__tests__/chatPanelTestSetup.tsx`
-- **mockConsoleLog** (3 connections) — `client/src/components/__tests__/chatPanelTestSetup.tsx`
-- **mockMessages** (2 connections) — `client/src/components/__tests__/chatPanelTestHelpers.ts`
-- **Player** (2 connections) — `client/src/stores/gameStore.ts`
-- **ChatPanelTestMessage** (1 connections) — `client/src/components/__tests__/chatPanelTestHelpers.ts`
-- **TerminalButtonProps** (1 connections) — `client/src/components/panels/__tests__/chat-panel.spec.tsx`
-- **TerminalInputProps** (1 connections) — `client/src/components/panels/__tests__/chat-panel.spec.tsx`
-- **Channel** (1 connections) — `client/src/components/panels/__tests__/chat-panel.spec.tsx`
-- **ChannelSelectorProps** (1 connections) — `client/src/components/panels/__tests__/chat-panel.spec.tsx`
-- **TerminalButtonProps** (1 connections) — `client/src/components/panels/__tests__/chat-panel.test.tsx`
-- **Channel** (1 connections) — `client/src/components/panels/__tests__/chat-panel.test.tsx`
-- **ChannelSelectorProps** (1 connections) — `client/src/components/panels/__tests__/chat-panel.test.tsx`
-- **GameLogEntry** (1 connections) — `client/src/stores/gameStore.ts`
-- **GameState** (1 connections) — `client/src/stores/gameStore.ts`
-- **GameActions** (1 connections) — `client/src/stores/gameStore.ts`
-- *... and 3 more nodes in this community*
+- **.get_player_aliases()** (8 connections) — `server/alias_storage.py`
+- **.save_player_aliases()** (7 connections) — `server/alias_storage.py`
+- **.create_alias()** (7 connections) — `server/alias_storage.py`
+- **.add_alias()** (6 connections) — `server/alias_storage.py`
+- **.remove_alias()** (4 connections) — `server/alias_storage.py`
+- **.get_alias()** (4 connections) — `server/alias_storage.py`
+- **.get_alias_count()** (4 connections) — `server/alias_storage.py`
+- **.clear_aliases()** (3 connections) — `server/alias_storage.py`
+- **.validate_alias_name()** (3 connections) — `server/alias_storage.py`
+- **.validate_alias_command()** (3 connections) — `server/alias_storage.py`
+- **Get all aliases for a player.** (1 connections) — `server/alias_storage.py`
+- **Save aliases for a player.** (1 connections) — `server/alias_storage.py`
+- **Add or update an alias for a player.** (1 connections) — `server/alias_storage.py`
+- **Remove an alias for a player.** (1 connections) — `server/alias_storage.py`
+- **Get a specific alias for a player.** (1 connections) — `server/alias_storage.py`
+- **Clear all aliases for a player.** (1 connections) — `server/alias_storage.py`
+- **Get the number of aliases for a player.** (1 connections) — `server/alias_storage.py`
+- **Validate alias name format.** (1 connections) — `server/alias_storage.py`
+- **Validate alias command.** (1 connections) — `server/alias_storage.py`
+- **Create and save a new alias for a player.** (1 connections) — `server/alias_storage.py`
 
 ## Relationships
 
-- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (10 shared connections)
-- [game terminal lucidity](game_terminal_lucidity.md) (6 shared connections)
-- [panels chatPanelRuntimeUtils chatPanelEx](panels_chatPanelRuntimeUtils_chatPanelEx.md) (5 shared connections)
-- [stores connectionStore commandStore](stores_connectionStore_commandStore.md) (5 shared connections)
-- [containers stores containerStore](containers_stores_containerStore.md) (5 shared connections)
-- [panels GameClientV2Dock gameLogPanelUtil](panels_GameClientV2Dock_gameLogPanelUtil.md) (4 shared connections)
-- [panels chat ChatPanelRuntimeViewParts](panels_chat_ChatPanelRuntimeViewParts.md) (2 shared connections)
-- [RoomEditModal map buildInitialFormData()](RoomEditModal_map_buildInitialFormData%28%29.md) (2 shared connections)
-- [panels chatPanelRefactoredDerived ChatPa](panels_chatPanelRefactoredDerived_ChatPa.md) (2 shared connections)
-- [performanceTester performance ExtendedPe](performanceTester_performance_ExtendedPe.md) (1 shared connections)
+- [commands admin mute](commands_admin_mute.md) (10 shared connections)
+- [alias models rationale](alias_models_rationale.md) (5 shared connections)
+- [services admin auth](services_admin_auth.md) (2 shared connections)
 
 ## Source Files
 
-- `client/src/components/__tests__/ChatPanel.edgeCases.test.tsx`
-- `client/src/components/__tests__/ChatPanel.test.tsx`
-- `client/src/components/__tests__/GameTerminal.test.tsx`
-- `client/src/components/__tests__/chatPanelTestHelpers.ts`
-- `client/src/components/__tests__/chatPanelTestSetup.tsx`
-- `client/src/components/panels/ChatPanel.tsx`
-- `client/src/components/panels/__tests__/chat-panel.spec.tsx`
-- `client/src/components/panels/__tests__/chat-panel.test.tsx`
-- `client/src/stores/gameStore.ts`
+- `server/alias_storage.py`
 
 ## Audit Trail
 
-- EXTRACTED: 118 (100%)
+- EXTRACTED: 59 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

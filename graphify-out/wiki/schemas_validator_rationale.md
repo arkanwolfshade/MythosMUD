@@ -1,13 +1,9 @@
 # schemas validator rationale
 
-> 32 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **SchemaValidator** (27 connections) — `schemas/validator.py`
-- **create_validator()** (10 connections) — `schemas/validator.py`
-- **schema_validator.py** (8 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
-- **validator.py** (7 connections) — `schemas/validator.py`
 - **Any** (7 connections)
 - **.validate_data()** (6 connections) — `schemas/validator.py`
 - **.validate_room()** (6 connections) — `schemas/validator.py`
@@ -20,35 +16,29 @@
 - **Path** (3 connections)
 - **.get_exit_target()** (3 connections) — `schemas/validator.py`
 - **.get_exit_flags()** (3 connections) — `schemas/validator.py`
-- **.is_room_id_valid()** (2 connections) — `schemas/validator.py`
-- **Shared schema validator for room definition files.  This module provides JSON sc** (1 connections) — `schemas/validator.py`
-- **Validates room definitions against JSON schema.      This validator can be used** (1 connections) — `schemas/validator.py`
 - **Initialize the schema validator.          Args:             schema_path: Path to** (1 connections) — `schemas/validator.py`
 - **Load and cache the JSON schema.** (1 connections) — `schemas/validator.py`
 - **Validate a JSON document against the loaded schema.          Args:             d** (1 connections) — `schemas/validator.py`
 - **Validate a single room against the schema.          Args:             room_data:** (1 connections) — `schemas/validator.py`
 - **Validate a room file against the schema.          Args:             file_path: P** (1 connections) — `schemas/validator.py`
 - **Validate all rooms in a database against the schema.          Args:** (1 connections) — `schemas/validator.py`
-- *... and 7 more nodes in this community*
+- **Validate a serialized alias bundle against the alias schema.          Args:** (1 connections) — `schemas/validator.py`
+- **Validate emote definition data against the emote schema.          Args:** (1 connections) — `schemas/validator.py`
+- **Extract target room ID from exit data, handling both formats.          Args:** (1 connections) — `schemas/validator.py`
+- **Extract flags from exit data, handling both formats.          Args:** (1 connections) — `schemas/validator.py`
 
 ## Relationships
 
-- [command inventory factories](command_inventory_factories.md) (9 shared connections)
-- [room validator toolkit](room_validator_toolkit.md) (6 shared connections)
-- [emote game service](emote_game_service.md) (5 shared connections)
-- [commands alias rationale](commands_alias_rationale.md) (4 shared connections)
-- [alias storage rationale](alias_storage_rationale.md) (1 shared connections)
-- [room hierarchical schema](room_hierarchical_schema.md) (1 shared connections)
+- [commands admin mute](commands_admin_mute.md) (11 shared connections)
 
 ## Source Files
 
 - `schemas/validator.py`
-- `tools/room_toolkit/room_validator/core/schema_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 111 (92%)
-- INFERRED: 9 (8%)
+- EXTRACTED: 61 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

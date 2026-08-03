@@ -1,5 +1,7 @@
 """Admin dialogue definition schemas (#583)."""
 
+# pylint: disable=too-few-public-methods  # Reason: Pydantic DTOs; fields are the API surface
+
 from __future__ import annotations
 
 from datetime import datetime

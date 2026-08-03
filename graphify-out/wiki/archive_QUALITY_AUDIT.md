@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_process_validated_command_success()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
-- **Test process_validated_command successfully routes to handler.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_handle_stop_command_success()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Test stop command success.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
 
 ## Relationships
 
-- [command service commands](command_service_commands.md) (1 shared connections)
+- [commands magic rationale](commands_magic_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_service.py`
+- `server/tests/unit/commands/test_magic_commands.py`
 
 ## Audit Trail
 

@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **test_validate_combat_command_target_too_long()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test validate_combat_command with target name too long.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_validate_combat_command_rate_limited()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **Test validate_combat_command when rate limited.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
 
 ## Relationships
 

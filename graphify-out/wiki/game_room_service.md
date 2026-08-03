@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_evaluate_inequality_false()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test _evaluate_inequality() returns False for matching condition.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_run_improvement_rolls_previous_level_under_1_no_op()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
+- **run_improvement_rolls with new_level 1 does nothing (previous level 0).** (1 connections) — `server/tests/unit/game/test_skill_service.py`
 
 ## Relationships
 
-- [npc behavior engine](npc_behavior_engine.md) (1 shared connections)
-- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
+- [skill service game](skill_service_game.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_behavior_engine.py`
+- `server/tests/unit/game/test_skill_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [command inventory factories](command_inventory_factories.md) (4 shared connections)
+- [command inventory models](command_inventory_models.md) (4 shared connections)
 
 ## Source Files
 

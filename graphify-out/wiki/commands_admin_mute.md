@@ -1,60 +1,78 @@
 # commands admin mute
 
-> 105 nodes
+> 595 nodes
 
 ## Key Concepts
 
+- **AliasStorage** (231 connections) — `server/alias_storage.py`
+- **command_service.py** (95 connections) — `server/commands/command_service.py`
+- **alias_storage.py** (67 connections) — `server/alias_storage.py`
+- **admin_teleport_commands.py** (38 connections) — `server/commands/admin_teleport_commands.py`
 - **test_admin_commands.py** (37 connections) — `server/tests/unit/commands/test_admin_commands.py`
+- **admin_summon_command.py** (34 connections) — `server/commands/admin_summon_command.py`
+- **MagicCommandHandler** (34 connections) — `server/commands/magic_commands.py`
+- **test_lucidity_recovery_commands.py** (34 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
 - **admin_commands.py** (33 connections) — `server/commands/admin_commands.py`
+- **__init__.py** (29 connections) — `server/commands/__init__.py`
 - **admin_mute_commands.py** (29 connections) — `server/commands/admin_mute_commands.py`
+- **admin_setlucidity_command.py** (28 connections) — `server/commands/admin_setlucidity_command.py`
+- **admin_setstat_command.py** (28 connections) — `server/commands/admin_setstat_command.py`
+- **SchemaValidator** (27 connections) — `schemas/validator.py`
+- **magic_commands.py** (26 connections) — `server/commands/magic_commands.py`
+- **lucidity_recovery_commands.py** (25 connections) — `server/commands/lucidity_recovery_commands.py`
+- **get_admin_actions_logger()** (25 connections) — `server/structured_logging/admin_actions_logger.py`
+- **teleport_helpers.py** (23 connections) — `server/commands/teleport_helpers.py`
+- **active_lucidity_service.py** (22 connections) — `server/services/active_lucidity_service.py`
+- **handle_pray_command()** (21 connections) — `server/commands/lucidity_recovery_commands.py`
+- **goto_helpers.py** (20 connections) — `server/commands/goto_helpers.py`
+- **Any** (20 connections)
+- **ActiveLucidityService** (20 connections) — `server/services/active_lucidity_service.py`
+- **test_communication_commands_channels.py** (20 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
 - **handle_mute_command()** (19 connections) — `server/commands/admin_mute_commands.py`
-- **Any** (16 connections)
-- **handle_unmute_command()** (12 connections) — `server/commands/admin_mute_commands.py`
-- **handle_add_admin_command()** (11 connections) — `server/commands/admin_mute_commands.py`
-- **handle_mutes_command()** (11 connections) — `server/commands/admin_mute_commands.py`
-- **handle_mute_global_command()** (9 connections) — `server/commands/admin_mute_commands.py`
-- **handle_unmute_global_command()** (9 connections) — `server/commands/admin_mute_commands.py`
-- **_perform_mutes_list()** (7 connections) — `server/commands/admin_mute_commands.py`
-- **_perform_mute()** (6 connections) — `server/commands/admin_mute_commands.py`
-- **_mute_command_app()** (5 connections) — `server/commands/admin_mute_commands.py`
-- **_format_mute_line()** (5 connections) — `server/commands/admin_mute_commands.py`
-- **_collect_mute_display_lines()** (5 connections) — `server/commands/admin_mute_commands.py`
-- **_extract_mute_target()** (4 connections) — `server/commands/admin_mute_commands.py`
-- **_parse_mute_duration_minutes()** (4 connections) — `server/commands/admin_mute_commands.py`
-- **_resolve_muter_and_target_players()** (4 connections) — `server/commands/admin_mute_commands.py`
-- **_mute_success_result()** (4 connections) — `server/commands/admin_mute_commands.py`
-- **_mute_display_target()** (4 connections) — `server/commands/admin_mute_commands.py`
-- **_resolve_current_player_id_for_mutes()** (4 connections) — `server/commands/admin_mute_commands.py`
-- **test_handle_mute_command_exception()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- **_mute_duration_display()** (3 connections) — `server/commands/admin_mute_commands.py`
-- **_mutes_list_result()** (3 connections) — `server/commands/admin_mute_commands.py`
-- **test_handle_admin_command_status()** (3 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- *... and 80 more nodes in this community*
+- *... and 570 more nodes in this community*
 
 ## Relationships
 
-- [commands alias rationale](commands_alias_rationale.md) (31 shared connections)
-- [combat services turn](combat_services_turn.md) (9 shared connections)
-- [npc populate databases](npc_populate_databases.md) (7 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (5 shared connections)
-- [command helpers functions](command_helpers_functions.md) (3 shared connections)
-- [command admin setlucidity](command_admin_setlucidity.md) (2 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [admin commands setstat](admin_commands_setstat.md) (1 shared connections)
-- [admin command setstat](admin_command_setstat.md) (1 shared connections)
-- [commands admin helpers](commands_admin_helpers.md) (1 shared connections)
-- [time service rationale](time_service_rationale.md) (1 shared connections)
+- [command inventory factories](command_inventory_factories.md) (63 shared connections)
+- [Database Config](Database_Config.md) (34 shared connections)
+- [NPC Combat](NPC_Combat.md) (21 shared connections)
+- [command commands handler](command_commands_handler.md) (19 shared connections)
+- [commands npc admin](commands_npc_admin.md) (18 shared connections)
+- [admin command setstat](admin_command_setstat.md) (16 shared connections)
+- [game models player](game_models_player.md) (16 shared connections)
+- [lucidity services helpers](lucidity_services_helpers.md) (16 shared connections)
+- [command factories create](command_factories_create.md) (14 shared connections)
+- [target resolution service](target_resolution_service.md) (13 shared connections)
+- [commands inventory command](commands_inventory_command.md) (13 shared connections)
+- [rest grace period](rest_grace_period.md) (13 shared connections)
 
 ## Source Files
 
+- `schemas/validator.py`
+- `server/alias_storage.py`
+- `server/commands/__init__.py`
 - `server/commands/admin_commands.py`
 - `server/commands/admin_mute_commands.py`
-- `server/tests/unit/commands/test_admin_commands.py`
+- `server/commands/admin_permission_utils.py`
+- `server/commands/admin_setlucidity_command.py`
+- `server/commands/admin_setstat_command.py`
+- `server/commands/admin_summon_command.py`
+- `server/commands/admin_teleport_commands.py`
+- `server/commands/admin_teleport_utils.py`
+- `server/commands/command_service.py`
+- `server/commands/communication_commands.py`
+- `server/commands/exploration_commands.py`
+- `server/commands/goto_helpers.py`
+- `server/commands/help_commands.py`
+- `server/commands/lucidity_recovery_commands.py`
+- `server/commands/magic_commands.py`
+- `server/commands/position_commands.py`
+- `server/commands/skills_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 335 (87%)
-- INFERRED: 52 (13%)
+- EXTRACTED: 2779 (95%)
+- INFERRED: 133 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

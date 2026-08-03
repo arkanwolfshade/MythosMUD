@@ -29,7 +29,7 @@
 
 ## Relationships
 
-- [combat services turn](combat_services_turn.md) (2 shared connections)
+- [commands admin mute](commands_admin_mute.md) (2 shared connections)
 - [shutdown admin command](shutdown_admin_command.md) (1 shared connections)
 - [Item Instances](Item_Instances.md) (1 shared connections)
 

@@ -33,14 +33,16 @@
 
 ## Relationships
 
+- [logging structured utilities](logging_structured_utilities.md) (17 shared connections)
 - [logging handlers structured](logging_handlers_structured.md) (15 shared connections)
-- [logging structured utilities](logging_structured_utilities.md) (14 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (9 shared connections)
-- [logging file setup](logging_file_setup.md) (9 shared connections)
+- [commands follow rationale](commands_follow_rationale.md) (9 shared connections)
+- [command inventory factories](command_inventory_factories.md) (5 shared connections)
 - [windows safe rotation](windows_safe_rotation.md) (4 shared connections)
-- [logging utilities structured](logging_utilities_structured.md) (3 shared connections)
 - [player guid formatter](player_guid_formatter.md) (3 shared connections)
-- [System Metrics](System_Metrics.md) (1 shared connections)
+- [logging processors structured](logging_processors_structured.md) (2 shared connections)
+- [npc shopkeeper rationale](npc_shopkeeper_rationale.md) (1 shared connections)
+- [scripts run guard](scripts_run_guard.md) (1 shared connections)
+- [chat game message](chat_game_message.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,20 +1,14 @@
 # mythos mud mapbuilder
 
-> 66 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **deque** (25 connections)
-- **mythos_mud_mapbuilder.py** (22 connections) — `data/local/mythos_mud_mapbuilder.py`
 - **Coord** (14 connections)
 - **RoomID** (12 connections)
 - **Room** (11 connections) — `data/local/mythos_mud_mapbuilder.py`
 - **infer_coordinates()** (11 connections) — `data/local/mythos_mud_mapbuilder.py`
 - **_process_exit()** (10 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **main()** (10 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **render_with_tcod()** (8 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **build_tile_grid()** (7 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **compute_bounds()** (7 connections) — `data/local/mythos_mud_mapbuilder.py`
 - **_record_explicit_coords()** (6 connections) — `data/local/mythos_mud_mapbuilder.py`
 - **_select_start_room_if_needed()** (6 connections) — `data/local/mythos_mud_mapbuilder.py`
 - **_initialize_bfs_queue()** (6 connections) — `data/local/mythos_mud_mapbuilder.py`
@@ -22,39 +16,32 @@
 - **_handle_coordinate_conflict()** (6 connections) — `data/local/mythos_mud_mapbuilder.py`
 - **_handle_spatial_collision()** (6 connections) — `data/local/mythos_mud_mapbuilder.py`
 - **_check_disconnected_rooms()** (6 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **Any** (6 connections)
-- **render_text()** (6 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **dump_ascii_to_file()** (6 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **load_rooms_from_dir()** (5 connections) — `data/local/mythos_mud_mapbuilder.py`
 - **run_validator_on_rooms()** (5 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **_load_tileset()** (4 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **example_validator()** (4 connections) — `data/local/mythos_mud_mapbuilder.py`
-- *... and 41 more nodes in this community*
+- **Represents a room in the MUD world with its ID, exits, and metadata.** (1 connections) — `data/local/mythos_mud_mapbuilder.py`
+- **Run user-provided validator function over rooms. It should return a list     of** (1 connections) — `data/local/mythos_mud_mapbuilder.py`
+- **Record explicit coordinates from rooms.** (1 connections) — `data/local/mythos_mud_mapbuilder.py`
+- **Select start room if needed. Returns (start_room, should_early_return).** (1 connections) — `data/local/mythos_mud_mapbuilder.py`
+- **Initialize BFS queue with start room.** (1 connections) — `data/local/mythos_mud_mapbuilder.py`
+- **Handle unknown direction by keeping same coordinates.** (1 connections) — `data/local/mythos_mud_mapbuilder.py`
+- **Handle when destination already has different coordinates.** (1 connections) — `data/local/mythos_mud_mapbuilder.py`
+- **Handle when coordinate is already claimed by another room.** (1 connections) — `data/local/mythos_mud_mapbuilder.py`
+- **Process a single exit during BFS.** (1 connections) — `data/local/mythos_mud_mapbuilder.py`
+- **Check for disconnected rooms and add warning if found.** (1 connections) — `data/local/mythos_mud_mapbuilder.py`
+- **If rooms have coords already, those are used. If some rooms lack coords and** (1 connections) — `data/local/mythos_mud_mapbuilder.py`
 
 ## Relationships
 
-- [connection disconnection realtime](connection_disconnection_realtime.md) (13 shared connections)
-- [realtime monitoring statistics](realtime_monitoring_statistics.md) (3 shared connections)
-- [error monitoring scripts](error_monitoring_scripts.md) (1 shared connections)
-- [System Metrics](System_Metrics.md) (1 shared connections)
-- [event bus events](event_bus_events.md) (1 shared connections)
-- [coordinate services generator](coordinate_services_generator.md) (1 shared connections)
-- [health models rationale](health_models_rationale.md) (1 shared connections)
-- [nats services metrics](nats_services_metrics.md) (1 shared connections)
-- [command player state](command_player_state.md) (1 shared connections)
+- [player room realtime](player_room_realtime.md) (23 shared connections)
+- [message nats handler](message_nats_handler.md) (5 shared connections)
 
 ## Source Files
 
 - `data/local/mythos_mud_mapbuilder.py`
-- `server/monitoring/memory_leak_metrics.py`
-- `server/realtime/message_queue.py`
-- `server/services/nats_metrics.py`
-- `server/services/nats_subject_manager/metrics.py`
 
 ## Audit Trail
 
-- EXTRACTED: 253 (90%)
-- INFERRED: 28 (10%)
+- EXTRACTED: 116 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

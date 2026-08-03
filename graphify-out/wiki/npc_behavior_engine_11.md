@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_evaluate_condition_unknown()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test evaluate_condition() returns False for unknown condition.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **active_lucidity_service()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **Create an ActiveLucidityService instance.** (1 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
 
 ## Relationships
 
-- [npc behavior engine](npc_behavior_engine.md) (1 shared connections)
-- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
+- [commands admin mute](commands_admin_mute.md) (1 shared connections)
+- [lucidity active service](lucidity_active_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_behavior_engine.py`
+- `server/tests/unit/services/test_active_lucidity_service.py`
 
 ## Audit Trail
 

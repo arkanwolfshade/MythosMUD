@@ -4,29 +4,26 @@
 
 ## Key Concepts
 
-- **.create_goto_command()** (6 connections) — `server/utils/command_factories_utility.py`
-- **test_create_goto_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
-- **test_create_goto_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
-- **Test create_goto_command() creates GotoCommand.** (1 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
-- **Test create_goto_command() raises error with no args.** (1 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
-- **Create GotoCommand from arguments.** (1 connections) — `server/utils/command_factories_utility.py`
+- **TestGetPlayerService** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_player_service_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_player_service_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Tests for get_player_service dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_player_service returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_player_service raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Relationships
 
-- [exceptions rationale error](exceptions_rationale_error.md) (2 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [command models admin](command_models_admin.md) (1 shared connections)
-- [auth dependencies rationale](auth_dependencies_rationale.md) (1 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (3 shared connections)
+- [command inventory models](command_inventory_models.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories_utility.py`
-- `server/utils/command_factories_utility.py`
+- `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (94%)
-- INFERRED: 1 (6%)
+- EXTRACTED: 13 (93%)
+- INFERRED: 1 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

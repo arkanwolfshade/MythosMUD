@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **mock_request()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
-- **Create a mock request object.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_handle_alias_command_view_existing()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **Test handle_alias_command viewing existing alias.** (1 connections) — `server/tests/unit/commands/test_alias_commands.py`
 
 ## Relationships
 
-- [command service commands](command_service_commands.md) (1 shared connections)
+- [commands alias rationale](commands_alias_rationale.md) (1 shared connections)
+- [scripts worktree ops](scripts_worktree_ops.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_service.py`
+- `server/tests/unit/commands/test_alias_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_call_success_closed_state()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **Test call() executes successfully in CLOSED state.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_setup_session_tracking_new_session()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **Test _setup_session_tracking() creates new session entry.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
 
 ## Relationships
 
-- [message broadcaster realtime](message_broadcaster_realtime.md) (1 shared connections)
-- [circuit breaker realtime](circuit_breaker_realtime.md) (1 shared connections)
+- [player event state](player_event_state.md) (1 shared connections)
+- [connection establishment realtime](connection_establishment_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_circuit_breaker.py`
+- `server/tests/unit/realtime/test_connection_establishment.py`
 
 ## Audit Trail
 

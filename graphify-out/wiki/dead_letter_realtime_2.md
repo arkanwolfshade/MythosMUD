@@ -4,29 +4,26 @@
 
 ## Key Concepts
 
-- **.from_dict()** (6 connections) — `server/realtime/dead_letter_queue.py`
-- **test_dead_letter_message_from_dict()** (3 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
-- **test_dead_letter_message_from_dict_string_timestamp()** (3 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
-- **test_dead_letter_message_from_dict_datetime_timestamp()** (3 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
-- **Reconstruct message from dictionary.** (1 connections) — `server/realtime/dead_letter_queue.py`
-- **Test DeadLetterMessage.from_dict() reconstructs message.** (1 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
-- **Test DeadLetterMessage.from_dict() handles string timestamp.** (1 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
-- **Test DeadLetterMessage.from_dict() handles datetime timestamp.** (1 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **TestHandleSpecialCommandRouting** (5 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.test_handle_special_command_routing_alias_command()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.test_handle_special_command_routing_alias_command_no_storage()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.test_handle_special_command_routing_emote_conversion()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _handle_special_command_routing function.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _handle_special_command_routing handles alias management commands.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _handle_special_command_routing returns error when alias storage unavailabl** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _handle_special_command_routing converts single-word emotes.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
 
 ## Relationships
 
-- [dead letter queue](dead_letter_queue.md) (3 shared connections)
-- [message nats handler](message_nats_handler.md) (1 shared connections)
-- [realtime dead letter](realtime_dead_letter.md) (1 shared connections)
+- [command commands handler](command_commands_handler.md) (4 shared connections)
 
 ## Source Files
 
-- `server/realtime/dead_letter_queue.py`
-- `server/tests/unit/realtime/test_dead_letter_queue.py`
+- `server/tests/unit/commands/test_command_aliases.py`
 
 ## Audit Trail
 
-- EXTRACTED: 19 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

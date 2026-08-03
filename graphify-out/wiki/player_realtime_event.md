@@ -4,22 +4,23 @@
 
 ## Key Concepts
 
-- **._handle_npc_died_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **Handle npc_died event - NATS to EventBus bridge pattern.** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **.npc_entered()** (4 connections) — `server/models/room.py`
+- **Add an NPC to the room and trigger event.          Args:             npc_id: The** (1 connections) — `server/models/room.py`
 
 ## Relationships
 
-- [handler realtime nats](handler_realtime_nats.md) (1 shared connections)
-- [persistence services combat](persistence_services_combat.md) (1 shared connections)
+- [item models rationale](item_models_rationale.md) (1 shared connections)
+- [room models instance](room_models_instance.md) (1 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/nats_message_handler_subscriptions.py`
+- `server/models/room.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 4 (80%)
+- INFERRED: 1 (20%)
 - AMBIGUOUS: 0 (0%)
 
 ---

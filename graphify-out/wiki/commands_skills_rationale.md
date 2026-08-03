@@ -1,24 +1,30 @@
 # commands skills rationale
 
-> 3 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **.__init__()** (3 connections) — `server/realtime/room_id_utils.py`
-- **Any** (1 connections)
-- **Initialize room ID utilities.          Args:             connection_manager: Con** (1 connections) — `server/realtime/room_id_utils.py`
+- **.keys()** (5 connections) — `server/caching/lru_cache.py`
+- **._initialize_default_caches()** (4 connections) — `server/caching/lru_cache.py`
+- **.__init__()** (3 connections) — `server/caching/lru_cache.py`
+- **.get_cache_names()** (2 connections) — `server/caching/lru_cache.py`
+- **Get all keys in the cache.** (1 connections) — `server/caching/lru_cache.py`
+- **Initialize the cache manager.** (1 connections) — `server/caching/lru_cache.py`
+- **Initialize default caches with appropriate configurations.** (1 connections) — `server/caching/lru_cache.py`
 
 ## Relationships
 
-- [NATS Messaging](NATS_Messaging.md) (1 shared connections)
+- [command inventory factories](command_inventory_factories.md) (3 shared connections)
+- [combat messaging service](combat_messaging_service.md) (1 shared connections)
+- [caching lru cache](caching_lru_cache.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/room_id_utils.py`
+- `server/caching/lru_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 17 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

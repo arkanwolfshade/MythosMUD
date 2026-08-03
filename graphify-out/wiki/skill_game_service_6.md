@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_occupant_formatter_init()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter.__init__() initializes formatter.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **command_parser()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **Create a CommandParser instance.** (1 connections) — `server/tests/unit/utils/test_command_parser.py`
 
 ## Relationships
 
-- [commands recovery lucidity](commands_recovery_lucidity.md) (1 shared connections)
-- [occupant formatter realtime](occupant_formatter_realtime.md) (1 shared connections)
+- [command parser rationale](command_parser_rationale.md) (1 shared connections)
+- [player effects endpoints](player_effects_endpoints.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_occupant_formatter.py`
+- `server/tests/unit/utils/test_command_parser.py`
 
 ## Audit Trail
 

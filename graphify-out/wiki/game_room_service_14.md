@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_handle_nats_message_event_data_detection()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test _handle_nats_message detects event messages by event_data.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_get_system_stats_no_players()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **Test get_system_stats handles no active players.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
 
 ## Relationships
 
-- [nats message handler](nats_message_handler.md) (1 shared connections)
+- [rate limiter services](rate_limiter_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/tests/unit/services/test_rate_limiter.py`
 
 ## Audit Trail
 

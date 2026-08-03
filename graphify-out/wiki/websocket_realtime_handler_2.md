@@ -1,51 +1,66 @@
 # websocket realtime handler
 
-> 26 nodes
+> 63 nodes
 
 ## Key Concepts
 
-- **PlayerXpLike** (9 connections) — `server/services/player_combat_service_support.py`
-- **Protocol** (6 connections)
-- **NPCCombatRewardsLike** (6 connections) — `server/services/player_combat_service_support.py`
-- **UUIDMappingXP** (6 connections) — `server/services/player_combat_service_support.py`
-- **PersistenceWithNpcLifecycleManager** (6 connections) — `server/services/player_combat_service_support.py`
-- **async_load_lifecycle_manager()** (5 connections) — `server/services/player_combat_service_support.py`
-- **._despawn_npc()** (4 connections) — `server/services/npc_combat_lifecycle.py`
-- **.despawn_npc_safely()** (3 connections) — `server/services/npc_combat_lifecycle.py`
-- **.get_xp_value()** (3 connections) — `server/services/player_combat_service_support.py`
-- **.get_rewards_service()** (3 connections) — `server/services/player_combat_service_support.py`
-- **.get_uuid_mapping()** (3 connections) — `server/services/player_combat_service_support.py`
-- **.get_npc_lifecycle_manager()** (3 connections) — `server/services/player_combat_service_support.py`
-- **.award_xp_to_killer()** (2 connections) — `server/services/player_combat_service_support.py`
-- **Despawn NPC with defensive error handling.          Args:             npc_id: ID** (1 connections) — `server/services/npc_combat_lifecycle.py`
-- **Despawn an NPC.          Args:             npc_id: ID of the NPC to despawn** (1 connections) — `server/services/npc_combat_lifecycle.py`
-- **.add_experience()** (1 connections) — `server/services/player_combat_service_support.py`
-- **NPC combat rewards helper.** (1 connections) — `server/services/player_combat_service_support.py`
-- **Award XP to the killer for an NPC defeat.** (1 connections) — `server/services/player_combat_service_support.py`
-- **UUID mapping helper with XP lookup (NPCCombatUUIDMapping).** (1 connections) — `server/services/player_combat_service_support.py`
-- **Return stored XP for npc_id when present.** (1 connections) — `server/services/player_combat_service_support.py`
-- **Return rewards helper service.** (1 connections) — `server/services/player_combat_service_support.py`
-- **Return UUID mapping helper.** (1 connections) — `server/services/player_combat_service_support.py`
-- **Minimal player surface for XP persistence fallback.** (1 connections) — `server/services/player_combat_service_support.py`
-- **Persistence layer that can expose the NPC lifecycle manager.** (1 connections) — `server/services/player_combat_service_support.py`
-- **Return lifecycle manager (sync); may be wrapped by asyncio.to_thread.** (1 connections) — `server/services/player_combat_service_support.py`
-- *... and 1 more nodes in this community*
+- **websocket_handler.py** (64 connections) — `server/realtime/websocket_handler.py`
+- **websocket_handler_message_loop.py** (25 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **websocket_handler_connection.py** (17 connections) — `server/realtime/websocket_handler_connection.py`
+- **handle_message_loop_exception()** (10 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **cleanup_websocket_connection()** (7 connections) — `server/realtime/websocket_handler_connection.py`
+- **setup_initial_connection_state()** (7 connections) — `server/realtime/websocket_handler_connection.py`
+- **send_websocket_error_response()** (7 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **WebSocket** (7 connections)
+- **PlayerDisconnectService** (6 connections) — `server/realtime/websocket_handler_connection.py`
+- **AsyncPersistenceRoomLookup** (6 connections) — `server/realtime/websocket_handler_connection.py`
+- **send_welcome_event()** (6 connections) — `server/realtime/websocket_handler_connection.py`
+- **handle_json_decode_error()** (6 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **UUID** (6 connections)
+- **handle_websocket_runtime_error()** (6 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **handle_websocket_generic_exception()** (6 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **process_exception_in_message_loop()** (6 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **handle_websocket_message_loop()** (6 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **is_websocket_disconnect_message()** (6 connections) — `server/realtime/websocket_helpers.py`
+- **get_message_validator()** (5 connections) — `server/realtime/message_validator.py`
+- **UUID** (5 connections)
+- **process_websocket_inbound_message()** (5 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **handle_websocket_disconnect()** (4 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **test_websocket_handler_disconnect.py** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
+- **test_websocket_handler_helpers.py** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers.py`
+- **test_websocket_handler_json_error.py** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
+- *... and 38 more nodes in this community*
 
 ## Relationships
 
-- [NATS Messaging](NATS_Messaging.md) (13 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (5 shared connections)
-- [NPC Combat](NPC_Combat.md) (4 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (14 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (8 shared connections)
+- [websocket handler realtime](websocket_handler_realtime.md) (7 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (6 shared connections)
+- [command inventory factories](command_inventory_factories.md) (6 shared connections)
+- [realtime message validator](realtime_message_validator.md) (5 shared connections)
+- [combat services messaging](combat_services_messaging.md) (5 shared connections)
+- [realtime websocket initial](realtime_websocket_initial.md) (5 shared connections)
+- [room look commands](room_look_commands.md) (4 shared connections)
+- [websocket validation realtime](websocket_validation_realtime.md) (3 shared connections)
+- [combat schemas schema](combat_schemas_schema.md) (3 shared connections)
+- [combat commands handler](combat_commands_handler.md) (2 shared connections)
 
 ## Source Files
 
-- `server/services/npc_combat_lifecycle.py`
-- `server/services/player_combat_service_support.py`
+- `server/realtime/message_validator.py`
+- `server/realtime/websocket_handler.py`
+- `server/realtime/websocket_handler_connection.py`
+- `server/realtime/websocket_handler_message_loop.py`
+- `server/realtime/websocket_helpers.py`
+- `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
+- `server/tests/unit/realtime/test_websocket_handler_helpers.py`
+- `server/tests/unit/realtime/test_websocket_handler_json_error.py`
 
 ## Audit Trail
 
-- EXTRACTED: 61 (85%)
-- INFERRED: 11 (15%)
+- EXTRACTED: 279 (98%)
+- INFERRED: 6 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

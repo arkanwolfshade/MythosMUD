@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_evaluate_boolean_condition_variable_false()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test _evaluate_boolean_condition() returns False for missing variable.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_validate_command_content_valid()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Test validating valid command content.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
 
 ## Relationships
 
-- [npc behavior engine](npc_behavior_engine.md) (1 shared connections)
-- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
+- [Security Validator Tests](Security_Validator_Tests.md) (1 shared connections)
+- [command communication models](command_communication_models.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_behavior_engine.py`
+- `server/tests/unit/validators/test_security_validator.py`
 
 ## Audit Trail
 

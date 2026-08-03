@@ -1,61 +1,65 @@
 # panels domPurifyClient chat
 
-> 34 nodes
+> 42 nodes
 
 ## Key Concepts
 
-- **SafeHtml.tsx** (14 connections) — `client/src/components/common/SafeHtml.tsx`
+- **security.ts** (36 connections) — `client/src/utils/security.ts`
 - **domPurifyClient.ts** (14 connections) — `client/src/utils/domPurifyClient.ts`
-- **setup.ts** (13 connections) — `client/src/test/setup.ts`
-- **SafeHtml()** (11 connections) — `client/src/components/common/SafeHtml.tsx`
+- **SessionManager** (12 connections) — `client/src/utils/security.ts`
+- **inputSanitizer** (8 connections) — `client/src/utils/security.ts`
+- **CSRFProtection** (7 connections) — `client/src/utils/security.ts`
 - **domPurifyClient.test.ts** (5 connections) — `client/src/utils/__tests__/domPurifyClient.test.ts`
+- **secureTokenStorage.test.ts** (5 connections) — `client/src/utils/__tests__/secureTokenStorage.test.ts`
 - **resolveSanitizeWindow()** (5 connections) — `client/src/utils/domPurifyClient.ts`
-- **getDomPurify()** (5 connections) — `client/src/utils/domPurifyClient.ts`
-- **localStorageShim.ts** (5 connections) — `client/src/utils/localStorageShim.ts`
-- **installLocalStorageShim()** (5 connections) — `client/src/utils/localStorageShim.ts`
-- **localStorageShim.test.ts** (4 connections) — `client/src/utils/__tests__/localStorageShim.test.ts`
+- **csrfProtection.test.ts** (4 connections) — `client/src/utils/__tests__/csrfProtection.test.ts`
+- **security.test-utils.ts** (4 connections) — `client/src/utils/__tests__/security.test-utils.ts`
 - **verifiesDomPurifySanitize()** (4 connections) — `client/src/utils/domPurifyClient.ts`
 - **resolveVitestSanitizeWindow()** (4 connections) — `client/src/utils/domPurifyClient.ts`
 - **sanitizeWithDomPurify()** (4 connections) — `client/src/utils/domPurifyClient.ts`
-- **domPurifyTestWindow.ts** (3 connections) — `client/src/test/domPurifyTestWindow.ts`
-- **installDomPurifyTestWindow()** (3 connections) — `client/src/test/domPurifyTestWindow.ts`
+- **.generateToken()** (4 connections) — `client/src/utils/security.ts`
+- **setupSecurityMocks()** (3 connections) — `client/src/utils/__tests__/security.test-utils.ts`
+- **sessionManager.test.ts** (3 connections) — `client/src/utils/__tests__/sessionManager.test.ts`
 - **collectWindowCandidates()** (3 connections) — `client/src/utils/domPurifyClient.ts`
 - **resetDomPurifyClientForTests()** (3 connections) — `client/src/utils/domPurifyClient.ts`
+- **.cleanupExpiredSessions()** (3 connections) — `client/src/utils/security.ts`
+- **.startCleanupInterval()** (3 connections) — `client/src/utils/security.ts`
 - **INCOMING_HTML_DOMPURIFY_CONFIG** (3 connections) — `client/src/utils/security.ts`
-- **SafeHtml.test.tsx** (2 connections) — `client/src/components/common/__tests__/SafeHtml.test.tsx`
-- **createDomPurifyTestWindow()** (2 connections) — `client/src/test/domPurifyTestWindow.ts`
+- **inputSanitizer.test.ts** (2 connections) — `client/src/utils/__tests__/inputSanitizer.test.ts`
+- **localStorageMock** (2 connections) — `client/src/utils/__tests__/security.test-utils.ts`
 - **DOMPurifyInstance** (2 connections) — `client/src/utils/domPurifyClient.ts`
-- **isUsableStorage()** (2 connections) — `client/src/utils/localStorageShim.ts`
-- **peekExistingLocalStorage()** (2 connections) — `client/src/utils/localStorageShim.ts`
-- **SafeHtmlProps** (1 connections) — `client/src/components/common/SafeHtml.tsx`
-- **observe()** (1 connections) — `client/src/test/setup.ts`
-- *... and 9 more nodes in this community*
+- **.constructor()** (2 connections) — `client/src/utils/security.ts`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [mythosApp security submitAuth](mythosApp_security_submitAuth.md) (5 shared connections)
-- [map maps useAsciiMap](map_maps_useAsciiMap.md) (4 shared connections)
-- [alias command models](alias_command_models.md) (4 shared connections)
-- [panels GameClientV2Dock gameLogPanelUtil](panels_GameClientV2Dock_gameLogPanelUtil.md) (3 shared connections)
+- [mythosApp security submitAuth](mythosApp_security_submitAuth.md) (6 shared connections)
+- [panels chat ChatPanelRuntimeViewParts](panels_chat_ChatPanelRuntimeViewParts.md) (6 shared connections)
+- [roomHandlers eventHandlers calculateOccu](roomHandlers_eventHandlers_calculateOccu.md) (4 shared connections)
+- [mythosApp appLazyScreens mythosAppViewMo](mythosApp_appLazyScreens_mythosAppViewMo.md) (4 shared connections)
+- [zone configuration npc](zone_configuration_npc.md) (4 shared connections)
+- [command parser rationale](command_parser_rationale.md) (2 shared connections)
+- [Game Terminal UI](Game_Terminal_UI.md) (2 shared connections)
+- [lucidityEventUtils mythosTime MythosTime](lucidityEventUtils_mythosTime_MythosTime.md) (2 shared connections)
 - [panels chatPanelRuntimeUtils chatPanelEx](panels_chatPanelRuntimeUtils_chatPanelEx.md) (2 shared connections)
-- [panels chat ChatPanelRuntimeViewParts](panels_chat_ChatPanelRuntimeViewParts.md) (2 shared connections)
-- [PanelContextRuntime contexts package](PanelContextRuntime_contexts_package.md) (1 shared connections)
+- [mythosApp CharacterSelectionScreen chara](mythosApp_CharacterSelectionScreen_chara.md) (1 shared connections)
+- [mythosApp useMythosAppState useStatsRoll](mythosApp_useMythosAppState_useStatsRoll.md) (1 shared connections)
+- [dialogue DialogueEditorPage baseUrl()](dialogue_DialogueEditorPage_baseUrl%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/common/SafeHtml.tsx`
-- `client/src/components/common/__tests__/SafeHtml.test.tsx`
-- `client/src/test/domPurifyTestWindow.ts`
-- `client/src/test/setup.ts`
+- `client/src/utils/__tests__/csrfProtection.test.ts`
 - `client/src/utils/__tests__/domPurifyClient.test.ts`
-- `client/src/utils/__tests__/localStorageShim.test.ts`
+- `client/src/utils/__tests__/inputSanitizer.test.ts`
+- `client/src/utils/__tests__/secureTokenStorage.test.ts`
+- `client/src/utils/__tests__/security.test-utils.ts`
+- `client/src/utils/__tests__/sessionManager.test.ts`
 - `client/src/utils/domPurifyClient.ts`
-- `client/src/utils/localStorageShim.ts`
 - `client/src/utils/security.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 129 (100%)
+- EXTRACTED: 168 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

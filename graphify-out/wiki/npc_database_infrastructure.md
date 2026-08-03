@@ -1,51 +1,56 @@
 # npc database infrastructure
 
-> 41 nodes
+> 64 nodes
 
 ## Key Concepts
 
-- **test_container_helpers_inventory_ops.py** (52 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- **transfer_item_to_container()** (20 connections) — `server/commands/container_helpers_inventory_ops.py`
-- **transfer_item_from_container()** (18 connections) — `server/commands/container_helpers_inventory_ops.py`
-- **_player_with_inventory()** (17 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- **_coerce_transfer_quantity()** (8 connections) — `server/commands/container_helpers_inventory_ops.py`
-- **_int_transfer_qty()** (8 connections) — `server/commands/container_helpers_inventory_ops.py`
-- **_ContainerSvcTokenOnly** (6 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- **test_transfer_item_to_container_no_transfer_to_method()** (4 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- **test_transfer_item_from_container_no_transfer_from()** (4 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- **test_transfer_item_from_container_inventory_rows_fallback_non_dict_result()** (4 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- **test_coerce_transfer_quantity_bool_is_one()** (3 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- **test_int_transfer_qty_empty_string_uses_default_quantity()** (3 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- **test_int_transfer_qty_zero_quantity_keeps_explicit_zero()** (3 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- **test_transfer_item_to_container_success_uses_token_from_service()** (3 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- **test_transfer_item_to_container_awaits_async_ensure_item_instance()** (3 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- **test_transfer_item_to_container_coerces_string_quantity()** (3 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- **test_transfer_item_to_container_missing_item_identifiers()** (3 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- **test_transfer_item_to_container_rejects_non_positive_quantity()** (3 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- **test_transfer_item_to_container_open_container_when_no_token()** (3 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- **test_transfer_item_to_container_service_unavailable_no_open()** (3 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- **test_transfer_item_to_container_transfer_raises()** (3 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- **test_transfer_item_from_container_success_updates_inventory()** (3 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- **test_transfer_item_from_container_rejects_non_positive_quantity()** (3 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- **test_transfer_item_from_container_persist_failure_returns_error()** (3 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- **test_transfer_item_from_container_transfer_raises()** (3 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- *... and 16 more nodes in this community*
+- **combat_service_npc.py** (30 connections) — `server/services/combat_service_npc.py`
+- **get_combat_id_for_npc()** (13 connections) — `server/services/combat_service_npc.py`
+- **UUID** (11 connections)
+- **get_npc_participant_current_room()** (11 connections) — `server/services/combat_service_npc.py`
+- **spell_effects_internal.py** (10 connections) — `server/game/magic/spell_effects_internal.py`
+- **_get_uuid_mapping()** (10 connections) — `server/services/combat_service_npc.py`
+- **find_participant_uuid_by_string_id()** (10 connections) — `server/services/combat_service_npc.py`
+- **resolve_npc_participant_id_in_combat()** (9 connections) — `server/services/combat_service_npc.py`
+- **._add_spell_damage_threat_to_combat()** (8 connections) — `server/game/magic/spell_effects.py`
+- **UUIDMappingProtocol** (8 connections) — `server/services/combat_service_npc.py`
+- **DataProviderProtocol** (8 connections) — `server/services/combat_service_npc.py`
+- **get_combat_id_for_npc_via_mapping()** (8 connections) — `server/services/combat_service_npc.py`
+- **_fallback_find_combat_id_for_npc()** (8 connections) — `server/services/combat_service_npc.py`
+- **get_participant_current_room()** (8 connections) — `server/services/combat_service_npc.py`
+- **.get_uuid_for_string_id()** (7 connections) — `server/services/combat_service_npc.py`
+- **combat_room_id_for_npc_spell()** (6 connections) — `server/game/magic/spell_effects_internal.py`
+- **.get_original_string_id()** (6 connections) — `server/services/combat_service_npc.py`
+- **_get_data_provider()** (6 connections) — `server/services/combat_service_npc.py`
+- **_iter_active_combats()** (6 connections) — `server/services/combat_service_npc.py`
+- **sync_npc_participant_dp_after_spell_damage()** (6 connections) — `server/services/combat_service_npc.py`
+- **get_combat_by_participant()** (6 connections) — `server/services/combat_service_npc.py`
+- **_participant_matches_npc_id()** (6 connections) — `server/services/combat_service_npc.py`
+- **npc_in_combat_by_string_id_mapping()** (6 connections) — `server/services/combat_service_npc.py`
+- **is_npc_in_combat_sync()** (6 connections) — `server/services/combat_service_npc.py`
+- **.end_combat_if_npc_died()** (5 connections) — `server/services/combat_service.py`
+- *... and 39 more nodes in this community*
 
 ## Relationships
 
-- [container inventory helpers](container_inventory_helpers.md) (36 shared connections)
-- [inventory commands command](inventory_commands_command.md) (3 shared connections)
-- [Exception Containers](Exception_Containers.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (30 shared connections)
+- [Item Instances](Item_Instances.md) (15 shared connections)
+- [game models player](game_models_player.md) (7 shared connections)
+- [spell game magic](spell_game_magic.md) (6 shared connections)
+- [websocket handler realtime](websocket_handler_realtime.md) (3 shared connections)
+- [target resolution service](target_resolution_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/container_helpers_inventory_ops.py`
-- `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
+- `server/game/magic/spell_effects.py`
+- `server/game/magic/spell_effects_internal.py`
+- `server/services/combat_service.py`
+- `server/services/combat_service_npc.py`
 
 ## Audit Trail
 
-- EXTRACTED: 203 (98%)
-- INFERRED: 4 (2%)
+- EXTRACTED: 269 (95%)
+- INFERRED: 13 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

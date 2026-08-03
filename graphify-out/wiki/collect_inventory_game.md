@@ -34,8 +34,8 @@
 ## Relationships
 
 - [quest game service](quest_game_service.md) (7 shared connections)
-- [Async Query Helpers](Async_Query_Helpers.md) (3 shared connections)
-- [Item Instances](Item_Instances.md) (1 shared connections)
+- [combat models rationale](combat_models_rationale.md) (3 shared connections)
+- [NPC Combat](NPC_Combat.md) (1 shared connections)
 
 ## Source Files
 

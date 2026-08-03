@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_execute_applicable_rules_no_matching()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test execute_applicable_rules() returns True when no rules match.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_strip_ansi_codes_empty()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Test stripping ANSI codes from empty string.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
 
 ## Relationships
 
-- [npc behavior engine](npc_behavior_engine.md) (1 shared connections)
-- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
+- [Security Validator Tests](Security_Validator_Tests.md) (1 shared connections)
+- [commands admin mute](commands_admin_mute.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_behavior_engine.py`
+- `server/tests/unit/validators/test_security_validator.py`
 
 ## Audit Trail
 

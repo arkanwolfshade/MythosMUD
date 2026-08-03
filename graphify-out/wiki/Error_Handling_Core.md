@@ -1,11 +1,10 @@
 # Error Handling Core
 
-> 586 nodes
+> 564 nodes
 
 ## Key Concepts
 
 - **MythosMUDError** (79 connections) — `server/exceptions.py`
-- **RateLimitError** (76 connections) — `server/exceptions.py`
 - **AuthenticationError** (63 connections) — `server/exceptions.py`
 - **ErrorContext** (54 connections) — `server/exceptions.py`
 - **legacy_error_handlers.py** (48 connections) — `server/legacy_error_handlers.py`
@@ -29,22 +28,23 @@
 - **TestSanitization** (31 connections) — `server/tests/unit/test_legacy_error_handlers.py`
 - **JSONResponse** (30 connections) — `docs/examples/logging/fastapi_integration.py`
 - **ErrorSeverity** (30 connections) — `server/error_types.py`
-- *... and 561 more nodes in this community*
+- **create_standard_error_response()** (27 connections) — `server/error_types.py`
+- *... and 539 more nodes in this community*
 
 ## Relationships
 
-- [Exception Containers](Exception_Containers.md) (90 shared connections)
-- [command inventory factories](command_inventory_factories.md) (80 shared connections)
-- [npc populate databases](npc_populate_databases.md) (32 shared connections)
-- [auth rationale access](auth_rationale_access.md) (20 shared connections)
-- [Loot Generation](Loot_Generation.md) (19 shared connections)
-- [auth users rationale](auth_users_rationale.md) (16 shared connections)
-- [websocket realtime handler](websocket_realtime_handler.md) (15 shared connections)
-- [websocket handler realtime](websocket_handler_realtime.md) (12 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (8 shared connections)
-- [System Metrics](System_Metrics.md) (8 shared connections)
-- [app factory rationale](app_factory_rationale.md) (7 shared connections)
-- [character creation validate](character_creation_validate.md) (6 shared connections)
+- [Database Config](Database_Config.md) (60 shared connections)
+- [Memory Task Runtime](Memory_Task_Runtime.md) (46 shared connections)
+- [command inventory models](command_inventory_models.md) (43 shared connections)
+- [Exception Containers](Exception_Containers.md) (41 shared connections)
+- [command inventory factories](command_inventory_factories.md) (29 shared connections)
+- [websocket realtime handler](websocket_realtime_handler.md) (19 shared connections)
+- [auth rationale access](auth_rationale_access.md) (19 shared connections)
+- [combat services messaging](combat_services_messaging.md) (11 shared connections)
+- [middleware error handling](middleware_error_handling.md) (9 shared connections)
+- [auth users rationale](auth_users_rationale.md) (8 shared connections)
+- [room look commands](room_look_commands.md) (5 shared connections)
+- [commands lucidity recovery](commands_lucidity_recovery.md) (5 shared connections)
 
 ## Source Files
 
@@ -56,21 +56,21 @@
 - `server/exceptions.py`
 - `server/legacy_error_handlers.py`
 - `server/legacy_error_sanitization.py`
-- `server/services/corpse_lifecycle_service.py`
+- `server/realtime/message_handler_factory.py`
+- `server/realtime/websocket_handler_validation.py`
+- `server/services/combat_messaging_service.py`
 - `server/tests/unit/error_handlers/test_standardized_responses_security.py`
-- `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
 - `server/tests/unit/test_error_types.py`
 - `server/tests/unit/test_exceptions.py`
 - `server/tests/unit/test_exceptions_comprehensive.py`
 - `server/tests/unit/test_legacy_error_handlers.py`
-- `server/tests/unit/utils/test_rate_limiter_utils.py`
-- `server/utils/__init__.py`
-- `server/utils/rate_limiter.py`
+- `server/utils/error_logging.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2398 (78%)
-- INFERRED: 657 (22%)
+- EXTRACTED: 2353 (80%)
+- INFERRED: 600 (20%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_process_validated_command_unknown_command()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
-- **Test process_validated_command handles unknown command type.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_handle_cast_command_wrapper_no_magic_service()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Test handle_cast_command wrapper when magic service is not available.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
 
 ## Relationships
 
-- [command service commands](command_service_commands.md) (1 shared connections)
+- [commands admin mute](commands_admin_mute.md) (1 shared connections)
+- [commands magic rationale](commands_magic_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_service.py`
+- `server/tests/unit/commands/test_magic_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

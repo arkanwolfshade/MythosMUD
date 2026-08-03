@@ -1,24 +1,35 @@
 # npc behavior engine
 
-> 2 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **test_set_async_persistence()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **Test set_async_persistence() sets persistence layer.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **validate_security_comprehensive()** (8 connections) — `server/validators/security_validator.py`
+- **test_validate_security_comprehensive_message()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_validate_security_comprehensive_action()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_validate_security_comprehensive_player_name()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_validate_security_comprehensive_default()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Test comprehensive validation for message type.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Test comprehensive validation for action type.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Test comprehensive validation for player_name type.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Test comprehensive validation with unknown field type defaults to message.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Comprehensive security validation for any text field.      This is the main vali** (1 connections) — `server/validators/security_validator.py`
 
 ## Relationships
 
-- [room subscription manager](room_subscription_manager.md) (1 shared connections)
+- [Security Validator Tests](Security_Validator_Tests.md) (5 shared connections)
+- [command communication models](command_communication_models.md) (1 shared connections)
+- [subject nats manager](subject_nats_manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager.py`
+- `server/tests/unit/validators/test_security_validator.py`
+- `server/validators/security_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 24 (96%)
+- INFERRED: 1 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

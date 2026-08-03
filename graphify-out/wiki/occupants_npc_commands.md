@@ -26,12 +26,10 @@
 
 ## Relationships
 
-- [commands alias rationale](commands_alias_rationale.md) (3 shared connections)
-- [npc commands admin](npc_commands_admin.md) (2 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (2 shared connections)
-- [combat attack handler](combat_attack_handler.md) (2 shared connections)
-- [websocket handler realtime](websocket_handler_realtime.md) (1 shared connections)
-- [container schemas containers](container_schemas_containers.md) (1 shared connections)
+- [commands npc admin](commands_npc_admin.md) (5 shared connections)
+- [commands admin mute](commands_admin_mute.md) (3 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [Player Name Validation](Player_Name_Validation.md) (1 shared connections)
 
 ## Source Files
 

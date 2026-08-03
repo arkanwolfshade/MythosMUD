@@ -1,58 +1,52 @@
 # room validator toolkit
 
-> 37 nodes
+> 55 nodes
 
 ## Key Concepts
 
-- **validator.py** (15 connections) — `tools/room_toolkit/room_validator/validator.py`
-- **__init__.py** (11 connections) — `tools/room_toolkit/room_validator/core/__init__.py`
-- **main()** (10 connections) — `tools/room_toolkit/room_validator/validator.py`
-- **_initialize_validator_components()** (8 connections) — `tools/room_toolkit/room_validator/validator.py`
-- **Any** (7 connections)
-- **_load_and_filter_rooms()** (6 connections) — `tools/room_toolkit/room_validator/validator.py`
-- **_validate_room_connectivity()** (6 connections) — `tools/room_toolkit/room_validator/validator.py`
-- **_apply_automatic_fixes()** (6 connections) — `tools/room_toolkit/room_validator/validator.py`
-- **_validate_config_files()** (6 connections) — `tools/room_toolkit/room_validator/validator.py`
-- **_generate_minimap()** (6 connections) — `tools/room_toolkit/room_validator/validator.py`
-- **_report_results()** (6 connections) — `tools/room_toolkit/room_validator/validator.py`
-- **reporter.py** (5 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
-- **room_loader.py** (5 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **_collect_parsing_errors()** (5 connections) — `tools/room_toolkit/room_validator/validator.py`
-- **fixer.py** (4 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
-- **path_validator.py** (4 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **minimap_renderer.py** (3 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **test_reporter.py** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
-- **test_room_loader.py** (3 connections) — `tools/room_toolkit/room_validator/tests/test_room_loader.py`
-- **SchemaValidator** (3 connections)
-- **Core validation components for the MythosMUD room validator.  This module contai** (1 connections) — `tools/room_toolkit/room_validator/core/__init__.py`
-- **Room fixer for automatic issue resolution.  This module handles automatic fixing** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
-- **Mini-map renderer for room connectivity visualization.  This module provides vis** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **Path validator for room connectivity analysis.  This module handles graph traver** (1 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **Reporter for validation results.  This module handles formatting and displaying** (1 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
-- *... and 12 more nodes in this community*
+- **test_aggro_threat.py** (29 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **_make_combat()** (23 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **get_or_create_hate_list()** (19 connections) — `server/services/aggro_threat.py`
+- **_make_participant()** (13 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **combat_service_end.py** (11 connections) — `server/services/combat_service_end.py`
+- **clear_aggro_for_combat()** (6 connections) — `server/services/aggro_threat.py`
+- **test_update_aggro_one_entity_sets_target()** (6 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **test_update_aggro_stability_no_switch_when_below_threshold()** (6 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **test_update_aggro_stability_switch_when_at_or_above_threshold()** (6 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **test_update_aggro_excludes_dead_from_candidate()** (6 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **test_on_player_entered_stealth_wipes_from_all_npcs()** (6 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **end_combat()** (5 connections) — `server/services/combat_service_end.py`
+- **test_apply_taunt_same_room_sets_threat_above_top()** (5 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **test_apply_taunt_different_room_no_op()** (5 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **test_apply_stealth_wipe_removes_entity()** (5 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **test_update_aggro_no_hate_list_clears_target()** (5 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **test_add_damage_threat_passive_mob_skipped()** (5 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **test_add_damage_threat_aggressive_mob_adds()** (5 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **test_aggression_level_scales_damage_threat()** (5 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **test_aggression_level_scales_heal_threat()** (5 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **test_get_or_create_hate_list_creates_empty()** (4 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **test_add_damage_threat_accumulates()** (4 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **test_add_damage_threat_ignores_zero()** (4 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **test_add_heal_threat_accumulates_with_factor()** (4 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **test_apply_stealth_wipe_no_list_no_op()** (4 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- *... and 30 more nodes in this community*
 
 ## Relationships
 
-- [room toolkit validator](room_toolkit_validator.md) (21 shared connections)
-- [room validator toolkit](room_validator_toolkit.md) (6 shared connections)
-- [schemas validator rationale](schemas_validator_rationale.md) (2 shared connections)
+- [Item Instances](Item_Instances.md) (41 shared connections)
+- [NPC Combat](NPC_Combat.md) (3 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/core/__init__.py`
-- `tools/room_toolkit/room_validator/core/fixer.py`
-- `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- `tools/room_toolkit/room_validator/core/path_validator.py`
-- `tools/room_toolkit/room_validator/core/reporter.py`
-- `tools/room_toolkit/room_validator/core/room_loader.py`
-- `tools/room_toolkit/room_validator/tests/test_reporter.py`
-- `tools/room_toolkit/room_validator/tests/test_room_loader.py`
-- `tools/room_toolkit/room_validator/validator.py`
+- `server/services/aggro_threat.py`
+- `server/services/combat_service_end.py`
+- `server/tests/unit/services/test_aggro_threat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 138 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 236 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

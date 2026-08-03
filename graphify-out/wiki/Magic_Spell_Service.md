@@ -1,77 +1,64 @@
 # Magic Spell Service
 
-> 199 nodes
+> 78 nodes
 
 ## Key Concepts
 
-- **ApplicationContainer** (140 connections) — `server/container/main.py`
-- **magic_service.py** (39 connections) — `server/game/magic/magic_service.py`
-- **PlayerSpellRepository** (36 connections) — `server/persistence/repositories/player_spell_repository.py`
-- **SpellRegistry** (35 connections) — `server/game/magic/spell_registry.py`
-- **lifespan_magic.py** (34 connections) — `server/app/lifespan_magic.py`
-- **SpellTargetingService** (31 connections) — `server/game/magic/spell_targeting.py`
-- **SpellLearningService** (30 connections) — `server/game/magic/spell_learning_service.py`
-- **MagicService** (29 connections) — `server/game/magic/magic_service.py`
+- **lifespan_startup.py** (59 connections) — `server/app/lifespan_startup.py`
 - **test_lifespan_startup.py** (26 connections) — `server/tests/unit/app/test_lifespan_startup.py`
-- **spell_learning_service.py** (21 connections) — `server/game/magic/spell_learning_service.py`
-- **MPRegenerationService** (20 connections) — `server/game/magic/mp_regeneration_service.py`
-- **player_spell_repository.py** (20 connections) — `server/persistence/repositories/player_spell_repository.py`
-- **magic.py** (19 connections) — `server/container/bundles/magic.py`
-- **MagicBundle** (18 connections) — `server/container/bundles/magic.py`
-- **MagicServiceOptionalDeps** (17 connections) — `server/game/magic/magic_service.py`
-- **initialize_magic_services()** (15 connections) — `server/app/lifespan_magic.py`
-- **spell_registry.py** (15 connections) — `server/game/magic/spell_registry.py`
 - **initialize_container_and_legacy_services()** (14 connections) — `server/app/lifespan_startup.py`
-- **SpellCostsService** (14 connections) — `server/game/magic/spell_costs.py`
-- **SpellRepository** (14 connections) — `server/persistence/repositories/spell_repository.py`
+- **NPCService** (14 connections) — `server/services/npc_service/__init__.py`
 - **_startup_application()** (13 connections) — `server/app/lifespan.py`
-- **_initialize_magic_service()** (13 connections) — `server/app/lifespan_magic.py`
 - **FastAPI** (13 connections)
-- **_create_registry_and_targeting()** (13 connections) — `server/container/bundles/magic.py`
-- **mp_regeneration_service.py** (13 connections) — `server/game/magic/mp_regeneration_service.py`
-- *... and 174 more nodes in this community*
+- **initialize_combat_services()** (12 connections) — `server/app/lifespan_startup.py`
+- **setup_connection_manager()** (11 connections) — `server/app/lifespan_startup.py`
+- **initialize_npc_services()** (10 connections) — `server/app/lifespan_startup.py`
+- **initialize_npc_startup_spawning()** (10 connections) — `server/app/lifespan_startup.py`
+- **initialize_chat_service()** (9 connections) — `server/app/lifespan_startup.py`
+- **initialize_mythos_time_consumer()** (8 connections) — `server/app/lifespan_startup.py`
+- **get_npc_startup_service()** (8 connections) — `server/services/npc_startup_service.py`
+- **subscribe_room_occupants_refresh()** (7 connections) — `server/app/lifespan_event_subscriptions.py`
+- **_set_legacy_services()** (6 connections) — `server/app/lifespan_startup.py`
+- **_load_npc_definitions_and_rules()** (6 connections) — `server/app/lifespan_startup.py`
+- **_get_item_prototype_count()** (5 connections) — `server/app/lifespan_startup.py`
+- **_legacy_service_bindings()** (5 connections) — `server/app/lifespan_startup.py`
+- **_log_memory_metrics_periodically()** (4 connections) — `server/app/lifespan.py`
+- **_get_item_prototype_entries()** (4 connections) — `server/app/lifespan_startup.py`
+- **Any** (4 connections)
+- **_validate_npc_services_prerequisites()** (4 connections) — `server/app/lifespan_startup.py`
+- **_start_npc_thread_manager_and_pending()** (4 connections) — `server/app/lifespan_startup.py`
+- **_ensure_room_cache_before_npc_startup()** (4 connections) — `server/app/lifespan_startup.py`
+- **_log_npc_startup_errors()** (4 connections) — `server/app/lifespan_startup.py`
+- *... and 53 more nodes in this community*
 
 ## Relationships
 
-- [Memory Task Runtime](Memory_Task_Runtime.md) (61 shared connections)
-- [spell models rationale](spell_models_rationale.md) (44 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (31 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (30 shared connections)
-- [spell game magic](spell_game_magic.md) (24 shared connections)
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (19 shared connections)
-- [magic healing game](magic_healing_game.md) (18 shared connections)
-- [magic completion game](magic_completion_game.md) (17 shared connections)
-- [commands magic rationale](commands_magic_rationale.md) (16 shared connections)
-- [Item Instances](Item_Instances.md) (14 shared connections)
-- [System Metrics](System_Metrics.md) (12 shared connections)
-- [aggro threat services](aggro_threat_services.md) (9 shared connections)
+- [Error Conversion](Error_Conversion.md) (16 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (16 shared connections)
+- [time service rationale](time_service_rationale.md) (14 shared connections)
+- [NPC Combat](NPC_Combat.md) (7 shared connections)
+- [item models rationale](item_models_rationale.md) (5 shared connections)
+- [command inventory factories](command_inventory_factories.md) (5 shared connections)
+- [catatonia registry services](catatonia_registry_services.md) (3 shared connections)
+- [lucidity services helpers](lucidity_services_helpers.md) (3 shared connections)
+- [npc service services](npc_service_services.md) (3 shared connections)
+- [player respawn event](player_respawn_event.md) (3 shared connections)
+- [game models player](game_models_player.md) (3 shared connections)
+- [command combat models](command_combat_models.md) (2 shared connections)
 
 ## Source Files
 
 - `server/app/lifespan.py`
 - `server/app/lifespan_event_subscriptions.py`
-- `server/app/lifespan_magic.py`
 - `server/app/lifespan_startup.py`
-- `server/commands/magic_commands.py`
-- `server/container/bundles/magic.py`
-- `server/container/main.py`
-- `server/game/magic/magic_service.py`
-- `server/game/magic/mp_regeneration_service.py`
-- `server/game/magic/spell_costs.py`
-- `server/game/magic/spell_effects.py`
-- `server/game/magic/spell_learning_service.py`
-- `server/game/magic/spell_registry.py`
-- `server/game/magic/spell_targeting.py`
-- `server/persistence/repositories/player_spell_repository.py`
-- `server/persistence/repositories/spell_repository.py`
+- `server/services/npc_service/__init__.py`
+- `server/services/npc_startup_service.py`
 - `server/tests/unit/app/test_lifespan_startup.py`
-- `server/tests/unit/game/magic/test_spell_targeting.py`
-- `server/tests/unit/test_application_container.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1007 (87%)
-- INFERRED: 144 (13%)
+- EXTRACTED: 336 (98%)
+- INFERRED: 8 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

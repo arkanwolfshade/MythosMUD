@@ -1,25 +1,26 @@
 # invite models generate
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **._handle_event_message()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **Handle incoming event messages from NATS.** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **.model_dump()** (4 connections) — `server/models/alias.py`
+- **Any** (1 connections)
+- **Convert alias to dictionary for JSON serialization.** (1 connections) — `server/models/alias.py`
 
 ## Relationships
 
-- [handler realtime nats](handler_realtime_nats.md) (1 shared connections)
-- [persistence services combat](persistence_services_combat.md) (1 shared connections)
+- [alias models rationale](alias_models_rationale.md) (1 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/nats_message_handler_subscriptions.py`
+- `server/models/alias.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 5 (83%)
+- INFERRED: 1 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

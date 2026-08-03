@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_occupant_formatter_process_string_occupant_for_update_uuid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter._process_string_occupant_for_update() skips UUID string.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **command_parser()** (3 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **Create a CommandParser instance.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
 
 ## Relationships
 
-- [commands recovery lucidity](commands_recovery_lucidity.md) (1 shared connections)
-- [occupant formatter realtime](occupant_formatter_realtime.md) (1 shared connections)
+- [command parser helpers](command_parser_helpers.md) (1 shared connections)
+- [player effects endpoints](player_effects_endpoints.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_occupant_formatter.py`
+- `server/tests/unit/utils/test_command_parser_helpers.py`
 
 ## Audit Trail
 

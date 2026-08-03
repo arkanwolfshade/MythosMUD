@@ -1,13 +1,15 @@
 # commands inventory pickup
 
-> 53 nodes
+> 62 nodes
 
 ## Key Concepts
 
 - **test_inventory_commands.py** (20 connections) — `server/tests/unit/commands/test_inventory_commands.py`
+- **handle_pickup_command()** (17 connections) — `server/commands/inventory_pickup_command.py`
 - **command_result_text()** (17 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
 - **PickupTestWiring** (17 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
 - **test_inventory_commands_pickup.py** (17 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
+- **handle_inventory_command()** (13 connections) — `server/commands/inventory_commands.py`
 - **inventory_commands_test_support.py** (7 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
 - **test_handle_pickup_command()** (7 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
 - **test_handle_pickup_command_inventory_capacity_error()** (7 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
@@ -27,28 +29,30 @@
 - **test_handle_put_command_no_target()** (4 connections) — `server/tests/unit/commands/test_inventory_commands.py`
 - **test_handle_get_command_no_target()** (4 connections) — `server/tests/unit/commands/test_inventory_commands.py`
 - **test_handle_inventory_command()** (3 connections) — `server/tests/unit/commands/test_inventory_commands.py`
-- **test_handle_drop_command()** (3 connections) — `server/tests/unit/commands/test_inventory_commands.py`
-- **test_handle_get_command()** (3 connections) — `server/tests/unit/commands/test_inventory_commands.py`
-- *... and 28 more nodes in this community*
+- *... and 37 more nodes in this community*
 
 ## Relationships
 
-- [inventory commands command](inventory_commands_command.md) (16 shared connections)
-- [container helpers endpoints](container_helpers_endpoints.md) (4 shared connections)
-- [commands alias rationale](commands_alias_rationale.md) (3 shared connections)
-- [commands inventory command](commands_inventory_command.md) (2 shared connections)
-- [Inventory Equip](Inventory_Equip.md) (2 shared connections)
+- [commands inventory command](commands_inventory_command.md) (16 shared connections)
+- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (10 shared connections)
+- [commands admin mute](commands_admin_mute.md) (4 shared connections)
+- [container inventory display](container_inventory_display.md) (2 shared connections)
+- [persistence rationale player](persistence_rationale_player.md) (2 shared connections)
+- [commands inventory helpers](commands_inventory_helpers.md) (1 shared connections)
+- [container helpers endpoints](container_helpers_endpoints.md) (1 shared connections)
 
 ## Source Files
 
+- `server/commands/inventory_commands.py`
+- `server/commands/inventory_pickup_command.py`
 - `server/tests/unit/commands/inventory_commands_test_support.py`
 - `server/tests/unit/commands/test_inventory_commands.py`
 - `server/tests/unit/commands/test_inventory_commands_pickup.py`
 
 ## Audit Trail
 
-- EXTRACTED: 187 (93%)
-- INFERRED: 14 (7%)
+- EXTRACTED: 218 (90%)
+- INFERRED: 24 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

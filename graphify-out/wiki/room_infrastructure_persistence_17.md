@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_send_room_updates_to_entering_player_success()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **Test send_room_updates_to_entering_player() sends updates.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_remove_room_occupant_not_occupant()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **Test remove_room_occupant() when player is not an occupant.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
 
 ## Relationships
 
-- [player room event](player_room_event.md) (1 shared connections)
+- [room subscription manager](room_subscription_manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- `server/tests/unit/realtime/test_room_subscription_manager.py`
 
 ## Audit Trail
 

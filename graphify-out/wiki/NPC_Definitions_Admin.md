@@ -1,6 +1,6 @@
 # NPC Definitions Admin
 
-> 318 nodes
+> 72 nodes
 
 ## Key Concepts
 
@@ -9,17 +9,10 @@
 - **get_container()** (41 connections) — `server/dependencies.py`
 - **RuntimeError** (37 connections)
 - **Request** (29 connections)
-- **game.py** (25 connections) — `server/api/game.py`
 - **test_dependency_injection.py** (18 connections) — `server/tests/unit/test_dependency_injection.py`
-- **test_level_service.py** (16 connections) — `server/tests/unit/game/test_level_service.py`
-- **total_xp_for_level()** (15 connections) — `server/game/level_curve.py`
-- **test_level_curve.py** (15 connections) — `server/tests/unit/game/test_level_curve.py`
-- **level_from_total_xp()** (13 connections) — `server/game/level_curve.py`
-- **LevelService** (13 connections) — `server/game/level_service.py`
 - **get_player_service()** (12 connections) — `server/dependencies.py`
 - **get_room_service()** (12 connections) — `server/dependencies.py`
 - **get_combat_service()** (10 connections) — `server/dependencies.py`
-- **get_player_service_for_testing()** (9 connections) — `server/dependencies.py`
 - **get_connection_manager()** (9 connections) — `server/dependencies.py`
 - **get_async_persistence()** (9 connections) — `server/dependencies.py`
 - **get_player_respawn_service()** (9 connections) — `server/dependencies.py`
@@ -29,39 +22,41 @@
 - **get_spell_registry()** (9 connections) — `server/dependencies.py`
 - **get_spell_targeting_service()** (9 connections) — `server/dependencies.py`
 - **get_spell_effects()** (9 connections) — `server/dependencies.py`
-- *... and 293 more nodes in this community*
+- **get_spell_learning_service()** (9 connections) — `server/dependencies.py`
+- **get_mp_regeneration_service()** (9 connections) — `server/dependencies.py`
+- **get_npc_lifecycle_manager()** (9 connections) — `server/dependencies.py`
+- **get_npc_spawning_service()** (9 connections) — `server/dependencies.py`
+- **get_npc_population_controller()** (9 connections) — `server/dependencies.py`
+- **get_catatonia_registry()** (9 connections) — `server/dependencies.py`
+- **get_passive_lucidity_flux_service()** (9 connections) — `server/dependencies.py`
+- *... and 47 more nodes in this community*
 
 ## Relationships
 
-- [magic healing game](magic_healing_game.md) (43 shared connections)
-- [Magic Spell Service](Magic_Spell_Service.md) (19 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (16 shared connections)
-- [character creation validate](character_creation_validate.md) (11 shared connections)
-- [game rationale schemas](game_rationale_schemas.md) (8 shared connections)
-- [maps handle ascii](maps_handle_ascii.md) (8 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (8 shared connections)
-- [auth users rationale](auth_users_rationale.md) (6 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (6 shared connections)
-- [player model models](player_model_models.md) (5 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (4 shared connections)
-- [Player Stats](Player_Stats.md) (4 shared connections)
+- [game models player](game_models_player.md) (12 shared connections)
+- [command inventory factories](command_inventory_factories.md) (9 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (9 shared connections)
+- [profession game service](profession_game_service.md) (8 shared connections)
+- [NPC Combat](NPC_Combat.md) (8 shared connections)
+- [command inventory models](command_inventory_models.md) (7 shared connections)
+- [room game service](room_game_service.md) (7 shared connections)
+- [Database Config](Database_Config.md) (6 shared connections)
+- [Error Conversion](Error_Conversion.md) (6 shared connections)
+- [config rationale config()](config_rationale_config%28%29.md) (6 shared connections)
+- [nats services service](nats_services_service.md) (5 shared connections)
+- [npc realtime occupant](npc_realtime_occupant.md) (5 shared connections)
 
 ## Source Files
 
-- `server/api/game.py`
 - `server/database.py`
 - `server/dependencies.py`
-- `server/game/level_curve.py`
-- `server/game/level_service.py`
-- `server/tests/unit/game/test_level_curve.py`
-- `server/tests/unit/game/test_level_service.py`
 - `server/tests/unit/infrastructure/test_dependencies.py`
 - `server/tests/unit/test_dependency_injection.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1109 (90%)
-- INFERRED: 123 (10%)
+- EXTRACTED: 489 (85%)
+- INFERRED: 83 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

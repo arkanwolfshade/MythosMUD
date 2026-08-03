@@ -1,33 +1,29 @@
 # commands exploration rationale
 
-> 9 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **handle_explore_command()** (8 connections) — `server/commands/exploration_commands.py`
-- **test_exploration_commands.py** (5 connections) — `server/tests/unit/commands/test_exploration_commands.py`
-- **test_handle_explore_command()** (3 connections) — `server/tests/unit/commands/test_exploration_commands.py`
-- **test_handle_explore_command_no_persistence()** (3 connections) — `server/tests/unit/commands/test_exploration_commands.py`
-- **Any** (1 connections)
-- **Handle exploration requests by returning a simple message.      This lightweight** (1 connections) — `server/commands/exploration_commands.py`
-- **Unit tests for exploration command handlers.  Tests the exploration command func** (1 connections) — `server/tests/unit/commands/test_exploration_commands.py`
-- **Test handle_explore_command() explores area.** (1 connections) — `server/tests/unit/commands/test_exploration_commands.py`
-- **Test handle_explore_command() handles missing persistence.** (1 connections) — `server/tests/unit/commands/test_exploration_commands.py`
+- **._calculate_exit_weights()** (5 connections) — `server/npc/idle_movement.py`
+- **._calculate_exit_weight()** (3 connections) — `server/npc/idle_movement.py`
+- **._calculate_distance_to_room()** (3 connections) — `server/npc/idle_movement.py`
+- **Calculate weight for an exit based on distance from spawn.          Args:** (1 connections) — `server/npc/idle_movement.py`
+- **Calculate weights for all exits.          Args:             valid_exits: Dict** (1 connections) — `server/npc/idle_movement.py`
+- **Calculate approximate distance between two rooms.          This is a simplifie** (1 connections) — `server/npc/idle_movement.py`
 
 ## Relationships
 
-- [commands alias rationale](commands_alias_rationale.md) (3 shared connections)
-- [realtime game state](realtime_game_state.md) (1 shared connections)
+- [config models player](config_models_player.md) (3 shared connections)
+- [idle npc movement](idle_npc_movement.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/exploration_commands.py`
-- `server/tests/unit/commands/test_exploration_commands.py`
+- `server/npc/idle_movement.py`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (96%)
-- INFERRED: 1 (4%)
+- EXTRACTED: 14 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_send_occupants_snapshot_to_player_success()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **Test send_occupants_snapshot_to_player() successfully sends snapshot.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_create_channel_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_channel_command delegates to communication factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- [player room event](player_room_event.md) (1 shared connections)
+- [command factories create](command_factories_create.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 

@@ -1,50 +1,47 @@
 # player respawn event
 
-> 58 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **test_player_event_handlers_respawn.py** (34 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **player_respawn_event_handler()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_send_respawn_event_with_retry_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **mock_logger()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_player_respawn_event_handler_init()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_update_connection_manager_position_success()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_update_connection_manager_position_player_not_online()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_update_connection_manager_position_no_online_players_attr()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_get_player_data_for_respawn_success()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_get_player_data_for_respawn_no_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_get_player_data_for_respawn_no_persistence()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_get_player_data_for_respawn_player_not_found()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_get_player_data_for_respawn_error_handling()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_send_respawn_event_with_retry_success()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_send_respawn_event_with_retry_waits_for_connection()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_send_respawn_event_with_retry_timeout()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_handle_player_respawned_success()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_handle_player_respawned_error_handling()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_get_current_lucidity_found()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_get_current_lucidity_not_found()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_get_player_data_for_delirium_respawn_success()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_get_player_data_for_delirium_respawn_no_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_get_player_data_for_delirium_respawn_player_not_found()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_get_player_data_for_delirium_respawn_error_handling()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- *... and 33 more nodes in this community*
+- **NPCStartupService** (44 connections) — `server/services/npc_startup_service.py`
+- **npc_startup_service()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_get_npc_startup_service()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_npcs_on_startup()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_npcs_on_startup_with_required_npcs()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_required_npcs_spawn_failure()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_get_default_room_for_sub_zone()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_get_default_room_for_sub_zone_unknown()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_optional_npcs_no_spawn_room()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **.__init__()** (2 connections) — `server/services/npc_startup_service.py`
+- **Service for automatic NPC spawning during server startup.      This service coor** (1 connections) — `server/services/npc_startup_service.py`
+- **Initialize the NPC startup service.** (1 connections) — `server/services/npc_startup_service.py`
+- **Create an NPCStartupService instance.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test spawn_npcs_on_startup() processes startup spawning.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test spawn_npcs_on_startup() spawns required NPCs.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _spawn_required_npcs() handles spawn failures.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _get_default_room_for_sub_zone() returns correct room for known sub-zone.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _get_default_room_for_sub_zone() returns None for unknown sub-zone.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test get_npc_startup_service() returns service instance.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _spawn_optional_npcs() handles missing spawn room.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
 
 ## Relationships
 
-- [player respawn event](player_respawn_event.md) (4 shared connections)
-- [player event realtime](player_event_realtime.md) (2 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (1 shared connections)
+- [startup npc service](startup_npc_service.md) (18 shared connections)
+- [services npc startup](services_npc_startup.md) (16 shared connections)
+- [startup services npc](startup_services_npc.md) (5 shared connections)
+- [Magic Spell Service](Magic_Spell_Service.md) (3 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- `server/services/npc_startup_service.py`
+- `server/tests/unit/services/test_npc_startup_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 121 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 78 (95%)
+- INFERRED: 4 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,37 +1,45 @@
 # movement monitor game
 
-> 16 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **test_inventory_mutation_guard_error_handling.py** (10 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
-- **guard()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
-- **test_cleanup_async_state_lock_attribute_error()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
-- **test_cleanup_async_state_lock_runtime_error()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
-- **test_acquire_record_custom_alert_with_message_param()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
-- **test_acquire_async_record_custom_alert_with_message_param()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
-- **test_acquire_record_custom_alert_type_error_fallback()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
-- **test_acquire_async_record_custom_alert_type_error_fallback()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
-- **Unit tests for inventory mutation guard - error handling and monitoring.  Tests** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
-- **Create an InventoryMutationGuard instance.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
-- **Test _cleanup_async_state handles AttributeError from lock.locked().** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
-- **Test _cleanup_async_state handles RuntimeError from lock.locked().** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
-- **Test acquire handles record_custom_alert with message parameter.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
-- **Test acquire_async handles record_custom_alert with message parameter.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
-- **Test acquire handles TypeError from record_custom_alert and uses fallback.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
-- **Test acquire_async handles TypeError from record_custom_alert and uses fallback.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
+- **test_game_enums.py** (11 connections) — `server/tests/unit/models/test_game_enums.py`
+- **AttributeType** (8 connections) — `server/models/game.py`
+- **StrEnum** (3 connections)
+- **.get_attribute_modifier()** (3 connections) — `server/models/game.py`
+- **test_attribute_type_enum_values()** (2 connections) — `server/tests/unit/models/test_game_enums.py`
+- **test_attribute_type_enum_all_types()** (2 connections) — `server/tests/unit/models/test_game_enums.py`
+- **test_status_effect_type_enum_values()** (2 connections) — `server/tests/unit/models/test_game_enums.py`
+- **test_status_effect_type_enum_all_types()** (2 connections) — `server/tests/unit/models/test_game_enums.py`
+- **test_position_state_enum_values()** (2 connections) — `server/tests/unit/models/test_game_enums.py`
+- **test_position_state_enum_all_states()** (2 connections) — `server/tests/unit/models/test_game_enums.py`
+- **Core attribute types for the character system .** (1 connections) — `server/models/game.py`
+- **Get the modifier for a given attribute (standard D&D-style calculation).** (1 connections) — `server/models/game.py`
+- **Unit tests for game model enums.  Tests AttributeType, StatusEffectType, and Pos** (1 connections) — `server/tests/unit/models/test_game_enums.py`
+- **Test AttributeType enum contains expected values.** (1 connections) — `server/tests/unit/models/test_game_enums.py`
+- **Test AttributeType enum contains all expected types.** (1 connections) — `server/tests/unit/models/test_game_enums.py`
+- **Test StatusEffectType enum contains expected values.** (1 connections) — `server/tests/unit/models/test_game_enums.py`
+- **Test StatusEffectType enum contains all expected types.** (1 connections) — `server/tests/unit/models/test_game_enums.py`
+- **Test PositionState enum contains expected values.** (1 connections) — `server/tests/unit/models/test_game_enums.py`
+- **Test PositionState enum contains all expected states.** (1 connections) — `server/tests/unit/models/test_game_enums.py`
 
 ## Relationships
 
-- [container helpers endpoints](container_helpers_endpoints.md) (3 shared connections)
+- [command inventory factories](command_inventory_factories.md) (4 shared connections)
+- [schemas unified room](schemas_unified_room.md) (2 shared connections)
+- [command factories exploration](command_factories_exploration.md) (2 shared connections)
+- [profession game service](profession_game_service.md) (1 shared connections)
+- [world models rationale](world_models_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
+- `server/models/game.py`
+- `server/tests/unit/models/test_game_enums.py`
 
 ## Audit Trail
 
-- EXTRACTED: 33 (100%)
+- EXTRACTED: 46 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

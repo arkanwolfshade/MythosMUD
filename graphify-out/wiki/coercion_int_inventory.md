@@ -1,33 +1,52 @@
 # coercion int inventory
 
-> 6 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **CorruptionRequest** (11 connections) — `server/schemas/players/player_requests.py`
-- **test_corruption_request_validation()** (4 connections) — `server/tests/unit/schemas/test_player_requests.py`
-- **test_corruption_request()** (3 connections) — `server/tests/unit/schemas/test_player_requests.py`
-- **Request model for applying corruption.** (1 connections) — `server/schemas/players/player_requests.py`
-- **Test CorruptionRequest can be instantiated.** (1 connections) — `server/tests/unit/schemas/test_player_requests.py`
-- **Test CorruptionRequest validates amount range.** (1 connections) — `server/tests/unit/schemas/test_player_requests.py`
+- **MPRegenerationService** (20 connections) — `server/game/magic/mp_regeneration_service.py`
+- **.process_tick_regeneration()** (6 connections) — `server/game/magic/mp_regeneration_service.py`
+- **UUID** (5 connections)
+- **Any** (5 connections)
+- **._get_regen_multiplier()** (4 connections) — `server/game/magic/mp_regeneration_service.py`
+- **.restore_mp_from_rest()** (4 connections) — `server/game/magic/mp_regeneration_service.py`
+- **.restore_mp_from_meditation()** (4 connections) — `server/game/magic/mp_regeneration_service.py`
+- **.restore_mp_from_item()** (4 connections) — `server/game/magic/mp_regeneration_service.py`
+- **mp_regeneration_service()** (4 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **.__init__()** (3 connections) — `server/game/magic/mp_regeneration_service.py`
+- **test_mp_regeneration_service_init()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **test_mp_regeneration_service_init_custom_rate()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Service for managing MP regeneration.      Handles passive regeneration over tim** (1 connections) — `server/game/magic/mp_regeneration_service.py`
+- **Initialize the MP regeneration service.          Args:             player_servic** (1 connections) — `server/game/magic/mp_regeneration_service.py`
+- **Process MP regeneration for a player on a game tick.          Args:** (1 connections) — `server/game/magic/mp_regeneration_service.py`
+- **Get MP regeneration multiplier based on player state.          Args:** (1 connections) — `server/game/magic/mp_regeneration_service.py`
+- **Restore MP from resting (accelerated regeneration).          Args:             p** (1 connections) — `server/game/magic/mp_regeneration_service.py`
+- **Restore MP from meditation (highly accelerated regeneration).          Args:** (1 connections) — `server/game/magic/mp_regeneration_service.py`
+- **Restore MP from consuming an item.          Args:             player_id: Player** (1 connections) — `server/game/magic/mp_regeneration_service.py`
+- **Create an MPRegenerationService instance.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Test MPRegenerationService initialization.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Test MPRegenerationService initialization with custom regen_rate.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Relationships
 
-- [player requests schemas](player_requests_schemas.md) (5 shared connections)
-- [player effects endpoints](player_effects_endpoints.md) (2 shared connections)
-- [player schemas requests](player_schemas_requests.md) (2 shared connections)
-- [Player Stats](Player_Stats.md) (1 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [regeneration service magic](regeneration_service_magic.md) (4 shared connections)
+- [Error Conversion](Error_Conversion.md) (3 shared connections)
+- [game models player](game_models_player.md) (2 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (2 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [command inventory models](command_inventory_models.md) (2 shared connections)
+- [connection manager realtime](connection_manager_realtime.md) (1 shared connections)
+- [commands admin mute](commands_admin_mute.md) (1 shared connections)
 
 ## Source Files
 
-- `server/schemas/players/player_requests.py`
-- `server/tests/unit/schemas/test_player_requests.py`
+- `server/game/magic/mp_regeneration_service.py`
+- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (95%)
-- INFERRED: 1 (5%)
+- EXTRACTED: 71 (95%)
+- INFERRED: 4 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

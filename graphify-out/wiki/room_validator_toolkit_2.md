@@ -1,53 +1,59 @@
 # room validator toolkit
 
-> 48 nodes
+> 37 nodes
 
 ## Key Concepts
 
-- **PathValidator** (25 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **TestValidatorComponents** (11 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **TestValidatorEdgeCases** (10 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **.check_bidirectional_connections()** (6 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **.test_full_validation_pipeline()** (6 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **.build_graph()** (5 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **._get_exit_target()** (5 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **.test_room_with_nonexistent_exit_targets()** (5 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **test_validator_integration.py** (4 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **.test_path_validator_integration()** (4 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **.test_empty_room_directory()** (4 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **.test_room_with_malformed_json()** (4 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **.test_room_with_missing_required_fields()** (4 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **._is_one_way_exit()** (3 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **._get_room_zone()** (3 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **._get_opposite_direction()** (3 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **.find_dead_ends()** (3 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **.find_self_references()** (3 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **.generate_minimap_graph()** (3 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **.test_room_loader_integration()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **.test_schema_validator_integration()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **.test_reporter_integration()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **.__init__()** (2 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **.find_unreachable_rooms()** (2 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **Validates room connectivity using graph traversal algorithms.      Implements th** (1 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- *... and 23 more nodes in this community*
+- **validator.py** (15 connections) — `tools/room_toolkit/room_validator/validator.py`
+- **__init__.py** (11 connections) — `tools/room_toolkit/room_validator/core/__init__.py`
+- **main()** (10 connections) — `tools/room_toolkit/room_validator/validator.py`
+- **_initialize_validator_components()** (8 connections) — `tools/room_toolkit/room_validator/validator.py`
+- **Any** (7 connections)
+- **_load_and_filter_rooms()** (6 connections) — `tools/room_toolkit/room_validator/validator.py`
+- **_validate_room_connectivity()** (6 connections) — `tools/room_toolkit/room_validator/validator.py`
+- **_apply_automatic_fixes()** (6 connections) — `tools/room_toolkit/room_validator/validator.py`
+- **_validate_config_files()** (6 connections) — `tools/room_toolkit/room_validator/validator.py`
+- **_generate_minimap()** (6 connections) — `tools/room_toolkit/room_validator/validator.py`
+- **_report_results()** (6 connections) — `tools/room_toolkit/room_validator/validator.py`
+- **reporter.py** (5 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
+- **room_loader.py** (5 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
+- **_collect_parsing_errors()** (5 connections) — `tools/room_toolkit/room_validator/validator.py`
+- **fixer.py** (4 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **path_validator.py** (4 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
+- **minimap_renderer.py** (3 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **test_reporter.py** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
+- **test_room_loader.py** (3 connections) — `tools/room_toolkit/room_validator/tests/test_room_loader.py`
+- **SchemaValidator** (3 connections)
+- **Core validation components for the MythosMUD room validator.  This module contai** (1 connections) — `tools/room_toolkit/room_validator/core/__init__.py`
+- **Room fixer for automatic issue resolution.  This module handles automatic fixing** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **Mini-map renderer for room connectivity visualization.  This module provides vis** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **Path validator for room connectivity analysis.  This module handles graph traver** (1 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
+- **Reporter for validation results.  This module handles formatting and displaying** (1 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
+- *... and 12 more nodes in this community*
 
 ## Relationships
 
-- [room toolkit validator](room_toolkit_validator.md) (12 shared connections)
-- [room validator toolkit](room_validator_toolkit.md) (10 shared connections)
-- [room conftest toolkit](room_conftest_toolkit.md) (4 shared connections)
-- [room validator path](room_validator_path.md) (2 shared connections)
-- [validator room toolkit](validator_room_toolkit.md) (2 shared connections)
+- [room toolkit validator](room_toolkit_validator.md) (21 shared connections)
+- [player service mutations](player_service_mutations.md) (5 shared connections)
+- [commands admin mute](commands_admin_mute.md) (2 shared connections)
+- [room validator toolkit](room_validator_toolkit.md) (1 shared connections)
 
 ## Source Files
 
+- `tools/room_toolkit/room_validator/core/__init__.py`
+- `tools/room_toolkit/room_validator/core/fixer.py`
+- `tools/room_toolkit/room_validator/core/minimap_renderer.py`
 - `tools/room_toolkit/room_validator/core/path_validator.py`
-- `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- `tools/room_toolkit/room_validator/core/reporter.py`
+- `tools/room_toolkit/room_validator/core/room_loader.py`
+- `tools/room_toolkit/room_validator/tests/test_reporter.py`
+- `tools/room_toolkit/room_validator/tests/test_room_loader.py`
+- `tools/room_toolkit/room_validator/validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 114 (77%)
-- INFERRED: 34 (23%)
+- EXTRACTED: 138 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

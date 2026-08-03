@@ -1,17 +1,36 @@
 # static schemas room
 
-> 4 nodes
+> 23 nodes
 
 ## Key Concepts
 
-- **exits** (4 connections) — `db/static/schemas/room.schema.json`
+- **properties** (11 connections) — `db/static/schemas/room.schema.json`
+- **string** (11 connections) — `db/static/schemas/room.schema.json`
+- **null** (11 connections) — `db/static/schemas/room.schema.json`
 - **type** (3 connections) — `db/static/schemas/room.schema.json`
-- **additionalProperties** (2 connections) — `db/static/schemas/room.schema.json`
-- **type** (1 connections) — `db/static/schemas/room.schema.json`
+- **type** (3 connections) — `db/static/schemas/room.schema.json`
+- **type** (3 connections) — `db/static/schemas/room.schema.json`
+- **type** (3 connections) — `db/static/schemas/room.schema.json`
+- **type** (3 connections) — `db/static/schemas/room.schema.json`
+- **type** (3 connections) — `db/static/schemas/room.schema.json`
+- **type** (3 connections) — `db/static/schemas/room.schema.json`
+- **type** (3 connections) — `db/static/schemas/room.schema.json`
+- **type** (3 connections) — `db/static/schemas/room.schema.json`
+- **type** (3 connections) — `db/static/schemas/room.schema.json`
+- **north** (2 connections) — `db/static/schemas/room.schema.json`
+- **south** (2 connections) — `db/static/schemas/room.schema.json`
+- **east** (2 connections) — `db/static/schemas/room.schema.json`
+- **west** (2 connections) — `db/static/schemas/room.schema.json`
+- **northeast** (2 connections) — `db/static/schemas/room.schema.json`
+- **northwest** (2 connections) — `db/static/schemas/room.schema.json`
+- **southeast** (2 connections) — `db/static/schemas/room.schema.json`
+- **southwest** (2 connections) — `db/static/schemas/room.schema.json`
+- **up** (2 connections) — `db/static/schemas/room.schema.json`
+- **down** (2 connections) — `db/static/schemas/room.schema.json`
 
 ## Relationships
 
-- [static schemas room](static_schemas_room.md) (4 shared connections)
+- [static schemas room](static_schemas_room.md) (3 shared connections)
 
 ## Source Files
 
@@ -19,7 +38,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
+- EXTRACTED: 83 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

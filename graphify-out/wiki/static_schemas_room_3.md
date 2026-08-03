@@ -1,16 +1,17 @@
 # static schemas room
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **plane** (3 connections) — `db/static/schemas/room.schema.json`
+- **exits** (4 connections) — `db/static/schemas/room.schema.json`
+- **type** (3 connections) — `db/static/schemas/room.schema.json`
+- **additionalProperties** (2 connections) — `db/static/schemas/room.schema.json`
 - **type** (1 connections) — `db/static/schemas/room.schema.json`
-- **minLength** (1 connections) — `db/static/schemas/room.schema.json`
 
 ## Relationships
 
-- [static schemas room](static_schemas_room.md) (1 shared connections)
+- [static schemas room](static_schemas_room.md) (4 shared connections)
 
 ## Source Files
 
@@ -18,7 +19,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 10 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

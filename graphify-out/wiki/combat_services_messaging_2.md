@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **.__init__()** (3 connections) — `server/realtime/player_name_utils.py`
-- **Initialize the player name extractor.** (1 connections) — `server/realtime/player_name_utils.py`
+- **test_handle_alias_command_circular_reference()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **Test handle_alias_command with circular reference.** (1 connections) — `server/tests/unit/commands/test_alias_commands.py`
 
 ## Relationships
 
-- [Player Name Validation](Player_Name_Validation.md) (1 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (1 shared connections)
+- [commands alias rationale](commands_alias_rationale.md) (1 shared connections)
+- [scripts worktree ops](scripts_worktree_ops.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/player_name_utils.py`
+- `server/tests/unit/commands/test_alias_commands.py`
 
 ## Audit Trail
 

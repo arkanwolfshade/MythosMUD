@@ -1,10 +1,10 @@
 # game rationale schemas
 
-> 76 nodes
+> 67 nodes
 
 ## Key Concepts
 
-- **test_game.py** (20 connections) — `server/tests/unit/api/test_game.py`
+- **game.py** (25 connections) — `server/api/game.py`
 - **MythosTimeResponse** (15 connections) — `server/schemas/game/game.py`
 - **get_mythos_time()** (14 connections) — `server/api/game.py`
 - **broadcast_message()** (13 connections) — `server/api/game.py`
@@ -27,17 +27,22 @@
 - **.test_get_mythos_time_with_holidays()** (4 connections) — `server/tests/unit/api/test_game.py`
 - **.test_get_mythos_time_no_container()** (4 connections) — `server/tests/unit/api/test_game.py`
 - **.test_get_mythos_time_holiday_service_upcoming_error()** (4 connections) — `server/tests/unit/api/test_game.py`
-- **TestGetGameStatusLogger** (4 connections) — `server/tests/unit/api/test_game.py`
 - **.test_get_mythos_time_container_no_holiday_service_attribute()** (4 connections) — `server/tests/unit/api/test_game.py`
-- *... and 51 more nodes in this community*
+- **.test_get_mythos_time_logs_debug()** (4 connections) — `server/tests/unit/api/test_game.py`
+- *... and 42 more nodes in this community*
 
 ## Relationships
 
-- [auth users rationale](auth_users_rationale.md) (10 shared connections)
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (8 shared connections)
-- [Player Stats](Player_Stats.md) (4 shared connections)
-- [project paths rationale](project_paths_rationale.md) (3 shared connections)
-- [time service rationale](time_service_rationale.md) (1 shared connections)
+- [ascii map renderer](ascii_map_renderer.md) (19 shared connections)
+- [command inventory factories](command_inventory_factories.md) (4 shared connections)
+- [admin auth service](admin_auth_service.md) (4 shared connections)
+- [holiday service services](holiday_service_services.md) (3 shared connections)
+- [time service rationale](time_service_rationale.md) (3 shared connections)
+- [auth users rationale](auth_users_rationale.md) (2 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (2 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [logging file setup](logging_file_setup.md) (1 shared connections)
 
 ## Source Files
 
@@ -48,8 +53,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 233 (90%)
-- INFERRED: 25 (10%)
+- EXTRACTED: 223 (91%)
+- INFERRED: 22 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

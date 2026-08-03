@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_get_applicable_rules_no_matching()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test get_applicable_rules() returns empty list when no rules match.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_sanitize_unicode_input_mojibake()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Test sanitizing mojibake (double-encoded text).** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
 
 ## Relationships
 
-- [npc behavior engine](npc_behavior_engine.md) (1 shared connections)
-- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
+- [Security Validator Tests](Security_Validator_Tests.md) (1 shared connections)
+- [command communication models](command_communication_models.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_behavior_engine.py`
+- `server/tests/unit/validators/test_security_validator.py`
 
 ## Audit Trail
 

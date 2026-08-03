@@ -1,52 +1,48 @@
 # commands who helpers
 
-> 38 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **format_player_location()** (13 connections) — `server/commands/who_commands.py`
-- **format_player_entry()** (13 connections) — `server/commands/who_commands.py`
-- **test_who_commands_helpers.py** (12 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- **test_format_player_entry_error_handling()** (4 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_format_player_location_valid()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_format_player_location_invalid()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_format_player_location_none()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_format_player_entry_basic()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_format_player_entry_admin()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_format_player_entry_missing_attributes()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_format_player_location_short_format()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_format_player_location_non_string()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_filter_players_by_name_found()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- **test_filter_players_by_name_not_found()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- **test_filter_players_by_name_empty_filter()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- **test_format_player_location_valid()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- **test_format_player_location_invalid()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- **test_format_player_entry()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- **test_format_player_entry_admin()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- **Format player location as Zone: Sub-zone: Room from room ID.      Args:** (1 connections) — `server/commands/who_commands.py`
-- **Format a single player entry for the who command output.      Args:         play** (1 connections) — `server/commands/who_commands.py`
-- **Test formatting valid player location.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **Test formatting invalid player location.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **Test formatting None location.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **Test formatting basic player entry.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
-- *... and 13 more nodes in this community*
+- **validate_combat_target()** (14 connections) — `server/validators/security_validator.py`
+- **.validate_target()** (3 connections) — `server/models/command_combat.py`
+- **.validate_target()** (3 connections) — `server/models/command_combat.py`
+- **.validate_target()** (3 connections) — `server/models/command_combat.py`
+- **.validate_target()** (3 connections) — `server/models/command_combat.py`
+- **.validate_target()** (3 connections) — `server/models/command_combat.py`
+- **test_validate_combat_target_empty()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_validate_combat_target_valid_player()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_validate_combat_target_valid_npc()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_validate_combat_target_rejects_dangerous_chars()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_validate_combat_target_rejects_too_long()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Validate combat target name format using centralized validation.** (1 connections) — `server/models/command_combat.py`
+- **Validate combat target name format using centralized validation.** (1 connections) — `server/models/command_combat.py`
+- **Validate combat target name format using centralized validation.** (1 connections) — `server/models/command_combat.py`
+- **Validate combat target name format using centralized validation.** (1 connections) — `server/models/command_combat.py`
+- **Validate combat target name format using centralized validation.** (1 connections) — `server/models/command_combat.py`
+- **Test validating empty combat target.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Test validating valid player combat target.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Test validating valid NPC combat target with title.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Test that validate_combat_target rejects dangerous characters.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Test that validate_combat_target rejects names that are too long.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Validation for combat target fields that can be either players or NPCs.      Thi** (1 connections) — `server/validators/security_validator.py`
 
 ## Relationships
 
-- [commands who rationale](commands_who_rationale.md) (19 shared connections)
-- [commands emote rationale](commands_emote_rationale.md) (2 shared connections)
-- [room websocket updates](room_websocket_updates.md) (1 shared connections)
+- [command factories create](command_factories_create.md) (6 shared connections)
+- [Security Validator Tests](Security_Validator_Tests.md) (6 shared connections)
+- [command communication models](command_communication_models.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/who_commands.py`
-- `server/tests/unit/commands/test_who_commands.py`
-- `server/tests/unit/commands/test_who_commands_helpers.py`
+- `server/models/command_combat.py`
+- `server/tests/unit/validators/test_security_validator.py`
+- `server/validators/security_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 105 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 54 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

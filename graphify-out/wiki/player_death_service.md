@@ -1,13 +1,10 @@
 # player death service
 
-> 86 nodes
+> 80 nodes
 
 ## Key Concepts
 
 - **test_player_death_service.py** (52 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **player_death_service()** (3 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **player_death_service_no_dependencies()** (3 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **mock_player()** (3 connections) — `server/tests/unit/services/test_player_death_service.py`
 - **test_process_mortally_wounded_tick_publishes_event()** (3 connections) — `server/tests/unit/services/test_player_death_service.py`
 - **test_publish_death_event_with_event_bus()** (3 connections) — `server/tests/unit/services/test_player_death_service.py`
 - **mock_event_bus()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
@@ -29,15 +26,18 @@
 - **test_process_mortally_wounded_tick_already_dead()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
 - **test_process_mortally_wounded_tick_applies_decay()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
 - **test_process_mortally_wounded_tick_caps_at_negative_10()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
-- *... and 61 more nodes in this community*
+- **test_process_mortally_wounded_tick_changes_posture_to_lying()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **test_process_mortally_wounded_tick_handles_error()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **test_ensure_player_posture_lying_already_lying()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
+- *... and 55 more nodes in this community*
 
 ## Relationships
 
-- [NATS Messaging](NATS_Messaging.md) (6 shared connections)
-- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (3 shared connections)
-- [world models rationale](world_models_rationale.md) (2 shared connections)
-- [Async Query Helpers](Async_Query_Helpers.md) (2 shared connections)
-- [game models player](game_models_player.md) (1 shared connections)
+- [item models rationale](item_models_rationale.md) (6 shared connections)
+- [alias command models](alias_command_models.md) (3 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [combat models rationale](combat_models_rationale.md) (2 shared connections)
+- [world models rationale](world_models_rationale.md) (1 shared connections)
 
 ## Source Files
 
@@ -45,8 +45,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 181 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 170 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

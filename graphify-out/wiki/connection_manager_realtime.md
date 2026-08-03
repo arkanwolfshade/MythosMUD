@@ -34,17 +34,17 @@
 ## Relationships
 
 - [Room Broadcast](Room_Broadcast.md) (9 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (8 shared connections)
-- [npc populate databases](npc_populate_databases.md) (7 shared connections)
-- [combat services messaging](combat_services_messaging.md) (4 shared connections)
-- [Magic Spell Service](Magic_Spell_Service.md) (4 shared connections)
-- [auth endpoints rationale](auth_endpoints_rationale.md) (3 shared connections)
-- [magic healing game](magic_healing_game.md) (2 shared connections)
-- [spell models rationale](spell_models_rationale.md) (2 shared connections)
-- [message handler factory](message_handler_factory.md) (2 shared connections)
-- [lucidity event services](lucidity_event_services.md) (2 shared connections)
+- [Database Config](Database_Config.md) (8 shared connections)
+- [combat services messaging](combat_services_messaging.md) (5 shared connections)
+- [command inventory factories](command_inventory_factories.md) (5 shared connections)
+- [follow game service](follow_game_service.md) (4 shared connections)
+- [game models player](game_models_player.md) (4 shared connections)
+- [tick game processing](tick_game_processing.md) (3 shared connections)
+- [time service rationale](time_service_rationale.md) (3 shared connections)
+- [aggro threat services](aggro_threat_services.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
 - [room websocket updates](room_websocket_updates.md) (1 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [magic healing game](magic_healing_game.md) (1 shared connections)
 
 ## Source Files
 

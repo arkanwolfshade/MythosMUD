@@ -1,35 +1,31 @@
 # config rationale config()
 
-> 12 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **test_config_init.py** (9 connections) — `server/tests/unit/config/test_config_init.py`
-- **test_get_config_returns_app_config()** (3 connections) — `server/tests/unit/config/test_config_init.py`
-- **test_get_config_fresh_instances_in_test_mode()** (3 connections) — `server/tests/unit/config/test_config_init.py`
-- **test_get_config_has_server_config()** (3 connections) — `server/tests/unit/config/test_config_init.py`
-- **test_get_config_has_database_config()** (3 connections) — `server/tests/unit/config/test_config_init.py`
-- **test_get_config_has_game_config()** (3 connections) — `server/tests/unit/config/test_config_init.py`
-- **Unit tests for config module initialization.** (1 connections) — `server/tests/unit/config/test_config_init.py`
-- **Test that get_config() returns an AppConfig object.** (1 connections) — `server/tests/unit/config/test_config_init.py`
-- **Test that get_config() returns fresh instances in test mode.** (1 connections) — `server/tests/unit/config/test_config_init.py`
-- **Test that config has server configuration.** (1 connections) — `server/tests/unit/config/test_config_init.py`
-- **Test that config has database configuration.** (1 connections) — `server/tests/unit/config/test_config_init.py`
-- **Test that config has game configuration.** (1 connections) — `server/tests/unit/config/test_config_init.py`
+- **TestGetStatsGenerator** (7 connections) — `server/tests/unit/test_dependency_injection.py`
+- **.test_get_stats_generator()** (4 connections) — `server/tests/unit/test_dependency_injection.py`
+- **.test_get_stats_generator_stateless()** (4 connections) — `server/tests/unit/test_dependency_injection.py`
+- **Test get_stats_generator() function.** (1 connections) — `server/tests/unit/test_dependency_injection.py`
+- **Test get_stats_generator() returns StatsGenerator instance.** (1 connections) — `server/tests/unit/test_dependency_injection.py`
+- **Test get_stats_generator() returns stateless instance.** (1 connections) — `server/tests/unit/test_dependency_injection.py`
 
 ## Relationships
 
-- [Item Instances](Item_Instances.md) (6 shared connections)
-- [config rationale reset](config_rationale_reset.md) (2 shared connections)
+- [profession game service](profession_game_service.md) (3 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (3 shared connections)
+- [command inventory models](command_inventory_models.md) (1 shared connections)
+- [room game service](room_game_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/config/test_config_init.py`
+- `server/tests/unit/test_dependency_injection.py`
 
 ## Audit Trail
 
-- EXTRACTED: 30 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 13 (72%)
+- INFERRED: 5 (28%)
 - AMBIGUOUS: 0 (0%)
 
 ---

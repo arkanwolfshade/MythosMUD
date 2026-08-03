@@ -22,7 +22,7 @@
 
 ## Relationships
 
-- [commands alias rationale](commands_alias_rationale.md) (3 shared connections)
+- [commands admin mute](commands_admin_mute.md) (3 shared connections)
 - [realtime game state](realtime_game_state.md) (1 shared connections)
 - [time service rationale](time_service_rationale.md) (1 shared connections)
 - [commands emote rationale](commands_emote_rationale.md) (1 shared connections)

@@ -1,10 +1,10 @@
 # admin auth service
 
-> 258 nodes
+> 168 nodes
 
 ## Key Concepts
 
-- **test_admin_auth_service.py** (54 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **__init__.py** (70 connections) — `server/schemas/__init__.py`
 - **get_admin_auth_service()** (44 connections) — `server/services/admin_auth_service.py`
 - **validate_admin_permission()** (37 connections) — `server/api/admin/npc_router_core.py`
 - **npc_definitions_api.py** (29 connections) — `server/api/admin/npc_definitions_api.py`
@@ -29,22 +29,22 @@
 - **create_npc_spawn_rule()** (11 connections) — `server/api/admin/npc_spawn_rules_api.py`
 - **test_dialogue_definitions_api.py** (11 connections) — `server/tests/unit/api/test_dialogue_definitions_api.py`
 - **_to_response()** (10 connections) — `server/api/admin/dialogue_definitions_api.py`
-- *... and 233 more nodes in this community*
+- *... and 143 more nodes in this community*
 
 ## Relationships
 
-- [auth users rationale](auth_users_rationale.md) (44 shared connections)
 - [Exception Containers](Exception_Containers.md) (30 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (20 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (17 shared connections)
-- [services admin auth](services_admin_auth.md) (13 shared connections)
-- [Player Stats](Player_Stats.md) (11 shared connections)
-- [command inventory factories](command_inventory_factories.md) (7 shared connections)
-- [dialogue definition persistence](dialogue_definition_persistence.md) (7 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (7 shared connections)
-- [dialogue service game](dialogue_service_game.md) (5 shared connections)
-- [maps handle ascii](maps_handle_ascii.md) (5 shared connections)
-- [respawn player handlers](respawn_player_handlers.md) (5 shared connections)
+- [ascii map renderer](ascii_map_renderer.md) (27 shared connections)
+- [command inventory factories](command_inventory_factories.md) (26 shared connections)
+- [Database Config](Database_Config.md) (13 shared connections)
+- [inventory schemas schema](inventory_schemas_schema.md) (12 shared connections)
+- [commands npc admin](commands_npc_admin.md) (10 shared connections)
+- [room game service](room_game_service.md) (9 shared connections)
+- [logging file setup](logging_file_setup.md) (8 shared connections)
+- [command factories moderation](command_factories_moderation.md) (7 shared connections)
+- [command handler processing](command_handler_processing.md) (7 shared connections)
+- [auth users rationale](auth_users_rationale.md) (6 shared connections)
+- [metrics schemas rationale](metrics_schemas_rationale.md) (6 shared connections)
 
 ## Source Files
 
@@ -59,17 +59,17 @@
 - `server/api/admin/npc_router_core.py`
 - `server/api/admin/npc_schemas.py`
 - `server/api/admin/npc_spawn_rules_api.py`
+- `server/schemas/__init__.py`
 - `server/schemas/admin/__init__.py`
 - `server/schemas/admin/admin_data.py`
 - `server/schemas/admin/npc_admin.py`
 - `server/services/admin_auth_service.py`
 - `server/tests/unit/api/test_dialogue_definitions_api.py`
-- `server/tests/unit/services/test_admin_auth_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1132 (96%)
-- INFERRED: 45 (4%)
+- EXTRACTED: 1008 (96%)
+- INFERRED: 42 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

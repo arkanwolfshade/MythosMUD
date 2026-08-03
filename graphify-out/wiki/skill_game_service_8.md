@@ -1,24 +1,26 @@
 # skill game service
 
-> 2 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **test_occupant_formatter_process_dict_occupant_for_update_fallback_name()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter._process_dict_occupant_for_update() processes fallback na** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **Phase 2: Categorize and Prioritize Lint Issues** (5 connections) — `.cursor/commands/lint-remediation.md`
+- **🔴 CRITICAL (Fix First - Blocking Issues)** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **🟡 HIGH PRIORITY (Fix Second - Core Functionality)** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **🟢 MEDIUM PRIORITY (Fix Third - Enhancement)** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **🔵 LOW PRIORITY (Fix Last - Polish)** (1 connections) — `.cursor/commands/lint-remediation.md`
 
 ## Relationships
 
-- [commands recovery lucidity](commands_recovery_lucidity.md) (1 shared connections)
-- [occupant formatter realtime](occupant_formatter_realtime.md) (1 shared connections)
+- [players coverage rationale](players_coverage_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_occupant_formatter.py`
+- `.cursor/commands/lint-remediation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

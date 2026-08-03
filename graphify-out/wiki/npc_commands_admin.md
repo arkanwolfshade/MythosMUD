@@ -1,58 +1,56 @@
 # npc commands admin
 
-> 29 nodes
+> 34 nodes
 
 ## Key Concepts
 
-- **__init__.py** (24 connections) — `server/commands/npc_admin/__init__.py`
-- **instance.py** (22 connections) — `server/commands/npc_admin/instance.py`
-- **handle_npc_spawn_command()** (13 connections) — `server/commands/npc_admin/instance.py`
-- **handle_npc_despawn_command()** (10 connections) — `server/commands/npc_admin/instance.py`
-- **handle_npc_move_command()** (10 connections) — `server/commands/npc_admin/instance.py`
-- **handle_npc_stats_command()** (10 connections) — `server/commands/npc_admin/instance.py`
-- **_resolve_spawn_params()** (7 connections) — `server/commands/npc_admin/instance.py`
-- **Any** (6 connections)
-- **_parse_npc_spawn_args()** (5 connections) — `server/commands/npc_admin/instance.py`
-- **_normalize_spawn_room_id()** (4 connections) — `server/commands/npc_admin/instance.py`
-- **_parse_npc_spawn_numeric()** (4 connections) — `server/commands/npc_admin/instance.py`
-- **_parse_npc_spawn_name()** (4 connections) — `server/commands/npc_admin/instance.py`
-- **_resolve_definition_id_from_name()** (4 connections) — `server/commands/npc_admin/instance.py`
-- **_resolve_spawn_room_id()** (4 connections) — `server/commands/npc_admin/instance.py`
-- **_execute_spawn_loop()** (4 connections) — `server/commands/npc_admin/instance.py`
-- **NPC Admin Commands subpackage for MythosMUD.  Splits NPC admin functionality acr** (1 connections) — `server/commands/npc_admin/__init__.py`
-- **NPC instance management commands (spawn, despawn, move, stats).** (1 connections) — `server/commands/npc_admin/instance.py`
-- **npc' means current location; return None to resolve from player.** (1 connections) — `server/commands/npc_admin/instance.py`
-- **Parse numeric definition_id case. Returns (definition_id, room_id) or None if no** (1 connections) — `server/commands/npc_admin/instance.py`
-- **Parse name-based spawn. Returns (npc_name, quantity, room_id).** (1 connections) — `server/commands/npc_admin/instance.py`
-- **Parse args for npc spawn. Returns (definition_id, npc_name, quantity, room_id, e** (1 connections) — `server/commands/npc_admin/instance.py`
-- **Resolve NPC definition ID by name. Returns None if not found.** (1 connections) — `server/commands/npc_admin/instance.py`
-- **Resolve room_id from player's current room when room_id is None. Returns (room_i** (1 connections) — `server/commands/npc_admin/instance.py`
-- **Resolve definition_id, room_id, and quantity for spawn. Returns (definition_id,** (1 connections) — `server/commands/npc_admin/instance.py`
-- **Run the spawn loop and return result message or error.** (1 connections) — `server/commands/npc_admin/instance.py`
-- *... and 4 more nodes in this community*
+- **test_communication_commands_support.py** (21 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **communication_commands_support.py** (16 connections) — `server/commands/communication_commands_support.py`
+- **get_services_from_container()** (15 connections) — `server/commands/communication_commands_support.py`
+- **primary_id()** (13 connections) — `server/commands/communication_commands_support.py`
+- **app_from_request()** (12 connections) — `server/commands/communication_commands_support.py`
+- **get_pose_persistence()** (11 connections) — `server/commands/communication_commands_support.py`
+- **UserManagerProtocol** (7 connections) — `server/commands/communication_commands_support.py`
+- **AsyncPersistenceForPose** (6 connections) — `server/commands/communication_commands_support.py`
+- **Protocol** (5 connections)
+- **PlayerWithPose** (4 connections) — `server/commands/communication_commands_support.py`
+- **test_app_from_request_with_app()** (3 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_get_services_from_container_via_container()** (3 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_get_services_from_container_state_fallback()** (3 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_get_pose_persistence_from_container()** (3 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_get_pose_persistence_state_fallback()** (3 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **.get_player_by_name()** (2 connections) — `server/commands/communication_commands_support.py`
+- **.save_player()** (2 connections) — `server/commands/communication_commands_support.py`
+- **test_app_from_request_none()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_primary_id_prefers_id()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_primary_id_falls_back_to_player_id()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_get_services_from_container_no_app()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_chat_result_map_dict()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_chat_result_map_non_dict()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_message_id_from_result_nested()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_message_id_from_result_no_id()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [combat attack handler](combat_attack_handler.md) (14 shared connections)
-- [container schemas containers](container_schemas_containers.md) (8 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (7 shared connections)
-- [commands npc admin](commands_npc_admin.md) (7 shared connections)
-- [commands alias rationale](commands_alias_rationale.md) (6 shared connections)
-- [item models rationale](item_models_rationale.md) (3 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (3 shared connections)
-- [occupants npc commands](occupants_npc_commands.md) (2 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (2 shared connections)
-- [help content websocket](help_content_websocket.md) (1 shared connections)
+- [commands communication flows](commands_communication_flows.md) (38 shared connections)
+- [message broadcaster realtime](message_broadcaster_realtime.md) (7 shared connections)
+- [inventory commands command](inventory_commands_command.md) (2 shared connections)
+- [commands admin mute](commands_admin_mute.md) (2 shared connections)
+- [realtime game state](realtime_game_state.md) (2 shared connections)
+- [shutdown admin command](shutdown_admin_command.md) (1 shared connections)
+- [models player related](models_player_related.md) (1 shared connections)
+- [websocket examples logging](websocket_examples_logging.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/npc_admin/__init__.py`
-- `server/commands/npc_admin/instance.py`
+- `server/commands/communication_commands_support.py`
+- `server/tests/unit/commands/test_communication_commands_support.py`
 
 ## Audit Trail
 
-- EXTRACTED: 135 (93%)
-- INFERRED: 10 (7%)
+- EXTRACTED: 142 (92%)
+- INFERRED: 12 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -13,7 +13,7 @@
 
 ## Relationships
 
-- [Inventory Equip](Inventory_Equip.md) (1 shared connections)
+- [commands inventory command](commands_inventory_command.md) (1 shared connections)
 
 ## Source Files
 

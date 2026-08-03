@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_idle_movement_handler_init()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **Test IdleMovementHandler initialization.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **__init__.py** (1 connections) — `server/tests/unit/realtime/maintenance/__init__.py`
+- **Realtime maintenance unit tests.** (1 connections) — `server/tests/unit/realtime/maintenance/__init__.py`
 
 ## Relationships
 
-- [idle npc movement](idle_npc_movement.md) (1 shared connections)
-- [idle movement npc](idle_movement_npc.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/npc/test_idle_movement.py`
+- `server/tests/unit/realtime/maintenance/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

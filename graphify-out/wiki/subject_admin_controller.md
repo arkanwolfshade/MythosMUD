@@ -17,7 +17,7 @@
 ## Relationships
 
 - [target services resolution](target_services_resolution.md) (3 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (2 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (2 shared connections)
 - [player game schema](player_game_schema.md) (2 shared connections)
 
 ## Source Files

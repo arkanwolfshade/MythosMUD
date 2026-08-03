@@ -36,7 +36,7 @@
 - [event bus events](event_bus_events.md) (4 shared connections)
 - [room game service](room_game_service.md) (3 shared connections)
 - [chat game service](chat_game_service.md) (2 shared connections)
-- [npc populate databases](npc_populate_databases.md) (1 shared connections)
+- [Database Config](Database_Config.md) (1 shared connections)
 - [game room service](game_room_service.md) (1 shared connections)
 - [events event bus](events_event_bus.md) (1 shared connections)
 

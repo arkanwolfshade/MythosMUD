@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_subscribe_to_room_multiple_players()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **Test subscribe_to_room() with multiple players.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **.get_command_help()** (2 connections) — `server/utils/command_parser.py`
+- **Get help information for commands.          Args:             command_name: Spec** (1 connections) — `server/utils/command_parser.py`
 
 ## Relationships
 
-- [room subscription manager](room_subscription_manager.md) (1 shared connections)
+- [player effects endpoints](player_effects_endpoints.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager.py`
+- `server/utils/command_parser.py`
 
 ## Audit Trail
 

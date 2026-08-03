@@ -4,29 +4,28 @@
 
 ## Key Concepts
 
-- **SubscribeError** (9 connections) — `server/infrastructure/message_broker.py`
-- **test_subscribe_not_connected()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_subscribe_failure()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **Exception raised when subscribing to subject fails.** (1 connections) — `server/infrastructure/message_broker.py`
-- **Test subscribe() raises SubscribeError when not connected.** (1 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **Test subscribe() raises SubscribeError on failure.** (1 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **get_database_url()** (6 connections) — `server/database_helpers.py`
+- **test_get_database_url()** (4 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **test_get_database_url_returns_none()** (4 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **Get the database URL, initializing if necessary.      Returns:         str | Non** (1 connections) — `server/database_helpers.py`
+- **Test get_database_url returns URL from DatabaseManager.** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **Test get_database_url returns None when not configured.** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
 
 ## Relationships
 
-- [broker infrastructure nats](broker_infrastructure_nats.md) (3 shared connections)
-- [command factories communication](command_factories_communication.md) (2 shared connections)
-- [infrastructure nats broker](infrastructure_nats_broker.md) (2 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (1 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (3 shared connections)
+- [lucidity npc combat](lucidity_npc_combat.md) (3 shared connections)
+- [command commands talk](command_commands_talk.md) (1 shared connections)
 
 ## Source Files
 
-- `server/infrastructure/message_broker.py`
-- `server/tests/unit/infrastructure/test_nats_broker.py`
+- `server/database_helpers.py`
+- `server/tests/unit/infrastructure/test_database_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (72%)
-- INFERRED: 5 (28%)
+- EXTRACTED: 17 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

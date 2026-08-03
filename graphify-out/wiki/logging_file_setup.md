@@ -1,47 +1,64 @@
 # logging file setup
 
-> 23 nodes
+> 51 nodes
 
 ## Key Concepts
 
-- **test_logging_file_setup.py** (14 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **test_queue_listener_has_aggregator_handlers()** (7 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **test_warning_and_error_reach_aggregator_files()** (7 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **get_queue_listener()** (6 connections) — `server/structured_logging/logging_file_setup.py`
-- **stop_queue_listener()** (6 connections) — `server/structured_logging/logging_file_setup.py`
-- **_root_handlers_snapshot()** (6 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **_restore_root_handlers()** (6 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **test_aggregator_handlers_on_root_when_async()** (6 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **test_log_directory_under_env()** (5 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **QueueListener** (2 connections)
-- **temp_log_base()** (2 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **default_log_config()** (2 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **Return the global QueueListener if running (for tests and shutdown).      Return** (1 connections) — `server/structured_logging/logging_file_setup.py`
-- **Stop the global QueueListener and reset state (for tests and shutdown).      All** (1 connections) — `server/structured_logging/logging_file_setup.py`
-- **Unit tests for logging file setup.  Verifies aggregator handlers attached to roo** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **Temporary directory used as log_base for setup.** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **Default log config with rotation.** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **Return a copy of root logger handlers (for restore).** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **Replace root logger handlers with the given list.** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **H1: With async enabled, root logger has a QueueHandler for the aggregator path (** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **H3: QueueListener is started and includes aggregator handlers.** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **H2/H5: WARNING and ERROR logged from root appear in warnings.log and errors.log.** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **H4 (setup): Log files are created under env_log_dir (e.g. .../test/).** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **user.py** (62 connections) — `server/models/user.py`
+- **professions.py** (19 connections) — `server/api/professions.py`
+- **test_professions_endpoints.py** (13 connections) — `server/tests/unit/api/test_professions_endpoints.py`
+- **test_users_current_user_logging.py** (12 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
+- **get_current_user_with_logging()** (11 connections) — `server/auth/users.py`
+- **get_all_professions()** (10 connections) — `server/api/professions.py`
+- **get_profession_by_id()** (10 connections) — `server/api/professions.py`
+- **profession.py** (7 connections) — `server/schemas/players/profession.py`
+- **ProfessionListResponse** (7 connections) — `server/schemas/players/profession.py`
+- **ProfessionResponse** (7 connections) — `server/schemas/players/profession.py`
+- **BaseModel** (5 connections)
+- **set_display_name_default()** (4 connections) — `server/models/user.py`
+- **StatRequirement** (4 connections) — `server/schemas/players/profession.py`
+- **MechanicalEffect** (4 connections) — `server/schemas/players/profession.py`
+- **ProfessionData** (4 connections) — `server/schemas/players/profession.py`
+- **_user()** (4 connections) — `server/tests/unit/api/test_professions_endpoints.py`
+- **test_get_all_professions_requires_auth()** (4 connections) — `server/tests/unit/api/test_professions_endpoints.py`
+- **test_get_profession_by_id_not_found()** (4 connections) — `server/tests/unit/api/test_professions_endpoints.py`
+- **test_get_current_user_with_logging_success()** (4 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
+- **test_get_current_user_with_logging_no_request()** (4 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
+- **test_get_current_user_with_logging_long_auth_header()** (4 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
+- **test_get_current_user_with_logging_no_auth_header()** (4 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
+- **test_get_all_professions_success()** (3 connections) — `server/tests/unit/api/test_professions_endpoints.py`
+- **test_get_profession_by_id_success()** (3 connections) — `server/tests/unit/api/test_professions_endpoints.py`
+- **test_get_current_user_with_logging_no_user()** (3 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
+- *... and 26 more nodes in this community*
 
 ## Relationships
 
-- [logging setup structured](logging_setup_structured.md) (9 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (1 shared connections)
+- [ascii map renderer](ascii_map_renderer.md) (18 shared connections)
+- [auth users rationale](auth_users_rationale.md) (9 shared connections)
+- [Exception Containers](Exception_Containers.md) (9 shared connections)
+- [Database Config](Database_Config.md) (8 shared connections)
+- [admin auth service](admin_auth_service.md) (8 shared connections)
+- [game models stats](game_models_stats.md) (7 shared connections)
+- [command inventory factories](command_inventory_factories.md) (5 shared connections)
+- [profession game service](profession_game_service.md) (4 shared connections)
+- [world models rationale](world_models_rationale.md) (4 shared connections)
+- [Loot Generation](Loot_Generation.md) (3 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (2 shared connections)
+- [Memory Task Runtime](Memory_Task_Runtime.md) (2 shared connections)
 
 ## Source Files
 
-- `server/structured_logging/logging_file_setup.py`
-- `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- `server/api/professions.py`
+- `server/auth/users.py`
+- `server/models/user.py`
+- `server/schemas/players/profession.py`
+- `server/tests/unit/api/test_professions_endpoints.py`
+- `server/tests/unit/auth/test_users_current_user_logging.py`
 
 ## Audit Trail
 
-- EXTRACTED: 80 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 244 (99%)
+- INFERRED: 3 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

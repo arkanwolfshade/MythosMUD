@@ -1,41 +1,43 @@
 # combat messaging service
 
-> 9 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **heal_player()** (11 connections) — `server/api/player_effects.py`
-- **HealRequest** (11 connections) — `server/schemas/players/player_requests.py`
-- **test_heal_player_success()** (4 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
-- **test_heal_request_validation()** (4 connections) — `server/tests/unit/schemas/test_player_requests.py`
-- **test_heal_request()** (3 connections) — `server/tests/unit/schemas/test_player_requests.py`
-- **Heal a player's health.** (1 connections) — `server/api/player_effects.py`
-- **Request model for healing a player.** (1 connections) — `server/schemas/players/player_requests.py`
-- **Test HealRequest can be instantiated.** (1 connections) — `server/tests/unit/schemas/test_player_requests.py`
-- **Test HealRequest validates amount range.** (1 connections) — `server/tests/unit/schemas/test_player_requests.py`
+- **LRUCache** (27 connections) — `server/caching/lru_cache.py`
+- **.delete()** (3 connections) — `server/caching/lru_cache.py`
+- **.clear()** (3 connections) — `server/caching/lru_cache.py`
+- **.size()** (3 connections) — `server/caching/lru_cache.py`
+- **.__len__()** (3 connections) — `server/caching/lru_cache.py`
+- **.clear_all_caches()** (3 connections) — `server/caching/lru_cache.py`
+- **.__init__()** (2 connections) — `server/caching/lru_cache.py`
+- **.is_full()** (2 connections) — `server/caching/lru_cache.py`
+- **Thread-safe LRU (Least Recently Used) cache implementation.      This cache auto** (1 connections) — `server/caching/lru_cache.py`
+- **Initialize the LRU cache.          Args:             max_size: Maximum number of** (1 connections) — `server/caching/lru_cache.py`
+- **Delete an item from the cache.          Args:             key: The key to delete** (1 connections) — `server/caching/lru_cache.py`
+- **Clear all items from the cache.** (1 connections) — `server/caching/lru_cache.py`
+- **Get the current number of items in the cache.** (1 connections) — `server/caching/lru_cache.py`
+- **Check if the cache is at maximum capacity.** (1 connections) — `server/caching/lru_cache.py`
+- **Get the number of items in the cache.** (1 connections) — `server/caching/lru_cache.py`
 
 ## Relationships
 
-- [player effects endpoints](player_effects_endpoints.md) (5 shared connections)
-- [player requests schemas](player_requests_schemas.md) (5 shared connections)
-- [player schemas requests](player_schemas_requests.md) (4 shared connections)
-- [Exception Containers](Exception_Containers.md) (1 shared connections)
-- [magic healing game](magic_healing_game.md) (1 shared connections)
-- [auth users rationale](auth_users_rationale.md) (1 shared connections)
-- [Player Stats](Player_Stats.md) (1 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [caching lru cache](caching_lru_cache.md) (9 shared connections)
+- [command inventory factories](command_inventory_factories.md) (4 shared connections)
+- [time service rationale](time_service_rationale.md) (4 shared connections)
+- [services lucidity repository](services_lucidity_repository.md) (2 shared connections)
+- [cache caching service](cache_caching_service.md) (2 shared connections)
+- [commands skills rationale](commands_skills_rationale.md) (1 shared connections)
+- [cache lru caching](cache_lru_caching.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/player_effects.py`
-- `server/schemas/players/player_requests.py`
-- `server/tests/unit/api/test_player_effects_endpoints.py`
-- `server/tests/unit/schemas/test_player_requests.py`
+- `server/caching/lru_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 36 (97%)
-- INFERRED: 1 (3%)
+- EXTRACTED: 49 (92%)
+- INFERRED: 4 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

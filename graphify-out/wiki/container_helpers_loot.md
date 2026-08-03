@@ -1,6 +1,6 @@
 # container helpers loot
 
-> 37 nodes
+> 35 nodes
 
 ## Key Concepts
 
@@ -13,7 +13,6 @@
 - **_make_participant()** (6 connections) — `server/tests/unit/commands/test_flee_command.py`
 - **_standing_player_id()** (6 connections) — `server/tests/unit/commands/test_flee_command.py`
 - **test_get_combat_command_handler_includes_flee()** (6 connections) — `server/tests/unit/commands/test_flee_command.py`
-- **handler()** (5 connections) — `server/tests/unit/commands/test_flee_command.py`
 - **test_flee_not_in_combat_returns_message()** (5 connections) — `server/tests/unit/commands/test_flee_command.py`
 - **test_flee_not_standing_forces_stand_and_returns_message()** (5 connections) — `server/tests/unit/commands/test_flee_command.py`
 - **UUID** (3 connections)
@@ -29,16 +28,14 @@
 - **Unit tests for /flee command (handle_flee_command).** (1 connections) — `server/tests/unit/commands/test_flee_command.py`
 - **Typed fixture bundle for CombatCommandHandler flee tests (mocks).** (1 connections) — `server/tests/unit/commands/test_flee_command.py`
 - **CombatCommandHandler deps for flee: combat_service, movement_service, player_pos** (1 connections) — `server/tests/unit/commands/test_flee_command.py`
-- *... and 12 more nodes in this community*
+- **Player that is standing and in a room.** (1 connections) — `server/tests/unit/commands/test_flee_command.py`
+- *... and 10 more nodes in this community*
 
 ## Relationships
 
+- [NPC Combat](NPC_Combat.md) (9 shared connections)
 - [Item Instances](Item_Instances.md) (8 shared connections)
-- [combat commands handler](combat_commands_handler.md) (6 shared connections)
-- [combat helpers commands](combat_helpers_commands.md) (2 shared connections)
-- [game models player](game_models_player.md) (1 shared connections)
-- [world models rationale](world_models_rationale.md) (1 shared connections)
-- [NPC Combat](NPC_Combat.md) (1 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
 
 ## Source Files
 
@@ -46,8 +43,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 141 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 136 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

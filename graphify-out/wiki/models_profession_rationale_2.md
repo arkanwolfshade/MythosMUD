@@ -1,38 +1,29 @@
 # models profession rationale
 
-> 15 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **Any** (8 connections)
-- **.set_stat_requirements()** (3 connections) — `server/models/profession.py`
-- **.get_mechanical_effects()** (3 connections) — `server/models/profession.py`
-- **.set_mechanical_effects()** (3 connections) — `server/models/profession.py`
-- **.get_stat_modifiers()** (3 connections) — `server/models/profession.py`
-- **.set_stat_modifiers()** (3 connections) — `server/models/profession.py`
-- **.get_skill_modifiers()** (3 connections) — `server/models/profession.py`
-- **.set_skill_modifiers()** (3 connections) — `server/models/profession.py`
-- **Set profession stat requirements from dictionary.** (1 connections) — `server/models/profession.py`
-- **Get profession mechanical effects as dictionary.** (1 connections) — `server/models/profession.py`
-- **Set profession mechanical effects from dictionary.** (1 connections) — `server/models/profession.py`
-- **Get stat modifiers as list of {stat, value}.** (1 connections) — `server/models/profession.py`
-- **Set stat modifiers from list of {stat, value}.** (1 connections) — `server/models/profession.py`
-- **Get skill modifiers as list of {skill_key, value}.** (1 connections) — `server/models/profession.py`
-- **Set skill modifiers from list of {skill_key, value}.** (1 connections) — `server/models/profession.py`
+- **TestGetPlayerCombatService** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_player_combat_service_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_player_combat_service_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Tests for get_player_combat_service dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_player_combat_service returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_player_combat_service raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Relationships
 
-- [models profession available](models_profession_available.md) (7 shared connections)
-- [models profession rationale](models_profession_rationale.md) (1 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (3 shared connections)
+- [command inventory models](command_inventory_models.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/profession.py`
+- `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 36 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 13 (93%)
+- INFERRED: 1 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

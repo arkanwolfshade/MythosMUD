@@ -30,16 +30,16 @@
 
 - [connection establishment realtime](connection_establishment_realtime.md) (18 shared connections)
 - [cleanup combat handler](cleanup_combat_handler.md) (6 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (6 shared connections)
+- [Database Config](Database_Config.md) (4 shared connections)
 - [useDraggablePanelInteractions draggableP](useDraggablePanelInteractions_draggableP.md) (4 shared connections)
 - [event bus events](event_bus_events.md) (4 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (3 shared connections)
-- [npc populate databases](npc_populate_databases.md) (3 shared connections)
 - [persistence rationale room](persistence_rationale_room.md) (3 shared connections)
-- [connection realtime delegates](connection_realtime_delegates.md) (3 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (3 shared connections)
 - [room game service](room_game_service.md) (3 shared connections)
 - [rest grace period](rest_grace_period.md) (2 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
 - [chat game service](chat_game_service.md) (2 shared connections)
+- [time service rationale](time_service_rationale.md) (1 shared connections)
 
 ## Source Files
 

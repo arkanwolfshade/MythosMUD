@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_handle_player_entered_success()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **Test handle_player_entered() successfully handles event.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_parse_command_parts_with_args()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **Test _parse_command_parts() parses command with arguments.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
 
 ## Relationships
 
-- [NATS Messaging](NATS_Messaging.md) (1 shared connections)
-- [player room event](player_room_event.md) (1 shared connections)
+- [command parser helpers](command_parser_helpers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- `server/tests/unit/utils/test_command_parser_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

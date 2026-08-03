@@ -1,53 +1,52 @@
 # inventory schemas schema
 
-> 30 nodes
+> 121 nodes
 
 ## Key Concepts
 
-- **PlayerSavePreparer** (16 connections) — `server/persistence/repositories/player_repository_save.py`
-- **player_repository_save.py** (11 connections) — `server/persistence/repositories/player_repository_save.py`
-- **.prepare()** (10 connections) — `server/persistence/repositories/player_repository_save.py`
-- **Any** (7 connections)
-- **Player** (7 connections)
-- **._prepare_inventory_payload()** (7 connections) — `server/persistence/repositories/player_repository_save.py`
-- **_parse_inventory_raw()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
-- **_parse_equipped_raw()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
-- **._ensure_inventory_record()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
-- **._normalize_timestamps()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
-- **._upsert_string_defaults()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
-- **._upsert_numeric_defaults()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
-- **.__init__()** (4 connections) — `server/persistence/repositories/player_repository.py`
-- **._normalize_is_admin()** (4 connections) — `server/persistence/repositories/player_repository_save.py`
-- **.execute()** (3 connections) — `server/persistence/repositories/player_repository_save.py`
-- **.__init__()** (2 connections) — `server/persistence/repositories/player_repository_save.py`
-- **datetime** (2 connections)
-- **Initialize the player repository.          Args:             room_cache: Shared** (1 connections) — `server/persistence/repositories/player_repository.py`
-- **Player save/upsert helpers for PlayerRepository.  Handles inventory validation,** (1 connections) — `server/persistence/repositories/player_repository_save.py`
-- **Parse inventory from string or list. Raises InventorySchemaValidationError if in** (1 connections) — `server/persistence/repositories/player_repository_save.py`
-- **Parse equipped from string or dict. Raises InventorySchemaValidationError if inv** (1 connections) — `server/persistence/repositories/player_repository_save.py`
-- **Prepares Player objects for upsert_player procedure calls.      Handles normaliz** (1 connections) — `server/persistence/repositories/player_repository_save.py`
-- **Ensure is_admin is an integer (PostgreSQL requires integer, not boolean).** (1 connections) — `server/persistence/repositories/player_repository_save.py`
-- **Ensure player has inventory_record and update with current payload.** (1 connections) — `server/persistence/repositories/player_repository_save.py`
-- **Normalize last_active, created_at, deleted_at to UTC for procedure call.** (1 connections) — `server/persistence/repositories/player_repository_save.py`
-- *... and 5 more nodes in this community*
+- **test_admin_auth_service.py** (54 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **AdminAuthService** (19 connections) — `server/services/admin_auth_service.py`
+- **.validate_permission()** (12 connections) — `server/services/admin_auth_service.py`
+- **AdminRole** (7 connections) — `server/services/admin_auth_service.py`
+- **AdminSession** (6 connections) — `server/services/admin_auth_service.py`
+- **Any** (6 connections)
+- **._update_session()** (6 connections) — `server/services/admin_auth_service.py`
+- **.get_user_role()** (5 connections) — `server/services/admin_auth_service.py`
+- **._has_permission()** (5 connections) — `server/services/admin_auth_service.py`
+- **._log_audit_event()** (5 connections) — `server/services/admin_auth_service.py`
+- **.get_username()** (4 connections) — `server/services/admin_auth_service.py`
+- **.get_user_id()** (4 connections) — `server/services/admin_auth_service.py`
+- **Request** (4 connections)
+- **._check_rate_limit()** (4 connections) — `server/services/admin_auth_service.py`
+- **admin_auth_service()** (4 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_get_admin_auth_service()** (4 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **.get_active_sessions()** (3 connections) — `server/services/admin_auth_service.py`
+- **.get_audit_log()** (3 connections) — `server/services/admin_auth_service.py`
+- **test_admin_session_init()** (3 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **.__init__()** (2 connections) — `server/services/admin_auth_service.py`
+- **.__init__()** (2 connections) — `server/services/admin_auth_service.py`
+- **.cleanup_expired_sessions()** (2 connections) — `server/services/admin_auth_service.py`
+- **test_admin_role_enum()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_admin_action_enum()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_admin_auth_service_init()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- *... and 96 more nodes in this community*
 
 ## Relationships
 
-- [npc population stats](npc_population_stats.md) (5 shared connections)
-- [player room persistence](player_room_persistence.md) (4 shared connections)
-- [world models rationale](world_models_rationale.md) (4 shared connections)
-- [Async Query Helpers](Async_Query_Helpers.md) (2 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (1 shared connections)
+- [admin auth service](admin_auth_service.md) (12 shared connections)
+- [ascii map renderer](ascii_map_renderer.md) (3 shared connections)
+- [container helpers endpoints](container_helpers_endpoints.md) (1 shared connections)
+- [logging file setup](logging_file_setup.md) (1 shared connections)
 
 ## Source Files
 
-- `server/persistence/repositories/player_repository.py`
-- `server/persistence/repositories/player_repository_save.py`
+- `server/services/admin_auth_service.py`
+- `server/tests/unit/services/test_admin_auth_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 113 (97%)
-- INFERRED: 3 (3%)
+- EXTRACTED: 300 (99%)
+- INFERRED: 3 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

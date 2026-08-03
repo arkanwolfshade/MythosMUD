@@ -1,10 +1,11 @@
 # service feature services
 
-> 47 nodes
+> 89 nodes
 
 ## Key Concepts
 
 - **FeatureFlagService** (36 connections) — `server/services/feature_flag_service.py`
+- **TestFeatureFlagService** (23 connections) — `server/tests/unit/services/test_feature_flag_service.py`
 - **feature_flag_service.py** (13 connections) — `server/services/feature_flag_service.py`
 - **test_feature_flag_service.py** (10 connections) — `server/tests/unit/services/test_feature_flag_service.py`
 - **get_feature_flags()** (9 connections) — `server/services/feature_flag_service.py`
@@ -20,24 +21,22 @@
 - **.test_get_feature_flags()** (4 connections) — `server/tests/unit/services/test_feature_flag_service.py`
 - **.__init__()** (3 connections) — `server/services/feature_flag_service.py`
 - **.clear_cache()** (3 connections) — `server/services/feature_flag_service.py`
-- **.test_is_combat_enabled_global()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
-- **.test_is_combat_logging_enabled_global()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
-- **.test_is_combat_monitoring_enabled_global()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
-- **.test_refresh_feature_flags()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
-- **.is_combat_enabled()** (2 connections) — `server/services/feature_flag_service.py`
-- **.is_combat_logging_enabled()** (2 connections) — `server/services/feature_flag_service.py`
-- **.is_combat_monitoring_enabled()** (2 connections) — `server/services/feature_flag_service.py`
-- **Any** (2 connections)
-- **Feature flag service for MythosMUD.  This service provides centralized feature f** (1 connections) — `server/services/feature_flag_service.py`
-- *... and 22 more nodes in this community*
+- **.test_init()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_is_combat_enabled_true()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_is_combat_enabled_false()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_is_combat_enabled_caching()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_is_combat_logging_enabled_true()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_is_combat_logging_enabled_false()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_is_combat_monitoring_enabled_true()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_is_combat_monitoring_enabled_false()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- *... and 64 more nodes in this community*
 
 ## Relationships
 
-- [feature services flag](feature_services_flag.md) (22 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (4 shared connections)
-- [Item Instances](Item_Instances.md) (3 shared connections)
-- [npc combat service](npc_combat_service.md) (2 shared connections)
-- [event bus events](event_bus_events.md) (1 shared connections)
+- [combat configuration service](combat_configuration_service.md) (3 shared connections)
+- [combat monitoring service](combat_monitoring_service.md) (3 shared connections)
+- [Item Instances](Item_Instances.md) (2 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
 
 ## Source Files
 
@@ -46,8 +45,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 173 (97%)
-- INFERRED: 5 (3%)
+- EXTRACTED: 276 (98%)
+- INFERRED: 6 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

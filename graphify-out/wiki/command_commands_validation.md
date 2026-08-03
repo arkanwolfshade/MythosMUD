@@ -17,7 +17,7 @@
 
 ## Relationships
 
-- [command handler unified](command_handler_unified.md) (4 shared connections)
+- [command commands handler](command_commands_handler.md) (4 shared connections)
 - [command validation commands](command_validation_commands.md) (1 shared connections)
 
 ## Source Files

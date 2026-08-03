@@ -1,63 +1,58 @@
 # command helpers functions
 
-> 88 nodes
+> 62 nodes
 
 ## Key Concepts
 
-- **get_username_from_user()** (51 connections) — `server/utils/command_helpers.py`
-- **test_command_helpers.py** (27 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **test_command_helpers_functions.py** (17 connections) — `server/tests/unit/utils/test_command_helpers_functions.py`
-- **validate_command_safety()** (17 connections) — `server/utils/command_helpers.py`
-- **command_helpers.py** (15 connections) — `server/utils/command_helpers.py`
-- **handle_teach_command()** (12 connections) — `server/commands/teach_command.py`
-- **get_command_help()** (12 connections) — `server/utils/command_helpers.py`
-- **test_teach_command.py** (6 connections) — `server/tests/unit/commands/test_teach_command.py`
-- **_username_from_dict()** (4 connections) — `server/utils/command_helpers.py`
-- **test_handle_teach_command()** (3 connections) — `server/tests/unit/commands/test_teach_command.py`
-- **test_handle_teach_command_no_target()** (3 connections) — `server/tests/unit/commands/test_teach_command.py`
-- **test_handle_teach_command_no_persistence()** (3 connections) — `server/tests/unit/commands/test_teach_command.py`
-- **test_validate_command_safety_safe_commands()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **test_validate_command_safety_shell_metacharacters()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **test_validate_command_safety_sql_injection()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **test_validate_command_safety_python_injection()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **test_validate_command_safety_format_string_injection()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **test_validate_command_safety_xss_attempts()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **test_get_command_help_no_command()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **test_get_command_help_specific_commands()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **test_get_command_help_unknown_command()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **test_get_command_help_case_insensitive()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **test_get_username_from_user_player_object()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **test_get_username_from_user_username_attribute()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **test_get_username_from_user_name_attribute()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- *... and 63 more nodes in this community*
+- **rescue_commands.py** (31 connections) — `server/commands/rescue_commands.py`
+- **handle_ground_command()** (31 connections) — `server/commands/rescue_commands.py`
+- **test_rescue_commands.py** (23 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **handle_rescue_command()** (14 connections) — `server/commands/rescue_commands.py`
+- **Any** (7 connections)
+- **_apply_grounding_adjustment()** (7 connections) — `server/commands/rescue_commands.py`
+- **_get_ground_services()** (5 connections) — `server/commands/rescue_commands.py`
+- **_validate_ground_context()** (5 connections) — `server/commands/rescue_commands.py`
+- **_normalize_player_ids()** (5 connections) — `server/commands/rescue_commands.py`
+- **UUID** (5 connections)
+- **_send_grounding_failure_events()** (5 connections) — `server/commands/rescue_commands.py`
+- **_send_grounding_success_events()** (5 connections) — `server/commands/rescue_commands.py`
+- **_validate_ground_target()** (4 connections) — `server/commands/rescue_commands.py`
+- **_send_grounding_channeling_events()** (4 connections) — `server/commands/rescue_commands.py`
+- **test_handle_ground_command_not_catatonic()** (4 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **test_handle_ground_command_success()** (4 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **test_handle_ground_command_target_player_key()** (4 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **test_handle_ground_command_apply_lucidity_error()** (4 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **test_handle_ground_command()** (3 connections) — `server/tests/unit/commands/test_position_commands.py`
+- **test_handle_rescue_command()** (3 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **test_handle_rescue_command_no_target()** (3 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **test_handle_rescue_command_no_persistence()** (3 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **test_handle_rescue_command_target_player_key()** (3 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **test_handle_rescue_command_no_app()** (3 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **test_handle_rescue_command_no_state()** (3 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- *... and 37 more nodes in this community*
 
 ## Relationships
 
-- [commands alias rationale](commands_alias_rationale.md) (13 shared connections)
-- [command inventory factories](command_inventory_factories.md) (7 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (4 shared connections)
-- [commands admin mute](commands_admin_mute.md) (3 shared connections)
-- [commands follow rationale](commands_follow_rationale.md) (3 shared connections)
-- [commands rescue rationale](commands_rescue_rationale.md) (3 shared connections)
-- [command utility models](command_utility_models.md) (2 shared connections)
-- [command handler unified](command_handler_unified.md) (2 shared connections)
-- [commands logout rationale](commands_logout_rationale.md) (2 shared connections)
-- [commands quest rationale](commands_quest_rationale.md) (2 shared connections)
-- [target resolution service](target_resolution_service.md) (1 shared connections)
-- [rest grace period](rest_grace_period.md) (1 shared connections)
+- [commands admin mute](commands_admin_mute.md) (11 shared connections)
+- [lucidity services helpers](lucidity_services_helpers.md) (11 shared connections)
+- [aggro threat services](aggro_threat_services.md) (5 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (4 shared connections)
+- [rescue service services](rescue_service_services.md) (3 shared connections)
+- [command factories create](command_factories_create.md) (3 shared connections)
+- [lucidity models rationale](lucidity_models_rationale.md) (2 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [realtime game state](realtime_game_state.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/teach_command.py`
-- `server/tests/unit/commands/test_teach_command.py`
-- `server/tests/unit/utils/test_command_helpers.py`
-- `server/tests/unit/utils/test_command_helpers_functions.py`
-- `server/utils/command_helpers.py`
+- `server/commands/rescue_commands.py`
+- `server/tests/unit/commands/test_position_commands.py`
+- `server/tests/unit/commands/test_rescue_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 276 (89%)
-- INFERRED: 34 (11%)
+- EXTRACTED: 229 (96%)
+- INFERRED: 10 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

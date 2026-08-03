@@ -1,53 +1,58 @@
 # npc spawn validator
 
-> 37 nodes
+> 94 nodes
 
 ## Key Concepts
 
-- **ExceptionTracker** (23 connections) — `server/monitoring/exception_tracker.py`
-- **ExceptionRecord** (12 connections) — `server/monitoring/exception_tracker.py`
-- **.track_exception()** (8 connections) — `server/monitoring/exception_tracker.py`
-- **.initialize()** (7 connections) — `server/container/bundles/monitoring.py`
-- **Exception** (5 connections)
-- **._call_handlers()** (5 connections) — `server/monitoring/exception_tracker.py`
-- **.add_exception_handler()** (4 connections) — `server/monitoring/exception_tracker.py`
-- **._update_stats()** (4 connections) — `server/monitoring/exception_tracker.py`
-- **.__init__()** (3 connections) — `server/monitoring/exception_tracker.py`
-- **.get_exception_record()** (3 connections) — `server/monitoring/exception_tracker.py`
-- **.get_exceptions_by_type()** (3 connections) — `server/monitoring/exception_tracker.py`
-- **.get_exceptions_by_user()** (3 connections) — `server/monitoring/exception_tracker.py`
-- **.get_exceptions_by_correlation()** (3 connections) — `server/monitoring/exception_tracker.py`
-- **.get_unhandled_exceptions()** (3 connections) — `server/monitoring/exception_tracker.py`
-- **.get_critical_exceptions()** (3 connections) — `server/monitoring/exception_tracker.py`
-- **.get_recent_exceptions()** (3 connections) — `server/monitoring/exception_tracker.py`
-- **.get_stats()** (3 connections) — `server/monitoring/exception_tracker.py`
-- **.add_global_exception_handler()** (3 connections) — `server/monitoring/exception_tracker.py`
-- **.reset_records()** (3 connections) — `server/monitoring/exception_tracker.py`
-- **Initialize monitoring services. No dependencies.** (1 connections) — `server/container/bundles/monitoring.py`
-- **Represents a tracked exception with full context.** (1 connections) — `server/monitoring/exception_tracker.py`
-- **Comprehensive exception tracking system.      This class provides 100% exception** (1 connections) — `server/monitoring/exception_tracker.py`
-- **Initialize the exception tracker.          Args:             max_records: Maximu** (1 connections) — `server/monitoring/exception_tracker.py`
-- **Track an exception with full context information.          Args:             exc** (1 connections) — `server/monitoring/exception_tracker.py`
-- **Get an exception record by ID.          Args:             exception_id: Unique e** (1 connections) — `server/monitoring/exception_tracker.py`
-- *... and 12 more nodes in this community*
+- **PopulationStats** (42 connections) — `server/npc/population_stats.py`
+- **test_population_stats.py** (23 connections) — `server/tests/unit/npc/test_population_stats.py`
+- **_PopulationLifecycleManager** (13 connections) — `server/npc/population_control.py`
+- **._should_spawn_npc()** (8 connections) — `server/npc/population_control.py`
+- **.__init__()** (7 connections) — `server/npc/population_control.py`
+- **._check_spawn_requirements_for_room()** (7 connections) — `server/npc/population_control.py`
+- **._spawn_npc()** (7 connections) — `server/npc/population_control.py`
+- **._register_spawned_npc_in_population_stats()** (6 connections) — `server/npc/population_control.py`
+- **._handle_player_entered_room()** (5 connections) — `server/npc/population_control.py`
+- **._get_zone_key_from_room_id()** (5 connections) — `server/npc/population_control.py`
+- **test_should_spawn_npc()** (5 connections) — `server/tests/unit/npc/test_population_control.py`
+- **.spawn_npc()** (4 connections) — `server/npc/population_control.py`
+- **._load_zone_configurations()** (4 connections) — `server/npc/population_control.py`
+- **._handle_player_left_room()** (4 connections) — `server/npc/population_control.py`
+- **._update_player_count()** (4 connections) — `server/npc/population_control.py`
+- **.get_zone_configuration()** (4 connections) — `server/npc/population_control.py`
+- **.get_population_stats()** (4 connections) — `server/npc/population_control.py`
+- **.clear_population_stats()** (3 connections) — `server/npc/population_control.py`
+- **.to_dict()** (3 connections) — `server/npc/population_stats.py`
+- **test_get_population_stats_existing()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_clear_population_stats()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_get_zone_population_summary_with_stats()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_despawn_npc_success()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_population_stats_init()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
+- **test_add_npc_required()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
+- *... and 69 more nodes in this community*
 
 ## Relationships
 
-- [System Metrics](System_Metrics.md) (15 shared connections)
-- [Memory Task Runtime](Memory_Task_Runtime.md) (3 shared connections)
-- [Magic Spell Service](Magic_Spell_Service.md) (1 shared connections)
-- [log structured logging](log_structured_logging.md) (1 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (30 shared connections)
+- [item models rationale](item_models_rationale.md) (7 shared connections)
+- [realtime monitoring statistics](realtime_monitoring_statistics.md) (6 shared connections)
+- [spell game magic](spell_game_magic.md) (5 shared connections)
+- [combat services rationale](combat_services_rationale.md) (3 shared connections)
+- [rate limiter realtime](rate_limiter_realtime.md) (1 shared connections)
+- [models npc rationale](models_npc_rationale.md) (1 shared connections)
+- [time service rationale](time_service_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/container/bundles/monitoring.py`
-- `server/monitoring/exception_tracker.py`
+- `server/npc/population_control.py`
+- `server/npc/population_stats.py`
+- `server/tests/unit/npc/test_population_control.py`
+- `server/tests/unit/npc/test_population_stats.py`
 
 ## Audit Trail
 
-- EXTRACTED: 117 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 269 (95%)
+- INFERRED: 13 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

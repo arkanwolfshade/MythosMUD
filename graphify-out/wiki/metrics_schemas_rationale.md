@@ -33,13 +33,15 @@
 
 ## Relationships
 
-- [auth users rationale](auth_users_rationale.md) (17 shared connections)
 - [Exception Containers](Exception_Containers.md) (16 shared connections)
-- [Player Stats](Player_Stats.md) (6 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (3 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [ascii map renderer](ascii_map_renderer.md) (14 shared connections)
+- [admin auth service](admin_auth_service.md) (6 shared connections)
+- [command inventory factories](command_inventory_factories.md) (3 shared connections)
+- [Database Config](Database_Config.md) (2 shared connections)
+- [logging file setup](logging_file_setup.md) (2 shared connections)
+- [auth users rationale](auth_users_rationale.md) (1 shared connections)
 - [NPC Definitions Admin](NPC_Definitions_Admin.md) (1 shared connections)
-- [app factory rationale](app_factory_rationale.md) (1 shared connections)
+- [circuit breaker realtime](circuit_breaker_realtime.md) (1 shared connections)
 - [nats services service](nats_services_service.md) (1 shared connections)
 
 ## Source Files

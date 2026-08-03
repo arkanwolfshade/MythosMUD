@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [Async Query Helpers](Async_Query_Helpers.md) (2 shared connections)
+- [combat models rationale](combat_models_rationale.md) (2 shared connections)
 - [world models rationale](world_models_rationale.md) (1 shared connections)
 
 ## Source Files

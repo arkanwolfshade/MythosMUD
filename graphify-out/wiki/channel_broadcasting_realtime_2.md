@@ -4,24 +4,24 @@
 
 ## Key Concepts
 
-- **ChannelBroadcastingStrategyFactory** (11 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **.register_strategy()** (3 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **test_channel_broadcasting_strategy_factory_init()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **test_channel_broadcasting_strategy_factory_register_strategy()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **test_global_channel_strategy_factory_instance()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Factory for creating channel broadcasting strategies.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Register a new strategy for a channel type.          Args:             channel_t** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Test ChannelBroadcastingStrategyFactory.__init__() initializes with default stra** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Test ChannelBroadcastingStrategyFactory.register_strategy() registers new strate** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Test global channel_strategy_factory instance exists.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **RoomBasedChannelStrategy** (10 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **test_channel_broadcasting_strategy_factory_get_strategy_known()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **test_room_based_channel_strategy_broadcast()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **test_room_based_channel_strategy_broadcast_no_room_id()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **.__init__()** (2 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Strategy for room-based channels (say, local, emote, pose).** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Initialize room-based channel strategy.          Args:             channel_type:** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Test RoomBasedChannelStrategy.broadcast() broadcasts to room.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **Test RoomBasedChannelStrategy.broadcast() handles missing room_id.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **Test ChannelBroadcastingStrategyFactory.get_strategy() returns known strategy.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
 
 ## Relationships
 
 - [channel realtime broadcasting](channel_realtime_broadcasting.md) (4 shared connections)
-- [channel broadcasting strategies](channel_broadcasting_strategies.md) (3 shared connections)
-- [auth users rationale](auth_users_rationale.md) (1 shared connections)
-- [world loader room](world_loader_room.md) (1 shared connections)
-- [channel broadcasting realtime](channel_broadcasting_realtime.md) (1 shared connections)
+- [channel broadcasting strategies](channel_broadcasting_strategies.md) (2 shared connections)
+- [message handler factory](message_handler_factory.md) (1 shared connections)
+- [realtime channel broadcasting](realtime_channel_broadcasting.md) (1 shared connections)
+- [npc behavior engine](npc_behavior_engine.md) (1 shared connections)
 
 ## Source Files
 
@@ -30,7 +30,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 26 (93%)
+- EXTRACTED: 25 (93%)
 - INFERRED: 2 (7%)
 - AMBIGUOUS: 0 (0%)
 

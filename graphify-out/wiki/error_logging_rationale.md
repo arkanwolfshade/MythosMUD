@@ -15,7 +15,7 @@
 
 ## Relationships
 
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [Database Config](Database_Config.md) (1 shared connections)
 
 ## Source Files
 

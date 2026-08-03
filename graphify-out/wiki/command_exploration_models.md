@@ -23,7 +23,9 @@
 
 ## Relationships
 
-- [NATS Messaging](NATS_Messaging.md) (6 shared connections)
+- [item models rationale](item_models_rationale.md) (4 shared connections)
+- [npc shopkeeper rationale](npc_shopkeeper_rationale.md) (1 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
 - [chat service game](chat_service_game.md) (1 shared connections)
 
 ## Source Files

@@ -20,7 +20,7 @@
 ## Relationships
 
 - [startup npc service](startup_npc_service.md) (6 shared connections)
-- [startup npc services](startup_npc_services.md) (5 shared connections)
+- [player respawn event](player_respawn_event.md) (5 shared connections)
 
 ## Source Files
 

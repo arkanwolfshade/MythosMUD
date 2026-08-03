@@ -1,11 +1,13 @@
 # attack combat commands
 
-> 35 nodes
+> 39 nodes
 
 ## Key Concepts
 
+- **combat_attack.py** (17 connections) — `server/commands/combat_attack.py`
 - **test_combat_attack.py** (12 connections) — `server/tests/unit/commands/test_combat_attack.py`
 - **run_handle_attack_command()** (9 connections) — `server/commands/combat_attack.py`
+- **_resolve_combat_damage()** (8 connections) — `server/commands/combat_attack.py`
 - **_validate_attack_player_and_room()** (7 connections) — `server/commands/combat_attack.py`
 - **Any** (7 connections)
 - **_execute_combat_action()** (7 connections) — `server/commands/combat_attack.py`
@@ -22,20 +24,21 @@
 - **test_run_handle_attack_command_blocked_by_rest()** (3 connections) — `server/tests/unit/commands/test_combat_attack.py`
 - **test_run_handle_attack_command_success_path()** (3 connections) — `server/tests/unit/commands/test_combat_attack.py`
 - **mock_handler()** (2 connections) — `server/tests/unit/commands/test_combat_attack.py`
+- **Attack command flow: validation and execution.  Extracted from combat.py to redu** (1 connections) — `server/commands/combat_attack.py`
 - **Validate target name, load player/room, check DP and no_combat.     Returns (pla** (1 connections) — `server/commands/combat_attack.py`
 - **Resolve combat target and validate action; return (target_match, npc_instance, N** (1 connections) — `server/commands/combat_attack.py`
 - **Run all attack pre-checks; return (player, room_id, target_match, npc_instance,** (1 connections) — `server/commands/combat_attack.py`
 - **Load player and resolve NPC instance/name for combat action.     Returns (player** (1 connections) — `server/commands/combat_attack.py`
-- **Execute combat action using the proper combat service.** (1 connections) — `server/commands/combat_attack.py`
-- **Handle attack commands (attack, punch, kick, etc.).** (1 connections) — `server/commands/combat_attack.py`
-- **Unit tests for server.commands.combat_attack (attack preconditions and execution** (1 connections) — `server/tests/unit/commands/test_combat_attack.py`
-- *... and 10 more nodes in this community*
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
-- [Realtime Subscribers](Realtime_Subscribers.md) (10 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (1 shared connections)
-- [combat commands handler](combat_commands_handler.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (3 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (3 shared connections)
+- [Item Instances](Item_Instances.md) (2 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [websocket handler realtime](websocket_handler_realtime.md) (1 shared connections)
 
 ## Source Files
 
@@ -44,7 +47,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 104 (100%)
+- EXTRACTED: 131 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

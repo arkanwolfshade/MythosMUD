@@ -1,39 +1,41 @@
 # combat services service
 
-> 15 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **_process_session_dp_decay_and_death()** (8 connections) — `server/app/game_tick_processing.py`
-- **_process_mortally_wounded_player()** (7 connections) — `server/app/game_tick_processing.py`
-- **AsyncSession** (6 connections)
-- **_process_mp_regeneration()** (6 connections) — `server/app/game_tick_processing.py`
-- **_process_mortally_wounded_players()** (5 connections) — `server/app/game_tick_processing.py`
-- **_process_passive_lucidity_flux()** (4 connections) — `server/app/game_tick_processing.py`
-- **_process_dead_players()** (4 connections) — `server/app/game_tick_processing.py`
-- **_validate_mp_regeneration_services()** (3 connections) — `server/app/game_tick_processing.py`
-- **Process a single mortally wounded player's DP decay and death check.      CRITIC** (1 connections) — `server/app/game_tick_processing.py`
-- **Process all mortally wounded players.** (1 connections) — `server/app/game_tick_processing.py`
-- **Process passive lucidity flux service if available.** (1 connections) — `server/app/game_tick_processing.py`
-- **Validate that required services exist for MP regeneration.      Args:         co** (1 connections) — `server/app/game_tick_processing.py`
-- **Process MP regeneration for online players.** (1 connections) — `server/app/game_tick_processing.py`
-- **Process dead players and move them to limbo if needed.** (1 connections) — `server/app/game_tick_processing.py`
-- **Process DP decay and death for a single database session.** (1 connections) — `server/app/game_tick_processing.py`
+- **.mark_room_as_explored()** (7 connections) — `server/services/exploration_service.py`
+- **UUID** (7 connections)
+- **._get_room_uuid_by_stable_id()** (7 connections) — `server/services/exploration_service.py`
+- **.is_room_explored()** (6 connections) — `server/services/exploration_service.py`
+- **AsyncSession** (5 connections)
+- **._mark_explored_in_session()** (5 connections) — `server/services/exploration_service.py`
+- **.get_explored_rooms()** (5 connections) — `server/services/exploration_service.py`
+- **.__init__()** (4 connections) — `server/services/exploration_service.py`
+- **.mark_room_as_explored_sync()** (4 connections) — `server/services/exploration_service.py`
+- **Any** (2 connections)
+- **Initialize the exploration service.          Args:             database_manager:** (1 connections) — `server/services/exploration_service.py`
+- **Mark a room as explored by a player.          This method inserts a record into** (1 connections) — `server/services/exploration_service.py`
+- **Get room UUID by stable_id (hierarchical room ID).          Args:             st** (1 connections) — `server/services/exploration_service.py`
+- **Mark room as explored using the provided session.          Args:             ses** (1 connections) — `server/services/exploration_service.py`
+- **Get list of room IDs that a player has explored.          Args:             play** (1 connections) — `server/services/exploration_service.py`
+- **Check if a player has explored a specific room.          Args:             playe** (1 connections) — `server/services/exploration_service.py`
+- **Synchronous wrapper for mark_room_as_explored.          This method is designed** (1 connections) — `server/services/exploration_service.py`
 
 ## Relationships
 
-- [auth endpoints rationale](auth_endpoints_rationale.md) (9 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (1 shared connections)
-- [models player rationale](models_player_rationale.md) (1 shared connections)
-- [invite models rationale](invite_models_rationale.md) (1 shared connections)
+- [corpse lifecycle service](corpse_lifecycle_service.md) (7 shared connections)
+- [Database Config](Database_Config.md) (4 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (1 shared connections)
+- [room game service](room_game_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/app/game_tick_processing.py`
+- `server/services/exploration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 50 (100%)
+- EXTRACTED: 59 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

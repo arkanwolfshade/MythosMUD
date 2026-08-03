@@ -25,7 +25,7 @@
 
 - [optimized security validator](optimized_security_validator.md) (11 shared connections)
 - [optimized validators security](optimized_validators_security.md) (7 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (2 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
 - [realtime message handler](realtime_message_handler.md) (2 shared connections)
 - [npc aggressive mob](npc_aggressive_mob.md) (1 shared connections)
 - [metadata rationale npc](metadata_rationale_npc.md) (1 shared connections)

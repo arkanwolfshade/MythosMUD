@@ -1,17 +1,19 @@
 # channel realtime broadcasting
 
-> 12 nodes
+> 14 nodes
 
 ## Key Concepts
 
 - **test_channel_broadcasting_strategies.py** (26 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
 - **PartyChannelStrategy** (10 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **test_global_channel_strategy_broadcast()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
 - **test_party_channel_strategy_broadcast_sends_only_to_party_members()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
 - **test_party_channel_strategy_broadcast_no_party_service_no_send()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
 - **test_party_channel_strategy_broadcast_party_not_found_no_send()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
 - **test_party_channel_strategy_broadcast_no_party_id()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
 - **Strategy for party channel broadcasting. Delivers only to current party members.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
 - **Unit tests for channel broadcasting strategies.  Tests the channel_broadcasting_** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **Test GlobalChannelStrategy.broadcast() broadcasts globally.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
 - **Party chat is delivered only to current party members (visibility).** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
 - **When party_service is missing on handler, no message is sent.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
 - **When party does not exist, no message is sent.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
@@ -19,9 +21,10 @@
 
 ## Relationships
 
-- [channel broadcasting strategies](channel_broadcasting_strategies.md) (8 shared connections)
-- [channel broadcasting realtime](channel_broadcasting_realtime.md) (8 shared connections)
-- [world loader room](world_loader_room.md) (4 shared connections)
+- [channel broadcasting strategies](channel_broadcasting_strategies.md) (7 shared connections)
+- [npc behavior engine](npc_behavior_engine.md) (5 shared connections)
+- [message handler factory](message_handler_factory.md) (4 shared connections)
+- [channel broadcasting realtime](channel_broadcasting_realtime.md) (4 shared connections)
 - [world loader rationale](world_loader_rationale.md) (3 shared connections)
 - [realtime channel broadcasting](realtime_channel_broadcasting.md) (1 shared connections)
 
@@ -32,7 +35,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 54 (100%)
+- EXTRACTED: 58 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

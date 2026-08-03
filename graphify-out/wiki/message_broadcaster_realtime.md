@@ -1,47 +1,43 @@
 # message broadcaster realtime
 
-> 14 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **CircuitBreaker** (43 connections) — `server/realtime/circuit_breaker.py`
-- **test_circuit_breaker_init_defaults()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_call_opens_circuit_after_threshold()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_on_failure_opens_circuit_at_threshold()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_should_attempt_reset_returns_false_before_timeout()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_get_state()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **.reset()** (2 connections) — `server/realtime/circuit_breaker.py`
-- **Circuit breaker for NATS message processing.      Implements Martin Fowler's cir** (1 connections) — `server/realtime/circuit_breaker.py`
-- **Manually reset circuit breaker to CLOSED state.          Clears all counters and** (1 connections) — `server/realtime/circuit_breaker.py`
-- **Test CircuitBreaker initialization with defaults.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **Test call() opens circuit after failure threshold.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **Test _on_failure() opens circuit at threshold.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **Test _should_attempt_reset() returns False before timeout.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **Test get_state() returns current state.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **talk_command.py** (26 connections) — `server/commands/talk_command.py`
+- **handle_talk_command()** (11 connections) — `server/commands/talk_command.py`
+- **_emit_prompt()** (8 connections) — `server/commands/talk_command.py`
+- **_talk_with_npc()** (8 connections) — `server/commands/talk_command.py`
+- **_talk_by_option_index()** (6 connections) — `server/commands/talk_command.py`
+- **_resolve_player_id()** (5 connections) — `server/commands/talk_command.py`
+- **UUID** (5 connections)
+- **_remainder_from_command_data()** (3 connections) — `server/commands/talk_command.py`
+- **talk / talk <n> command for NPC dialogue trees (#583).** (1 connections) — `server/commands/talk_command.py`
+- **Extract player UUID from player model.** (1 connections) — `server/commands/talk_command.py`
+- **Join talk args into a single remainder string.** (1 connections) — `server/commands/talk_command.py`
+- **Send personal system message for a node; return short command result.** (1 connections) — `server/commands/talk_command.py`
+- **Advance an active dialogue by numbered option.** (1 connections) — `server/commands/talk_command.py`
+- **Start dialogue with a same-room NPC.** (1 connections) — `server/commands/talk_command.py`
+- **Handle talk <npc> or talk <n> against same-room NPCs.** (1 connections) — `server/commands/talk_command.py`
 
 ## Relationships
 
-- [circuit breaker realtime](circuit_breaker_realtime.md) (13 shared connections)
-- [realtime circuit breaker](realtime_circuit_breaker.md) (7 shared connections)
-- [event bus events](event_bus_events.md) (7 shared connections)
-- [events event bus](events_event_bus.md) (5 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (3 shared connections)
-- [uuid services npc](uuid_services_npc.md) (1 shared connections)
-- [commands rest command](commands_rest_command.md) (1 shared connections)
-- [message nats handler](message_nats_handler.md) (1 shared connections)
-- [Memory Task Runtime](Memory_Task_Runtime.md) (1 shared connections)
-- [realtime message filtering](realtime_message_filtering.md) (1 shared connections)
-- [event events bus](event_events_bus.md) (1 shared connections)
+- [npc commands admin](npc_commands_admin.md) (7 shared connections)
+- [dialogue service game](dialogue_service_game.md) (7 shared connections)
+- [commands admin mute](commands_admin_mute.md) (5 shared connections)
+- [commands quest rationale](commands_quest_rationale.md) (5 shared connections)
+- [quest chat game](quest_chat_game.md) (3 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [command factories create](command_factories_create.md) (2 shared connections)
 
 ## Source Files
 
-- `server/realtime/circuit_breaker.py`
-- `server/tests/unit/realtime/test_circuit_breaker.py`
+- `server/commands/talk_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 65 (97%)
-- INFERRED: 2 (3%)
+- EXTRACTED: 78 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

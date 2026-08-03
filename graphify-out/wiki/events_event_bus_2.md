@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_call_transitions_to_half_open_after_timeout()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **Test call() transitions to HALF_OPEN after timeout.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_calculate_distance_to_room_same_subzone()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **Test _calculate_distance_to_room() with rooms in same subzone.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
 
 ## Relationships
 
-- [message broadcaster realtime](message_broadcaster_realtime.md) (1 shared connections)
-- [circuit breaker realtime](circuit_breaker_realtime.md) (1 shared connections)
+- [config models player](config_models_player.md) (1 shared connections)
+- [idle movement npc](idle_movement_npc.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_circuit_breaker.py`
+- `server/tests/unit/npc/test_idle_movement.py`
 
 ## Audit Trail
 

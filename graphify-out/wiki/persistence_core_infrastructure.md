@@ -1,54 +1,52 @@
 # persistence core infrastructure
 
-> 50 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **test_async_persistence_core.py** (40 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_async_persistence_layer_init_skip_room_cache()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_async_persistence_layer_init_with_room_cache()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_async_persistence_layer_init_deprecated_params()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_player_by_name_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_player_by_id_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_players_by_user_id_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_active_players_by_user_id_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_user_by_username_case_insensitive_success()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_save_player_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_list_players_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_players_in_room_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_save_players_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_close()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_player_by_name_not_found()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_user_by_username_case_insensitive_not_found()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_room_by_id_delegates()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_room_by_id_not_found()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_list_rooms_delegates()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_async_list_rooms_delegates()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_delete_player_delegates()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_update_player_last_active_delegates()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_update_player_last_active_none()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_professions_empty()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_profession_by_id_not_found()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- *... and 25 more nodes in this community*
+- **Profession** (54 connections) — `server/models/profession.py`
+- **test_get_professions_success()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_get_profession_by_id_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_profession_repr()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **test_profession_get_stat_requirements_invalid_json()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **test_profession_set_mechanical_effects()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **.__repr__()** (2 connections) — `server/models/profession.py`
+- **.is_available_for_selection()** (2 connections) — `server/models/profession.py`
+- **Base** (1 connections)
+- **Profession model for game data.      Stores profession information including nam** (1 connections) — `server/models/profession.py`
+- **String representation of the profession.** (1 connections) — `server/models/profession.py`
+- **Check if profession is available for player selection.** (1 connections) — `server/models/profession.py`
+- **Test get_professions with successful query.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **Test get_profession_by_id delegates to ProfessionRepository.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **Test __repr__ returns expected string format.** (1 connections) — `server/tests/unit/models/test_profession.py`
+- **Test get_stat_requirements returns empty dict for invalid JSON.** (1 connections) — `server/tests/unit/models/test_profession.py`
+- **Test set_mechanical_effects stores dict as JSON string.** (1 connections) — `server/tests/unit/models/test_profession.py`
 
 ## Relationships
 
-- [Async Query Helpers](Async_Query_Helpers.md) (9 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (5 shared connections)
-- [npc populate databases](npc_populate_databases.md) (4 shared connections)
-- [models profession available](models_profession_available.md) (3 shared connections)
-- [auth users rationale](auth_users_rationale.md) (3 shared connections)
-- [world models rationale](world_models_rationale.md) (2 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [profession models rationale](profession_models_rationale.md) (13 shared connections)
+- [Database Config](Database_Config.md) (11 shared connections)
+- [player realtime presence](player_realtime_presence.md) (7 shared connections)
+- [message handlers realtime](message_handlers_realtime.md) (3 shared connections)
+- [room toolkit validator](room_toolkit_validator.md) (2 shared connections)
+- [realtime player event](realtime_player_event.md) (2 shared connections)
+- [world models rationale](world_models_rationale.md) (1 shared connections)
+- [room infrastructure persistence](room_infrastructure_persistence.md) (1 shared connections)
+- [realtime monitoring performance](realtime_monitoring_performance.md) (1 shared connections)
+- [archive LOGGING BEST](archive_LOGGING_BEST.md) (1 shared connections)
+- [static schemas room](static_schemas_room.md) (1 shared connections)
+- [archive AUDIT EXECUTIVE](archive_AUDIT_EXECUTIVE.md) (1 shared connections)
 
 ## Source Files
 
+- `server/models/profession.py`
 - `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- `server/tests/unit/models/test_profession.py`
 
 ## Audit Trail
 
-- EXTRACTED: 117 (94%)
-- INFERRED: 8 (6%)
+- EXTRACTED: 75 (91%)
+- INFERRED: 7 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

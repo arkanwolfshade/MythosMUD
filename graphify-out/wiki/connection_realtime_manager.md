@@ -1,53 +1,34 @@
 # connection realtime manager
 
-> 37 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **CommunicationIntegrationProtocol** (10 connections) — `server/npc/npc_protocols.py`
 - **schedule_end_combat_if_npc_died_best_effort()** (8 connections) — `server/npc/npc_combat_schedule.py`
-- **CombatIntegrationProtocol** (7 connections) — `server/npc/npc_protocols.py`
-- **._handle_npc_death()** (6 connections) — `server/npc/npc_base.py`
-- **.take_damage()** (5 connections) — `server/npc/npc_base.py`
 - **test_npc_combat_schedule.py** (5 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
-- **._publish_damage_event()** (4 connections) — `server/npc/npc_base.py`
-- **._schedule_end_combat_if_npc_died()** (4 connections) — `server/npc/npc_base.py`
-- **.speak()** (4 connections) — `server/npc/npc_base.py`
-- **.listen()** (4 connections) — `server/npc/npc_base.py`
-- **npc_protocols.py** (4 connections) — `server/npc/npc_protocols.py`
-- **._update_determination_points()** (3 connections) — `server/npc/npc_base.py`
 - **test_schedule_end_combat_if_npc_died_no_service()** (3 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
 - **test_schedule_end_combat_if_npc_died_no_running_loop()** (3 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
-- **Protocol** (2 connections)
-- **.handle_npc_death()** (2 connections) — `server/npc/npc_protocols.py`
-- **.send_whisper_to_player()** (2 connections) — `server/npc/npc_protocols.py`
-- **.send_message_to_room()** (2 connections) — `server/npc/npc_protocols.py`
-- **.handle_player_message()** (2 connections) — `server/npc/npc_protocols.py`
-- **Update determination points after taking damage; return new DP.** (1 connections) — `server/npc/npc_base.py`
-- **Publish damage event to event bus.** (1 connections) — `server/npc/npc_base.py`
-- **Handle NPC death after taking fatal damage.** (1 connections) — `server/npc/npc_base.py`
-- **Schedule end_combat_if_npc_died so the slain NPC no longer gets combat turns (be** (1 connections) — `server/npc/npc_base.py`
-- **Take damage and update determination points (DP).** (1 connections) — `server/npc/npc_base.py`
-- **NPC speaks a message.** (1 connections) — `server/npc/npc_base.py`
-- *... and 12 more nodes in this community*
+- **Schedule end_combat_if_npc_died so the slain NPC no longer gets combat turns (be** (1 connections) — `server/npc/npc_combat_schedule.py`
+- **Unit tests for best-effort NPC combat cleanup scheduling.** (1 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
+- **When combat service is missing, scheduling is a no-op.** (1 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
+- **Without a running asyncio loop, scheduling fails quietly (RuntimeError path).** (1 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
 
 ## Relationships
 
-- [NATS Messaging](NATS_Messaging.md) (10 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (9 shared connections)
-- [Item Instances](Item_Instances.md) (1 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
+- [rate limiter realtime](rate_limiter_realtime.md) (1 shared connections)
+- [NPC Combat](NPC_Combat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/npc_base.py`
 - `server/npc/npc_combat_schedule.py`
-- `server/npc/npc_protocols.py`
 - `server/tests/unit/npc/test_npc_combat_schedule.py`
 
 ## Audit Trail
 
-- EXTRACTED: 90 (92%)
-- INFERRED: 8 (8%)
+- EXTRACTED: 23 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

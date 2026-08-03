@@ -30,7 +30,7 @@
 
 ## Relationships
 
-- [combat services persistence](combat_services_persistence.md) (3 shared connections)
+- [nats exceptions services](nats_exceptions_services.md) (3 shared connections)
 
 ## Source Files
 

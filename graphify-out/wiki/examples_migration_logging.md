@@ -33,9 +33,10 @@
 
 ## Relationships
 
-- [auth users rationale](auth_users_rationale.md) (2 shared connections)
 - [middleware correlation rationale](middleware_correlation_rationale.md) (1 shared connections)
-- [System Metrics](System_Metrics.md) (1 shared connections)
+- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [player preferences service](player_preferences_service.md) (1 shared connections)
+- [ascii map renderer](ascii_map_renderer.md) (1 shared connections)
 
 ## Source Files
 

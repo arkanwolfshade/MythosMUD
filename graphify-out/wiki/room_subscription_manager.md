@@ -15,13 +15,12 @@
 
 ## Relationships
 
-- [npc behavior engine](npc_behavior_engine.md) (10 shared connections)
-- [room infrastructure persistence](room_infrastructure_persistence.md) (4 shared connections)
+- [npc behavior engine](npc_behavior_engine.md) (9 shared connections)
+- [room infrastructure persistence](room_infrastructure_persistence.md) (5 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (3 shared connections)
 - [room cache infrastructure](room_cache_infrastructure.md) (3 shared connections)
-- [room realtime subscription](room_realtime_subscription.md) (2 shared connections)
 - [infrastructure persistence room](infrastructure_persistence_room.md) (2 shared connections)
 - [idle npc movement](idle_npc_movement.md) (2 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (1 shared connections)
 - [idle movement npc](idle_movement_npc.md) (1 shared connections)
 
 ## Source Files

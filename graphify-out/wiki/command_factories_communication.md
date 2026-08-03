@@ -1,56 +1,53 @@
 # command factories communication
 
-> 29 nodes
+> 44 nodes
 
 ## Key Concepts
 
-- **MessageBrokerError** (13 connections) — `server/infrastructure/message_broker.py`
-- **message_broker.py** (11 connections) — `server/infrastructure/message_broker.py`
-- **PublishError** (9 connections) — `server/infrastructure/message_broker.py`
-- **MessageBrokerConnectionError** (8 connections) — `server/infrastructure/message_broker.py`
-- **UnsubscribeError** (8 connections) — `server/infrastructure/message_broker.py`
-- **.disconnect()** (5 connections) — `server/infrastructure/nats_broker.py`
-- **.unsubscribe()** (4 connections) — `server/infrastructure/nats_broker.py`
-- **__init__.py** (3 connections) — `server/infrastructure/__init__.py`
-- **._stop_health_monitoring()** (3 connections) — `server/infrastructure/nats_broker.py`
-- **test_connect_failure()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_disconnect_error_handling()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_publish_not_connected()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_publish_failure()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_unsubscribe_failure()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **Infrastructure layer for MythosMUD.  This package contains abstractions for exte** (1 connections) — `server/infrastructure/__init__.py`
-- **Exception** (1 connections)
-- **Message Broker abstraction for MythosMUD.  This module defines the MessageBroker** (1 connections) — `server/infrastructure/message_broker.py`
-- **Base exception for message broker errors.** (1 connections) — `server/infrastructure/message_broker.py`
-- **Exception raised when connection to message broker fails.** (1 connections) — `server/infrastructure/message_broker.py`
-- **Exception raised when publishing message fails.** (1 connections) — `server/infrastructure/message_broker.py`
-- **Exception raised when unsubscribing from subject fails.** (1 connections) — `server/infrastructure/message_broker.py`
-- **Disconnect from NATS server.** (1 connections) — `server/infrastructure/nats_broker.py`
-- **Unsubscribe from NATS subject.          Args:             subscription_id: ID re** (1 connections) — `server/infrastructure/nats_broker.py`
-- **Stop health check monitoring task.** (1 connections) — `server/infrastructure/nats_broker.py`
-- **Test connect() raises ConnectionError on failure.** (1 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- *... and 4 more nodes in this community*
+- **Player** (26 connections) — `server/models/game.py`
+- **test_game_player.py** (23 connections) — `server/tests/unit/models/test_game_player.py`
+- **test_player_add_item_existing()** (4 connections) — `server/tests/unit/models/test_game_player.py`
+- **test_player_remove_item_success()** (4 connections) — `server/tests/unit/models/test_game_player.py`
+- **test_player_remove_item_removes_when_zero()** (4 connections) — `server/tests/unit/models/test_game_player.py`
+- **test_player_remove_item_insufficient_quantity()** (4 connections) — `server/tests/unit/models/test_game_player.py`
+- **test_player_add_status_effect()** (4 connections) — `server/tests/unit/models/test_game_player.py`
+- **test_player_remove_status_effect_success()** (4 connections) — `server/tests/unit/models/test_game_player.py`
+- **test_player_get_active_status_effects()** (4 connections) — `server/tests/unit/models/test_game_player.py`
+- **test_player_get_active_status_effects_all_active()** (4 connections) — `server/tests/unit/models/test_game_player.py`
+- **test_player_can_carry_weight_true()** (4 connections) — `server/tests/unit/models/test_game_player.py`
+- **test_player_can_carry_weight_false()** (4 connections) — `server/tests/unit/models/test_game_player.py`
+- **.add_item()** (3 connections) — `server/models/game.py`
+- **.add_status_effect()** (3 connections) — `server/models/game.py`
+- **test_player_add_item_new()** (3 connections) — `server/tests/unit/models/test_game_player.py`
+- **test_player_add_item_default_quantity()** (3 connections) — `server/tests/unit/models/test_game_player.py`
+- **test_player_remove_item_not_found()** (3 connections) — `server/tests/unit/models/test_game_player.py`
+- **test_player_remove_status_effect_not_found()** (3 connections) — `server/tests/unit/models/test_game_player.py`
+- **test_player_update_last_active()** (3 connections) — `server/tests/unit/models/test_game_player.py`
+- **.remove_item()** (2 connections) — `server/models/game.py`
+- **.update_last_active()** (2 connections) — `server/models/game.py`
+- **.can_carry_weight()** (2 connections) — `server/models/game.py`
+- **Pydantic Player model for game logic and validation.      This is separate from** (1 connections) — `server/models/game.py`
+- **Add an item to the player's inventory.          Args:             item_id: Uniqu** (1 connections) — `server/models/game.py`
+- **Remove an item from the player's inventory.          Args:             item_id:** (1 connections) — `server/models/game.py`
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [broker infrastructure nats](broker_infrastructure_nats.md) (10 shared connections)
-- [infrastructure nats broker](infrastructure_nats_broker.md) (9 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (5 shared connections)
-- [infrastructure message broker](infrastructure_message_broker.md) (2 shared connections)
-- [message handlers realtime](message_handlers_realtime.md) (2 shared connections)
-- [game models enums](game_models_enums.md) (2 shared connections)
+- [command inventory factories](command_inventory_factories.md) (15 shared connections)
+- [schemas unified room](schemas_unified_room.md) (3 shared connections)
+- [command factories exploration](command_factories_exploration.md) (2 shared connections)
+- [models invite Any](models_invite_Any.md) (1 shared connections)
+- [time service rationale](time_service_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/infrastructure/__init__.py`
-- `server/infrastructure/message_broker.py`
-- `server/infrastructure/nats_broker.py`
-- `server/tests/unit/infrastructure/test_nats_broker.py`
+- `server/models/game.py`
+- `server/tests/unit/models/test_game_player.py`
 
 ## Audit Trail
 
-- EXTRACTED: 80 (85%)
-- INFERRED: 14 (15%)
+- EXTRACTED: 138 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

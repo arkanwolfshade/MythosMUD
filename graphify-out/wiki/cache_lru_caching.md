@@ -33,8 +33,9 @@
 
 ## Relationships
 
-- [NATS Messaging](NATS_Messaging.md) (2 shared connections)
-- [caching lru cache](caching_lru_cache.md) (1 shared connections)
+- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [combat messaging service](combat_messaging_service.md) (1 shared connections)
+- [time service rationale](time_service_rationale.md) (1 shared connections)
 
 ## Source Files
 

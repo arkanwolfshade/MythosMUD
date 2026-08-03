@@ -32,7 +32,7 @@
 ## Relationships
 
 - [startup npc service](startup_npc_service.md) (11 shared connections)
-- [startup npc services](startup_npc_services.md) (10 shared connections)
+- [player respawn event](player_respawn_event.md) (10 shared connections)
 - [Loot Generation](Loot_Generation.md) (1 shared connections)
 - [container events rationale](container_events_rationale.md) (1 shared connections)
 

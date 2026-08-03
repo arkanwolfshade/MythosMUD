@@ -31,9 +31,9 @@
 
 ## Relationships
 
-- [character creation validate](character_creation_validate.md) (11 shared connections)
-- [game models stats](game_models_stats.md) (1 shared connections)
-- [services combat sync](services_combat_sync.md) (1 shared connections)
+- [profession game service](profession_game_service.md) (11 shared connections)
+- [schemas unified room](schemas_unified_room.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
 
 ## Source Files
 

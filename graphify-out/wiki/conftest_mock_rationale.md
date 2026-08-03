@@ -1,27 +1,29 @@
 # conftest mock rationale
 
-> 5 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **rename_invites_columns.py** (4 connections) — `server/scripts/rename_invites_columns.py`
-- **apply_migration()** (3 connections) — `server/scripts/rename_invites_columns.py`
-- **main()** (3 connections) — `server/scripts/rename_invites_columns.py`
-- **Apply the migration to rename columns.      Args:         database_url: PostgreS** (1 connections) — `server/scripts/rename_invites_columns.py`
-- **Main entry point for the migration script.** (1 connections) — `server/scripts/rename_invites_columns.py`
+- **TestGetMagicService** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_magic_service_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_magic_service_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Tests for get_magic_service dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_magic_service returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_magic_service raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Relationships
 
-- [NATS Messaging](NATS_Messaging.md) (2 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (3 shared connections)
+- [command inventory models](command_inventory_models.md) (1 shared connections)
 
 ## Source Files
 
-- `server/scripts/rename_invites_columns.py`
+- `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 13 (93%)
+- INFERRED: 1 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

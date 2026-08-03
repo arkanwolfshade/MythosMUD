@@ -1,59 +1,55 @@
 # persistence container extended
 
-> 95 nodes
+> 38 nodes
 
 ## Key Concepts
 
-- **ContainerData** (34 connections) — `server/persistence/container_data.py`
-- **test_container_persistence_extended_parse.py** (26 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **ContainerDataCore** (24 connections) — `server/persistence/container_data.py`
-- **container_query_helpers_async.py** (23 connections) — `server/persistence/container_query_helpers_async.py`
-- **container_repository.py** (23 connections) — `server/persistence/repositories/container_repository.py`
-- **ContainerDataExtras** (18 connections) — `server/persistence/container_data.py`
-- **ContainerRepository** (16 connections) — `server/persistence/repositories/container_repository.py`
-- **_build_container_data_from_row_async()** (14 connections) — `server/persistence/container_query_helpers_async.py`
-- **container_data.py** (12 connections) — `server/persistence/container_data.py`
-- **get_containers_by_entity_id_async()** (10 connections) — `server/persistence/container_query_helpers_async.py`
-- **get_decayed_containers_async()** (10 connections) — `server/persistence/container_query_helpers_async.py`
-- **_container_data_to_dict()** (10 connections) — `server/persistence/repositories/container_repository.py`
-- **get_containers_by_room_id_async()** (9 connections) — `server/persistence/container_query_helpers_async.py`
-- **Any** (7 connections)
-- **.create_container()** (7 connections) — `server/persistence/repositories/container_repository.py`
-- **.get_container()** (7 connections) — `server/persistence/repositories/container_repository.py`
-- **.get_containers_by_entity_id()** (7 connections) — `server/persistence/repositories/container_repository.py`
-- **.update_container()** (7 connections) — `server/persistence/repositories/container_repository.py`
-- **.get_decayed_containers()** (7 connections) — `server/persistence/repositories/container_repository.py`
-- **.get_containers_by_room_id()** (6 connections) — `server/persistence/repositories/container_repository.py`
-- **UUID** (5 connections)
-- **.delete_container()** (5 connections) — `server/persistence/repositories/container_repository.py`
-- **test_container_data_to_dict()** (5 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **test_container_data_to_dict_none_values()** (5 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
-- **_parse_jsonb()** (4 connections) — `server/persistence/container_query_helpers_async.py`
-- *... and 70 more nodes in this community*
+- **HealthService** (21 connections) — `server/services/health_service.py`
+- **.get_health_status()** (10 connections) — `server/services/health_service.py`
+- **.check_database_health_async()** (7 connections) — `server/services/health_service.py`
+- **.get_server_component_health()** (7 connections) — `server/services/health_service.py`
+- **.check_database_health()** (6 connections) — `server/services/health_service.py`
+- **Any** (5 connections)
+- **._create_health_response()** (5 connections) — `server/services/health_service.py`
+- **.check_connections_health()** (5 connections) — `server/services/health_service.py`
+- **.get_database_component_health()** (5 connections) — `server/services/health_service.py`
+- **.get_connections_component_health()** (5 connections) — `server/services/health_service.py`
+- **.determine_overall_status()** (5 connections) — `server/services/health_service.py`
+- **room_service()** (5 connections) — `server/tests/unit/game/test_room_service.py`
+- **.get_server_uptime()** (4 connections) — `server/services/health_service.py`
+- **.get_database_component_health_async()** (4 connections) — `server/services/health_service.py`
+- **.generate_alerts()** (4 connections) — `server/services/health_service.py`
+- **.__init__()** (3 connections) — `server/services/health_service.py`
+- **.get_memory_usage()** (3 connections) — `server/services/health_service.py`
+- **.get_cpu_usage()** (3 connections) — `server/services/health_service.py`
+- **health_service()** (3 connections) — `server/tests/unit/services/test_health_service.py`
+- **HealthStatus** (2 connections)
+- **Health monitoring service for MythosMUD server.      Provides comprehensive heal** (1 connections) — `server/services/health_service.py`
+- **Initialize the health service.          Args:             connection_manager: Co** (1 connections) — `server/services/health_service.py`
+- **Get server uptime in seconds.** (1 connections) — `server/services/health_service.py`
+- **Get current memory usage in MB.** (1 connections) — `server/services/health_service.py`
+- **Get current CPU usage percentage.** (1 connections) — `server/services/health_service.py`
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [persistence container item](persistence_container_item.md) (51 shared connections)
-- [persistence container rationale](persistence_container_rationale.md) (26 shared connections)
-- [container persistence rationale](container_persistence_rationale.md) (17 shared connections)
-- [Database Config](Database_Config.md) (8 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (6 shared connections)
-- [npc populate databases](npc_populate_databases.md) (5 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [dialogue definitions admin](dialogue_definitions_admin.md) (2 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (1 shared connections)
+- [grace period login](grace_period_login.md) (9 shared connections)
+- [player look commands](player_look_commands.md) (4 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [command combat models](command_combat_models.md) (1 shared connections)
+- [room game service](room_game_service.md) (1 shared connections)
+- [room service game](room_service_game.md) (1 shared connections)
 
 ## Source Files
 
-- `server/persistence/container_data.py`
-- `server/persistence/container_query_helpers_async.py`
-- `server/persistence/repositories/container_repository.py`
-- `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- `server/services/health_service.py`
+- `server/tests/unit/game/test_room_service.py`
+- `server/tests/unit/services/test_health_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 389 (92%)
-- INFERRED: 35 (8%)
+- EXTRACTED: 125 (96%)
+- INFERRED: 5 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

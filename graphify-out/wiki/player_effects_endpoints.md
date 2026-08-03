@@ -4,46 +4,42 @@
 
 ## Key Concepts
 
-- **player_effects.py** (30 connections) — `server/api/player_effects.py`
-- **EffectResponse** (12 connections) — `server/schemas/players/player_effects.py`
-- **apply_fear()** (11 connections) — `server/api/player_effects.py`
-- **apply_corruption()** (11 connections) — `server/api/player_effects.py`
-- **damage_player()** (11 connections) — `server/api/player_effects.py`
-- **UUID** (7 connections)
-- **FastAPIRequest** (6 connections)
-- **player_effects.py** (3 connections) — `server/schemas/players/player_effects.py`
-- **Player effects API endpoints.  This module handles endpoints for applying variou** (1 connections) — `server/api/player_effects.py`
-- **Apply fear to a player.** (1 connections) — `server/api/player_effects.py`
-- **Apply corruption to a player.** (1 connections) — `server/api/player_effects.py`
-- **Damage a player's health.** (1 connections) — `server/api/player_effects.py`
-- **BaseModel** (1 connections)
-- **Player effects API response schemas for MythosMUD server.  This module provides** (1 connections) — `server/schemas/players/player_effects.py`
-- **Response model for player effect endpoints (lucidity loss, fear, corruption, etc** (1 connections) — `server/schemas/players/player_effects.py`
+- **CommandParser** (19 connections) — `server/utils/command_parser.py`
+- **.parse_command()** (7 connections) — `server/utils/command_parser.py`
+- **._create_command_object()** (7 connections) — `server/utils/command_parser.py`
+- **Command** (4 connections)
+- **._parse_command_parts()** (4 connections) — `server/utils/command_parser.py`
+- **._invoke_create_method()** (4 connections) — `server/utils/command_parser.py`
+- **._normalize_command()** (3 connections) — `server/utils/command_parser.py`
+- **._resolve_command_alias()** (3 connections) — `server/utils/command_parser.py`
+- **Secure command parser using Click for parsing and Pydantic for validation.** (1 connections) — `server/utils/command_parser.py`
+- **Parse and validate a command string.          Args:             command_string:** (1 connections) — `server/utils/command_parser.py`
+- **Normalize command string by removing slash prefix and cleaning whitespace.** (1 connections) — `server/utils/command_parser.py`
+- **Parse command string into command and arguments.          Args:             comm** (1 connections) — `server/utils/command_parser.py`
+- **Resolve single-letter aliases to full command names.** (1 connections) — `server/utils/command_parser.py`
+- **Invoke the appropriate factory method for the command.** (1 connections) — `server/utils/command_parser.py`
+- **Create and validate a Command; raise MythosValidationError on failure.** (1 connections) — `server/utils/command_parser.py`
 
 ## Relationships
 
-- [player schemas requests](player_schemas_requests.md) (12 shared connections)
-- [auth users rationale](auth_users_rationale.md) (6 shared connections)
-- [npc lifecycle combat](npc_lifecycle_combat.md) (5 shared connections)
-- [combat messaging service](combat_messaging_service.md) (5 shared connections)
-- [Player Stats](Player_Stats.md) (4 shared connections)
-- [Exception Containers](Exception_Containers.md) (4 shared connections)
-- [magic healing game](magic_healing_game.md) (4 shared connections)
-- [Error Handling Core](Error_Handling_Core.md) (2 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [coercion int inventory](coercion_int_inventory.md) (2 shared connections)
-- [player requests schemas](player_requests_schemas.md) (2 shared connections)
-- [argon2 auth rationale](argon2_auth_rationale.md) (2 shared connections)
+- [command inventory factories](command_inventory_factories.md) (4 shared connections)
+- [command factories create](command_factories_create.md) (3 shared connections)
+- [command parser rationale](command_parser_rationale.md) (2 shared connections)
+- [npc behavior engine](npc_behavior_engine.md) (2 shared connections)
+- [skill game service](skill_game_service.md) (1 shared connections)
+- [infrastructure persistence room](infrastructure_persistence_room.md) (1 shared connections)
+- [command parser helpers](command_parser_helpers.md) (1 shared connections)
+- [infrastructure persistence core](infrastructure_persistence_core.md) (1 shared connections)
+- [command processor rationale](command_processor_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/player_effects.py`
-- `server/schemas/players/player_effects.py`
+- `server/utils/command_parser.py`
 
 ## Audit Trail
 
-- EXTRACTED: 98 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 56 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

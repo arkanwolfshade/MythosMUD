@@ -1,6 +1,6 @@
 # command validation commands
 
-> 84 nodes
+> 77 nodes
 
 ## Key Concepts
 
@@ -8,56 +8,55 @@
 - **test_command_validation.py** (22 connections) — `server/tests/unit/commands/test_command_validation.py`
 - **TestCatatoniaChecks** (21 connections) — `server/tests/unit/commands/test_command_validation.py`
 - **check_catatonia_block()** (17 connections) — `server/command_handler/catatonia_check.py`
-- **command_request_app_state()** (14 connections) — `server/command_handler/command_execution_request.py`
+- **__init__.py** (13 connections) — `server/command_handler/__init__.py`
 - **_load_player_for_catatonia_check()** (11 connections) — `server/command_handler/catatonia_check.py`
 - **_is_catatonic()** (10 connections) — `server/command_handler/catatonia_check.py`
 - **_check_catatonia_registry()** (9 connections) — `server/command_handler/catatonia_check.py`
 - **_query_lucidity_record()** (9 connections) — `server/command_handler/catatonia_check.py`
 - **_check_catatonia_database()** (9 connections) — `server/command_handler/catatonia_check.py`
-- **command_execution_request.py** (9 connections) — `server/command_handler/command_execution_request.py`
 - **CommandExecutionRequest** (9 connections)
-- **request_context.py** (9 connections) — `server/realtime/request_context.py`
+- **handle_expanded_command()** (8 connections) — `server/command_handler/alias_expansion.py`
 - **UUID** (8 connections)
 - **_fetch_lucidity_record()** (8 connections) — `server/command_handler/catatonia_check.py`
-- **test_command_execution_request.py** (8 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
 - **_registry_player_id_value()** (7 connections) — `server/command_handler/catatonia_check.py`
 - **_PersistenceGetPlayerByName** (6 connections) — `server/command_handler/catatonia_check.py`
 - **_convert_player_id_to_uuid()** (4 connections) — `server/command_handler/catatonia_check.py`
-- **test_command_request_app_state_from_http_request_like_object()** (4 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
-- **test_command_request_app_state_from_websocket_request_context()** (4 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
-- **test_command_request_app_state_missing_app_or_state_returns_none()** (4 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
 - **CommandExecutionRequest** (3 connections)
 - **.test_registry_player_id_value_preserves_uuid_and_str()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
 - **.test_registry_player_id_value_stringifies_non_string_ids()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- *... and 59 more nodes in this community*
+- **.test_is_catatonic_with_tier()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_is_catatonic_with_zero_lcd()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_is_catatonic_with_negative_lcd()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_is_catatonic_not_catatonic()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_is_catatonic_none()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- *... and 52 more nodes in this community*
 
 ## Relationships
 
-- [command handler unified](command_handler_unified.md) (18 shared connections)
-- [request context realtime](request_context_realtime.md) (6 shared connections)
-- [lucidity services helpers](lucidity_services_helpers.md) (5 shared connections)
+- [command commands handler](command_commands_handler.md) (15 shared connections)
+- [command inventory factories](command_inventory_factories.md) (6 shared connections)
 - [player cache rationale](player_cache_rationale.md) (5 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (4 shared connections)
+- [npc rationale extract](npc_rationale_extract.md) (4 shared connections)
+- [logoutHandler logger App](logoutHandler_logger_App.md) (4 shared connections)
+- [lucidity services helpers](lucidity_services_helpers.md) (4 shared connections)
 - [Database Access Layer](Database_Access_Layer.md) (3 shared connections)
-- [command handler processing](command_handler_processing.md) (3 shared connections)
-- [commands communication flows](commands_communication_flows.md) (2 shared connections)
 - [command commands validation](command_commands_validation.md) (2 shared connections)
-- [commands command validation](commands_command_validation.md) (2 shared connections)
+- [request context realtime](request_context_realtime.md) (1 shared connections)
+- [lucidity models rationale](lucidity_models_rationale.md) (1 shared connections)
 - [catatonia registry services](catatonia_registry_services.md) (1 shared connections)
-- [commands alias rationale](commands_alias_rationale.md) (1 shared connections)
+- [commands command validation](commands_command_validation.md) (1 shared connections)
 
 ## Source Files
 
+- `server/command_handler/__init__.py`
+- `server/command_handler/alias_expansion.py`
 - `server/command_handler/catatonia_check.py`
-- `server/command_handler/command_execution_request.py`
-- `server/realtime/request_context.py`
-- `server/tests/unit/command_handler/test_command_execution_request.py`
 - `server/tests/unit/commands/test_command_validation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 314 (95%)
-- INFERRED: 17 (5%)
+- EXTRACTED: 284 (94%)
+- INFERRED: 17 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

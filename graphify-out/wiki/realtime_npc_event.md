@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **mock_message_builder()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **Create a mock message builder.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_apply_encounter_lucidity_loss_acclimated()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **Test apply_encounter_lucidity_loss() for acclimated encounter.** (1 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
 
 ## Relationships
 
-- [npc event handlers](npc_event_handlers.md) (1 shared connections)
+- [lucidity active service](lucidity_active_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_npc_event_handlers.py`
+- `server/tests/unit/services/test_active_lucidity_service.py`
 
 ## Audit Trail
 

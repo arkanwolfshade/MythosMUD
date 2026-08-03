@@ -5,8 +5,8 @@
 ## Key Concepts
 
 - **messageHandlers.ts** (21 connections) — `client/src/components/ui-v2/eventHandlers/messageHandlers.ts`
+- **messageHandlers.test-utils.ts** (15 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/messageHandlers.test-utils.ts`
 - **handleCommandResponse()** (7 connections) — `client/src/components/ui-v2/eventHandlers/messageHandlers.ts`
-- **determineMessageType()** (7 connections) — `client/src/utils/messageTypeUtils.ts`
 - **statusParser.ts** (6 connections) — `client/src/utils/statusParser.ts`
 - **handleChatMessage.test.ts** (5 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/handleChatMessage.test.ts`
 - **handleCommandResponse.test.ts** (5 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/handleCommandResponse.test.ts`
@@ -27,10 +27,12 @@
 
 ## Relationships
 
-- [Game Terminal UI](Game_Terminal_UI.md) (8 shared connections)
-- [roomHandlers eventHandlers calculateOccu](roomHandlers_eventHandlers_calculateOccu.md) (5 shared connections)
+- [Game Terminal UI](Game_Terminal_UI.md) (12 shared connections)
 - [panels chatPanelRuntimeUtils chatPanelEx](panels_chatPanelRuntimeUtils_chatPanelEx.md) (4 shared connections)
-- [eventLog projectorRoom roomMergeUtils](eventLog_projectorRoom_roomMergeUtils.md) (1 shared connections)
+- [PanelSystem PanelManager panelLayoutClam](PanelSystem_PanelManager_panelLayoutClam.md) (1 shared connections)
+- [game terminal lucidity](game_terminal_lucidity.md) (1 shared connections)
+- [lucidityEventUtils mythosTime MythosTime](lucidityEventUtils_mythosTime_MythosTime.md) (1 shared connections)
+- [roomHandlers eventHandlers calculateOccu](roomHandlers_eventHandlers_calculateOccu.md) (1 shared connections)
 
 ## Source Files
 
@@ -41,12 +43,11 @@
 - `client/src/components/ui-v2/eventHandlers/__tests__/messageHandlers.test-utils.ts`
 - `client/src/components/ui-v2/eventHandlers/messageHandlers.ts`
 - `client/src/utils/__tests__/statusParser.test.ts`
-- `client/src/utils/messageTypeUtils.ts`
 - `client/src/utils/statusParser.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 99 (99%)
+- EXTRACTED: 107 (99%)
 - INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 

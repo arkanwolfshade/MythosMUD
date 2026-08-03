@@ -1,47 +1,55 @@
 # character creation service
 
-> 20 nodes
+> 28 nodes
 
 ## Key Concepts
 
-- **CharacterCreationService** (12 connections) — `server/game/character_creation_service.py`
-- **.create_character_with_stats()** (7 connections) — `server/game/character_creation_service.py`
-- **.validate_character_stats()** (6 connections) — `server/game/character_creation_service.py`
-- **Any** (5 connections)
-- **.roll_character_stats()** (5 connections) — `server/game/character_creation_service.py`
-- **.__init__()** (4 connections) — `server/game/character_creation_service.py`
-- **.get_available_classes_info()** (4 connections) — `server/game/character_creation_service.py`
-- **._get_class_description()** (3 connections) — `server/game/character_creation_service.py`
-- **character_creation_service()** (3 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- **test_character_creation_service_init()** (3 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- **UUID** (2 connections)
-- **Service class for character creation and stats generation business operations.** (1 connections) — `server/game/character_creation_service.py`
-- **Initialize the character creation service with a player service.** (1 connections) — `server/game/character_creation_service.py`
-- **Roll random stats for character creation.          Args:             method: The** (1 connections) — `server/game/character_creation_service.py`
-- **Validate character stats against class prerequisites.          Args:** (1 connections) — `server/game/character_creation_service.py`
-- **Create a new character with specific stats.          Args:             name: The** (1 connections) — `server/game/character_creation_service.py`
-- **Get information about all available character classes and their prerequisites.** (1 connections) — `server/game/character_creation_service.py`
-- **Get a description for a character class.** (1 connections) — `server/game/character_creation_service.py`
-- **Create a CharacterCreationService instance.** (1 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- **Test CharacterCreationService initialization.** (1 connections) — `server/tests/unit/game/test_character_creation_service.py`
+- **test_skills.py** (14 connections) — `server/tests/unit/api/test_skills.py`
+- **get_skills_catalog()** (11 connections) — `server/api/skills.py`
+- **skill.py** (8 connections) — `server/schemas/players/skill.py`
+- **SkillListResponse** (7 connections) — `server/schemas/players/skill.py`
+- **SkillData** (5 connections) — `server/schemas/players/skill.py`
+- **PlayerSkillEntry** (5 connections) — `server/schemas/players/skill.py`
+- **PlayerSkillsResponse** (5 connections) — `server/schemas/players/skill.py`
+- **BaseModel** (4 connections)
+- **test_get_skills_catalog_returns_list()** (4 connections) — `server/tests/unit/api/test_skills.py`
+- **test_get_skills_catalog_unauthorized()** (4 connections) — `server/tests/unit/api/test_skills.py`
+- **mock_user()** (3 connections) — `server/tests/unit/api/test_skills.py`
+- **sample_skills()** (3 connections) — `server/tests/unit/api/test_skills.py`
+- **mock_request()** (2 connections) — `server/tests/unit/api/test_skills.py`
+- **mock_skill_repository()** (2 connections) — `server/tests/unit/api/test_skills.py`
+- **Request** (1 connections)
+- **Return the  skills catalog (base values, allow_at_creation).      Cthulhu Mythos** (1 connections) — `server/api/skills.py`
+- **Skill catalog API response schemas.  Used by GET /v1/skills (or equivalent) for** (1 connections) — `server/schemas/players/skill.py`
+- **Single skill catalog entry.** (1 connections) — `server/schemas/players/skill.py`
+- **Response model for skills catalog list.** (1 connections) — `server/schemas/players/skill.py`
+- **Single player skill (character creation revamp 4.3).** (1 connections) — `server/schemas/players/skill.py`
+- **Response for GET /v1/api/players/{player_id}/skills.** (1 connections) — `server/schemas/players/skill.py`
+- **Unit tests for skills catalog API (GET /v1/skills).  Character creation revamp 4** (1 connections) — `server/tests/unit/api/test_skills.py`
+- **Create a mock request object.** (1 connections) — `server/tests/unit/api/test_skills.py`
+- **Create a mock user for auth.** (1 connections) — `server/tests/unit/api/test_skills.py`
+- **Sample skills for catalog response.** (1 connections) — `server/tests/unit/api/test_skills.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [character creation validate](character_creation_validate.md) (4 shared connections)
-- [character creation service](character_creation_service.md) (3 shared connections)
-- [command inventory factories](command_inventory_factories.md) (3 shared connections)
-- [persistence container rationale](persistence_container_rationale.md) (3 shared connections)
-- [game models stats](game_models_stats.md) (2 shared connections)
+- [command inventory factories](command_inventory_factories.md) (7 shared connections)
+- [Exception Containers](Exception_Containers.md) (3 shared connections)
+- [ascii map renderer](ascii_map_renderer.md) (3 shared connections)
+- [Database Config](Database_Config.md) (3 shared connections)
+- [Player Stats](Player_Stats.md) (2 shared connections)
+- [world models rationale](world_models_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/character_creation_service.py`
-- `server/tests/unit/game/test_character_creation_service.py`
+- `server/api/skills.py`
+- `server/schemas/players/skill.py`
+- `server/tests/unit/api/test_skills.py`
 
 ## Audit Trail
 
-- EXTRACTED: 59 (94%)
-- INFERRED: 4 (6%)
+- EXTRACTED: 88 (97%)
+- INFERRED: 3 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

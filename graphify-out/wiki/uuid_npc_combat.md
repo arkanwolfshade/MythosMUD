@@ -29,9 +29,9 @@
 
 ## Relationships
 
-- [NATS Messaging](NATS_Messaging.md) (2 shared connections)
-- [Memory Task Runtime](Memory_Task_Runtime.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (3 shared connections)
 - [room models instance](room_models_instance.md) (2 shared connections)
+- [item models rationale](item_models_rationale.md) (1 shared connections)
 - [player presence tracker](player_presence_tracker.md) (1 shared connections)
 
 ## Source Files

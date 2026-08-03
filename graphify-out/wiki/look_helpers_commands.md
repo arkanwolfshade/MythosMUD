@@ -1,59 +1,59 @@
 # look helpers commands
 
-> 165 nodes
+> 102 nodes
 
 ## Key Concepts
 
-- **test_look_player.py** (32 connections) — `server/tests/unit/commands/test_look_player.py`
-- **test_look_helpers.py** (30 connections) — `server/tests/unit/commands/test_look_helpers.py`
-- **look_player.py** (23 connections) — `server/commands/look_player.py`
-- **_format_player_look_display()** (23 connections) — `server/commands/look_player.py`
-- **test_look_helpers_functions.py** (23 connections) — `server/tests/unit/commands/test_look_helpers_functions.py`
-- **_get_health_label()** (17 connections) — `server/commands/look_helpers.py`
-- **_get_lucidity_label()** (17 connections) — `server/commands/look_helpers.py`
-- **_select_target_player()** (17 connections) — `server/commands/look_player.py`
-- **look_helpers.py** (16 connections) — `server/commands/look_helpers.py`
-- **_handle_player_look()** (13 connections) — `server/commands/look_player.py`
-- **_try_lookup_player_implicit()** (12 connections) — `server/commands/look_player.py`
-- **test_look_player_helpers.py** (12 connections) — `server/tests/unit/commands/test_look_player_helpers.py`
-- **_parse_instance_number()** (11 connections) — `server/commands/look_helpers.py`
-- **_get_visible_equipment()** (11 connections) — `server/commands/look_helpers.py`
-- **_get_players_in_room()** (11 connections) — `server/commands/look_player.py`
-- **_get_wearable_container_service()** (9 connections) — `server/commands/look_helpers.py`
-- **_find_matching_players()** (9 connections) — `server/commands/look_player.py`
-- **Any** (6 connections)
-- **Any** (4 connections)
-- **test_parse_instance_number_hyphen_syntax()** (3 connections) — `server/tests/unit/commands/test_look_helpers.py`
-- **test_parse_instance_number_space_syntax()** (3 connections) — `server/tests/unit/commands/test_look_helpers.py`
-- **test_parse_instance_number_no_instance()** (3 connections) — `server/tests/unit/commands/test_look_helpers.py`
-- **test_parse_instance_number_multiple_spaces()** (3 connections) — `server/tests/unit/commands/test_look_helpers.py`
-- **test_get_health_label_healthy()** (3 connections) — `server/tests/unit/commands/test_look_helpers.py`
-- **test_get_health_label_wounded()** (3 connections) — `server/tests/unit/commands/test_look_helpers.py`
-- *... and 140 more nodes in this community*
+- **test_look_room.py** (35 connections) — `server/tests/unit/commands/test_look_room.py`
+- **look_room.py** (28 connections) — `server/commands/look_room.py`
+- **test_look_room_helpers.py** (20 connections) — `server/tests/unit/commands/test_look_room_helpers.py`
+- **_filter_other_players()** (17 connections) — `server/commands/look_room.py`
+- **_handle_room_look()** (17 connections) — `server/commands/look_room.py`
+- **_format_items_section()** (11 connections) — `server/commands/look_room.py`
+- **_get_room_description()** (10 connections) — `server/commands/look_room.py`
+- **_format_exits_list()** (10 connections) — `server/commands/look_room.py`
+- **_format_containers_section()** (9 connections) — `server/commands/look_room.py`
+- **_format_players_section()** (9 connections) — `server/commands/look_room.py`
+- **_get_room_id()** (9 connections) — `server/commands/look_room.py`
+- **_handle_direction_look()** (9 connections) — `server/commands/look_room.py`
+- **Any** (8 connections)
+- **_format_npcs_section()** (8 connections) — `server/commands/look_room.py`
+- **test_warded_indicator_in_look_room()** (4 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
+- **test_format_items_section_empty()** (3 connections) — `server/tests/unit/commands/test_look_room.py`
+- **test_format_items_section_with_items()** (3 connections) — `server/tests/unit/commands/test_look_room.py`
+- **test_format_containers_section_no_room_id()** (3 connections) — `server/tests/unit/commands/test_look_room.py`
+- **test_format_containers_section_no_persistence()** (3 connections) — `server/tests/unit/commands/test_look_room.py`
+- **test_format_containers_section_with_containers()** (3 connections) — `server/tests/unit/commands/test_look_room.py`
+- **test_format_containers_section_empty()** (3 connections) — `server/tests/unit/commands/test_look_room.py`
+- **test_format_npcs_section_no_room_id()** (3 connections) — `server/tests/unit/commands/test_look_room.py`
+- **test_format_npcs_section_with_npcs()** (3 connections) — `server/tests/unit/commands/test_look_room.py`
+- **test_format_npcs_section_empty()** (3 connections) — `server/tests/unit/commands/test_look_room.py`
+- **test_filter_other_players_excludes_current()** (3 connections) — `server/tests/unit/commands/test_look_room.py`
+- *... and 77 more nodes in this community*
 
 ## Relationships
 
-- [look command commands](look_command_commands.md) (14 shared connections)
-- [grace period disconnect](grace_period_disconnect.md) (6 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (4 shared connections)
-- [player look commands](player_look_commands.md) (4 shared connections)
-- [DI Container Format](DI_Container_Format.md) (3 shared connections)
-- [Inventory Equip](Inventory_Equip.md) (3 shared connections)
-- [grace period login](grace_period_login.md) (3 shared connections)
-- [room look commands](room_look_commands.md) (3 shared connections)
+- [player occupant processor](player_occupant_processor.md) (7 shared connections)
+- [look command commands](look_command_commands.md) (5 shared connections)
+- [command utility models](command_utility_models.md) (4 shared connections)
+- [room renderer functions](room_renderer_functions.md) (4 shared connections)
+- [combat services turn](combat_services_turn.md) (3 shared connections)
+- [grace period disconnect](grace_period_disconnect.md) (3 shared connections)
+- [commands quest rationale](commands_quest_rationale.md) (2 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [npc look commands](npc_look_commands.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/look_helpers.py`
-- `server/commands/look_player.py`
-- `server/tests/unit/commands/test_look_helpers.py`
-- `server/tests/unit/commands/test_look_helpers_functions.py`
-- `server/tests/unit/commands/test_look_player.py`
-- `server/tests/unit/commands/test_look_player_helpers.py`
+- `server/commands/look_room.py`
+- `server/tests/unit/commands/test_look_room.py`
+- `server/tests/unit/commands/test_look_room_helpers.py`
+- `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
+- `server/tests/unit/realtime/test_visual_indicator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 568 (100%)
+- EXTRACTED: 365 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -78,6 +78,27 @@ export async function deleteDialogueDefinition(authToken: string, dialogueId: st
   }
 }
 
+function validateDialogueOption(
+  nodeId: string,
+  option: DialogueOptionDto,
+  nodes: Record<string, DialogueNodeDto>
+): string | null {
+  if (!option.label?.trim()) {
+    return `Node "${nodeId}" has an option without a label.`;
+  }
+  // null/undefined next ends the branch; "" is accidental input, not an end marker.
+  if (option.next == null) {
+    return null;
+  }
+  if (!option.next.trim()) {
+    return `Node "${nodeId}" option "${option.label}" has an empty next (use null to end).`;
+  }
+  if (!(option.next in nodes)) {
+    return `Node "${nodeId}" option "${option.label}" points to unknown next "${option.next}".`;
+  }
+  return null;
+}
+
 function validateDialogueNode(
   nodeId: string,
   node: DialogueNodeDto,
@@ -87,18 +108,9 @@ function validateDialogueNode(
     return `Node "${nodeId}" needs text.`;
   }
   for (const option of node.options ?? []) {
-    if (!option.label?.trim()) {
-      return `Node "${nodeId}" has an option without a label.`;
-    }
-    // null/undefined next ends the branch; "" is accidental input, not an end marker.
-    if (option.next == null) {
-      continue;
-    }
-    if (!option.next.trim()) {
-      return `Node "${nodeId}" option "${option.label}" has an empty next (use null to end).`;
-    }
-    if (!(option.next in nodes)) {
-      return `Node "${nodeId}" option "${option.label}" points to unknown next "${option.next}".`;
+    const optionError = validateDialogueOption(nodeId, option, nodes);
+    if (optionError) {
+      return optionError;
     }
   }
   return null;

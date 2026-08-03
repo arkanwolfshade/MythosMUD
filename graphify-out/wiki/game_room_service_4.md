@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_dead_letter_queue_init_with_storage_dir()** (3 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
-- **Test DeadLetterQueue initialization with storage directory.** (1 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_idle_movement_handler_init()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **Test IdleMovementHandler initialization.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
 
 ## Relationships
 
-- [realtime dead letter](realtime_dead_letter.md) (1 shared connections)
-- [dead letter queue](dead_letter_queue.md) (1 shared connections)
+- [config models player](config_models_player.md) (1 shared connections)
+- [idle movement npc](idle_movement_npc.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_dead_letter_queue.py`
+- `server/tests/unit/npc/test_idle_movement.py`
 
 ## Audit Trail
 

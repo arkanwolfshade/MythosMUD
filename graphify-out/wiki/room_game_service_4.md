@@ -4,22 +4,21 @@
 
 ## Key Concepts
 
-- **test_establish_websocket_connection_error()** (4 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test establish_websocket_connection() handles errors.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_select_exit_weighted_home_disabled()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **Test select_exit() with weighted_home disabled.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
 
 ## Relationships
 
-- [npc populate databases](npc_populate_databases.md) (1 shared connections)
-- [player event state](player_event_state.md) (1 shared connections)
-- [connection establishment realtime](connection_establishment_realtime.md) (1 shared connections)
+- [config models player](config_models_player.md) (1 shared connections)
+- [idle movement npc](idle_movement_npc.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_connection_establishment.py`
+- `server/tests/unit/npc/test_idle_movement.py`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

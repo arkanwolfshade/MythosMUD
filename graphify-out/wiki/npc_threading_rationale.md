@@ -1,44 +1,40 @@
 # npc threading rationale
 
-> 17 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **Any** (11 connections)
-- **NPCCommunicationBridge** (10 connections) — `server/npc/threading.py`
-- **.add_message()** (3 connections) — `server/npc/threading.py`
-- **.__init__()** (3 connections) — `server/npc/threading.py`
-- **.send_message_to_npc()** (3 connections) — `server/npc/threading.py`
-- **.receive_message_from_npc()** (3 connections) — `server/npc/threading.py`
-- **.broadcast_to_all_npcs()** (3 connections) — `server/npc/threading.py`
-- **.get_pending_messages()** (3 connections) — `server/npc/threading.py`
-- **.get_messages_for_npc()** (3 connections) — `server/npc/threading.py`
-- **Add a message to an NPC's pending message queue.          Args:             npc_** (1 connections) — `server/npc/threading.py`
-- **Bridge for communication between NPC threads and main game thread.      This cla** (1 connections) — `server/npc/threading.py`
-- **Initialize the communication bridge.** (1 connections) — `server/npc/threading.py`
-- **Send a message to a specific NPC.          Args:             npc_id: The NPC's I** (1 connections) — `server/npc/threading.py`
-- **Receive a message from a specific NPC.          Args:             npc_id: The NP** (1 connections) — `server/npc/threading.py`
-- **Broadcast a message to all NPCs.          Args:             message: The message** (1 connections) — `server/npc/threading.py`
-- **Get all pending outgoing messages from NPCs.** (1 connections) — `server/npc/threading.py`
-- **Get pending messages for a specific NPC.** (1 connections) — `server/npc/threading.py`
+- **handle_skills_command()** (10 connections) — `server/commands/skills_commands.py`
+- **_get_container_services()** (6 connections) — `server/commands/skills_commands.py`
+- **Any** (5 connections)
+- **_resolve_player_id()** (5 connections) — `server/commands/skills_commands.py`
+- **_resolve_user_id()** (4 connections) — `server/commands/skills_commands.py`
+- **_format_skills_output()** (4 connections) — `server/commands/skills_commands.py`
+- **skill_service()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
+- **UUID** (2 connections)
+- **Get container, persistence, and skill_service from request, or None if unavailab** (1 connections) — `server/commands/skills_commands.py`
+- **Extract and validate player_id from player object, returning UUID or None.** (1 connections) — `server/commands/skills_commands.py`
+- **Resolve user_id from current_user (auth user) or fallback to player.user_id.** (1 connections) — `server/commands/skills_commands.py`
+- **Format skills list as text output lines.** (1 connections) — `server/commands/skills_commands.py`
+- **Handle the /skills command: return the active character's skills as text.      R** (1 connections) — `server/commands/skills_commands.py`
+- **SkillService with mocks.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
 
 ## Relationships
 
-- [combat services initialization](combat_services_initialization.md) (2 shared connections)
-- [combat service services](combat_service_services.md) (2 shared connections)
-- [services combat sync](services_combat_sync.md) (2 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (2 shared connections)
-- [idle npc movement](idle_npc_movement.md) (1 shared connections)
-- [player event handlers](player_event_handlers.md) (1 shared connections)
+- [commands admin mute](commands_admin_mute.md) (8 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (2 shared connections)
+- [command factories create](command_factories_create.md) (1 shared connections)
+- [skill service game](skill_service_game.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/threading.py`
+- `server/commands/skills_commands.py`
+- `server/tests/unit/game/test_skill_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 48 (96%)
-- INFERRED: 2 (4%)
+- EXTRACTED: 43 (93%)
+- INFERRED: 3 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

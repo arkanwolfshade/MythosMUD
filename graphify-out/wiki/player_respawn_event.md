@@ -1,62 +1,52 @@
 # player respawn event
 
-> 70 nodes
+> 38 nodes
 
 ## Key Concepts
 
-- **player_event_handlers_respawn.py** (33 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **PlayerRespawnEventHandler** (33 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **PlayerRespawnedEvent** (19 connections) — `server/events/event_types.py`
-- **RespawnPlayerEventPayload** (13 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **UUID** (11 connections)
-- **.get_player_data_for_respawn()** (9 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **.handle_player_respawned()** (9 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **._extract_occupant_names()** (9 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **._fetch_delirium_respawn_player_snapshot()** (9 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **._resolve_player_data_for_respawn_event()** (8 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **._build_respawn_player_payload()** (7 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **.send_respawn_event_with_retry()** (7 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **._fetch_fallback_player_data_for_respawn()** (7 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **._prepare_room_data_for_respawn()** (7 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **.handle_player_delirium_respawned()** (7 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **._build_fallback_respawn_player_payload()** (6 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **._build_player_respawned_event()** (6 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **._send_room_occupants_after_respawn()** (6 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **._enrich_room_data_with_occupant_names()** (6 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **.get_current_lucidity()** (6 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **RespawnPlayerStatsPayload** (5 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **.update_connection_manager_position()** (5 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **._room_data_from_persistence_room()** (5 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **.get_player_data_for_delirium_respawn()** (5 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **._position_from_stats()** (4 connections) — `server/realtime/player_event_handlers_respawn.py`
-- *... and 45 more nodes in this community*
+- **format_player_location()** (13 connections) — `server/commands/who_commands.py`
+- **format_player_entry()** (13 connections) — `server/commands/who_commands.py`
+- **test_who_commands_helpers.py** (12 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
+- **test_format_player_entry_error_handling()** (4 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_format_player_location_valid()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_format_player_location_invalid()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_format_player_location_none()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_format_player_entry_basic()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_format_player_entry_admin()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_format_player_entry_missing_attributes()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_format_player_location_short_format()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_format_player_location_non_string()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **test_filter_players_by_name_found()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
+- **test_filter_players_by_name_not_found()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
+- **test_filter_players_by_name_empty_filter()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
+- **test_format_player_location_valid()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
+- **test_format_player_location_invalid()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
+- **test_format_player_entry()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
+- **test_format_player_entry_admin()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
+- **Format player location as Zone: Sub-zone: Room from room ID.      Args:** (1 connections) — `server/commands/who_commands.py`
+- **Format a single player entry for the who command output.      Args:         play** (1 connections) — `server/commands/who_commands.py`
+- **Test formatting valid player location.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **Test formatting invalid player location.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **Test formatting None location.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
+- **Test formatting basic player entry.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [NATS Messaging](NATS_Messaging.md) (16 shared connections)
-- [realtime websocket initial](realtime_websocket_initial.md) (9 shared connections)
-- [player event realtime](player_event_realtime.md) (6 shared connections)
-- [models player rationale](models_player_rationale.md) (6 shared connections)
-- [Async Query Helpers](Async_Query_Helpers.md) (5 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (5 shared connections)
-- [combat services messaging](combat_services_messaging.md) (4 shared connections)
-- [player respawn event](player_respawn_event.md) (4 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (2 shared connections)
-- [lucidity services helpers](lucidity_services_helpers.md) (2 shared connections)
-- [npc population control](npc_population_control.md) (1 shared connections)
-- [world models rationale](world_models_rationale.md) (1 shared connections)
+- [commands who rationale](commands_who_rationale.md) (19 shared connections)
+- [commands emote rationale](commands_emote_rationale.md) (2 shared connections)
+- [room websocket updates](room_websocket_updates.md) (1 shared connections)
 
 ## Source Files
 
-- `server/events/event_types.py`
-- `server/realtime/event_handler.py`
-- `server/realtime/player_event_handlers_respawn.py`
-- `server/tests/unit/services/test_player_respawn_service.py`
+- `server/commands/who_commands.py`
+- `server/tests/unit/commands/test_who_commands.py`
+- `server/tests/unit/commands/test_who_commands_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 295 (96%)
-- INFERRED: 13 (4%)
+- EXTRACTED: 105 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -33,11 +33,11 @@
 
 ## Relationships
 
-- [commands who helpers](commands_who_helpers.md) (19 shared connections)
+- [player respawn event](player_respawn_event.md) (19 shared connections)
 - [commands emote rationale](commands_emote_rationale.md) (3 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (2 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
 - [world models rationale](world_models_rationale.md) (1 shared connections)
-- [Async Query Helpers](Async_Query_Helpers.md) (1 shared connections)
+- [combat models rationale](combat_models_rationale.md) (1 shared connections)
 
 ## Source Files
 

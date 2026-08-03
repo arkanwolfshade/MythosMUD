@@ -33,9 +33,8 @@
 
 ## Relationships
 
-- [System Metrics](System_Metrics.md) (8 shared connections)
-- [Memory Task Runtime](Memory_Task_Runtime.md) (2 shared connections)
-- [npc spawn validator](npc_spawn_validator.md) (1 shared connections)
+- [command inventory factories](command_inventory_factories.md) (8 shared connections)
+- [Error Conversion](Error_Conversion.md) (3 shared connections)
 
 ## Source Files
 

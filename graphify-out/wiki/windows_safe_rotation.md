@@ -35,7 +35,7 @@
 
 - [logging handlers structured](logging_handlers_structured.md) (4 shared connections)
 - [logging setup structured](logging_setup_structured.md) (4 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (1 shared connections)
+- [time service rationale](time_service_rationale.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,57 +1,53 @@
 # combat attack handler
 
-> 24 nodes
+> 35 nodes
 
 ## Key Concepts
 
-- **router.py** (30 connections) — `server/commands/npc_admin/router.py`
-- **_build_subcommand_map()** (20 connections) — `server/commands/npc_admin/router.py`
-- **handle_npc_command()** (16 connections) — `server/commands/npc_admin/router.py`
-- **monitoring.py** (11 connections) — `server/commands/npc_admin/monitoring.py`
-- **handle_npc_population_command()** (9 connections) — `server/commands/npc_admin/monitoring.py`
-- **handle_npc_zone_command()** (9 connections) — `server/commands/npc_admin/monitoring.py`
-- **handle_npc_status_command()** (9 connections) — `server/commands/npc_admin/monitoring.py`
-- **_resolve_npc_command_player()** (5 connections) — `server/commands/npc_admin/router.py`
-- **Any** (5 connections)
-- **_extract_npc_subcommand()** (5 connections) — `server/commands/npc_admin/router.py`
-- **_invoke_npc_handler()** (5 connections) — `server/commands/npc_admin/router.py`
-- **_get_npc_help()** (4 connections) — `server/commands/npc_admin/router.py`
-- **Any** (3 connections)
-- **NPC monitoring commands (population, zone, status).** (1 connections) — `server/commands/npc_admin/monitoring.py`
-- **Handle NPC population stats command.** (1 connections) — `server/commands/npc_admin/monitoring.py`
-- **Handle NPC zone stats command.** (1 connections) — `server/commands/npc_admin/monitoring.py`
-- **Handle NPC system status command.** (1 connections) — `server/commands/npc_admin/monitoring.py`
-- **NPC admin command router and permission validation.** (1 connections) — `server/commands/npc_admin/router.py`
-- **Resolve player for NPC command. Returns (player_obj, error).     If error is set** (1 connections) — `server/commands/npc_admin/router.py`
-- **Get NPC admin command help text.** (1 connections) — `server/commands/npc_admin/router.py`
-- **Extract subcommand and normalize args. Returns (subcommand, args, help_result).** (1 connections) — `server/commands/npc_admin/router.py`
-- **Build subcommand to handler mapping. Lazy imports avoid circular dependencies.** (1 connections) — `server/commands/npc_admin/router.py`
-- **Invoke the handler for the given subcommand.** (1 connections) — `server/commands/npc_admin/router.py`
-- **Handle the main NPC admin command with subcommand routing.      Args:         co** (1 connections) — `server/commands/npc_admin/router.py`
+- **player_combat_service_support.py** (19 connections) — `server/services/player_combat_service_support.py`
+- **NPCCombatIntegrationReadApi** (10 connections) — `server/services/player_combat_service_support.py`
+- **PlayerXpLike** (9 connections) — `server/services/player_combat_service_support.py`
+- **Protocol** (6 connections)
+- **NPCCombatRewardsLike** (6 connections) — `server/services/player_combat_service_support.py`
+- **UUIDMappingXP** (6 connections) — `server/services/player_combat_service_support.py`
+- **PersistenceWithNpcLifecycleManager** (6 connections) — `server/services/player_combat_service_support.py`
+- **original_string_id_for_npc()** (5 connections) — `server/services/player_combat_service_support.py`
+- **lifecycle_lookup_id()** (5 connections) — `server/services/player_combat_service_support.py`
+- **async_load_lifecycle_manager()** (5 connections) — `server/services/player_combat_service_support.py`
+- **log_missing_lifecycle_npc()** (5 connections) — `server/services/player_combat_service_support.py`
+- **UUID** (4 connections)
+- **available_lifecycle_npc_ids()** (4 connections) — `server/services/player_combat_service_support.py`
+- **.get_xp_value()** (3 connections) — `server/services/player_combat_service_support.py`
+- **.get_rewards_service()** (3 connections) — `server/services/player_combat_service_support.py`
+- **.get_uuid_mapping()** (3 connections) — `server/services/player_combat_service_support.py`
+- **xp_int_from_base_stats_mapping()** (3 connections) — `server/services/player_combat_service_support.py`
+- **.award_xp_to_killer()** (2 connections) — `server/services/player_combat_service_support.py`
+- **.add_experience()** (1 connections) — `server/services/player_combat_service_support.py`
+- **Protocols and module-level helpers for player combat XP and lifecycle lookup.** (1 connections) — `server/services/player_combat_service_support.py`
+- **NPC combat rewards helper.** (1 connections) — `server/services/player_combat_service_support.py`
+- **Award XP to the killer for an NPC defeat.** (1 connections) — `server/services/player_combat_service_support.py`
+- **UUID mapping helper with XP lookup (NPCCombatUUIDMapping).** (1 connections) — `server/services/player_combat_service_support.py`
+- **Return stored XP for npc_id when present.** (1 connections) — `server/services/player_combat_service_support.py`
+- **Public read API from NPC combat integration.** (1 connections) — `server/services/player_combat_service_support.py`
+- *... and 10 more nodes in this community*
 
 ## Relationships
 
-- [npc commands admin](npc_commands_admin.md) (14 shared connections)
-- [container schemas containers](container_schemas_containers.md) (10 shared connections)
-- [commands alias rationale](commands_alias_rationale.md) (9 shared connections)
-- [commands npc admin](commands_npc_admin.md) (8 shared connections)
-- [item models rationale](item_models_rationale.md) (6 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (5 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (4 shared connections)
-- [help content websocket](help_content_websocket.md) (2 shared connections)
-- [occupants npc commands](occupants_npc_commands.md) (2 shared connections)
-- [world models rationale](world_models_rationale.md) (1 shared connections)
-- [Async Query Helpers](Async_Query_Helpers.md) (1 shared connections)
+- [item models rationale](item_models_rationale.md) (12 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (10 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [player service game](player_service_game.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [schemas players profession](schemas_players_profession.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/npc_admin/monitoring.py`
-- `server/commands/npc_admin/router.py`
+- `server/services/player_combat_service_support.py`
 
 ## Audit Trail
 
-- EXTRACTED: 116 (82%)
-- INFERRED: 26 (18%)
+- EXTRACTED: 108 (89%)
+- INFERRED: 13 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

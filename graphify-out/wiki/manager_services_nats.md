@@ -1,12 +1,14 @@
 # manager services nats
 
-> 51 nodes
+> 55 nodes
 
 ## Key Concepts
 
 - **test_metrics.py** (27 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
 - **._calculate_percentile()** (6 connections) — `server/services/nats_subject_manager/metrics.py`
 - **.get_metrics()** (4 connections) — `server/services/nats_subject_manager/metrics.py`
+- **metrics()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
+- **test_subject_manager_metrics_init()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
 - **test_calculate_percentile_empty()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
 - **test_calculate_percentile_single_value()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
 - **test_calculate_percentile_multiple_values()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
@@ -27,13 +29,11 @@
 - **test_get_metrics_with_data()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
 - **test_get_metrics_calculates_percentiles()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
 - **test_reset()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_validation_times_maxlen()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- **test_build_times_maxlen()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- *... and 26 more nodes in this community*
+- *... and 30 more nodes in this community*
 
 ## Relationships
 
-- [command player state](command_player_state.md) (6 shared connections)
+- [subject validation services](subject_validation_services.md) (6 shared connections)
 
 ## Source Files
 
@@ -42,7 +42,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 110 (100%)
+- EXTRACTED: 118 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

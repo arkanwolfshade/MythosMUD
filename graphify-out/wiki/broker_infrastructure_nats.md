@@ -1,53 +1,57 @@
 # broker infrastructure nats
 
-> 56 nodes
+> 91 nodes
 
 ## Key Concepts
 
 - **test_nats_broker.py** (49 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **nats_broker.py** (17 connections) — `server/infrastructure/nats_broker.py`
+- **MessageBrokerError** (13 connections) — `server/infrastructure/message_broker.py`
+- **message_broker.py** (11 connections) — `server/infrastructure/message_broker.py`
+- **PublishError** (9 connections) — `server/infrastructure/message_broker.py`
+- **SubscribeError** (9 connections) — `server/infrastructure/message_broker.py`
+- **RequestError** (9 connections) — `server/infrastructure/message_broker.py`
+- **MessageBrokerConnectionError** (8 connections) — `server/infrastructure/message_broker.py`
+- **UnsubscribeError** (8 connections) — `server/infrastructure/message_broker.py`
 - **nats_config()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_connect_failure()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_disconnect_error_handling()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_publish_not_connected()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_publish_failure()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_subscribe_not_connected()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_subscribe_failure()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_unsubscribe_failure()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_request_not_connected()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_request_failure()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
 - **test_nats_message_broker_init()** (2 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
 - **test_connect_success()** (2 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
 - **test_connect_already_connected()** (2 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
 - **test_connect_sets_callbacks()** (2 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
 - **test_disconnect_no_client()** (2 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
 - **test_disconnect_success()** (2 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_disconnect_unsubscribes_all()** (2 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_disconnect_handles_unsubscribe_error()** (2 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_is_connected_true()** (2 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_is_connected_false_no_client()** (2 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_is_connected_false_not_connected()** (2 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_publish_success()** (2 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_publish_json_serialization()** (2 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_subscribe_success()** (2 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_subscribe_with_queue_group()** (2 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_subscribe_without_queue_group()** (2 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_subscribe_message_wrapper_calls_handler()** (2 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_subscribe_message_wrapper_handles_error()** (2 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_unsubscribe_success()** (2 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_unsubscribe_not_found()** (2 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_request_success()** (2 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_request_timeout()** (2 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_error_callback()** (2 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- *... and 31 more nodes in this community*
+- *... and 66 more nodes in this community*
 
 ## Relationships
 
-- [command factories communication](command_factories_communication.md) (10 shared connections)
-- [game models enums](game_models_enums.md) (3 shared connections)
-- [message handlers realtime](message_handlers_realtime.md) (3 shared connections)
-- [infrastructure nats broker](infrastructure_nats_broker.md) (3 shared connections)
-- [config models rationale](config_models_rationale.md) (2 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (1 shared connections)
+- [infrastructure nats broker](infrastructure_nats_broker.md) (16 shared connections)
+- [nats services service](nats_services_service.md) (3 shared connections)
+- [infrastructure message broker](infrastructure_message_broker.md) (2 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [combat validator validators](combat_validator_validators.md) (1 shared connections)
+- [schemas nats messages](schemas_nats_messages.md) (1 shared connections)
+- [subject validation services](subject_validation_services.md) (1 shared connections)
+- [manager subject services](manager_subject_services.md) (1 shared connections)
 
 ## Source Files
 
+- `server/infrastructure/message_broker.py`
+- `server/infrastructure/nats_broker.py`
 - `server/tests/unit/infrastructure/test_nats_broker.py`
 
 ## Audit Trail
 
-- EXTRACTED: 132 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 237 (91%)
+- INFERRED: 24 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

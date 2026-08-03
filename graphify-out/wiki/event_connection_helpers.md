@@ -1,47 +1,33 @@
 # event connection helpers
 
-> 21 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **unsubscribe_from_room_events_impl()** (13 connections) — `server/realtime/connection_event_helpers.py`
-- **test_connection_event_helpers.py** (13 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **test_subscribe_to_room_events_impl_database_error()** (4 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **test_subscribe_to_room_events_impl_attribute_error()** (4 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **test_unsubscribe_from_room_events_impl_database_error()** (4 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **test_unsubscribe_from_room_events_impl_attribute_error()** (4 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **test_subscribe_to_room_events_impl_success()** (3 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **test_subscribe_to_room_events_impl_no_event_bus()** (3 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **test_unsubscribe_from_room_events_impl_success()** (3 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **test_unsubscribe_from_room_events_impl_no_event_bus()** (3 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **Any** (2 connections)
-- **Unsubscribe from room movement events.** (1 connections) — `server/realtime/connection_event_helpers.py`
-- **Unit tests for connection event helpers.  Tests the connection_event_helpers mod** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **Test subscribe_to_room_events_impl() successfully subscribes to events.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **Test subscribe_to_room_events_impl() handles missing event bus.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **Test subscribe_to_room_events_impl() handles DatabaseError.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **Test subscribe_to_room_events_impl() handles AttributeError.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **Test unsubscribe_from_room_events_impl() successfully unsubscribes from events.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **Test unsubscribe_from_room_events_impl() handles missing event bus.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **Test unsubscribe_from_room_events_impl() handles DatabaseError.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **Test unsubscribe_from_room_events_impl() handles AttributeError.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **handle_explore_command()** (8 connections) — `server/commands/exploration_commands.py`
+- **test_exploration_commands.py** (5 connections) — `server/tests/unit/commands/test_exploration_commands.py`
+- **test_handle_explore_command()** (3 connections) — `server/tests/unit/commands/test_exploration_commands.py`
+- **test_handle_explore_command_no_persistence()** (3 connections) — `server/tests/unit/commands/test_exploration_commands.py`
+- **Any** (1 connections)
+- **Handle exploration requests by returning a simple message.      This lightweight** (1 connections) — `server/commands/exploration_commands.py`
+- **Unit tests for exploration command handlers.  Tests the exploration command func** (1 connections) — `server/tests/unit/commands/test_exploration_commands.py`
+- **Test handle_explore_command() explores area.** (1 connections) — `server/tests/unit/commands/test_exploration_commands.py`
+- **Test handle_explore_command() handles missing persistence.** (1 connections) — `server/tests/unit/commands/test_exploration_commands.py`
 
 ## Relationships
 
-- [NATS Messaging](NATS_Messaging.md) (10 shared connections)
-- [npc populate databases](npc_populate_databases.md) (4 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (2 shared connections)
-- [room websocket updates](room_websocket_updates.md) (2 shared connections)
+- [commands admin mute](commands_admin_mute.md) (3 shared connections)
+- [realtime game state](realtime_game_state.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_event_helpers.py`
-- `server/tests/unit/realtime/test_connection_event_helpers.py`
+- `server/commands/exploration_commands.py`
+- `server/tests/unit/commands/test_exploration_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 61 (92%)
-- INFERRED: 5 (8%)
+- EXTRACTED: 23 (96%)
+- INFERRED: 1 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

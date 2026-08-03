@@ -1,30 +1,31 @@
 # manager room npcs
 
-> 9 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **test_api_request_logging()** (3 connections) — `docs/examples/logging/testing_examples.py`
-- **test_fastapi_endpoint_logging()** (3 connections) — `docs/examples/logging/testing_examples.py`
-- **client** (3 connections) — `docs/examples/logging/testing_examples.py`
-- **.post()** (3 connections) — `docs/examples/logging/testing_examples.py`
-- **.get()** (3 connections) — `docs/examples/logging/testing_examples.py`
-- **Test API request logging in integration tests.** (1 connections) — `docs/examples/logging/testing_examples.py`
-- **Test logging in FastAPI endpoints.** (1 connections) — `docs/examples/logging/testing_examples.py`
-- **Simulate client POST request.** (1 connections) — `docs/examples/logging/testing_examples.py`
-- **Simulate client GET request.** (1 connections) — `docs/examples/logging/testing_examples.py`
+- **TestProcessAliasExpansion** (6 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.test_process_alias_expansion_no_alias_storage()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.test_process_alias_expansion_no_alias()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.test_process_alias_expansion_unsafe_alias()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.test_process_alias_expansion_invalid_expanded()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _process_alias_expansion function.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _process_alias_expansion returns None when no alias storage.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _process_alias_expansion returns None when alias not found.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _process_alias_expansion returns error for unsafe alias.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _process_alias_expansion returns error for invalid expanded command.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
 
 ## Relationships
 
-- [examples logging testing](examples_logging_testing.md) (3 shared connections)
+- [command commands handler](command_commands_handler.md) (5 shared connections)
 
 ## Source Files
 
-- `docs/examples/logging/testing_examples.py`
+- `server/tests/unit/commands/test_command_aliases.py`
 
 ## Audit Trail
 
-- EXTRACTED: 19 (100%)
+- EXTRACTED: 23 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

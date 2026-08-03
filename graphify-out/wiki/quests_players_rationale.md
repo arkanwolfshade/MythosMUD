@@ -1,29 +1,39 @@
 # quests players rationale
 
-> 6 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **.handle_player_movement()** (6 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **.subscribe_to_subzone()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **.track_player_subzone_subscription()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **Subscribe to local channel messages for a specific sub-zone.          Args:** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **Track a player's sub-zone subscription for local channels.          Args:** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **Handle player movement between rooms and update sub-zone subscriptions.** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **level_from_total_xp()** (13 connections) — `server/game/level_curve.py`
+- **test_level_from_total_xp_roundtrip()** (4 connections) — `server/tests/unit/game/test_level_curve.py`
+- **test_level_from_total_xp_threshold_level_two()** (4 connections) — `server/tests/unit/game/test_level_curve.py`
+- **test_level_from_total_xp_zero()** (3 connections) — `server/tests/unit/game/test_level_curve.py`
+- **test_level_from_total_xp_negative()** (3 connections) — `server/tests/unit/game/test_level_curve.py`
+- **test_check_level_up_no_change_returns_false()** (3 connections) — `server/tests/unit/game/test_level_service.py`
+- **Compute character level from total experience points.      Uses the same curve a** (1 connections) — `server/game/level_curve.py`
+- **Zero XP gives level 1.** (1 connections) — `server/tests/unit/game/test_level_curve.py`
+- **Negative XP treated as zero gives level 1.** (1 connections) — `server/tests/unit/game/test_level_curve.py`
+- **level_from_total_xp(total_xp_for_level(n)) >= n (at least that level).** (1 connections) — `server/tests/unit/game/test_level_curve.py`
+- **XP just below total_xp_for_level(2) gives level 1; at or above gives level 2.** (1 connections) — `server/tests/unit/game/test_level_curve.py`
+- **check_level_up when level already matches curve returns False.** (1 connections) — `server/tests/unit/game/test_level_service.py`
 
 ## Relationships
 
-- [handler realtime nats](handler_realtime_nats.md) (3 shared connections)
-- [schemas players profession](schemas_players_profession.md) (1 shared connections)
-- [room rationale subzone](room_rationale_subzone.md) (1 shared connections)
+- [realtime dead letter](realtime_dead_letter.md) (6 shared connections)
+- [message formatters realtime](message_formatters_realtime.md) (3 shared connections)
+- [service combat services](service_combat_services.md) (2 shared connections)
+- [calendar models rationale](calendar_models_rationale.md) (2 shared connections)
+- [command inventory factories](command_inventory_factories.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/nats_message_handler_subscriptions.py`
+- `server/game/level_curve.py`
+- `server/tests/unit/game/test_level_curve.py`
+- `server/tests/unit/game/test_level_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
+- EXTRACTED: 36 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

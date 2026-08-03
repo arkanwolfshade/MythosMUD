@@ -1,29 +1,24 @@
 # schemas unified room
 
-> 8 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **lock_state** (5 connections) — `schemas/unified_room_schema.json`
-- **enum** (4 connections) — `schemas/unified_room_schema.json`
-- **type** (1 connections) — `schemas/unified_room_schema.json`
-- **unlocked** (1 connections) — `schemas/unified_room_schema.json`
-- **locked** (1 connections) — `schemas/unified_room_schema.json`
-- **sealed** (1 connections) — `schemas/unified_room_schema.json`
-- **default** (1 connections) — `schemas/unified_room_schema.json`
-- **description** (1 connections) — `schemas/unified_room_schema.json`
+- **test_handle_stop_command_wrapper_success()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Test handle_stop_command wrapper success.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
 
 ## Relationships
 
-- [schemas unified room](schemas_unified_room.md) (1 shared connections)
+- [commands admin mute](commands_admin_mute.md) (1 shared connections)
+- [commands magic rationale](commands_magic_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/unified_room_schema.json`
+- `server/tests/unit/commands/test_magic_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

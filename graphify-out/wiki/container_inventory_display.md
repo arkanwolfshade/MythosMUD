@@ -24,12 +24,12 @@
 ## Relationships
 
 - [container inventory helpers](container_inventory_helpers.md) (4 shared connections)
-- [Inventory Equip](Inventory_Equip.md) (3 shared connections)
+- [commands inventory command](commands_inventory_command.md) (3 shared connections)
 - [container helpers endpoints](container_helpers_endpoints.md) (3 shared connections)
-- [commands alias rationale](commands_alias_rationale.md) (2 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (1 shared connections)
+- [commands inventory pickup](commands_inventory_pickup.md) (2 shared connections)
+- [command inventory factories](command_inventory_factories.md) (1 shared connections)
 - [world models rationale](world_models_rationale.md) (1 shared connections)
-- [Async Query Helpers](Async_Query_Helpers.md) (1 shared connections)
+- [combat models rationale](combat_models_rationale.md) (1 shared connections)
 - [caching lru cache](caching_lru_cache.md) (1 shared connections)
 
 ## Source Files

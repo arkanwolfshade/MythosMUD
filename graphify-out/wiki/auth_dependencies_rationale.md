@@ -4,41 +4,33 @@
 
 ## Key Concepts
 
-- **UtilityCommandFactory** (20 connections) — `server/utils/command_factories_utility.py`
-- **.create_spells_command()** (6 connections) — `server/utils/command_factories_utility.py`
-- **test_create_spells_command_with_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
-- **._resolve_heal_cast()** (4 connections) — `server/utils/command_factories_utility.py`
-- **test_create_spells_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
-- **Test create_spells_command() creates SpellsCommand.** (1 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
-- **Test create_spells_command() raises error with args.** (1 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
-- **Factory class for creating utility command objects.** (1 connections) — `server/utils/command_factories_utility.py`
-- **Resolve 'heal' command variations to (spell_name, target). Returns None if not a** (1 connections) — `server/utils/command_factories_utility.py`
-- **Create SpellsCommand from arguments.** (1 connections) — `server/utils/command_factories_utility.py`
+- **validate_filter_name()** (8 connections) — `server/validators/security_validator.py`
+- **.validate_filter_name_field()** (3 connections) — `server/models/command_utility.py`
+- **test_validate_filter_name_empty()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_validate_filter_name_valid()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_validate_filter_name_rejects_invalid_format()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Validate filter name format using centralized validation.** (1 connections) — `server/models/command_utility.py`
+- **Test validating empty filter name.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Test validating valid filter name.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Test that validate_filter_name rejects invalid format.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Centralized validation for filter name fields.      This function provides consi** (1 connections) — `server/validators/security_validator.py`
 
 ## Relationships
 
-- [command inventory factories](command_inventory_factories.md) (5 shared connections)
-- [exceptions rationale error](exceptions_rationale_error.md) (4 shared connections)
-- [event events serialization](event_events_serialization.md) (2 shared connections)
-- [command factories create](command_factories_create.md) (1 shared connections)
-- [config models game](config_models_game.md) (1 shared connections)
-- [manager subject services](manager_subject_services.md) (1 shared connections)
-- [message realtime messaging](message_realtime_messaging.md) (1 shared connections)
-- [time service rationale](time_service_rationale.md) (1 shared connections)
-- [services service hallucination](services_service_hallucination.md) (1 shared connections)
-- [countdown rest task](countdown_rest_task.md) (1 shared connections)
-- [health monitor realtime](health_monitor_realtime.md) (1 shared connections)
-- [message handler factory](message_handler_factory.md) (1 shared connections)
+- [Security Validator Tests](Security_Validator_Tests.md) (4 shared connections)
+- [command factories create](command_factories_create.md) (2 shared connections)
+- [command communication models](command_communication_models.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories_utility.py`
-- `server/utils/command_factories_utility.py`
+- `server/models/command_utility.py`
+- `server/tests/unit/validators/test_security_validator.py`
+- `server/validators/security_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 40 (95%)
-- INFERRED: 2 (5%)
+- EXTRACTED: 24 (96%)
+- INFERRED: 1 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

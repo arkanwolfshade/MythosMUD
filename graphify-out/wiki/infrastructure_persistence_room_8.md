@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_log_player_movement_left()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **Test log_player_movement() logs player left.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_create_command_object_pydantic_validation_error()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **Test _create_command_object handles Pydantic validation errors.** (1 connections) — `server/tests/unit/utils/test_command_parser.py`
 
 ## Relationships
 
-- [player room event](player_room_event.md) (1 shared connections)
+- [command parser rationale](command_parser_rationale.md) (1 shared connections)
+- [player effects endpoints](player_effects_endpoints.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- `server/tests/unit/utils/test_command_parser.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

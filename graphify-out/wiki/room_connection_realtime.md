@@ -1,53 +1,40 @@
 # room connection realtime
 
-> 36 nodes
+> 18 nodes
 
 ## Key Concepts
 
-- **canonical_room_id_impl()** (17 connections) — `server/realtime/connection_room_utils.py`
-- **test_connection_room_utils.py** (16 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **connection_room_utils.py** (10 connections) — `server/realtime/connection_room_utils.py`
-- **reconcile_room_presence_impl()** (7 connections) — `server/realtime/connection_room_utils.py`
-- **prune_player_from_all_rooms_impl()** (7 connections) — `server/realtime/connection_room_utils.py`
-- **.canonical_room_id()** (5 connections) — `server/realtime/connection_manager.py`
-- **test_canonical_room_id_impl_database_error()** (4 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **._reconcile_room_presence()** (3 connections) — `server/realtime/connection_manager.py`
-- **Any** (3 connections)
-- **test_canonical_room_id_impl_none()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **test_canonical_room_id_impl_empty_string()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **test_canonical_room_id_impl_success_room_manager()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **test_canonical_room_id_impl_fallback_to_main_persistence()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **test_canonical_room_id_impl_no_room_found()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **test_canonical_room_id_impl_room_no_id_attribute()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **test_canonical_room_id_impl_attribute_error()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **test_reconcile_room_presence_impl()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **test_prune_player_from_all_rooms_impl()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **Resolve a room id to the canonical Room.id value (public method).** (1 connections) — `server/realtime/connection_manager.py`
-- **Resolve a room id to the canonical Room.id value (compatibility method).** (1 connections) — `server/realtime/connection_manager.py`
-- **Ensure room_occupants only contains currently online players (compatibility meth** (1 connections) — `server/realtime/connection_manager.py`
-- **Room and subscription utility helpers for connection manager.  This module provi** (1 connections) — `server/realtime/connection_room_utils.py`
-- **Resolve a room id to the canonical Room.id value.      Args:         room_id: Th** (1 connections) — `server/realtime/connection_room_utils.py`
-- **Ensure room_occupants only contains currently online players.** (1 connections) — `server/realtime/connection_room_utils.py`
-- **Remove a player from all room subscriptions and occupant lists.** (1 connections) — `server/realtime/connection_room_utils.py`
-- *... and 11 more nodes in this community*
+- **include** (8 connections) — `client/tsconfig.test.json`
+- **tsconfig.test.json** (5 connections) — `client/tsconfig.test.json`
+- **types** (5 connections) — `client/tsconfig.test.json`
+- **compilerOptions** (3 connections) — `client/tsconfig.test.json`
+- **extends** (1 connections) — `client/tsconfig.test.json`
+- **./tsconfig.json** (1 connections) — `client/tsconfig.test.json`
+- **vitest/globals** (1 connections) — `client/tsconfig.test.json`
+- **node** (1 connections) — `client/tsconfig.test.json`
+- **vite/client** (1 connections) — `client/tsconfig.test.json`
+- **noEmit** (1 connections) — `client/tsconfig.test.json`
+- **src/vite-env.d.ts** (1 connections) — `client/tsconfig.test.json`
+- **src/**/*.test.ts** (1 connections) — `client/tsconfig.test.json`
+- **src/**/*.test.tsx** (1 connections) — `client/tsconfig.test.json`
+- **src/**/*.spec.ts** (1 connections) — `client/tsconfig.test.json`
+- **src/**/*.spec.tsx** (1 connections) — `client/tsconfig.test.json`
+- **src/**/*TestFixtures.ts** (1 connections) — `client/tsconfig.test.json`
+- **src/test/**/*** (1 connections) — `client/tsconfig.test.json`
+- **exclude** (1 connections) — `client/tsconfig.test.json`
 
 ## Relationships
 
-- [Room Broadcast](Room_Broadcast.md) (10 shared connections)
-- [npc populate databases](npc_populate_databases.md) (4 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (2 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [panels GameClientV2Dock gameLogPanelUtil](panels_GameClientV2Dock_gameLogPanelUtil.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_manager.py`
-- `server/realtime/connection_room_utils.py`
-- `server/tests/unit/realtime/test_connection_room_utils.py`
+- `client/tsconfig.test.json`
 
 ## Audit Trail
 
-- EXTRACTED: 116 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 35 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

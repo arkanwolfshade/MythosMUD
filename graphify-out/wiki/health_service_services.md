@@ -37,7 +37,7 @@
 - [look command commands](look_command_commands.md) (5 shared connections)
 - [movement monitor game](movement_monitor_game.md) (4 shared connections)
 - [combat npc service](combat_npc_service.md) (4 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (2 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
 - [admin services auth](admin_services_auth.md) (1 shared connections)
 - [liability types call](liability_types_call.md) (1 shared connections)
 - [lucidity services npc](lucidity_services_npc.md) (1 shared connections)

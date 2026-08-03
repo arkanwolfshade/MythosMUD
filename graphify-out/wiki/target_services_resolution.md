@@ -26,7 +26,7 @@
 ## Relationships
 
 - [persistence container helpers](persistence_container_helpers.md) (6 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (5 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (5 shared connections)
 - [player game schema](player_game_schema.md) (4 shared connections)
 - [game magic regeneration](game_magic_regeneration.md) (3 shared connections)
 - [subject admin controller](subject_admin_controller.md) (3 shared connections)

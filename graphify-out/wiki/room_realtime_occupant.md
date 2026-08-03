@@ -4,22 +4,22 @@
 
 ## Key Concepts
 
-- **._handle_player_entered_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **Handle player_entered event.** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **.add_item_to_inventory()** (3 connections) — `server/npc/npc_base.py`
+- **Add item to NPC inventory.** (1 connections) — `server/npc/npc_base.py`
 
 ## Relationships
 
-- [handler realtime nats](handler_realtime_nats.md) (1 shared connections)
-- [persistence services combat](persistence_services_combat.md) (1 shared connections)
+- [quest game service](quest_game_service.md) (1 shared connections)
+- [rate limiter realtime](rate_limiter_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/nats_message_handler_subscriptions.py`
+- `server/npc/npc_base.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

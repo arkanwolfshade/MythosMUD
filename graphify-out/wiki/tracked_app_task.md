@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_process_command_parse_error()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
-- **Test process_command handles parse errors.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_handle_spell_command_no_player()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Test spell command when player is not found.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
 
 ## Relationships
 
-- [command service commands](command_service_commands.md) (1 shared connections)
+- [commands magic rationale](commands_magic_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_service.py`
+- `server/tests/unit/commands/test_magic_commands.py`
 
 ## Audit Trail
 

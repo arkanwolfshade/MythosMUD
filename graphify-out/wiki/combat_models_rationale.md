@@ -1,53 +1,64 @@
 # combat models rationale
 
-> 54 nodes
+> 168 nodes
 
 ## Key Concepts
 
-- **test_async_persistence_delegates.py** (35 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **reset_async_persistence()** (6 connections) — `server/async_persistence.py`
-- **test_validate_and_fix_player_room_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_apply_lucidity_loss_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_apply_fear_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_apply_corruption_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_heal_player_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_async_heal_player_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_damage_player_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_async_damage_player_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_get_async_persistence_creates_instance()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_get_async_persistence_returns_same_instance()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_reset_async_persistence()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_get_player_by_user_id_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_get_container_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_get_containers_by_room_id_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_get_containers_by_entity_id_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_update_container_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_get_decayed_containers_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_get_decayed_containers_none_time()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_delete_container_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_create_item_instance_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_ensure_item_instance_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_item_instance_exists_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_soft_delete_player_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- *... and 29 more nodes in this community*
+- **Player** (203 connections) — `server/models/player.py`
+- **test_player_model.py** (48 connections) — `server/tests/unit/models/test_player_model.py`
+- **.get_stats()** (13 connections) — `server/models/player.py`
+- **.set_stats()** (6 connections) — `server/models/player.py`
+- **.apply_dp_decay()** (5 connections) — `server/models/player.py`
+- **.restore_to_full_health()** (5 connections) — `server/models/player.py`
+- **.apply_dp_change()** (5 connections) — `server/models/player.py`
+- **.is_alive()** (4 connections) — `server/models/player.py`
+- **.is_mortally_wounded()** (4 connections) — `server/models/player.py`
+- **.is_dead()** (4 connections) — `server/models/player.py`
+- **.get_health_state()** (4 connections) — `server/models/player.py`
+- **.get_combat_stats()** (4 connections) — `server/models/player.py`
+- **.get_health_percentage()** (4 connections) — `server/models/player.py`
+- **test_get_player_by_name_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_get_player_by_id_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_get_players_by_user_id_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_get_active_players_by_user_id_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_save_player_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_list_players_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_get_players_in_room_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_save_players_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_player_creation()** (3 connections) — `server/tests/unit/models/test_player_model.py`
+- **test_player_defaults()** (3 connections) — `server/tests/unit/models/test_player_model.py`
+- **test_player_get_stats()** (3 connections) — `server/tests/unit/models/test_player_model.py`
+- **test_player_get_stats_default()** (3 connections) — `server/tests/unit/models/test_player_model.py`
+- *... and 143 more nodes in this community*
 
 ## Relationships
 
-- [NATS Messaging](NATS_Messaging.md) (23 shared connections)
-- [Async Query Helpers](Async_Query_Helpers.md) (10 shared connections)
-- [realtime websocket initial](realtime_websocket_initial.md) (4 shared connections)
-- [persistence container item](persistence_container_item.md) (3 shared connections)
-- [world models rationale](world_models_rationale.md) (1 shared connections)
+- [Database Config](Database_Config.md) (21 shared connections)
+- [world models rationale](world_models_rationale.md) (21 shared connections)
+- [command inventory factories](command_inventory_factories.md) (19 shared connections)
+- [schemas invite user](schemas_invite_user.md) (10 shared connections)
+- [models player rationale](models_player_rationale.md) (9 shared connections)
+- [realtime websocket initial](realtime_websocket_initial.md) (6 shared connections)
+- [lucidity services helpers](lucidity_services_helpers.md) (5 shared connections)
+- [alias command models](alias_command_models.md) (5 shared connections)
+- [Async Query Helpers](Async_Query_Helpers.md) (5 shared connections)
+- [commands inventory command](commands_inventory_command.md) (4 shared connections)
+- [inventory commands command](inventory_commands_command.md) (3 shared connections)
+- [target resolution service](target_resolution_service.md) (3 shared connections)
 
 ## Source Files
 
-- `server/async_persistence.py`
-- `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- `server/models/player.py`
+- `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- `server/tests/unit/models/test_player_model.py`
+- `server/tests/unit/persistence/test_player_repository.py`
+- `server/tests/unit/services/test_player_death_service.py`
+- `server/tests/unit/services/test_player_respawn_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 144 (94%)
-- INFERRED: 9 (6%)
+- EXTRACTED: 505 (85%)
+- INFERRED: 92 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,37 +1,42 @@
 # command parser rationale
 
-> 10 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **_get_lifecycle_manager()** (11 connections) — `server/commands/look_npc.py`
-- **_get_npcs_in_room()** (7 connections) — `server/commands/look_npc.py`
-- **test_get_lifecycle_manager_success()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_get_lifecycle_manager_no_service()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_get_lifecycle_manager_no_lifecycle_manager()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Get the lifecycle manager from the NPC instance service.** (1 connections) — `server/commands/look_npc.py`
-- **Get list of NPC names in a room from lifecycle manager.** (1 connections) — `server/commands/look_npc.py`
-- **Test getting lifecycle manager successfully.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test getting lifecycle manager when service not available.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test getting lifecycle manager when lifecycle_manager not available.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **setup.ts** (13 connections) — `client/src/test/setup.ts`
+- **localStorageShim.ts** (5 connections) — `client/src/utils/localStorageShim.ts`
+- **installLocalStorageShim()** (5 connections) — `client/src/utils/localStorageShim.ts`
+- **localStorageShim.test.ts** (4 connections) — `client/src/utils/__tests__/localStorageShim.test.ts`
+- **domPurifyTestWindow.ts** (3 connections) — `client/src/test/domPurifyTestWindow.ts`
+- **installDomPurifyTestWindow()** (3 connections) — `client/src/test/domPurifyTestWindow.ts`
+- **createDomPurifyTestWindow()** (2 connections) — `client/src/test/domPurifyTestWindow.ts`
+- **isUsableStorage()** (2 connections) — `client/src/utils/localStorageShim.ts`
+- **peekExistingLocalStorage()** (2 connections) — `client/src/utils/localStorageShim.ts`
+- **observe()** (1 connections) — `client/src/test/setup.ts`
+- **unobserve()** (1 connections) — `client/src/test/setup.ts`
+- **disconnect()** (1 connections) — `client/src/test/setup.ts`
+- **constructor()** (1 connections) — `client/src/test/setup.ts`
+- **takeRecords()** (1 connections) — `client/src/test/setup.ts`
+- **defaultFetchMock** (1 connections) — `client/src/test/setup.ts`
+- **deleteProp()** (1 connections) — `client/src/utils/__tests__/localStorageShim.test.ts`
+- **get()** (1 connections) — `client/src/utils/__tests__/localStorageShim.test.ts`
 
 ## Relationships
 
-- [npc look commands](npc_look_commands.md) (7 shared connections)
-- [commands quest rationale](commands_quest_rationale.md) (2 shared connections)
-- [room look commands](room_look_commands.md) (2 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
-- [follow service game](follow_service_game.md) (1 shared connections)
-- [models player related](models_player_related.md) (1 shared connections)
+- [panels domPurifyClient chat](panels_domPurifyClient_chat.md) (2 shared connections)
+- [panels GameClientV2Dock gameLogPanelUtil](panels_GameClientV2Dock_gameLogPanelUtil.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/look_npc.py`
-- `server/tests/unit/commands/test_look_npc.py`
+- `client/src/test/domPurifyTestWindow.ts`
+- `client/src/test/setup.ts`
+- `client/src/utils/__tests__/localStorageShim.test.ts`
+- `client/src/utils/localStorageShim.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 32 (100%)
+- EXTRACTED: 47 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

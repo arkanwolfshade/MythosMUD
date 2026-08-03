@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [manager subject services](manager_subject_services.md) (3 shared connections)
-- [command player state](command_player_state.md) (1 shared connections)
+- [subject validation services](subject_validation_services.md) (3 shared connections)
+- [manager subject services](manager_subject_services.md) (1 shared connections)
 
 ## Source Files
 

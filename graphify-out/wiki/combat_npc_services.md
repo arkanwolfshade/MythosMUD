@@ -1,42 +1,39 @@
 # combat npc services
 
-> 14 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **find_wearable_container()** (17 connections) — `server/commands/container_helpers_inventory_find.py`
-- **_player_for_wearable()** (12 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **find_wearable_container_for_put()** (10 connections) — `server/commands/container_helpers_inventory_find.py`
-- **test_find_wearable_container_resolves_via_wearable_instance_id()** (4 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **test_find_wearable_container_falls_back_to_name_slot_match()** (4 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **test_create_wearable_container_uses_equip_dict_branch()** (3 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **test_create_wearable_container_fallback_when_equip_returns_non_dict()** (3 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **test_find_wearable_container_for_put_hits_inner_container()** (3 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **test_find_wearable_container_for_put_creates_on_slot_only_match()** (3 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **test_find_wearable_container_no_match_returns_none()** (3 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **test_find_wearable_container_inner_id_short_circuits()** (3 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **test_find_wearable_container_wearable_raises_returns_none()** (3 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **Find a wearable container for put command, creating if necessary.** (1 connections) — `server/commands/container_helpers_inventory_find.py`
-- **Find a wearable container by name.** (1 connections) — `server/commands/container_helpers_inventory_find.py`
+- **rest_countdown_task.py** (12 connections) — `server/commands/rest_countdown_task.py`
+- **create_rest_countdown_task()** (7 connections) — `server/commands/rest_countdown_task.py`
+- **UUID** (6 connections)
+- **_send_countdown_message()** (6 connections) — `server/commands/rest_countdown_task.py`
+- **_handle_countdown_loop()** (6 connections) — `server/commands/rest_countdown_task.py`
+- **_is_rest_interrupted()** (5 connections) — `server/commands/rest_countdown_task.py`
+- **Any** (5 connections)
+- **_disconnect_player_after_rest()** (5 connections) — `server/commands/rest_countdown_task.py`
+- **Task** (1 connections)
+- **Rest countdown task implementation.  This module contains the async task that ha** (1 connections) — `server/commands/rest_countdown_task.py`
+- **Check if rest countdown was interrupted.      Args:         player_id: Player UU** (1 connections) — `server/commands/rest_countdown_task.py`
+- **Send countdown message to player.      Args:         player_id: Player UUID** (1 connections) — `server/commands/rest_countdown_task.py`
+- **Execute countdown loop, sending messages every second.      Args:         player** (1 connections) — `server/commands/rest_countdown_task.py`
+- **Disconnect player after rest countdown completes.      Args:         player_id:** (1 connections) — `server/commands/rest_countdown_task.py`
+- **Create and return a rest countdown task.      Args:         player_id: The playe** (1 connections) — `server/commands/rest_countdown_task.py`
 
 ## Relationships
 
-- [container find inventory](container_find_inventory.md) (14 shared connections)
-- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (13 shared connections)
-- [container inventory helpers](container_inventory_helpers.md) (2 shared connections)
-- [inventory commands command](inventory_commands_command.md) (2 shared connections)
-- [commands communication flows](commands_communication_flows.md) (2 shared connections)
-- [Inventory Equip](Inventory_Equip.md) (1 shared connections)
+- [combat services messaging](combat_services_messaging.md) (4 shared connections)
+- [rest grace period](rest_grace_period.md) (3 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/container_helpers_inventory_find.py`
-- `server/tests/unit/commands/test_container_helpers_inventory_find.py`
+- `server/commands/rest_countdown_task.py`
 
 ## Audit Trail
 
-- EXTRACTED: 66 (94%)
-- INFERRED: 4 (6%)
+- EXTRACTED: 59 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_send_room_message_no_room_manager()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **Test _send_room_message() handles missing room_manager.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_get_wearable_containers_for_player_filters_non_equipment()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test get_wearable_containers_for_player filters out non-equipment containers.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Relationships
 
-- [npc event handlers](npc_event_handlers.md) (1 shared connections)
+- [wearable container service](wearable_container_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_npc_event_handlers.py`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 

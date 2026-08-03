@@ -1,26 +1,46 @@
 # websocket examples logging
 
-> 12 nodes
+> 50 nodes
 
 ## Key Concepts
 
+- **websocket_integration.py** (22 connections) — `docs/examples/logging/websocket_integration.py`
+- **handle_websocket_message()** (8 connections) — `docs/examples/logging/websocket_integration.py`
 - **WebSocketManager** (7 connections) — `docs/examples/logging/websocket_integration.py`
+- **websocket_endpoint()** (7 connections) — `docs/examples/logging/websocket_integration.py`
+- **.send_text()** (7 connections) — `docs/examples/logging/websocket_integration.py`
 - **.disconnect()** (6 connections) — `docs/examples/logging/websocket_integration.py`
+- **handle_game_action()** (6 connections) — `docs/examples/logging/websocket_integration.py`
+- **chat_service** (6 connections) — `docs/examples/logging/websocket_integration.py`
 - **.connect()** (5 connections) — `docs/examples/logging/websocket_integration.py`
+- **handle_chat_message()** (5 connections) — `docs/examples/logging/websocket_integration.py`
+- **WebSocket** (5 connections) — `docs/examples/logging/websocket_integration.py`
 - **.send_message()** (4 connections) — `docs/examples/logging/websocket_integration.py`
 - **.broadcast_message()** (4 connections) — `docs/examples/logging/websocket_integration.py`
-- **.accept()** (2 connections) — `docs/examples/logging/websocket_integration.py`
-- **.__init__()** (1 connections) — `docs/examples/logging/websocket_integration.py`
-- **WebSocket connection manager with enhanced logging.** (1 connections) — `docs/examples/logging/websocket_integration.py`
-- **Establish WebSocket connection with enhanced logging.** (1 connections) — `docs/examples/logging/websocket_integration.py`
-- **Disconnect WebSocket with enhanced logging.** (1 connections) — `docs/examples/logging/websocket_integration.py`
-- **Send message to specific client with enhanced logging.** (1 connections) — `docs/examples/logging/websocket_integration.py`
-- **Broadcast message to all connected clients with enhanced logging.** (1 connections) — `docs/examples/logging/websocket_integration.py`
+- **authenticate_websocket_connection()** (4 connections) — `docs/examples/logging/websocket_integration.py`
+- **WebSocketRateLimiter** (4 connections) — `docs/examples/logging/websocket_integration.py`
+- **handle_websocket_error()** (4 connections) — `docs/examples/logging/websocket_integration.py`
+- **websocket_heartbeat()** (3 connections) — `docs/examples/logging/websocket_integration.py`
+- **parse_websocket_message()** (3 connections) — `docs/examples/logging/websocket_integration.py`
+- **.broadcast_message()** (3 connections) — `docs/examples/logging/websocket_integration.py`
+- **.verify_token()** (3 connections) — `docs/examples/logging/websocket_integration.py`
+- **.check_rate_limit()** (2 connections) — `docs/examples/logging/websocket_integration.py`
+- **validate_websocket_message()** (2 connections) — `docs/examples/logging/websocket_integration.py`
+- **Exception** (2 connections)
+- **WebSocketDisconnect** (2 connections) — `docs/examples/logging/websocket_integration.py`
+- **websocket_manager** (2 connections) — `docs/examples/logging/websocket_integration.py`
+- *... and 25 more nodes in this community*
 
 ## Relationships
 
-- [System Metrics](System_Metrics.md) (6 shared connections)
+- [command inventory factories](command_inventory_factories.md) (7 shared connections)
 - [middleware correlation rationale](middleware_correlation_rationale.md) (2 shared connections)
+- [time service rationale](time_service_rationale.md) (1 shared connections)
+- [npc commands admin](npc_commands_admin.md) (1 shared connections)
+- [commands emote rationale](commands_emote_rationale.md) (1 shared connections)
+- [models player related](models_player_related.md) (1 shared connections)
+- [commands position system](commands_position_system.md) (1 shared connections)
+- [ascii map renderer](ascii_map_renderer.md) (1 shared connections)
 
 ## Source Files
 
@@ -28,8 +48,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 32 (94%)
-- INFERRED: 2 (6%)
+- EXTRACTED: 150 (96%)
+- INFERRED: 7 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

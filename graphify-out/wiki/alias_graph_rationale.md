@@ -33,9 +33,9 @@
 
 ## Relationships
 
-- [NATS Messaging](NATS_Messaging.md) (2 shared connections)
-- [command handler unified](command_handler_unified.md) (2 shared connections)
-- [commands alias rationale](commands_alias_rationale.md) (1 shared connections)
+- [command inventory factories](command_inventory_factories.md) (3 shared connections)
+- [command commands handler](command_commands_handler.md) (1 shared connections)
+- [commands admin mute](commands_admin_mute.md) (1 shared connections)
 
 ## Source Files
 

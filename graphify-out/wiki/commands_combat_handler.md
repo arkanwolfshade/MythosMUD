@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_process_command_no_handler()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
-- **Test process_command handles missing handler.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_handle_spell_command_no_spell_name()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Test spell command when no spell name is provided.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
 
 ## Relationships
 
-- [command service commands](command_service_commands.md) (1 shared connections)
+- [commands magic rationale](commands_magic_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_service.py`
+- `server/tests/unit/commands/test_magic_commands.py`
 
 ## Audit Trail
 

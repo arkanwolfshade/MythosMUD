@@ -1,49 +1,37 @@
 # room occupant manager
 
-> 28 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **test_room_occupant_manager.py** (16 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **occupant_manager()** (3 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **test_get_room_occupants_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **test_get_room_occupants_get_players_error()** (3 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **test_room_occupant_manager_init()** (2 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **test_get_room_occupants_no_persistence()** (2 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **test_get_room_occupants_no_room()** (2 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **test_get_room_occupants_success()** (2 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **test_get_room_occupants_error()** (2 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **test_separate_occupants_by_type()** (2 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **test_get_room_occupants_with_ensure_player()** (2 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **test_get_room_occupants_with_players_and_npcs()** (2 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **test_separate_occupants_by_type_empty_list()** (2 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **Unit tests for room occupant manager.  Tests the RoomOccupantManager class for q** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **Create mock connection manager.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **Create RoomOccupantManager instance.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **Test RoomOccupantManager initialization.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **Test get_room_occupants returns empty when no connection manager.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **Test get_room_occupants returns empty when no persistence.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **Test get_room_occupants returns empty when room not found.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **Test get_room_occupants returns occupants.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **Test get_room_occupants handles errors gracefully.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **Test separate_occupants_by_type separates occupants.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **Test get_room_occupants with ensure_player_included.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- *... and 3 more nodes in this community*
+- **UUID** (8 connections)
+- **.is_valid_uuid()** (4 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **.convert_to_uuid()** (4 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **.store_string_id_mapping()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **.store_xp_mapping()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **.get_uuid_for_string_id()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **.get_original_string_id()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **.get_xp_value()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **Check if a string is a valid UUID.          Args:             uuid_string: Strin** (1 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **Convert string ID to UUID, creating new UUID if needed.          For non-UUID st** (1 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **Store UUID-to-string ID mapping.          Args:             uuid_id: UUID of the** (1 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **Store UUID-to-XP mapping.          Args:             uuid_id: UUID of the NPC** (1 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **Get the UUID that was stored for a given string ID (reverse of get_original_stri** (1 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **Get the original string ID from a UUID.          Args:             uuid_id: The** (1 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **Get XP value for a UUID.          Args:             uuid_id: The UUID to look up** (1 connections) — `server/services/npc_combat_uuid_mapping.py`
 
 ## Relationships
 
-- [NATS Messaging](NATS_Messaging.md) (4 shared connections)
-- [room websocket updates](room_websocket_updates.md) (1 shared connections)
+- [NPC Combat](NPC_Combat.md) (8 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_occupant_manager.py`
+- `server/services/npc_combat_uuid_mapping.py`
 
 ## Audit Trail
 
-- EXTRACTED: 58 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 38 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

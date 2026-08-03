@@ -12,7 +12,7 @@
 ## Relationships
 
 - [tick service services](tick_service_services.md) (2 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (1 shared connections)
+- [time service rationale](time_service_rationale.md) (1 shared connections)
 
 ## Source Files
 

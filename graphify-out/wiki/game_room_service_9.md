@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_unsubscribe_from_subject_not_found()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test _unsubscribe_from_subject() handles subscription not found.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_set_limit()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **Test set_limit updates channel limit.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
 
 ## Relationships
 
-- [Item Instances](Item_Instances.md) (1 shared connections)
-- [nats message handler](nats_message_handler.md) (1 shared connections)
+- [rate limiter services](rate_limiter_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/tests/unit/services/test_rate_limiter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

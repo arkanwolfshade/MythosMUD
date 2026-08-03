@@ -1,61 +1,64 @@
 # combat commands handler
 
-> 52 nodes
+> 75 nodes
 
 ## Key Concepts
 
-- **CombatCommandHandler** (54 connections) — `server/commands/combat_handler.py`
-- **Any** (6 connections)
-- **.get_player_and_room()** (6 connections) — `server/commands/combat_handler.py`
-- **._validate_combat_target_match()** (6 connections) — `server/commands/combat_handler.py`
-- **.item_prototype_registry()** (5 connections) — `server/commands/combat_handler.py`
-- **AppWithState** (5 connections)
-- **.resolve_combat_target()** (5 connections) — `server/commands/combat_handler.py`
-- **._get_persistence_from_app()** (5 connections) — `server/commands/combat_handler.py`
-- **.handle_attack_command()** (5 connections) — `server/commands/combat_handler.py`
-- **.handle_taunt_command()** (5 connections) — `server/commands/combat_handler.py`
-- **.extract_combat_command_data()** (4 connections) — `server/commands/combat_handler.py`
-- **.get_npc_instance()** (4 connections) — `server/commands/combat_handler.py`
-- **.handle_flee_command()** (4 connections) — `server/commands/combat_handler.py`
-- **test_combat_command_handler_extras_optional()** (4 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **.movement_service()** (3 connections) — `server/commands/combat_handler.py`
-- **.player_position_service()** (3 connections) — `server/commands/combat_handler.py`
-- **.validate_target_name()** (3 connections) — `server/commands/combat_handler.py`
-- **.room_forbids_combat()** (3 connections) — `server/commands/combat_handler.py`
-- **.get_room_data()** (3 connections) — `server/commands/combat_handler.py`
-- **.validate_combat_action()** (3 connections) — `server/commands/combat_handler.py`
-- **test_attack_command_allowed_after_grace_period()** (3 connections) — `server/tests/unit/commands/test_combat_grace_period.py`
-- **test_attack_command_blocked_when_incapacitated()** (3 connections) — `server/tests/unit/commands/test_combat_grace_period.py`
-- **test_combat_command_handler_requires_async_persistence()** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **Handler for combat-related commands.     Processes combat commands and integrat** (1 connections) — `server/commands/combat_handler.py`
-- **Movement service for command modules.** (1 connections) — `server/commands/combat_handler.py`
-- *... and 27 more nodes in this community*
+- **real_time.py** (35 connections) — `server/api/real_time.py`
+- **handle_websocket_connection()** (21 connections) — `server/realtime/websocket_handler.py`
+- **get_async_persistence()** (19 connections) — `server/async_persistence.py`
+- **realtime.py** (13 connections) — `server/schemas/realtime/realtime.py`
+- **_resolve_player_id()** (10 connections) — `server/api/real_time.py`
+- **websocket_endpoint()** (10 connections) — `server/api/real_time.py`
+- **PresenceStatistics** (10 connections) — `server/schemas/realtime/presence_data.py`
+- **SessionStatistics** (10 connections) — `server/schemas/realtime/presence_data.py`
+- **ErrorStatistics** (10 connections) — `server/schemas/realtime/presence_data.py`
+- **PlayerConnectionsResponse** (10 connections) — `server/schemas/realtime/realtime.py`
+- **NewGameSessionResponse** (10 connections) — `server/schemas/realtime/realtime.py`
+- **ConnectionStatisticsResponse** (10 connections) — `server/schemas/realtime/realtime.py`
+- **Any** (9 connections)
+- **_ensure_connection_manager()** (9 connections) — `server/api/real_time.py`
+- **SessionInfo** (9 connections) — `server/schemas/realtime/realtime.py`
+- **WebSocket** (8 connections)
+- **_resolve_player_id_from_test()** (8 connections) — `server/api/real_time.py`
+- **_resolve_player_id_from_token()** (8 connections) — `server/api/real_time.py`
+- **get_player_connections()** (8 connections) — `server/api/real_time.py`
+- **handle_new_game_session()** (8 connections) — `server/api/real_time.py`
+- **websocket_endpoint_route()** (8 connections) — `server/api/real_time.py`
+- **UUID** (7 connections)
+- **_validate_websocket_connection_manager()** (7 connections) — `server/api/real_time.py`
+- **_resolve_connection_manager_from_state()** (6 connections) — `server/api/real_time.py`
+- **_parse_websocket_token()** (6 connections) — `server/api/real_time.py`
+- *... and 50 more nodes in this community*
 
 ## Relationships
 
-- [combat commands handler](combat_commands_handler.md) (9 shared connections)
-- [combat helpers commands](combat_helpers_commands.md) (7 shared connections)
-- [commands alias rationale](commands_alias_rationale.md) (6 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (6 shared connections)
-- [NPC Combat](NPC_Combat.md) (6 shared connections)
-- [container helpers loot](container_helpers_loot.md) (6 shared connections)
-- [grace period login](grace_period_login.md) (4 shared connections)
-- [spell game magic](spell_game_magic.md) (3 shared connections)
-- [rest grace period](rest_grace_period.md) (2 shared connections)
-- [Item Instances](Item_Instances.md) (2 shared connections)
-- [game weapon player](game_weapon_player.md) (2 shared connections)
-- [magic healing game](magic_healing_game.md) (1 shared connections)
+- [command inventory factories](command_inventory_factories.md) (8 shared connections)
+- [Exception Containers](Exception_Containers.md) (7 shared connections)
+- [combat schemas schema](combat_schemas_schema.md) (7 shared connections)
+- [websocket handler realtime](websocket_handler_realtime.md) (6 shared connections)
+- [schemas nats messages](schemas_nats_messages.md) (5 shared connections)
+- [realtime websocket initial](realtime_websocket_initial.md) (4 shared connections)
+- [schemas invite user](schemas_invite_user.md) (4 shared connections)
+- [Database Config](Database_Config.md) (3 shared connections)
+- [auth rationale access](auth_rationale_access.md) (3 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (3 shared connections)
+- [admin auth service](admin_auth_service.md) (3 shared connections)
+- [command combat models](command_combat_models.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/combat_handler.py`
-- `server/tests/unit/commands/test_combat_grace_period.py`
-- `server/tests/unit/commands/test_combat_handler.py`
+- `server/api/real_time.py`
+- `server/async_persistence.py`
+- `server/realtime/websocket_handler.py`
+- `server/schemas/realtime/presence_data.py`
+- `server/schemas/realtime/realtime.py`
+- `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
 
 ## Audit Trail
 
-- EXTRACTED: 141 (81%)
-- INFERRED: 33 (19%)
+- EXTRACTED: 334 (90%)
+- INFERRED: 38 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

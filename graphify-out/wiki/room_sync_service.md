@@ -1,41 +1,40 @@
 # room sync service
 
-> 17 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **Any** (7 connections)
-- **.__init__()** (6 connections) — `server/services/room_sync_service.py`
-- **._handle_stale_room_data()** (6 connections) — `server/services/room_sync_service.py`
-- **._process_room_update_with_validation()** (4 connections) — `server/services/room_sync_service.py`
-- **._fetch_fresh_room_data()** (4 connections) — `server/services/room_sync_service.py`
-- **.set_room_service()** (3 connections) — `server/services/room_sync_service.py`
-- **._invalidate_stale_cache()** (3 connections) — `server/services/room_sync_service.py`
-- **._process_room_transition()** (3 connections) — `server/services/room_sync_service.py`
-- **.get_room_data_cache_stats()** (3 connections) — `server/services/room_sync_service.py`
-- **Initialize the room synchronization service.          Args:             room_ser** (1 connections) — `server/services/room_sync_service.py`
-- **Set the room service for fetching fresh room data.          Args:             ro** (1 connections) — `server/services/room_sync_service.py`
-- **Process room update with comprehensive validation.          Args:             ro** (1 connections) — `server/services/room_sync_service.py`
-- **Invalidate stale room cache entry.          Args:             room_id: Room ID t** (1 connections) — `server/services/room_sync_service.py`
-- **Fetch fresh room data from room service.          Args:             room_id: Roo** (1 connections) — `server/services/room_sync_service.py`
-- **Handle stale room data by requesting fresh data.          Args:             room** (1 connections) — `server/services/room_sync_service.py`
-- **Process room transition with proper ordering and validation.          Args:** (1 connections) — `server/services/room_sync_service.py`
-- **Get statistics about the room data cache.          Returns:             Dict[str** (1 connections) — `server/services/room_sync_service.py`
+- **__init__.py** (9 connections) — `server/schemas/quest/__init__.py`
+- **quest.py** (8 connections) — `server/schemas/quest/quest.py`
+- **QuestLogEntryResponse** (7 connections) — `server/schemas/quest/quest.py`
+- **QuestLogResponse** (7 connections) — `server/schemas/quest/quest.py`
+- **BaseModel** (6 connections)
+- **QuestGoalSchema** (4 connections) — `server/schemas/quest/quest.py`
+- **QuestRewardSchema** (4 connections) — `server/schemas/quest/quest.py`
+- **QuestTriggerSchema** (4 connections) — `server/schemas/quest/quest.py`
+- **Quest subsystem schemas: definition, progress, API responses.** (1 connections) — `server/schemas/quest/__init__.py`
+- **Quest subsystem Pydantic schemas for MythosMUD server.  Defines schemas for ques** (1 connections) — `server/schemas/quest/quest.py`
+- **Single goal in a quest definition (complete_activity, kill_n, collect_n, etc.).** (1 connections) — `server/schemas/quest/quest.py`
+- **Single reward in a quest definition (xp, item, spell).** (1 connections) — `server/schemas/quest/quest.py`
+- **Single trigger that can start a quest (room, npc, item).** (1 connections) — `server/schemas/quest/quest.py`
+- **Single quest entry in GET /quests (quest log) response.** (1 connections) — `server/schemas/quest/quest.py`
+- **Response model for GET /quests (quest log).** (1 connections) — `server/schemas/quest/quest.py`
 
 ## Relationships
 
-- [room service sync](room_service_sync.md) (8 shared connections)
-- [room cache services](room_cache_services.md) (1 shared connections)
-- [room fixer services](room_fixer_services.md) (1 shared connections)
-- [room validator services](room_validator_services.md) (1 shared connections)
+- [admin auth service](admin_auth_service.md) (3 shared connections)
+- [quest game service](quest_game_service.md) (3 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [Player Stats](Player_Stats.md) (2 shared connections)
 
 ## Source Files
 
-- `server/services/room_sync_service.py`
+- `server/schemas/quest/__init__.py`
+- `server/schemas/quest/quest.py`
 
 ## Audit Trail
 
-- EXTRACTED: 47 (100%)
+- EXTRACTED: 56 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

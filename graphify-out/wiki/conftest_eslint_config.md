@@ -1,32 +1,27 @@
 # conftest eslint config
 
-> 9 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **pytest_asyncio_loop_factories()** (6 connections) — `server/tests/conftest.py`
-- **_create_test_event_loop()** (4 connections) — `server/tests/conftest.py`
-- **eslint.config.js** (3 connections) — `client/eslint.config.js`
-- **Config** (3 connections)
-- **AbstractEventLoop** (2 connections)
-- **jsxA11yRecommendedWarnRules** (1 connections) — `client/eslint.config.js`
-- **jsxA11yRulesOff** (1 connections) — `client/eslint.config.js`
-- **Create an event loop suitable for MythosMUD tests.      CRITICAL: On Windows, Se** (1 connections) — `server/tests/conftest.py`
-- **Register platform-appropriate loop factories for pytest-asyncio (Python 3.14+ sa** (1 connections) — `server/tests/conftest.py`
+- **TestGetStatsGenerator** (4 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_stats_generator_returns_instance()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Tests for get_stats_generator dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_stats_generator returns StatsGenerator instance.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Relationships
 
-- [conftest rationale Item](conftest_rationale_Item.md) (4 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (2 shared connections)
+- [command inventory models](command_inventory_models.md) (1 shared connections)
 
 ## Source Files
 
-- `client/eslint.config.js`
-- `server/tests/conftest.py`
+- `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (91%)
-- INFERRED: 2 (9%)
+- EXTRACTED: 8 (89%)
+- INFERRED: 1 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

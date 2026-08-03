@@ -1,27 +1,23 @@
 # skill game service
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **.__init__()** (5 connections) — `server/services/chat_logger.py`
-- **._start_writer_thread()** (3 connections) — `server/services/chat_logger.py`
-- **Initialize chat logger.          Args:             log_dir: Directory for log fi** (1 connections) — `server/services/chat_logger.py`
-- **Start the background writer thread for thread-safe file writing.** (1 connections) — `server/services/chat_logger.py`
+- **test_handle_equip_wearable_container_existing()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test handle_equip_wearable_container returns existing container.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Relationships
 
-- [chat services logger](chat_services_logger.md) (2 shared connections)
-- [Item Instances](Item_Instances.md) (1 shared connections)
-- [services chat logger](services_chat_logger.md) (1 shared connections)
+- [wearable container service](wearable_container_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/chat_logger.py`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

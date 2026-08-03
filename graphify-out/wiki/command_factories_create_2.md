@@ -22,7 +22,7 @@
 ## Relationships
 
 - [services admin auth](services_admin_auth.md) (23 shared connections)
-- [command factories create](command_factories_create.md) (7 shared connections)
+- [command factories create](command_factories_create.md) (8 shared connections)
 - [command factories rationale](command_factories_rationale.md) (6 shared connections)
 - [admin services auth](admin_services_auth.md) (3 shared connections)
 - [player realtime event](player_realtime_event.md) (2 shared connections)

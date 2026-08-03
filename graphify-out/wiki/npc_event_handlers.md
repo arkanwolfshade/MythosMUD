@@ -1,28 +1,40 @@
 # npc event handlers
 
-> 10 nodes
+> 78 nodes
 
 ## Key Concepts
 
 - **test_npc_event_handlers.py** (44 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **npc_event_handler()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_entered_room()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_left_room()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_entered_room_with_npc_instance()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_left_room_with_npc_instance()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_entered_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_entered_no_persistence()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
 - **test_handle_npc_entered_room_not_found()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_left_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_left_no_persistence()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_left_room_not_found()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
 - **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_parse_behavior_config_none()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_get_npc_departure_message_no_config()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **Unit tests for NPC event handlers.  Tests the NPCEventHandler class.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **Create a mock connection manager.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **Test _parse_behavior_config() with None.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **Test _get_npc_departure_message() returns default when no config.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **Test handle_npc_entered() handles room not found.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **mock_message_builder()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **mock_send_occupants_update()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_npc_event_handler_init()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_get_npc_instance_not_found()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_get_behavior_config_from_instance_private_attr()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_get_behavior_config_from_instance_method()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_get_behavior_config_from_instance_public_attr()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_get_behavior_config_from_instance_none()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_parse_behavior_config_dict()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_parse_behavior_config_string()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_parse_behavior_config_invalid_json()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_get_npc_instance_found()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- *... and 53 more nodes in this community*
 
 ## Relationships
 
-- [npc realtime event](npc_realtime_event.md) (16 shared connections)
-- [realtime npc event](realtime_npc_event.md) (11 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (6 shared connections)
-- [game skill service](game_skill_service.md) (4 shared connections)
-- [npc event realtime](npc_event_realtime.md) (2 shared connections)
-- [skill game service](skill_game_service.md) (1 shared connections)
+- [item models rationale](item_models_rationale.md) (13 shared connections)
+- [Player Name Validation](Player_Name_Validation.md) (3 shared connections)
 
 ## Source Files
 
@@ -30,7 +42,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 58 (100%)
+- EXTRACTED: 170 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

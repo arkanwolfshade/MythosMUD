@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_handle_npc_entered_room()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **Test handle_npc_entered_room() processes event.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **.test_start_success()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **Test start successfully starts the service.** (1 connections) — `server/tests/unit/services/test_game_tick_service.py`
 
 ## Relationships
 
-- [NATS Messaging](NATS_Messaging.md) (1 shared connections)
-- [npc event handlers](npc_event_handlers.md) (1 shared connections)
+- [tick service services](tick_service_services.md) (1 shared connections)
+- [tick game service](tick_game_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_npc_event_handlers.py`
+- `server/tests/unit/services/test_game_tick_service.py`
 
 ## Audit Trail
 

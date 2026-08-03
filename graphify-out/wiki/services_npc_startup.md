@@ -20,10 +20,10 @@
 
 ## Relationships
 
-- [startup npc services](startup_npc_services.md) (6 shared connections)
-- [services combat sync](services_combat_sync.md) (3 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (1 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
+- [player respawn event](player_respawn_event.md) (6 shared connections)
+- [Error Conversion](Error_Conversion.md) (3 shared connections)
+- [command inventory models](command_inventory_models.md) (1 shared connections)
+- [commands npc admin](commands_npc_admin.md) (1 shared connections)
 
 ## Source Files
 

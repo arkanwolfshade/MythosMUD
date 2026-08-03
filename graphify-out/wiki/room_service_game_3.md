@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_subscribe_to_standardized_chat_subjects_no_subject_manager()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test _subscribe_to_standardized_chat_subjects raises RuntimeError when subject_m** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_handle_unequip_wearable_container_with_allowed_roles()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test handle_unequip_wearable_container preserves allowed_roles.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Relationships
 
-- [nats message handler](nats_message_handler.md) (1 shared connections)
+- [wearable container service](wearable_container_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 

@@ -1,19 +1,17 @@
 # chat game message
 
-> 128 nodes
+> 85 nodes
 
 ## Key Concepts
 
 - **chat_service.py** (49 connections) — `server/game/chat_service.py`
-- **ChatMessage** (32 connections) — `server/game/chat_message.py`
-- **chat_npc_system.py** (32 connections) — `server/game/chat_npc_system.py`
-- **chat_nats_publisher.py** (29 connections) — `server/game/chat_nats_publisher.py`
+- **ChatMessage** (33 connections) — `server/game/chat_message.py`
 - **chat_message_senders.py** (26 connections) — `server/game/chat_message_senders.py`
 - **publish_chat_message_to_nats()** (24 connections) — `server/game/chat_nats_publisher.py`
 - **chat_message.py** (14 connections) — `server/game/chat_message.py`
 - **chat_pose_helpers.py** (14 connections) — `server/game/chat_pose_helpers.py`
+- **chat_logger.py** (14 connections) — `server/services/chat_logger.py`
 - **send_global_message()** (13 connections) — `server/game/chat_message_senders.py`
-- **send_npc_say_to_room()** (13 connections) — `server/game/chat_npc_system.py`
 - **send_local_message()** (12 connections) — `server/game/chat_message_senders.py`
 - **chat_message_helpers.py** (11 connections) — `server/game/chat_message_helpers.py`
 - **create_and_log_chat_message()** (11 connections) — `server/game/chat_message_helpers.py`
@@ -26,25 +24,27 @@
 - **send_system_message()** (9 connections) — `server/game/chat_message_senders.py`
 - **send_whisper_message()** (9 connections) — `server/game/chat_message_senders.py`
 - **send_party_message()** (9 connections) — `server/game/chat_message_senders.py`
-- **_build_standardized_subject()** (9 connections) — `server/game/chat_nats_publisher.py`
 - **check_channel_permissions()** (9 connections) — `server/game/chat_validation_helpers.py`
-- **chat_validator.py** (9 connections) — `server/game/chat_validator.py`
-- *... and 103 more nodes in this community*
+- **rate_limiter.py** (9 connections) — `server/services/rate_limiter.py`
+- **set_player_pose()** (8 connections) — `server/game/chat_pose_helpers.py`
+- **Any** (7 connections)
+- **UUID** (7 connections)
+- *... and 60 more nodes in this community*
 
 ## Relationships
 
-- [NATS Messaging](NATS_Messaging.md) (31 shared connections)
-- [quest chat game](quest_chat_game.md) (24 shared connections)
 - [chat service game](chat_service_game.md) (21 shared connections)
+- [quest chat game](quest_chat_game.md) (20 shared connections)
+- [command inventory factories](command_inventory_factories.md) (16 shared connections)
+- [room rationale subzone](room_rationale_subzone.md) (16 shared connections)
+- [commands admin mute](commands_admin_mute.md) (3 shared connections)
 - [chat moderation game](chat_moderation_game.md) (3 shared connections)
-- [emote game service](emote_game_service.md) (2 shared connections)
-- [nats exceptions services](nats_exceptions_services.md) (2 shared connections)
-- [manager subject services](manager_subject_services.md) (2 shared connections)
-- [room rationale subzone](room_rationale_subzone.md) (2 shared connections)
 - [game chat whisper](game_chat_whisper.md) (2 shared connections)
-- [Item Instances](Item_Instances.md) (1 shared connections)
-- [dialogue service game](dialogue_service_game.md) (1 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
+- [services user manager](services_user_manager.md) (2 shared connections)
+- [Item Instances](Item_Instances.md) (2 shared connections)
+- [rate limiter services](rate_limiter_services.md) (2 shared connections)
+- [Magic Spell Service](Magic_Spell_Service.md) (1 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (1 shared connections)
 
 ## Source Files
 
@@ -52,18 +52,17 @@
 - `server/game/chat_message_helpers.py`
 - `server/game/chat_message_senders.py`
 - `server/game/chat_nats_publisher.py`
-- `server/game/chat_npc_system.py`
 - `server/game/chat_pose_helpers.py`
 - `server/game/chat_service.py`
 - `server/game/chat_validation_helpers.py`
-- `server/game/chat_validator.py`
-- `server/tests/unit/game/test_chat_npc_system.py`
+- `server/services/chat_logger.py`
+- `server/services/rate_limiter.py`
 - `vulture_allowlist.py`
 
 ## Audit Trail
 
-- EXTRACTED: 650 (99%)
-- INFERRED: 6 (1%)
+- EXTRACTED: 474 (99%)
+- INFERRED: 4 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

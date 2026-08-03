@@ -1,36 +1,30 @@
 # occupant formatter realtime
 
-> 12 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **._is_uuid_string()** (8 connections) — `server/realtime/occupant_formatter.py`
-- **._process_string_occupant_for_update()** (4 connections) — `server/realtime/occupant_formatter.py`
-- **test_occupant_formatter_is_uuid_string_valid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_is_uuid_string_invalid_length()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_is_uuid_string_invalid_dashes()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_is_uuid_string_invalid_chars()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Check if a string looks like a UUID.          Args:             value: The strin** (1 connections) — `server/realtime/occupant_formatter.py`
-- **Process a string occupant (legacy format) and add to list if valid.          Arg** (1 connections) — `server/realtime/occupant_formatter.py`
-- **Test OccupantFormatter._is_uuid_string() returns True for valid UUID.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter._is_uuid_string() returns False for invalid length.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter._is_uuid_string() returns False for wrong dash count.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter._is_uuid_string() returns False for invalid characters.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **PingMessageHandler** (7 connections) — `server/realtime/message_handler_factory.py`
+- **test_ping_message_handler_handle()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **Handler for ping messages.** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Test PingMessageHandler.handle() calls handle_ping_message.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
 
 ## Relationships
 
-- [occupant formatter realtime](occupant_formatter_realtime.md) (4 shared connections)
-- [commands recovery lucidity](commands_recovery_lucidity.md) (2 shared connections)
-- [occupant realtime formatter](occupant_realtime_formatter.md) (2 shared connections)
+- [message handler factory](message_handler_factory.md) (2 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
+- [command commands aliases](command_commands_aliases.md) (1 shared connections)
+- [tsconfig src/**/* spec](tsconfig_src-__-__spec.md) (1 shared connections)
+- [game chat moderation](game_chat_moderation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/occupant_formatter.py`
-- `server/tests/unit/realtime/test_occupant_formatter.py`
+- `server/realtime/message_handler_factory.py`
+- `server/tests/unit/realtime/test_message_handler_factory.py`
 
 ## Audit Trail
 
-- EXTRACTED: 30 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

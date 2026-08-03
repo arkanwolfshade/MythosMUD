@@ -1,11 +1,13 @@
 # map layout useMapLayout
 
-> 22 nodes
+> 24 nodes
 
 ## Key Concepts
 
 - **layout.ts** (26 connections) — `client/src/components/map/utils/layout.ts`
+- **useMapLayout.ts** (22 connections) — `client/src/components/map/hooks/useMapLayout.ts`
 - **applyForceLayout()** (10 connections) — `client/src/components/map/utils/layout.ts`
+- **applyGridLayout()** (7 connections) — `client/src/components/map/utils/layout.ts`
 - **applyForceLayout.test.ts** (6 connections) — `client/src/components/map/utils/__tests__/applyForceLayout.test.ts`
 - **applyGridLayout.test.ts** (6 connections) — `client/src/components/map/utils/__tests__/applyGridLayout.test.ts`
 - **calculateGridPosition.test.ts** (6 connections) — `client/src/components/map/utils/__tests__/calculateGridPosition.test.ts`
@@ -29,9 +31,9 @@
 
 ## Relationships
 
+- [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (15 shared connections)
 - [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (13 shared connections)
-- [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (6 shared connections)
-- [map ExitEdge nodes](map_ExitEdge_nodes.md) (4 shared connections)
+- [performance map debounce()](performance_map_debounce%28%29.md) (2 shared connections)
 
 ## Source Files
 
@@ -44,7 +46,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 107 (100%)
+- EXTRACTED: 136 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

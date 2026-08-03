@@ -1,45 +1,59 @@
 # spell game magic
 
-> 18 nodes
+> 106 nodes
 
 ## Key Concepts
 
-- **run_flee_effect()** (18 connections) — `server/game/magic/spell_effect_flee.py`
-- **spell_effect_flee.py** (17 connections) — `server/game/magic/spell_effect_flee.py`
-- **Any** (10 connections)
-- **_flee_effect_validate_room_exits()** (5 connections) — `server/game/magic/spell_effect_flee.py`
-- **_flee_effect_services_available()** (4 connections) — `server/game/magic/spell_effect_flee.py`
-- **_flee_effect_not_in_combat_response()** (4 connections) — `server/game/magic/spell_effect_flee.py`
-- **_flee_effect_success_response()** (4 connections) — `server/game/magic/spell_effect_flee.py`
-- **_flee_effect_failure_response()** (4 connections) — `server/game/magic/spell_effect_flee.py`
-- **_flee_effect_invalid_target_type_response()** (3 connections) — `server/game/magic/spell_effect_flee.py`
-- **_flee_effect_services_unavailable_response()** (3 connections) — `server/game/magic/spell_effect_flee.py`
-- **_flee_effect_invalid_target_response()** (3 connections) — `server/game/magic/spell_effect_flee.py`
-- **_flee_effect_room_error_response()** (3 connections) — `server/game/magic/spell_effect_flee.py`
-- **.get_room_by_id()** (3 connections) — `server/game/magic/spell_effects.py`
-- **Flee spell effect: voluntary flee mechanics (success roll, lose-attack-on-fail,** (1 connections) — `server/game/magic/spell_effect_flee.py`
-- **True if combat, movement, and get_room_by_id are all configured for flee effect.** (1 connections) — `server/game/magic/spell_effect_flee.py`
-- **Return (room_id, None) if combat room has exits; else (None, error_message).** (1 connections) — `server/game/magic/spell_effect_flee.py`
-- **Apply flee effect: same mechanics as /flee (success roll, lose-attack-on-fail, e** (1 connections) — `server/game/magic/spell_effect_flee.py`
-- **Callable to resolve room by ID for flee effect.** (1 connections) — `server/game/magic/spell_effects.py`
+- **spell_effects_heal.py** (40 connections) — `server/game/magic/spell_effects_heal.py`
+- **NpcSpellDamageTarget** (17 connections) — `server/game/magic/spell_effect_types.py`
+- **._dispatch_effect()** (15 connections) — `server/game/magic/spell_effects.py`
+- **run_heal_effect()** (15 connections) — `server/game/magic/spell_effects_heal.py`
+- **SpellEffectPlayer** (14 connections) — `server/game/magic/spell_effect_types.py`
+- **SpellEffectsEngineHealPort** (13 connections) — `server/game/magic/spell_effect_types.py`
+- **UUID** (13 connections)
+- **UUID** (12 connections)
+- **spell_effect_types.py** (11 connections) — `server/game/magic/spell_effect_types.py`
+- **_steal_life_resolve_target_dp()** (11 connections) — `server/game/magic/spell_effects_heal.py`
+- **_steal_life_apply_target_damage()** (11 connections) — `server/game/magic/spell_effects_heal.py`
+- **_run_steal_life()** (11 connections) — `server/game/magic/spell_effects_heal.py`
+- **PlayerPersistenceSpellPort** (10 connections) — `server/game/magic/spell_effect_types.py`
+- **_run_standard_heal_after_validation()** (10 connections) — `server/game/magic/spell_effects_heal.py`
+- **._process_damage()** (9 connections) — `server/game/magic/spell_effects.py`
+- **._process_lucidity_adjust()** (9 connections) — `server/game/magic/spell_effects.py`
+- **._process_corruption_adjust()** (9 connections) — `server/game/magic/spell_effects.py`
+- **get_npc_instance_for_steal_life()** (9 connections) — `server/game/magic/spell_effects_heal.py`
+- **._process_heal()** (8 connections) — `server/game/magic/spell_effects.py`
+- **._publish_npc_damage_and_death_events()** (8 connections) — `server/game/magic/spell_effects.py`
+- **._process_teleport()** (8 connections) — `server/game/magic/spell_effects.py`
+- **_steal_life_publish_npc_events()** (8 connections) — `server/game/magic/spell_effects_heal.py`
+- **Protocol** (7 connections)
+- **._process_damage_to_npc()** (7 connections) — `server/game/magic/spell_effects.py`
+- **_add_healing_threat_if_in_combat()** (7 connections) — `server/game/magic/spell_effects_heal.py`
+- *... and 81 more nodes in this community*
 
 ## Relationships
 
-- [spell game magic](spell_game_magic.md) (7 shared connections)
-- [combat services rationale](combat_services_rationale.md) (3 shared connections)
-- [game models player](game_models_player.md) (3 shared connections)
-- [spell models rationale](spell_models_rationale.md) (2 shared connections)
-- [Item Instances](Item_Instances.md) (1 shared connections)
+- [game models player](game_models_player.md) (43 shared connections)
+- [target resolution service](target_resolution_service.md) (21 shared connections)
+- [NPC Combat](NPC_Combat.md) (14 shared connections)
+- [npc database infrastructure](npc_database_infrastructure.md) (6 shared connections)
+- [Item Instances](Item_Instances.md) (3 shared connections)
+- [commands npc admin](commands_npc_admin.md) (2 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [container main rationale](container_main_rationale.md) (1 shared connections)
+- [command factories exploration](command_factories_exploration.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/magic/spell_effect_flee.py`
+- `server/game/magic/spell_effect_types.py`
 - `server/game/magic/spell_effects.py`
+- `server/game/magic/spell_effects_heal.py`
+- `server/game/magic/spell_effects_internal.py`
 
 ## Audit Trail
 
-- EXTRACTED: 84 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 453 (97%)
+- INFERRED: 16 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

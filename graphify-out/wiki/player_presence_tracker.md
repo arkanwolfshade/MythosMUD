@@ -33,13 +33,14 @@
 
 ## Relationships
 
-- [realtime player connection](realtime_player_connection.md) (9 shared connections)
+- [Database Config](Database_Config.md) (10 shared connections)
 - [player disconnect handlers](player_disconnect_handlers.md) (9 shared connections)
-- [npc populate databases](npc_populate_databases.md) (8 shared connections)
 - [Room Broadcast](Room_Broadcast.md) (7 shared connections)
 - [grace period disconnect](grace_period_disconnect.md) (6 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (3 shared connections)
+- [help content websocket](help_content_websocket.md) (6 shared connections)
+- [realtime player connection](realtime_player_connection.md) (3 shared connections)
 - [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [time service rationale](time_service_rationale.md) (1 shared connections)
 - [realtime game state](realtime_game_state.md) (1 shared connections)
 - [uuid npc combat](uuid_npc_combat.md) (1 shared connections)
 

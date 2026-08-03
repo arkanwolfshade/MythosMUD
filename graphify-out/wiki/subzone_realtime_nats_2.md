@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_unsubscribe_from_subzone_decrease_count()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test unsubscribe_from_subzone decreases count when > 1.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **mock_session()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **Create a mock async session.** (1 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
 
 ## Relationships
 
-- [subzone realtime nats](subzone_realtime_nats.md) (1 shared connections)
+- [lucidity active service](lucidity_active_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- `server/tests/unit/services/test_active_lucidity_service.py`
 
 ## Audit Trail
 

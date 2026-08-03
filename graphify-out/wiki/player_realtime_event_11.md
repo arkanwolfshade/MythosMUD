@@ -1,23 +1,25 @@
 # player realtime event
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_send_occupants_snapshot_to_player_error_handling()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **Test send_occupants_snapshot_to_player() handles errors.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **6. Rest Location (Inn/Hotel) Behavior** (4 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **Industry Practices** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **Our Plan** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **Gap Analysis** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
 
 ## Relationships
 
-- [player room event](player_room_event.md) (1 shared connections)
+- [grace period disconnect](grace_period_disconnect.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- `.cursor/plans/disconnect_grace_period_comparison.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

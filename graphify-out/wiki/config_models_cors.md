@@ -33,9 +33,8 @@
 
 ## Relationships
 
-- [config models rationale](config_models_rationale.md) (4 shared connections)
-- [app factory rationale](app_factory_rationale.md) (1 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (1 shared connections)
+- [command inventory factories](command_inventory_factories.md) (4 shared connections)
+- [player event handlers](player_event_handlers.md) (2 shared connections)
 
 ## Source Files
 

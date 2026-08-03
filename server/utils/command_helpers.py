@@ -18,18 +18,18 @@ logger = get_logger(__name__)
 
 
 @runtime_checkable
-class _HasNameAndPlayerId(Protocol):
+class _HasNameAndPlayerId(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
     name: object
     player_id: object
 
 
 @runtime_checkable
-class _HasUsername(Protocol):
+class _HasUsername(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
     username: object
 
 
 @runtime_checkable
-class _HasName(Protocol):
+class _HasName(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
     name: object
 
 

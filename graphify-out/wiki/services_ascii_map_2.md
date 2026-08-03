@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_unregister_command_handler()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
-- **Test unregister_command_handler removes handler.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_handle_learn_command_with_corruption()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Test learn command with corruption applied.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
 
 ## Relationships
 
-- [command service commands](command_service_commands.md) (1 shared connections)
+- [commands magic rationale](commands_magic_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_service.py`
+- `server/tests/unit/commands/test_magic_commands.py`
 
 ## Audit Trail
 

@@ -1,43 +1,53 @@
 # calendar schemas validate
 
-> 19 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **validate_calendar.py** (17 connections) — `scripts/validate_calendar.py`
-- **run_validation()** (9 connections) — `scripts/validate_calendar.py`
-- **_get_calendar_paths()** (7 connections) — `scripts/validate_calendar.py`
-- **Path** (6 connections)
-- **_load_and_validate_holidays()** (6 connections) — `scripts/validate_calendar.py`
-- **_check_holiday_coverage()** (6 connections) — `scripts/validate_calendar.py`
-- **_validate_schedule_files()** (6 connections) — `scripts/validate_calendar.py`
-- **_print_success_message()** (5 connections) — `scripts/validate_calendar.py`
-- **parse_args()** (4 connections) — `scripts/validate_calendar.py`
-- **load_document_ids()** (4 connections) — `scripts/validate_calendar.py`
-- **Namespace** (3 connections)
-- **_print_errors()** (3 connections) — `scripts/validate_calendar.py`
-- **main()** (3 connections) — `scripts/validate_calendar.py`
-- **Get holidays and schedules paths.** (1 connections) — `scripts/validate_calendar.py`
-- **Load and validate holidays.** (1 connections) — `scripts/validate_calendar.py`
-- **Check if holidays cover documentation references.** (1 connections) — `scripts/validate_calendar.py`
-- **Load and validate schedule files.** (1 connections) — `scripts/validate_calendar.py`
-- **Print validation errors.** (1 connections) — `scripts/validate_calendar.py`
-- **Print success message if not quiet.** (1 connections) — `scripts/validate_calendar.py`
+- **definition.py** (16 connections) — `server/commands/npc_admin/definition.py`
+- **handle_npc_create_command()** (12 connections) — `server/commands/npc_admin/definition.py`
+- **handle_npc_edit_command()** (10 connections) — `server/commands/npc_admin/definition.py`
+- **handle_npc_delete_command()** (9 connections) — `server/commands/npc_admin/definition.py`
+- **handle_npc_list_command()** (9 connections) — `server/commands/npc_admin/definition.py`
+- **Any** (7 connections)
+- **_parse_npc_edit_args()** (5 connections) — `server/commands/npc_admin/definition.py`
+- **_build_npc_edit_params()** (5 connections) — `server/commands/npc_admin/definition.py`
+- **_execute_npc_edit()** (5 connections) — `server/commands/npc_admin/definition.py`
+- **test_handle_npc_create_command_no_args()** (3 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
+- **test_handle_npc_list_command()** (3 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
+- **test_handle_npc_create_command_invalid_type()** (3 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
+- **test_handle_npc_create_command_no_database()** (3 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
+- **NPC definition management commands (create, edit, delete, list).** (1 connections) — `server/commands/npc_admin/definition.py`
+- **Parse and validate NPC edit command args.      Returns:         (npc_id, field,** (1 connections) — `server/commands/npc_admin/definition.py`
+- **Map a single NPC field/value into NPCDefinitionUpdateParams, or return an error** (1 connections) — `server/commands/npc_admin/definition.py`
+- **Run NPC definition update in DB session. Returns result or error dict.** (1 connections) — `server/commands/npc_admin/definition.py`
+- **Handle NPC creation command.** (1 connections) — `server/commands/npc_admin/definition.py`
+- **Handle NPC editing command.** (1 connections) — `server/commands/npc_admin/definition.py`
+- **Handle NPC deletion command.** (1 connections) — `server/commands/npc_admin/definition.py`
+- **Handle NPC listing command.** (1 connections) — `server/commands/npc_admin/definition.py`
+- **Test handle_npc_create_command() with no arguments.** (1 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
+- **Test handle_npc_list_command() lists NPCs.** (1 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
+- **Test handle_npc_create_command() with invalid NPC type.** (1 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
+- **Test handle_npc_create_command() when database is not available.** (1 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
 
 ## Relationships
 
-- [Memory Task Runtime](Memory_Task_Runtime.md) (7 shared connections)
-- [commands party examples](commands_party_examples.md) (5 shared connections)
-- [holiday service services](holiday_service_services.md) (5 shared connections)
+- [commands npc admin](commands_npc_admin.md) (17 shared connections)
+- [commands admin mute](commands_admin_mute.md) (6 shared connections)
+- [nats services metrics](nats_services_metrics.md) (5 shared connections)
+- [command inventory factories](command_inventory_factories.md) (4 shared connections)
+- [combat commands handler](combat_commands_handler.md) (3 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/validate_calendar.py`
+- `server/commands/npc_admin/definition.py`
+- `server/tests/unit/commands/test_npc_admin_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 85 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 89 (87%)
+- INFERRED: 13 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_evaluate_numeric_comparison_greater_equal()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test _evaluate_numeric_comparison() handles >= operator.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_run_improvement_rolls_high_skill_gains_one()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
+- **When current >= 90, successful improvement adds 1 (cap 99).** (1 connections) — `server/tests/unit/game/test_skill_service.py`
 
 ## Relationships
 
-- [npc behavior engine](npc_behavior_engine.md) (1 shared connections)
-- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
+- [skill service game](skill_service_game.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_behavior_engine.py`
+- `server/tests/unit/game/test_skill_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

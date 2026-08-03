@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_process_command_success()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
-- **Test process_command successfully processes command string.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_handle_spells_command_with_spells()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Test spells command when player has spells.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
 
 ## Relationships
 
-- [command service commands](command_service_commands.md) (1 shared connections)
+- [commands magic rationale](commands_magic_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_service.py`
+- `server/tests/unit/commands/test_magic_commands.py`
 
 ## Audit Trail
 

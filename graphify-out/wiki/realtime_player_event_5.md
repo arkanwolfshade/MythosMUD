@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_evaluate_condition_greater_than()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test evaluate_condition() handles > operator.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_apply_encounter_lucidity_loss_horrific_category()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **Test apply_encounter_lucidity_loss() with horrific category.** (1 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
 
 ## Relationships
 
-- [npc behavior engine](npc_behavior_engine.md) (1 shared connections)
-- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
+- [lucidity active service](lucidity_active_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_behavior_engine.py`
+- `server/tests/unit/services/test_active_lucidity_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

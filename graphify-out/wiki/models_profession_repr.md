@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_select_exit_empty_dict()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **Test select_exit() with empty exit dict.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_perform_recovery_action_string_player_id()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **Test perform_recovery_action() handles string player_id.** (1 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
 
 ## Relationships
 
-- [idle npc movement](idle_npc_movement.md) (1 shared connections)
-- [idle movement npc](idle_movement_npc.md) (1 shared connections)
+- [lucidity active service](lucidity_active_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_idle_movement.py`
+- `server/tests/unit/services/test_active_lucidity_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

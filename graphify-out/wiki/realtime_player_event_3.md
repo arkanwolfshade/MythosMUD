@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_profession_meets_stat_requirements_multiple_not_met()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **Test meets_stat_requirements returns False when multiple requirements are not me** (1 connections) — `server/tests/unit/models/test_profession.py`
+- **test_get_valid_exits_no_subzone()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **Test get_valid_exits() when NPC definition has no sub_zone_id.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
 
 ## Relationships
 
-- [models profession available](models_profession_available.md) (1 shared connections)
-- [profession models rationale](profession_models_rationale.md) (1 shared connections)
+- [config models player](config_models_player.md) (1 shared connections)
+- [idle movement npc](idle_movement_npc.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/models/test_profession.py`
+- `server/tests/unit/npc/test_idle_movement.py`
 
 ## Audit Trail
 

@@ -1,28 +1,23 @@
 # models profession rationale
 
-> 6 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **.get_stat_requirements()** (5 connections) — `server/models/profession.py`
-- **.meets_stat_requirements()** (3 connections) — `server/models/profession.py`
-- **.get_requirement_display_text()** (3 connections) — `server/models/profession.py`
-- **Get profession stat requirements as dictionary.** (1 connections) — `server/models/profession.py`
-- **Check if given stats meet the profession requirements.          Args:** (1 connections) — `server/models/profession.py`
-- **Get formatted text for displaying stat requirements.          Returns:** (1 connections) — `server/models/profession.py`
+- **test_handle_spell_command_success()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Test spell command success.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
 
 ## Relationships
 
-- [models profession available](models_profession_available.md) (3 shared connections)
-- [models profession rationale](models_profession_rationale.md) (1 shared connections)
+- [commands magic rationale](commands_magic_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/profession.py`
+- `server/tests/unit/commands/test_magic_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

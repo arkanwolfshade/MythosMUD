@@ -1,42 +1,50 @@
 # follow game service
 
-> 28 nodes
+> 52 nodes
 
 ## Key Concepts
 
+- **FollowService** (37 connections) — `server/game/follow_service.py`
+- **follow_service.py** (24 connections) — `server/game/follow_service.py`
 - **UUID** (14 connections)
 - **_str_id()** (13 connections) — `server/game/follow_service.py`
+- **.__init__()** (10 connections) — `server/game/follow_service.py`
 - **.request_follow()** (9 connections) — `server/game/follow_service.py`
+- **._handle_player_follower_move()** (9 connections) — `server/game/follow_service.py`
+- **._handle_npc_follower_move()** (9 connections) — `server/game/follow_service.py`
 - **._send_result_to_player()** (8 connections) — `server/game/follow_service.py`
+- **._send_follow_state_to_player()** (8 connections) — `server/game/follow_service.py`
+- **.unfollow()** (8 connections) — `server/game/follow_service.py`
 - **Any** (7 connections)
 - **._expire_pending_requests()** (7 connections) — `server/game/follow_service.py`
 - **.accept_follow()** (7 connections) — `server/game/follow_service.py`
 - **.decline_follow()** (7 connections) — `server/game/follow_service.py`
 - **_is_npc_follow_value()** (6 connections) — `server/game/follow_service.py`
+- **.get_followers()** (6 connections) — `server/game/follow_service.py`
 - **.get_following_display()** (6 connections) — `server/game/follow_service.py`
+- **._ensure_follower_standing()** (6 connections) — `server/game/follow_service.py`
+- **._on_player_entered_room()** (6 connections) — `server/game/follow_service.py`
 - **._send_follow_request_to_target()** (5 connections) — `server/game/follow_service.py`
 - **.get_following()** (5 connections) — `server/game/follow_service.py`
 - **.get_following_display_name()** (5 connections) — `server/game/follow_service.py`
-- **.on_player_disconnect()** (4 connections) — `server/game/follow_service.py`
-- **_FollowTargetValue** (1 connections)
-- **TypeGuard** (1 connections)
-- **True when v is the 3-tuple (target_id, 'npc', display_name).** (1 connections) — `server/game/follow_service.py`
-- **Normalize ID to string for dict keys.** (1 connections) — `server/game/follow_service.py`
-- **Remove expired pending requests and notify requestors.** (1 connections) — `server/game/follow_service.py`
-- **Send a command_response-style message to a single player.** (1 connections) — `server/game/follow_service.py`
-- **Request to follow a player (pending acceptance) or start following an NPC immedi** (1 connections) — `server/game/follow_service.py`
-- **Send follow_request event to the target player only.** (1 connections) — `server/game/follow_service.py`
-- **Accept a follow request. Target is the player who accepted (the followee).** (1 connections) — `server/game/follow_service.py`
-- **Decline a follow request.** (1 connections) — `server/game/follow_service.py`
-- **Return (target_id, target_type) if following someone, else None.** (1 connections) — `server/game/follow_service.py`
-- *... and 3 more nodes in this community*
+- **._on_npc_entered_room()** (5 connections) — `server/game/follow_service.py`
+- **._send_result_and_player_update()** (4 connections) — `server/game/follow_service.py`
+- *... and 27 more nodes in this community*
 
 ## Relationships
 
-- [NATS Messaging](NATS_Messaging.md) (26 shared connections)
-- [Item Instances](Item_Instances.md) (3 shared connections)
-- [connection manager realtime](connection_manager_realtime.md) (1 shared connections)
-- [combat services messaging](combat_services_messaging.md) (1 shared connections)
+- [item models rationale](item_models_rationale.md) (11 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (4 shared connections)
+- [Database Config](Database_Config.md) (4 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (4 shared connections)
+- [connection manager realtime](connection_manager_realtime.md) (4 shared connections)
+- [position player service](position_player_service.md) (3 shared connections)
+- [services user manager](services_user_manager.md) (3 shared connections)
+- [command inventory factories](command_inventory_factories.md) (3 shared connections)
+- [persistence services combat](persistence_services_combat.md) (3 shared connections)
+- [party service game](party_service_game.md) (3 shared connections)
+- [target resolution service](target_resolution_service.md) (3 shared connections)
+- [Error Conversion](Error_Conversion.md) (3 shared connections)
 
 ## Source Files
 
@@ -44,8 +52,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 117 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 250 (96%)
+- INFERRED: 11 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

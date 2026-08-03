@@ -1,55 +1,47 @@
 # commands follow rationale
 
-> 42 nodes
+> 23 nodes
 
 ## Key Concepts
 
-- **test_follow_commands.py** (23 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **handle_follow_command()** (18 connections) — `server/commands/follow_commands.py`
-- **follow_commands.py** (15 connections) — `server/commands/follow_commands.py`
-- **_make_container()** (12 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **_make_request()** (12 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **handle_unfollow_command()** (10 connections) — `server/commands/follow_commands.py`
-- **handle_following_command()** (10 connections) — `server/commands/follow_commands.py`
-- **test_handle_follow_self_rejected()** (7 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_follow_same_room_player_sends_request()** (7 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_follow_same_room_npc_immediate()** (7 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **_get_container()** (6 connections) — `server/commands/follow_commands.py`
-- **test_handle_follow_no_such_player_or_npc()** (6 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_follow_no_persistence()** (5 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_follow_no_target()** (5 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_follow_player_not_in_game()** (5 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_unfollow_success()** (5 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_unfollow_was_not_following()** (5 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_following_display()** (5 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **Any** (4 connections)
-- **test_handle_follow_no_container()** (3 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_unfollow_no_container()** (3 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_following_no_container()** (3 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **Follow commands for MythosMUD.  Handlers for /follow, /unfollow, and /following.** (1 connections) — `server/commands/follow_commands.py`
-- **Get application container from request.** (1 connections) — `server/commands/follow_commands.py`
-- **Handle /follow <target>. Target must be a player or NPC in the same room.** (1 connections) — `server/commands/follow_commands.py`
-- *... and 17 more nodes in this community*
+- **test_logging_file_setup.py** (14 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **test_queue_listener_has_aggregator_handlers()** (7 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **test_warning_and_error_reach_aggregator_files()** (7 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **get_queue_listener()** (6 connections) — `server/structured_logging/logging_file_setup.py`
+- **stop_queue_listener()** (6 connections) — `server/structured_logging/logging_file_setup.py`
+- **_root_handlers_snapshot()** (6 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **_restore_root_handlers()** (6 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **test_aggregator_handlers_on_root_when_async()** (6 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **test_log_directory_under_env()** (5 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **QueueListener** (2 connections)
+- **temp_log_base()** (2 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **default_log_config()** (2 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **Return the global QueueListener if running (for tests and shutdown).      Return** (1 connections) — `server/structured_logging/logging_file_setup.py`
+- **Stop the global QueueListener and reset state (for tests and shutdown).      All** (1 connections) — `server/structured_logging/logging_file_setup.py`
+- **Unit tests for logging file setup.  Verifies aggregator handlers attached to roo** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **Temporary directory used as log_base for setup.** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **Default log config with rotation.** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **Return a copy of root logger handlers (for restore).** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **Replace root logger handlers with the given list.** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **H1: With async enabled, root logger has a QueueHandler for the aggregator path (** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **H3: QueueListener is started and includes aggregator handlers.** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **H2/H5: WARNING and ERROR logged from root appear in warnings.log and errors.log.** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **H4 (setup): Log files are created under env_log_dir (e.g. .../test/).** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
 
 ## Relationships
 
-- [commands alias rationale](commands_alias_rationale.md) (11 shared connections)
-- [combat commands handler](combat_commands_handler.md) (5 shared connections)
-- [spell game magic](spell_game_magic.md) (4 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (3 shared connections)
-- [command helpers functions](command_helpers_functions.md) (3 shared connections)
-- [Item Instances](Item_Instances.md) (2 shared connections)
-- [target resolution service](target_resolution_service.md) (2 shared connections)
+- [logging setup structured](logging_setup_structured.md) (9 shared connections)
+- [time service rationale](time_service_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/follow_commands.py`
-- `server/tests/unit/commands/test_follow_commands.py`
+- `server/structured_logging/logging_file_setup.py`
+- `server/tests/unit/structured_logging/test_logging_file_setup.py`
 
 ## Audit Trail
 
-- EXTRACTED: 192 (98%)
-- INFERRED: 4 (2%)
+- EXTRACTED: 80 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

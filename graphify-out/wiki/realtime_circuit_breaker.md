@@ -1,38 +1,34 @@
 # realtime circuit breaker
 
-> 15 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **.call()** (9 connections) — `server/realtime/circuit_breaker.py`
-- **._transition_to()** (6 connections) — `server/realtime/circuit_breaker.py`
-- **._on_success()** (4 connections) — `server/realtime/circuit_breaker.py`
-- **._on_failure()** (4 connections) — `server/realtime/circuit_breaker.py`
-- **._time_until_retry()** (4 connections) — `server/realtime/circuit_breaker.py`
-- **.get_stats()** (4 connections) — `server/realtime/circuit_breaker.py`
-- **._should_attempt_reset()** (3 connections) — `server/realtime/circuit_breaker.py`
-- **Any** (2 connections)
-- **Execute function through circuit breaker.          Enforces circuit breaker logi** (1 connections) — `server/realtime/circuit_breaker.py`
-- **Handle successful function call.          Updates state based on current circuit** (1 connections) — `server/realtime/circuit_breaker.py`
-- **Handle failed function call.          Updates state based on failure count:** (1 connections) — `server/realtime/circuit_breaker.py`
-- **Check if enough time has passed to attempt circuit reset.          Returns:** (1 connections) — `server/realtime/circuit_breaker.py`
-- **Calculate seconds until circuit can attempt reset.          Returns:** (1 connections) — `server/realtime/circuit_breaker.py`
-- **Transition circuit to new state.          Args:             new_state: State to** (1 connections) — `server/realtime/circuit_breaker.py`
-- **Get circuit breaker statistics.          Returns:             Dictionary with ci** (1 connections) — `server/realtime/circuit_breaker.py`
+- **alias_commands.py** (15 connections) — `server/commands/alias_commands.py`
+- **_create_alias()** (5 connections) — `server/commands/alias_commands.py`
+- **_view_alias()** (4 connections) — `server/commands/alias_commands.py`
+- **_validate_alias_params()** (3 connections) — `server/commands/alias_commands.py`
+- **Alias management commands for MythosMUD.  This module contains handlers for alia** (1 connections) — `server/commands/alias_commands.py`
+- **View an existing alias. Returns result dict.** (1 connections) — `server/commands/alias_commands.py`
+- **Validate alias name and command. Returns error dict if invalid, None if valid.** (1 connections) — `server/commands/alias_commands.py`
+- **Create or update an alias. Returns result dict.** (1 connections) — `server/commands/alias_commands.py`
 
 ## Relationships
 
-- [message broadcaster realtime](message_broadcaster_realtime.md) (7 shared connections)
-- [message nats handler](message_nats_handler.md) (1 shared connections)
-- [uuid services npc](uuid_services_npc.md) (1 shared connections)
+- [commands admin mute](commands_admin_mute.md) (6 shared connections)
+- [commands alias rationale](commands_alias_rationale.md) (4 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [schemas calendar rationale](schemas_calendar_rationale.md) (1 shared connections)
+- [emote game service](emote_game_service.md) (1 shared connections)
+- [scripts worktree ops](scripts_worktree_ops.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/circuit_breaker.py`
+- `server/commands/alias_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 43 (100%)
+- EXTRACTED: 31 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

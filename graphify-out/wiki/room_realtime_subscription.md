@@ -1,18 +1,15 @@
 # room realtime subscription
 
-> 72 nodes
+> 41 nodes
 
 ## Key Concepts
 
-- **RoomSubscriptionManager** (46 connections) — `server/realtime/room_subscription_manager.py`
 - **Any** (13 connections)
 - **._canonical_room_id()** (13 connections) — `server/realtime/room_subscription_manager.py`
-- **test_room_subscription_manager_npcs.py** (13 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
 - **.get_room_occupants()** (8 connections) — `server/realtime/room_subscription_manager.py`
 - **._get_fallback_npcs_from_room()** (7 connections) — `server/realtime/room_subscription_manager.py`
 - **._query_npcs_from_lifecycle_manager()** (6 connections) — `server/realtime/room_subscription_manager.py`
 - **._add_npc_to_occupants()** (5 connections) — `server/realtime/room_subscription_manager.py`
-- **.__init__()** (4 connections) — `server/realtime/messaging/message_broadcaster.py`
 - **.list_room_drops()** (4 connections) — `server/realtime/room_subscription_manager.py`
 - **.add_room_drop()** (4 connections) — `server/realtime/room_subscription_manager.py`
 - **.take_room_drop()** (4 connections) — `server/realtime/room_subscription_manager.py`
@@ -28,31 +25,25 @@
 - **.add_room_occupant()** (3 connections) — `server/realtime/room_subscription_manager.py`
 - **.remove_room_occupant()** (3 connections) — `server/realtime/room_subscription_manager.py`
 - **.get_stats()** (3 connections) — `server/realtime/room_subscription_manager.py`
-- **subscription_manager()** (3 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
-- *... and 47 more nodes in this community*
+- **Set the async persistence layer reference.** (1 connections) — `server/realtime/room_subscription_manager.py`
+- **Subscribe a player to a room.          Args:             player_id: The player's** (1 connections) — `server/realtime/room_subscription_manager.py`
+- **Unsubscribe a player from a room.          Args:             player_id: The play** (1 connections) — `server/realtime/room_subscription_manager.py`
+- **Get all players subscribed to a room.          Args:             room_id: The ro** (1 connections) — `server/realtime/room_subscription_manager.py`
+- *... and 16 more nodes in this community*
 
 ## Relationships
 
-- [NATS Messaging](NATS_Messaging.md) (7 shared connections)
-- [connection disconnection realtime](connection_disconnection_realtime.md) (4 shared connections)
-- [room subscription manager](room_subscription_manager.md) (3 shared connections)
-- [realtime messaging message](realtime_messaging_message.md) (2 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (2 shared connections)
-- [room subscription realtime](room_subscription_realtime.md) (2 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (2 shared connections)
-- [grace period disconnect](grace_period_disconnect.md) (1 shared connections)
-- [infrastructure persistence room](infrastructure_persistence_room.md) (1 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (20 shared connections)
+- [commands npc admin](commands_npc_admin.md) (2 shared connections)
 
 ## Source Files
 
-- `server/realtime/messaging/message_broadcaster.py`
 - `server/realtime/room_subscription_manager.py`
-- `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
 
 ## Audit Trail
 
-- EXTRACTED: 225 (99%)
-- INFERRED: 3 (1%)
+- EXTRACTED: 124 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

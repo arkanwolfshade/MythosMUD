@@ -1,63 +1,64 @@
 # game models stats
 
-> 95 nodes
+> 100 nodes
 
 ## Key Concepts
 
-- **Stats** (80 connections) — `server/models/game.py`
-- **test_game_stats_methods.py** (31 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **AttributeType** (8 connections) — `server/models/game.py`
-- **generate_random_stats()** (6 connections) — `server/game/stats_generator.py`
-- **.validate_current_vs_max_stats()** (5 connections) — `server/models/game.py`
-- **.__init__()** (4 connections) — `server/models/game.py`
-- **._calculate_max_magic_points()** (4 connections) — `server/models/game.py`
-- **._calculate_max_lucidity()** (4 connections) — `server/models/game.py`
-- **test_create_player_with_stats_character_limit()** (4 connections) — `server/tests/unit/game/test_player_service.py`
-- **test_create_player_with_stats_name_exists()** (4 connections) — `server/tests/unit/game/test_player_service.py`
-- **StrEnum** (3 connections)
-- **._compute_max_dp_if_missing()** (3 connections) — `server/models/game.py`
-- **.max_magic_points()** (3 connections) — `server/models/game.py`
-- **.max_lucidity()** (3 connections) — `server/models/game.py`
-- **._calculate_max_dp()** (3 connections) — `server/models/game.py`
-- **.get_attribute_modifier()** (3 connections) — `server/models/game.py`
-- **test_create_player_with_stats_success()** (3 connections) — `server/tests/unit/game/test_player_service.py`
-- **test_stats_validate_current_vs_max_stats_caps_dp()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_validate_current_vs_max_stats_caps_magic_points()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_validate_current_vs_max_stats_caps_lucidity()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_validate_current_vs_max_stats_allows_valid_values()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_get_attribute_modifier_negative()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_get_attribute_modifier_zero()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_get_attribute_modifier_different_attribute()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_max_dp_calculation()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- *... and 70 more nodes in this community*
+- **__init__.py** (38 connections) — `server/schemas/players/__init__.py`
+- **player_effects.py** (30 connections) — `server/api/player_effects.py`
+- **test_player_requests.py** (29 connections) — `server/tests/unit/schemas/test_player_requests.py`
+- **test_player_effects_endpoints.py** (28 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
+- **RollStatsRequest** (20 connections) — `server/schemas/players/player_requests.py`
+- **CreateCharacterRequest** (17 connections) — `server/schemas/players/player_requests.py`
+- **player_requests.py** (14 connections) — `server/schemas/players/player_requests.py`
+- **apply_lucidity_loss()** (12 connections) — `server/api/player_effects.py`
+- **EffectResponse** (12 connections) — `server/schemas/players/player_effects.py`
+- **LucidityLossRequest** (12 connections) — `server/schemas/players/player_requests.py`
+- **DamageRequest** (12 connections) — `server/schemas/players/player_requests.py`
+- **apply_fear()** (11 connections) — `server/api/player_effects.py`
+- **apply_corruption()** (11 connections) — `server/api/player_effects.py`
+- **gain_occult_knowledge()** (11 connections) — `server/api/player_effects.py`
+- **heal_player()** (11 connections) — `server/api/player_effects.py`
+- **damage_player()** (11 connections) — `server/api/player_effects.py`
+- **BaseModel** (11 connections)
+- **FearRequest** (11 connections) — `server/schemas/players/player_requests.py`
+- **CorruptionRequest** (11 connections) — `server/schemas/players/player_requests.py`
+- **OccultKnowledgeRequest** (11 connections) — `server/schemas/players/player_requests.py`
+- **HealRequest** (11 connections) — `server/schemas/players/player_requests.py`
+- **SelectCharacterRequest** (8 connections) — `server/schemas/players/player_requests.py`
+- **_user()** (8 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
+- **UUID** (7 connections)
+- **FastAPIRequest** (6 connections)
+- *... and 75 more nodes in this community*
 
 ## Relationships
 
-- [game models player](game_models_player.md) (11 shared connections)
-- [character creation service](character_creation_service.md) (8 shared connections)
-- [character creation validate](character_creation_validate.md) (7 shared connections)
-- [Player Stats](Player_Stats.md) (6 shared connections)
-- [player service game](player_service_game.md) (4 shared connections)
-- [world models rationale](world_models_rationale.md) (3 shared connections)
-- [command inventory factories](command_inventory_factories.md) (3 shared connections)
-- [game weapon player](game_weapon_player.md) (3 shared connections)
-- [combat schemas schema](combat_schemas_schema.md) (2 shared connections)
-- [stats game generator](stats_game_generator.md) (1 shared connections)
-- [spell models rationale](spell_models_rationale.md) (1 shared connections)
-- [memory profiler rationale](memory_profiler_rationale.md) (1 shared connections)
+- [profession game service](profession_game_service.md) (20 shared connections)
+- [command inventory models](command_inventory_models.md) (18 shared connections)
+- [command inventory factories](command_inventory_factories.md) (16 shared connections)
+- [Exception Containers](Exception_Containers.md) (12 shared connections)
+- [logging file setup](logging_file_setup.md) (7 shared connections)
+- [ascii map renderer](ascii_map_renderer.md) (7 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (4 shared connections)
+- [Database Config](Database_Config.md) (2 shared connections)
+- [admin auth service](admin_auth_service.md) (2 shared connections)
+- [room game service](room_game_service.md) (2 shared connections)
+- [schemas unified room](schemas_unified_room.md) (2 shared connections)
+- [auth users rationale](auth_users_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/stats_generator.py`
-- `server/models/game.py`
-- `server/tests/unit/api/test_character_creation.py`
-- `server/tests/unit/game/test_player_service.py`
-- `server/tests/unit/models/test_game_stats_methods.py`
+- `server/api/player_effects.py`
+- `server/schemas/players/__init__.py`
+- `server/schemas/players/player_effects.py`
+- `server/schemas/players/player_requests.py`
+- `server/tests/unit/api/test_player_effects_endpoints.py`
+- `server/tests/unit/schemas/test_player_requests.py`
 
 ## Audit Trail
 
-- EXTRACTED: 299 (97%)
-- INFERRED: 9 (3%)
+- EXTRACTED: 505 (98%)
+- INFERRED: 8 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

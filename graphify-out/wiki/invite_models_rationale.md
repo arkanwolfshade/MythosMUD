@@ -1,38 +1,42 @@
 # invite models rationale
 
-> 11 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **Any** (7 connections)
-- **_update_player_status_effects()** (7 connections) — `server/app/game_tick_processing.py`
-- **_cleanup_single_decayed_corpse()** (6 connections) — `server/app/game_tick_processing.py`
-- **_process_single_player_mp_regeneration()** (5 connections) — `server/app/game_tick_processing.py`
-- **test_update_player_status_effects_no_changes()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_update_player_status_effects_changes()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **Update and save player status effects if changes occurred.      Returns:** (1 connections) — `server/app/game_tick_processing.py`
-- **Process MP regeneration for a single player.      Args:         mp_service: MP r** (1 connections) — `server/app/game_tick_processing.py`
-- **Cleanup a single decayed corpse.      Args:         corpse_service: Corpse lifec** (1 connections) — `server/app/game_tick_processing.py`
-- **Test _update_player_status_effects() when no changes occurred.** (1 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **Test _update_player_status_effects() when changes occurred.** (1 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
+- **GameConfig** (15 connections) — `server/config/models/game.py`
+- **.validate_max_connections()** (2 connections) — `server/config/models/game.py`
+- **.validate_aliases_dir()** (2 connections) — `server/config/models/game.py`
+- **.validate_combat_tick_interval()** (2 connections) — `server/config/models/game.py`
+- **.validate_combat_timeout()** (2 connections) — `server/config/models/game.py`
+- **.validate_combat_xp_multiplier()** (2 connections) — `server/config/models/game.py`
+- **.validate_combat_alert_threshold()** (2 connections) — `server/config/models/game.py`
+- **.validate_combat_performance_threshold()** (2 connections) — `server/config/models/game.py`
+- **.validate_combat_error_threshold()** (2 connections) — `server/config/models/game.py`
+- **BaseSettings** (1 connections)
+- **Game-specific configuration.** (1 connections) — `server/config/models/game.py`
+- **Validate max connections is reasonable.** (1 connections) — `server/config/models/game.py`
+- **Validate aliases directory path.** (1 connections) — `server/config/models/game.py`
+- **Validate combat tick interval.** (1 connections) — `server/config/models/game.py`
+- **Validate combat timeout.** (1 connections) — `server/config/models/game.py`
+- **Validate combat XP multiplier.** (1 connections) — `server/config/models/game.py`
+- **Validate combat alert threshold.** (1 connections) — `server/config/models/game.py`
+- **Validate combat performance threshold.** (1 connections) — `server/config/models/game.py`
+- **Validate combat error threshold.** (1 connections) — `server/config/models/game.py`
 
 ## Relationships
 
-- [auth endpoints rationale](auth_endpoints_rationale.md) (7 shared connections)
-- [tick game processing](tick_game_processing.md) (6 shared connections)
-- [combat services service](combat_services_service.md) (1 shared connections)
-- [container events rationale](container_events_rationale.md) (1 shared connections)
-- [Item Instances](Item_Instances.md) (1 shared connections)
+- [command inventory factories](command_inventory_factories.md) (3 shared connections)
+- [player event handlers](player_event_handlers.md) (2 shared connections)
 
 ## Source Files
 
-- `server/app/game_tick_processing.py`
-- `server/tests/unit/app/test_game_tick_processing_async.py`
+- `server/config/models/game.py`
 
 ## Audit Trail
 
-- EXTRACTED: 36 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 40 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

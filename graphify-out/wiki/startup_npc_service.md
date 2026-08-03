@@ -29,10 +29,11 @@
 
 ## Relationships
 
-- [startup npc services](startup_npc_services.md) (18 shared connections)
+- [player respawn event](player_respawn_event.md) (18 shared connections)
 - [services npc startup](services_npc_startup.md) (11 shared connections)
 - [startup services npc](startup_services_npc.md) (6 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (2 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
+- [Magic Spell Service](Magic_Spell_Service.md) (1 shared connections)
 
 ## Source Files
 

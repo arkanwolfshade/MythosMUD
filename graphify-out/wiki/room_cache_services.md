@@ -1,52 +1,52 @@
 # room cache services
 
-> 60 nodes
+> 40 nodes
 
 ## Key Concepts
 
-- **RoomDataCache** (40 connections) — `server/services/room_data_cache.py`
-- **TestRoomDataCache** (28 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- **test_room_data_cache.py** (4 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- **.test_init_default_threshold()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- **.test_init_custom_threshold()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- **.test_is_room_data_fresh_fresh()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- **.test_is_room_data_fresh_stale()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- **.test_is_room_data_fresh_no_timestamp()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- **.test_is_room_data_fresh_custom_threshold()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- **.test_is_room_data_fresh_exactly_at_threshold()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- **.test_is_room_data_fresh_invalid_input()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- **.test_get_cache_not_found()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- **.test_get_cache_found()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- **.test_set_cache()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- **.test_set_cache_overwrites()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- **.test_clear_cache_specific_room()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- **.test_clear_cache_all()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- **.test_clear_cache_nonexistent_room()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- **.test_get_cache_stats_empty()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- **.test_get_cache_stats_with_fresh_and_stale()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- **.test_merge_room_data_newer_timestamp()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- **.test_merge_room_data_older_timestamp()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- **.test_merge_room_data_new_field()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- **.test_merge_room_data_preserves_old_data()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- **.test_merge_room_data_invalid_input()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- *... and 35 more nodes in this community*
+- **MonitoringDashboard** (31 connections) — `server/monitoring/monitoring_dashboard.py`
+- **Alert** (12 connections) — `server/monitoring/monitoring_dashboard.py`
+- **.get_system_health()** (11 connections) — `server/monitoring/monitoring_dashboard.py`
+- **.record_custom_alert()** (10 connections) — `server/monitoring/monitoring_dashboard.py`
+- **.get_monitoring_summary()** (6 connections) — `server/monitoring/monitoring_dashboard.py`
+- **.check_alerts()** (6 connections) — `server/monitoring/monitoring_dashboard.py`
+- **Any** (6 connections)
+- **.record_registry_failure()** (5 connections) — `server/monitoring/monitoring_dashboard.py`
+- **.record_summon_quantity_spike()** (5 connections) — `server/monitoring/monitoring_dashboard.py`
+- **.record_durability_anomaly()** (5 connections) — `server/monitoring/monitoring_dashboard.py`
+- **.export_monitoring_data()** (5 connections) — `server/monitoring/monitoring_dashboard.py`
+- **._get_memory_leak_metrics()** (5 connections) — `server/monitoring/monitoring_dashboard.py`
+- **._calculate_performance_score()** (4 connections) — `server/monitoring/monitoring_dashboard.py`
+- **.resolve_alert()** (3 connections) — `server/monitoring/monitoring_dashboard.py`
+- **.get_alert_history()** (3 connections) — `server/monitoring/monitoring_dashboard.py`
+- **._determine_health_status()** (3 connections) — `server/monitoring/monitoring_dashboard.py`
+- **._get_active_users()** (3 connections) — `server/monitoring/monitoring_dashboard.py`
+- **._get_system_load()** (3 connections) — `server/monitoring/monitoring_dashboard.py`
+- **._get_memory_usage()** (3 connections) — `server/monitoring/monitoring_dashboard.py`
+- **._get_disk_usage()** (3 connections) — `server/monitoring/monitoring_dashboard.py`
+- **PerformanceStats** (2 connections)
+- **Represents a system alert.** (1 connections) — `server/monitoring/monitoring_dashboard.py`
+- **Comprehensive monitoring dashboard system.      This class provides a centralize** (1 connections) — `server/monitoring/monitoring_dashboard.py`
+- **Get overall system health status.          Returns:             Current system h** (1 connections) — `server/monitoring/monitoring_dashboard.py`
+- **Get comprehensive monitoring summary.          Returns:             Complete mon** (1 connections) — `server/monitoring/monitoring_dashboard.py`
+- *... and 15 more nodes in this community*
 
 ## Relationships
 
-- [room cache services](room_cache_services.md) (6 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (3 shared connections)
-- [room service sync](room_service_sync.md) (1 shared connections)
-- [room sync service](room_sync_service.md) (1 shared connections)
+- [command inventory factories](command_inventory_factories.md) (19 shared connections)
+- [Error Conversion](Error_Conversion.md) (3 shared connections)
+- [command combat models](command_combat_models.md) (2 shared connections)
+- [container helpers endpoints](container_helpers_endpoints.md) (2 shared connections)
+- [System Metrics](System_Metrics.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/room_data_cache.py`
-- `server/tests/unit/services/test_room_data_cache.py`
+- `server/monitoring/monitoring_dashboard.py`
 
 ## Audit Trail
 
-- EXTRACTED: 178 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 138 (90%)
+- INFERRED: 15 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

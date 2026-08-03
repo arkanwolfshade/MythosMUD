@@ -4,26 +4,25 @@
 
 ## Key Concepts
 
-- **.create_learn_command()** (7 connections) — `server/utils/command_factories_utility.py`
-- **test_create_learn_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
-- **test_create_learn_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
-- **test_create_learn_command_multi_word()** (3 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
-- **Test create_learn_command() creates LearnCommand.** (1 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
-- **Test create_learn_command() raises error with no args.** (1 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
-- **Test create_learn_command() with multi-word spell name.** (1 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
-- **Create LearnCommand from arguments.** (1 connections) — `server/utils/command_factories_utility.py`
+- **_send_combat_participant_updates()** (8 connections) — `server/realtime/event_handlers.py`
+- **_participant_key_strings()** (3 connections) — `server/realtime/event_handlers.py`
+- **.handle_combat_started_event()** (3 connections) — `server/realtime/event_handlers.py`
+- **.handle_combat_ended_event()** (3 connections) — `server/realtime/event_handlers.py`
+- **Keys from a participants mapping (NATS may send dict-like payloads).** (1 connections) — `server/realtime/event_handlers.py`
+- **Push player_update to each combat participant (in_combat flag).** (1 connections) — `server/realtime/event_handlers.py`
+- **Handle combat_started event.** (1 connections) — `server/realtime/event_handlers.py`
+- **Handle combat_ended event.** (1 connections) — `server/realtime/event_handlers.py`
 
 ## Relationships
 
-- [exceptions rationale error](exceptions_rationale_error.md) (3 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [Spell Validation](Spell_Validation.md) (1 shared connections)
-- [auth dependencies rationale](auth_dependencies_rationale.md) (1 shared connections)
+- [circuit breaker realtime](circuit_breaker_realtime.md) (4 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (1 shared connections)
+- [combat services messaging](combat_services_messaging.md) (1 shared connections)
+- [nats exceptions services](nats_exceptions_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories_utility.py`
-- `server/utils/command_factories_utility.py`
+- `server/realtime/event_handlers.py`
 
 ## Audit Trail
 

@@ -163,7 +163,9 @@ def get_auth_backend() -> AuthenticationBackend[User, uuid.UUID]:
     )
 
 
-class UsernameAuthenticationBackend(AuthenticationBackend[User, uuid.UUID]):
+class UsernameAuthenticationBackend(  # pylint: disable=too-few-public-methods  # Reason: Thin override of FastAPI Users backend
+    AuthenticationBackend[User, uuid.UUID]
+):
     """Custom authentication backend that uses username instead of email."""
 
     @override

@@ -1,63 +1,64 @@
 # grace period login
 
-> 96 nodes
+> 73 nodes
 
 ## Key Concepts
 
-- **is_player_in_login_grace_period()** (52 connections) — `server/realtime/login_grace_period.py`
-- **start_login_grace_period()** (42 connections) — `server/realtime/login_grace_period.py`
-- **login_grace_period.py** (32 connections) — `server/realtime/login_grace_period.py`
-- **test_login_grace_period.py** (24 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
-- **get_login_grace_period_remaining()** (21 connections) — `server/realtime/login_grace_period.py`
-- **test_login_grace_period_flow.py** (18 connections) — `server/tests/integration/test_login_grace_period_flow.py`
-- **cancel_login_grace_period()** (13 connections) — `server/realtime/login_grace_period.py`
-- **_grace_period_expiration_handler()** (11 connections) — `server/realtime/login_grace_period.py`
-- **test_combat_grace_period.py** (11 connections) — `server/tests/unit/commands/test_combat_grace_period.py`
-- **UUID** (9 connections)
-- **Any** (8 connections)
-- **_remove_from_grace_period_tracking()** (7 connections) — `server/realtime/login_grace_period.py`
-- **_grace_period_task()** (7 connections) — `server/realtime/login_grace_period.py`
-- **test_warded_indicator_removed_after_expiration()** (6 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
-- **_trigger_room_occupants_update()** (5 connections) — `server/realtime/login_grace_period.py`
-- **test_grace_period_expires_after_duration()** (5 connections) — `server/tests/integration/test_login_grace_period_flow.py`
-- **test_multiple_players_independent_grace_periods()** (5 connections) — `server/tests/integration/test_login_grace_period_flow.py`
-- **test_grace_period_can_be_cancelled()** (5 connections) — `server/tests/integration/test_login_grace_period_flow.py`
-- **test_effect_based_grace_start_then_tick_expiration_clears_in_memory()** (5 connections) — `server/tests/integration/test_login_grace_period_flow.py`
-- **test_warded_indicator_in_game_state_provider()** (5 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
-- **test_start_grace_period_removes_from_combat()** (4 connections) — `server/tests/integration/test_login_grace_period_flow.py`
-- **test_grace_period_blocks_combat_initiation()** (4 connections) — `server/tests/integration/test_login_grace_period_flow.py`
-- **test_grace_period_remaining_time_decreases()** (4 connections) — `server/tests/integration/test_login_grace_period_flow.py`
-- **test_grace_period_start_time_tracking()** (4 connections) — `server/tests/integration/test_login_grace_period_flow.py`
-- **test_attack_command_blocked_during_grace_period()** (4 connections) — `server/tests/unit/commands/test_combat_grace_period.py`
-- *... and 71 more nodes in this community*
+- **test_health.py** (27 connections) — `server/tests/unit/models/test_health.py`
+- **DatabaseComponent** (24 connections) — `server/models/health.py`
+- **ServerComponent** (23 connections) — `server/models/health.py`
+- **ConnectionsComponent** (22 connections) — `server/models/health.py`
+- **HealthComponents** (21 connections) — `server/models/health.py`
+- **health_service.py** (20 connections) — `server/services/health_service.py`
+- **HealthResponse** (17 connections) — `server/models/health.py`
+- **health.py** (14 connections) — `server/models/health.py`
+- **get_health_status()** (12 connections) — `server/api/monitoring.py`
+- **HealthStatus** (11 connections) — `server/models/health.py`
+- **HealthErrorResponse** (10 connections) — `server/models/health.py`
+- **test_get_health_status_healthy_returns_model()** (7 connections) — `server/tests/unit/api/test_monitoring_endpoints.py`
+- **test_health_components_rejects_extra_fields()** (7 connections) — `server/tests/unit/models/test_health.py`
+- **test_health_response_creation()** (7 connections) — `server/tests/unit/models/test_health.py`
+- **test_health_response_with_alerts()** (7 connections) — `server/tests/unit/models/test_health.py`
+- **test_health_response_default_alerts()** (7 connections) — `server/tests/unit/models/test_health.py`
+- **BaseModel** (6 connections)
+- **test_health_components_creation()** (6 connections) — `server/tests/unit/models/test_health.py`
+- **test_generate_alerts_no_alerts()** (6 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_generate_alerts_with_alerts()** (6 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_determine_overall_status_healthy()** (6 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_determine_overall_status_degraded()** (6 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_determine_overall_status_unhealthy()** (6 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_get_health_status_version_fallback()** (5 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_server_component_rejects_extra_fields()** (4 connections) — `server/tests/unit/models/test_health.py`
+- *... and 48 more nodes in this community*
 
 ## Relationships
 
-- [grace period disconnect](grace_period_disconnect.md) (18 shared connections)
-- [Item Instances](Item_Instances.md) (11 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (8 shared connections)
-- [Player Stats](Player_Stats.md) (7 shared connections)
-- [auth endpoints rationale](auth_endpoints_rationale.md) (7 shared connections)
-- [realtime game state](realtime_game_state.md) (5 shared connections)
-- [npc combat services](npc_combat_services.md) (4 shared connections)
-- [combat commands handler](combat_commands_handler.md) (4 shared connections)
-- [look helpers commands](look_helpers_commands.md) (3 shared connections)
-- [room look commands](room_look_commands.md) (3 shared connections)
-- [game models player](game_models_player.md) (3 shared connections)
-- [realtime player connection](realtime_player_connection.md) (3 shared connections)
+- [player look commands](player_look_commands.md) (15 shared connections)
+- [health models rationale](health_models_rationale.md) (11 shared connections)
+- [persistence container extended](persistence_container_extended.md) (9 shared connections)
+- [command combat models](command_combat_models.md) (8 shared connections)
+- [command inventory models](command_inventory_models.md) (7 shared connections)
+- [memory profiler rationale](memory_profiler_rationale.md) (5 shared connections)
+- [world models rationale](world_models_rationale.md) (4 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (2 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
+- [Exception Containers](Exception_Containers.md) (1 shared connections)
+- [time service rationale](time_service_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/login_grace_period.py`
-- `server/tests/integration/test_login_grace_period_flow.py`
-- `server/tests/unit/commands/test_combat_grace_period.py`
-- `server/tests/unit/realtime/test_login_grace_period.py`
-- `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
+- `server/api/monitoring.py`
+- `server/models/health.py`
+- `server/services/health_service.py`
+- `server/tests/unit/api/test_monitoring_endpoints.py`
+- `server/tests/unit/models/test_health.py`
+- `server/tests/unit/services/test_health_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 422 (99%)
-- INFERRED: 3 (1%)
+- EXTRACTED: 350 (97%)
+- INFERRED: 12 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

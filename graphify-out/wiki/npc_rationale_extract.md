@@ -1,61 +1,53 @@
 # npc rationale extract
 
-> 35 nodes
+> 48 nodes
 
 ## Key Concepts
 
-- **useMythosAppState.ts** (28 connections) — `client/src/mythosApp/useMythosAppState.ts`
-- **1774539086359-useMythosAppState.ts** (24 connections) — `client/src/mythosApp/1774539086359-useMythosAppState.ts`
-- **useAuthSessionRestore.ts** (15 connections) — `client/src/mythosApp/useAuthSessionRestore.ts`
-- **mythosAppViewModelFactory.ts** (12 connections) — `client/src/mythosApp/mythosAppViewModelFactory.ts`
-- **useMythosApp.tsx** (9 connections) — `client/src/mythosApp/useMythosApp.tsx`
-- **useMythosAppState()** (9 connections) — `client/src/mythosApp/useMythosAppState.ts`
-- **useAuthSessionRestore()** (7 connections) — `client/src/mythosApp/useAuthSessionRestore.ts`
-- **useMythosApp()** (6 connections) — `client/src/mythosApp/useMythosApp.tsx`
-- **useReducerStateSlices()** (5 connections) — `client/src/mythosApp/1774539086359-useMythosAppState.ts`
-- **restoreCharactersOnMount()** (5 connections) — `client/src/mythosApp/characterSessionApi.ts`
-- **buildMythosAppViewModel()** (5 connections) — `client/src/mythosApp/mythosAppViewModelFactory.ts`
-- **useReducerStateSlices()** (5 connections) — `client/src/mythosApp/useMythosAppState.ts`
-- **useMythosAppState()** (4 connections) — `client/src/mythosApp/1774539086359-useMythosAppState.ts`
-- **useMythosAppState.test.ts** (3 connections) — `client/src/mythosApp/__tests__/useMythosAppState.test.ts`
-- **AuthSlice** (2 connections) — `client/src/mythosApp/1774539086359-useMythosAppState.ts`
-- **authSliceReducer()** (2 connections) — `client/src/mythosApp/1774539086359-useMythosAppState.ts`
-- **creationSliceReducer()** (2 connections) — `client/src/mythosApp/1774539086359-useMythosAppState.ts`
-- **resolveNextState()** (2 connections) — `client/src/mythosApp/1774539086359-useMythosAppState.ts`
-- **buildStateViewModel()** (2 connections) — `client/src/mythosApp/mythosAppViewModelFactory.ts`
-- **buildActionViewModel()** (2 connections) — `client/src/mythosApp/mythosAppViewModelFactory.ts`
-- **applyRestoredCharacters()** (2 connections) — `client/src/mythosApp/useAuthSessionRestore.ts`
-- **AuthSlice** (2 connections) — `client/src/mythosApp/useMythosAppState.ts`
-- **authSliceReducer()** (2 connections) — `client/src/mythosApp/useMythosAppState.ts`
-- **creationSliceReducer()** (2 connections) — `client/src/mythosApp/useMythosAppState.ts`
-- **resolveNextState()** (2 connections) — `client/src/mythosApp/useMythosAppState.ts`
-- *... and 10 more nodes in this community*
+- **command_input.py** (14 connections) — `server/command_handler/command_input.py`
+- **normalize_command()** (12 connections) — `server/command_handler/command_input.py`
+- **TestCommandNormalization** (12 connections) — `server/tests/unit/commands/test_command_input.py`
+- **clean_command_input()** (10 connections) — `server/command_handler/command_input.py`
+- **should_treat_as_emote()** (10 connections) — `server/command_handler/command_input.py`
+- **_is_predefined_emote()** (8 connections) — `server/command_handler/command_input.py`
+- **test_command_input.py** (8 connections) — `server/tests/unit/commands/test_command_input.py`
+- **TestEmoteDetection** (8 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_clean_command_input_basic()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_clean_command_input_multiple_spaces()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_clean_command_input_leading_trailing_whitespace()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_clean_command_input_tabs()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_normalize_command_no_slash()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_normalize_command_with_slash()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_normalize_command_empty()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_normalize_command_whitespace_only()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_normalize_command_slash_only()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_normalize_command_slash_with_spaces()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_is_predefined_emote_true()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_is_predefined_emote_false()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_is_predefined_emote_handles_error()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_should_treat_as_emote_system_command()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_should_treat_as_emote_unknown_word()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_should_treat_as_emote_predefined_emote()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
+- **Command Input Utilities for MythosMUD.  This module provides utilities for clean** (1 connections) — `server/command_handler/command_input.py`
+- *... and 23 more nodes in this community*
 
 ## Relationships
 
-- [mythosApp CharacterSelectionScreen chara](mythosApp_CharacterSelectionScreen_chara.md) (24 shared connections)
-- [mythosApp useMythosAppState useStatsRoll](mythosApp_useMythosAppState_useStatsRoll.md) (10 shared connections)
-- [zone configuration npc](zone_configuration_npc.md) (6 shared connections)
-- [memoryMonitor memoryLeakDetector constru](memoryMonitor_memoryLeakDetector_constru.md) (4 shared connections)
-- [mythosApp appLazyScreens mythosAppViewMo](mythosApp_appLazyScreens_mythosAppViewMo.md) (4 shared connections)
-- [mythosApp security submitAuth](mythosApp_security_submitAuth.md) (4 shared connections)
-- [App helpers professionSystemErrorHandlin](App_helpers_professionSystemErrorHandlin.md) (2 shared connections)
-- [apiTypeGuards FIELDS SHARED](apiTypeGuards_FIELDS_SHARED.md) (1 shared connections)
+- [command commands handler](command_commands_handler.md) (6 shared connections)
+- [command validation commands](command_validation_commands.md) (4 shared connections)
+- [command inventory factories](command_inventory_factories.md) (4 shared connections)
+- [commands admin mute](commands_admin_mute.md) (3 shared connections)
+- [Item Instances](Item_Instances.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/mythosApp/1774539086359-useMythosAppState.ts`
-- `client/src/mythosApp/__tests__/useMythosAppState.test.ts`
-- `client/src/mythosApp/characterSessionApi.ts`
-- `client/src/mythosApp/mythosAppViewModelFactory.ts`
-- `client/src/mythosApp/useAuthSessionRestore.ts`
-- `client/src/mythosApp/useMythosApp.tsx`
-- `client/src/mythosApp/useMythosAppState.ts`
+- `server/command_handler/command_input.py`
+- `server/tests/unit/commands/test_command_input.py`
 
 ## Audit Trail
 
-- EXTRACTED: 160 (95%)
-- INFERRED: 9 (5%)
+- EXTRACTED: 154 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

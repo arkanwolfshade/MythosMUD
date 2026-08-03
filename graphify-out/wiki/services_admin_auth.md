@@ -1,50 +1,39 @@
 # services admin auth
 
-> 35 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **AdminAuthService** (19 connections) — `server/services/admin_auth_service.py`
-- **.validate_permission()** (12 connections) — `server/services/admin_auth_service.py`
-- **AdminRole** (7 connections) — `server/services/admin_auth_service.py`
-- **AdminSession** (6 connections) — `server/services/admin_auth_service.py`
-- **Any** (6 connections)
-- **._update_session()** (6 connections) — `server/services/admin_auth_service.py`
-- **.get_user_role()** (5 connections) — `server/services/admin_auth_service.py`
-- **._has_permission()** (5 connections) — `server/services/admin_auth_service.py`
-- **._log_audit_event()** (5 connections) — `server/services/admin_auth_service.py`
-- **.get_username()** (4 connections) — `server/services/admin_auth_service.py`
-- **.get_user_id()** (4 connections) — `server/services/admin_auth_service.py`
-- **Request** (4 connections)
-- **._check_rate_limit()** (4 connections) — `server/services/admin_auth_service.py`
-- **.get_active_sessions()** (3 connections) — `server/services/admin_auth_service.py`
-- **.get_audit_log()** (3 connections) — `server/services/admin_auth_service.py`
-- **test_admin_session_init()** (3 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **.__init__()** (2 connections) — `server/services/admin_auth_service.py`
-- **.__init__()** (2 connections) — `server/services/admin_auth_service.py`
-- **.cleanup_expired_sessions()** (2 connections) — `server/services/admin_auth_service.py`
-- **Enumeration of admin roles.** (1 connections) — `server/services/admin_auth_service.py`
-- **Represents an admin session.** (1 connections) — `server/services/admin_auth_service.py`
-- **Service for admin authentication and authorization.** (1 connections) — `server/services/admin_auth_service.py`
-- **Initialize the admin auth service.** (1 connections) — `server/services/admin_auth_service.py`
-- **Determine the admin role for a user.          Args:             current_user: Th** (1 connections) — `server/services/admin_auth_service.py`
-- **Safely get username from current user object.** (1 connections) — `server/services/admin_auth_service.py`
-- *... and 10 more nodes in this community*
+- **._get_alias_file_path()** (8 connections) — `server/alias_storage.py`
+- **._validate_alias_payload()** (7 connections) — `server/alias_storage.py`
+- **._load_alias_data()** (6 connections) — `server/alias_storage.py`
+- **._save_alias_data()** (6 connections) — `server/alias_storage.py`
+- **Path** (4 connections)
+- **.backup_aliases()** (4 connections) — `server/alias_storage.py`
+- **Any** (3 connections)
+- **.delete_player_aliases()** (3 connections) — `server/alias_storage.py`
+- **.__init__()** (2 connections) — `server/alias_storage.py`
+- **Get the file path for a player's aliases.          Human: reject path separators** (1 connections) — `server/alias_storage.py`
+- **Load alias data from JSON file.** (1 connections) — `server/alias_storage.py`
+- **Save alias data to JSON file.** (1 connections) — `server/alias_storage.py`
+- **Delete a player's alias file.** (1 connections) — `server/alias_storage.py`
+- **Create a backup of a player's aliases.** (1 connections) — `server/alias_storage.py`
+- **Validate alias payload against the shared schema when available.          Args:** (1 connections) — `server/alias_storage.py`
 
 ## Relationships
 
-- [admin auth service](admin_auth_service.md) (13 shared connections)
-- [container helpers endpoints](container_helpers_endpoints.md) (1 shared connections)
+- [commands admin mute](commands_admin_mute.md) (8 shared connections)
+- [taunt combat commands](taunt_combat_commands.md) (2 shared connections)
+- [command models moderation](command_models_moderation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/admin_auth_service.py`
-- `server/tests/unit/services/test_admin_auth_service.py`
+- `server/alias_storage.py`
 
 ## Audit Trail
 
-- EXTRACTED: 117 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 49 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

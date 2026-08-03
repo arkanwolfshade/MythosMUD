@@ -33,7 +33,8 @@
 
 ## Relationships
 
-- [health models rationale](health_models_rationale.md) (3 shared connections)
+- [command combat models](command_combat_models.md) (2 shared connections)
+- [time service rationale](time_service_rationale.md) (1 shared connections)
 
 ## Source Files
 

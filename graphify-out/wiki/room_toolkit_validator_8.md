@@ -20,7 +20,7 @@
 
 - [room toolkit validator](room_toolkit_validator.md) (6 shared connections)
 - [room hierarchy schema](room_hierarchy_schema.md) (1 shared connections)
-- [tsconfig build {ts,tsx}](tsconfig_build_%7Bts%2Ctsx%7D.md) (1 shared connections)
+- [npc populate databases](npc_populate_databases.md) (1 shared connections)
 
 ## Source Files
 

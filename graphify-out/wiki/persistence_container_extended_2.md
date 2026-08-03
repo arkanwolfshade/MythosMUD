@@ -1,49 +1,50 @@
 # persistence container extended
 
-> 28 nodes
+> 36 nodes
 
 ## Key Concepts
 
-- **TestCombatConfiguration** (19 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_init_defaults()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_init_custom_values()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_to_dict()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_from_dict()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_validate_valid()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_validate_invalid_tick_interval_too_low()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_validate_invalid_tick_interval_too_high()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_validate_invalid_timeout_too_low()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_validate_invalid_timeout_too_high()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_validate_invalid_xp_multiplier_too_low()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_validate_invalid_xp_multiplier_too_high()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_validate_invalid_alert_threshold()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_validate_invalid_max_participants()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **Test suite for CombatConfiguration dataclass.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **Test CombatConfiguration initialization with defaults.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **Test CombatConfiguration initialization with custom values.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **Test to_dict converts configuration to dictionary.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **Test from_dict creates configuration from dictionary.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **Test validate returns empty list for valid configuration.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **Test validate catches tick interval too low.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **Test validate catches tick interval too high.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **Test validate catches timeout too low.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **Test validate catches timeout too high.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **Test validate catches XP multiplier too low.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- *... and 3 more nodes in this community*
+- **test_container_persistence_extended_parse.py** (26 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_parse_jsonb_column_empty_list()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_parse_jsonb_column_empty_dict()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_parse_jsonb_column_string_list()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_parse_jsonb_column_string_dict()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_parse_jsonb_column_with_default()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_parse_jsonb_column_falsy_value()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_parse_jsonb_column_falsy_empty_string()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_parse_jsonb_column_falsy_empty_list()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_parse_jsonb_column_falsy_empty_dict()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_fetch_container_items_success()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_fetch_container_items_empty()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_fetch_container_items_missing_item_instance_id()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_fetch_container_items_non_dict_row()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_fetch_container_items_string_metadata()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_fetch_container_items_invalid_json_metadata()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_fetch_container_items_non_dict_metadata()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_fetch_container_items_missing_fields()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **Unit tests for container persistence: JSONB parsing, item fetch, and ContainerDa** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **Test parsing empty list JSONB column.** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **Test parsing empty dict JSONB column.** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **Test parsing string JSONB column containing list.** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **Test parsing string JSONB column containing dict.** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **Test parsing JSONB column with custom default.** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **Test parsing falsy but non-None value.** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
-- [combat configuration service](combat_configuration_service.md) (15 shared connections)
-- [npc combat service](npc_combat_service.md) (3 shared connections)
+- [Database Config](Database_Config.md) (17 shared connections)
+- [auth endpoints rationale](auth_endpoints_rationale.md) (7 shared connections)
+- [persistence container item](persistence_container_item.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_configuration_service.py`
+- `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
 
 ## Audit Trail
 
-- EXTRACTED: 68 (94%)
-- INFERRED: 4 (6%)
+- EXTRACTED: 78 (82%)
+- INFERRED: 17 (18%)
 - AMBIGUOUS: 0 (0%)
 
 ---

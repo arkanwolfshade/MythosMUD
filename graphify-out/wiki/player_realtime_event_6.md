@@ -4,20 +4,20 @@
 
 ## Key Concepts
 
-- **test_log_player_movement_no_room()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **Test log_player_movement() handles room not found.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_combat_audit_logger_log_combat_start_with_timestamp()** (3 connections) — `server/tests/unit/structured_logging/test_combat_audit.py`
+- **Test CombatAuditLogger.log_combat_start() uses provided timestamp.** (1 connections) — `server/tests/unit/structured_logging/test_combat_audit.py`
 
 ## Relationships
 
-- [player room event](player_room_event.md) (1 shared connections)
+- [combat audit structured](combat_audit_structured.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- `server/tests/unit/structured_logging/test_combat_audit.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

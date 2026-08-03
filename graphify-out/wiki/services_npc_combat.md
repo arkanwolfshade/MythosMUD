@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_unregister_command_handler_nonexistent()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
-- **Test unregister_command_handler handles nonexistent command.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_handle_learn_command_no_service()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Test learn command when spell learning service is not available.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
 
 ## Relationships
 
-- [command service commands](command_service_commands.md) (1 shared connections)
+- [commands magic rationale](commands_magic_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_service.py`
+- `server/tests/unit/commands/test_magic_commands.py`
 
 ## Audit Trail
 

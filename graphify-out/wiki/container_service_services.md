@@ -33,12 +33,12 @@
 
 ## Relationships
 
-- [Room Broadcast](Room_Broadcast.md) (13 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (15 shared connections)
 - [connection realtime delegates](connection_realtime_delegates.md) (9 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (4 shared connections)
 - [player disconnect handlers](player_disconnect_handlers.md) (3 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
 - [connection cleaner realtime](connection_cleaner_realtime.md) (2 shared connections)
-- [npc populate databases](npc_populate_databases.md) (1 shared connections)
+- [Database Config](Database_Config.md) (1 shared connections)
 - [realtime maintenance connection](realtime_maintenance_connection.md) (1 shared connections)
 
 ## Source Files

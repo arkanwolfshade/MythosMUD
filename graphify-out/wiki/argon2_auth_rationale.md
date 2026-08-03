@@ -17,8 +17,9 @@
 
 ## Relationships
 
-- [auth users rationale](auth_users_rationale.md) (3 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (1 shared connections)
+- [auth users rationale](auth_users_rationale.md) (2 shared connections)
+- [Database Config](Database_Config.md) (1 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
 
 ## Source Files
 

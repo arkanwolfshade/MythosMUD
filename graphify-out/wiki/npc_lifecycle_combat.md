@@ -1,41 +1,34 @@
 # npc lifecycle combat
 
-> 9 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **gain_occult_knowledge()** (11 connections) — `server/api/player_effects.py`
-- **OccultKnowledgeRequest** (11 connections) — `server/schemas/players/player_requests.py`
-- **test_gain_occult_knowledge_success()** (4 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
-- **test_occult_knowledge_request_validation()** (4 connections) — `server/tests/unit/schemas/test_player_requests.py`
-- **test_occult_knowledge_request()** (3 connections) — `server/tests/unit/schemas/test_player_requests.py`
-- **Gain occult knowledge (with lucidity loss).** (1 connections) — `server/api/player_effects.py`
-- **Request model for gaining occult knowledge.** (1 connections) — `server/schemas/players/player_requests.py`
-- **Test OccultKnowledgeRequest can be instantiated.** (1 connections) — `server/tests/unit/schemas/test_player_requests.py`
-- **Test OccultKnowledgeRequest validates amount range.** (1 connections) — `server/tests/unit/schemas/test_player_requests.py`
+- **check_dangerous_characters()** (6 connections) — `server/validators/security_validator.py`
+- **get_dangerous_characters()** (5 connections) — `server/validators/security_validator.py`
+- **test_get_dangerous_characters()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_check_dangerous_characters_no_dangerous()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_check_dangerous_characters_has_dangerous()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Test getting dangerous characters list.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Test checking for dangerous characters when none present.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Test checking for dangerous characters when present.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Get the list of dangerous characters used in validation.      Returns:         L** (1 connections) — `server/validators/security_validator.py`
+- **Check if text contains dangerous characters.      Args:         text: The text t** (1 connections) — `server/validators/security_validator.py`
 
 ## Relationships
 
-- [player effects endpoints](player_effects_endpoints.md) (5 shared connections)
-- [player requests schemas](player_requests_schemas.md) (5 shared connections)
-- [player schemas requests](player_schemas_requests.md) (4 shared connections)
-- [Exception Containers](Exception_Containers.md) (1 shared connections)
-- [magic healing game](magic_healing_game.md) (1 shared connections)
-- [auth users rationale](auth_users_rationale.md) (1 shared connections)
-- [Player Stats](Player_Stats.md) (1 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [Security Validator Tests](Security_Validator_Tests.md) (5 shared connections)
+- [command communication models](command_communication_models.md) (2 shared connections)
 
 ## Source Files
 
-- `server/api/player_effects.py`
-- `server/schemas/players/player_requests.py`
-- `server/tests/unit/api/test_player_effects_endpoints.py`
-- `server/tests/unit/schemas/test_player_requests.py`
+- `server/tests/unit/validators/test_security_validator.py`
+- `server/validators/security_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 36 (97%)
-- INFERRED: 1 (3%)
+- EXTRACTED: 25 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

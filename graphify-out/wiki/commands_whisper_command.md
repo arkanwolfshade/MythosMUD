@@ -1,9 +1,10 @@
 # commands whisper command
 
-> 51 nodes
+> 53 nodes
 
 ## Key Concepts
 
+- **request_with_app_container()** (28 connections) — `server/tests/unit/commands/communication_commands_mocks.py`
 - **handle_whisper_command()** (20 connections) — `server/commands/communication_commands.py`
 - **test_communication_commands_whisper_reply.py** (17 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
 - **test_whisper_command.py** (13 connections) — `server/tests/unit/commands/test_whisper_command.py`
@@ -28,15 +29,13 @@
 - **test_whisper_command_whisper_to_self()** (3 connections) — `server/tests/unit/commands/test_whisper_command.py`
 - **test_whisper_command_success()** (3 connections) — `server/tests/unit/commands/test_whisper_command.py`
 - **mock_request()** (2 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- **mock_sender()** (2 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- *... and 26 more nodes in this community*
+- *... and 28 more nodes in this community*
 
 ## Relationships
 
-- [commands communication say](commands_communication_say.md) (13 shared connections)
-- [commands alias rationale](commands_alias_rationale.md) (4 shared connections)
-- [commands communication flows](commands_communication_flows.md) (2 shared connections)
-- [commands communication channels](commands_communication_channels.md) (1 shared connections)
+- [commands admin mute](commands_admin_mute.md) (13 shared connections)
+- [commands communication say](commands_communication_say.md) (12 shared connections)
+- [commands communication flows](commands_communication_flows.md) (6 shared connections)
 
 ## Source Files
 
@@ -47,7 +46,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 156 (100%)
+- EXTRACTED: 185 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

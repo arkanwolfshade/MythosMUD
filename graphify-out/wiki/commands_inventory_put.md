@@ -4,27 +4,33 @@
 
 ## Key Concepts
 
-- **TestHandleSpecialCommandRouting** (5 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **.test_handle_special_command_routing_alias_command()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **.test_handle_special_command_routing_alias_command_no_storage()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **.test_handle_special_command_routing_emote_conversion()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _handle_special_command_routing function.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _handle_special_command_routing handles alias management commands.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _handle_special_command_routing returns error when alias storage unavailabl** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _handle_special_command_routing converts single-word emotes.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **close_db()** (9 connections) — `server/database_helpers.py`
+- **test_close_db_engine_initialization_failure()** (4 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **test_close_db_success()** (3 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **test_close_db_raises_runtime_error_on_failure()** (3 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **Close database connections.** (1 connections) — `server/database_helpers.py`
+- **Test close_db successfully closes database connections.** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **Test close_db raises RuntimeError when closing fails.** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **Test close_db handles failure when engine initialization fails.** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
 
 ## Relationships
 
-- [command handler unified](command_handler_unified.md) (4 shared connections)
+- [lucidity npc combat](lucidity_npc_combat.md) (4 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (1 shared connections)
+- [command commands talk](command_commands_talk.md) (1 shared connections)
+- [npc idle movement](npc_idle_movement.md) (1 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (1 shared connections)
+- [command inventory models](command_inventory_models.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_aliases.py`
+- `server/database_helpers.py`
+- `server/tests/unit/infrastructure/test_database_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 22 (96%)
+- INFERRED: 1 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

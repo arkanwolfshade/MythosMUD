@@ -4,31 +4,32 @@
 
 ## Key Concepts
 
-- **._get_npc_spawn_message()** (7 connections) — `server/realtime/npc_event_handlers.py`
-- **Any** (5 connections)
-- **._get_npc_instance()** (5 connections) — `server/realtime/npc_event_handlers.py`
-- **._get_behavior_config_from_instance()** (4 connections) — `server/realtime/npc_event_handlers.py`
-- **._parse_behavior_config()** (4 connections) — `server/realtime/npc_event_handlers.py`
-- **._extract_spawn_message_from_config()** (4 connections) — `server/realtime/npc_event_handlers.py`
-- **Get NPC instance from lifecycle manager.          Args:             npc_id: The** (1 connections) — `server/realtime/npc_event_handlers.py`
-- **Extract behavior_config from NPC instance.          Args:             npc_instan** (1 connections) — `server/realtime/npc_event_handlers.py`
-- **Parse behavior_config if it's a JSON string.          Args:             behavior** (1 connections) — `server/realtime/npc_event_handlers.py`
-- **Extract spawn_message from behavior_config.          Args:             behavior_** (1 connections) — `server/realtime/npc_event_handlers.py`
-- **Get the spawn message for an NPC from its behavior_config.          If no custom** (1 connections) — `server/realtime/npc_event_handlers.py`
+- **UUID** (6 connections)
+- **.player_entered()** (5 connections) — `server/models/room.py`
+- **.player_left()** (4 connections) — `server/models/room.py`
+- **.has_player()** (4 connections) — `server/models/room.py`
+- **.add_player_silently()** (3 connections) — `server/models/room.py`
+- **.remove_player_silently()** (3 connections) — `server/models/room.py`
+- **Add a player to the room and trigger event.          Args:             player_id** (1 connections) — `server/models/room.py`
+- **Add a player to the room without triggering an event.          This method is us** (1 connections) — `server/models/room.py`
+- **Remove a player from the room without triggering an event.          This method** (1 connections) — `server/models/room.py`
+- **Remove a player from the room and trigger event.          Args:             play** (1 connections) — `server/models/room.py`
+- **Check if a player is in the room.          Args:             player_id: The ID o** (1 connections) — `server/models/room.py`
 
 ## Relationships
 
-- [NATS Messaging](NATS_Messaging.md) (7 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
+- [room models instance](room_models_instance.md) (5 shared connections)
+- [item models rationale](item_models_rationale.md) (3 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (2 shared connections)
 
 ## Source Files
 
-- `server/realtime/npc_event_handlers.py`
+- `server/models/room.py`
 
 ## Audit Trail
 
-- EXTRACTED: 34 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 28 (93%)
+- INFERRED: 2 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

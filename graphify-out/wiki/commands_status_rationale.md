@@ -33,12 +33,12 @@
 
 ## Relationships
 
-- [commands alias rationale](commands_alias_rationale.md) (5 shared connections)
+- [commands admin mute](commands_admin_mute.md) (4 shared connections)
 - [commands emote rationale](commands_emote_rationale.md) (3 shared connections)
 - [commands whoami utility](commands_whoami_utility.md) (3 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (2 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [command factories create](command_factories_create.md) (2 shared connections)
 - [room websocket updates](room_websocket_updates.md) (2 shared connections)
-- [command helpers functions](command_helpers_functions.md) (1 shared connections)
 
 ## Source Files
 

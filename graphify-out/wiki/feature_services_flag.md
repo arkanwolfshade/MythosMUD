@@ -1,48 +1,53 @@
 # feature services flag
 
-> 42 nodes
+> 34 nodes
 
 ## Key Concepts
 
-- **TestFeatureFlagService** (23 connections) — `server/tests/unit/services/test_feature_flag_service.py`
-- **.test_init()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
-- **.test_is_combat_enabled_true()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
-- **.test_is_combat_enabled_false()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
-- **.test_is_combat_enabled_caching()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
-- **.test_is_combat_logging_enabled_true()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
-- **.test_is_combat_logging_enabled_false()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
-- **.test_is_combat_monitoring_enabled_true()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
-- **.test_is_combat_monitoring_enabled_false()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
-- **.test_get_combat_configuration()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
-- **.test_clear_cache()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
-- **.test_validate_combat_requirements_disabled()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
-- **.test_validate_combat_requirements_valid()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
-- **.test_validate_combat_requirements_invalid_tick_interval()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
-- **.test_validate_combat_requirements_invalid_timeout()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
-- **.test_validate_combat_requirements_invalid_xp_multiplier()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
-- **.test_get_feature_status()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
-- **.test_check_combat_availability_enabled()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
-- **.test_check_combat_availability_disabled()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
-- **.test_check_combat_availability_invalid_requirements()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
-- **.test_check_combat_availability_with_player_id()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
-- **Test suite for FeatureFlagService class.** (1 connections) — `server/tests/unit/services/test_feature_flag_service.py`
-- **Test FeatureFlagService initialization.** (1 connections) — `server/tests/unit/services/test_feature_flag_service.py`
-- **Test is_combat_enabled returns True when enabled.** (1 connections) — `server/tests/unit/services/test_feature_flag_service.py`
-- **Test is_combat_enabled returns False when disabled.** (1 connections) — `server/tests/unit/services/test_feature_flag_service.py`
-- *... and 17 more nodes in this community*
+- **test_command_alias.py** (18 connections) — `server/tests/unit/models/test_command_alias.py`
+- **AliasCommand** (17 connections) — `server/models/command_alias.py`
+- **UnaliasCommand** (12 connections) — `server/models/command_alias.py`
+- **test_alias_command_alias_name_min_length()** (4 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_alias_command_alias_name_max_length()** (4 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_alias_command_command_max_length()** (4 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_unalias_command_alias_name_min_length()** (4 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_unalias_command_alias_name_max_length()** (4 connections) — `server/tests/unit/models/test_command_alias.py`
+- **.validate_command()** (3 connections) — `server/models/command_alias.py`
+- **test_alias_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_alias_command_with_command()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_alias_command_validate_alias_name_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_alias_command_validate_command_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_alias_command_validate_command_none()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_aliases_command_no_fields()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_unalias_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_unalias_command_validate_alias_name_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
+- **Command for creating or viewing command aliases.** (1 connections) — `server/models/command_alias.py`
+- **Validate command content for security using centralized validation.** (1 connections) — `server/models/command_alias.py`
+- **Command for removing an alias.** (1 connections) — `server/models/command_alias.py`
+- **Unit tests for alias command models.  Tests the alias command models and their v** (1 connections) — `server/tests/unit/models/test_command_alias.py`
+- **Test AliasCommand requires alias_name.** (1 connections) — `server/tests/unit/models/test_command_alias.py`
+- **Test AliasCommand can have optional command.** (1 connections) — `server/tests/unit/models/test_command_alias.py`
+- **Test AliasCommand calls validate_alias_name.** (1 connections) — `server/tests/unit/models/test_command_alias.py`
+- **Test AliasCommand calls validate_command_content when command provided.** (1 connections) — `server/tests/unit/models/test_command_alias.py`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [service feature services](service_feature_services.md) (22 shared connections)
+- [command factories create](command_factories_create.md) (11 shared connections)
+- [command inventory models](command_inventory_models.md) (5 shared connections)
+- [combat services initialization](combat_services_initialization.md) (2 shared connections)
+- [exceptions rationale error](exceptions_rationale_error.md) (2 shared connections)
+- [command communication models](command_communication_models.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_feature_flag_service.py`
+- `server/models/command_alias.py`
+- `server/tests/unit/models/test_command_alias.py`
 
 ## Audit Trail
 
-- EXTRACTED: 103 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 102 (92%)
+- INFERRED: 9 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

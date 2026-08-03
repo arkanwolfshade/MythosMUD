@@ -1,24 +1,25 @@
 # lucidity commands services
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_auth()** (3 connections) — `server/main.py`
-- **Any** (1 connections)
-- **Test endpoint to verify JWT authentication is working.** (1 connections) — `server/main.py`
+- **Structured Logging Patterns** (4 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Basic Logging** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Error Logging with Context** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Performance Logging** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
 
 ## Relationships
 
-- [NATS Messaging](NATS_Messaging.md) (1 shared connections)
+- [archive LOGGING BEST](archive_LOGGING_BEST.md) (1 shared connections)
 
 ## Source Files
 
-- `server/main.py`
+- `docs/archive/LOGGING_BEST_PRACTICES.md`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

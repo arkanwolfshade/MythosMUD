@@ -1,6 +1,6 @@
 # message broadcast realtime
 
-> 47 nodes
+> 45 nodes
 
 ## Key Concepts
 
@@ -21,7 +21,6 @@
 - **._get_user_manager()** (4 connections) — `server/realtime/nats_message_handler_broadcast.py`
 - **._collect_room_targets()** (3 connections) — `server/realtime/nats_message_handler_broadcast.py`
 - **._should_echo_to_sender()** (3 connections) — `server/realtime/nats_message_handler_broadcast.py`
-- **._is_player_muted_by_receiver()** (3 connections) — `server/realtime/nats_message_handler_broadcast.py`
 - **._is_player_muted_by_receiver_with_user_manager()** (3 connections) — `server/realtime/nats_message_handler_broadcast.py`
 - **._should_apply_mute_check()** (2 connections) — `server/realtime/nats_message_handler_broadcast.py`
 - **._compare_canonical_rooms()** (2 connections) — `server/realtime/nats_message_handler_broadcast.py`
@@ -29,17 +28,17 @@
 - **._get_player_room_from_persistence()** (2 connections) — `server/realtime/nats_message_handler_broadcast.py`
 - **._is_player_in_room()** (2 connections) — `server/realtime/nats_message_handler_broadcast.py`
 - **Mixin: room filtering, mute checks, dampening, and personal send.** (1 connections) — `server/realtime/nats_message_handler_broadcast.py`
-- *... and 22 more nodes in this community*
+- **Collect all players subscribed to a room (canonical and original IDs).** (1 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- *... and 20 more nodes in this community*
 
 ## Relationships
 
-- [NATS Messaging](NATS_Messaging.md) (4 shared connections)
-- [message nats handler](message_nats_handler.md) (2 shared connections)
-- [Item Instances](Item_Instances.md) (2 shared connections)
-- [Memory Task Runtime](Memory_Task_Runtime.md) (1 shared connections)
+- [nats exceptions services](nats_exceptions_services.md) (5 shared connections)
+- [circuit breaker realtime](circuit_breaker_realtime.md) (3 shared connections)
+- [realtime message filtering](realtime_message_filtering.md) (1 shared connections)
 - [Database Access Layer](Database_Access_Layer.md) (1 shared connections)
 - [lucidity services helpers](lucidity_services_helpers.md) (1 shared connections)
-- [realtime message filtering](realtime_message_filtering.md) (1 shared connections)
+- [command inventory factories](command_inventory_factories.md) (1 shared connections)
 
 ## Source Files
 
@@ -48,8 +47,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 145 (97%)
-- INFERRED: 5 (3%)
+- EXTRACTED: 142 (97%)
+- INFERRED: 4 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

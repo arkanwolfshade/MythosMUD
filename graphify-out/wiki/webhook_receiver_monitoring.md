@@ -16,7 +16,7 @@
 ## Relationships
 
 - [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
-- [npc populate databases](npc_populate_databases.md) (1 shared connections)
+- [Database Config](Database_Config.md) (1 shared connections)
 
 ## Source Files
 

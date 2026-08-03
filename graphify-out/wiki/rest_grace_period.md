@@ -1,6 +1,6 @@
 # rest grace period
 
-> 96 nodes
+> 85 nodes
 
 ## Key Concepts
 
@@ -18,10 +18,8 @@
 - **.check_and_interrupt_rest()** (8 connections) — `server/commands/combat_handler.py`
 - **_disconnect_player_intentionally()** (8 connections) — `server/commands/rest_command.py`
 - **_begin_seated_rest_countdown()** (8 connections) — `server/commands/rest_command.py`
-- **MockPersistence** (7 connections) — `server/tests/unit/commands/test_rest_command.py`
 - **_resolve_rest_command_setup()** (6 connections) — `server/commands/rest_command.py`
 - **_get_services_from_app()** (4 connections) — `server/commands/rest_command.py`
-- **mock_persistence()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
 - **test_handle_rest_command_no_app()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
 - **test_handle_rest_command_no_persistence()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
 - **test_handle_rest_command_no_connection_manager()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
@@ -29,22 +27,23 @@
 - **test_handle_rest_command_already_resting()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
 - **test_handle_rest_command_in_combat()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
 - **test_handle_rest_command_rest_location_instant()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
-- *... and 71 more nodes in this community*
+- **test_handle_rest_command_starts_countdown()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **test_check_player_in_combat_true()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
+- *... and 60 more nodes in this community*
 
 ## Relationships
 
+- [commands admin mute](commands_admin_mute.md) (13 shared connections)
+- [NPC Combat](NPC_Combat.md) (9 shared connections)
 - [grace period disconnect](grace_period_disconnect.md) (9 shared connections)
-- [commands alias rationale](commands_alias_rationale.md) (8 shared connections)
 - [commands command rationale](commands_command_rationale.md) (5 shared connections)
-- [commands magic rationale](commands_magic_rationale.md) (5 shared connections)
-- [Item Instances](Item_Instances.md) (5 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (4 shared connections)
-- [combat services messaging](combat_services_messaging.md) (3 shared connections)
-- [combat commands handler](combat_commands_handler.md) (2 shared connections)
+- [combat npc services](combat_npc_services.md) (3 shared connections)
 - [position player service](position_player_service.md) (2 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
 - [player event state](player_event_state.md) (2 shared connections)
-- [grace period login](grace_period_login.md) (1 shared connections)
-- [command helpers functions](command_helpers_functions.md) (1 shared connections)
+- [uuid services npc](uuid_services_npc.md) (2 shared connections)
+- [command utility models](command_utility_models.md) (1 shared connections)
+- [command factories create](command_factories_create.md) (1 shared connections)
 
 ## Source Files
 
@@ -54,7 +53,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 354 (99%)
+- EXTRACTED: 332 (99%)
 - INFERRED: 3 (1%)
 - AMBIGUOUS: 0 (0%)
 

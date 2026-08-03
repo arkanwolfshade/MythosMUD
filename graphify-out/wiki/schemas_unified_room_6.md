@@ -1,19 +1,26 @@
 # schemas unified room
 
-> 10 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **enum** (6 connections) — `schemas/unified_room_schema.json`
-- **environment** (5 connections) — `schemas/unified_room_schema.json`
+- **properties** (7 connections) — `schemas/unified_room_schema.json`
+- **exits** (5 connections) — `schemas/unified_room_schema.json`
+- **north** (2 connections) — `schemas/unified_room_schema.json`
+- **south** (2 connections) — `schemas/unified_room_schema.json`
+- **east** (2 connections) — `schemas/unified_room_schema.json`
+- **west** (2 connections) — `schemas/unified_room_schema.json`
+- **up** (2 connections) — `schemas/unified_room_schema.json`
+- **down** (2 connections) — `schemas/unified_room_schema.json`
 - **type** (1 connections) — `schemas/unified_room_schema.json`
-- **indoors** (1 connections) — `schemas/unified_room_schema.json`
-- **outdoors** (1 connections) — `schemas/unified_room_schema.json`
-- **underwater** (1 connections) — `schemas/unified_room_schema.json`
-- **intersection** (1 connections) — `schemas/unified_room_schema.json`
-- **street_paved** (1 connections) — `schemas/unified_room_schema.json`
-- **default** (1 connections) — `schemas/unified_room_schema.json`
 - **description** (1 connections) — `schemas/unified_room_schema.json`
+- **oneOf** (1 connections) — `schemas/unified_room_schema.json`
+- **oneOf** (1 connections) — `schemas/unified_room_schema.json`
+- **oneOf** (1 connections) — `schemas/unified_room_schema.json`
+- **oneOf** (1 connections) — `schemas/unified_room_schema.json`
+- **oneOf** (1 connections) — `schemas/unified_room_schema.json`
+- **oneOf** (1 connections) — `schemas/unified_room_schema.json`
+- **additionalProperties** (1 connections) — `schemas/unified_room_schema.json`
 
 ## Relationships
 
@@ -25,7 +32,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 19 (100%)
+- EXTRACTED: 33 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

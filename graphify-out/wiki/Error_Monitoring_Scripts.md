@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [NATS Messaging](NATS_Messaging.md) (1 shared connections)
-- [mythos mud mapbuilder](mythos_mud_mapbuilder.md) (1 shared connections)
+- [time service rationale](time_service_rationale.md) (1 shared connections)
+- [message nats handler](message_nats_handler.md) (1 shared connections)
 
 ## Source Files
 

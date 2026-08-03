@@ -10,7 +10,7 @@
 
 ## Relationships
 
-- [NATS Messaging](NATS_Messaging.md) (1 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
 
 ## Source Files
 

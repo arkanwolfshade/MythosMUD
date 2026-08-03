@@ -1,24 +1,30 @@
 # realtime message nats
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_handle_nats_message_circuit_breaker_open()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test _handle_nats_message() handles circuit breaker open.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **ClientErrorReportMessageHandler** (7 connections) — `server/realtime/message_handler_factory.py`
+- **test_client_error_report_handler_logs()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **Handler for client_error_report messages (client-reported errors for server logg** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Test ClientErrorReportMessageHandler logs via logger.error.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
 
 ## Relationships
 
-- [message nats handler](message_nats_handler.md) (1 shared connections)
-- [nats message handler](nats_message_handler.md) (1 shared connections)
+- [message handler factory](message_handler_factory.md) (2 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
+- [command commands aliases](command_commands_aliases.md) (1 shared connections)
+- [game chat moderation](game_chat_moderation.md) (1 shared connections)
+- [tsconfig src/**/* spec](tsconfig_src-__-__spec.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/realtime/message_handler_factory.py`
+- `server/tests/unit/realtime/test_message_handler_factory.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

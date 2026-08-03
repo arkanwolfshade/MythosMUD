@@ -1,51 +1,31 @@
 # realtime real time
 
-> 32 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **conftest.py** (22 connections) — `server/tests/unit/realtime/conftest.py`
-- **nats_message_handler()** (3 connections) — `server/tests/unit/realtime/conftest.py`
-- **mock_utils()** (3 connections) — `server/tests/unit/realtime/conftest.py`
-- **player_room_event_handler()** (3 connections) — `server/tests/unit/realtime/conftest.py`
-- **mock_nats_service()** (2 connections) — `server/tests/unit/realtime/conftest.py`
-- **mock_subject_manager()** (2 connections) — `server/tests/unit/realtime/conftest.py`
-- **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/conftest.py`
-- **mock_websocket()** (2 connections) — `server/tests/unit/realtime/conftest.py`
-- **mock_ws_connection_manager()** (2 connections) — `server/tests/unit/realtime/conftest.py`
-- **mock_user_manager()** (2 connections) — `server/tests/unit/realtime/conftest.py`
-- **mock_room_sync_service()** (2 connections) — `server/tests/unit/realtime/conftest.py`
-- **mock_chat_logger()** (2 connections) — `server/tests/unit/realtime/conftest.py`
-- **mock_message_builder()** (2 connections) — `server/tests/unit/realtime/conftest.py`
-- **mock_name_extractor()** (2 connections) — `server/tests/unit/realtime/conftest.py`
-- **mock_occupant_manager()** (2 connections) — `server/tests/unit/realtime/conftest.py`
-- **mock_logger()** (2 connections) — `server/tests/unit/realtime/conftest.py`
-- **Shared fixtures for realtime unit tests.  Provides fixtures used by NATS message** (1 connections) — `server/tests/unit/realtime/conftest.py`
-- **Create a mock NATS service.** (1 connections) — `server/tests/unit/realtime/conftest.py`
-- **Create a mock subject manager.** (1 connections) — `server/tests/unit/realtime/conftest.py`
-- **Create a mock connection manager (NATS / general).** (1 connections) — `server/tests/unit/realtime/conftest.py`
-- **Create mock WebSocket for handler tests.** (1 connections) — `server/tests/unit/realtime/conftest.py`
-- **Create mock connection manager for WebSocket handler tests.** (1 connections) — `server/tests/unit/realtime/conftest.py`
-- **Create a mock user manager.** (1 connections) — `server/tests/unit/realtime/conftest.py`
-- **Create a NATSMessageHandler instance.** (1 connections) — `server/tests/unit/realtime/conftest.py`
-- **Create a mock room sync service.** (1 connections) — `server/tests/unit/realtime/conftest.py`
-- *... and 7 more nodes in this community*
+- **._subscribe_to_standardized_chat_subjects()** (5 connections) — `server/realtime/nats_message_handler.py`
+- **.start()** (4 connections) — `server/realtime/nats_message_handler.py`
+- **._subscribe_to_chat_subjects()** (4 connections) — `server/realtime/nats_message_handler.py`
+- **._subscribe_to_subject()** (4 connections) — `server/realtime/nats_message_handler.py`
+- **Start the NATS message handler and subscribe to subjects.          Args:** (1 connections) — `server/realtime/nats_message_handler.py`
+- **Subscribe to all chat-related NATS subjects using NATSSubjectManager patterns.** (1 connections) — `server/realtime/nats_message_handler.py`
+- **Subscribe to chat subjects using NATSSubjectManager patterns.          This meth** (1 connections) — `server/realtime/nats_message_handler.py`
+- **Subscribe to a specific NATS subject.          Args:             subject: Subjec** (1 connections) — `server/realtime/nats_message_handler.py`
 
 ## Relationships
 
-- [NATS Messaging](NATS_Messaging.md) (3 shared connections)
-- [Memory Task Runtime](Memory_Task_Runtime.md) (2 shared connections)
-- [player room realtime](player_room_realtime.md) (2 shared connections)
-- [player event realtime](player_event_realtime.md) (2 shared connections)
+- [circuit breaker realtime](circuit_breaker_realtime.md) (4 shared connections)
+- [nats exceptions services](nats_exceptions_services.md) (3 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/conftest.py`
+- `server/realtime/nats_message_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 71 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 18 (86%)
+- INFERRED: 3 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

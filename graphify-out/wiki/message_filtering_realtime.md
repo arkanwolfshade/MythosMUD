@@ -33,8 +33,7 @@
 
 ## Relationships
 
-- [realtime message filtering](realtime_message_filtering.md) (2 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (1 shared connections)
+- [circuit breaker realtime](circuit_breaker_realtime.md) (3 shared connections)
 
 ## Source Files
 

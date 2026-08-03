@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [NATS Messaging](NATS_Messaging.md) (2 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
 - [Item Instances](Item_Instances.md) (1 shared connections)
 
 ## Source Files

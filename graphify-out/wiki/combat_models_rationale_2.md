@@ -1,24 +1,30 @@
 # combat models rationale
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **.validate_coordinates()** (3 connections) — `server/services/coordinate_validator.py`
-- **Any** (1 connections)
-- **Validate coordinates for rooms in a zone/subzone and detect conflicts.** (1 connections) — `server/services/coordinate_validator.py`
+- **ChatMessageHandler** (7 connections) — `server/realtime/message_handler_factory.py`
+- **test_chat_message_handler_handle()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **Handler for chat messages.** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Test ChatMessageHandler.handle() calls handle_chat_message.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
 
 ## Relationships
 
-- [maps handle ascii](maps_handle_ascii.md) (1 shared connections)
+- [message handler factory](message_handler_factory.md) (2 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
+- [command commands aliases](command_commands_aliases.md) (1 shared connections)
+- [game chat moderation](game_chat_moderation.md) (1 shared connections)
+- [tsconfig src/**/* spec](tsconfig_src-__-__spec.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/coordinate_validator.py`
+- `server/realtime/message_handler_factory.py`
+- `server/tests/unit/realtime/test_message_handler_factory.py`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

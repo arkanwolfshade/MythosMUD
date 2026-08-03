@@ -1,37 +1,24 @@
 # security headers middleware
 
-> 13 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **MutableHeaders** (6 connections)
-- **._add_security_headers()** (3 connections) — `server/middleware/security_headers.py`
-- **test_add_security_headers()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **test_add_security_headers_hsts_value()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **test_add_security_headers_permissions_policy()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **test_add_security_headers_csp_policy()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **test_add_security_headers_referrer_policy()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **Add all security headers to the response.** (1 connections) — `server/middleware/security_headers.py`
-- **Test _add_security_headers adds all security headers.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **Test _add_security_headers sets correct HSTS value.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **Test _add_security_headers includes Permissions-Policy.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **Test _add_security_headers uses configured CSP policy.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **Test _add_security_headers uses configured referrer policy.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **test_handle_spell_command_spell_not_found()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Test spell command when spell is not found.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
 
 ## Relationships
 
-- [security headers middleware](security_headers_middleware.md) (5 shared connections)
-- [middleware security headers](middleware_security_headers.md) (1 shared connections)
+- [commands magic rationale](commands_magic_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/middleware/security_headers.py`
-- `server/tests/unit/middleware/test_security_headers.py`
+- `server/tests/unit/commands/test_magic_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (67%)
-- INFERRED: 10 (33%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

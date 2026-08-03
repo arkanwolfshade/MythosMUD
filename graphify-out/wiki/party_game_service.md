@@ -1,47 +1,56 @@
 # party game service
 
-> 21 nodes
+> 50 nodes
 
 ## Key Concepts
 
+- **PartyService** (36 connections) — `server/game/party_service.py`
 - **UUID** (17 connections)
 - **_str_id()** (16 connections) — `server/game/party_service.py`
+- **Any** (10 connections)
+- **._emit_party_updated()** (9 connections) — `server/game/party_service.py`
+- **.disband_party()** (8 connections) — `server/game/party_service.py`
 - **._send_result_to_player()** (8 connections) — `server/game/party_service.py`
 - **.accept_party_invite()** (8 connections) — `server/game/party_service.py`
+- **.remove_member()** (8 connections) — `server/game/party_service.py`
+- **.kick_member()** (8 connections) — `server/game/party_service.py`
+- **.get_party_for_player()** (8 connections) — `server/game/party_service.py`
 - **.create_party()** (7 connections) — `server/game/party_service.py`
 - **.add_member()** (7 connections) — `server/game/party_service.py`
 - **._expire_pending_invites()** (7 connections) — `server/game/party_service.py`
+- **._notify_player_removed_from_party()** (7 connections) — `server/game/party_service.py`
 - **.request_party_invite()** (7 connections) — `server/game/party_service.py`
 - **.decline_party_invite()** (7 connections) — `server/game/party_service.py`
+- **.__init__()** (6 connections) — `server/game/party_service.py`
+- **._schedule_notification()** (6 connections) — `server/game/party_service.py`
 - **.on_player_disconnect()** (6 connections) — `server/game/party_service.py`
 - **._send_party_invite_to_target()** (5 connections) — `server/game/party_service.py`
-- **Normalize ID to string for dict keys and membership sets.** (1 connections) — `server/game/party_service.py`
-- **Create a new party with the given player as leader.          Returns dict with s** (1 connections) — `server/game/party_service.py`
-- **Add a player to a party. Fails if party does not exist or player is already in a** (1 connections) — `server/game/party_service.py`
-- **Remove expired pending invites and notify inviters.** (1 connections) — `server/game/party_service.py`
-- **Send a command_response-style message to a single player.** (1 connections) — `server/game/party_service.py`
-- **Send party_invite event to the target player only.** (1 connections) — `server/game/party_service.py`
-- **Create a pending party invite and send party_invite event to target.         Tar** (1 connections) — `server/game/party_service.py`
-- **Accept a party invite. Target is the player who accepted (the invitee).** (1 connections) — `server/game/party_service.py`
-- **Decline a party invite.** (1 connections) — `server/game/party_service.py`
-- **Remove player from any party and disband if they were leader.         Cancel any** (1 connections) — `server/game/party_service.py`
+- **.is_leader()** (5 connections) — `server/game/party_service.py`
+- **.is_in_same_party()** (5 connections) — `server/game/party_service.py`
+- **.get_party_members()** (4 connections) — `server/game/party_service.py`
+- **.get_party()** (3 connections) — `server/game/party_service.py`
+- *... and 25 more nodes in this community*
 
 ## Relationships
 
-- [command base models](command_base_models.md) (16 shared connections)
-- [envelope event game](envelope_event_game.md) (16 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (3 shared connections)
+- [commands inventory helpers](commands_inventory_helpers.md) (14 shared connections)
+- [Error Conversion](Error_Conversion.md) (3 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (2 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (2 shared connections)
+- [combat messaging services](combat_messaging_services.md) (1 shared connections)
+- [command inventory factories](command_inventory_factories.md) (1 shared connections)
 - [connection manager realtime](connection_manager_realtime.md) (1 shared connections)
 - [combat services messaging](combat_services_messaging.md) (1 shared connections)
 
 ## Source Files
 
 - `server/game/party_service.py`
+- `server/tests/unit/game/test_party_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 105 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 241 (98%)
+- INFERRED: 4 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

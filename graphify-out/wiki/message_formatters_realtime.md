@@ -1,32 +1,40 @@
 # message formatters realtime
 
-> 8 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **_npc_died_broadcast_and_bridge()** (7 connections) — `server/realtime/event_handlers.py`
-- **_refresh_room_after_npc_death()** (5 connections) — `server/realtime/event_handlers.py`
-- **_npc_died_ids_or_warn()** (3 connections) — `server/realtime/event_handlers.py`
-- **.handle_npc_died_event()** (3 connections) — `server/realtime/event_handlers.py`
-- **Return (room_id, npc_id, npc_name) or None after logging warnings.** (1 connections) — `server/realtime/event_handlers.py`
-- **Best-effort room occupants refresh after NPC death.** (1 connections) — `server/realtime/event_handlers.py`
-- **Broadcast npc_died to WebSocket, publish NPCDied to EventBus, refresh room occup** (1 connections) — `server/realtime/event_handlers.py`
-- **Handle npc_died event - NATS to EventBus bridge pattern.          ARCHITECTURE** (1 connections) — `server/realtime/event_handlers.py`
+- **total_xp_for_level()** (15 connections) — `server/game/level_curve.py`
+- **test_grant_xp_level_up_calls_hook()** (4 connections) — `server/tests/unit/game/test_level_service.py`
+- **test_total_xp_for_level_one()** (3 connections) — `server/tests/unit/game/test_level_curve.py`
+- **test_total_xp_for_level_two_positive()** (3 connections) — `server/tests/unit/game/test_level_curve.py`
+- **test_total_xp_for_level_increases()** (3 connections) — `server/tests/unit/game/test_level_curve.py`
+- **test_total_xp_for_level_invalid()** (3 connections) — `server/tests/unit/game/test_level_curve.py`
+- **test_check_level_up_increase_persists_and_returns_true()** (3 connections) — `server/tests/unit/game/test_level_service.py`
+- **Total XP required to reach a given level (cumulative).      Level 1 requires 0 X** (1 connections) — `server/game/level_curve.py`
+- **Level 1 requires 0 cumulative XP.** (1 connections) — `server/tests/unit/game/test_level_curve.py`
+- **Level 2 requires positive cumulative XP.** (1 connections) — `server/tests/unit/game/test_level_curve.py`
+- **Cumulative XP increases with level.** (1 connections) — `server/tests/unit/game/test_level_curve.py`
+- **total_xp_for_level raises for level < 1.** (1 connections) — `server/tests/unit/game/test_level_curve.py`
+- **When level increases, save is called and level_up_hook is invoked.** (1 connections) — `server/tests/unit/game/test_level_service.py`
+- **check_level_up when curve gives higher level updates player and returns True.** (1 connections) — `server/tests/unit/game/test_level_service.py`
 
 ## Relationships
 
-- [NATS Messaging](NATS_Messaging.md) (4 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (2 shared connections)
-- [room websocket updates](room_websocket_updates.md) (1 shared connections)
-- [realtime message filtering](realtime_message_filtering.md) (1 shared connections)
+- [realtime dead letter](realtime_dead_letter.md) (8 shared connections)
+- [quests players rationale](quests_players_rationale.md) (3 shared connections)
+- [calendar models rationale](calendar_models_rationale.md) (3 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/event_handlers.py`
+- `server/game/level_curve.py`
+- `server/tests/unit/game/test_level_curve.py`
+- `server/tests/unit/game/test_level_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 22 (100%)
+- EXTRACTED: 41 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

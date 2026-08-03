@@ -1,29 +1,32 @@
 # uuid services npc
 
-> 5 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **CircuitState** (6 connections) — `server/realtime/circuit_breaker.py`
-- **.get_state()** (3 connections) — `server/realtime/circuit_breaker.py`
-- **Enum** (2 connections)
-- **Circuit breaker states.      - CLOSED: Normal operation, requests pass through** (1 connections) — `server/realtime/circuit_breaker.py`
-- **Get current circuit state.          Returns:             Current CircuitState** (1 connections) — `server/realtime/circuit_breaker.py`
+- **MockPersistence** (7 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **mock_persistence()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **.get_player_by_name()** (2 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **.get_room_by_id()** (2 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **.__setattr__()** (2 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **.__init__()** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **Mock persistence layer with async methods.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **Mock async method that uses configured mock.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **Mock method that uses configured mock.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **Allow setting get_player_by_name and get_room_by_id to mocks.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
 
 ## Relationships
 
-- [NATS Messaging](NATS_Messaging.md) (2 shared connections)
-- [realtime circuit breaker](realtime_circuit_breaker.md) (1 shared connections)
-- [circuit breaker realtime](circuit_breaker_realtime.md) (1 shared connections)
-- [message broadcaster realtime](message_broadcaster_realtime.md) (1 shared connections)
+- [rest grace period](rest_grace_period.md) (2 shared connections)
 
 ## Source Files
 
-- `server/realtime/circuit_breaker.py`
+- `server/tests/unit/commands/test_rest_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 22 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

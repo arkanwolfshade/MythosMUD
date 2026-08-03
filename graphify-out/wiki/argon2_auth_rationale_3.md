@@ -1,33 +1,29 @@
 # argon2 auth rationale
 
-> 6 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **FearRequest** (11 connections) — `server/schemas/players/player_requests.py`
-- **test_fear_request_validation()** (4 connections) — `server/tests/unit/schemas/test_player_requests.py`
-- **test_fear_request()** (3 connections) — `server/tests/unit/schemas/test_player_requests.py`
-- **Request model for applying fear.** (1 connections) — `server/schemas/players/player_requests.py`
-- **Test FearRequest can be instantiated.** (1 connections) — `server/tests/unit/schemas/test_player_requests.py`
-- **Test FearRequest validates amount range.** (1 connections) — `server/tests/unit/schemas/test_player_requests.py`
+- **.apply_encounter_lucidity_effect()** (6 connections) — `server/services/npc_combat_lucidity.py`
+- **._resolve_lucidity_category()** (4 connections) — `server/services/npc_combat_lucidity.py`
+- **Any** (2 connections)
+- **Apply lucidity loss when a player engages an eldritch entity.          Args:** (1 connections) — `server/services/npc_combat_lucidity.py`
+- **Determine encounter category based on NPC definition metadata.          Args:** (1 connections) — `server/services/npc_combat_lucidity.py`
 
 ## Relationships
 
-- [player requests schemas](player_requests_schemas.md) (5 shared connections)
-- [player effects endpoints](player_effects_endpoints.md) (2 shared connections)
-- [player schemas requests](player_schemas_requests.md) (2 shared connections)
-- [Player Stats](Player_Stats.md) (1 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (1 shared connections)
+- [commands admin mute](commands_admin_mute.md) (1 shared connections)
 
 ## Source Files
 
-- `server/schemas/players/player_requests.py`
-- `server/tests/unit/schemas/test_player_requests.py`
+- `server/services/npc_combat_lucidity.py`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (95%)
-- INFERRED: 1 (5%)
+- EXTRACTED: 14 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

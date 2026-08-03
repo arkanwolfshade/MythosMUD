@@ -1,42 +1,59 @@
 # player requests schemas
 
-> 11 nodes
+> 75 nodes
 
 ## Key Concepts
 
-- **player_requests.py** (14 connections) — `server/schemas/players/player_requests.py`
-- **BaseModel** (11 connections)
-- **SelectCharacterRequest** (8 connections) — `server/schemas/players/player_requests.py`
-- **OccupationSlot** (3 connections) — `server/schemas/players/player_requests.py`
-- **PersonalInterestSlot** (3 connections) — `server/schemas/players/player_requests.py`
-- **test_select_character_request()** (3 connections) — `server/tests/unit/schemas/test_player_requests.py`
-- **Request models for player API endpoints.  This module defines Pydantic request m** (1 connections) — `server/schemas/players/player_requests.py`
-- **One occupation skill slot: skill_id and fixed value (70, 60, 50, or 40).** (1 connections) — `server/schemas/players/player_requests.py`
-- **One personal interest skill: skill_id only (server applies base + 20).** (1 connections) — `server/schemas/players/player_requests.py`
-- **Request model for character selection.** (1 connections) — `server/schemas/players/player_requests.py`
-- **Test SelectCharacterRequest can be instantiated.** (1 connections) — `server/tests/unit/schemas/test_player_requests.py`
+- **Invite** (38 connections) — `server/models/invite.py`
+- **test_invite.py** (17 connections) — `server/tests/unit/models/test_invite.py`
+- **generate_invites_db.py** (14 connections) — `tools/invite_tools/generate_invites_db.py`
+- **main()** (7 connections) — `tools/invite_tools/generate_invites_db.py`
+- **.validate_invite()** (6 connections) — `server/auth/invites.py`
+- **.create_invite()** (6 connections) — `server/models/invite.py`
+- **._generate_invite_code()** (6 connections) — `server/models/invite.py`
+- **create_invite_in_db()** (6 connections) — `tools/invite_tools/generate_invites_db.py`
+- **.use_invite()** (5 connections) — `server/auth/invites.py`
+- **_set_database_url_from_env()** (5 connections) — `tools/invite_tools/generate_invites_db.py`
+- **.create_invite()** (4 connections) — `server/auth/invites.py`
+- **.get_user_invites()** (4 connections) — `server/auth/invites.py`
+- **parse_expires_date()** (4 connections) — `tools/invite_tools/generate_invites_db.py`
+- **generate_unique_codes()** (4 connections) — `tools/invite_tools/generate_invites_db.py`
+- **get_existing_codes()** (4 connections) — `tools/invite_tools/generate_invites_db.py`
+- **UUID** (3 connections)
+- **.get_unused_invites()** (3 connections) — `server/auth/invites.py`
+- **.cleanup_expired_invites()** (3 connections) — `server/auth/invites.py`
+- **.is_expired()** (3 connections) — `server/models/invite.py`
+- **.is_valid()** (3 connections) — `server/models/invite.py`
+- **test_invite_is_expired_with_future_expiry()** (3 connections) — `server/tests/unit/models/test_invite.py`
+- **test_invite_is_expired_with_past_expiry()** (3 connections) — `server/tests/unit/models/test_invite.py`
+- **test_invite_is_expired_with_aware_datetime()** (3 connections) — `server/tests/unit/models/test_invite.py`
+- **test_invite_is_valid_with_active_and_not_expired()** (3 connections) — `server/tests/unit/models/test_invite.py`
+- **test_invite_is_valid_with_inactive()** (3 connections) — `server/tests/unit/models/test_invite.py`
+- *... and 50 more nodes in this community*
 
 ## Relationships
 
-- [Player Stats](Player_Stats.md) (4 shared connections)
-- [player requests schemas](player_requests_schemas.md) (4 shared connections)
-- [player schemas requests](player_schemas_requests.md) (3 shared connections)
-- [coercion int inventory](coercion_int_inventory.md) (2 shared connections)
-- [combat schemas schema](combat_schemas_schema.md) (2 shared connections)
-- [argon2 auth rationale](argon2_auth_rationale.md) (2 shared connections)
-- [combat messaging service](combat_messaging_service.md) (2 shared connections)
-- [npc lifecycle combat](npc_lifecycle_combat.md) (2 shared connections)
-- [character creation validate](character_creation_validate.md) (2 shared connections)
+- [auth users rationale](auth_users_rationale.md) (16 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (5 shared connections)
+- [Database Config](Database_Config.md) (3 shared connections)
+- [world models rationale](world_models_rationale.md) (2 shared connections)
+- [Exception Containers](Exception_Containers.md) (1 shared connections)
+- [command commands talk](command_commands_talk.md) (1 shared connections)
+- [models invite Any](models_invite_Any.md) (1 shared connections)
+- [ascii map renderer](ascii_map_renderer.md) (1 shared connections)
+- [logging file setup](logging_file_setup.md) (1 shared connections)
 
 ## Source Files
 
-- `server/schemas/players/player_requests.py`
-- `server/tests/unit/schemas/test_player_requests.py`
+- `server/auth/invites.py`
+- `server/models/invite.py`
+- `server/tests/unit/models/test_invite.py`
+- `tools/invite_tools/generate_invites_db.py`
 
 ## Audit Trail
 
-- EXTRACTED: 47 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 231 (98%)
+- INFERRED: 4 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

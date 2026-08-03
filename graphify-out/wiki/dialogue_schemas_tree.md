@@ -1,31 +1,24 @@
 # dialogue schemas tree
 
-> 9 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **__init__.py** (5 connections) — `server/schemas/dialogue/__init__.py`
-- **dialogue_tree.py** (5 connections) — `server/schemas/dialogue/dialogue_tree.py`
-- **DialogueOption** (4 connections) — `server/schemas/dialogue/dialogue_tree.py`
-- **DialogueNode** (4 connections) — `server/schemas/dialogue/dialogue_tree.py`
-- **BaseModel** (3 connections)
-- **Dialogue Pydantic schemas.** (1 connections) — `server/schemas/dialogue/__init__.py`
-- **Nav-only dialogue tree schema for #583.  Rejects unknown next targets, missing** (1 connections) — `server/schemas/dialogue/dialogue_tree.py`
-- **Player-facing option; next null/omitted ends the conversation.** (1 connections) — `server/schemas/dialogue/dialogue_tree.py`
-- **One NPC line plus numbered options.** (1 connections) — `server/schemas/dialogue/dialogue_tree.py`
+- **description** (3 connections) — `db/static/schemas/room.schema.json`
+- **type** (1 connections) — `db/static/schemas/room.schema.json`
+- **minLength** (1 connections) — `db/static/schemas/room.schema.json`
 
 ## Relationships
 
-- [dialogue service game](dialogue_service_game.md) (3 shared connections)
+- [static schemas room](static_schemas_room.md) (1 shared connections)
 
 ## Source Files
 
-- `server/schemas/dialogue/__init__.py`
-- `server/schemas/dialogue/dialogue_tree.py`
+- `db/static/schemas/room.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,36 +1,29 @@
 # occupant realtime formatter
 
-> 13 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **._is_valid_name_for_occupant()** (7 connections) — `server/realtime/occupant_formatter.py`
-- **._process_dict_occupant_for_update()** (7 connections) — `server/realtime/occupant_formatter.py`
-- **._process_player_name_for_update()** (6 connections) — `server/realtime/occupant_formatter.py`
-- **._process_npc_name_for_update()** (6 connections) — `server/realtime/occupant_formatter.py`
-- **Any** (5 connections)
-- **.separate_occupants_by_type()** (5 connections) — `server/realtime/occupant_formatter.py`
-- **._add_valid_name_to_lists()** (4 connections) — `server/realtime/occupant_formatter.py`
-- **Check if a name is valid for use as an occupant name.          Args:** (1 connections) — `server/realtime/occupant_formatter.py`
-- **Add a valid name to both target list and all occupants list.          Args:** (1 connections) — `server/realtime/occupant_formatter.py`
-- **Process a player name and add to appropriate lists if valid.          Args:** (1 connections) — `server/realtime/occupant_formatter.py`
-- **Process an NPC name and add to appropriate lists if valid.          Args:** (1 connections) — `server/realtime/occupant_formatter.py`
-- **Process a dictionary occupant and add to appropriate lists if valid.          Ar** (1 connections) — `server/realtime/occupant_formatter.py`
-- **Separate occupants into players, NPCs, and all occupants lists.          Args:** (1 connections) — `server/realtime/occupant_formatter.py`
+- **TestGetNPCSpawningService** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_npc_spawning_service_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_npc_spawning_service_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Tests for get_npc_spawning_service dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_npc_spawning_service returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_npc_spawning_service raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Relationships
 
-- [commands recovery lucidity](commands_recovery_lucidity.md) (6 shared connections)
-- [occupant formatter realtime](occupant_formatter_realtime.md) (2 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (3 shared connections)
+- [command inventory models](command_inventory_models.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/occupant_formatter.py`
+- `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 46 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 13 (93%)
+- INFERRED: 1 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

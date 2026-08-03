@@ -4,12 +4,12 @@
 
 ## Key Concepts
 
-- **test_profession_get_requirement_display_text_no_requirements()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **Test get_requirement_display_text returns 'No requirements' when empty.** (1 connections) — `server/tests/unit/models/test_profession.py`
+- **test_profession_get_stat_requirements_valid_json()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **Test get_stat_requirements returns dict for valid JSON.** (1 connections) — `server/tests/unit/models/test_profession.py`
 
 ## Relationships
 
-- [models profession available](models_profession_available.md) (1 shared connections)
+- [persistence core infrastructure](persistence_core_infrastructure.md) (1 shared connections)
 - [profession models rationale](profession_models_rationale.md) (1 shared connections)
 
 ## Source Files

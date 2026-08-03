@@ -33,10 +33,9 @@
 
 ## Relationships
 
-- [npc populate databases](npc_populate_databases.md) (5 shared connections)
+- [Database Config](Database_Config.md) (6 shared connections)
 - [Room Broadcast](Room_Broadcast.md) (3 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (2 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
 
 ## Source Files
 

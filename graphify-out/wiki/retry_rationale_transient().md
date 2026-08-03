@@ -33,8 +33,9 @@
 
 ## Relationships
 
-- [NATS Messaging](NATS_Messaging.md) (3 shared connections)
-- [player room persistence](player_room_persistence.md) (2 shared connections)
+- [Database Config](Database_Config.md) (2 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [time service rationale](time_service_rationale.md) (1 shared connections)
 
 ## Source Files
 

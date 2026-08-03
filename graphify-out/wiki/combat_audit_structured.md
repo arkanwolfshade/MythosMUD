@@ -19,7 +19,7 @@
 
 - [combat audit structured](combat_audit_structured.md) (23 shared connections)
 - [player realtime event](player_realtime_event.md) (3 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (2 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
 - [player event realtime](player_event_realtime.md) (1 shared connections)
 
 ## Source Files

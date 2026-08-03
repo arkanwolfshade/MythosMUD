@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_evaluate_equality_invalid_format()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test _evaluate_equality() returns None for invalid format.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_calculate_distance_to_room_different_subzone()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **Test _calculate_distance_to_room() with rooms in different subzones.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
 
 ## Relationships
 
-- [npc behavior engine](npc_behavior_engine.md) (1 shared connections)
-- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
+- [config models player](config_models_player.md) (1 shared connections)
+- [idle movement npc](idle_movement_npc.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_behavior_engine.py`
+- `server/tests/unit/npc/test_idle_movement.py`
 
 ## Audit Trail
 

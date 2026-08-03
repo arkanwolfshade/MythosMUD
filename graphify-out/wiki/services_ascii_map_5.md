@@ -1,25 +1,33 @@
 # services ascii map
 
-> 2 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **test_should_idle_move_not_active()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **Test should_idle_move() returns False when NPC is not active.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **TestGetContainer** (8 connections) — `server/tests/unit/test_dependency_injection.py`
+- **.test_get_container_success()** (3 connections) — `server/tests/unit/test_dependency_injection.py`
+- **.test_get_container_missing()** (3 connections) — `server/tests/unit/test_dependency_injection.py`
+- **.test_get_container_no_app_state()** (3 connections) — `server/tests/unit/test_dependency_injection.py`
+- **Test get_container() function.** (1 connections) — `server/tests/unit/test_dependency_injection.py`
+- **Test get_container() returns container from app state.** (1 connections) — `server/tests/unit/test_dependency_injection.py`
+- **Test get_container() raises error when container missing.** (1 connections) — `server/tests/unit/test_dependency_injection.py`
+- **Test get_container() raises error when app.state missing.** (1 connections) — `server/tests/unit/test_dependency_injection.py`
 
 ## Relationships
 
-- [idle npc movement](idle_npc_movement.md) (1 shared connections)
-- [idle movement npc](idle_movement_npc.md) (1 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (4 shared connections)
+- [command inventory models](command_inventory_models.md) (1 shared connections)
+- [room game service](room_game_service.md) (1 shared connections)
+- [profession game service](profession_game_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_idle_movement.py`
+- `server/tests/unit/test_dependency_injection.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 18 (86%)
+- INFERRED: 3 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

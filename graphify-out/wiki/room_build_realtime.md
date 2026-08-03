@@ -4,22 +4,21 @@
 
 ## Key Concepts
 
-- **test_extract_parsed_fields_handles_missing_attributes()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
-- **Test _extract_parsed_fields handles missing attributes gracefully.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_handle_cast_command_cast_failure()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Test cast command when casting fails.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
 
 ## Relationships
 
-- [room websocket updates](room_websocket_updates.md) (1 shared connections)
-- [command service commands](command_service_commands.md) (1 shared connections)
+- [commands magic rationale](commands_magic_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_service.py`
+- `server/tests/unit/commands/test_magic_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

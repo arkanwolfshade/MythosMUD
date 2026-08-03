@@ -10,7 +10,7 @@ import uuid
 from dataclasses import dataclass
 
 from server.persistence.repositories.dialogue_definition_repository import DialogueDefinitionRepository
-from server.schemas.dialogue import DialogueTree
+from server.schemas.dialogue import DialogueNode, DialogueTree
 from server.structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -102,6 +102,27 @@ class DialogueService:
             npc_definition_id=npc_definition_id,
         )
 
+    async def _load_tree_or_fade(self, player_id: uuid.UUID | str, dialogue_id: str) -> DialogueTree | str:
+        """Load and validate a dialogue tree, or clear cursor and return fade text."""
+        row = await self._repo.get_by_id(dialogue_id)
+        if not row:
+            self.clear_cursor(player_id)
+            return "The conversation fades."
+        try:
+            return DialogueTree.model_validate(row.definition)
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: invalid DB trees must not crash talk
+            logger.warning("Invalid dialogue tree", dialogue_id=row.id, error=str(e))
+            self.clear_cursor(player_id)
+            return "The conversation fades."
+
+    def _invalid_option_message(self, node: DialogueNode, option_index: int) -> str | None:
+        """Return an error string if option_index is out of range for node."""
+        if 1 <= option_index <= len(node.options):
+            return None
+        if not node.options:
+            return "There is nothing more to say."
+        return f"Choose a number from 1 to {len(node.options)}."
+
     async def choose_option(self, player_id: uuid.UUID | str, option_index: int) -> DialoguePrompt | str:
         """
         Advance from the current cursor by 1-based option index.
@@ -111,24 +132,16 @@ class DialogueService:
         cursor = self.get_cursor(player_id)
         if not cursor:
             return "You are not in a conversation. Use: talk <npc>"
-        row = await self._repo.get_by_id(cursor.dialogue_id)
-        if not row:
-            self.clear_cursor(player_id)
-            return "The conversation fades."
-        try:
-            tree = DialogueTree.model_validate(row.definition)
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: invalid DB trees must not crash talk
-            logger.warning("Invalid dialogue tree", dialogue_id=row.id, error=str(e))
-            self.clear_cursor(player_id)
-            return "The conversation fades."
+        tree = await self._load_tree_or_fade(player_id, cursor.dialogue_id)
+        if isinstance(tree, str):
+            return tree
         node = tree.nodes.get(cursor.node_id)
         if not node:
             self.clear_cursor(player_id)
             return "The conversation fades."
-        if option_index < 1 or option_index > len(node.options):
-            return (
-                f"Choose a number from 1 to {len(node.options)}." if node.options else "There is nothing more to say."
-            )
+        bad_option = self._invalid_option_message(node, option_index)
+        if bad_option:
+            return bad_option
         chosen = node.options[option_index - 1]
         if chosen.next is None:
             self.clear_cursor(player_id)

@@ -4,20 +4,20 @@
 
 ## Key Concepts
 
-- **test_broadcast_player_entered_message()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **Test broadcast_player_entered_message() broadcasts to room.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_combat_audit_logger_get_combat_audit_summary_with_player()** (3 connections) — `server/tests/unit/structured_logging/test_combat_audit.py`
+- **Test CombatAuditLogger.get_combat_audit_summary() filters by player.** (1 connections) — `server/tests/unit/structured_logging/test_combat_audit.py`
 
 ## Relationships
 
-- [player room event](player_room_event.md) (1 shared connections)
+- [combat audit structured](combat_audit_structured.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- `server/tests/unit/structured_logging/test_combat_audit.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

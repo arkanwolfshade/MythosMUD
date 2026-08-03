@@ -4,22 +4,21 @@
 
 ## Key Concepts
 
-- **test_list_messages_returns_all()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
-- **Test list_messages() returns all messages.** (1 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_calculate_distance_to_room_different_rooms()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **Test _calculate_distance_to_room() with different rooms.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
 
 ## Relationships
 
-- [message nats handler](message_nats_handler.md) (1 shared connections)
-- [realtime dead letter](realtime_dead_letter.md) (1 shared connections)
-- [dead letter queue](dead_letter_queue.md) (1 shared connections)
+- [config models player](config_models_player.md) (1 shared connections)
+- [idle movement npc](idle_movement_npc.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_dead_letter_queue.py`
+- `server/tests/unit/npc/test_idle_movement.py`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

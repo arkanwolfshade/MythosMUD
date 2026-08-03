@@ -3,6 +3,8 @@
 Rejects unknown next targets, missing start, and empty nodes on write.
 """
 
+# pylint: disable=too-few-public-methods  # Reason: Pydantic models; validators are the behavior
+
 from __future__ import annotations
 
 from pydantic import BaseModel, Field, model_validator

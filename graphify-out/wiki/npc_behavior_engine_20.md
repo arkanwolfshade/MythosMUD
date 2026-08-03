@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_room_subscription_manager_init()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **Test RoomSubscriptionManager initialization.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_validate_reason_content_valid()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Test validating valid reason content.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
 
 ## Relationships
 
-- [room subscription manager](room_subscription_manager.md) (1 shared connections)
+- [Security Validator Tests](Security_Validator_Tests.md) (1 shared connections)
+- [command communication models](command_communication_models.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager.py`
+- `server/tests/unit/validators/test_security_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

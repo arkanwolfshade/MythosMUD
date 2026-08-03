@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_evaluate_equality_not_equality()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test _evaluate_equality() returns None for non-equality condition.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **mock_skill_repo()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
+- **Mock SkillRepository returning catalog.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
 
 ## Relationships
 
-- [npc behavior engine](npc_behavior_engine.md) (1 shared connections)
-- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
+- [skill service game](skill_service_game.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_behavior_engine.py`
+- `server/tests/unit/game/test_skill_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

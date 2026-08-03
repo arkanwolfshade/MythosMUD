@@ -1,53 +1,52 @@
 # subject nats manager
 
-> 49 nodes
+> 32 nodes
 
 ## Key Concepts
 
-- **PatternNotFoundError** (21 connections) — `server/services/nats_subject_manager/exceptions.py`
-- **MissingParameterError** (17 connections) — `server/services/nats_subject_manager/exceptions.py`
-- **InvalidPatternError** (17 connections) — `server/services/nats_subject_manager/exceptions.py`
-- **NATSSubjectError** (16 connections) — `server/services/nats_subject_manager/exceptions.py`
-- **test_nats_subject_exceptions.py** (16 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
-- **test_exception_hierarchy()** (7 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
-- **test_exceptions_can_be_raised()** (6 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
-- **test_exceptions_can_be_caught_by_base()** (5 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
-- **test_pattern_not_found_error()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
-- **test_missing_parameter_error_single()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
-- **test_invalid_pattern_error()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
-- **test_subject_validation_error()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
-- **.register_pattern()** (3 connections) — `server/services/nats_subject_manager/manager.py`
-- **.get_subscription_pattern()** (3 connections) — `server/services/nats_subject_manager/manager.py`
-- **test_build_subject_pattern_not_found()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- **test_build_subject_missing_parameter()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- **test_register_pattern_duplicate_name()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- **test_register_pattern_invalid_format()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- **test_register_pattern_missing_placeholder()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- **test_get_pattern_info_not_found()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- **test_get_subscription_pattern_not_found()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- **test_nats_subject_error()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
-- **test_missing_parameter_error_multiple()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
-- **.__init__()** (2 connections) — `server/services/nats_subject_manager/exceptions.py`
-- **.__init__()** (2 connections) — `server/services/nats_subject_manager/exceptions.py`
-- *... and 24 more nodes in this community*
+- **validate_message_content()** (21 connections) — `server/validators/security_validator.py`
+- **.validate_message()** (3 connections) — `server/models/command_communication.py`
+- **.validate_message()** (3 connections) — `server/models/command_communication.py`
+- **.validate_message()** (3 connections) — `server/models/command_communication.py`
+- **.validate_message()** (3 connections) — `server/models/command_communication.py`
+- **.validate_message()** (3 connections) — `server/models/command_communication.py`
+- **test_validate_message_content_empty()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_validate_message_content_normal()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_validate_message_content_rejects_html_tags()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_validate_message_content_rejects_angle_brackets()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_validate_message_content_rejects_sql_injection()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_validate_message_content_rejects_shell_metacharacters()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_validate_message_content_rejects_xss_patterns()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_validate_message_content_rejects_javascript_urls()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_validate_message_content_rejects_path_traversal()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_validate_message_content_allows_safe_special_chars()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Validate message content for security using centralized validation.** (1 connections) — `server/models/command_communication.py`
+- **Validate message content for security using centralized validation.** (1 connections) — `server/models/command_communication.py`
+- **Validate system message content for security using centralized validation.** (1 connections) — `server/models/command_communication.py`
+- **Validate message content for security using centralized validation.** (1 connections) — `server/models/command_communication.py`
+- **Validate message content for security using centralized validation.** (1 connections) — `server/models/command_communication.py`
+- **Test validating empty message content.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Test validating normal message content.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Test that validate_message_content rejects HTML tags.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Test that validate_message_content rejects angle brackets.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [manager subject services](manager_subject_services.md) (32 shared connections)
-- [command player state](command_player_state.md) (4 shared connections)
-- [auth users rationale](auth_users_rationale.md) (4 shared connections)
+- [Security Validator Tests](Security_Validator_Tests.md) (11 shared connections)
+- [command communication models](command_communication_models.md) (8 shared connections)
+- [npc behavior engine](npc_behavior_engine.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/nats_subject_manager/exceptions.py`
-- `server/services/nats_subject_manager/manager.py`
-- `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
+- `server/models/command_communication.py`
+- `server/tests/unit/validators/test_security_validator.py`
+- `server/validators/security_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 151 (83%)
-- INFERRED: 31 (17%)
+- EXTRACTED: 80 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

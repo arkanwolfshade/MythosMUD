@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_stop_success()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test stop() successfully stops handler.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_execute_idle_movement_no_exit_selected()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **Test execute_idle_movement() when no exit is selected.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
 
 ## Relationships
 
-- [nats message handler](nats_message_handler.md) (1 shared connections)
+- [config models player](config_models_player.md) (1 shared connections)
+- [idle movement npc](idle_movement_npc.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/tests/unit/npc/test_idle_movement.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

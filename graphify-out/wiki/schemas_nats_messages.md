@@ -1,6 +1,6 @@
 # schemas nats messages
 
-> 54 nodes
+> 56 nodes
 
 ## Key Concepts
 
@@ -9,6 +9,7 @@
 - **ChatMessageSchema** (13 connections) — `server/schemas/realtime/nats_messages.py`
 - **BaseMessageSchema** (11 connections) — `server/schemas/realtime/nats_messages.py`
 - **EventMessageSchema** (11 connections) — `server/schemas/realtime/nats_messages.py`
+- **__init__.py** (9 connections) — `server/schemas/realtime/__init__.py`
 - **nats_messages.py** (9 connections) — `server/schemas/realtime/nats_messages.py`
 - **validate_chat_message()** (7 connections) — `server/schemas/realtime/nats_messages.py`
 - **validate_event_message()** (7 connections) — `server/schemas/realtime/nats_messages.py`
@@ -28,26 +29,27 @@
 - **test_chat_message_schema_accepts_speaker_kind_and_party_id()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
 - **test_event_message_schema()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
 - **test_event_message_schema_validate_event_type()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
-- **.validate_timestamp()** (2 connections) — `server/schemas/realtime/nats_messages.py`
-- *... and 29 more nodes in this community*
+- *... and 31 more nodes in this community*
 
 ## Relationships
 
-- [command inventory factories](command_inventory_factories.md) (4 shared connections)
-- [auth rationale access](auth_rationale_access.md) (2 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (2 shared connections)
+- [combat commands handler](combat_commands_handler.md) (5 shared connections)
+- [command inventory models](command_inventory_models.md) (4 shared connections)
+- [circuit breaker realtime](circuit_breaker_realtime.md) (2 shared connections)
+- [admin auth service](admin_auth_service.md) (1 shared connections)
+- [broker infrastructure nats](broker_infrastructure_nats.md) (1 shared connections)
 - [infrastructure nats broker](infrastructure_nats_broker.md) (1 shared connections)
-- [message nats handler](message_nats_handler.md) (1 shared connections)
 
 ## Source Files
 
+- `server/schemas/realtime/__init__.py`
 - `server/schemas/realtime/nats_messages.py`
 - `server/tests/unit/schemas/test_nats_messages.py`
 
 ## Audit Trail
 
-- EXTRACTED: 172 (93%)
-- INFERRED: 12 (7%)
+- EXTRACTED: 182 (94%)
+- INFERRED: 12 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

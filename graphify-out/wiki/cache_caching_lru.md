@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_parse_command_string_unexpected_error()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
-- **Test _parse_command_string handles unexpected errors.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **mock_player_spell_repository()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Create a mock player spell repository.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
 
 ## Relationships
 
-- [command service commands](command_service_commands.md) (1 shared connections)
+- [commands magic rationale](commands_magic_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_service.py`
+- `server/tests/unit/commands/test_magic_commands.py`
 
 ## Audit Trail
 

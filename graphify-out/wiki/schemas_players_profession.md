@@ -4,26 +4,27 @@
 
 ## Key Concepts
 
-- **.unsubscribe_from_subzone()** (4 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **.cleanup_empty_subzone_subscriptions()** (4 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **.get_players_in_subzone()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **Unsubscribe from local channel messages for a specific sub-zone.          Args:** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **Get list of players currently in a specific sub-zone.          Args:** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **Clean up sub-zone subscriptions that have no active players.** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **._despawn_npc()** (4 connections) — `server/services/npc_combat_lifecycle.py`
+- **.despawn_npc_safely()** (3 connections) — `server/services/npc_combat_lifecycle.py`
+- **.get_npc_lifecycle_manager()** (3 connections) — `server/services/player_combat_service_support.py`
+- **Despawn NPC with defensive error handling.          Args:             npc_id: ID** (1 connections) — `server/services/npc_combat_lifecycle.py`
+- **Despawn an NPC.          Args:             npc_id: ID of the NPC to despawn** (1 connections) — `server/services/npc_combat_lifecycle.py`
+- **Return lifecycle manager (sync); may be wrapped by asyncio.to_thread.** (1 connections) — `server/services/player_combat_service_support.py`
 
 ## Relationships
 
-- [handler realtime nats](handler_realtime_nats.md) (3 shared connections)
-- [quests players rationale](quests_players_rationale.md) (1 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [combat attack handler](combat_attack_handler.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/nats_message_handler_subscriptions.py`
+- `server/services/npc_combat_lifecycle.py`
+- `server/services/player_combat_service_support.py`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 11 (85%)
+- INFERRED: 2 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

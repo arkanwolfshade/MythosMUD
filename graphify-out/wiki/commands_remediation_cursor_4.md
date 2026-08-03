@@ -1,12 +1,14 @@
 # commands remediation cursor
 
-> 3 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **8. Error Handling and Debugging** (3 connections) — `.cursor/commands/server-test-remediation.md`
-- **Test Debugging** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **Common Debug Commands** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **4. Common Fix Patterns** (5 connections) — `.cursor/commands/server-test-remediation.md`
+- **Database Test Patterns** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **Authentication Test Patterns** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **WebSocket Test Patterns** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **Game Logic Test Patterns** (1 connections) — `.cursor/commands/server-test-remediation.md`
 
 ## Relationships
 
@@ -18,7 +20,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

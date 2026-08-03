@@ -1,30 +1,23 @@
 # commands admin shutdown
 
-> 8 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **calculate_notification_times()** (7 connections) — `server/commands/admin_shutdown_command.py`
-- **test_calculate_notification_times_short()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_calculate_notification_times_long()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_calculate_notification_times_sorted()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Calculate notification times for countdown.      Notifications occur:     - Ever** (1 connections) — `server/commands/admin_shutdown_command.py`
-- **Test calculate_notification_times() for short countdown.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Test calculate_notification_times() for long countdown.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Test calculate_notification_times() returns sorted descending.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **mock_spell_learning_service()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Create a mock spell learning service.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
 
 ## Relationships
 
-- [shutdown admin command](shutdown_admin_command.md) (6 shared connections)
+- [commands magic rationale](commands_magic_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/admin_shutdown_command.py`
-- `server/tests/unit/commands/test_admin_shutdown_command.py`
+- `server/tests/unit/commands/test_magic_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

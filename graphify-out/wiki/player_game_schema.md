@@ -19,7 +19,7 @@
 - [target services resolution](target_services_resolution.md) (4 shared connections)
 - [persistence container helpers](persistence_container_helpers.md) (3 shared connections)
 - [subject admin controller](subject_admin_controller.md) (2 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (1 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (1 shared connections)
 
 ## Source Files
 

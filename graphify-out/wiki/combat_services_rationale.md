@@ -1,56 +1,53 @@
 # combat services rationale
 
-> 41 nodes
+> 77 nodes
 
 ## Key Concepts
 
-- **combat_flee_handler.py** (22 connections) — `server/services/combat_flee_handler.py`
-- **test_combat_flee_handler.py** (17 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
-- **execute_voluntary_flee()** (15 connections) — `server/services/combat_flee_handler.py`
-- **try_voluntary_flee_roll()** (11 connections) — `server/services/combat_flee_handler.py`
-- **_make_participant()** (11 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
-- **_check_involuntary_flee_with_session()** (8 connections) — `server/services/combat_flee_handler.py`
-- **lucidity_command_disruption.py** (8 connections) — `server/services/lucidity_command_disruption.py`
-- **_involuntary_flee_on_cooldown()** (5 connections) — `server/services/combat_flee_handler.py`
-- **test_try_voluntary_flee_roll_zero_exits_returns_false()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
-- **test_try_voluntary_flee_roll_roll_above_chance_fails()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
-- **test_try_voluntary_flee_roll_roll_below_chance_succeeds()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
-- **test_try_voluntary_flee_roll_opponents_reduce_chance()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
-- **test_try_voluntary_flee_roll_dead_opponent_not_counted()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
-- **test_execute_voluntary_flee_no_room_returns_false()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
-- **test_execute_voluntary_flee_no_exits_returns_false()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
-- **UUID** (4 connections)
-- **should_involuntary_flee()** (4 connections) — `server/services/lucidity_command_disruption.py`
-- **Any** (2 connections)
-- **should_misfire_command()** (2 connections) — `server/services/lucidity_command_disruption.py`
-- **get_misfire_message()** (2 connections) — `server/services/lucidity_command_disruption.py`
-- **can_perform_action()** (2 connections) — `server/services/lucidity_command_disruption.py`
-- **UUID** (2 connections)
-- **Combat flee handler for involuntary and voluntary flee logic.  Handles checking** (1 connections) — `server/services/combat_flee_handler.py`
-- **Roll for voluntary flee success (no side effects).      Formula: base + (bonus *** (1 connections) — `server/services/combat_flee_handler.py`
-- **Execute voluntary flee for a combat participant (shared by /flee command and fle** (1 connections) — `server/services/combat_flee_handler.py`
-- *... and 16 more nodes in this community*
+- **test_npc_utils.py** (30 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **get_zone_key_from_room_id()** (17 connections) — `server/npc/npc_utils.py`
+- **extract_npc_metadata()** (12 connections) — `server/npc/npc_utils.py`
+- **extract_definition_id_from_npc()** (12 connections) — `server/npc/npc_utils.py`
+- **extract_room_id_from_npc()** (11 connections) — `server/npc/npc_utils.py`
+- **npc_utils.py** (8 connections) — `server/npc/npc_utils.py`
+- **.despawn_npc()** (8 connections) — `server/npc/population_control.py`
+- **._get_active_npcs_from_lifecycle_manager()** (6 connections) — `server/npc/population_control.py`
+- **._should_remove_inactive_npc()** (5 connections) — `server/npc/population_control.py`
+- **.cleanup_inactive_npcs()** (5 connections) — `server/npc/population_control.py`
+- **.is_required()** (4 connections) — `server/models/npc.py`
+- **._update_population_stats_for_despawn()** (4 connections) — `server/npc/population_control.py`
+- **Any** (3 connections)
+- **_stable_room_id_for_zone()** (3 connections) — `server/npc/npc_utils.py`
+- **.get_zone_population_summary()** (3 connections) — `server/npc/population_control.py`
+- **test_extract_room_id_from_npc_current_room()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_room_id_from_npc_current_room_id()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_room_id_from_npc_room_id()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_room_id_from_npc_not_found()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_room_id_from_npc_non_string()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_npc_metadata_valid()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_npc_metadata_defaults()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_npc_metadata_non_string_type()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_npc_metadata_truthy_required()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- **test_extract_npc_metadata_none_required()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
+- *... and 52 more nodes in this community*
 
 ## Relationships
 
-- [Item Instances](Item_Instances.md) (23 shared connections)
-- [lucidity services helpers](lucidity_services_helpers.md) (4 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (4 shared connections)
-- [spell game magic](spell_game_magic.md) (3 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (2 shared connections)
-- [combat flee commands](combat_flee_commands.md) (2 shared connections)
-- [target resolution service](target_resolution_service.md) (1 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (12 shared connections)
+- [npc spawn validator](npc_spawn_validator.md) (3 shared connections)
+- [rate limiter realtime](rate_limiter_realtime.md) (2 shared connections)
 
 ## Source Files
 
-- `server/services/combat_flee_handler.py`
-- `server/services/lucidity_command_disruption.py`
-- `server/tests/unit/services/test_combat_flee_handler.py`
+- `server/models/npc.py`
+- `server/npc/npc_utils.py`
+- `server/npc/population_control.py`
+- `server/tests/unit/npc/test_npc_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 168 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 237 (98%)
+- INFERRED: 4 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

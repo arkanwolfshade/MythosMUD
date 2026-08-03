@@ -1,6 +1,6 @@
 # spawn npc services
 
-> 35 nodes
+> 37 nodes
 
 ## Key Concepts
 
@@ -15,6 +15,7 @@
 - **.get_npc_definition()** (7 connections) — `server/services/npc_service/definition_crud.py`
 - **._build_npc_update_data()** (7 connections) — `server/services/npc_service/definition_crud.py`
 - **.get_npc_definition_by_name()** (5 connections) — `server/services/npc_service/definition_crud.py`
+- **.get_npc_definitions_by_sub_zone()** (5 connections) — `server/services/npc_service/queries.py`
 - **._log_npc_definition_created()** (4 connections) — `server/services/npc_service/definition_crud.py`
 - **._add_simple_field()** (4 connections) — `server/services/npc_service/definition_crud.py`
 - **Any** (4 connections)
@@ -22,28 +23,31 @@
 - **.delete_npc_definition()** (4 connections) — `server/services/npc_service/definition_crud.py`
 - **._validate_create_npc_definition_params()** (3 connections) — `server/services/npc_service/definition_crud.py`
 - **._validate_npc_update_params()** (3 connections) — `server/services/npc_service/definition_crud.py`
-- **Any** (2 connections)
+- **AsyncSession** (3 connections)
 - **Mixin providing NPC definition CRUD operations.** (1 connections) — `server/services/npc_service/definition_crud.py`
 - **Get all NPC definitions.** (1 connections) — `server/services/npc_service/definition_crud.py`
 - **Get a specific NPC definition by ID.** (1 connections) — `server/services/npc_service/definition_crud.py`
 - **Get an NPC definition by name (case-insensitive).** (1 connections) — `server/services/npc_service/definition_crud.py`
 - **Create a new NPC definition.** (1 connections) — `server/services/npc_service/definition_crud.py`
-- **Execute create_npc_definition stored procedure and return the created definition** (1 connections) — `server/services/npc_service/definition_crud.py`
-- *... and 10 more nodes in this community*
+- *... and 12 more nodes in this community*
 
 ## Relationships
 
-- [Realtime Subscribers](Realtime_Subscribers.md) (22 shared connections)
-- [npc populate databases](npc_populate_databases.md) (3 shared connections)
+- [command inventory factories](command_inventory_factories.md) (13 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (10 shared connections)
+- [Database Config](Database_Config.md) (3 shared connections)
+- [Magic Spell Service](Magic_Spell_Service.md) (1 shared connections)
+- [models npc rationale](models_npc_rationale.md) (1 shared connections)
 
 ## Source Files
 
 - `server/services/npc_service/definition_crud.py`
+- `server/services/npc_service/queries.py`
 - `server/services/npc_service_models.py`
 
 ## Audit Trail
 
-- EXTRACTED: 140 (99%)
+- EXTRACTED: 147 (99%)
 - INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 

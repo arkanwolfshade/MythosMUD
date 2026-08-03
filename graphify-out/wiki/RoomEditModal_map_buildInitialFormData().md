@@ -23,10 +23,8 @@
 
 ## Relationships
 
-- [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (4 shared connections)
-- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (3 shared connections)
-- [taunt combat commands](taunt_combat_commands.md) (2 shared connections)
-- [map ExitEdge nodes](map_ExitEdge_nodes.md) (1 shared connections)
+- [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (5 shared connections)
+- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (5 shared connections)
 
 ## Source Files
 

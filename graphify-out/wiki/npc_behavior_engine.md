@@ -1,57 +1,38 @@
 # npc behavior engine
 
-> 22 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **BehaviorEngine** (73 connections) — `server/npc/behavior_engine.py`
-- **.get_behavior_engine()** (3 connections) — `server/npc/npc_base.py`
-- **test_add_rule_replaces_existing()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **test_add_rule_handles_exception()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **test_get_rules()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **test_evaluate_equality_true()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **test_evaluate_numeric_comparison_non_numeric()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **test_get_applicable_rules_matching()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **test_get_applicable_rules_priority_order()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **.__init__()** (2 connections) — `server/npc/behavior_engine.py`
-- **.remove_rule()** (2 connections) — `server/npc/behavior_engine.py`
-- **Deterministic behavior engine for NPCs.      This engine evaluates rules based o** (1 connections) — `server/npc/behavior_engine.py`
-- **Initialize the behavior engine.** (1 connections) — `server/npc/behavior_engine.py`
-- **Remove a behavior rule from the engine.          Args:             rule_name: Na** (1 connections) — `server/npc/behavior_engine.py`
-- **Get the behavior engine for this NPC.** (1 connections) — `server/npc/npc_base.py`
-- **Test add_rule() replaces existing rule with same name.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test add_rule() handles exceptions gracefully.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test get_rules() returns copy of rules.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test _evaluate_equality() returns True for matching condition.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test _evaluate_numeric_comparison() raises ValueError for non-numeric values.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test get_applicable_rules() returns matching rules.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test get_applicable_rules() returns rules in priority order.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **ChannelBroadcastingStrategyFactory** (11 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **test_channel_broadcasting_strategy_factory_get_strategy_unknown()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **.register_strategy()** (3 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **test_channel_broadcasting_strategy_factory_init()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **test_channel_broadcasting_strategy_factory_register_strategy()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **test_global_channel_strategy_factory_instance()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **Factory for creating channel broadcasting strategies.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Register a new strategy for a channel type.          Args:             channel_t** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Test ChannelBroadcastingStrategyFactory.__init__() initializes with default stra** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **Test ChannelBroadcastingStrategyFactory.get_strategy() returns UnknownChannelStr** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **Test ChannelBroadcastingStrategyFactory.register_strategy() registers new strate** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **Test global channel_strategy_factory instance exists.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
 
 ## Relationships
 
-- [npc behavior engine](npc_behavior_engine.md) (29 shared connections)
-- [behavior engine npc](behavior_engine_npc.md) (22 shared connections)
-- [realtime player event](realtime_player_event.md) (4 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (3 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (2 shared connections)
-- [game room service](game_room_service.md) (2 shared connections)
-- [rate limiter realtime](rate_limiter_realtime.md) (1 shared connections)
-- [player services death](player_services_death.md) (1 shared connections)
-- [event bus events](event_bus_events.md) (1 shared connections)
-- [events event bus](events_event_bus.md) (1 shared connections)
-- [room game service](room_game_service.md) (1 shared connections)
-- [room infrastructure persistence](room_infrastructure_persistence.md) (1 shared connections)
+- [channel realtime broadcasting](channel_realtime_broadcasting.md) (5 shared connections)
+- [channel broadcasting strategies](channel_broadcasting_strategies.md) (4 shared connections)
+- [message handler factory](message_handler_factory.md) (1 shared connections)
+- [channel broadcasting realtime](channel_broadcasting_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/behavior_engine.py`
-- `server/npc/npc_base.py`
-- `server/tests/unit/npc/test_behavior_engine.py`
+- `server/realtime/channel_broadcasting_strategies.py`
+- `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 111 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 30 (91%)
+- INFERRED: 3 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

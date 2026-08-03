@@ -1,42 +1,50 @@
 # lucidity npc combat
 
-> 16 nodes
+> 18 nodes
 
 ## Key Concepts
 
-- **test_logging_processors.py** (36 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_add_request_context_adds_timestamp()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_add_request_context_preserves_timestamp()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_add_request_context_adds_logger_name()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_add_request_context_adds_request_id()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_add_request_context_preserves_request_id()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **mock_player_service()** (2 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **sample_event_dict()** (2 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Unit tests for logging processors.  Tests the logging processors for sanitizing** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Create a mock player service.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Create a sample event dictionary.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Test add_request_context() adds timestamp when missing.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Test add_request_context() preserves existing timestamp.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Test add_request_context() adds logger_name.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Test add_request_context() adds request_id when missing.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Test add_request_context() preserves existing request_id.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **test_database_helpers.py** (46 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **get_database_path()** (16 connections) — `server/database_helpers.py`
+- **test_get_database_path_unsupported_url_raises()** (4 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **test_get_database_path_empty_string_url_raises()** (4 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **test_get_database_path_postgresql_returns_none()** (3 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **test_get_database_path_none_url_uses_manager()** (3 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **test_get_database_path_uses_database_manager_when_no_test_url()** (3 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **test_get_database_path_uses_test_url_when_available()** (3 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **test_get_database_path_uses_module_attribute_fallback()** (3 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **Get the database file path.      DEPRECATED: PostgreSQL does not use file paths.** (1 connections) — `server/database_helpers.py`
+- **Unit tests for database_helpers module.  Tests module-level utility functions fo** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **Test get_database_path returns None for PostgreSQL URLs.** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **Test get_database_path raises ValidationError for unsupported URL schemes.** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **Test get_database_path uses DatabaseManager when URL state is None.** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **Test get_database_path falls back to DatabaseManager when no test URL.** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **Test get_database_path raises ValidationError when URL is empty string.** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **Test get_database_path uses test URL from get_test_database_url when available.** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **Test get_database_path falls back to module _database_url attribute.** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
 
 ## Relationships
 
-- [logging processors structured](logging_processors_structured.md) (14 shared connections)
-- [monitoring dashboard rationale](monitoring_dashboard_rationale.md) (9 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (6 shared connections)
-- [services ascii map](services_ascii_map.md) (3 shared connections)
-- [npc populate databases](npc_populate_databases.md) (1 shared connections)
+- [manager subject services](manager_subject_services.md) (11 shared connections)
+- [command commands talk](command_commands_talk.md) (6 shared connections)
+- [command inventory models](command_inventory_models.md) (5 shared connections)
+- [room persistence loader](room_persistence_loader.md) (5 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (4 shared connections)
+- [memory lifespan app](memory_lifespan_app.md) (4 shared connections)
+- [commands inventory put](commands_inventory_put.md) (4 shared connections)
+- [npc idle movement](npc_idle_movement.md) (3 shared connections)
+- [game models enums](game_models_enums.md) (3 shared connections)
+- [Database Config](Database_Config.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/structured_logging/test_logging_processors.py`
+- `server/database_helpers.py`
+- `server/tests/unit/infrastructure/test_database_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 63 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 92 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

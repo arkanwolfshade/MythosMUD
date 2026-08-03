@@ -1,64 +1,58 @@
 # combat services turn
 
-> 70 nodes
+> 90 nodes
 
 ## Key Concepts
 
-- **admin_teleport_commands.py** (38 connections) — `server/commands/admin_teleport_commands.py`
-- **get_admin_actions_logger()** (25 connections) — `server/structured_logging/admin_actions_logger.py`
-- **teleport_helpers.py** (23 connections) — `server/commands/teleport_helpers.py`
-- **goto_helpers.py** (20 connections) — `server/commands/goto_helpers.py`
-- **handle_teleport_command()** (19 connections) — `server/commands/admin_teleport_commands.py`
-- **admin_actions_logger.py** (15 connections) — `server/structured_logging/admin_actions_logger.py`
-- **validate_admin_permission()** (13 connections) — `server/commands/admin_permission_utils.py`
-- **admin_teleport_utils.py** (13 connections) — `server/commands/admin_teleport_utils.py`
-- **broadcast_teleport_effects()** (11 connections) — `server/commands/admin_teleport_utils.py`
-- **get_online_player_by_display_name()** (10 connections) — `server/commands/admin_teleport_utils.py`
-- **notify_player_of_teleport()** (10 connections) — `server/commands/admin_teleport_utils.py`
-- **handle_confirm_teleport_command()** (9 connections) — `server/commands/admin_teleport_commands.py`
-- **handle_confirm_goto_command()** (9 connections) — `server/commands/admin_teleport_commands.py`
-- **execute_goto_teleport()** (9 connections) — `server/commands/goto_helpers.py`
-- **Any** (9 connections)
-- **execute_confirm_teleport()** (9 connections) — `server/commands/teleport_helpers.py`
-- **admin_permission_utils.py** (8 connections) — `server/commands/admin_permission_utils.py`
-- **execute_confirm_goto()** (8 connections) — `server/commands/goto_helpers.py`
-- **update_player_room_location()** (8 connections) — `server/commands/teleport_helpers.py`
-- **Any** (7 connections)
-- **log_goto_failure()** (7 connections) — `server/commands/goto_helpers.py`
-- **broadcast_teleport_updates()** (7 connections) — `server/commands/teleport_helpers.py`
-- **validate_goto_context()** (6 connections) — `server/commands/goto_helpers.py`
-- **resolve_goto_target()** (6 connections) — `server/commands/goto_helpers.py`
-- **validate_confirm_goto_context()** (6 connections) — `server/commands/goto_helpers.py`
-- *... and 45 more nodes in this community*
+- **test_look_player.py** (32 connections) — `server/tests/unit/commands/test_look_player.py`
+- **look_player.py** (23 connections) — `server/commands/look_player.py`
+- **_format_player_look_display()** (23 connections) — `server/commands/look_player.py`
+- **_select_target_player()** (17 connections) — `server/commands/look_player.py`
+- **_handle_player_look()** (13 connections) — `server/commands/look_player.py`
+- **_try_lookup_player_implicit()** (12 connections) — `server/commands/look_player.py`
+- **test_look_player_helpers.py** (12 connections) — `server/tests/unit/commands/test_look_player_helpers.py`
+- **_get_visible_equipment()** (11 connections) — `server/commands/look_helpers.py`
+- **_get_players_in_room()** (11 connections) — `server/commands/look_player.py`
+- **_find_matching_players()** (9 connections) — `server/commands/look_player.py`
+- **Any** (6 connections)
+- **test_warded_indicator_in_look_player()** (4 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
+- **test_get_players_in_room_success()** (3 connections) — `server/tests/unit/commands/test_look_player.py`
+- **test_get_players_in_room_empty()** (3 connections) — `server/tests/unit/commands/test_look_player.py`
+- **test_get_players_in_room_invalid_uuid()** (3 connections) — `server/tests/unit/commands/test_look_player.py`
+- **test_get_players_in_room_non_iterable()** (3 connections) — `server/tests/unit/commands/test_look_player.py`
+- **test_find_matching_players_success()** (3 connections) — `server/tests/unit/commands/test_look_player.py`
+- **test_find_matching_players_no_match()** (3 connections) — `server/tests/unit/commands/test_look_player.py`
+- **test_select_target_player_single_match()** (3 connections) — `server/tests/unit/commands/test_look_player.py`
+- **test_select_target_player_no_matches()** (3 connections) — `server/tests/unit/commands/test_look_player.py`
+- **test_select_target_player_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_player.py`
+- **test_select_target_player_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_player.py`
+- **test_select_target_player_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_player.py`
+- **test_format_player_look_display_basic()** (3 connections) — `server/tests/unit/commands/test_look_player.py`
+- **test_format_player_look_display_with_equipment()** (3 connections) — `server/tests/unit/commands/test_look_player.py`
+- *... and 65 more nodes in this community*
 
 ## Relationships
 
-- [commands alias rationale](commands_alias_rationale.md) (14 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (12 shared connections)
-- [commands admin mute](commands_admin_mute.md) (9 shared connections)
-- [commands inventory helpers](commands_inventory_helpers.md) (6 shared connections)
-- [npc populate databases](npc_populate_databases.md) (4 shared connections)
-- [commands admin helpers](commands_admin_helpers.md) (4 shared connections)
-- [combat services messaging](combat_services_messaging.md) (4 shared connections)
-- [command admin setlucidity](command_admin_setlucidity.md) (4 shared connections)
-- [admin commands setstat](admin_commands_setstat.md) (2 shared connections)
-- [admin structured logging](admin_structured_logging.md) (2 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
-- [shutdown admin command](shutdown_admin_command.md) (1 shared connections)
+- [look command commands](look_command_commands.md) (18 shared connections)
+- [player occupant processor](player_occupant_processor.md) (7 shared connections)
+- [command utility models](command_utility_models.md) (4 shared connections)
+- [grace period disconnect](grace_period_disconnect.md) (3 shared connections)
+- [look helpers commands](look_helpers_commands.md) (3 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/admin_permission_utils.py`
-- `server/commands/admin_teleport_commands.py`
-- `server/commands/admin_teleport_utils.py`
-- `server/commands/goto_helpers.py`
-- `server/commands/teleport_helpers.py`
-- `server/structured_logging/admin_actions_logger.py`
+- `server/commands/look_helpers.py`
+- `server/commands/look_player.py`
+- `server/tests/unit/commands/test_look_player.py`
+- `server/tests/unit/commands/test_look_player_helpers.py`
+- `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
+- `server/tests/unit/realtime/test_visual_indicator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 392 (99%)
-- INFERRED: 3 (1%)
+- EXTRACTED: 315 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

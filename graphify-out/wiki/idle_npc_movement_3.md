@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **test_unsubscribe_from_room_error()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **Test unsubscribe_from_room() handles errors gracefully.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_get_room_subscribers()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **Test get_room_subscribers() returns subscribers.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
 
 ## Relationships
 

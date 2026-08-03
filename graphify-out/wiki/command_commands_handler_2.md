@@ -19,7 +19,7 @@
 
 ## Relationships
 
-- [command handler unified](command_handler_unified.md) (6 shared connections)
+- [command commands handler](command_commands_handler.md) (6 shared connections)
 
 ## Source Files
 

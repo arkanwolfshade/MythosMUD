@@ -1,38 +1,52 @@
 # player look commands
 
-> 14 nodes
+> 54 nodes
 
 ## Key Concepts
 
-- **test_visual_indicator.py** (13 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
-- **test_filter_other_players_adds_linkdead_indicator()** (3 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
-- **test_filter_other_players_no_linkdead_when_not_in_grace_period()** (3 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
-- **test_format_player_look_display_adds_linkdead_indicator()** (3 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
-- **test_format_player_look_display_no_linkdead_when_not_in_grace_period()** (3 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
-- **test_player_occupant_processor_adds_linkdead_indicator()** (3 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
-- **test_player_occupant_processor_no_linkdead_when_not_in_grace_period()** (3 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
-- **Unit tests for visual indicator (linkdead) display.  Tests that "(linkdead)" ind** (1 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
-- **Test _filter_other_players() adds (linkdead) indicator for grace period players.** (1 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
-- **Test _filter_other_players() does not add (linkdead) when player not in grace pe** (1 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
-- **Test _format_player_look_display() adds (linkdead) indicator for grace period pl** (1 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
-- **Test _format_player_look_display() does not add (linkdead) when player not in gr** (1 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
-- **Test PlayerOccupantProcessor adds (linkdead) indicator for grace period players.** (1 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
-- **Test PlayerOccupantProcessor does not add (linkdead) when player not in grace pe** (1 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
+- **test_health_service.py** (43 connections) — `server/tests/unit/services/test_health_service.py`
+- **get_health_service()** (9 connections) — `server/services/health_service.py`
+- **test_get_health_service_creates_instance()** (4 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_get_health_service_returns_singleton()** (3 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_get_health_service_updates_connection_manager()** (3 connections) — `server/tests/unit/services/test_health_service.py`
+- **mock_connection_manager()** (2 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_health_service_initialization()** (2 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_get_server_uptime()** (2 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_get_memory_usage_success()** (2 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_get_memory_usage_error()** (2 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_get_cpu_usage_success()** (2 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_get_cpu_usage_error()** (2 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_check_database_health_healthy()** (2 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_check_database_health_degraded()** (2 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_check_database_health_unhealthy()** (2 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_check_database_health_error()** (2 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_check_connections_health_healthy()** (2 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_check_connections_health_degraded()** (2 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_check_connections_health_unhealthy()** (2 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_check_connections_health_no_manager()** (2 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_check_connections_health_error()** (2 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_get_server_component_health_healthy()** (2 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_get_server_component_health_degraded()** (2 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_get_server_component_health_unhealthy()** (2 connections) — `server/tests/unit/services/test_health_service.py`
+- **test_get_database_component_health()** (2 connections) — `server/tests/unit/services/test_health_service.py`
+- *... and 29 more nodes in this community*
 
 ## Relationships
 
-- [look helpers commands](look_helpers_commands.md) (4 shared connections)
-- [room look commands](room_look_commands.md) (4 shared connections)
-- [grace period disconnect](grace_period_disconnect.md) (4 shared connections)
+- [grace period login](grace_period_login.md) (15 shared connections)
+- [persistence container extended](persistence_container_extended.md) (4 shared connections)
+- [command combat models](command_combat_models.md) (1 shared connections)
+- [time service rationale](time_service_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_visual_indicator.py`
+- `server/services/health_service.py`
+- `server/tests/unit/services/test_health_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 38 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 132 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

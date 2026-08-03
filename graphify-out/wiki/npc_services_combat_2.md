@@ -4,23 +4,21 @@
 
 ## Key Concepts
 
-- **test_create_teleport_command_too_many_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
-- **Test create_teleport_command() raises error with too many args.** (1 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
+- **test_validate_combat_command_target_too_long()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **Test validate_combat_command with target name too long.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
 
 ## Relationships
 
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
-- [exceptions rationale error](exceptions_rationale_error.md) (1 shared connections)
-- [command models admin](command_models_admin.md) (1 shared connections)
+- [emote models rationale](emote_models_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories_utility.py`
+- `server/tests/unit/validators/test_combat_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (80%)
-- INFERRED: 1 (20%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

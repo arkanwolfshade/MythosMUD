@@ -33,12 +33,11 @@
 
 ## Relationships
 
-- [taunt combat commands](taunt_combat_commands.md) (5 shared connections)
+- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (5 shared connections)
 - [contexts GameTerminalContext useGameTerm](contexts_GameTerminalContext_useGameTerm.md) (5 shared connections)
+- [panels GameClientV2Dock gameLogPanelUtil](panels_GameClientV2Dock_gameLogPanelUtil.md) (3 shared connections)
 - [containers stores containerStore](containers_stores_containerStore.md) (3 shared connections)
 - [stateNormalization stores basic](stateNormalization_stores_basic.md) (3 shared connections)
-- [game terminal lucidity](game_terminal_lucidity.md) (2 shared connections)
-- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (1 shared connections)
 
 ## Source Files
 

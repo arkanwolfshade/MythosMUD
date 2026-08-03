@@ -1,54 +1,56 @@
 # logging examples fastapi
 
-> 45 nodes
+> 34 nodes
 
 ## Key Concepts
 
-- **fastapi_integration.py** (27 connections) — `docs/examples/logging/fastapi_integration.py`
-- **websocket_endpoint()** (9 connections) — `docs/examples/logging/fastapi_integration.py`
-- **HTTPException** (6 connections)
-- **upload_avatar()** (6 connections) — `docs/examples/logging/fastapi_integration.py`
-- **add_request_context()** (5 connections) — `docs/examples/logging/fastapi_integration.py`
-- **create_player()** (5 connections) — `docs/examples/logging/fastapi_integration.py`
-- **http_exception_handler()** (5 connections) — `docs/examples/logging/fastapi_integration.py`
-- **general_exception_handler()** (5 connections) — `docs/examples/logging/fastapi_integration.py`
-- **list_players()** (5 connections) — `docs/examples/logging/fastapi_integration.py`
-- **WebSocket** (5 connections) — `docs/examples/logging/fastapi_integration.py`
-- **Request** (4 connections)
-- **get_player()** (4 connections) — `docs/examples/logging/fastapi_integration.py`
-- **get_current_user()** (4 connections) — `docs/examples/logging/fastapi_integration.py`
-- **log_api_requests()** (3 connections) — `docs/examples/logging/fastapi_integration.py`
-- **auth_service()** (3 connections) — `docs/examples/logging/fastapi_integration.py`
-- **process_websocket_message()** (3 connections) — `docs/examples/logging/fastapi_integration.py`
-- **.verify_token()** (3 connections) — `docs/examples/logging/fastapi_integration.py`
-- **UploadFile** (3 connections) — `docs/examples/logging/fastapi_integration.py`
-- **Exception** (2 connections)
-- **.create_player()** (2 connections) — `docs/examples/logging/fastapi_integration.py`
-- **.get_player()** (2 connections) — `docs/examples/logging/fastapi_integration.py`
-- **.list_players()** (2 connections) — `docs/examples/logging/fastapi_integration.py`
-- **.upload_avatar()** (2 connections) — `docs/examples/logging/fastapi_integration.py`
-- **.accept()** (2 connections) — `docs/examples/logging/fastapi_integration.py`
-- **.receive_text()** (2 connections) — `docs/examples/logging/fastapi_integration.py`
-- *... and 20 more nodes in this community*
+- **InstanceManager** (19 connections) — `server/game/instance_manager.py`
+- **instance_manager.py** (12 connections) — `server/game/instance_manager.py`
+- **.create_instance()** (7 connections) — `server/game/instance_manager.py`
+- **._build_instance_rooms()** (6 connections) — `server/game/instance_manager.py`
+- **.__init__()** (5 connections) — `server/game/instance_manager.py`
+- **Room** (5 connections)
+- **._stable_id_from_room()** (5 connections) — `server/game/instance_manager.py`
+- **spawn_defaults.py** (4 connections) — `server/constants/spawn_defaults.py`
+- **Instance** (4 connections) — `server/game/instance_manager.py`
+- **._get_template_rooms()** (4 connections) — `server/game/instance_manager.py`
+- **._remap_exits()** (4 connections) — `server/game/instance_manager.py`
+- **._stable_id_from_target()** (3 connections) — `server/game/instance_manager.py`
+- **.get_instance()** (3 connections) — `server/game/instance_manager.py`
+- **.get_room_by_id()** (3 connections) — `server/game/instance_manager.py`
+- **UUID** (2 connections)
+- **.destroy_instance()** (2 connections) — `server/game/instance_manager.py`
+- **.get_first_room_id()** (2 connections) — `server/game/instance_manager.py`
+- **.get_exit_room_id()** (2 connections) — `server/game/instance_manager.py`
+- **Shared spawn / respawn room identifiers used by gameplay and E2E seed scripts.** (1 connections) — `server/constants/spawn_defaults.py`
+- **InstanceManager for MythosMUD.  Manages instanced rooms: creates, stores, and de** (1 connections) — `server/game/instance_manager.py`
+- **An instanced set of rooms, unique per player or group.** (1 connections) — `server/game/instance_manager.py`
+- **Manages instanced rooms: create from templates, destroy, and lookup.      Instan** (1 connections) — `server/game/instance_manager.py`
+- **Initialize the instance manager.          Args:             room_cache: Shared r** (1 connections) — `server/game/instance_manager.py`
+- **Create an instance from room templates with the given template_id.          Args** (1 connections) — `server/game/instance_manager.py`
+- **Return template rooms matching instance_template_id.** (1 connections) — `server/game/instance_manager.py`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [System Metrics](System_Metrics.md) (7 shared connections)
-- [commands alias rationale](commands_alias_rationale.md) (5 shared connections)
-- [middleware correlation rationale](middleware_correlation_rationale.md) (4 shared connections)
-- [lucidity active service](lucidity_active_service.md) (3 shared connections)
-- [Error Handling Core](Error_Handling_Core.md) (3 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (1 shared connections)
-- [auth users rationale](auth_users_rationale.md) (1 shared connections)
+- [command inventory factories](command_inventory_factories.md) (4 shared connections)
+- [uuid npc combat](uuid_npc_combat.md) (3 shared connections)
+- [Error Conversion](Error_Conversion.md) (3 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (2 shared connections)
+- [argon2 auth rationale](argon2_auth_rationale.md) (1 shared connections)
+- [item models rationale](item_models_rationale.md) (1 shared connections)
+- [room models instance](room_models_instance.md) (1 shared connections)
+- [npc shopkeeper rationale](npc_shopkeeper_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/examples/logging/fastapi_integration.py`
+- `server/constants/spawn_defaults.py`
+- `server/game/instance_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 137 (96%)
-- INFERRED: 5 (4%)
+- EXTRACTED: 107 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

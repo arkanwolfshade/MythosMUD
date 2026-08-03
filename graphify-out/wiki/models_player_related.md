@@ -1,41 +1,60 @@
 # models player related
 
-> 14 nodes
+> 37 nodes
 
 ## Key Concepts
 
-- **_should_include_npc()** (14 connections) — `server/commands/look_npc.py`
-- **test_should_include_npc_alive_with_name()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_should_include_npc_dead()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_should_include_npc_no_name()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_should_include_npc()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_should_include_npc_no_name()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_should_include_npc_not_alive()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **Check if an NPC should be included in the results (has name and is alive).** (1 connections) — `server/commands/look_npc.py`
-- **Test should_include_npc for alive NPC with name.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test should_include_npc for dead NPC.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test should_include_npc for NPC without name.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test _should_include_npc() returns True for valid NPC.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **Test _should_include_npc() returns False when no name.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **Test _should_include_npc() returns False when not alive.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **player_service()** (23 connections) — `docs/examples/logging/fastapi_integration.py`
+- **party_commands.py** (19 connections) — `server/commands/party_commands.py`
+- **handle_party_command()** (11 connections) — `server/commands/party_commands.py`
+- **Any** (9 connections)
+- **HTTPException** (6 connections)
+- **upload_avatar()** (6 connections) — `docs/examples/logging/fastapi_integration.py`
+- **_get_party_command_context()** (6 connections) — `server/commands/party_commands.py`
+- **_handle_party_invite()** (6 connections) — `server/commands/party_commands.py`
+- **_handle_party_kick()** (6 connections) — `server/commands/party_commands.py`
+- **create_player()** (5 connections) — `docs/examples/logging/fastapi_integration.py`
+- **list_players()** (5 connections) — `docs/examples/logging/fastapi_integration.py`
+- **_handle_party_chat()** (5 connections) — `server/commands/party_commands.py`
+- **_handle_party_list()** (5 connections) — `server/commands/party_commands.py`
+- **get_player()** (4 connections) — `docs/examples/logging/fastapi_integration.py`
+- **get_current_user()** (4 connections) — `docs/examples/logging/fastapi_integration.py`
+- **_get_container()** (4 connections) — `server/commands/party_commands.py`
+- **_get_member_display()** (4 connections) — `server/commands/party_commands.py`
+- **_handle_party_leave()** (3 connections) — `server/commands/party_commands.py`
+- **.create_player()** (2 connections) — `docs/examples/logging/fastapi_integration.py`
+- **.get_player()** (2 connections) — `docs/examples/logging/fastapi_integration.py`
+- **.list_players()** (2 connections) — `docs/examples/logging/fastapi_integration.py`
+- **.upload_avatar()** (2 connections) — `docs/examples/logging/fastapi_integration.py`
+- **Create a new player with enhanced logging.** (1 connections) — `docs/examples/logging/fastapi_integration.py`
+- **Get player information with enhanced logging.** (1 connections) — `docs/examples/logging/fastapi_integration.py`
+- **Get current user with enhanced logging.** (1 connections) — `docs/examples/logging/fastapi_integration.py`
+- *... and 12 more nodes in this community*
 
 ## Relationships
 
-- [npc look commands](npc_look_commands.md) (6 shared connections)
-- [follow service game](follow_service_game.md) (4 shared connections)
-- [commands quest rationale](commands_quest_rationale.md) (2 shared connections)
-- [command parser rationale](command_parser_rationale.md) (1 shared connections)
+- [middleware correlation rationale](middleware_correlation_rationale.md) (10 shared connections)
+- [commands admin mute](commands_admin_mute.md) (8 shared connections)
+- [target resolution service](target_resolution_service.md) (6 shared connections)
+- [command inventory factories](command_inventory_factories.md) (5 shared connections)
+- [command commands handler](command_commands_handler.md) (2 shared connections)
+- [websocket handler realtime](websocket_handler_realtime.md) (2 shared connections)
+- [command factories create](command_factories_create.md) (2 shared connections)
+- [admin command setstat](admin_command_setstat.md) (1 shared connections)
+- [npc commands admin](npc_commands_admin.md) (1 shared connections)
+- [commands emote rationale](commands_emote_rationale.md) (1 shared connections)
+- [realtime game state](realtime_game_state.md) (1 shared connections)
+- [request context realtime](request_context_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/look_npc.py`
-- `server/tests/unit/commands/test_look_npc.py`
-- `server/tests/unit/commands/test_look_npc_helpers.py`
+- `docs/examples/logging/fastapi_integration.py`
+- `server/commands/party_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 39 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 134 (87%)
+- INFERRED: 20 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

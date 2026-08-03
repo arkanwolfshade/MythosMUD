@@ -34,7 +34,7 @@
 ## Relationships
 
 - [realtime game state](realtime_game_state.md) (2 shared connections)
-- [grace period disconnect](grace_period_disconnect.md) (1 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (1 shared connections)
 
 ## Source Files
 

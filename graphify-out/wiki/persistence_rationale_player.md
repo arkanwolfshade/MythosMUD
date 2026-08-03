@@ -1,34 +1,51 @@
 # persistence rationale player
 
-> 12 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **test_grace_period_blocking.py** (8 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
-- **test_check_grace_period_block_blocks_commands()** (3 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
-- **test_check_grace_period_block_allows_commands_when_not_in_grace_period()** (3 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
-- **test_check_grace_period_block_handles_missing_services()** (3 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
-- **test_check_grace_period_block_handles_player_not_found()** (3 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
-- **mock_request()** (2 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
-- **Unit tests for grace period command blocking in unified command handler.  Tests** (1 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
-- **Create a mock request.** (1 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
-- **Test _check_grace_period_block() blocks commands for grace period players.** (1 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
-- **Test _check_grace_period_block() allows commands when player not in grace period** (1 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
-- **Test _check_grace_period_block() handles missing services gracefully.** (1 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
-- **Test _check_grace_period_block() handles player not found gracefully.** (1 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **inventory_put_command.py** (21 connections) — `server/commands/inventory_put_command.py`
+- **handle_put_command()** (12 connections) — `server/commands/inventory_put_command.py`
+- **_put_resolve_container_id()** (9 connections) — `server/commands/inventory_put_command.py`
+- **_put_transfer_finish()** (8 connections) — `server/commands/inventory_put_command.py`
+- **_put_run_validated()** (7 connections) — `server/commands/inventory_put_command.py`
+- **remove_item_from_inventory()** (5 connections) — `server/commands/inventory_command_helpers.py`
+- **PutCommandRuntime** (4 connections) — `server/commands/inventory_put_command.py`
+- **PutValidatedWork** (4 connections) — `server/commands/inventory_put_command.py`
+- **CommandResponse** (4 connections)
+- **UUID** (3 connections)
+- **test_handle_put_command()** (3 connections) — `server/tests/unit/commands/test_inventory_commands.py`
+- **Player** (2 connections)
+- **Remove or update item quantity in player inventory after transfer.** (1 connections) — `server/commands/inventory_command_helpers.py`
+- **Put command: move inventory items into a container.** (1 connections) — `server/commands/inventory_put_command.py`
+- **Services and request scope for put-after-validation.** (1 connections) — `server/commands/inventory_put_command.py`
+- **Validated inventory item and command fields for put.** (1 connections) — `server/commands/inventory_put_command.py`
+- **Locate a room or wearable container id, or return an error response.** (1 connections) — `server/commands/inventory_put_command.py`
+- **Put an item from inventory into a container.** (1 connections) — `server/commands/inventory_put_command.py`
+- **Test handle_put_command() puts item in container.** (1 connections) — `server/tests/unit/commands/test_inventory_commands.py`
 
 ## Relationships
 
-- [command handler unified](command_handler_unified.md) (6 shared connections)
+- [inventory commands command](inventory_commands_command.md) (5 shared connections)
+- [commands inventory command](commands_inventory_command.md) (5 shared connections)
+- [container inventory helpers](container_inventory_helpers.md) (4 shared connections)
+- [commands admin mute](commands_admin_mute.md) (3 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [container find inventory](container_find_inventory.md) (2 shared connections)
+- [commands inventory pickup](commands_inventory_pickup.md) (2 shared connections)
+- [world models rationale](world_models_rationale.md) (1 shared connections)
+- [combat models rationale](combat_models_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- `server/commands/inventory_command_helpers.py`
+- `server/commands/inventory_put_command.py`
+- `server/tests/unit/commands/test_inventory_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 28 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 81 (91%)
+- INFERRED: 8 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

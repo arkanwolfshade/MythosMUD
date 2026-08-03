@@ -1,54 +1,55 @@
 # aggro threat services
 
-> 54 nodes
+> 71 nodes
 
 ## Key Concepts
 
-- **_MagicServiceCore** (42 connections) — `server/game/magic/magic_service.py`
-- **UUID** (20 connections)
-- **Any** (18 connections)
-- **.can_cast_spell()** (10 connections) — `server/game/magic/magic_service.py`
-- **.cast_spell()** (10 connections) — `server/game/magic/magic_service.py`
-- **._execute_instant_or_delayed_cast()** (8 connections) — `server/game/magic/magic_service.py`
-- **._get_spell_and_validate_target()** (7 connections) — `server/game/magic/magic_service.py`
-- **._validate_spell_casting()** (6 connections) — `server/game/magic/magic_service.py`
-- **._start_delayed_cast()** (6 connections) — `server/game/magic/magic_service.py`
-- **._casting_roll_or_fail_result()** (6 connections) — `server/game/magic/magic_service.py`
-- **._send_spell_completion_message()** (6 connections) — `server/game/magic/magic_service.py`
-- **._get_player_and_normalized_stats()** (5 connections) — `server/game/magic/magic_service.py`
-- **._check_mp_sufficient()** (5 connections) — `server/game/magic/magic_service.py`
-- **._check_lucidity_sufficient()** (5 connections) — `server/game/magic/magic_service.py`
-- **._check_player_knows_spell()** (5 connections) — `server/game/magic/magic_service.py`
-- **._check_materials_available()** (5 connections) — `server/game/magic/magic_service.py`
-- **._check_already_casting()** (5 connections) — `server/game/magic/magic_service.py`
-- **._handle_instant_cast()** (5 connections) — `server/game/magic/magic_service.py`
-- **._consume_materials_if_required()** (5 connections) — `server/game/magic/magic_service.py`
-- **._casting_roll()** (5 connections) — `server/game/magic/magic_service.py`
-- **.send_spell_execution_notifications()** (5 connections) — `server/game/magic/magic_service.py`
-- **.interrupt_casting()** (5 connections) — `server/game/magic/magic_service.py`
-- **._get_spell_from_registry()** (4 connections) — `server/game/magic/magic_service.py`
-- **._calculate_initiative_tick()** (4 connections) — `server/game/magic/magic_service.py`
-- **.restore_mp()** (4 connections) — `server/game/magic/magic_service.py`
-- *... and 29 more nodes in this community*
+- **test_lucidity_event_dispatcher.py** (34 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **lucidity_event_dispatcher.py** (18 connections) — `server/services/lucidity_event_dispatcher.py`
+- **send_rescue_update_event()** (18 connections) — `server/services/lucidity_event_dispatcher.py`
+- **send_lucidity_change_event()** (17 connections) — `server/services/lucidity_event_dispatcher.py`
+- **LucidityChangeEventExtras** (12 connections) — `server/services/lucidity_event_dispatcher.py`
+- **send_catatonia_event()** (12 connections) — `server/services/lucidity_event_dispatcher.py`
+- **_dispatch_player_event()** (11 connections) — `server/services/lucidity_event_dispatcher.py`
+- **_lucidity_change_payload_with_liabilities()** (11 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **UUID** (6 connections)
+- **_format_liabilities()** (4 connections) — `server/services/lucidity_event_dispatcher.py`
+- **test_send_lucidity_change_event_with_max_lcd()** (4 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_send_lucidity_change_event_with_liabilities()** (4 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_send_lucidity_change_event_with_reason_and_source()** (4 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_send_lucidity_change_event_with_metadata()** (4 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_format_liabilities_empty()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_format_liabilities_single()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_format_liabilities_multiple_stacks()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_format_liabilities_multiple_entries()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_format_liabilities_invalid_stacks()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_format_liabilities_empty_code()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_send_lucidity_change_event_basic()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_send_lucidity_change_event_string_player_id()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_send_lucidity_change_event_dispatch_error()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_send_catatonia_event_basic()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_send_catatonia_event_with_current_lcd()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- *... and 46 more nodes in this community*
 
 ## Relationships
 
-- [Magic Spell Service](Magic_Spell_Service.md) (9 shared connections)
-- [spell models rationale](spell_models_rationale.md) (8 shared connections)
-- [magic completion game](magic_completion_game.md) (2 shared connections)
-- [magic healing game](magic_healing_game.md) (2 shared connections)
-- [Item Instances](Item_Instances.md) (2 shared connections)
-- [spell game magic](spell_game_magic.md) (1 shared connections)
-- [connection manager realtime](connection_manager_realtime.md) (1 shared connections)
+- [lucidity services helpers](lucidity_services_helpers.md) (15 shared connections)
+- [command helpers functions](command_helpers_functions.md) (5 shared connections)
+- [services service phantom](services_service_phantom.md) (3 shared connections)
+- [connection manager realtime](connection_manager_realtime.md) (2 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [rescue service services](rescue_service_services.md) (2 shared connections)
+- [Async Query Helpers](Async_Query_Helpers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/magic/magic_service.py`
+- `server/services/lucidity_event_dispatcher.py`
+- `server/tests/unit/services/test_lucidity_event_dispatcher.py`
 
 ## Audit Trail
 
-- EXTRACTED: 228 (95%)
-- INFERRED: 13 (5%)
+- EXTRACTED: 256 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

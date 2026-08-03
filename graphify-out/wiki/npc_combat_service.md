@@ -1,49 +1,52 @@
 # npc combat service
 
-> 20 nodes
+> 28 nodes
 
 ## Key Concepts
 
-- **combat_configuration_service.py** (17 connections) — `server/services/combat_configuration_service.py`
-- **CombatConfigurationError** (11 connections) — `server/services/combat_configuration_service.py`
-- **CombatConfigurationScope** (9 connections) — `server/services/combat_configuration_service.py`
-- **test_combat_configuration_service.py** (8 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.clear_scope_override()** (4 connections) — `server/services/combat_configuration_service.py`
-- **.test_update_combat_configuration_global_raises()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_update_combat_configuration_invalid_raises()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_clear_scope_override_global_raises()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **Enum** (2 connections)
-- **is_combat_available()** (2 connections) — `server/services/combat_configuration_service.py`
-- **Exception** (1 connections)
-- **Combat configuration management service for MythosMUD.  This service provides ce** (1 connections) — `server/services/combat_configuration_service.py`
-- **Exception raised for combat configuration errors.** (1 connections) — `server/services/combat_configuration_service.py`
-- **Scope for combat configuration changes.** (1 connections) — `server/services/combat_configuration_service.py`
-- **Clear configuration override for a specific scope.          Args:             sc** (1 connections) — `server/services/combat_configuration_service.py`
-- **Convenience function to check if combat is available.      Args:         player_** (1 connections) — `server/services/combat_configuration_service.py`
-- **Unit tests for combat configuration service.  Tests the CombatConfigurationServi** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **Test update_combat_configuration raises error for global scope.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **Test update_combat_configuration raises error for invalid config.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **Test clear_scope_override raises error for global scope.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **_find_container_wearable()** (20 connections) — `server/commands/look_container.py`
+- **test_find_container_wearable_success()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_wearable_by_prototype_id()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_wearable_not_found()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_wearable_with_inner_container()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_wearable_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_wearable_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_wearable_found()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_wearable_not_found()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_wearable_empty()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_wearable_no_match()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_wearable_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_wearable_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_wearable_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Find a wearable container in equipped items by name or prototype_id.      This f** (1 connections) — `server/commands/look_container.py`
+- **Test finding wearable container by name.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test finding wearable container by prototype_id.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test finding wearable container when not found.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test finding wearable container with inner_container.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test finding wearable container with instance number.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test finding wearable container with invalid instance number.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test _find_container_wearable() finds wearable container.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Test _find_container_wearable() returns None when container not found.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Test _find_container_wearable() with empty dict.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Test _find_container_wearable() with no matching containers.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [combat configuration service](combat_configuration_service.md) (15 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (3 shared connections)
-- [persistence container extended](persistence_container_extended.md) (3 shared connections)
-- [service feature services](service_feature_services.md) (2 shared connections)
-- [Item Instances](Item_Instances.md) (1 shared connections)
-- [event bus events](event_bus_events.md) (1 shared connections)
-- [connection helpers realtime](connection_helpers_realtime.md) (1 shared connections)
+- [models lucidity rationale](models_lucidity_rationale.md) (8 shared connections)
+- [DI Container Format](DI_Container_Format.md) (7 shared connections)
+- [schemas player rationale](schemas_player_rationale.md) (4 shared connections)
 
 ## Source Files
 
-- `server/services/combat_configuration_service.py`
-- `server/tests/unit/services/test_combat_configuration_service.py`
+- `server/commands/look_container.py`
+- `server/tests/unit/commands/test_look_container.py`
+- `server/tests/unit/commands/test_look_container_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 62 (86%)
-- INFERRED: 10 (14%)
+- EXTRACTED: 73 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

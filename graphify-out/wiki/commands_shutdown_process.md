@@ -1,26 +1,23 @@
 # commands shutdown process
 
-> 5 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **_find_uvicorn_processes()** (3 connections) — `server/commands/shutdown_process_termination.py`
-- **_terminate_uvicorn_processes()** (3 connections) — `server/commands/shutdown_process_termination.py`
-- **Any** (2 connections)
-- **Find all uvicorn processes using psutil.** (1 connections) — `server/commands/shutdown_process_termination.py`
-- **Terminate all uvicorn processes.** (1 connections) — `server/commands/shutdown_process_termination.py`
+- **test_announce_spell_cast_chat_error()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Test announce spell cast when chat service raises an error.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
 
 ## Relationships
 
-- [NATS Messaging](NATS_Messaging.md) (2 shared connections)
+- [commands magic rationale](commands_magic_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/shutdown_process_termination.py`
+- `server/tests/unit/commands/test_magic_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

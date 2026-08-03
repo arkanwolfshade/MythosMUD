@@ -1,46 +1,72 @@
 # circuit breaker realtime
 
-> 18 nodes
+> 241 nodes
 
 ## Key Concepts
 
+- **CircuitBreaker** (43 connections) — `server/realtime/circuit_breaker.py`
+- **DeadLetterQueue** (37 connections) — `server/realtime/dead_letter_queue.py`
+- **nats_message_handler.py** (34 connections) — `server/realtime/nats_message_handler.py`
 - **test_circuit_breaker.py** (31 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_call_rejects_when_open()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_call_failure_closed_state()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_call_closes_from_half_open_on_success()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_on_success_increments_success_count_half_open()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_on_failure_increments_failure_count()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_on_failure_resets_success_count()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_time_until_retry_returns_zero_when_not_open()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_circuit_breaker_open_exception()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **Unit tests for circuit breaker.  Tests the CircuitBreaker class and CircuitBreak** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **Test call() handles failure in CLOSED state.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **Test call() raises CircuitBreakerOpen when circuit is OPEN.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **Test call() closes circuit from HALF_OPEN after success threshold.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **Test _on_success() increments success count in HALF_OPEN state.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **Test _on_failure() increments failure count.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **Test _on_failure() resets success count.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **Test _time_until_retry() returns 0 when not OPEN.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **Test CircuitBreakerOpen exception.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_dead_letter_queue.py** (28 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **DeadLetterMessage** (27 connections) — `server/realtime/dead_letter_queue.py`
+- **MessageFilteringHelper** (25 connections) — `server/realtime/message_filtering.py`
+- **event_handlers.py** (24 connections) — `server/realtime/event_handlers.py`
+- **EventHandler** (24 connections) — `server/realtime/event_handlers.py`
+- **NATSMessageHandler** (24 connections) — `server/realtime/nats_message_handler.py`
+- **nats_message_handler_processing.py** (23 connections) — `server/realtime/nats_message_handler_processing.py`
+- **nats_message_handler_base.py** (19 connections) — `server/realtime/nats_message_handler_base.py`
+- **NATSMessageHandlerMixinBase** (17 connections) — `server/realtime/nats_message_handler_base.py`
+- **NATSMessageProcessingMixin** (15 connections) — `server/realtime/nats_message_handler_processing.py`
+- **CircuitBreakerOpen** (14 connections) — `server/realtime/circuit_breaker.py`
+- **circuit_breaker.py** (12 connections) — `server/realtime/circuit_breaker.py`
+- **message_filtering.py** (12 connections) — `server/realtime/message_filtering.py`
+- **dead_letter_queue.py** (10 connections) — `server/realtime/dead_letter_queue.py`
+- **nats_message_handler_subscriptions.py** (10 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **nats_retry_handler.py** (10 connections) — `server/realtime/nats_retry_handler.py`
+- **metrics_collector.py** (9 connections) — `server/middleware/metrics_collector.py`
+- **.call()** (9 connections) — `server/realtime/circuit_breaker.py`
+- **_ChatMessageFields** (8 connections) — `server/realtime/nats_message_handler_processing.py`
+- **_ValidatedChatFields** (8 connections) — `server/realtime/nats_message_handler_processing.py`
+- **._process_single_message()** (8 connections) — `server/realtime/nats_message_handler_processing.py`
+- *... and 216 more nodes in this community*
 
 ## Relationships
 
-- [message broadcaster realtime](message_broadcaster_realtime.md) (13 shared connections)
-- [event bus events](event_bus_events.md) (7 shared connections)
-- [events event bus](events_event_bus.md) (5 shared connections)
-- [message nats handler](message_nats_handler.md) (3 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (1 shared connections)
-- [uuid services npc](uuid_services_npc.md) (1 shared connections)
-- [event events bus](event_events_bus.md) (1 shared connections)
+- [nats exceptions services](nats_exceptions_services.md) (24 shared connections)
+- [command inventory factories](command_inventory_factories.md) (18 shared connections)
+- [realtime message filtering](realtime_message_filtering.md) (10 shared connections)
+- [retry nats handler](retry_nats_handler.md) (9 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (7 shared connections)
+- [instance game manager](instance_game_manager.md) (7 shared connections)
+- [command admin setlucidity](command_admin_setlucidity.md) (6 shared connections)
+- [services user manager](services_user_manager.md) (6 shared connections)
+- [nats message handler](nats_message_handler.md) (5 shared connections)
+- [combat services messaging](combat_services_messaging.md) (5 shared connections)
+- [services service hallucination](services_service_hallucination.md) (4 shared connections)
+- [handler realtime nats](handler_realtime_nats.md) (4 shared connections)
 
 ## Source Files
 
+- `server/middleware/metrics_collector.py`
+- `server/realtime/circuit_breaker.py`
+- `server/realtime/dead_letter_queue.py`
+- `server/realtime/event_handlers.py`
+- `server/realtime/message_filtering.py`
+- `server/realtime/nats_message_handler.py`
+- `server/realtime/nats_message_handler_base.py`
+- `server/realtime/nats_message_handler_processing.py`
+- `server/realtime/nats_message_handler_subscriptions.py`
+- `server/realtime/nats_retry_handler.py`
+- `server/tests/unit/realtime/conftest.py`
 - `server/tests/unit/realtime/test_circuit_breaker.py`
+- `server/tests/unit/realtime/test_dead_letter_queue.py`
+- `server/tests/unit/realtime/test_event_handlers_combat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 64 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 893 (95%)
+- INFERRED: 51 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,57 +1,58 @@
 # combat schemas schema
 
-> 29 nodes
+> 43 nodes
 
 ## Key Concepts
 
-- **test_character_creation.py** (22 connections) — `server/tests/unit/api/test_character_creation.py`
-- **CreateCharacterRequest** (17 connections) — `server/schemas/players/player_requests.py`
-- **TestCreateCharacterWithStats** (10 connections) — `server/tests/unit/api/test_character_creation.py`
-- **TestValidateCharacterStats** (9 connections) — `server/tests/unit/api/test_character_creation.py`
-- **.test_create_character_rate_limit()** (6 connections) — `server/tests/unit/api/test_character_creation.py`
-- **.test_create_character_shutdown_pending()** (5 connections) — `server/tests/unit/api/test_character_creation.py`
-- **.test_create_character_not_authenticated()** (5 connections) — `server/tests/unit/api/test_character_creation.py`
-- **.test_create_character_success()** (5 connections) — `server/tests/unit/api/test_character_creation.py`
-- **.test_validate_stats_invalid_input()** (4 connections) — `server/tests/unit/api/test_character_creation.py`
-- **test_create_character_request_validation()** (4 connections) — `server/tests/unit/schemas/test_player_requests.py`
-- **.validate_name()** (2 connections) — `server/schemas/players/player_requests.py`
-- **mock_request()** (2 connections) — `server/tests/unit/api/test_character_creation.py`
-- **mock_user()** (2 connections) — `server/tests/unit/api/test_character_creation.py`
-- **mock_stats_generator()** (2 connections) — `server/tests/unit/api/test_character_creation.py`
-- **mock_profession_service()** (2 connections) — `server/tests/unit/api/test_character_creation.py`
-- **Request model for character creation.** (1 connections) — `server/schemas/players/player_requests.py`
-- **Validate character name format.** (1 connections) — `server/schemas/players/player_requests.py`
-- **Unit tests for character creation API endpoints.  Tests roll stats, create chara** (1 connections) — `server/tests/unit/api/test_character_creation.py`
-- **Create a mock request object.** (1 connections) — `server/tests/unit/api/test_character_creation.py`
-- **Create a mock stats generator.** (1 connections) — `server/tests/unit/api/test_character_creation.py`
-- **Create a mock profession service.** (1 connections) — `server/tests/unit/api/test_character_creation.py`
-- **Test create_character_with_stats() endpoint.** (1 connections) — `server/tests/unit/api/test_character_creation.py`
-- **Test create_character_with_stats() blocks when server is shutting down.** (1 connections) — `server/tests/unit/api/test_character_creation.py`
-- **Test create_character_with_stats() requires authentication.** (1 connections) — `server/tests/unit/api/test_character_creation.py`
-- **Test create_character_with_stats() enforces rate limiting.** (1 connections) — `server/tests/unit/api/test_character_creation.py`
-- *... and 4 more nodes in this community*
+- **test_websocket_handler_coverage_gaps.py** (24 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **handle_chat_message()** (18 connections) — `server/realtime/websocket_handler.py`
+- **UUID** (3 connections)
+- **test_handle_chat_message()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **test_handle_websocket_connection_full_flow()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_process_websocket_command_resolve_connection_manager_from_app()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_handle_chat_message_resolve_connection_manager_from_app()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_handle_chat_message_exception_handling()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_handle_chat_message_runtime_error_handling()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_handle_websocket_connection_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_handle_websocket_connection_connect_failed()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_handle_websocket_connection_setup_fails()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_handle_websocket_connection_welcome_fails()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_handle_chat_message_no_player()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_message_loop_should_raise_exception()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_process_exception_in_message_loop()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_setup_initial_connection_state_should_exit()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_setup_initial_connection_state_with_room()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_setup_initial_connection_state_websocket_disconnect()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_send_welcome_event_already_disconnected()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_send_welcome_event_close_message_sent()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_send_welcome_event_cannot_call_error()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **Handle a chat message from a player.      Args:         websocket: The WebSocket** (1 connections) — `server/realtime/websocket_handler.py`
+- **Test handle_chat_message handles chat message.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **Unit tests to fill coverage gaps in websocket_handler.py.  These tests target sp** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- *... and 18 more nodes in this community*
 
 ## Relationships
 
-- [auth users rationale](auth_users_rationale.md) (11 shared connections)
-- [character creation validate](character_creation_validate.md) (9 shared connections)
-- [Exception Containers](Exception_Containers.md) (7 shared connections)
-- [player requests schemas](player_requests_schemas.md) (6 shared connections)
-- [command inventory factories](command_inventory_factories.md) (5 shared connections)
-- [Error Handling Core](Error_Handling_Core.md) (4 shared connections)
-- [Player Stats](Player_Stats.md) (3 shared connections)
-- [game models stats](game_models_stats.md) (2 shared connections)
+- [combat commands handler](combat_commands_handler.md) (7 shared connections)
+- [websocket validation realtime](websocket_validation_realtime.md) (6 shared connections)
+- [websocket realtime handler](websocket_realtime_handler.md) (3 shared connections)
+- [room look commands](room_look_commands.md) (3 shared connections)
+- [combat services messaging](combat_services_messaging.md) (2 shared connections)
+- [websocket handler realtime](websocket_handler_realtime.md) (2 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
+- [command inventory factories](command_inventory_factories.md) (1 shared connections)
 
 ## Source Files
 
-- `server/schemas/players/player_requests.py`
-- `server/tests/unit/api/test_character_creation.py`
-- `server/tests/unit/schemas/test_player_requests.py`
+- `server/realtime/websocket_handler.py`
+- `server/tests/unit/realtime/test_websocket_handler_core.py`
+- `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
 
 ## Audit Trail
 
-- EXTRACTED: 98 (88%)
-- INFERRED: 13 (12%)
+- EXTRACTED: 114 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

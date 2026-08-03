@@ -1,32 +1,31 @@
 # lucidity active service
 
-> 7 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **update_player_background_task()** (8 connections) — `docs/examples/logging/fastapi_integration.py`
-- **update_player_background()** (5 connections) — `docs/examples/logging/fastapi_integration.py`
-- **BackgroundTasks** (3 connections) — `docs/examples/logging/fastapi_integration.py`
-- **.update_player()** (2 connections) — `docs/examples/logging/fastapi_integration.py`
-- **.add_task()** (2 connections) — `docs/examples/logging/fastapi_integration.py`
-- **Update player with background task and enhanced logging.** (1 connections) — `docs/examples/logging/fastapi_integration.py`
-- **Background task for player update with enhanced logging.** (1 connections) — `docs/examples/logging/fastapi_integration.py`
+- **TestGetContainer** (6 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_container_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_container_missing_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_container_no_state_attribute()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Tests for get_container dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_container returns container when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_container raises RuntimeError when container not in app.state.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_container raises RuntimeError when app.state doesn't exist.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Relationships
 
-- [logging examples fastapi](logging_examples_fastapi.md) (3 shared connections)
-- [System Metrics](System_Metrics.md) (2 shared connections)
-- [middleware correlation rationale](middleware_correlation_rationale.md) (2 shared connections)
-- [commands alias rationale](commands_alias_rationale.md) (1 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (4 shared connections)
+- [command inventory models](command_inventory_models.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/examples/logging/fastapi_integration.py`
+- `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (82%)
-- INFERRED: 4 (18%)
+- EXTRACTED: 18 (95%)
+- INFERRED: 1 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

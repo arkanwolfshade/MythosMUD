@@ -1,59 +1,29 @@
 # services passive lucidity
 
-> 32 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **service.py** (30 connections) — `server/services/passive_lucidity_flux/service.py`
-- **config.py** (11 connections) — `server/services/passive_lucidity_flux/config.py`
-- **._resolve_context_async()** (10 connections) — `server/services/passive_lucidity_flux/service.py`
-- **PassiveFluxContext** (9 connections) — `server/services/passive_lucidity_flux/models.py`
-- **._resolve_context()** (9 connections) — `server/services/passive_lucidity_flux/service.py`
-- **.__init__()** (7 connections) — `server/services/passive_lucidity_flux/service.py`
-- **__init__.py** (6 connections) — `server/services/passive_lucidity_flux/__init__.py`
-- **FluxServiceConfig** (6 connections) — `server/services/passive_lucidity_flux/config.py`
-- **period_label()** (6 connections) — `server/services/passive_lucidity_flux/config.py`
-- **models.py** (6 connections) — `server/services/passive_lucidity_flux/models.py`
-- **CachedRoom** (6 connections) — `server/services/passive_lucidity_flux/models.py`
-- **._lookup_base_flux_for_room()** (6 connections) — `server/services/passive_lucidity_flux/service.py`
-- **normalize_environment_config()** (5 connections) — `server/services/passive_lucidity_flux/config.py`
-- **._lookup_world_override_flux()** (5 connections) — `server/services/passive_lucidity_flux/service.py`
-- **lookup_profile()** (4 connections) — `server/services/passive_lucidity_flux/config.py`
-- **load_lucidity_rate_overrides()** (4 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
-- **datetime** (2 connections)
-- **Passive lucidity flux service package.** (1 connections) — `server/services/passive_lucidity_flux/__init__.py`
-- **Any** (1 connections)
-- **Configuration and normalization for passive lucidity flux.** (1 connections) — `server/services/passive_lucidity_flux/config.py`
-- **Optional configuration for PassiveLucidityFluxService. All fields have defaults.** (1 connections) — `server/services/passive_lucidity_flux/config.py`
-- **Return a coarse period label used for environment profiles.** (1 connections) — `server/services/passive_lucidity_flux/config.py`
-- **Normalize environment config to validated structure.** (1 connections) — `server/services/passive_lucidity_flux/config.py`
-- **Look up flux value from profile by period.** (1 connections) — `server/services/passive_lucidity_flux/config.py`
-- **Data models for passive lucidity flux.** (1 connections) — `server/services/passive_lucidity_flux/models.py`
-- *... and 7 more nodes in this community*
+- **TestGetNPCPopulationController** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_npc_population_controller_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_npc_population_controller_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Tests for get_npc_population_controller dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_npc_population_controller returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_npc_population_controller raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Relationships
 
-- [lucidity flux passive](lucidity_flux_passive.md) (21 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (6 shared connections)
-- [lucidity services helpers](lucidity_services_helpers.md) (5 shared connections)
-- [rate lucidity services](rate_lucidity_services.md) (4 shared connections)
-- [System Metrics](System_Metrics.md) (3 shared connections)
-- [world models rationale](world_models_rationale.md) (2 shared connections)
-- [Async Query Helpers](Async_Query_Helpers.md) (2 shared connections)
-- [services service phantom](services_service_phantom.md) (2 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (3 shared connections)
+- [command inventory models](command_inventory_models.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/passive_lucidity_flux/__init__.py`
-- `server/services/passive_lucidity_flux/config.py`
-- `server/services/passive_lucidity_flux/models.py`
-- `server/services/passive_lucidity_flux/rate_overrides.py`
-- `server/services/passive_lucidity_flux/service.py`
+- `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 142 (97%)
-- INFERRED: 5 (3%)
+- EXTRACTED: 13 (93%)
+- INFERRED: 1 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

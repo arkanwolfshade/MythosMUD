@@ -10,7 +10,7 @@
 ## Relationships
 
 - [emote models rationale](emote_models_rationale.md) (1 shared connections)
-- [combat validator validators](combat_validator_validators.md) (1 shared connections)
+- [NPC Combat](NPC_Combat.md) (1 shared connections)
 
 ## Source Files
 

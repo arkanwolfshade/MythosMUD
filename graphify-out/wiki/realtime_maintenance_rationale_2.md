@@ -4,20 +4,20 @@
 
 ## Key Concepts
 
-- **__init__.py** (1 connections) — `server/tests/unit/realtime/maintenance/__init__.py`
-- **Realtime maintenance unit tests.** (1 connections) — `server/tests/unit/realtime/maintenance/__init__.py`
+- **test_perform_recovery_action_all_actions()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **Test perform_recovery_action() works for all recovery actions.** (1 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [lucidity active service](lucidity_active_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/maintenance/__init__.py`
+- `server/tests/unit/services/test_active_lucidity_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

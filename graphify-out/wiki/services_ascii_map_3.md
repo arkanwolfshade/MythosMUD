@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_log_parsed_command_inspection()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
-- **Test _log_parsed_command_inspection logs command inspection.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_ensure_room_cache_loaded_runtime_error()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _ensure_room_cache_loaded handles RuntimeError gracefully.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Relationships
 
-- [command service commands](command_service_commands.md) (1 shared connections)
+- [room persistence loading](room_persistence_loading.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_service.py`
+- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Audit Trail
 

@@ -1,6 +1,6 @@
 # LoggedHTTPException
 
-> God node · 408 connections · `server/exceptions.py`
+> God node · 409 connections · `server/exceptions.py`
 
 **Community:** [Exception Containers](Exception_Containers.md)
 
@@ -37,7 +37,6 @@
 - endpoints.py `EXTRACTED`
 - test_monitoring_endpoints.py `EXTRACTED`
 - maps.py `EXTRACTED`
-- test_endpoints.py `EXTRACTED`
 - legacy_error_handlers.py `EXTRACTED`
 - character_creation.py `EXTRACTED`
 - container_helpers.py `EXTRACTED`
@@ -52,6 +51,7 @@
 - standardized_responses.py `EXTRACTED`
 - test_container_exception_handlers.py `EXTRACTED`
 - test_containers.py `EXTRACTED`
+- player_effects.py `EXTRACTED`
 
 ### indirect_call
 - loot_all_items() `INFERRED`
@@ -63,6 +63,7 @@
 - test_login_user_authenticate_returns_none() `INFERRED`
 - test_login_user_generic_exception() `INFERRED`
 - test_login_user_id_mismatch() `INFERRED`
+- test_login_user_invalid_credentials() `INFERRED`
 - test_login_user_no_email() `INFERRED`
 - test_register_user_duplicate_username() `INFERRED`
 - test_register_user_email_constraint_violation() `INFERRED`
@@ -73,7 +74,6 @@
 - .test_roll_character_stats_profession_not_found() `INFERRED`
 - .test_roll_character_stats_rate_limit() `INFERRED`
 - .test_loot_all_items_emit_event_failure() `INFERRED`
-- .test_loot_all_items_capacity_error() `INFERRED`
 
 ### inherits
 - LoggedException `EXTRACTED`

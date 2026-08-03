@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_subscribe_to_room()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test subscribe_to_room subscribes to room.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_get_limit_existing()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **Test get_limit returns configured limit.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
 
 ## Relationships
 
-- [nats message handler](nats_message_handler.md) (1 shared connections)
+- [rate limiter services](rate_limiter_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/tests/unit/services/test_rate_limiter.py`
 
 ## Audit Trail
 

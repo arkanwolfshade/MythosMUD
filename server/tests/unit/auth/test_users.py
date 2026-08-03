@@ -453,64 +453,65 @@ def test_get_username_auth_backend_jwt_strategy_uses_env_var():
     """Test that get_username_auth_backend uses environment variable for JWT secret."""
     import os
 
+    from server.auth.jwt_strategy import RestartInvalidatingJWTStrategy
     from server.auth.users import get_username_auth_backend
 
-    # Test with custom env var
     with patch.dict(os.environ, {"MYTHOSMUD_JWT_SECRET": "custom-secret"}):
         backend = get_username_auth_backend()
-        # The strategy is created lazily, so we can't easily test it
-        # But we can verify the backend is created
-        assert backend is not None
-        assert backend.name == "jwt"
+        strategy = backend.get_strategy()
+        assert isinstance(strategy, RestartInvalidatingJWTStrategy)
 
 
 def test_get_username_auth_backend_jwt_strategy_default_secret():
-    """Test that get_username_auth_backend uses default secret when env var not set."""
+    """Test that get_username_auth_backend fails when JWT secret env var is missing."""
     import os
 
     from server.auth.users import get_username_auth_backend
 
-    # Remove env var if it exists
     with patch.dict(os.environ, {}, clear=False):
         if "MYTHOSMUD_JWT_SECRET" in os.environ:
             del os.environ["MYTHOSMUD_JWT_SECRET"]
         backend = get_username_auth_backend()
-        # The strategy is created lazily, so we can't easily test it
-        # But we can verify the backend is created with default
-        assert backend is not None
-        assert backend.name == "jwt"
+        with pytest.raises(ValueError, match="MYTHOSMUD_JWT_SECRET"):
+            _ = backend.get_strategy()
 
 
 def test_get_auth_backend_jwt_strategy_uses_env_var():
     """Test that get_auth_backend uses environment variable for JWT secret."""
     import os
 
+    from server.auth.jwt_strategy import RestartInvalidatingJWTStrategy
     from server.auth.users import get_auth_backend
 
-    # Test with custom env var
     with patch.dict(os.environ, {"MYTHOSMUD_JWT_SECRET": "custom-secret"}):
         backend = get_auth_backend()
-        # The strategy is created lazily, so we can't easily test it
-        # But we can verify the backend is created
-        assert backend is not None
-        assert backend.name == "jwt"
+        strategy = backend.get_strategy()
+        assert isinstance(strategy, RestartInvalidatingJWTStrategy)
 
 
 def test_get_auth_backend_jwt_strategy_default_secret():
-    """Test that get_auth_backend uses default secret when env var not set."""
+    """Test that get_auth_backend fails when JWT secret env var is missing."""
     import os
 
     from server.auth.users import get_auth_backend
 
-    # Remove env var if it exists
     with patch.dict(os.environ, {}, clear=False):
         if "MYTHOSMUD_JWT_SECRET" in os.environ:
             del os.environ["MYTHOSMUD_JWT_SECRET"]
         backend = get_auth_backend()
-        # The strategy is created lazily, so we can't easily test it
-        # But we can verify the backend is created with default
-        assert backend is not None
-        assert backend.name == "jwt"
+        with pytest.raises(ValueError, match="MYTHOSMUD_JWT_SECRET"):
+            _ = backend.get_strategy()
+
+
+def test_validate_jwt_secret_rejects_dev_prefix():
+    """Dev-prefixed JWT secrets must be rejected."""
+    import os
+
+    from server.auth.users import validate_jwt_secret
+
+    with patch.dict(os.environ, {"MYTHOSMUD_JWT_SECRET": "dev-insecure"}):
+        with pytest.raises(ValueError, match="dev-"):
+            _ = validate_jwt_secret()
 
 
 def test_user_manager_reset_password_token_secret_env_var():

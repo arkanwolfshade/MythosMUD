@@ -1,10 +1,9 @@
 # map ExitEdge nodes
 
-> 34 nodes
+> 26 nodes
 
 ## Key Concepts
 
-- **types.ts** (32 connections) — `client/src/components/map/types.ts`
 - **config.ts** (14 connections) — `client/src/components/map/config.ts`
 - **ExitEdge.tsx** (10 connections) — `client/src/components/map/edges/ExitEdge.tsx`
 - **ReactFlowConfig.test.tsx** (9 connections) — `client/src/components/map/__tests__/ReactFlowConfig.test.tsx`
@@ -22,22 +21,20 @@
 - **IntersectionNode.test.tsx** (4 connections) — `client/src/components/map/nodes/__tests__/IntersectionNode.test.tsx`
 - **nodeTypes** (3 connections) — `client/src/components/map/config.ts`
 - **edgeTypes** (3 connections) — `client/src/components/map/config.ts`
-- **layout.test-fixtures.ts** (3 connections) — `client/src/components/map/utils/__tests__/layout.test-fixtures.ts`
 - **getNodeTypes()** (2 connections) — `client/src/components/map/config.ts`
 - **getEdgeTypes()** (2 connections) — `client/src/components/map/config.ts`
 - **RoomNodeProps** (2 connections) — `client/src/components/map/nodes/RoomNode.tsx`
 - **getNodeShape()** (2 connections) — `client/src/components/map/nodes/RoomNode.tsx`
 - **getNodeClasses()** (2 connections) — `client/src/components/map/nodes/RoomNode.tsx`
 - **defaultReactFlowOptions** (1 connections) — `client/src/components/map/config.ts`
-- *... and 9 more nodes in this community*
+- **ExitEdgeProps** (1 connections) — `client/src/components/map/edges/ExitEdge.tsx`
+- **getFlagIcon()** (1 connections) — `client/src/components/map/edges/ExitEdge.tsx`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (20 shared connections)
-- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (7 shared connections)
-- [map layout useMapLayout](map_layout_useMapLayout.md) (4 shared connections)
-- [EdgeCreationModal map STANDARD](EdgeCreationModal_map_STANDARD.md) (1 shared connections)
-- [RoomEditModal map buildInitialFormData()](RoomEditModal_map_buildInitialFormData%28%29.md) (1 shared connections)
+- [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (17 shared connections)
+- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (3 shared connections)
 
 ## Source Files
 
@@ -52,12 +49,10 @@
 - `client/src/components/map/nodes/RoomNode.tsx`
 - `client/src/components/map/nodes/__tests__/IntersectionNode.test.tsx`
 - `client/src/components/map/nodes/__tests__/RoomNode.test.tsx`
-- `client/src/components/map/types.ts`
-- `client/src/components/map/utils/__tests__/layout.test-fixtures.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 157 (100%)
+- EXTRACTED: 116 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

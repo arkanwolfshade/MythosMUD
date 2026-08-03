@@ -1,37 +1,41 @@
 # services user manager
 
-> 14 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **.load_player_mutes()** (12 connections) — `server/services/user_manager.py`
-- **._load_player_mutes_from_data()** (6 connections) — `server/services/user_manager.py`
-- **._load_global_mutes_from_data()** (6 connections) — `server/services/user_manager.py`
-- **._convert_mute_info_timestamps()** (5 connections) — `server/services/user_manager.py`
-- **._convert_mute_info_uuids()** (5 connections) — `server/services/user_manager.py`
-- **._load_channel_mutes_from_data()** (5 connections) — `server/services/user_manager.py`
-- **user_manager()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Convert timestamp strings in mute_info to datetime objects.** (1 connections) — `server/services/user_manager.py`
-- **Convert UUID strings in mute_info to UUID objects.** (1 connections) — `server/services/user_manager.py`
-- **Load player mutes from JSON data into memory.** (1 connections) — `server/services/user_manager.py`
-- **Load channel mutes from JSON data into memory.** (1 connections) — `server/services/user_manager.py`
-- **Load global mutes from JSON data into memory.** (1 connections) — `server/services/user_manager.py`
-- **Load mute data for a specific player from JSON file.          Args:** (1 connections) — `server/services/user_manager.py`
-- **Create a UserManager instance.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **._cleanup_player_mutes()** (8 connections) — `server/services/user_manager.py`
+- **datetime** (7 connections)
+- **.get_player_mutes()** (7 connections) — `server/services/user_manager.py`
+- **._cleanup_expired_mutes()** (6 connections) — `server/services/user_manager.py`
+- **._get_active_player_mutes()** (5 connections) — `server/services/user_manager.py`
+- **._get_active_channel_mutes()** (5 connections) — `server/services/user_manager.py`
+- **._get_active_global_mutes()** (5 connections) — `server/services/user_manager.py`
+- **._cleanup_channel_mutes()** (4 connections) — `server/services/user_manager.py`
+- **._cleanup_global_mutes()** (4 connections) — `server/services/user_manager.py`
+- **.get_system_stats()** (3 connections) — `server/services/user_manager.py`
+- **Get active player mutes for a player.** (1 connections) — `server/services/user_manager.py`
+- **Get active channel mutes for a player.** (1 connections) — `server/services/user_manager.py`
+- **Get active global mutes applied by a player.** (1 connections) — `server/services/user_manager.py`
+- **Get all mutes applied by a player.          Args:             player_id: Play** (1 connections) — `server/services/user_manager.py`
+- **Get system-wide user management statistics.          Returns:             Dic** (1 connections) — `server/services/user_manager.py`
+- **Clean up expired player mutes.** (1 connections) — `server/services/user_manager.py`
+- **Clean up expired channel mutes.** (1 connections) — `server/services/user_manager.py`
+- **Clean up expired global mutes.** (1 connections) — `server/services/user_manager.py`
+- **Clean up expired mutes from all storage.** (1 connections) — `server/services/user_manager.py`
+- **Remove mute data for a player from memory and optionally delete their file.** (1 connections) — `server/services/user_manager.py`
 
 ## Relationships
 
 - [services user manager](services_user_manager.md) (18 shared connections)
-- [user manager services](user_manager_services.md) (1 shared connections)
 
 ## Source Files
 
 - `server/services/user_manager.py`
-- `server/tests/unit/services/test_user_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 49 (100%)
+- EXTRACTED: 64 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

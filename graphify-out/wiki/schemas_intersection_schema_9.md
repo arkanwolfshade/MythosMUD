@@ -1,38 +1,24 @@
 # schemas intersection schema
 
-> 17 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **properties** (7 connections) — `schemas/intersection_schema.json`
-- **exits** (5 connections) — `schemas/intersection_schema.json`
-- **north** (2 connections) — `schemas/intersection_schema.json`
-- **south** (2 connections) — `schemas/intersection_schema.json`
-- **east** (2 connections) — `schemas/intersection_schema.json`
-- **west** (2 connections) — `schemas/intersection_schema.json`
-- **up** (2 connections) — `schemas/intersection_schema.json`
-- **down** (2 connections) — `schemas/intersection_schema.json`
-- **type** (1 connections) — `schemas/intersection_schema.json`
-- **description** (1 connections) — `schemas/intersection_schema.json`
-- **oneOf** (1 connections) — `schemas/intersection_schema.json`
-- **oneOf** (1 connections) — `schemas/intersection_schema.json`
-- **oneOf** (1 connections) — `schemas/intersection_schema.json`
-- **oneOf** (1 connections) — `schemas/intersection_schema.json`
-- **oneOf** (1 connections) — `schemas/intersection_schema.json`
-- **oneOf** (1 connections) — `schemas/intersection_schema.json`
-- **additionalProperties** (1 connections) — `schemas/intersection_schema.json`
+- **test_handle_learn_command_wrapper_success()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Test handle_learn_command wrapper success.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
 
 ## Relationships
 
-- [schemas intersection schema](schemas_intersection_schema.md) (1 shared connections)
+- [commands admin mute](commands_admin_mute.md) (1 shared connections)
+- [commands magic rationale](commands_magic_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/intersection_schema.json`
+- `server/tests/unit/commands/test_magic_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 33 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

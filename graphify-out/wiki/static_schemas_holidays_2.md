@@ -16,7 +16,7 @@
 
 ## Relationships
 
-- [static schemas holidays](static_schemas_holidays.md) (1 shared connections)
+- [player room persistence](player_room_persistence.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,24 +1,25 @@
 # combat death services
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **.__init__()** (3 connections) — `server/middleware/comprehensive_logging.py`
-- **ASGIApp** (1 connections)
-- **Initialize comprehensive logging middleware.          Args:             app: ASG** (1 connections) — `server/middleware/comprehensive_logging.py`
+- **end_hour** (4 connections) — `schemas/calendar/schedule.schema.json`
+- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **minimum** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **maximum** (1 connections) — `schemas/calendar/schedule.schema.json`
 
 ## Relationships
 
-- [middleware comprehensive logging](middleware_comprehensive_logging.md) (1 shared connections)
+- [schemas calendar schedule](schemas_calendar_schedule.md) (1 shared connections)
 
 ## Source Files
 
-- `server/middleware/comprehensive_logging.py`
+- `schemas/calendar/schedule.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

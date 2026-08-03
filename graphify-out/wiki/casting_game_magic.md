@@ -1,34 +1,36 @@
 # casting game magic
 
-> 8 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **.create_unalias_command()** (7 connections) — `server/utils/command_factories_utility.py`
-- **test_create_unalias_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
-- **test_create_unalias_command_multiple_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
-- **test_create_unalias_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
-- **Test create_unalias_command() creates UnaliasCommand.** (1 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
-- **Test create_unalias_command() raises error with no args.** (1 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
-- **Test create_unalias_command() raises error with multiple args.** (1 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
-- **Create UnaliasCommand from arguments.** (1 connections) — `server/utils/command_factories_utility.py`
+- **verify_npc_occupants.py** (8 connections) — `server/scripts/verify_npc_occupants.py`
+- **verify_npcs_in_lifecycle_manager()** (6 connections) — `server/scripts/verify_npc_occupants.py`
+- **_check_service_availability()** (5 connections) — `server/scripts/verify_npc_occupants.py`
+- **_collect_npcs_by_room()** (4 connections) — `server/scripts/verify_npc_occupants.py`
+- **_test_query_for_room()** (4 connections) — `server/scripts/verify_npc_occupants.py`
+- **Any** (3 connections)
+- **_print_summary()** (3 connections) — `server/scripts/verify_npc_occupants.py`
+- **Verification script to check NPCs in lifecycle manager and test occupant query l** (1 connections) — `server/scripts/verify_npc_occupants.py`
+- **Check if NPC service, lifecycle manager, and active_npcs are available.      Ret** (1 connections) — `server/scripts/verify_npc_occupants.py`
+- **Collect NPCs grouped by room ID.      Args:         active_npcs: Dictionary of a** (1 connections) — `server/scripts/verify_npc_occupants.py`
+- **Test query logic for a specific room.      Args:         active_npcs: Dictionary** (1 connections) — `server/scripts/verify_npc_occupants.py`
+- **Print verification summary.      Args:         npc_count: Total number of active** (1 connections) — `server/scripts/verify_npc_occupants.py`
+- **Verify NPCs exist in lifecycle manager and test query logic.** (1 connections) — `server/scripts/verify_npc_occupants.py`
 
 ## Relationships
 
-- [exceptions rationale error](exceptions_rationale_error.md) (3 shared connections)
-- [command inventory factories](command_inventory_factories.md) (3 shared connections)
-- [command utility models](command_utility_models.md) (1 shared connections)
-- [auth dependencies rationale](auth_dependencies_rationale.md) (1 shared connections)
+- [commands npc admin](commands_npc_admin.md) (2 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories_utility.py`
-- `server/utils/command_factories_utility.py`
+- `server/scripts/verify_npc_occupants.py`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (91%)
-- INFERRED: 2 (9%)
+- EXTRACTED: 39 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

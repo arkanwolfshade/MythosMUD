@@ -1,54 +1,56 @@
 # command handler processing
 
-> 25 nodes
+> 31 nodes
 
 ## Key Concepts
 
-- **.is_security_sensitive()** (9 connections) — `server/validators/command_validator.py`
-- **_run_command_service_for_validated()** (6 connections) — `server/command_handler/processing.py`
-- **_dispatch_parsed_command()** (6 connections) — `server/command_handler/processing.py`
-- **_log_security_sensitive_command()** (6 connections) — `server/command_handler/processing.py`
-- **_handle_processing_error()** (6 connections) — `server/command_handler/processing.py`
-- **CommandExecutionRequest** (5 connections)
-- **_handle_validation_error()** (5 connections) — `server/command_handler/processing.py`
-- **_parse_command_line_or_client_error()** (3 connections) — `server/command_handler/processing.py`
-- **test_command_validator_is_security_sensitive_admin()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **test_command_validator_is_security_sensitive_case_insensitive()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **test_command_validator_is_security_sensitive_non_sensitive()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **test_command_validator_is_security_sensitive_empty()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **ValidationError** (2 connections)
-- **Exception** (2 connections)
-- **Validate the raw command string via CommandProcessor.      Returns:         (** (1 connections) — `server/command_handler/processing.py`
-- **Extract structured command data, dispatch to CommandService, audit if needed.** (1 connections) — `server/command_handler/processing.py`
-- **Parse the command line; on success run CommandService (see ``_parse_command_line** (1 connections) — `server/command_handler/processing.py`
-- **Log a security-sensitive command for auditing.** (1 connections) — `server/command_handler/processing.py`
-- **Handle a validation error during command processing.** (1 connections) — `server/command_handler/processing.py`
-- **Handle a general exception during command processing.** (1 connections) — `server/command_handler/processing.py`
-- **Test CommandValidator.is_security_sensitive detects admin commands.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **Test CommandValidator.is_security_sensitive is case-insensitive.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **Test CommandValidator.is_security_sensitive returns False for non-sensitive comm** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **Test CommandValidator.is_security_sensitive returns False for empty command.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **Check if command requires audit logging.          Identifies commands that shoul** (1 connections) — `server/validators/command_validator.py`
+- **set_map_origin()** (11 connections) — `server/api/maps.py`
+- **recalculate_coordinates()** (10 connections) — `server/api/maps.py`
+- **__init__.py** (10 connections) — `server/schemas/maps/__init__.py`
+- **map.py** (9 connections) — `server/schemas/maps/map.py`
+- **BaseModel** (7 connections)
+- **AsciiMapResponse** (7 connections) — `server/schemas/maps/map.py`
+- **AsciiMinimapResponse** (7 connections) — `server/schemas/maps/map.py`
+- **CoordinateRecalculationResponse** (7 connections) — `server/schemas/maps/map.py`
+- **MapOriginSetResponse** (7 connections) — `server/schemas/maps/map.py`
+- **CoordinateValidator** (7 connections) — `server/services/coordinate_validator.py`
+- **ViewportInfo** (4 connections) — `server/schemas/maps/map.py`
+- **CoordinateGenerationResponse** (4 connections) — `server/schemas/maps/map.py`
+- **CoordinateValidationResponse** (4 connections) — `server/schemas/maps/map.py`
+- **.__init__()** (3 connections) — `server/services/coordinate_validator.py`
+- **.validate_coordinates()** (3 connections) — `server/services/coordinate_validator.py`
+- **Trigger coordinate recalculation for a zone/subzone (admin only).      Returns l** (1 connections) — `server/api/maps.py`
+- **Set a room as the map origin for its zone/subzone (admin only).      Triggers co** (1 connections) — `server/api/maps.py`
+- **Maps domain schemas: map API responses.** (1 connections) — `server/schemas/maps/__init__.py`
+- **Map API response schemas for MythosMUD server.  This module provides Pydantic mo** (1 connections) — `server/schemas/maps/map.py`
+- **Viewport information for map rendering.** (1 connections) — `server/schemas/maps/map.py`
+- **Response model for ASCII map endpoint.** (1 connections) — `server/schemas/maps/map.py`
+- **Response model for ASCII minimap endpoint.** (1 connections) — `server/schemas/maps/map.py`
+- **Response model for coordinate generation endpoint.** (1 connections) — `server/schemas/maps/map.py`
+- **Response model for coordinate validation endpoint.** (1 connections) — `server/schemas/maps/map.py`
+- **Response model for coordinate recalculation endpoint.** (1 connections) — `server/schemas/maps/map.py`
+- *... and 6 more nodes in this community*
 
 ## Relationships
 
-- [commands alias rationale](commands_alias_rationale.md) (7 shared connections)
-- [command handler unified](command_handler_unified.md) (4 shared connections)
-- [command validator validators](command_validator_validators.md) (4 shared connections)
-- [command validation commands](command_validation_commands.md) (3 shared connections)
-- [alias storage commands](alias_storage_commands.md) (2 shared connections)
-- [realtime game state](realtime_game_state.md) (1 shared connections)
+- [maps handle ascii](maps_handle_ascii.md) (14 shared connections)
+- [admin auth service](admin_auth_service.md) (7 shared connections)
+- [Exception Containers](Exception_Containers.md) (2 shared connections)
+- [ascii map renderer](ascii_map_renderer.md) (2 shared connections)
+- [coordinate services generator](coordinate_services_generator.md) (2 shared connections)
+- [command inventory factories](command_inventory_factories.md) (1 shared connections)
 
 ## Source Files
 
-- `server/command_handler/processing.py`
-- `server/tests/unit/validators/test_command_validator.py`
-- `server/validators/command_validator.py`
+- `server/api/maps.py`
+- `server/schemas/maps/__init__.py`
+- `server/schemas/maps/map.py`
+- `server/services/coordinate_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 69 (95%)
-- INFERRED: 4 (5%)
+- EXTRACTED: 116 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

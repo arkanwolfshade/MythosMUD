@@ -15,12 +15,12 @@
 
 ## Relationships
 
-- [room realtime subscription](room_realtime_subscription.md) (21 shared connections)
+- [room realtime subscription](room_realtime_subscription.md) (20 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (2 shared connections)
 - [infrastructure persistence room](infrastructure_persistence_room.md) (2 shared connections)
 - [room infrastructure persistence](room_infrastructure_persistence.md) (2 shared connections)
 - [room drops realtime](room_drops_realtime.md) (2 shared connections)
 - [room cache infrastructure](room_cache_infrastructure.md) (2 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (1 shared connections)
 
 ## Source Files
 

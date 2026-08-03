@@ -1,61 +1,61 @@
 # websocket helpers realtime
 
-> 59 nodes
+> 41 nodes
 
 ## Key Concepts
 
-- **websocket_helpers.py** (37 connections) — `server/realtime/websocket_helpers.py`
-- **test_websocket_helpers_player.py** (23 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **get_player_and_room()** (14 connections) — `server/realtime/websocket_helpers.py`
-- **prepare_player_data()** (12 connections) — `server/realtime/websocket_helpers.py`
-- **get_player_service_from_connection_manager()** (9 connections) — `server/realtime/websocket_helpers.py`
-- **get_player_stats_data()** (9 connections) — `server/realtime/websocket_helpers.py`
-- **convert_schema_to_dict()** (7 connections) — `server/realtime/websocket_helpers.py`
-- **build_basic_player_data()** (7 connections) — `server/realtime/websocket_helpers.py`
-- **UUID** (6 connections)
-- **_ensure_player_in_room_occupancy()** (6 connections) — `server/realtime/websocket_helpers.py`
-- **_get_tracked_player_from_connection_manager()** (5 connections) — `server/realtime/websocket_helpers.py`
-- **_fetch_room_for_tracked_player()** (4 connections) — `server/realtime/websocket_helpers.py`
-- **.get_room_by_id()** (3 connections) — `server/realtime/websocket_handler_connection.py`
-- **_AppStateForPlayerService** (3 connections) — `server/realtime/websocket_helpers.py`
-- **test_get_player_service_from_connection_manager_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_get_player_service_from_connection_manager_no_app()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_get_player_service_from_connection_manager_no_state()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_get_player_stats_data_with_get_stats()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_get_player_stats_data_string_stats()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_get_player_stats_data_adds_health()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_get_player_stats_data_no_get_stats()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_build_basic_player_data()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_build_basic_player_data_defaults()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_prepare_player_data_with_service()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_prepare_player_data_no_service()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- *... and 34 more nodes in this community*
+- **open_container()** (23 connections) — `server/api/container_endpoints_basic.py`
+- **OpenContainerRequest** (17 connections) — `server/api/container_models.py`
+- **register_basic_endpoints()** (10 connections) — `server/api/container_endpoints_basic.py`
+- **ContainerOpenResponse** (10 connections) — `server/schemas/containers/container.py`
+- **ContainerTransferResponse** (10 connections) — `server/schemas/containers/container.py`
+- **ContainerCloseResponse** (10 connections) — `server/schemas/containers/container.py`
+- **ContainerLootAllResponse** (10 connections) — `server/schemas/containers/container.py`
+- **InventoryStack** (10 connections) — `server/schemas/containers/container_data.py`
+- **ContainerData** (10 connections) — `server/schemas/containers/container_data.py`
+- **container.py** (9 connections) — `server/schemas/containers/container.py`
+- **__init__.py** (7 connections) — `server/schemas/containers/__init__.py`
+- **container_data.py** (7 connections) — `server/schemas/containers/container_data.py`
+- **.test_open_container_rate_limit()** (6 connections) — `server/tests/unit/api/test_containers.py`
+- **.test_open_container_not_found()** (6 connections) — `server/tests/unit/api/test_containers.py`
+- **.test_open_container_locked()** (6 connections) — `server/tests/unit/api/test_containers.py`
+- **.test_open_container_access_denied()** (6 connections) — `server/tests/unit/api/test_containers.py`
+- **.test_open_container_not_authenticated()** (5 connections) — `server/tests/unit/api/test_containers.py`
+- **BaseModel** (4 connections)
+- **.test_open_container_success()** (4 connections) — `server/tests/unit/api/test_containers.py`
+- **BaseModel** (3 connections)
+- **InnerContainer** (3 connections) — `server/schemas/containers/container_data.py`
+- **APIRouter** (1 connections)
+- **Open a container for interaction.      Initiates interaction with a container in** (1 connections) — `server/api/container_endpoints_basic.py`
+- **Register basic container operation endpoints (open, transfer, close) to the rout** (1 connections) — `server/api/container_endpoints_basic.py`
+- **Request model for opening a container.** (1 connections) — `server/api/container_models.py`
+- *... and 16 more nodes in this community*
 
 ## Relationships
 
-- [realtime websocket initial](realtime_websocket_initial.md) (11 shared connections)
-- [websocket helpers realtime](websocket_helpers_realtime.md) (7 shared connections)
-- [websocket realtime handler](websocket_realtime_handler.md) (5 shared connections)
-- [websocket handler realtime](websocket_handler_realtime.md) (2 shared connections)
-- [room websocket updates](room_websocket_updates.md) (2 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (2 shared connections)
-- [realtime game state](realtime_game_state.md) (2 shared connections)
-- [room models instance](room_models_instance.md) (2 shared connections)
-- [shutdown admin command](shutdown_admin_command.md) (1 shared connections)
-- [auth users rationale](auth_users_rationale.md) (1 shared connections)
-- [world models rationale](world_models_rationale.md) (1 shared connections)
-- [Async Query Helpers](Async_Query_Helpers.md) (1 shared connections)
+- [Exception Containers](Exception_Containers.md) (23 shared connections)
+- [Memory Task Runtime](Memory_Task_Runtime.md) (20 shared connections)
+- [Loot Generation](Loot_Generation.md) (6 shared connections)
+- [admin auth service](admin_auth_service.md) (5 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [container events rationale](container_events_rationale.md) (1 shared connections)
+- [NPC Combat](NPC_Combat.md) (1 shared connections)
+- [ascii map renderer](ascii_map_renderer.md) (1 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/websocket_handler_connection.py`
-- `server/realtime/websocket_helpers.py`
-- `server/tests/unit/realtime/test_websocket_helpers_player.py`
+- `server/api/container_endpoints_basic.py`
+- `server/api/container_models.py`
+- `server/schemas/containers/__init__.py`
+- `server/schemas/containers/container.py`
+- `server/schemas/containers/container_data.py`
+- `server/tests/unit/api/test_containers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 214 (96%)
-- INFERRED: 10 (4%)
+- EXTRACTED: 159 (81%)
+- INFERRED: 37 (19%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,27 +1,24 @@
 # commands remediation cursor
 
-> 6 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **FAILURE PATTERN RECOGNITION** (6 connections) — `.cursor/commands/server-test-remediation.md`
-- **A. Database-Related Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **B. Authentication/Security Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **C. WebSocket/Connection Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **D. Game Logic Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **E. Integration Test Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **test_profession_meets_stat_requirements_extra_stats()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **Test meets_stat_requirements returns True when stats exceed requirements.** (1 connections) — `server/tests/unit/models/test_profession.py`
 
 ## Relationships
 
-- [remediation commands cursor](remediation_commands_cursor.md) (1 shared connections)
+- [persistence core infrastructure](persistence_core_infrastructure.md) (1 shared connections)
+- [profession models rationale](profession_models_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/commands/server-test-remediation.md`
+- `server/tests/unit/models/test_profession.py`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

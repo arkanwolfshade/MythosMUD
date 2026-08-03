@@ -33,9 +33,10 @@
 
 ## Relationships
 
-- [maps handle ascii](maps_handle_ascii.md) (4 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (1 shared connections)
-- [mythos mud mapbuilder](mythos_mud_mapbuilder.md) (1 shared connections)
+- [maps handle ascii](maps_handle_ascii.md) (2 shared connections)
+- [command handler processing](command_handler_processing.md) (2 shared connections)
+- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [message nats handler](message_nats_handler.md) (1 shared connections)
 
 ## Source Files
 

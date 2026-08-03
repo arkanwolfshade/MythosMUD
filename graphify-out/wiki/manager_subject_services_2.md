@@ -1,59 +1,51 @@
 # manager subject services
 
-> 52 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **SubjectValidationError** (29 connections) — `server/services/nats_subject_manager/exceptions.py`
-- **SubjectValidator** (23 connections) — `server/services/nats_subject_manager/validation.py`
-- **manager.py** (20 connections) — `server/services/nats_subject_manager/manager.py`
-- **test_subscription_patterns.py** (14 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
-- **exceptions.py** (13 connections) — `server/services/nats_subject_manager/exceptions.py`
-- **get_subscription_pattern()** (12 connections) — `server/services/nats_subject_manager/subscription_patterns.py`
-- **subscription_patterns.py** (10 connections) — `server/services/nats_subject_manager/subscription_patterns.py`
-- **get_chat_subscription_patterns()** (10 connections) — `server/services/nats_subject_manager/subscription_patterns.py`
-- **get_event_subscription_patterns()** (10 connections) — `server/services/nats_subject_manager/subscription_patterns.py`
-- **validation.py** (7 connections) — `server/services/nats_subject_manager/validation.py`
-- **.validate_parameter_value()** (5 connections) — `server/services/nats_subject_manager/validation.py`
-- **.validate_pattern_params()** (4 connections) — `server/services/nats_subject_manager/validation.py`
-- **Any** (3 connections)
-- **test_get_subscription_pattern_single_param()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
-- **test_get_subscription_pattern_multiple_params()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
-- **test_get_subscription_pattern_no_params()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
-- **test_get_chat_subscription_patterns()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
-- **test_get_chat_subscription_patterns_missing_pattern()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
-- **test_get_event_subscription_patterns()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
-- **test_get_event_subscription_patterns_missing_pattern()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
-- **test_get_chat_subscription_patterns_empty()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
-- **test_get_event_subscription_patterns_empty()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
-- **.__init__()** (2 connections) — `server/services/nats_subject_manager/validation.py`
-- **.validate_subject_basic()** (2 connections) — `server/services/nats_subject_manager/validation.py`
-- **.validate_subject_components()** (2 connections) — `server/services/nats_subject_manager/validation.py`
-- *... and 27 more nodes in this community*
+- **get_async_session()** (13 connections) — `server/database_helpers.py`
+- **get_session_maker()** (9 connections) — `server/database_helpers.py`
+- **test_get_session_maker_raises_validation_error()** (5 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **AsyncSession** (4 connections)
+- **test_get_session_maker()** (4 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **test_get_async_session_success()** (3 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **test_get_async_session_http_exception_propagates()** (3 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **test_get_async_session_rollback_on_error()** (3 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **test_get_async_session_rollback_failure()** (3 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **test_get_async_session_http_exception_passthrough()** (3 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **test_get_async_session_finally_block_executes()** (3 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **test_get_async_session_rollback_success()** (3 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **Dependency to get NPC database session.      Yields:         AsyncSession: Datab** (2 connections) — `server/npc_database.py`
+- **Get the async session maker, initializing if necessary.      Returns:         as** (1 connections) — `server/database_helpers.py`
+- **Dependency to get database session.      Yields:         AsyncSession: Database** (1 connections) — `server/database_helpers.py`
+- **Test get_session_maker returns session maker from DatabaseManager.** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **Test get_session_maker raises ValidationError when database cannot be initialize** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **Test get_async_session yields session and handles cleanup.** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **Test get_async_session re-raises HTTPException without rollback.** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **Test get_async_session rolls back on exception.** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **Test get_async_session handles rollback failure.** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **Test get_async_session re-raises HTTPException without logging as database error** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **Test get_async_session finally block executes even on success.** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **Test get_async_session successfully rolls back on exception.** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
 
 ## Relationships
 
-- [subject validation services](subject_validation_services.md) (15 shared connections)
-- [subject nats manager](subject_nats_manager.md) (13 shared connections)
-- [manager subject services](manager_subject_services.md) (9 shared connections)
-- [command player state](command_player_state.md) (7 shared connections)
-- [chat game message](chat_game_message.md) (2 shared connections)
-- [pattern matcher services](pattern_matcher_services.md) (2 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (1 shared connections)
-- [Item Instances](Item_Instances.md) (1 shared connections)
+- [lucidity npc combat](lucidity_npc_combat.md) (11 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (4 shared connections)
+- [command inventory models](command_inventory_models.md) (4 shared connections)
+- [command commands talk](command_commands_talk.md) (2 shared connections)
 
 ## Source Files
 
-- `server/services/nats_subject_manager/exceptions.py`
-- `server/services/nats_subject_manager/manager.py`
-- `server/services/nats_subject_manager/subscription_patterns.py`
-- `server/services/nats_subject_manager/validation.py`
-- `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
+- `server/database_helpers.py`
+- `server/npc_database.py`
+- `server/tests/unit/infrastructure/test_database_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 210 (95%)
-- INFERRED: 12 (5%)
+- EXTRACTED: 67 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,9 +1,10 @@
 # panels chatPanelRefactoredDerived ChatPa
 
-> 17 nodes
+> 23 nodes
 
 ## Key Concepts
 
+- **ChatPanelRefactoredView.tsx** (14 connections) — `client/src/components/panels/ChatPanelRefactoredView.tsx`
 - **chatPanelRefactoredDerived.ts** (13 connections) — `client/src/components/panels/chatPanelRefactoredDerived.ts`
 - **useChatPanelRefactored.ts** (12 connections) — `client/src/components/panels/useChatPanelRefactored.ts`
 - **ChatPanelRefactored.tsx** (10 connections) — `client/src/components/panels/ChatPanelRefactored.tsx`
@@ -20,26 +21,34 @@
 - **filterNonSystemMessages()** (4 connections) — `client/src/components/panels/chatPanelRefactoredDerived.ts`
 - **ChatPanelRefactored()** (3 connections) — `client/src/components/panels/ChatPanelRefactored.tsx`
 - **ChatPanelRefactoredProps** (2 connections) — `client/src/components/panels/ChatPanelRefactored.tsx`
+- **ChatPanelRefactoredView()** (2 connections) — `client/src/components/panels/ChatPanelRefactoredView.tsx`
+- **ChatHistoryToggle()** (2 connections) — `client/src/components/panels/chat/ChatHistoryToggle.tsx`
+- **UseChatPanelRefactoredResult** (2 connections) — `client/src/components/panels/useChatPanelRefactored.ts`
+- **ChatPanelRefactoredChromeProps** (1 connections) — `client/src/components/panels/ChatPanelRefactoredView.tsx`
+- **ChatPanelRefactoredViewProps** (1 connections) — `client/src/components/panels/ChatPanelRefactoredView.tsx`
 - **base()** (1 connections) — `client/src/components/panels/__tests__/chatPanelRefactoredDerived.test.ts`
 
 ## Relationships
 
-- [panels chat ChatPanelRuntimeViewParts](panels_chat_ChatPanelRuntimeViewParts.md) (7 shared connections)
+- [panels chat ChatPanelRuntimeViewParts](panels_chat_ChatPanelRuntimeViewParts.md) (11 shared connections)
 - [panels chatPanelRuntimeUtils chatPanelEx](panels_chatPanelRuntimeUtils_chatPanelEx.md) (5 shared connections)
-- [taunt combat commands](taunt_combat_commands.md) (2 shared connections)
+- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (1 shared connections)
+- [panels GameClientV2Dock gameLogPanelUtil](panels_GameClientV2Dock_gameLogPanelUtil.md) (1 shared connections)
 
 ## Source Files
 
 - `client/src/components/panels/ChatPanelRefactored.tsx`
+- `client/src/components/panels/ChatPanelRefactoredView.tsx`
 - `client/src/components/panels/__tests__/ChatPanelRefactored.test.tsx`
 - `client/src/components/panels/__tests__/chatPanelRefactoredDerived.test.ts`
+- `client/src/components/panels/chat/ChatHistoryToggle.tsx`
 - `client/src/components/panels/chatPanelRefactoredDerived.ts`
 - `client/src/components/panels/chatPanelRefactoredTypes.ts`
 - `client/src/components/panels/useChatPanelRefactored.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 106 (100%)
+- EXTRACTED: 128 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

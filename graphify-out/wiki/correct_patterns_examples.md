@@ -33,10 +33,10 @@
 
 ## Relationships
 
-- [System Metrics](System_Metrics.md) (6 shared connections)
+- [command inventory factories](command_inventory_factories.md) (6 shared connections)
 - [middleware correlation rationale](middleware_correlation_rationale.md) (3 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (1 shared connections)
-- [auth users rationale](auth_users_rationale.md) (1 shared connections)
+- [time service rationale](time_service_rationale.md) (1 shared connections)
+- [player preferences service](player_preferences_service.md) (1 shared connections)
 
 ## Source Files
 

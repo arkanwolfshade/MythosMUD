@@ -25,7 +25,7 @@
 ## Relationships
 
 - [panels chat ChatPanelRuntimeViewParts](panels_chat_ChatPanelRuntimeViewParts.md) (2 shared connections)
-- [mythosApp security submitAuth](mythosApp_security_submitAuth.md) (1 shared connections)
+- [mythosApp appLazyScreens mythosAppViewMo](mythosApp_appLazyScreens_mythosAppViewMo.md) (1 shared connections)
 - [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (1 shared connections)
 - [panels GameClientV2Dock gameLogPanelUtil](panels_GameClientV2Dock_gameLogPanelUtil.md) (1 shared connections)
 

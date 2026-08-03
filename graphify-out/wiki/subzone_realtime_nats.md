@@ -1,28 +1,39 @@
 # subzone realtime nats
 
-> 10 nodes
+> 68 nodes
 
 ## Key Concepts
 
 - **test_nats_message_handler_subzone_events.py** (36 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_unsubscribe_from_subzone_error()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_handle_player_movement_exception()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_subscribe_to_subzone_error()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_subscribe_to_event_subjects_partial_failure()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_handle_player_movement_error()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_cleanup_empty_subzone_subscriptions_error()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_unsubscribe_from_subzone_decrease_count()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
 - **test_unsubscribe_from_subzone_not_subscribed()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_track_player_subzone_subscription_different_subzone()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_get_players_in_subzone()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_get_players_in_subzone_empty()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_handle_player_movement_different_subzone()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_handle_player_movement_same_subzone()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_cleanup_empty_subzone_subscriptions()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_subscribe_to_subzone_no_subject_manager()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_unsubscribe_from_event_subjects_partial()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_get_event_subscription_count()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_is_event_subscription_active()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_get_user_manager_injected()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_get_user_manager_fallback()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_handle_player_movement_old_subzone_none()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_handle_player_movement_new_subzone_none()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_subscribe_to_subzone_subscribe_failure()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
 - **test_unsubscribe_from_subzone_unsubscribe_failure()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **test_handle_npc_attacked_event()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **test_handle_event_message()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Unit tests for NATS message handler subzone and event handling.  Tests subzone s** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test unsubscribe_from_subzone handles not subscribed case.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test unsubscribe_from_subzone returns False when unsubscription fails.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test _handle_npc_attacked_event delegates to event handler.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test _handle_event_message delegates to event handler.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- *... and 43 more nodes in this community*
 
 ## Relationships
 
-- [realtime nats message](realtime_nats_message.md) (15 shared connections)
-- [subzone realtime nats](subzone_realtime_nats.md) (9 shared connections)
-- [Item Instances](Item_Instances.md) (2 shared connections)
-- [room game service](room_game_service.md) (2 shared connections)
-- [skill game service](skill_game_service.md) (2 shared connections)
-- [handler realtime nats](handler_realtime_nats.md) (1 shared connections)
+- [nats exceptions services](nats_exceptions_services.md) (8 shared connections)
 
 ## Source Files
 
@@ -30,7 +41,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 49 (100%)
+- EXTRACTED: 142 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

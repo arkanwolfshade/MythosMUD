@@ -1,25 +1,21 @@
 # holidays schema static
 
-> 12 nodes
+> 8 nodes
 
 ## Key Concepts
 
 - **holidays.schema.json** (7 connections) — `db/static/schemas/holidays.schema.json`
-- **holidays** (4 connections) — `db/static/schemas/holidays.schema.json`
 - **required** (2 connections) — `db/static/schemas/holidays.schema.json`
-- **properties** (2 connections) — `db/static/schemas/holidays.schema.json`
 - **$schema** (1 connections) — `db/static/schemas/holidays.schema.json`
 - **$id** (1 connections) — `db/static/schemas/holidays.schema.json`
 - **title** (1 connections) — `db/static/schemas/holidays.schema.json`
 - **type** (1 connections) — `db/static/schemas/holidays.schema.json`
 - **holidays** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **type** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **minItems** (1 connections) — `db/static/schemas/holidays.schema.json`
 - **additionalProperties** (1 connections) — `db/static/schemas/holidays.schema.json`
 
 ## Relationships
 
-- [static schemas holidays](static_schemas_holidays.md) (1 shared connections)
+- [player room persistence](player_room_persistence.md) (1 shared connections)
 
 ## Source Files
 
@@ -27,7 +23,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 23 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

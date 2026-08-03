@@ -1,39 +1,29 @@
 # message filtering helpers
 
-> 16 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **test_message_filtering_helpers.py** (10 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
-- **message_filtering_helper()** (3 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
-- **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
-- **test_extract_chat_event_info()** (2 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
-- **test_should_apply_mute_check()** (2 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
-- **test_compare_canonical_rooms()** (2 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
-- **test_get_player_room_from_online_players()** (2 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
-- **test_get_player_room_from_online_players_not_found()** (2 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
-- **Unit tests for message filtering helper functions.  Tests the helper functions i** (1 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
-- **Create a mock connection manager.** (1 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
-- **Create a MessageFilteringHelper instance.** (1 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
-- **Test extract_chat_event_info() extracts event information.** (1 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
-- **Test should_apply_mute_check() determines if mute check needed.** (1 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
-- **Test compare_canonical_rooms() compares room IDs.** (1 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
-- **Test get_player_room_from_online_players() gets room from cache.** (1 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
-- **Test get_player_room_from_online_players() returns None when not found.** (1 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
+- **TestGetConnectionManager** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_connection_manager_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_connection_manager_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Tests for get_connection_manager dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_connection_manager returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_connection_manager raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Relationships
 
-- [realtime message filtering](realtime_message_filtering.md) (2 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (1 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (3 shared connections)
+- [command inventory models](command_inventory_models.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_message_filtering_helpers.py`
+- `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 33 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 13 (93%)
+- INFERRED: 1 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

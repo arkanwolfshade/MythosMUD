@@ -1,19 +1,31 @@
 # schemas unified room
 
-> 6 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **container** (6 connections) — `schemas/unified_room_schema.json`
-- **required** (2 connections) — `schemas/unified_room_schema.json`
+- **properties** (7 connections) — `schemas/unified_room_schema.json`
+- **enabled** (4 connections) — `schemas/unified_room_schema.json`
+- **weight_limit** (4 connections) — `schemas/unified_room_schema.json`
+- **allowed_roles** (4 connections) — `schemas/unified_room_schema.json`
+- **key_item_id** (3 connections) — `schemas/unified_room_schema.json`
+- **items** (2 connections) — `schemas/unified_room_schema.json`
+- **type** (1 connections) — `schemas/unified_room_schema.json`
+- **default** (1 connections) — `schemas/unified_room_schema.json`
+- **description** (1 connections) — `schemas/unified_room_schema.json`
 - **type** (1 connections) — `schemas/unified_room_schema.json`
 - **description** (1 connections) — `schemas/unified_room_schema.json`
-- **additionalProperties** (1 connections) — `schemas/unified_room_schema.json`
-- **enabled** (1 connections) — `schemas/unified_room_schema.json`
+- **type** (1 connections) — `schemas/unified_room_schema.json`
+- **minimum** (1 connections) — `schemas/unified_room_schema.json`
+- **description** (1 connections) — `schemas/unified_room_schema.json`
+- **type** (1 connections) — `schemas/unified_room_schema.json`
+- **type** (1 connections) — `schemas/unified_room_schema.json`
+- **description** (1 connections) — `schemas/unified_room_schema.json`
 
 ## Relationships
 
 - [schemas unified room](schemas_unified_room.md) (2 shared connections)
+- [channel broadcasting realtime](channel_broadcasting_realtime.md) (1 shared connections)
 
 ## Source Files
 
@@ -21,7 +33,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 35 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

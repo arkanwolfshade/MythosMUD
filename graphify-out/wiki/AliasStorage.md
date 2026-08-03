@@ -2,7 +2,7 @@
 
 > God node · 231 connections · `server/alias_storage.py`
 
-**Community:** [commands alias rationale](commands_alias_rationale.md)
+**Community:** [commands admin mute](commands_admin_mute.md)
 
 ## Connections by Relation
 

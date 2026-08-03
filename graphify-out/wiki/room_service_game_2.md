@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_stop_failure()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test stop() handles failure.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_wearable_container_service_init()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test WearableContainerService initialization.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Relationships
 
-- [Item Instances](Item_Instances.md) (1 shared connections)
-- [nats message handler](nats_message_handler.md) (1 shared connections)
+- [wearable container service](wearable_container_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

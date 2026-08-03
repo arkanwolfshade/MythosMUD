@@ -1,62 +1,52 @@
 # realtime monitoring statistics
 
-> 81 nodes
+> 86 nodes
 
 ## Key Concepts
 
-- **HealthMonitor** (22 connections) — `server/realtime/monitoring/health_monitor.py`
-- **test_connection_initialization.py** (18 connections) — `server/tests/unit/realtime/test_connection_initialization.py`
-- **.__init__()** (12 connections) — `server/realtime/connection_manager.py`
-- **PersonalMessageSender** (11 connections) — `server/realtime/messaging/personal_message_sender.py`
-- **initialize_connection_state()** (9 connections) — `server/realtime/connection_initialization.py`
-- **initialize_messaging()** (9 connections) — `server/realtime/connection_initialization.py`
-- **UUID** (9 connections)
-- **Any** (8 connections)
-- **initialize_health_monitor()** (8 connections) — `server/realtime/connection_initialization.py`
-- **initialize_error_handler()** (8 connections) — `server/realtime/connection_initialization.py`
-- **initialize_connection_cleaner()** (8 connections) — `server/realtime/connection_initialization.py`
-- **initialize_game_state_provider()** (8 connections) — `server/realtime/connection_initialization.py`
-- **initialize_room_event_handler()** (8 connections) — `server/realtime/connection_initialization.py`
-- **.send_message()** (8 connections) — `server/realtime/messaging/personal_message_sender.py`
-- **._process_single_connection()** (8 connections) — `server/realtime/monitoring/health_monitor.py`
-- **UUID** (7 connections)
-- **._prepare_payload()** (7 connections) — `server/realtime/messaging/personal_message_sender.py`
-- **Any** (6 connections)
-- **._queue_message_if_needed()** (6 connections) — `server/realtime/messaging/personal_message_sender.py`
-- **.check_all_connections_health()** (6 connections) — `server/realtime/monitoring/health_monitor.py`
-- **._send_to_websocket()** (5 connections) — `server/realtime/messaging/personal_message_sender.py`
-- **.periodic_health_check_task()** (5 connections) — `server/realtime/monitoring/health_monitor.py`
-- **.start_periodic_checks()** (5 connections) — `server/realtime/monitoring/health_monitor.py`
-- **.__init__()** (4 connections) — `server/realtime/messaging/personal_message_sender.py`
-- **.get_delivery_stats()** (4 connections) — `server/realtime/messaging/personal_message_sender.py`
-- *... and 56 more nodes in this community*
+- **test_population_control.py** (65 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_check_spawn_requirements_for_room_with_definitions()** (4 connections) — `server/tests/unit/npc/test_population_control.py`
+- **mock_event_bus()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **population_controller()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_population_controller_init()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_population_controller_init_requires_async_persistence()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_load_npc_definitions()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_load_npc_definitions_overwrites()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_get_zone_configuration_exact_match()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_get_zone_configuration_zone_fallback()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_get_zone_configuration_no_slash()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_handle_player_entered_room()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_handle_player_left_room()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_handle_npc_entered_room()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_handle_npc_left_room()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_spawn_npc_no_lifecycle_manager()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_spawn_npc_success()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_spawn_npc_spawn_fails()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_spawn_npc_handles_exception()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_spawn_npc_public_api()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **mock_async_persistence()** (2 connections) — `server/tests/unit/npc/test_population_control.py`
+- **mock_lifecycle_manager()** (2 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_load_spawn_rules_empty()** (2 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_update_game_state()** (2 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_update_game_state_partial()** (2 connections) — `server/tests/unit/npc/test_population_control.py`
+- *... and 61 more nodes in this community*
 
 ## Relationships
 
-- [NATS Messaging](NATS_Messaging.md) (23 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (8 shared connections)
-- [mythos mud mapbuilder](mythos_mud_mapbuilder.md) (3 shared connections)
-- [health monitor realtime](health_monitor_realtime.md) (3 shared connections)
-- [realtime messaging message](realtime_messaging_message.md) (2 shared connections)
-- [npc populate databases](npc_populate_databases.md) (2 shared connections)
-- [player event handlers](player_event_handlers.md) (1 shared connections)
-- [realtime errors error](realtime_errors_error.md) (1 shared connections)
-- [realtime maintenance connection](realtime_maintenance_connection.md) (1 shared connections)
-- [realtime game state](realtime_game_state.md) (1 shared connections)
-- [services combat sync](services_combat_sync.md) (1 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (19 shared connections)
+- [item models rationale](item_models_rationale.md) (9 shared connections)
+- [npc spawn validator](npc_spawn_validator.md) (6 shared connections)
+- [spell game magic](spell_game_magic.md) (6 shared connections)
+- [models npc rationale](models_npc_rationale.md) (2 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_initialization.py`
-- `server/realtime/connection_manager.py`
-- `server/realtime/messaging/personal_message_sender.py`
-- `server/realtime/monitoring/health_monitor.py`
-- `server/tests/unit/realtime/test_connection_initialization.py`
+- `server/tests/unit/npc/test_population_control.py`
 
 ## Audit Trail
 
-- EXTRACTED: 297 (98%)
-- INFERRED: 7 (2%)
+- EXTRACTED: 203 (96%)
+- INFERRED: 9 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

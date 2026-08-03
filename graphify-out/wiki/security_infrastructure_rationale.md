@@ -16,7 +16,7 @@
 ## Relationships
 
 - [security infrastructure secure](security_infrastructure_secure.md) (4 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (1 shared connections)
+- [command inventory factories](command_inventory_factories.md) (1 shared connections)
 
 ## Source Files
 

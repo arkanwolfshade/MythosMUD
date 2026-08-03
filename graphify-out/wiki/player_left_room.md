@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [NATS Messaging](NATS_Messaging.md) (7 shared connections)
+- [item models rationale](item_models_rationale.md) (7 shared connections)
 
 ## Source Files
 

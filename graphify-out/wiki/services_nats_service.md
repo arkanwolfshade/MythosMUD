@@ -32,7 +32,7 @@
 ## Relationships
 
 - [target services resolution](target_services_resolution.md) (2 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (1 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (1 shared connections)
 
 ## Source Files
 

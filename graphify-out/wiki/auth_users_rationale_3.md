@@ -4,29 +4,31 @@
 
 ## Key Concepts
 
-- **TestHandleSpecialCommandRouting** (7 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **.test_handle_special_command_routing_alias_command()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **.test_handle_special_command_routing_alias_storage_none()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **.test_handle_special_command_routing_emote_conversion()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **.test_handle_special_command_routing_returns_none()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **Tests for _handle_special_command_routing function.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **Test _handle_special_command_routing processes alias commands.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **Test _handle_special_command_routing returns error when alias_storage is None.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **Test _handle_special_command_routing converts single-word emotes.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **Test _handle_special_command_routing returns None for normal commands.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **validate_target_player()** (8 connections) — `server/validators/security_validator.py`
+- **.validate_target()** (3 connections) — `server/models/command_communication.py`
+- **test_validate_target_player_empty()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_validate_target_player_valid()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_validate_target_player_rejects_invalid_format()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Validate target player name format using centralized validation.** (1 connections) — `server/models/command_communication.py`
+- **Test validating empty target player name.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Test validating valid target player name.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Test that validate_target_player rejects invalid format.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Centralized validation for target player fields.      This function provides con** (1 connections) — `server/validators/security_validator.py`
 
 ## Relationships
 
-- [command handler unified](command_handler_unified.md) (5 shared connections)
-- [commands alias rationale](commands_alias_rationale.md) (1 shared connections)
+- [Security Validator Tests](Security_Validator_Tests.md) (4 shared connections)
+- [command communication models](command_communication_models.md) (3 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- `server/models/command_communication.py`
+- `server/tests/unit/validators/test_security_validator.py`
+- `server/validators/security_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (96%)
+- EXTRACTED: 24 (96%)
 - INFERRED: 1 (4%)
 - AMBIGUOUS: 0 (0%)
 

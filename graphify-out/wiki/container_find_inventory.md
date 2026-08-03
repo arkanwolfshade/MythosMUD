@@ -1,53 +1,59 @@
 # container find inventory
 
-> 41 nodes
+> 87 nodes
 
 ## Key Concepts
 
 - **test_container_helpers_inventory_find.py** (55 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
+- **container_helpers_inventory_find.py** (32 connections) — `server/commands/container_helpers_inventory_find.py`
+- **find_wearable_container()** (17 connections) — `server/commands/container_helpers_inventory_find.py`
+- **UUID** (16 connections)
+- **try_wearable_container_service()** (14 connections) — `server/commands/container_helpers_inventory_find.py`
 - **find_container_in_room()** (13 connections) — `server/commands/container_helpers_inventory_find.py`
+- **try_wearable_container_service_by_instance_id()** (13 connections) — `server/commands/container_helpers_inventory_find.py`
 - **find_item_in_inventory()** (12 connections) — `server/commands/container_helpers_inventory_find.py`
 - **try_inner_container()** (12 connections) — `server/commands/container_helpers_inventory_find.py`
+- **create_wearable_container()** (12 connections) — `server/commands/container_helpers_inventory_find.py`
+- **_player_for_wearable()** (12 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
 - **try_inner_container_by_id()** (11 connections) — `server/commands/container_helpers_inventory_find.py`
+- **try_wearable_container_service_by_name()** (11 connections) — `server/commands/container_helpers_inventory_find.py`
+- **find_wearable_container_for_put()** (10 connections) — `server/commands/container_helpers_inventory_find.py`
+- **_get_container_pair()** (9 connections) — `server/commands/container_helpers_inventory_find.py`
+- **_try_put_container_for_equipped_item()** (9 connections) — `server/commands/container_helpers_inventory_find.py`
 - **find_matching_equipped_containers()** (9 connections) — `server/commands/container_helpers_inventory_find.py`
 - **check_item_matches_target()** (7 connections) — `server/commands/container_helpers_inventory_find.py`
-- **test_find_item_in_inventory_non_numeric_token_name_search()** (3 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **test_check_item_matches_target_partial_name()** (3 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **test_find_item_in_inventory_by_index()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **test_find_item_in_inventory_by_name_substring()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **test_find_item_in_inventory_miss()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **test_find_item_in_inventory_index_zero_invalid()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **test_find_item_in_inventory_uppercase_query()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **test_check_item_matches_target()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **test_find_matching_equipped_containers_by_name()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **test_find_matching_equipped_containers_inner_without_name_match()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **test_try_inner_container_by_id_none()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **test_try_inner_container_by_id_resolves()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **test_find_container_in_room_with_metadata_name()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **test_find_container_in_room_no_match()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **test_find_container_in_room_non_dict_entries_skipped()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **test_find_container_in_room_get_containers_not_callable()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **test_find_container_in_room_non_list_returns_empty()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **test_check_item_matches_target_name_miss_slot_exact()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- *... and 16 more nodes in this community*
+- **_container_uuid()** (5 connections) — `server/commands/container_helpers_inventory_find.py`
+- **Player** (5 connections)
+- **container_id()** (5 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
+- **_component_metadata()** (4 connections) — `server/commands/container_helpers_inventory_find.py`
+- **_resolve_inner_uuid()** (4 connections) — `server/commands/container_helpers_inventory_find.py`
+- **_container_from_equip_dict()** (4 connections) — `server/commands/container_helpers_inventory_find.py`
+- **_fallback_create_equipment_container()** (4 connections) — `server/commands/container_helpers_inventory_find.py`
+- *... and 62 more nodes in this community*
 
 ## Relationships
 
-- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (26 shared connections)
-- [combat npc services](combat_npc_services.md) (14 shared connections)
-- [container inventory helpers](container_inventory_helpers.md) (7 shared connections)
-- [inventory commands command](inventory_commands_command.md) (2 shared connections)
-- [room models instance](room_models_instance.md) (1 shared connections)
+- [container inventory helpers](container_inventory_helpers.md) (15 shared connections)
+- [commands inventory command](commands_inventory_command.md) (5 shared connections)
+- [commands communication flows](commands_communication_flows.md) (5 shared connections)
+- [persistence rationale player](persistence_rationale_player.md) (2 shared connections)
+- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (2 shared connections)
+- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [world models rationale](world_models_rationale.md) (1 shared connections)
+- [combat models rationale](combat_models_rationale.md) (1 shared connections)
+- [event events serialization](event_events_serialization.md) (1 shared connections)
+- [Exception Containers](Exception_Containers.md) (1 shared connections)
 
 ## Source Files
 
 - `server/commands/container_helpers_inventory_find.py`
+- `server/tests/unit/api/test_container_exception_handlers.py`
 - `server/tests/unit/commands/test_container_helpers_inventory_find.py`
 
 ## Audit Trail
 
-- EXTRACTED: 177 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 412 (96%)
+- INFERRED: 16 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

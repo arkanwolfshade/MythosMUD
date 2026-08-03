@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_setup_session_tracking_existing_session()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _setup_session_tracking() adds to existing session.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_get_npc_instance_service_not_initialized()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
+- **Test get_npc_instance_service() raises RuntimeError when not initialized.** (1 connections) — `server/tests/unit/services/test_npc_instance_service.py`
 
 ## Relationships
 
-- [player event state](player_event_state.md) (1 shared connections)
-- [connection establishment realtime](connection_establishment_realtime.md) (1 shared connections)
+- [commands npc admin](commands_npc_admin.md) (1 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_connection_establishment.py`
+- `server/tests/unit/services/test_npc_instance_service.py`
 
 ## Audit Trail
 

@@ -1,24 +1,25 @@
 # AppRouter main AppRouter()
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **._handle_combat_started_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **Handle combat_started event.** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **.get_npc_instance()** (4 connections) — `server/commands/combat_handler.py`
+- **Get NPC instance from the spawning service. Public API.** (1 connections) — `server/commands/combat_handler.py`
+- **Get NPC instance from the spawning service.** (1 connections) — `server/commands/combat_handler.py`
 
 ## Relationships
 
-- [handler realtime nats](handler_realtime_nats.md) (1 shared connections)
-- [persistence services combat](persistence_services_combat.md) (1 shared connections)
+- [NPC Combat](NPC_Combat.md) (1 shared connections)
+- [commands npc admin](commands_npc_admin.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/nats_message_handler_subscriptions.py`
+- `server/commands/combat_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

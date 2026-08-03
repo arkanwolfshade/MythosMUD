@@ -1,13 +1,16 @@
 # player service game
 
-> 38 nodes
+> 44 nodes
 
 ## Key Concepts
 
 - **test_player_service.py** (26 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_create_player_with_stats_character_limit()** (4 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_create_player_with_stats_name_exists()** (4 connections) — `server/tests/unit/game/test_player_service.py`
 - **player_service()** (3 connections) — `server/tests/unit/game/test_player_service.py`
 - **test_player_service_init()** (3 connections) — `server/tests/unit/game/test_player_service.py`
 - **test_create_player_name_exists()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_create_player_with_stats_success()** (3 connections) — `server/tests/unit/game/test_player_service.py`
 - **mock_persistence()** (2 connections) — `server/tests/unit/game/test_player_service.py`
 - **test_create_player_success()** (2 connections) — `server/tests/unit/game/test_player_service.py`
 - **test_get_player_by_id_found()** (2 connections) — `server/tests/unit/game/test_player_service.py`
@@ -26,17 +29,13 @@
 - **Unit tests for player service CRUD and lookup.  Delete, location, mythos status,** (1 connections) — `server/tests/unit/game/test_player_service.py`
 - **Create a mock persistence layer.** (1 connections) — `server/tests/unit/game/test_player_service.py`
 - **Create a PlayerService instance.** (1 connections) — `server/tests/unit/game/test_player_service.py`
-- **Test PlayerService initialization.** (1 connections) — `server/tests/unit/game/test_player_service.py`
-- **Test create_player() successful creation.** (1 connections) — `server/tests/unit/game/test_player_service.py`
-- **Test create_player() when name already exists.** (1 connections) — `server/tests/unit/game/test_player_service.py`
-- *... and 13 more nodes in this community*
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [game models stats](game_models_stats.md) (4 shared connections)
-- [magic healing game](magic_healing_game.md) (3 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [spell models rationale](spell_models_rationale.md) (1 shared connections)
+- [command inventory models](command_inventory_models.md) (7 shared connections)
+- [schemas unified room](schemas_unified_room.md) (4 shared connections)
+- [command inventory factories](command_inventory_factories.md) (1 shared connections)
 
 ## Source Files
 
@@ -44,8 +43,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 83 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 95 (97%)
+- INFERRED: 3 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

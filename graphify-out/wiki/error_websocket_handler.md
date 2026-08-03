@@ -1,34 +1,29 @@
 # error websocket handler
 
-> 12 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **test_websocket_handler_error_handling.py** (9 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
-- **mock_websocket()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
-- **test_send_error_response_success()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
-- **test_send_error_response_disconnected()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
-- **test_handle_runtime_error_disconnected()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
-- **test_handle_runtime_error_other()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
-- **Unit tests for websocket handler error handling.  Tests the error handling funct** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
-- **Create a mock WebSocket.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
-- **Test _send_error_response() successfully sends error.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
-- **Test _send_error_response() handles WebSocket disconnection.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
-- **Test _handle_runtime_error() detects WebSocket disconnection.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
-- **Test _handle_runtime_error() handles other runtime errors.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **.get_lifecycle_statistics()** (5 connections) — `server/npc/lifecycle_manager.py`
+- **._compute_state_counts()** (3 connections) — `server/npc/lifecycle_manager.py`
+- **._compute_type_counts()** (3 connections) — `server/npc/lifecycle_manager.py`
+- **._compute_aggregate_counts()** (3 connections) — `server/npc/lifecycle_manager.py`
+- **Get overall lifecycle statistics.          Returns:             Dictionary co** (1 connections) — `server/npc/lifecycle_manager.py`
+- **Return counts of lifecycle records by current_state.** (1 connections) — `server/npc/lifecycle_manager.py`
+- **Return counts of lifecycle records by NPC type string.** (1 connections) — `server/npc/lifecycle_manager.py`
+- **Return (total_spawns, total_despawns, total_errors) across all lifecycle records** (1 connections) — `server/npc/lifecycle_manager.py`
 
 ## Relationships
 
-- [Error Handling Core](Error_Handling_Core.md) (2 shared connections)
-- [websocket realtime handler](websocket_realtime_handler.md) (1 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (4 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- `server/npc/lifecycle_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

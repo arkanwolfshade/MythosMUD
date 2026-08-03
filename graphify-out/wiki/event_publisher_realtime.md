@@ -1,13 +1,26 @@
 # event publisher realtime
 
-> 34 nodes
+> 69 nodes
 
 ## Key Concepts
 
+- **EventPublisher** (23 connections) — `server/realtime/event_publisher.py`
 - **test_event_publisher.py** (19 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **event_publisher.py** (10 connections) — `server/realtime/event_publisher.py`
+- **test_event_publisher_helpers.py** (9 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **._create_event_message()** (7 connections) — `server/realtime/event_publisher.py`
+- **Any** (6 connections)
+- **._get_async_persistence()** (6 connections) — `server/realtime/event_publisher.py`
+- **.publish_player_entered_event()** (5 connections) — `server/realtime/event_publisher.py`
+- **.publish_player_left_event()** (5 connections) — `server/realtime/event_publisher.py`
+- **.__init__()** (4 connections) — `server/realtime/event_publisher.py`
+- **.publish_game_tick_event()** (4 connections) — `server/realtime/event_publisher.py`
+- **.get_next_sequence_number()** (3 connections) — `server/realtime/event_publisher.py`
 - **event_publisher()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
 - **test_event_publisher_init_without_subject_manager()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
 - **test_event_publisher_init_with_initial_sequence()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **event_publisher()** (3 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **.reset_sequence_number()** (2 connections) — `server/realtime/event_publisher.py`
 - **mock_nats_service()** (2 connections) — `server/tests/unit/realtime/test_event_publisher.py`
 - **mock_subject_manager()** (2 connections) — `server/tests/unit/realtime/test_event_publisher.py`
 - **test_event_publisher_init()** (2 connections) — `server/tests/unit/realtime/test_event_publisher.py`
@@ -16,34 +29,26 @@
 - **test_publish_player_left_event_success()** (2 connections) — `server/tests/unit/realtime/test_event_publisher.py`
 - **test_publish_game_tick_event_success()** (2 connections) — `server/tests/unit/realtime/test_event_publisher.py`
 - **test_publish_player_entered_event_with_metadata()** (2 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_publish_player_entered_event_nats_error()** (2 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_publish_player_left_event_not_connected()** (2 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_publish_game_tick_event_not_connected()** (2 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_get_next_sequence_number()** (2 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_reset_sequence_number()** (2 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **Unit tests for event publisher.  Tests the EventPublisher class.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **Create a mock NATS service.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **Create a mock subject manager.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **Create an EventPublisher instance.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **Test EventPublisher initialization.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **Test publish_player_entered_event() successfully publishes.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **Test publish_player_entered_event() when NATS is not connected.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **Test publish_player_left_event() successfully publishes.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- *... and 9 more nodes in this community*
+- *... and 44 more nodes in this community*
 
 ## Relationships
 
-- [services combat sync](services_combat_sync.md) (4 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (5 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (4 shared connections)
+- [manager subject services](manager_subject_services.md) (2 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [time service rationale](time_service_rationale.md) (2 shared connections)
 
 ## Source Files
 
+- `server/realtime/event_publisher.py`
 - `server/tests/unit/realtime/test_event_publisher.py`
+- `server/tests/unit/realtime/test_event_publisher_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 71 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 183 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

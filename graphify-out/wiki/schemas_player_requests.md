@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **.unsubscribe_from_room()** (2 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **Unsubscribe from chat messages for a specific room.          Args:             r** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **test_handle_alias_command_invalid_name_too_long()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **Test handle_alias_command with alias name too long.** (1 connections) — `server/tests/unit/commands/test_alias_commands.py`
 
 ## Relationships
 
-- [handler realtime nats](handler_realtime_nats.md) (1 shared connections)
+- [commands alias rationale](commands_alias_rationale.md) (1 shared connections)
+- [scripts worktree ops](scripts_worktree_ops.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/nats_message_handler_subscriptions.py`
+- `server/tests/unit/commands/test_alias_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

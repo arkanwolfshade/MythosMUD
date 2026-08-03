@@ -1,55 +1,56 @@
 # command input commands
 
-> 46 nodes
+> 33 nodes
 
 ## Key Concepts
 
-- **command_input.py** (14 connections) — `server/command_handler/command_input.py`
-- **normalize_command()** (12 connections) — `server/command_handler/command_input.py`
-- **TestCommandNormalization** (12 connections) — `server/tests/unit/commands/test_command_input.py`
-- **should_treat_as_emote()** (10 connections) — `server/command_handler/command_input.py`
-- **_is_predefined_emote()** (8 connections) — `server/command_handler/command_input.py`
-- **test_command_input.py** (8 connections) — `server/tests/unit/commands/test_command_input.py`
-- **TestEmoteDetection** (8 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_clean_command_input_basic()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_clean_command_input_multiple_spaces()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_clean_command_input_leading_trailing_whitespace()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_clean_command_input_tabs()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_normalize_command_no_slash()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_normalize_command_with_slash()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_normalize_command_empty()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_normalize_command_whitespace_only()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_normalize_command_slash_only()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_normalize_command_slash_with_spaces()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_is_predefined_emote_true()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_is_predefined_emote_false()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_is_predefined_emote_handles_error()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_should_treat_as_emote_system_command()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_should_treat_as_emote_unknown_word()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_should_treat_as_emote_predefined_emote()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
-- **Command Input Utilities for MythosMUD.  This module provides utilities for clean** (1 connections) — `server/command_handler/command_input.py`
-- **Normalize command input by removing optional slash prefix.      Supports both tr** (1 connections) — `server/command_handler/command_input.py`
-- *... and 21 more nodes in this community*
+- **UUID** (15 connections)
+- **._award_xp_via_persistence_fallback()** (7 connections) — `server/services/player_combat_service.py`
+- **.get_base_stats()** (6 connections) — `server/models/npc.py`
+- **.award_xp_on_npc_death()** (6 connections) — `server/services/player_combat_service.py`
+- **.track_player_combat_state()** (5 connections) — `server/services/player_combat_service.py`
+- **.clear_player_combat_state()** (5 connections) — `server/services/player_combat_service.py`
+- **._get_xp_from_lifecycle_manager()** (5 connections) — `server/services/player_combat_service.py`
+- **.get_player_combat_state()** (4 connections) — `server/services/player_combat_service.py`
+- **.handle_combat_start()** (4 connections) — `server/services/player_combat_service.py`
+- **.handle_combat_end()** (4 connections) — `server/services/player_combat_service.py`
+- **.handle_npc_death()** (4 connections) — `server/services/player_combat_service.py`
+- **._award_xp_via_npc_rewards()** (4 connections) — `server/services/player_combat_service.py`
+- **.calculate_xp_reward()** (4 connections) — `server/services/player_combat_service.py`
+- **.is_player_in_combat_sync()** (3 connections) — `server/services/player_combat_service.py`
+- **.is_player_in_combat()** (3 connections) — `server/services/player_combat_service.py`
+- **.get_players_in_combat()** (3 connections) — `server/services/player_combat_service.py`
+- **.cleanup_stale_combat_states()** (3 connections) — `server/services/player_combat_service.py`
+- **Get base stats as dictionary.** (1 connections) — `server/models/npc.py`
+- **Track a player's combat state.          Args:             player_id: ID of th** (1 connections) — `server/services/player_combat_service.py`
+- **Get a player's combat state.          Args:             player_id: ID of the** (1 connections) — `server/services/player_combat_service.py`
+- **Clear a player's combat state.          Args:             player_id: ID of th** (1 connections) — `server/services/player_combat_service.py`
+- **Synchronously check if a player is currently in combat.          This is the p** (1 connections) — `server/services/player_combat_service.py`
+- **Check if a player is currently in combat.          Args:             player_i** (1 connections) — `server/services/player_combat_service.py`
+- **Get all players currently in combat.          Returns:             List of pl** (1 connections) — `server/services/player_combat_service.py`
+- **Handle combat start for a player.          Args:             player_id: ID of** (1 connections) — `server/services/player_combat_service.py`
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [command handler unified](command_handler_unified.md) (13 shared connections)
-- [emote game service](emote_game_service.md) (2 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (2 shared connections)
-- [Item Instances](Item_Instances.md) (1 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
-- [command validator validators](command_validator_validators.md) (1 shared connections)
-- [alias storage commands](alias_storage_commands.md) (1 shared connections)
+- [NPC Combat](NPC_Combat.md) (15 shared connections)
+- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [player service game](player_service_game.md) (2 shared connections)
+- [item models rationale](item_models_rationale.md) (2 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
+- [room validator services](room_validator_services.md) (1 shared connections)
+- [game chat service](game_chat_service.md) (1 shared connections)
+- [target resolution service](target_resolution_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/command_handler/command_input.py`
-- `server/tests/unit/commands/test_command_input.py`
+- `server/models/npc.py`
+- `server/services/player_combat_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 143 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 96 (95%)
+- INFERRED: 5 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

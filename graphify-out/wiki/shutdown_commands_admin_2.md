@@ -1,27 +1,23 @@
 # shutdown commands admin
 
-> 6 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **test_initiate_shutdown_countdown_success()** (5 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_initiate_shutdown_countdown_supersedes()** (5 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **_InitiateStateStub** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **_InitiateAppStub** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Test initiate_shutdown_countdown() successfully initiates shutdown.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Test initiate_shutdown_countdown() cancels existing shutdown.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_handle_learn_command_no_spell_name()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Test learn command when no spell name is provided.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
 
 ## Relationships
 
-- [shutdown admin command](shutdown_admin_command.md) (6 shared connections)
+- [commands magic rationale](commands_magic_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_admin_shutdown_command.py`
+- `server/tests/unit/commands/test_magic_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_behavior_config_from_instance_none()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **Test _get_behavior_config_from_instance() when config is not found.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_add_items_to_wearable_container_non_dict_items()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test add_items_to_wearable_container handles non-dict items.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Relationships
 
-- [npc event handlers](npc_event_handlers.md) (1 shared connections)
+- [wearable container service](wearable_container_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_npc_event_handlers.py`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 

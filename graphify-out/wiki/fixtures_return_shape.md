@@ -1,9 +1,10 @@
 # fixtures return shape
 
-> 40 nodes
+> 43 nodes
 
 ## Key Concepts
 
+- **__init__.py** (18 connections) — `server/tests/fixtures/integration/__init__.py`
 - **session_factory()** (17 connections) — `server/tests/fixtures/integration/__init__.py`
 - **test_procedures_return_shape.py** (11 connections) — `server/tests/integration/test_procedures_return_shape.py`
 - **db_cleanup()** (10 connections) — `server/tests/fixtures/integration/__init__.py`
@@ -25,21 +26,21 @@
 - **FixtureRequest** (3 connections)
 - **AsyncSession** (3 connections)
 - **_should_preserve_table_on_cleanup()** (3 connections) — `server/tests/fixtures/integration/__init__.py`
+- **_IntegrationState** (2 connections) — `server/tests/fixtures/integration/__init__.py`
 - **async_sessionmaker** (2 connections)
 - **AsyncEngine** (1 connections)
-- **Extract database name from a PostgreSQL URL. Returns empty string on parse failu** (1 connections) — `server/tests/fixtures/integration/__init__.py`
-- **Return True only if the URL points to an allowed test-only database (mythos_unit** (1 connections) — `server/tests/fixtures/integration/__init__.py`
-- *... and 15 more nodes in this community*
+- *... and 18 more nodes in this community*
 
 ## Relationships
 
-- [world models rationale](world_models_rationale.md) (11 shared connections)
-- [auth users rationale](auth_users_rationale.md) (5 shared connections)
+- [world models rationale](world_models_rationale.md) (4 shared connections)
+- [ascii map renderer](ascii_map_renderer.md) (4 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (3 shared connections)
+- [command inventory factories](command_inventory_factories.md) (3 shared connections)
 - [Database Config](Database_Config.md) (3 shared connections)
-- [Async Query Helpers](Async_Query_Helpers.md) (3 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (1 shared connections)
+- [combat models rationale](combat_models_rationale.md) (3 shared connections)
 - [lucidity services helpers](lucidity_services_helpers.md) (1 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (1 shared connections)
+- [logging file setup](logging_file_setup.md) (1 shared connections)
 - [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
 
 ## Source Files
@@ -51,8 +52,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 128 (89%)
-- INFERRED: 16 (11%)
+- EXTRACTED: 148 (90%)
+- INFERRED: 17 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

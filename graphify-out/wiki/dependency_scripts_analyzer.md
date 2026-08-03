@@ -33,9 +33,8 @@
 
 ## Relationships
 
-- [scripts worktree ops](scripts_worktree_ops.md) (2 shared connections)
+- [scripts run guard](scripts_run_guard.md) (3 shared connections)
 - [NPC Definitions Admin](NPC_Definitions_Admin.md) (2 shared connections)
-- [scripts run guard](scripts_run_guard.md) (1 shared connections)
 
 ## Source Files
 

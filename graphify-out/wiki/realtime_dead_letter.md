@@ -1,31 +1,34 @@
 # realtime dead letter
 
-> 9 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **Any** (7 connections)
-- **.dequeue_async()** (3 connections) — `server/realtime/dead_letter_queue.py`
-- **.dequeue()** (3 connections) — `server/realtime/dead_letter_queue.py`
-- **.get_statistics()** (3 connections) — `server/realtime/dead_letter_queue.py`
-- **.list_messages()** (3 connections) — `server/realtime/dead_letter_queue.py`
-- **Retrieve and remove oldest message from DLQ (async version).          Returns:** (1 connections) — `server/realtime/dead_letter_queue.py`
-- **Retrieve and remove oldest message from DLQ (sync version).          Returns:** (1 connections) — `server/realtime/dead_letter_queue.py`
-- **Get DLQ statistics.          Returns:             Dictionary with DLQ metrics** (1 connections) — `server/realtime/dead_letter_queue.py`
-- **List messages in DLQ without removing them.          Args:             limit: Ma** (1 connections) — `server/realtime/dead_letter_queue.py`
+- **test_level_curve.py** (15 connections) — `server/tests/unit/game/test_level_curve.py`
+- **level_curve.py** (6 connections) — `server/game/level_curve.py`
+- **xp_required_for_level()** (6 connections) — `server/game/level_curve.py`
+- **test_xp_required_for_level_marginal()** (4 connections) — `server/tests/unit/game/test_level_curve.py`
+- **test_xp_required_for_level_invalid()** (3 connections) — `server/tests/unit/game/test_level_curve.py`
+- **Level and XP curve for MythosMUD.  Placeholder implementation: XP required for n** (1 connections) — `server/game/level_curve.py`
+- **XP required to go from (level - 1) to level.      Args:         level: Target le** (1 connections) — `server/game/level_curve.py`
+- **Unit tests for level curve (XP to level, level from total XP).  Character creati** (1 connections) — `server/tests/unit/game/test_level_curve.py`
+- **xp_required_for_level(2) equals total_xp_for_level(2) - total_xp_for_level(1).** (1 connections) — `server/tests/unit/game/test_level_curve.py`
+- **xp_required_for_level raises for level < 2.** (1 connections) — `server/tests/unit/game/test_level_curve.py`
 
 ## Relationships
 
-- [realtime dead letter](realtime_dead_letter.md) (4 shared connections)
-- [dead letter realtime](dead_letter_realtime.md) (3 shared connections)
+- [message formatters realtime](message_formatters_realtime.md) (8 shared connections)
+- [quests players rationale](quests_players_rationale.md) (6 shared connections)
+- [command inventory factories](command_inventory_factories.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/dead_letter_queue.py`
+- `server/game/level_curve.py`
+- `server/tests/unit/game/test_level_curve.py`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (100%)
+- EXTRACTED: 39 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -9,7 +9,7 @@
 
 ## Relationships
 
-- [models profession available](models_profession_available.md) (1 shared connections)
+- [persistence core infrastructure](persistence_core_infrastructure.md) (1 shared connections)
 - [profession models rationale](profession_models_rationale.md) (1 shared connections)
 
 ## Source Files

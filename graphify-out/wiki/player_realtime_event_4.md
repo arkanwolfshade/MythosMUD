@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_log_player_movement_joined()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **Test log_player_movement() logs player joined.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_perform_recovery_action_success()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **Test perform_recovery_action() successfully performs recovery.** (1 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
 
 ## Relationships
 
-- [player room event](player_room_event.md) (1 shared connections)
+- [lucidity active service](lucidity_active_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- `server/tests/unit/services/test_active_lucidity_service.py`
 
 ## Audit Trail
 

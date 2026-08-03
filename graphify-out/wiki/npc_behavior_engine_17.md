@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_state_direct_access()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test state can be accessed directly.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_validate_player_name_rejects_invalid_chars()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Test that validate_player_name rejects invalid characters.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
 
 ## Relationships
 
-- [npc behavior engine](npc_behavior_engine.md) (1 shared connections)
-- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
+- [Security Validator Tests](Security_Validator_Tests.md) (1 shared connections)
+- [command models moderation](command_models_moderation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_behavior_engine.py`
+- `server/tests/unit/validators/test_security_validator.py`
 
 ## Audit Trail
 

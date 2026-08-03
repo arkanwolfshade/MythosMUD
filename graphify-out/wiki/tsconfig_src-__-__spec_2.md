@@ -1,39 +1,37 @@
 # tsconfig src/**/* spec
 
-> 18 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **include** (8 connections) — `client/tsconfig.test.json`
-- **tsconfig.test.json** (5 connections) — `client/tsconfig.test.json`
-- **types** (5 connections) — `client/tsconfig.test.json`
-- **compilerOptions** (3 connections) — `client/tsconfig.test.json`
-- **extends** (1 connections) — `client/tsconfig.test.json`
-- **./tsconfig.json** (1 connections) — `client/tsconfig.test.json`
-- **vitest/globals** (1 connections) — `client/tsconfig.test.json`
-- **node** (1 connections) — `client/tsconfig.test.json`
-- **vite/client** (1 connections) — `client/tsconfig.test.json`
-- **noEmit** (1 connections) — `client/tsconfig.test.json`
-- **src/vite-env.d.ts** (1 connections) — `client/tsconfig.test.json`
-- **src/**/*.test.ts** (1 connections) — `client/tsconfig.test.json`
-- **src/**/*.test.tsx** (1 connections) — `client/tsconfig.test.json`
-- **src/**/*.spec.ts** (1 connections) — `client/tsconfig.test.json`
-- **src/**/*.spec.tsx** (1 connections) — `client/tsconfig.test.json`
-- **src/**/*TestFixtures.ts** (1 connections) — `client/tsconfig.test.json`
-- **src/test/**/*** (1 connections) — `client/tsconfig.test.json`
-- **exclude** (1 connections) — `client/tsconfig.test.json`
+- **.__init__()** (8 connections) — `server/realtime/message_handler_factory.py`
+- **FollowResponseMessageHandler** (5 connections) — `server/realtime/message_handler_factory.py`
+- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
+- **PartyInviteResponseMessageHandler** (5 connections) — `server/realtime/message_handler_factory.py`
+- **Handler for follow_response messages (accept/decline follow request).** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Handle follow_response message type.** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Handler for party_invite_response messages (accept/decline party invite).** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Initialize the factory with registered handlers.** (1 connections) — `server/realtime/message_handler_factory.py`
 
 ## Relationships
 
-- [panels GameClientV2Dock gameLogPanelUtil](panels_GameClientV2Dock_gameLogPanelUtil.md) (1 shared connections)
+- [game chat moderation](game_chat_moderation.md) (3 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (2 shared connections)
+- [command commands aliases](command_commands_aliases.md) (2 shared connections)
+- [combat services messaging](combat_services_messaging.md) (1 shared connections)
+- [dead letter queue](dead_letter_queue.md) (1 shared connections)
+- [combat models rationale](combat_models_rationale.md) (1 shared connections)
+- [occupant formatter realtime](occupant_formatter_realtime.md) (1 shared connections)
+- [realtime message nats](realtime_message_nats.md) (1 shared connections)
+- [message handler factory](message_handler_factory.md) (1 shared connections)
 
 ## Source Files
 
-- `client/tsconfig.test.json`
+- `server/realtime/message_handler_factory.py`
 
 ## Audit Trail
 
-- EXTRACTED: 35 (100%)
+- EXTRACTED: 27 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

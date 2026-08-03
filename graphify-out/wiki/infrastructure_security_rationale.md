@@ -4,12 +4,12 @@
 
 ## Key Concepts
 
-- **test_profession_meets_stat_requirements_all_met()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **Test meets_stat_requirements returns True when all requirements are met.** (1 connections) — `server/tests/unit/models/test_profession.py`
+- **test_profession_set_mechanical_effects_empty_dict()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **Test set_mechanical_effects handles empty dict.** (1 connections) — `server/tests/unit/models/test_profession.py`
 
 ## Relationships
 
-- [models profession available](models_profession_available.md) (1 shared connections)
+- [persistence core infrastructure](persistence_core_infrastructure.md) (1 shared connections)
 - [profession models rationale](profession_models_rationale.md) (1 shared connections)
 
 ## Source Files

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_process_validated_command_no_command_type()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
-- **Test process_validated_command handles missing command_type.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_announce_spell_cast_no_player_id()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Test announce spell cast when player has no ID.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
 
 ## Relationships
 
-- [command service commands](command_service_commands.md) (1 shared connections)
+- [commands magic rationale](commands_magic_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_service.py`
+- `server/tests/unit/commands/test_magic_commands.py`
 
 ## Audit Trail
 

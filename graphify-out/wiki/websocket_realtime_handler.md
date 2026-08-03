@@ -1,65 +1,52 @@
 # websocket realtime handler
 
-> 61 nodes
+> 32 nodes
 
 ## Key Concepts
 
-- **websocket_handler.py** (64 connections) — `server/realtime/websocket_handler.py`
-- **websocket_handler_message_loop.py** (25 connections) — `server/realtime/websocket_handler_message_loop.py`
-- **websocket_handler_connection.py** (17 connections) — `server/realtime/websocket_handler_connection.py`
-- **handle_message_loop_exception()** (10 connections) — `server/realtime/websocket_handler_message_loop.py`
-- **cleanup_websocket_connection()** (7 connections) — `server/realtime/websocket_handler_connection.py`
-- **setup_initial_connection_state()** (7 connections) — `server/realtime/websocket_handler_connection.py`
-- **send_websocket_error_response()** (7 connections) — `server/realtime/websocket_handler_message_loop.py`
-- **WebSocket** (7 connections)
-- **PlayerDisconnectService** (6 connections) — `server/realtime/websocket_handler_connection.py`
-- **AsyncPersistenceRoomLookup** (6 connections) — `server/realtime/websocket_handler_connection.py`
-- **send_welcome_event()** (6 connections) — `server/realtime/websocket_handler_connection.py`
-- **handle_json_decode_error()** (6 connections) — `server/realtime/websocket_handler_message_loop.py`
-- **UUID** (6 connections)
-- **handle_websocket_runtime_error()** (6 connections) — `server/realtime/websocket_handler_message_loop.py`
-- **handle_websocket_generic_exception()** (6 connections) — `server/realtime/websocket_handler_message_loop.py`
-- **process_exception_in_message_loop()** (6 connections) — `server/realtime/websocket_handler_message_loop.py`
-- **handle_websocket_message_loop()** (6 connections) — `server/realtime/websocket_handler_message_loop.py`
-- **is_websocket_disconnect_message()** (6 connections) — `server/realtime/websocket_helpers.py`
-- **UUID** (5 connections)
-- **process_websocket_inbound_message()** (5 connections) — `server/realtime/websocket_handler_message_loop.py`
-- **handle_websocket_disconnect()** (4 connections) — `server/realtime/websocket_handler_message_loop.py`
-- **test_websocket_handler_disconnect.py** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
-- **test_websocket_handler_helpers.py** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers.py`
-- **test_websocket_handler_json_error.py** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
-- **.on_player_disconnect()** (3 connections) — `server/realtime/websocket_handler_connection.py`
-- *... and 36 more nodes in this community*
+- **_find_container_in_room()** (22 connections) — `server/commands/look_container.py`
+- **test_find_container_in_room_success()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_in_room_by_container_id()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_in_room_not_found()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_in_room_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_in_room_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_in_room_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_in_room_found()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_in_room_not_found()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_in_room_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_in_room_empty()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_in_room_no_match()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_in_room_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_in_room_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_in_room_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_in_room_instance_number_zero()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Find a container in room containers by name or container_id.      Args:** (1 connections) — `server/commands/look_container.py`
+- **Test finding container in room by name.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test finding container in room by container_id.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test finding container in room when not found.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test finding container in room with multiple matches.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test finding container in room with instance number.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test finding container in room with invalid instance number.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test _find_container_in_room() finds container by name.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Test _find_container_in_room() returns None when container not found.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [websocket handler realtime](websocket_handler_realtime.md) (15 shared connections)
-- [Error Handling Core](Error_Handling_Core.md) (10 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (8 shared connections)
-- [realtime message validator](realtime_message_validator.md) (8 shared connections)
-- [websocket helpers realtime](websocket_helpers_realtime.md) (7 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (7 shared connections)
-- [combat services messaging](combat_services_messaging.md) (5 shared connections)
-- [realtime websocket initial](realtime_websocket_initial.md) (4 shared connections)
-- [websocket validation realtime](websocket_validation_realtime.md) (3 shared connections)
-- [room websocket updates](room_websocket_updates.md) (2 shared connections)
-- [Memory Task Runtime](Memory_Task_Runtime.md) (2 shared connections)
-- [auth rationale access](auth_rationale_access.md) (1 shared connections)
+- [models lucidity rationale](models_lucidity_rationale.md) (10 shared connections)
+- [DI Container Format](DI_Container_Format.md) (7 shared connections)
+- [schemas player rationale](schemas_player_rationale.md) (4 shared connections)
 
 ## Source Files
 
-- `server/realtime/websocket_handler.py`
-- `server/realtime/websocket_handler_connection.py`
-- `server/realtime/websocket_handler_message_loop.py`
-- `server/realtime/websocket_helpers.py`
-- `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
-- `server/tests/unit/realtime/test_websocket_handler_helpers.py`
-- `server/tests/unit/realtime/test_websocket_handler_json_error.py`
+- `server/commands/look_container.py`
+- `server/tests/unit/commands/test_look_container.py`
+- `server/tests/unit/commands/test_look_container_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 273 (98%)
-- INFERRED: 6 (2%)
+- EXTRACTED: 83 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

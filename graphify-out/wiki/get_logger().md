@@ -2,7 +2,7 @@
 
 > God node · 516 connections · `server/structured_logging/enhanced_logging_config.py`
 
-**Community:** [NATS Messaging](NATS_Messaging.md)
+**Community:** [command inventory factories](command_inventory_factories.md)
 
 ## Connections by Relation
 
@@ -46,8 +46,8 @@
 - players.py `EXTRACTED`
 - websocket_handler.py `EXTRACTED`
 - monitoring.py `EXTRACTED`
-- lifespan_startup.py `EXTRACTED`
 - endpoints.py `EXTRACTED`
+- lifespan_startup.py `EXTRACTED`
 - container_persistence.py `EXTRACTED`
 - maps.py `EXTRACTED`
 - command_handler_unified.py `EXTRACTED`

@@ -2,7 +2,7 @@
 
 > God node · 184 connections · `server/async_persistence.py`
 
-**Community:** [NATS Messaging](NATS_Messaging.md)
+**Community:** [NPC Combat](NPC_Combat.md)
 
 ## Connections by Relation
 

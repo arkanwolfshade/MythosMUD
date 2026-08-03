@@ -1,12 +1,21 @@
 # logging processors structured
 
-> 28 nodes
+> 81 nodes
 
 ## Key Concepts
 
+- **test_logging_processors.py** (36 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
 - **set_global_player_service()** (17 connections) — `server/structured_logging/logging_processors.py`
 - **enhance_player_ids()** (17 connections) — `server/structured_logging/logging_processors.py`
+- **sanitize_sensitive_data()** (14 connections) — `server/structured_logging/logging_processors.py`
+- **logging_processors.py** (12 connections) — `server/structured_logging/logging_processors.py`
+- **configure_enhanced_structlog()** (11 connections) — `server/structured_logging/enhanced_logging_config.py`
+- **add_request_context()** (11 connections) — `server/structured_logging/logging_processors.py`
+- **update_logging_with_player_service()** (8 connections) — `server/structured_logging/enhanced_logging_config.py`
+- **add_correlation_id()** (8 connections) — `server/structured_logging/logging_processors.py`
+- **EventDict** (5 connections)
 - **test_enhance_player_ids_persistence_error()** (5 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **_EnhancePlayerIdsTls** (4 connections) — `server/structured_logging/logging_processors.py`
 - **test_enhance_player_ids_no_player_service()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
 - **test_enhance_player_ids_player_found()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
 - **test_enhance_player_ids_player_not_found()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
@@ -18,36 +27,32 @@
 - **test_enhance_player_ids_prevents_recursion()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
 - **test_enhance_player_ids_no_persistence_attribute()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
 - **test_set_global_player_service()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Set the global player service for logging enhancement.      This allows the logg** (1 connections) — `server/structured_logging/logging_processors.py`
-- **Enhance player_id fields with player names for better log readability.      This** (1 connections) — `server/structured_logging/logging_processors.py`
-- **Test set_global_player_service() sets the global player service.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Test enhance_player_ids() handles missing player service.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Test enhance_player_ids() enhances player_id when player is found.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Test enhance_player_ids() leaves player_id unchanged when player not found.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Test enhance_player_ids() leaves non-UUID player_id unchanged.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Test enhance_player_ids() leaves short strings unchanged.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Test enhance_player_ids() handles non-string player_id values.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Test enhance_player_ids() handles event_dict without player_id.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Test enhance_player_ids() handles persistence errors gracefully.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- *... and 3 more nodes in this community*
+- **test_sanitize_sensitive_data_password()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **test_sanitize_sensitive_data_token()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- *... and 56 more nodes in this community*
 
 ## Relationships
 
-- [lucidity npc combat](lucidity_npc_combat.md) (14 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (4 shared connections)
-- [npc populate databases](npc_populate_databases.md) (2 shared connections)
-- [services ascii map](services_ascii_map.md) (1 shared connections)
+- [command inventory factories](command_inventory_factories.md) (11 shared connections)
+- [Database Config](Database_Config.md) (4 shared connections)
+- [logging setup structured](logging_setup_structured.md) (2 shared connections)
+- [logging structured utilities](logging_structured_utilities.md) (2 shared connections)
+- [time service rationale](time_service_rationale.md) (1 shared connections)
+- [Magic Spell Service](Magic_Spell_Service.md) (1 shared connections)
+- [player guid formatter](player_guid_formatter.md) (1 shared connections)
+- [npc shopkeeper rationale](npc_shopkeeper_rationale.md) (1 shared connections)
 - [room websocket updates](room_websocket_updates.md) (1 shared connections)
 
 ## Source Files
 
+- `server/structured_logging/enhanced_logging_config.py`
 - `server/structured_logging/logging_processors.py`
 - `server/tests/unit/structured_logging/test_logging_processors.py`
 
 ## Audit Trail
 
-- EXTRACTED: 94 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 269 (95%)
+- INFERRED: 13 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

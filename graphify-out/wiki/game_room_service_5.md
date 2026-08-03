@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_dequeue_handles_read_error()** (3 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
-- **Test dequeue() handles file read errors.** (1 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_should_idle_move_true_when_not_in_combat_and_probability_succeeds()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **When combat service is empty and probability passes, idle move is allowed.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
 
 ## Relationships
 
-- [realtime dead letter](realtime_dead_letter.md) (1 shared connections)
-- [dead letter queue](dead_letter_queue.md) (1 shared connections)
+- [config models player](config_models_player.md) (1 shared connections)
+- [idle movement npc](idle_movement_npc.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_dead_letter_queue.py`
+- `server/tests/unit/npc/test_idle_movement.py`
 
 ## Audit Trail
 

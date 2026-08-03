@@ -34,8 +34,8 @@
 ## Relationships
 
 - [chat services logger](chat_services_logger.md) (2 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (1 shared connections)
-- [services chat rate](services_chat_rate.md) (1 shared connections)
+- [chat game message](chat_game_message.md) (1 shared connections)
+- [services user manager](services_user_manager.md) (1 shared connections)
 
 ## Source Files
 

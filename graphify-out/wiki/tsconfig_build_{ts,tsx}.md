@@ -1,25 +1,27 @@
 # tsconfig build {ts,tsx}
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **id** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **pattern** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **.__init__()** (4 connections) — `server/services/npc_combat_rewards.py`
+- **.calculate_xp_reward()** (3 connections) — `server/services/npc_combat_rewards.py`
+- **Any** (2 connections)
+- **Initialize the rewards manager.          Args:             async_persistence: As** (1 connections) — `server/services/npc_combat_rewards.py`
+- **Calculate XP reward from NPC definition.          Args:             npc_definiti** (1 connections) — `server/services/npc_combat_rewards.py`
 
 ## Relationships
 
-- [room toolkit validator](room_toolkit_validator.md) (1 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [Database Config](Database_Config.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- `server/services/npc_combat_rewards.py`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

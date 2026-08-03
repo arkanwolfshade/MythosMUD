@@ -1,78 +1,48 @@
 # commands alias rationale
 
-> 320 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **AliasStorage** (231 connections) — `server/alias_storage.py`
-- **command_service.py** (95 connections) — `server/commands/command_service.py`
-- **alias_storage.py** (67 connections) — `server/alias_storage.py`
-- **command_parser.py** (46 connections) — `server/utils/command_parser.py`
-- **test_alias_commands.py** (30 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **__init__.py** (29 connections) — `server/commands/__init__.py`
-- **processing.py** (25 connections) — `server/command_handler/processing.py`
-- **debrief_command.py** (25 connections) — `server/commands/debrief_command.py`
 - **handle_alias_command()** (24 connections) — `server/commands/alias_commands.py`
-- **parse_command()** (24 connections) — `server/utils/command_parser.py`
-- **player_service()** (23 connections) — `docs/examples/logging/fastapi_integration.py`
-- **CommandService** (20 connections) — `server/commands/command_service.py`
-- **party_commands.py** (19 connections) — `server/commands/party_commands.py`
-- **position_commands.py** (19 connections) — `server/commands/position_commands.py`
-- **player_position_service.py** (17 connections) — `server/services/player_position_service.py`
-- **channel_commands.py** (16 connections) — `server/commands/channel_commands.py`
-- **alias_commands.py** (15 connections) — `server/commands/alias_commands.py`
-- **handle_debrief_command()** (15 connections) — `server/commands/debrief_command.py`
-- **skills_commands.py** (15 connections) — `server/commands/skills_commands.py`
-- **get_help_content()** (15 connections) — `server/help/help_content.py`
-- **handle_goto_command()** (14 connections) — `server/commands/admin_teleport_commands.py`
-- **handle_admin_command()** (13 connections) — `server/commands/admin_commands.py`
-- **handle_inventory_command()** (13 connections) — `server/commands/inventory_commands.py`
-- **system_commands.py** (13 connections) — `server/commands/system_commands.py`
-- **command_processor.py** (13 connections) — `server/utils/command_processor.py`
-- *... and 295 more nodes in this community*
+- **_extract_alias_params()** (4 connections) — `server/commands/alias_commands.py`
+- **Any** (4 connections)
+- **test_handle_alias_command_no_storage()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_view_nonexistent()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_create_from_args()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_create_from_structured_data()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_create_error()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_invalid_command_empty()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **Extract alias_name and command from command_data. Returns (alias_name, command).** (1 connections) — `server/commands/alias_commands.py`
+- **Handle the alias command for creating and viewing aliases.      Args:         co** (1 connections) — `server/commands/alias_commands.py`
+- **Test handle_alias_command when alias storage is not available.** (1 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **Test handle_alias_command viewing nonexistent alias.** (1 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **Test handle_alias_command creating alias from args.** (1 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **Test handle_alias_command creating alias from structured data.** (1 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **Test handle_alias_command when creation fails.** (1 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **Test handle_alias_command with empty command.** (1 connections) — `server/tests/unit/commands/test_alias_commands.py`
 
 ## Relationships
 
-- [NATS Messaging](NATS_Messaging.md) (43 shared connections)
-- [commands admin mute](commands_admin_mute.md) (31 shared connections)
-- [command handler unified](command_handler_unified.md) (25 shared connections)
-- [lucidity active service](lucidity_active_service.md) (20 shared connections)
-- [commands magic rationale](commands_magic_rationale.md) (20 shared connections)
-- [inventory commands command](inventory_commands_command.md) (19 shared connections)
-- [command parser rationale](command_parser_rationale.md) (17 shared connections)
-- [commands communication say](commands_communication_say.md) (15 shared connections)
-- [combat services turn](combat_services_turn.md) (14 shared connections)
-- [command helpers functions](command_helpers_functions.md) (13 shared connections)
-- [commands rescue rationale](commands_rescue_rationale.md) (13 shared connections)
-- [command inventory factories](command_inventory_factories.md) (13 shared connections)
+- [scripts worktree ops](scripts_worktree_ops.md) (11 shared connections)
+- [realtime circuit breaker](realtime_circuit_breaker.md) (4 shared connections)
+- [commands admin mute](commands_admin_mute.md) (3 shared connections)
+- [schemas calendar rationale](schemas_calendar_rationale.md) (1 shared connections)
+- [emote game service](emote_game_service.md) (1 shared connections)
+- [combat services messaging](combat_services_messaging.md) (1 shared connections)
+- [schemas player requests](schemas_player_requests.md) (1 shared connections)
+- [headers middleware security](headers_middleware_security.md) (1 shared connections)
+- [ascii map renderer](ascii_map_renderer.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/examples/logging/fastapi_integration.py`
-- `server/alias_storage.py`
-- `server/command_handler/processing.py`
-- `server/commands/__init__.py`
-- `server/commands/admin_commands.py`
-- `server/commands/admin_teleport_commands.py`
 - `server/commands/alias_commands.py`
-- `server/commands/channel_commands.py`
-- `server/commands/command_service.py`
-- `server/commands/communication_commands.py`
-- `server/commands/debrief_command.py`
-- `server/commands/exploration_commands.py`
-- `server/commands/help_commands.py`
-- `server/commands/inventory_commands.py`
-- `server/commands/party_commands.py`
-- `server/commands/position_commands.py`
-- `server/commands/skills_commands.py`
-- `server/commands/system_commands.py`
-- `server/commands/time_commands.py`
-- `server/help/__init__.py`
+- `server/tests/unit/commands/test_alias_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1612 (96%)
-- INFERRED: 61 (4%)
+- EXTRACTED: 58 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

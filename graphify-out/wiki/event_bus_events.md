@@ -1,36 +1,49 @@
 # event bus events
 
-> 5 nodes
+> 80 nodes
 
 ## Key Concepts
 
-- **.__init__()** (8 connections) — `server/services/combat_monitoring_service.py`
-- **Alert** (6 connections) — `server/services/combat_monitoring_service.py`
-- **get_combat_config()** (5 connections) — `server/services/combat_configuration_service.py`
-- **Get the global combat configuration service instance.      Returns:         Comb** (1 connections) — `server/services/combat_configuration_service.py`
-- **Initialize the combat monitoring service.** (1 connections) — `server/services/combat_monitoring_service.py`
+- **test_event_bus.py** (45 connections) — `server/tests/unit/events/test_event_bus.py`
+- **MockEventClass** (29 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_subscribe()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_subscribe_multiple()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_unsubscribe()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_unsubscribe_not_found()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_get_subscriber_count()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_get_subscriber_count_none()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_get_all_subscriber_counts()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_publish()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_unsubscribe_multiple_handlers()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_get_all_subscriber_counts_multiple_types()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_publish_no_subscribers()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_inject_dispatches_to_subscribers()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_publish_multiple_subscribers()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_subscribe_invalid_handler()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_handle_event_async_no_subscribers()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_handle_event_async_sync_subscriber_error()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_handle_event_async_async_subscriber_error()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_handle_task_result_async_no_error()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_handle_task_result_async_with_error()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_subscribe_with_service_id()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_unsubscribe_all_for_service()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_unsubscribe_all_for_service_partial_cleanup()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_get_subscriber_stats()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- *... and 55 more nodes in this community*
 
 ## Relationships
 
-- [combat monitoring service](combat_monitoring_service.md) (4 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (2 shared connections)
-- [npc combat service](npc_combat_service.md) (1 shared connections)
-- [combat configuration service](combat_configuration_service.md) (1 shared connections)
-- [main rationale failure()](main_rationale_failure%28%29.md) (1 shared connections)
-- [logoutHandler logger App](logoutHandler_logger_App.md) (1 shared connections)
-- [mythos mud mapbuilder](mythos_mud_mapbuilder.md) (1 shared connections)
-- [Item Instances](Item_Instances.md) (1 shared connections)
-- [service feature services](service_feature_services.md) (1 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (4 shared connections)
+- [item models rationale](item_models_rationale.md) (3 shared connections)
 
 ## Source Files
 
-- `server/services/combat_configuration_service.py`
-- `server/services/combat_monitoring_service.py`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (86%)
-- INFERRED: 3 (14%)
+- EXTRACTED: 171 (80%)
+- INFERRED: 44 (20%)
 - AMBIGUOUS: 0 (0%)
 
 ---

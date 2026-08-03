@@ -1,40 +1,45 @@
 # command base models
 
-> 15 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **Any** (10 connections)
-- **._emit_party_updated()** (9 connections) — `server/game/party_service.py`
-- **.disband_party()** (8 connections) — `server/game/party_service.py`
-- **.remove_member()** (8 connections) — `server/game/party_service.py`
-- **.kick_member()** (8 connections) — `server/game/party_service.py`
-- **._notify_player_removed_from_party()** (7 connections) — `server/game/party_service.py`
-- **.__init__()** (6 connections) — `server/game/party_service.py`
-- **._schedule_notification()** (6 connections) — `server/game/party_service.py`
-- **Initialize empty party store. Optionally provide event_bus, connection_manager,** (1 connections) — `server/game/party_service.py`
-- **Emit PartyUpdated event if event_bus is set.** (1 connections) — `server/game/party_service.py`
-- **Disband a party. If by_player_id is given, only the leader may disband.** (1 connections) — `server/game/party_service.py`
-- **Safely schedule an async notification, handling cases where no event loop is run** (1 connections) — `server/game/party_service.py`
-- **Notify a player they have been removed from a party. Resolves leader name.** (1 connections) — `server/game/party_service.py`
-- **Remove a player from a party (leave or internal remove). If leader leaves,** (1 connections) — `server/game/party_service.py`
-- **Remove a member from the party. Only the leader may kick.** (1 connections) — `server/game/party_service.py`
+- **CombatBundle** (19 connections) — `server/container/bundles/combat.py`
+- **combat.py** (13 connections) — `server/container/bundles/combat.py`
+- **.initialize()** (8 connections) — `server/container/bundles/combat.py`
+- **.initialize_nats_combat()** (7 connections) — `server/container/bundles/combat.py`
+- **._sanitarium_failover_callback()** (4 connections) — `server/container/bundles/combat.py`
+- **._validate_nats_combat_prerequisites()** (4 connections) — `server/container/bundles/combat.py`
+- **._start_nats_message_handler()** (4 connections) — `server/container/bundles/combat.py`
+- **._handle_nats_unavailable()** (3 connections) — `server/container/bundles/combat.py`
+- **Combat bundle: player combat, death, respawn, combat service, catatonia, lucidit** (1 connections) — `server/container/bundles/combat.py`
+- **Combat-related services.** (1 connections) — `server/container/bundles/combat.py`
+- **Failover callback that relocates catatonic players to the sanitarium.** (1 connections) — `server/container/bundles/combat.py`
+- **Initialize combat services.** (1 connections) — `server/container/bundles/combat.py`
+- **Raise if prerequisites for NATS combat are missing.** (1 connections) — `server/container/bundles/combat.py`
+- **Start NATS message handler if available. Logs and swallows errors.** (1 connections) — `server/container/bundles/combat.py`
+- **Handle case when NATS is not connected. Raises in prod, sets combat_service to N** (1 connections) — `server/container/bundles/combat.py`
+- **Initialize NATS-dependent combat service and start NATS message handler.** (1 connections) — `server/container/bundles/combat.py`
 
 ## Relationships
 
-- [party game service](party_game_service.md) (16 shared connections)
-- [envelope event game](envelope_event_game.md) (7 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (3 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (12 shared connections)
+- [NPC Combat](NPC_Combat.md) (7 shared connections)
+- [catatonia registry services](catatonia_registry_services.md) (3 shared connections)
+- [lucidity services helpers](lucidity_services_helpers.md) (3 shared connections)
+- [alias command models](alias_command_models.md) (3 shared connections)
+- [Async Query Helpers](Async_Query_Helpers.md) (3 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [lucidity flux passive](lucidity_flux_passive.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/party_service.py`
+- `server/container/bundles/combat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 69 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 62 (89%)
+- INFERRED: 8 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

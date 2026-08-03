@@ -4,28 +4,26 @@
 
 ## Key Concepts
 
-- **.create_npc_command()** (5 connections) — `server/utils/command_factories_utility.py`
-- **test_create_npc_command_no_args()** (3 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
-- **test_create_npc_command_with_subcommand()** (3 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
-- **Test create_npc_command() with no args.** (1 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
-- **Test create_npc_command() with subcommand.** (1 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
-- **Create NPCCommand from arguments.** (1 connections) — `server/utils/command_factories_utility.py`
+- **TestGetPlayerRespawnService** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_player_respawn_service_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_player_respawn_service_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Tests for get_player_respawn_service dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_player_respawn_service returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_player_respawn_service raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Relationships
 
-- [exceptions rationale error](exceptions_rationale_error.md) (2 shared connections)
-- [command models admin](command_models_admin.md) (1 shared connections)
-- [auth dependencies rationale](auth_dependencies_rationale.md) (1 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (3 shared connections)
+- [command inventory models](command_inventory_models.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories_utility.py`
-- `server/utils/command_factories_utility.py`
+- `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 13 (93%)
+- INFERRED: 1 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

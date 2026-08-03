@@ -1,34 +1,41 @@
 # command processor rationale
 
-> 11 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **_apply_stat_change_and_build_result()** (8 connections) — `server/commands/admin_setstat_command.py`
-- **_log_admin_set_stat()** (6 connections) — `server/commands/admin_setstat_command.py`
-- **_build_set_stat_error_response()** (6 connections) — `server/commands/admin_setstat_command.py`
-- **_AdminSetStatLogContext** (5 connections) — `server/commands/admin_setstat_command.py`
-- **_AdminSetStatApplyContext** (4 connections) — `server/commands/admin_setstat_command.py`
-- **BaseException** (1 connections)
-- **Context for logging an admin set-stat command (reduces parameter count).** (1 connections) — `server/commands/admin_setstat_command.py`
-- **Context for applying an admin set-stat change (reduces parameter count).** (1 connections) — `server/commands/admin_setstat_command.py`
-- **Log admin set stat command.** (1 connections) — `server/commands/admin_setstat_command.py`
-- **Log error and admin action failure, return error result dict.** (1 connections) — `server/commands/admin_setstat_command.py`
-- **Apply stat change, persist, notify, log; return success result dict.** (1 connections) — `server/commands/admin_setstat_command.py`
+- **Any** (8 connections)
+- **.spawn_npc_instance()** (4 connections) — `server/services/npc_instance_service.py`
+- **.get_population_stats()** (4 connections) — `server/services/npc_instance_service.py`
+- **.get_zone_stats()** (4 connections) — `server/services/npc_instance_service.py`
+- **._extract_zone_from_room_id()** (4 connections) — `server/services/npc_instance_service.py`
+- **.despawn_npc_instance()** (3 connections) — `server/services/npc_instance_service.py`
+- **.move_npc_instance()** (3 connections) — `server/services/npc_instance_service.py`
+- **.get_npc_instances()** (3 connections) — `server/services/npc_instance_service.py`
+- **.get_npc_stats()** (3 connections) — `server/services/npc_instance_service.py`
+- **.get_system_stats()** (3 connections) — `server/services/npc_instance_service.py`
+- **Spawn a new NPC instance.          Args:             definition_id: ID of the NP** (1 connections) — `server/services/npc_instance_service.py`
+- **Despawn an NPC instance.          Args:             npc_id: ID of the NPC to des** (1 connections) — `server/services/npc_instance_service.py`
+- **Move an NPC instance to a different room.          Args:             npc_id: ID** (1 connections) — `server/services/npc_instance_service.py`
+- **Get all active NPC instances.          Returns:             List of NPC instance** (1 connections) — `server/services/npc_instance_service.py`
+- **Get detailed stats for a specific NPC instance.          Args:             npc_i** (1 connections) — `server/services/npc_instance_service.py`
+- **Get NPC population statistics.          Returns:             Dictionary with pop** (1 connections) — `server/services/npc_instance_service.py`
+- **Get NPC zone statistics.          Returns:             Dictionary with zone stat** (1 connections) — `server/services/npc_instance_service.py`
+- **Get system-wide NPC statistics.          Returns:             Dictionary with sy** (1 connections) — `server/services/npc_instance_service.py`
+- **Extract zone key from room ID.          Args:             room_id: Room ID like** (1 connections) — `server/services/npc_instance_service.py`
 
 ## Relationships
 
-- [admin commands setstat](admin_commands_setstat.md) (7 shared connections)
-- [admin command setstat](admin_command_setstat.md) (3 shared connections)
-- [combat services turn](combat_services_turn.md) (1 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (9 shared connections)
+- [command inventory models](command_inventory_models.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/admin_setstat_command.py`
+- `server/services/npc_instance_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 35 (100%)
+- EXTRACTED: 48 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

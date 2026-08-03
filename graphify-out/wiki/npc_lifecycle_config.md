@@ -1,11 +1,10 @@
 # npc lifecycle config
 
-> 32 nodes
+> 23 nodes
 
 ## Key Concepts
 
 - **lifecycle_periodic.py** (18 connections) — `server/npc/lifecycle_periodic.py`
-- **NPCMaintenanceConfig** (8 connections) — `server/config/npc_config.py`
 - **Any** (8 connections)
 - **check_optional_npc_spawns_impl()** (8 connections) — `server/npc/lifecycle_periodic.py`
 - **run_periodic_maintenance_impl()** (7 connections) — `server/npc/lifecycle_periodic.py`
@@ -13,39 +12,37 @@
 - **_attempt_optional_npc_spawn()** (5 connections) — `server/npc/lifecycle_periodic.py`
 - **get_zone_key_for_definition()** (5 connections) — `server/npc/lifecycle_periodic.py`
 - **get_spawn_room_for_definition()** (5 connections) — `server/npc/lifecycle_periodic.py`
-- **npc_config.py** (4 connections) — `server/config/npc_config.py`
 - **_should_skip_optional_npc()** (4 connections) — `server/npc/lifecycle_periodic.py`
 - **_check_spawn_conditions_for_optional_npc()** (4 connections) — `server/npc/lifecycle_periodic.py`
-- **.get_config_summary()** (3 connections) — `server/config/npc_config.py`
 - **.cleanup_old_records()** (3 connections) — `server/npc/lifecycle_manager.py`
 - **.periodic_maintenance()** (3 connections) — `server/npc/lifecycle_manager.py`
-- **.get_respawn_delay()** (2 connections) — `server/config/npc_config.py`
-- **Any** (1 connections)
-- **NPC Configuration for MythosMUD.  This module defines configuration settings for** (1 connections) — `server/config/npc_config.py`
-- **Configuration for NPC lifecycle maintenance.      This class centralizes all tim** (1 connections) — `server/config/npc_config.py`
-- **Get the respawn delay for a specific NPC type.          Args:             npc_ty** (1 connections) — `server/config/npc_config.py`
-- **Get a summary of all NPC configuration values.          Returns:             Dic** (1 connections) — `server/config/npc_config.py`
 - **Clean up old lifecycle records (delegates to lifecycle_periodic).** (1 connections) — `server/npc/lifecycle_manager.py`
 - **Perform periodic maintenance (delegates to lifecycle_periodic).** (1 connections) — `server/npc/lifecycle_manager.py`
 - **Periodic maintenance and optional NPC spawn checks for lifecycle.  Extracted fro** (1 connections) — `server/npc/lifecycle_periodic.py`
 - **Clean up old lifecycle records. Returns number of records removed.** (1 connections) — `server/npc/lifecycle_periodic.py`
-- *... and 7 more nodes in this community*
+- **Run respawn queue, optional NPC spawn checks, and cleanup. Returns results dict.** (1 connections) — `server/npc/lifecycle_periodic.py`
+- **Check if optional NPCs should spawn; return spawned_count and checks_performed.** (1 connections) — `server/npc/lifecycle_periodic.py`
+- **Return (should_skip, last_check_time).** (1 connections) — `server/npc/lifecycle_periodic.py`
+- **Return (can_spawn, current_count).** (1 connections) — `server/npc/lifecycle_periodic.py`
+- **Attempt to spawn an optional NPC. Returns npc_id if spawned, else None.** (1 connections) — `server/npc/lifecycle_periodic.py`
+- **Get zone key for an NPC definition (e.g. from sub_zone_id / room_id).** (1 connections) — `server/npc/lifecycle_periodic.py`
+- **Get spawn room ID for an NPC definition.** (1 connections) — `server/npc/lifecycle_periodic.py`
 
 ## Relationships
 
-- [NATS Messaging](NATS_Messaging.md) (8 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (6 shared connections)
-- [auth endpoints rationale](auth_endpoints_rationale.md) (3 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (10 shared connections)
+- [npc combat services](npc_combat_services.md) (2 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [time service rationale](time_service_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/config/npc_config.py`
 - `server/npc/lifecycle_manager.py`
 - `server/npc/lifecycle_periodic.py`
 
 ## Audit Trail
 
-- EXTRACTED: 109 (100%)
+- EXTRACTED: 87 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

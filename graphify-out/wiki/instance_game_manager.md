@@ -1,25 +1,27 @@
 # instance game manager
 
-> 8 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **_send_combat_participant_updates()** (8 connections) — `server/realtime/event_handlers.py`
-- **_participant_key_strings()** (3 connections) — `server/realtime/event_handlers.py`
-- **.handle_combat_started_event()** (3 connections) — `server/realtime/event_handlers.py`
-- **.handle_combat_ended_event()** (3 connections) — `server/realtime/event_handlers.py`
-- **Keys from a participants mapping (NATS may send dict-like payloads).** (1 connections) — `server/realtime/event_handlers.py`
-- **Push player_update to each combat participant (in_combat flag).** (1 connections) — `server/realtime/event_handlers.py`
-- **Handle combat_started event.** (1 connections) — `server/realtime/event_handlers.py`
-- **Handle combat_ended event.** (1 connections) — `server/realtime/event_handlers.py`
+- **_as_event_data_dict()** (6 connections) — `server/realtime/event_handlers.py`
+- **.handle_event_message()** (5 connections) — `server/realtime/event_handlers.py`
+- **.get_event_handler_map()** (3 connections) — `server/realtime/event_handlers.py`
+- **.validate_event_message()** (3 connections) — `server/realtime/event_handlers.py`
+- **.handle_player_attacked_event()** (3 connections) — `server/realtime/event_handlers.py`
+- **.handle_npc_attacked_event()** (3 connections) — `server/realtime/event_handlers.py`
+- **.handle_npc_took_damage_event()** (3 connections) — `server/realtime/event_handlers.py`
+- **Normalize NATS event_data payload to a string-keyed dict.** (1 connections) — `server/realtime/event_handlers.py`
+- **Get mapping of event types to their handler methods.          Returns:** (1 connections) — `server/realtime/event_handlers.py`
+- **Validate that event message has required fields.          Args:             e** (1 connections) — `server/realtime/event_handlers.py`
+- **Handle incoming event messages from NATS.          Args:             message_** (1 connections) — `server/realtime/event_handlers.py`
+- **Handle player_attacked event.** (1 connections) — `server/realtime/event_handlers.py`
+- **Handle npc_attacked event.** (1 connections) — `server/realtime/event_handlers.py`
+- **Handle npc_took_damage event.** (1 connections) — `server/realtime/event_handlers.py`
 
 ## Relationships
 
-- [NATS Messaging](NATS_Messaging.md) (2 shared connections)
-- [realtime message filtering](realtime_message_filtering.md) (2 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (1 shared connections)
-- [combat services messaging](combat_services_messaging.md) (1 shared connections)
-- [Item Instances](Item_Instances.md) (1 shared connections)
+- [circuit breaker realtime](circuit_breaker_realtime.md) (7 shared connections)
 
 ## Source Files
 
@@ -27,8 +29,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 20 (95%)
-- INFERRED: 1 (5%)
+- EXTRACTED: 33 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,65 +1,76 @@
 # game models player
 
-> 123 nodes
+> 327 nodes
 
 ## Key Concepts
 
-- **game.py** (32 connections) — `server/models/game.py`
-- **StatusEffect** (32 connections) — `server/models/game.py`
-- **Player** (26 connections) — `server/models/game.py`
-- **spell_effects_status.py** (24 connections) — `server/game/magic/spell_effects_status.py`
-- **test_game_player.py** (23 connections) — `server/tests/unit/models/test_game_player.py`
-- **InventoryItem** (19 connections) — `server/models/game.py`
-- **StatusEffectType** (18 connections) — `server/models/game.py`
-- **test_game_status_effect.py** (13 connections) — `server/tests/unit/models/test_game_status_effect.py`
-- **test_game_enums.py** (11 connections) — `server/tests/unit/models/test_game_enums.py`
-- **_apply_player_status_with_grace_check()** (10 connections) — `server/game/magic/spell_effects_status.py`
-- **_handle_player_status_effect()** (10 connections) — `server/game/magic/spell_effects_status.py`
-- **run_status_effect()** (10 connections) — `server/game/magic/spell_effects_status.py`
-- **memory_profiler.py** (10 connections) — `server/utils/memory_profiler.py`
-- **_apply_status_effect_to_player()** (9 connections) — `server/game/magic/spell_effects_status.py`
-- **Any** (8 connections)
-- **_grace_period_blocks_negative_status_effect()** (7 connections) — `server/game/magic/spell_effects_status.py`
-- **_maybe_run_force_flee_effect()** (7 connections) — `server/game/magic/spell_effects_status.py`
-- **_remove_player_status_effect()** (7 connections) — `server/game/magic/spell_effects_status.py`
-- **UUID** (6 connections)
-- **_parse_status_effect_metadata()** (6 connections) — `server/game/magic/spell_effects_status.py`
-- **test_game_inventory_item.py** (6 connections) — `server/tests/unit/models/test_game_inventory_item.py`
-- **BaseModel** (5 connections)
-- **.is_active()** (5 connections) — `server/models/game.py`
-- **.get_active_status_effects()** (4 connections) — `server/models/game.py`
-- **test_inventory_item_quantity_validation_min()** (4 connections) — `server/tests/unit/models/test_game_inventory_item.py`
-- *... and 98 more nodes in this community*
+- **Spell** (84 connections) — `server/models/spell.py`
+- **SpellEffects** (56 connections) — `server/game/magic/spell_effects.py`
+- **spell_effects.py** (47 connections) — `server/game/magic/spell_effects.py`
+- **_MagicServiceCore** (42 connections) — `server/game/magic/magic_service.py`
+- **magic_service.py** (39 connections) — `server/game/magic/magic_service.py`
+- **test_spell_effects.py** (37 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
+- **PlayerSpellRepository** (36 connections) — `server/persistence/repositories/player_spell_repository.py`
+- **SpellRegistry** (35 connections) — `server/game/magic/spell_registry.py`
+- **lifespan_magic.py** (34 connections) — `server/app/lifespan_magic.py`
+- **SpellLearningService** (30 connections) — `server/game/magic/spell_learning_service.py`
+- **test_spell.py** (30 connections) — `server/tests/unit/models/test_spell.py`
+- **MagicService** (29 connections) — `server/game/magic/magic_service.py`
+- **magic_service_completion.py** (25 connections) — `server/game/magic/magic_service_completion.py`
+- **spell.py** (22 connections) — `server/models/spell.py`
+- **spell_learning_service.py** (21 connections) — `server/game/magic/spell_learning_service.py`
+- **UUID** (20 connections)
+- **spell_effects_support.py** (19 connections) — `server/game/magic/spell_effects_support.py`
+- **CastingStateManager** (18 connections) — `server/game/magic/casting_state_manager.py`
+- **Any** (18 connections)
+- **MagicServiceOptionalDeps** (17 connections) — `server/game/magic/magic_service.py`
+- **initialize_magic_services()** (15 connections) — `server/app/lifespan_magic.py`
+- **SpellMaterialsService** (15 connections) — `server/game/magic/spell_materials.py`
+- **spell_registry.py** (15 connections) — `server/game/magic/spell_registry.py`
+- **test_spell_targeting.py** (15 connections) — `server/tests/unit/game/magic/test_spell_targeting.py`
+- **SpellCostsService** (14 connections) — `server/game/magic/spell_costs.py`
+- *... and 302 more nodes in this community*
 
 ## Relationships
 
-- [spell models rationale](spell_models_rationale.md) (14 shared connections)
-- [game weapon player](game_weapon_player.md) (13 shared connections)
-- [spell game magic](spell_game_magic.md) (11 shared connections)
-- [game models stats](game_models_stats.md) (11 shared connections)
-- [world models rationale](world_models_rationale.md) (6 shared connections)
-- [command inventory factories](command_inventory_factories.md) (5 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (4 shared connections)
-- [Player Stats](Player_Stats.md) (4 shared connections)
-- [memory profiler rationale](memory_profiler_rationale.md) (4 shared connections)
-- [grace period login](grace_period_login.md) (3 shared connections)
-- [Item Instances](Item_Instances.md) (3 shared connections)
-- [Async Query Helpers](Async_Query_Helpers.md) (3 shared connections)
+- [target resolution service](target_resolution_service.md) (58 shared connections)
+- [spell game magic](spell_game_magic.md) (43 shared connections)
+- [command inventory factories](command_inventory_factories.md) (37 shared connections)
+- [Error Conversion](Error_Conversion.md) (26 shared connections)
+- [Database Config](Database_Config.md) (23 shared connections)
+- [command inventory models](command_inventory_models.md) (20 shared connections)
+- [commands admin mute](commands_admin_mute.md) (16 shared connections)
+- [command factories exploration](command_factories_exploration.md) (15 shared connections)
+- [magic completion game](magic_completion_game.md) (14 shared connections)
+- [NPC Combat](NPC_Combat.md) (13 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (12 shared connections)
+- [startup npc services](startup_npc_services.md) (8 shared connections)
 
 ## Source Files
 
-- `server/game/magic/spell_effects_status.py`
-- `server/models/game.py`
-- `server/tests/unit/models/test_game_enums.py`
-- `server/tests/unit/models/test_game_inventory_item.py`
-- `server/tests/unit/models/test_game_player.py`
-- `server/tests/unit/models/test_game_status_effect.py`
-- `server/utils/memory_profiler.py`
+- `server/app/lifespan_magic.py`
+- `server/commands/magic_commands.py`
+- `server/game/magic/casting_state_manager.py`
+- `server/game/magic/magic_service.py`
+- `server/game/magic/magic_service_completion.py`
+- `server/game/magic/spell_costs.py`
+- `server/game/magic/spell_effects.py`
+- `server/game/magic/spell_effects_stats.py`
+- `server/game/magic/spell_effects_support.py`
+- `server/game/magic/spell_learning_service.py`
+- `server/game/magic/spell_materials.py`
+- `server/game/magic/spell_registry.py`
+- `server/models/spell.py`
+- `server/persistence/repositories/player_spell_repository.py`
+- `server/persistence/repositories/spell_repository.py`
+- `server/tests/unit/game/magic/test_spell_effects.py`
+- `server/tests/unit/game/magic/test_spell_targeting.py`
+- `server/tests/unit/models/test_spell.py`
 
 ## Audit Trail
 
-- EXTRACTED: 481 (98%)
-- INFERRED: 10 (2%)
+- EXTRACTED: 1400 (90%)
+- INFERRED: 153 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

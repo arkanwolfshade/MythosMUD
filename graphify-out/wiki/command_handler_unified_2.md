@@ -1,24 +1,54 @@
 # command handler unified
 
-> 2 nodes
+> 51 nodes
 
 ## Key Concepts
 
-- **__init__.py** (1 connections) — `server/tests/unit/command_handler_unified/__init__.py`
-- **Command handler unified unit tests.** (1 connections) — `server/tests/unit/command_handler_unified/__init__.py`
+- **test_rate_limiter_utils.py** (22 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **RateLimiter** (10 connections) — `server/utils/rate_limiter.py`
+- **rate_limiter.py** (9 connections) — `server/utils/rate_limiter.py`
+- **.enforce_rate_limit()** (5 connections) — `server/utils/rate_limiter.py`
+- **.get_rate_limit_info()** (4 connections) — `server/utils/rate_limiter.py`
+- **rate_limiter()** (3 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_enforce_rate_limit_raises_when_exceeded()** (3 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_enforce_rate_limit_includes_retry_after()** (3 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **__init__.py** (3 connections) — `server/utils/__init__.py`
+- **.check_rate_limit()** (3 connections) — `server/utils/rate_limiter.py`
+- **test_rate_limiter_initialization()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_check_rate_limit_first_request()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_check_rate_limit_multiple_requests()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_check_rate_limit_exceeds_limit()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_check_rate_limit_different_users()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_check_rate_limit_removes_old_requests()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_get_rate_limit_info_no_requests()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_get_rate_limit_info_with_requests()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_get_rate_limit_info_calculates_reset_time()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_get_rate_limit_info_calculates_retry_after()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_get_rate_limit_info_filters_old_requests()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_enforce_rate_limit_allows_request()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_stats_roll_limiter_initialized()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_character_creation_limiter_initialized()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **.__init__()** (2 connections) — `server/utils/rate_limiter.py`
+- *... and 26 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Memory Task Runtime](Memory_Task_Runtime.md) (5 shared connections)
+- [Database Config](Database_Config.md) (2 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
+- [profession game service](profession_game_service.md) (1 shared connections)
+- [time service rationale](time_service_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/command_handler_unified/__init__.py`
+- `server/tests/unit/utils/test_rate_limiter_utils.py`
+- `server/utils/__init__.py`
+- `server/utils/rate_limiter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 119 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

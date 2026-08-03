@@ -32,14 +32,14 @@
 
 ## Relationships
 
-- [commands alias rationale](commands_alias_rationale.md) (7 shared connections)
+- [commands admin mute](commands_admin_mute.md) (8 shared connections)
 - [commands logout rationale](commands_logout_rationale.md) (3 shared connections)
 - [commands status rationale](commands_status_rationale.md) (3 shared connections)
 - [commands who rationale](commands_who_rationale.md) (3 shared connections)
-- [emote game service](emote_game_service.md) (2 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (2 shared connections)
-- [commands who helpers](commands_who_helpers.md) (2 shared connections)
-- [commands position system](commands_position_system.md) (1 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [player respawn event](player_respawn_event.md) (2 shared connections)
+- [models player related](models_player_related.md) (1 shared connections)
+- [websocket examples logging](websocket_examples_logging.md) (1 shared connections)
 - [realtime game state](realtime_game_state.md) (1 shared connections)
 - [commands time handle](commands_time_handle.md) (1 shared connections)
 - [logout command commands](logout_command_commands.md) (1 shared connections)

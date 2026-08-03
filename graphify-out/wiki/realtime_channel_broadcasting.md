@@ -26,7 +26,7 @@
 - [channel broadcasting strategies](channel_broadcasting_strategies.md) (4 shared connections)
 - [channel broadcasting realtime](channel_broadcasting_realtime.md) (1 shared connections)
 - [channel realtime broadcasting](channel_realtime_broadcasting.md) (1 shared connections)
-- [world loader room](world_loader_room.md) (1 shared connections)
+- [message handler factory](message_handler_factory.md) (1 shared connections)
 - [world loader rationale](world_loader_rationale.md) (1 shared connections)
 
 ## Source Files

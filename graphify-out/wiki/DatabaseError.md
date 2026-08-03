@@ -2,7 +2,7 @@
 
 > God node · 440 connections · `server/exceptions.py`
 
-**Community:** [npc populate databases](npc_populate_databases.md)
+**Community:** [Database Config](Database_Config.md)
 
 ## Connections by Relation
 

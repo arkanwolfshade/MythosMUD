@@ -1,70 +1,47 @@
 # spell models rationale
 
-> 136 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **Spell** (84 connections) — `server/models/spell.py`
-- **spell_effects.py** (47 connections) — `server/game/magic/spell_effects.py`
-- **player_service.py** (45 connections) — `server/game/player_service.py`
-- **test_spell.py** (30 connections) — `server/tests/unit/models/test_spell.py`
-- **spell_targeting.py** (25 connections) — `server/game/magic/spell_targeting.py`
-- **spell.py** (22 connections) — `server/models/spell.py`
-- **spell_effects_support.py** (19 connections) — `server/game/magic/spell_effects_support.py`
-- **SpellMaterialsService** (15 connections) — `server/game/magic/spell_materials.py`
-- **test_spell_targeting.py** (15 connections) — `server/tests/unit/game/magic/test_spell_targeting.py`
-- **SpellMaterial** (13 connections) — `server/models/spell.py`
-- **spell_costs.py** (12 connections) — `server/game/magic/spell_costs.py`
-- **spell_materials.py** (10 connections) — `server/game/magic/spell_materials.py`
-- **process_stat_modify_effect()** (9 connections) — `server/game/magic/spell_effects_support.py`
-- **process_create_object_effect()** (9 connections) — `server/game/magic/spell_effects_support.py`
-- **SpellEffectType** (9 connections) — `server/models/spell.py`
-- **_apply_stat_modify_to_player()** (8 connections) — `server/game/magic/spell_effects_support.py`
-- **.consume_materials()** (8 connections) — `server/game/magic/spell_materials.py`
-- **SpellSchool** (8 connections) — `server/models/spell.py`
-- **SpellTargetType** (8 connections) — `server/models/spell.py`
-- **Any** (6 connections)
-- **_create_object_for_room()** (6 connections) — `server/game/magic/spell_effects_support.py`
-- **SpellRangeType** (6 connections) — `server/models/spell.py`
-- **.apply_costs()** (5 connections) — `server/game/magic/spell_costs.py`
-- **_build_stat_modifications()** (5 connections) — `server/game/magic/spell_effects_support.py`
-- **_create_object_for_player()** (5 connections) — `server/game/magic/spell_effects_support.py`
-- *... and 111 more nodes in this community*
+- **._get_random_error_message()** (8 connections) — `server/validators/combat_validator.py`
+- **.validate_combat_command()** (7 connections) — `server/validators/combat_validator.py`
+- **Any** (4 connections)
+- **._is_rate_limited()** (4 connections) — `server/validators/combat_validator.py`
+- **.__init__()** (3 connections) — `server/validators/combat_validator.py`
+- **.validate_can_attack_target()** (3 connections) — `server/validators/combat_validator.py`
+- **.validate_target_exists()** (3 connections) — `server/validators/combat_validator.py`
+- **.validate_target_alive()** (3 connections) — `server/validators/combat_validator.py`
+- **.validate_combat_state()** (3 connections) — `server/validators/combat_validator.py`
+- **.validate_attack_strength()** (3 connections) — `server/validators/combat_validator.py`
+- **._is_valid_target_name()** (3 connections) — `server/validators/combat_validator.py`
+- **._contains_suspicious_patterns()** (3 connections) — `server/validators/combat_validator.py`
+- **.get_combat_status_message()** (3 connections) — `server/validators/combat_validator.py`
+- **Initialize the combat validator.          Args:             party_service: Optio** (1 connections) — `server/validators/combat_validator.py`
+- **Validate that attacker is allowed to attack target (e.g. not same party).** (1 connections) — `server/validators/combat_validator.py`
+- **Validate a combat command with thematic error messages.          Args:** (1 connections) — `server/validators/combat_validator.py`
+- **Validate that a target exists with thematic error messages.          Args:** (1 connections) — `server/validators/combat_validator.py`
+- **Validate that a target is alive with thematic error messages.          Args:** (1 connections) — `server/validators/combat_validator.py`
+- **Validate combat state with thematic error messages.          Args:             i** (1 connections) — `server/validators/combat_validator.py`
+- **Validate attack strength with thematic error messages.          Args:** (1 connections) — `server/validators/combat_validator.py`
+- **Check if target name is valid.** (1 connections) — `server/validators/combat_validator.py`
+- **Check for suspicious patterns in target name.** (1 connections) — `server/validators/combat_validator.py`
+- **Check if player is rate limited.** (1 connections) — `server/validators/combat_validator.py`
+- **Get a random error message for the given error type.** (1 connections) — `server/validators/combat_validator.py`
+- **Get a thematic combat status message.** (1 connections) — `server/validators/combat_validator.py`
 
 ## Relationships
 
-- [spell game magic](spell_game_magic.md) (49 shared connections)
-- [Magic Spell Service](Magic_Spell_Service.md) (44 shared connections)
-- [Item Instances](Item_Instances.md) (21 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (19 shared connections)
-- [game models player](game_models_player.md) (14 shared connections)
-- [magic healing game](magic_healing_game.md) (13 shared connections)
-- [command inventory factories](command_inventory_factories.md) (11 shared connections)
-- [aggro threat services](aggro_threat_services.md) (8 shared connections)
-- [world models rationale](world_models_rationale.md) (8 shared connections)
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (4 shared connections)
-- [Async Query Helpers](Async_Query_Helpers.md) (4 shared connections)
-- [magic completion game](magic_completion_game.md) (3 shared connections)
+- [NPC Combat](NPC_Combat.md) (12 shared connections)
 
 ## Source Files
 
-- `server/game/magic/spell_costs.py`
-- `server/game/magic/spell_effects.py`
-- `server/game/magic/spell_effects_internal.py`
-- `server/game/magic/spell_effects_stats.py`
-- `server/game/magic/spell_effects_support.py`
-- `server/game/magic/spell_materials.py`
-- `server/game/magic/spell_registry.py`
-- `server/game/magic/spell_targeting.py`
-- `server/game/player_service.py`
-- `server/models/spell.py`
-- `server/tests/unit/game/magic/test_spell_targeting.py`
-- `server/tests/unit/models/test_spell.py`
+- `server/validators/combat_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 611 (97%)
-- INFERRED: 21 (3%)
+- EXTRACTED: 62 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

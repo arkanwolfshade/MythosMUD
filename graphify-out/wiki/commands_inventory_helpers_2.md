@@ -1,57 +1,59 @@
 # commands inventory helpers
 
-> 109 nodes
+> 82 nodes
 
 ## Key Concepts
 
-- **test_inventory_helpers.py** (38 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **inventory_item_matching.py** (22 connections) — `server/commands/inventory_item_matching.py`
-- **match_room_drop_by_name()** (19 connections) — `server/commands/inventory_item_matching.py`
-- **normalize_slot_name()** (19 connections) — `server/commands/inventory_item_matching.py`
-- **match_equipped_item_by_name()** (18 connections) — `server/commands/inventory_item_matching.py`
-- **match_inventory_item_by_name()** (16 connections) — `server/commands/inventory_item_matching.py`
-- **test_inventory_commands_helpers.py** (13 connections) — `server/tests/unit/commands/test_inventory_commands_helpers.py`
-- **inventory_command_prototype.py** (12 connections) — `server/commands/inventory_command_prototype.py`
-- **infer_equip_slot_from_prototype()** (9 connections) — `server/commands/inventory_command_prototype.py`
-- **build_equipped_candidates()** (5 connections) — `server/commands/inventory_item_matching.py`
-- **prototype_registry_from_request()** (4 connections) — `server/commands/inventory_command_prototype.py`
-- **prototype_from_registry()** (4 connections) — `server/commands/inventory_command_prototype.py`
-- **extract_item_identifier()** (4 connections) — `server/commands/inventory_item_matching.py`
-- **build_drop_candidates()** (4 connections) — `server/commands/inventory_item_matching.py`
-- **match_exact_drop()** (4 connections) — `server/commands/inventory_item_matching.py`
-- **match_prefix_drop()** (4 connections) — `server/commands/inventory_item_matching.py`
-- **match_substring_drop()** (4 connections) — `server/commands/inventory_item_matching.py`
-- **build_inventory_candidates()** (4 connections) — `server/commands/inventory_item_matching.py`
-- **_first_normalized_wear_slot()** (3 connections) — `server/commands/inventory_command_prototype.py`
-- **clean_item_value()** (3 connections) — `server/commands/inventory_item_matching.py`
-- **search_exact_match()** (3 connections) — `server/commands/inventory_item_matching.py`
-- **search_prefix_match()** (3 connections) — `server/commands/inventory_item_matching.py`
-- **search_substring_match()** (3 connections) — `server/commands/inventory_item_matching.py`
-- **test_match_room_drop_by_name_exact()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_helpers.py`
-- **test_match_room_drop_by_name_not_found()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_helpers.py`
-- *... and 84 more nodes in this community*
+- **test_party_service.py** (38 connections) — `server/tests/unit/game/test_party_service.py`
+- **party_service.py** (16 connections) — `server/game/party_service.py`
+- **PartyUpdated** (12 connections) — `server/events/event_types.py`
+- **Party** (12 connections) — `server/game/party_service.py`
+- **test_party_flow.py** (12 connections) — `server/tests/integration/test_party_flow.py`
+- **party_events()** (4 connections) — `server/tests/integration/test_party_flow.py`
+- **party_service()** (4 connections) — `server/tests/integration/test_party_flow.py`
+- **test_party_invite_join_leave_disband_state_and_events()** (4 connections) — `server/tests/integration/test_party_flow.py`
+- **test_party_leader_leaves_disbands()** (4 connections) — `server/tests/integration/test_party_flow.py`
+- **event_bus()** (3 connections) — `server/tests/integration/test_party_flow.py`
+- **test_party_post_init_includes_leader_in_members()** (3 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_party_post_init_preserves_other_members()** (3 connections) — `server/tests/unit/game/test_party_service.py`
+- **.__post_init__()** (2 connections) — `server/game/party_service.py`
+- **test_create_party_success()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_create_party_already_in_party_rejected()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_add_member_success()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_add_member_already_in_party_rejected()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_add_member_no_such_party()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_request_party_invite_creates_pending()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_accept_party_invite_success()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_decline_party_invite_success()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_request_party_invite_target_already_in_party_rejected()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_remove_member_leave_success()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_remove_member_leader_leaves_disbands()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_kick_member_leader_success()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- *... and 57 more nodes in this community*
 
 ## Relationships
 
-- [commands inventory command](commands_inventory_command.md) (8 shared connections)
-- [inventory commands command](inventory_commands_command.md) (8 shared connections)
-- [argon2 auth rationale](argon2_auth_rationale.md) (7 shared connections)
-- [commands inventory helpers](commands_inventory_helpers.md) (6 shared connections)
-- [Error Conversion](Error_Conversion.md) (3 shared connections)
-- [realtime game state](realtime_game_state.md) (1 shared connections)
-- [Inventory Equip](Inventory_Equip.md) (1 shared connections)
+- [party game service](party_game_service.md) (14 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (8 shared connections)
+- [item models rationale](item_models_rationale.md) (3 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (3 shared connections)
+- [combat messaging services](combat_messaging_services.md) (3 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [command service commands](command_service_commands.md) (1 shared connections)
+- [connection manager realtime](connection_manager_realtime.md) (1 shared connections)
+- [combat services messaging](combat_services_messaging.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/inventory_command_prototype.py`
-- `server/commands/inventory_item_matching.py`
-- `server/tests/unit/commands/test_inventory_commands_helpers.py`
-- `server/tests/unit/commands/test_inventory_helpers.py`
+- `server/events/event_types.py`
+- `server/game/party_service.py`
+- `server/tests/integration/test_party_flow.py`
+- `server/tests/unit/game/test_party_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 366 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 209 (98%)
+- INFERRED: 5 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

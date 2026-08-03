@@ -1,12 +1,15 @@
 # retry nats handler
 
-> 59 nodes
+> 86 nodes
 
 ## Key Concepts
 
 - **NATSRetryHandler** (42 connections) — `server/realtime/nats_retry_handler.py`
 - **test_nats_retry_handler.py** (34 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
 - **RetryableMessage** (13 connections) — `server/realtime/nats_retry_handler.py`
+- **RetryConfig** (10 connections) — `server/realtime/nats_retry_handler.py`
+- **.retry_async()** (5 connections) — `server/realtime/nats_retry_handler.py`
+- **.calculate_backoff()** (4 connections) — `server/realtime/nats_retry_handler.py`
 - **.should_retry()** (4 connections) — `server/realtime/nats_retry_handler.py`
 - **test_should_retry_under_max()** (4 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
 - **test_should_retry_at_max()** (4 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
@@ -15,31 +18,24 @@
 - **test_retry_async_calls_function()** (4 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
 - **test_retry_async_waits_for_backoff()** (4 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
 - **test_retry_async_zero_delay()** (4 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
+- **test_get_config()** (4 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
+- **.__init__()** (3 connections) — `server/realtime/nats_retry_handler.py`
+- **Any** (3 connections)
+- **.get_retry_stats()** (3 connections) — `server/realtime/nats_retry_handler.py`
+- **.retry_with_backoff()** (3 connections) — `server/realtime/nats_retry_handler.py`
+- **.get_config()** (3 connections) — `server/realtime/nats_retry_handler.py`
+- **.update_config()** (3 connections) — `server/realtime/nats_retry_handler.py`
 - **test_nats_message_handler_init()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_retryable_message_init()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_nats_retry_handler_init()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_nats_retry_handler_init_defaults()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_calculate_backoff_base()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_calculate_backoff_exponential()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_calculate_backoff_capped()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_calculate_backoff_non_negative()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_get_retry_stats()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_retry_with_backoff_success_first_attempt()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_retry_with_backoff_success_after_retries()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_retry_with_backoff_all_retries_fail()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_retry_with_backoff_no_sleep_after_last_attempt()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_update_config_valid_field()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- *... and 34 more nodes in this community*
+- **test_retry_config_calculate_delay_base()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
+- **test_retry_config_calculate_delay_capped()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
+- **test_retry_config_defaults()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
+- *... and 61 more nodes in this community*
 
 ## Relationships
 
-- [commands communication support](commands_communication_support.md) (8 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (6 shared connections)
-- [game chat moderation](game_chat_moderation.md) (6 shared connections)
+- [circuit breaker realtime](circuit_breaker_realtime.md) (9 shared connections)
 - [nats message handler](nats_message_handler.md) (2 shared connections)
-- [Memory Task Runtime](Memory_Task_Runtime.md) (1 shared connections)
-- [realtime message filtering](realtime_message_filtering.md) (1 shared connections)
-- [message nats handler](message_nats_handler.md) (1 shared connections)
+- [time service rationale](time_service_rationale.md) (1 shared connections)
 
 ## Source Files
 
@@ -49,8 +45,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 201 (98%)
-- INFERRED: 4 (2%)
+- EXTRACTED: 264 (98%)
+- INFERRED: 6 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,48 +1,51 @@
 # models lucidity rationale
 
-> 20 nodes
+> 26 nodes
 
 ## Key Concepts
 
-- **_def_row()** (18 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_update_npc_definition_success()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_npc_definitions_success()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_npc_definition_found()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_npc_definition_by_name_case_insensitive()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_npc_definition_by_name_not_found()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_create_npc_definition_success()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_create_spawn_rule_invalid_min_population()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_create_spawn_rule_invalid_max_population()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_npc_definitions_by_type()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- **Build procedure result row (mappings().all()[i] or .first()) for NPCDefinition.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
-- **Test get_npc_definitions() successfully retrieves definitions.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
-- **Test get_npc_definition() returns definition when found.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
-- **Test get_npc_definition_by_name() matches case-insensitively.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
-- **Test get_npc_definition_by_name() returns None when not found.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
-- **Test create_npc_definition() successfully creates definition.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
-- **Test update_npc_definition() successfully updates definition.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
-- **Test create_spawn_rule() raises ValueError for invalid min population.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
-- **Test create_spawn_rule() raises ValueError when max < min.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
-- **Test get_npc_definitions_by_type() filters by type.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
+- **LucidityRepository** (14 connections) — `server/services/lucidity_repository.py`
+- **lucidity_repository.py** (11 connections) — `server/services/lucidity_repository.py`
+- **UUID** (9 connections)
+- **.increment_exposure_state()** (6 connections) — `server/services/lucidity_repository.py`
+- **.set_cooldown()** (6 connections) — `server/services/lucidity_repository.py`
+- **_utc_now()** (5 connections) — `server/services/lucidity_repository.py`
+- **.get_player_lucidity()** (5 connections) — `server/services/lucidity_repository.py`
+- **.get_or_create_player_lucidity()** (5 connections) — `server/services/lucidity_repository.py`
+- **.add_adjustment_log()** (5 connections) — `server/services/lucidity_repository.py`
+- **.get_exposure_state()** (5 connections) — `server/services/lucidity_repository.py`
+- **.get_cooldown()** (5 connections) — `server/services/lucidity_repository.py`
+- **.delete_cooldowns_by_action_code_pattern()** (5 connections) — `server/services/lucidity_repository.py`
+- **datetime** (3 connections)
+- **.__init__()** (2 connections) — `server/services/lucidity_repository.py`
+- **AsyncSession** (1 connections)
+- **Repository layer for lucidity-related persistence.** (1 connections) — `server/services/lucidity_repository.py`
+- **Return naive UTC timestamp suitable for PostgreSQL TIMESTAMP WITHOUT TIME ZONE.** (1 connections) — `server/services/lucidity_repository.py`
+- **Data-access helpers for lucidity persistence.** (1 connections) — `server/services/lucidity_repository.py`
+- **Get player lucidity record.** (1 connections) — `server/services/lucidity_repository.py`
+- **Get existing player lucidity record or create a new one.** (1 connections) — `server/services/lucidity_repository.py`
+- **Add a lucidity adjustment log entry.** (1 connections) — `server/services/lucidity_repository.py`
+- **Get exposure state for a player and entity archetype.** (1 connections) — `server/services/lucidity_repository.py`
+- **Increment exposure state for a player and entity archetype.** (1 connections) — `server/services/lucidity_repository.py`
+- **Get cooldown state for a player and action.** (1 connections) — `server/services/lucidity_repository.py`
+- **Set or update cooldown for a player and action.** (1 connections) — `server/services/lucidity_repository.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [npc service services](npc_service_services.md) (10 shared connections)
-- [commands lucidity recovery](commands_lucidity_recovery.md) (9 shared connections)
-- [realtime player event](realtime_player_event.md) (3 shared connections)
-- [player event realtime](player_event_realtime.md) (2 shared connections)
-- [eventLog eventStore projector](eventLog_eventStore_projector.md) (1 shared connections)
-- [player event room](player_event_room.md) (1 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
+- [world models rationale](world_models_rationale.md) (9 shared connections)
+- [lucidity services helpers](lucidity_services_helpers.md) (7 shared connections)
+- [lucidity models rationale](lucidity_models_rationale.md) (1 shared connections)
+- [postgres adapter infrastructure](postgres_adapter_infrastructure.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_npc_service.py`
+- `server/services/lucidity_repository.py`
 
 ## Audit Trail
 
-- EXTRACTED: 64 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 95 (97%)
+- INFERRED: 3 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

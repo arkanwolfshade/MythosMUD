@@ -4,20 +4,22 @@
 
 ## Key Concepts
 
-- **test_get_npc_instance_not_found()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **Test _get_npc_instance() when NPC is not found.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_game_tick_service.py** (4 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **Unit tests for game tick service.  Tests the GameTickService class for managing** (1 connections) — `server/tests/unit/services/test_game_tick_service.py`
 
 ## Relationships
 
-- [npc event handlers](npc_event_handlers.md) (1 shared connections)
+- [time service rationale](time_service_rationale.md) (1 shared connections)
+- [tick service services](tick_service_services.md) (1 shared connections)
+- [tick game service](tick_game_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_npc_event_handlers.py`
+- `server/tests/unit/services/test_game_tick_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

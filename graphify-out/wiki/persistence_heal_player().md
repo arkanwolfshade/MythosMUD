@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_is_leader_false_when_member()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **is_leader is False for non-leader member.** (1 connections) — `server/tests/unit/game/test_party_service.py`
+- **mock_player_skill_repo()** (2 connections) — `server/tests/unit/game/test_skill_service.py`
+- **Mock PlayerSkillRepository.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
 
 ## Relationships
 
-- [party service game](party_service_game.md) (1 shared connections)
+- [skill service game](skill_service_game.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_party_service.py`
+- `server/tests/unit/game/test_skill_service.py`
 
 ## Audit Trail
 

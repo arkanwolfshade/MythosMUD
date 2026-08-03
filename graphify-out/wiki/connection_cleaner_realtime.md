@@ -33,9 +33,10 @@
 
 ## Relationships
 
-- [NATS Messaging](NATS_Messaging.md) (2 shared connections)
 - [container service services](container_service_services.md) (2 shared connections)
 - [realtime maintenance connection](realtime_maintenance_connection.md) (2 shared connections)
+- [time service rationale](time_service_rationale.md) (1 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,59 +1,52 @@
 # schedule services service
 
-> 47 nodes
+> 27 nodes
 
 ## Key Concepts
 
-- **ScheduleEntry** (28 connections) — `server/schemas/calendar/calendar.py`
-- **TestScheduleService** (14 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **test_schedule_service.py** (8 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **normalize_weekday_names()** (5 connections) — `server/services/schedule_service.py`
-- **.get_active_entries()** (4 connections) — `server/services/schedule_service.py`
-- **test_schedule_entry_validation_days()** (4 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **test_schedule_collection()** (4 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **.test_init_loads_from_database()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_get_active_entries_with_matches()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_get_active_entries_boundary_conditions()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_get_active_entries_wrong_day()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_entries_property()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_normalize_weekday_names_latin_to_standard()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_entry_count_property()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.apply_schedule_state()** (3 connections) — `server/npc/lifecycle_manager.py`
-- **.validate_duration()** (3 connections) — `server/schemas/calendar/calendar.py`
-- **.entries()** (3 connections) — `server/services/schedule_service.py`
-- **test_schedule_entry()** (3 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **.test_init_with_collections()** (3 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_init_without_persistence_raises()** (3 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_get_active_entries_no_matches()** (3 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.validate_days()** (2 connections) — `server/schemas/calendar/calendar.py`
-- **.validate_slug_list()** (2 connections) — `server/schemas/calendar/calendar.py`
-- **Record the schedule categories currently active for NPC routines.** (1 connections) — `server/npc/lifecycle_manager.py`
-- **Any** (1 connections)
-- *... and 22 more nodes in this community*
+- **_get_enum_value()** (9 connections) — `server/services/wearable_container_service.py`
+- **_filter_container_data()** (9 connections) — `server/services/wearable_container_service.py`
+- **Any** (8 connections)
+- **.add_items_to_wearable_container()** (8 connections) — `server/services/wearable_container_service.py`
+- **.update_wearable_container_items()** (8 connections) — `server/services/wearable_container_service.py`
+- **UUID** (7 connections)
+- **.handle_equip_wearable_container()** (6 connections) — `server/services/wearable_container_service.py`
+- **.handle_unequip_wearable_container()** (6 connections) — `server/services/wearable_container_service.py`
+- **.handle_container_overflow()** (6 connections) — `server/services/wearable_container_service.py`
+- **.get_wearable_containers_for_player()** (5 connections) — `server/services/wearable_container_service.py`
+- **.__init__()** (3 connections) — `server/services/wearable_container_service.py`
+- **test_get_enum_value_with_enum()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_get_enum_value_with_string()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_filter_container_data()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **ContainerComponent** (1 connections)
+- **Safely get enum value, handling both enum instances and string values.      When** (1 connections) — `server/services/wearable_container_service.py`
+- **Filter out database-only fields from container data before validation.      The** (1 connections) — `server/services/wearable_container_service.py`
+- **Initialize the wearable container service.          Args:             persistenc** (1 connections) — `server/services/wearable_container_service.py`
+- **Handle equipping a wearable container item.          Creates a container in Post** (1 connections) — `server/services/wearable_container_service.py`
+- **Handle unequipping a wearable container item.          Preserves the container a** (1 connections) — `server/services/wearable_container_service.py`
+- **Get all wearable containers for a player.          Args:             player_id:** (1 connections) — `server/services/wearable_container_service.py`
+- **Add items to a wearable container.          Args:             player_id: UUID of** (1 connections) — `server/services/wearable_container_service.py`
+- **Update items in a wearable container.          Args:             player_id: UUID** (1 connections) — `server/services/wearable_container_service.py`
+- **Handle container overflow by spilling items to inventory or ground.          Arg** (1 connections) — `server/services/wearable_container_service.py`
+- **Test _get_enum_value returns value from enum instance.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [time service rationale](time_service_rationale.md) (14 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (6 shared connections)
-- [commands party examples](commands_party_examples.md) (5 shared connections)
-- [schedule service services](schedule_service_services.md) (4 shared connections)
-- [schemas calendar rationale](schemas_calendar_rationale.md) (4 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
-- [Player Stats](Player_Stats.md) (1 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [Database Config](Database_Config.md) (7 shared connections)
+- [commands inventory command](commands_inventory_command.md) (7 shared connections)
+- [wearable container service](wearable_container_service.md) (5 shared connections)
+- [rate limiter rationale](rate_limiter_rationale.md) (4 shared connections)
 
 ## Source Files
 
-- `server/npc/lifecycle_manager.py`
-- `server/schemas/calendar/calendar.py`
-- `server/services/schedule_service.py`
-- `server/tests/unit/schemas/test_calendar_schemas.py`
-- `server/tests/unit/services/test_schedule_service.py`
+- `server/services/wearable_container_service.py`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 141 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 93 (96%)
+- INFERRED: 4 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

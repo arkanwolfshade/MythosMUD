@@ -1,54 +1,60 @@
 # models npc rationale
 
-> 36 nodes
+> 95 nodes
 
 ## Key Concepts
 
-- **PassiveMobNPC** (29 connections) — `server/npc/passive_mob_npc.py`
-- **test_npc_base.py** (8 connections) — `server/tests/unit/npc/test_npc_base.py`
-- **.wander()** (6 connections) — `server/npc/passive_mob_npc.py`
-- **.schedule_idle_movement()** (6 connections) — `server/npc/passive_mob_npc.py`
-- **._queue_wander_action()** (5 connections) — `server/npc/passive_mob_npc.py`
-- **._create_wander_action()** (4 connections) — `server/npc/passive_mob_npc.py`
-- **._setup_passive_mob_behavior_rules()** (3 connections) — `server/npc/passive_mob_npc.py`
-- **._should_schedule_movement()** (3 connections) — `server/npc/passive_mob_npc.py`
-- **.respond_to_player()** (3 connections) — `server/npc/passive_mob_npc.py`
-- **._handle_wander()** (3 connections) — `server/npc/passive_mob_npc.py`
-- **._handle_respond_to_greeting()** (3 connections) — `server/npc/passive_mob_npc.py`
-- **test_npc_base_get_combat_stats()** (3 connections) — `server/tests/unit/npc/test_npc_base.py`
-- **test_npc_base_get_combat_stats_legacy_dp()** (3 connections) — `server/tests/unit/npc/test_npc_base.py`
-- **test_npc_base_is_alive_property()** (3 connections) — `server/tests/unit/npc/test_npc_base.py`
-- **test_npc_base_get_combat_stats_defaults()** (3 connections) — `server/tests/unit/npc/test_npc_base.py`
-- **test_npc_base_move_to_room_blocked_when_in_combat()** (3 connections) — `server/tests/unit/npc/test_npc_base.py`
-- **.get_behavior_rules()** (2 connections) — `server/npc/passive_mob_npc.py`
-- **._handle_flee()** (2 connections) — `server/npc/passive_mob_npc.py`
-- **Passive mob NPC type with wandering and response behaviors.** (1 connections) — `server/npc/passive_mob_npc.py`
-- **Setup passive mob-specific behavior rules.** (1 connections) — `server/npc/passive_mob_npc.py`
-- **Get passive mob-specific behavior rules.** (1 connections) — `server/npc/passive_mob_npc.py`
-- **Perform wandering behavior using idle movement system.** (1 connections) — `server/npc/passive_mob_npc.py`
-- **Check if idle movement should be scheduled based on configuration and timing.** (1 connections) — `server/npc/passive_mob_npc.py`
-- **Create a WANDER action message.          Args:             current_time: Curr** (1 connections) — `server/npc/passive_mob_npc.py`
-- **Queue a WANDER action via the thread manager.          Args:             wand** (1 connections) — `server/npc/passive_mob_npc.py`
-- *... and 11 more nodes in this community*
+- **CombatParticipantData** (38 connections) — `server/services/combat_types.py`
+- **.create_combat_instance()** (17 connections) — `server/services/combat_initialization.py`
+- **combat_initialization.py** (15 connections) — `server/services/combat_initialization.py`
+- **TestCombatInitializer** (15 connections) — `server/tests/unit/services/test_combat_initialization.py`
+- **test_npc_combat_data_provider.py** (14 connections) — `server/tests/unit/services/test_npc_combat_data_provider.py`
+- **TestCombatParticipantData** (12 connections) — `server/tests/unit/services/test_combat_types.py`
+- **combat_types.py** (11 connections) — `server/services/combat_types.py`
+- **CombatInitializer** (8 connections) — `server/services/combat_initialization.py`
+- **test_combat_initialization.py** (8 connections) — `server/tests/unit/services/test_combat_initialization.py`
+- **test_combat_types.py** (6 connections) — `server/tests/unit/services/test_combat_types.py`
+- **_build_participant()** (5 connections) — `server/services/combat_initialization.py`
+- **_compute_turn_order()** (5 connections) — `server/services/combat_initialization.py`
+- **.start_combat()** (5 connections) — `server/services/combat_service.py`
+- **.get_npc_definition()** (5 connections) — `server/services/npc_combat_data_provider.py`
+- **UUID** (5 connections)
+- **.get_npc_combat_data()** (5 connections) — `server/services/npc_combat_data_provider.py`
+- **_build_combat_instance()** (4 connections) — `server/services/combat_initialization.py`
+- **Any** (4 connections)
+- **.get_npc_instance()** (4 connections) — `server/services/npc_combat_data_provider.py`
+- **.get_player_combat_data()** (4 connections) — `server/services/npc_combat_data_provider.py`
+- **test_get_player_combat_data_uses_get_combat_stats()** (4 connections) — `server/tests/unit/services/test_npc_combat_data_provider.py`
+- **test_get_npc_combat_data_uses_get_combat_stats()** (4 connections) — `server/tests/unit/services/test_npc_combat_data_provider.py`
+- **.__init__()** (3 connections) — `server/services/npc_combat_data_provider.py`
+- **.get_player_name()** (3 connections) — `server/services/npc_combat_data_provider.py`
+- **.get_player_room_id()** (3 connections) — `server/services/npc_combat_data_provider.py`
+- *... and 70 more nodes in this community*
 
 ## Relationships
 
-- [NATS Messaging](NATS_Messaging.md) (5 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (4 shared connections)
-- [combat services initialization](combat_services_initialization.md) (4 shared connections)
-- [idle npc movement](idle_npc_movement.md) (2 shared connections)
-- [Item Instances](Item_Instances.md) (2 shared connections)
-- [services combat sync](services_combat_sync.md) (1 shared connections)
+- [NPC Combat](NPC_Combat.md) (28 shared connections)
+- [Item Instances](Item_Instances.md) (15 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [commands npc admin](commands_npc_admin.md) (2 shared connections)
+- [combat models rationale](combat_models_rationale.md) (2 shared connections)
+- [npc shopkeeper rationale](npc_shopkeeper_rationale.md) (2 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/passive_mob_npc.py`
-- `server/tests/unit/npc/test_npc_base.py`
+- `server/services/combat_initialization.py`
+- `server/services/combat_service.py`
+- `server/services/combat_types.py`
+- `server/services/npc_combat_data_provider.py`
+- `server/tests/unit/services/test_combat_initialization.py`
+- `server/tests/unit/services/test_combat_types.py`
+- `server/tests/unit/services/test_npc_combat_data_provider.py`
 
 ## Audit Trail
 
-- EXTRACTED: 104 (95%)
-- INFERRED: 6 (5%)
+- EXTRACTED: 306 (95%)
+- INFERRED: 16 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

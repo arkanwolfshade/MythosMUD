@@ -1,25 +1,24 @@
 # conftest BoundLogger rationale
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **test_logger()** (4 connections) — `server/tests/conftest.py`
-- **BoundLogger** (1 connections)
-- **Provide a logger for tests.** (1 connections) — `server/tests/conftest.py`
+- **test_select_exit_single_exit()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **Test select_exit() with single exit.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
 
 ## Relationships
 
-- [NATS Messaging](NATS_Messaging.md) (1 shared connections)
-- [conftest rationale Item](conftest_rationale_Item.md) (1 shared connections)
+- [config models player](config_models_player.md) (1 shared connections)
+- [idle movement npc](idle_movement_npc.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/conftest.py`
+- `server/tests/unit/npc/test_idle_movement.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

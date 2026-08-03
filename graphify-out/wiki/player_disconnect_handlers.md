@@ -35,13 +35,16 @@
 
 - [grace period disconnect](grace_period_disconnect.md) (9 shared connections)
 - [player presence tracker](player_presence_tracker.md) (9 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (6 shared connections)
 - [container service services](container_service_services.md) (3 shared connections)
-- [realtime player connection](realtime_player_connection.md) (3 shared connections)
+- [help content websocket](help_content_websocket.md) (3 shared connections)
 - [Room Broadcast](Room_Broadcast.md) (2 shared connections)
 - [combat services messaging](combat_services_messaging.md) (2 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [Database Config](Database_Config.md) (1 shared connections)
+- [NPC Combat](NPC_Combat.md) (1 shared connections)
+- [time service rationale](time_service_rationale.md) (1 shared connections)
 - [world models rationale](world_models_rationale.md) (1 shared connections)
-- [room models instance](room_models_instance.md) (1 shared connections)
+- [item models rationale](item_models_rationale.md) (1 shared connections)
 
 ## Source Files
 

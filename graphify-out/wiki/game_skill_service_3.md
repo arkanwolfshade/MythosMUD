@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_parse_behavior_config_empty_string()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **Test _parse_behavior_config() with empty string.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_get_wearable_containers_for_player_exception_in_validation()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test get_wearable_containers_for_player handles validation errors gracefully.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Relationships
 
-- [npc event handlers](npc_event_handlers.md) (1 shared connections)
+- [wearable container service](wearable_container_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_npc_event_handlers.py`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 

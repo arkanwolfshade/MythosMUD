@@ -1,53 +1,40 @@
 # commands inventory helpers
 
-> 33 nodes
+> 18 nodes
 
 ## Key Concepts
 
-- **format_metadata()** (15 connections) — `server/commands/inventory_display_helpers.py`
-- **inventory_display_helpers.py** (12 connections) — `server/commands/inventory_display_helpers.py`
-- **render_inventory()** (9 connections) — `server/commands/inventory_display_helpers.py`
-- **Any** (7 connections)
-- **test_inventory_commands_format_helpers.py** (6 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
-- **build_inventory_lines()** (5 connections) — `server/commands/inventory_display_helpers.py`
-- **build_container_metadata()** (5 connections) — `server/commands/inventory_display_helpers.py`
-- **build_equipped_lines()** (5 connections) — `server/commands/inventory_display_helpers.py`
-- **get_equipped_item_identifiers()** (4 connections) — `server/commands/inventory_display_helpers.py`
-- **filter_non_equipped_inventory()** (4 connections) — `server/commands/inventory_display_helpers.py`
-- **test_format_metadata_empty()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
-- **test_format_metadata_simple()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
-- **test_format_metadata_nested_dict()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
-- **test_format_metadata_none()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_format_metadata_empty()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_format_metadata_simple()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_format_metadata_complex()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **Display and rendering helpers for inventory commands.** (1 connections) — `server/commands/inventory_display_helpers.py`
-- **Format metadata for display.** (1 connections) — `server/commands/inventory_display_helpers.py`
-- **Get sets of equipped item IDs and instance IDs for efficient lookup.** (1 connections) — `server/commands/inventory_display_helpers.py`
-- **Filter out equipped items and container items from inventory.** (1 connections) — `server/commands/inventory_display_helpers.py`
-- **Build inventory display lines.** (1 connections) — `server/commands/inventory_display_helpers.py`
-- **Build and format metadata for equipped item with container.** (1 connections) — `server/commands/inventory_display_helpers.py`
-- **Build equipped items display lines.** (1 connections) — `server/commands/inventory_display_helpers.py`
-- **Render inventory display with equipped items and container contents.** (1 connections) — `server/commands/inventory_display_helpers.py`
-- *... and 8 more nodes in this community*
+- **conftest.py** (9 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **temp_rooms_dir()** (3 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **sample_room_data()** (2 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **sample_room_database()** (2 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **invalid_room_data()** (2 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **room_with_new_exit_format()** (2 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **room_with_self_reference()** (2 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **dead_end_room()** (2 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **unreachable_room()** (2 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **Pytest configuration and fixtures for room validator tests.  Provides test data** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **Create a temporary directory with test room files.** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **Sample room data for testing.** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **Sample room database for testing.** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **Invalid room data for testing error conditions.** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **Room data using the new object format for exits.** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **Room data with self-reference exit.** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **Room data with no exits (dead end).** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **Room data that would be unreachable from the starting room.** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
 
 ## Relationships
 
-- [commands inventory helpers](commands_inventory_helpers.md) (6 shared connections)
-- [inventory commands command](inventory_commands_command.md) (2 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (2 shared connections)
-- [commands alias rationale](commands_alias_rationale.md) (1 shared connections)
+- [logging structured utilities](logging_structured_utilities.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/inventory_display_helpers.py`
-- `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
-- `server/tests/unit/commands/test_inventory_helpers.py`
+- `tools/room_toolkit/room_validator/tests/conftest.py`
 
 ## Audit Trail
 
-- EXTRACTED: 109 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 34 (97%)
+- INFERRED: 1 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

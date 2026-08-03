@@ -31,7 +31,7 @@
 
 ## Relationships
 
-- [NATS Messaging](NATS_Messaging.md) (3 shared connections)
+- [Player Name Validation](Player_Name_Validation.md) (3 shared connections)
 
 ## Source Files
 

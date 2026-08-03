@@ -1,10 +1,11 @@
 # middleware metrics collector
 
-> 21 nodes
+> 23 nodes
 
 ## Key Concepts
 
 - **MetricsCollector** (13 connections) — `server/middleware/metrics_collector.py`
+- **.__init__()** (3 connections) — `server/middleware/metrics_collector.py`
 - **.get_metrics()** (3 connections) — `server/middleware/metrics_collector.py`
 - **.get_summary()** (3 connections) — `server/middleware/metrics_collector.py`
 - **.record_message_processed()** (2 connections) — `server/middleware/metrics_collector.py`
@@ -16,6 +17,7 @@
 - **Any** (2 connections)
 - **.reset_metrics()** (2 connections) — `server/middleware/metrics_collector.py`
 - **Simple metrics collector for NATS message delivery.      Thread-safe metrics col** (1 connections) — `server/middleware/metrics_collector.py`
+- **Initialize metrics collector.          AI: Uses Lock for thread-safety in async** (1 connections) — `server/middleware/metrics_collector.py`
 - **Record a successfully processed message.          Args:             channel: Mes** (1 connections) — `server/middleware/metrics_collector.py`
 - **Record a failed message.          Args:             channel: Message channel** (1 connections) — `server/middleware/metrics_collector.py`
 - **Record a message retry attempt.          Args:             channel: Message chan** (1 connections) — `server/middleware/metrics_collector.py`
@@ -28,8 +30,8 @@
 
 ## Relationships
 
-- [NATS Messaging](NATS_Messaging.md) (2 shared connections)
-- [player event handlers](player_event_handlers.md) (1 shared connections)
+- [circuit breaker realtime](circuit_breaker_realtime.md) (2 shared connections)
+- [container helpers endpoints](container_helpers_endpoints.md) (1 shared connections)
 
 ## Source Files
 
@@ -37,8 +39,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 45 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 48 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

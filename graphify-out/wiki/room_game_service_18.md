@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_subscribe_to_standardized_chat_subjects_runtime_error_handled()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test _subscribe_to_standardized_chat_subjects handles RuntimeError and continues** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_get_wearable_containers_for_player_empty()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test get_wearable_containers_for_player returns empty list when no containers.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Relationships
 
-- [nats message handler](nats_message_handler.md) (1 shared connections)
+- [wearable container service](wearable_container_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 

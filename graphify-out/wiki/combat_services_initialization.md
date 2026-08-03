@@ -1,38 +1,41 @@
 # combat services initialization
 
-> 13 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **NPCActionMessage** (12 connections) — `server/npc/threading.py`
-- **NPCActionType** (8 connections) — `server/npc/threading.py`
-- **.from_dict()** (5 connections) — `server/npc/threading.py`
-- **.to_dict()** (4 connections) — `server/npc/threading.py`
-- **.to_json()** (3 connections) — `server/npc/threading.py`
-- **.from_json()** (3 connections) — `server/npc/threading.py`
-- **Enum** (2 connections)
-- **Enumeration of NPC action types.** (1 connections) — `server/npc/threading.py`
-- **Message structure for NPC actions.      This class represents a single action th** (1 connections) — `server/npc/threading.py`
-- **Convert message to dictionary for serialization.** (1 connections) — `server/npc/threading.py`
-- **Create message from dictionary.** (1 connections) — `server/npc/threading.py`
-- **Convert message to JSON string.** (1 connections) — `server/npc/threading.py`
-- **Create message from JSON string.** (1 connections) — `server/npc/threading.py`
+- **validate_alias_name()** (10 connections) — `server/validators/security_validator.py`
+- **.validate_alias_name_field()** (3 connections) — `server/models/command_alias.py`
+- **.validate_alias_name_field()** (3 connections) — `server/models/command_alias.py`
+- **test_validate_alias_name_empty()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_validate_alias_name_valid()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_validate_alias_name_rejects_invalid_format()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_validate_alias_name_rejects_hyphens()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Validate alias name format using centralized validation.** (1 connections) — `server/models/command_alias.py`
+- **Validate alias name format using centralized validation.** (1 connections) — `server/models/command_alias.py`
+- **Test validating empty alias name.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Test validating valid alias name.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Test that validate_alias_name rejects invalid format.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Test that validate_alias_name rejects hyphens.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Centralized validation for alias name fields.      This function provides consis** (1 connections) — `server/validators/security_validator.py`
 
 ## Relationships
 
-- [NATS Messaging](NATS_Messaging.md) (7 shared connections)
-- [models npc rationale](models_npc_rationale.md) (4 shared connections)
-- [idle npc movement](idle_npc_movement.md) (2 shared connections)
-- [npc threading rationale](npc_threading_rationale.md) (2 shared connections)
+- [Security Validator Tests](Security_Validator_Tests.md) (5 shared connections)
+- [feature services flag](feature_services_flag.md) (2 shared connections)
+- [command factories create](command_factories_create.md) (1 shared connections)
+- [command communication models](command_communication_models.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/threading.py`
+- `server/models/command_alias.py`
+- `server/tests/unit/validators/test_security_validator.py`
+- `server/validators/security_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 39 (91%)
-- INFERRED: 4 (9%)
+- EXTRACTED: 34 (97%)
+- INFERRED: 1 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

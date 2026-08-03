@@ -1,41 +1,23 @@
 # schemas items item
 
-> 19 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **enum** (21 connections) — `schemas/items/item_prototype.schema.json`
-- **MAGICAL** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **CURSED** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **NO_DROP** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **NO_SALE** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **SOULBOUND** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **GLOW** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **QUEST_ITEM** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **HEAD** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **TORSO** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **LEGS** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **MAIN_HAND** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **OFF_HAND** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **FEET** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **HANDS** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **ACCESSORY** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **RING** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **AMULET** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **BELT** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **test_announce_spell_cast_no_chat_service()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Test announce spell cast when chat service is not available.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
 
 ## Relationships
 
-- [items schemas item](items_schemas_item.md) (2 shared connections)
-- [item schemas items](item_schemas_items.md) (1 shared connections)
+- [commands magic rationale](commands_magic_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/items/item_prototype.schema.json`
+- `server/tests/unit/commands/test_magic_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 39 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

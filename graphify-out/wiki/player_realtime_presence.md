@@ -1,36 +1,37 @@
 # player realtime presence
 
-> 14 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **test_inventory_mutation_guard_sync.py** (10 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **guard()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **test_acquire_serializes_per_player()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **test_acquire_token_expiry()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **test_acquire_token_ttl_zero()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **test_acquire_enforces_max_tokens()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **test_acquire_cleanup_empty_state()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **Unit tests for inventory mutation guard - synchronous acquire operations.  Tests** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **Create an InventoryMutationGuard instance.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **Test acquire serializes mutations per player.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **Test acquire allows token reuse after expiry.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **Test acquire with token_ttl=0 (no expiry).** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **Test acquire enforces max_tokens limit.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **Test acquire cleans up state when tokens are empty.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
+- **Any** (8 connections)
+- **.set_stat_requirements()** (3 connections) — `server/models/profession.py`
+- **.get_mechanical_effects()** (3 connections) — `server/models/profession.py`
+- **.set_mechanical_effects()** (3 connections) — `server/models/profession.py`
+- **.get_stat_modifiers()** (3 connections) — `server/models/profession.py`
+- **.set_stat_modifiers()** (3 connections) — `server/models/profession.py`
+- **.get_skill_modifiers()** (3 connections) — `server/models/profession.py`
+- **.set_skill_modifiers()** (3 connections) — `server/models/profession.py`
+- **Set profession stat requirements from dictionary.** (1 connections) — `server/models/profession.py`
+- **Get profession mechanical effects as dictionary.** (1 connections) — `server/models/profession.py`
+- **Set profession mechanical effects from dictionary.** (1 connections) — `server/models/profession.py`
+- **Get stat modifiers as list of {stat, value}.** (1 connections) — `server/models/profession.py`
+- **Set stat modifiers from list of {stat, value}.** (1 connections) — `server/models/profession.py`
+- **Get skill modifiers as list of {skill_key, value}.** (1 connections) — `server/models/profession.py`
+- **Set skill modifiers from list of {skill_key, value}.** (1 connections) — `server/models/profession.py`
 
 ## Relationships
 
-- [container helpers endpoints](container_helpers_endpoints.md) (3 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (1 shared connections)
+- [persistence core infrastructure](persistence_core_infrastructure.md) (7 shared connections)
+- [message handlers realtime](message_handlers_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
+- `server/models/profession.py`
 
 ## Audit Trail
 
-- EXTRACTED: 30 (100%)
+- EXTRACTED: 36 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

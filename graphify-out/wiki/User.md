@@ -1,8 +1,8 @@
 # User
 
-> God node · 315 connections · `server/models/user.py`
+> God node · 319 connections · `server/models/user.py`
 
-**Community:** [auth users rationale](auth_users_rationale.md)
+**Community:** [ascii map renderer](ascii_map_renderer.md)
 
 ## Connections by Relation
 
@@ -13,14 +13,14 @@
 - test_login_user_authenticate_returns_none() `EXTRACTED`
 - test_login_user_generic_exception() `EXTRACTED`
 - test_login_user_id_mismatch() `EXTRACTED`
+- test_login_user_invalid_credentials() `EXTRACTED`
 - test_login_user_no_email() `EXTRACTED`
 - test_register_user_duplicate_username() `EXTRACTED`
-- test_login_user_http_exception_re_raised() `EXTRACTED`
-- test_login_user_invalid_credentials() `EXTRACTED`
 - test_login_user_player_no_profession_id() `EXTRACTED`
 - test_login_user_profession_lookup_error() `EXTRACTED`
 - test_login_user_profession_lookup_none() `EXTRACTED`
 - test_login_user_profession_lookup_success() `EXTRACTED`
+- test_login_user_http_exception_re_raised() `EXTRACTED`
 - test_login_user_success() `EXTRACTED`
 - test_login_user_with_characters() `EXTRACTED`
 - test_register_user_success() `EXTRACTED`
@@ -36,12 +36,11 @@
 - async_persistence.py `EXTRACTED`
 - __init__.py `EXTRACTED`
 - players.py `EXTRACTED`
-- test_users.py `EXTRACTED`
 - endpoints.py `EXTRACTED`
 - test_admin_auth_service.py `EXTRACTED`
 - maps.py `EXTRACTED`
-- test_endpoints.py `EXTRACTED`
 - container_endpoints_basic.py `EXTRACTED`
+- test_users.py `EXTRACTED`
 - users.py `EXTRACTED`
 - character_creation.py `EXTRACTED`
 - container_helpers.py `EXTRACTED`
@@ -52,6 +51,7 @@
 - rooms.py `EXTRACTED`
 - test_maps.py `EXTRACTED`
 - test_container_exception_handlers.py `EXTRACTED`
+- test_containers.py `EXTRACTED`
 
 ### indirect_call
 - _admin_user() `INFERRED`

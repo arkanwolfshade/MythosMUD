@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_process_single_message_chat()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test _process_single_message processes chat message.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_record_message_cleanup_old()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **Test record_message cleans up old entries.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
 
 ## Relationships
 
-- [nats message handler](nats_message_handler.md) (1 shared connections)
+- [rate limiter services](rate_limiter_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/tests/unit/services/test_rate_limiter.py`
 
 ## Audit Trail
 

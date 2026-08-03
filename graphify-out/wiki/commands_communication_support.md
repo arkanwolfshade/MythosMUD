@@ -1,40 +1,44 @@
 # commands communication support
 
-> 16 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **RetryConfig** (10 connections) — `server/realtime/nats_retry_handler.py`
-- **test_get_config()** (4 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **.__init__()** (3 connections) — `server/realtime/nats_retry_handler.py`
-- **.get_config()** (3 connections) — `server/realtime/nats_retry_handler.py`
-- **test_retry_config_calculate_delay_base()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_retry_config_calculate_delay_capped()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_retry_config_defaults()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **.calculate_delay()** (2 connections) — `server/realtime/nats_retry_handler.py`
-- **Configuration for retry behavior.      Defines retry parameters for handling tra** (1 connections) — `server/realtime/nats_retry_handler.py`
-- **Calculate delay for a given attempt number.          Uses exponential backoff ca** (1 connections) — `server/realtime/nats_retry_handler.py`
-- **Initialize retry handler.          Args:             max_retries: Maximum number** (1 connections) — `server/realtime/nats_retry_handler.py`
-- **Get current retry configuration.          Returns:             Current RetryConf** (1 connections) — `server/realtime/nats_retry_handler.py`
-- **Test RetryConfig.calculate_delay() with base delay.** (1 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **Test RetryConfig.calculate_delay() respects max_delay.** (1 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **Test RetryConfig default values.** (1 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **Test get_config() returns current RetryConfig.** (1 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
+- **test_room_subscription_manager_npcs.py** (13 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **subscription_manager()** (3 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **test_get_npc_name_from_lifecycle_manager()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **test_get_npc_name_from_lifecycle_manager_not_found()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **test_get_npc_name_from_lifecycle_manager_error()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **test_add_npc_to_occupants()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **test_query_npcs_from_lifecycle_manager()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **test_filter_fallback_npcs()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **test_filter_fallback_npcs_error()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **test_get_room_occupants_with_npcs()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **test_get_room_occupants_fallback_npcs()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **Unit tests for room subscription manager NPC helpers.  Tests NPC-related helpers** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **Create a RoomSubscriptionManager instance.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **Test _get_npc_name_from_lifecycle_manager gets NPC name.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **Test _get_npc_name_from_lifecycle_manager returns ID when NPC not found.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **Test _get_npc_name_from_lifecycle_manager handles errors gracefully.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **Test _add_npc_to_occupants adds NPC to list.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **Test _query_npcs_from_lifecycle_manager queries NPCs.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **Test _filter_fallback_npcs filters dead NPCs.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **Test _filter_fallback_npcs handles errors gracefully.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **Test get_room_occupants() includes NPCs from lifecycle manager.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **Test get_room_occupants() falls back to room.get_npcs() when lifecycle manager f** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
 
 ## Relationships
 
-- [retry nats handler](retry_nats_handler.md) (8 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (1 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (3 shared connections)
 
 ## Source Files
 
-- `server/realtime/nats_retry_handler.py`
-- `server/tests/unit/realtime/test_nats_retry_handler.py`
+- `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
 
 ## Audit Trail
 
-- EXTRACTED: 37 (95%)
-- INFERRED: 2 (5%)
+- EXTRACTED: 45 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
