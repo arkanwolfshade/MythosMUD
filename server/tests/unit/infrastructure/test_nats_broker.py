@@ -529,3 +529,101 @@ async def test_subscribe_message_wrapper_invalid_json(nats_broker):
     # Should not raise, just log error
     await wrapper(mock_msg)
     handler.assert_not_awaited()
+
+
+@pytest.mark.asyncio
+async def test_perform_health_check_paths(nats_broker):
+    assert await nats_broker._perform_health_check() is False
+    mock_client = MagicMock()
+    mock_client.flush = AsyncMock()
+    nats_broker._client = mock_client
+    assert await nats_broker._perform_health_check() is True
+
+    mock_client.flush = AsyncMock(side_effect=TimeoutError())
+    assert await nats_broker._perform_health_check() is False
+
+    mock_client.flush = AsyncMock(side_effect=RuntimeError("flush fail"))
+    assert await nats_broker._perform_health_check() is False
+
+
+@pytest.mark.asyncio
+async def test_start_stop_health_monitoring(nats_broker):
+    nats_broker.config.health_check_interval = 0
+    await nats_broker._start_health_monitoring()
+    assert nats_broker._health_check_task is None
+
+    nats_broker.config.health_check_interval = 30
+    nats_broker._running = True
+    with patch.object(nats_broker, "_health_check_loop", new_callable=AsyncMock):
+        await nats_broker._start_health_monitoring()
+        assert nats_broker._health_check_task is not None
+        await nats_broker._stop_health_monitoring()
+        assert nats_broker._health_check_task is None
+
+
+def test_is_connected_consecutive_failures(nats_broker):
+    mock_client = MagicMock()
+    mock_client.is_connected = True
+    nats_broker._client = mock_client
+    nats_broker._running = True
+    nats_broker.config.health_check_interval = 30
+    nats_broker._last_health_check = 1.0
+    nats_broker._consecutive_health_failures = 3
+    with patch("server.infrastructure.nats_broker.anyio.current_time", return_value=2.0):
+        assert nats_broker.is_connected() is False
+
+
+def test_configure_tls_disabled(nats_broker):
+    nats_broker.config.tls_enabled = False
+    opts: dict = {}
+    nats_broker._configure_tls(opts)
+    assert "tls" not in opts
+
+
+def test_configure_tls_verify_off(nats_broker, tmp_path):
+    cert = tmp_path / "cert.pem"
+    key = tmp_path / "key.pem"
+    ca = tmp_path / "ca.pem"
+    cert.write_text("c")
+    key.write_text("k")
+    ca.write_text("ca")
+    nats_broker.config.tls_enabled = True
+    nats_broker.config.tls_cert_file = str(cert)
+    nats_broker.config.tls_key_file = str(key)
+    nats_broker.config.tls_ca_file = str(ca)
+    nats_broker.config.tls_verify = False
+    opts: dict = {}
+    with (
+        patch("server.infrastructure.nats_broker.ssl.create_default_context") as ctx_factory,
+    ):
+        ctx = MagicMock()
+        ctx_factory.return_value = ctx
+        nats_broker._configure_tls(opts)
+        assert opts["tls"] is ctx
+        assert ctx.check_hostname is False
+
+
+def test_error_and_disconnect_sync_callbacks_no_loop(nats_broker):
+    with patch("server.infrastructure.nats_broker.asyncio.create_task", side_effect=RuntimeError("no loop")):
+        nats_broker._error_callback(Exception("e"))
+        nats_broker._disconnected_callback()
+        nats_broker._reconnected_callback()
+    assert nats_broker._running is True
+    assert nats_broker._consecutive_health_failures == 0
+
+
+@pytest.mark.asyncio
+async def test_connect_with_user_password(nats_config):
+    nats_config.user = "u"
+    nats_config.password = "p"
+    nats_config.token = None
+    nats_config.health_check_interval = 0
+    broker = NATSMessageBroker(nats_config)
+    mock_client = MagicMock()
+    mock_client.is_connected = True
+    with patch("server.infrastructure.nats_broker.nats.connect", new_callable=AsyncMock) as connect:
+        connect.return_value = mock_client
+        assert await broker.connect() is True
+        kwargs = connect.call_args.kwargs
+        assert kwargs["user"] == "u"
+        assert kwargs["password"] == "p"

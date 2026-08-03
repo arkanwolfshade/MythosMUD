@@ -11,6 +11,10 @@ from fastapi import FastAPI
 
 from server.app.lifespan_magic import initialize_magic_services
 from server.app.lifespan_startup import (
+    _get_item_prototype_count,
+    _get_item_prototype_entries,
+    _log_npc_startup_errors,
+    _validate_npc_services_prerequisites,
     initialize_chat_service,
     initialize_combat_services,
     initialize_container_and_legacy_services,
@@ -174,3 +178,76 @@ async def test_initialize_magic_services(mock_app, mock_container):  # pylint: d
     with patch("server.app.lifespan_magic.SpellRegistry.load_spells", new=AsyncMock(return_value=None)):
         await initialize_magic_services(mock_app, mock_container)
     assert hasattr(mock_app.state, "magic_service") or hasattr(mock_app.state, "spell_registry")
+
+
+@pytest.mark.asyncio
+async def test_get_item_prototype_entries_none_registry():
+    """Missing registry returns None."""
+    assert await _get_item_prototype_entries(None) is None
+
+
+@pytest.mark.asyncio
+async def test_get_item_prototype_entries_missing_all_method():
+    """Registry without all() returns None."""
+    registry = MagicMock(spec=[])
+    assert await _get_item_prototype_entries(registry) is None
+
+
+@pytest.mark.asyncio
+async def test_get_item_prototype_entries_async_failure():
+    """Async registry errors are swallowed."""
+
+    class BadRegistry:
+        async def all(self):
+            raise RuntimeError("boom")
+
+    assert await _get_item_prototype_entries(BadRegistry()) is None
+
+
+@pytest.mark.asyncio
+async def test_get_item_prototype_count_non_iterable():
+    """Non-iterable registry entries default count to zero."""
+
+    class WeirdRegistry:
+        def all(self):
+            return 42
+
+    assert await _get_item_prototype_count(WeirdRegistry()) == 0
+
+
+def test_validate_npc_services_prerequisites_missing_event_bus(mock_container):
+    """Missing event bus raises RuntimeError."""
+    mock_container.event_bus = None
+    with pytest.raises(RuntimeError, match="EventBus"):
+        _validate_npc_services_prerequisites(mock_container)
+
+
+def test_validate_npc_services_prerequisites_missing_persistence(mock_container):
+    """Missing persistence raises RuntimeError."""
+    mock_container.persistence = None
+    with pytest.raises(RuntimeError, match="Persistence"):
+        _validate_npc_services_prerequisites(mock_container)
+
+
+def test_log_npc_startup_errors():
+    """Startup errors are logged when present."""
+    _log_npc_startup_errors({"errors": ["spawn failed"]})
+    _log_npc_startup_errors({"errors": []})
+
+
+@pytest.mark.asyncio
+async def test_initialize_mythos_time_consumer_missing_deps(mock_app, mock_container):
+    """Missing dependencies skip mythos time consumer initialization."""
+    mock_container.holiday_service = None
+    with patch("server.app.lifespan_startup.MythosTimeEventConsumer") as mock_consumer_cls:
+        await initialize_mythos_time_consumer(mock_app, mock_container)
+        mock_consumer_cls.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_initialize_container_legacy_service_none(mock_app, mock_container):
+    """None legacy services log warning without failing startup."""
+    mock_container.player_service = None
+    mock_container.item_prototype_registry.all = MagicMock(return_value=[])
+    await initialize_container_and_legacy_services(mock_app, mock_container)
+    assert mock_app.state.container is mock_container
