@@ -360,6 +360,8 @@ async def test_handle_confirm_goto_exception():
     assert "Failed to teleport" in result["result"]
 
 
+@pytest.mark.asyncio
+@patch("server.commands.admin_teleport_commands.resolve_teleport_services", new_callable=AsyncMock)
 async def test_handle_teleport_direction_error(mock_resolve):
     player_service = MagicMock()
     player_service.get_player_by_name = AsyncMock(return_value=MagicMock(current_room_id="room-a"))
@@ -443,6 +445,8 @@ async def test_handle_teleport_location_error(mock_resolve):
     assert result["result"] == "Could not update location."
 
 
+@pytest.mark.asyncio
+@patch("server.commands.admin_teleport_commands.resolve_teleport_services", new_callable=AsyncMock)
 async def test_handle_teleport_success_with_direction(mock_resolve):
     player_service = MagicMock()
     current_player = MagicMock(current_room_id="room-a")
