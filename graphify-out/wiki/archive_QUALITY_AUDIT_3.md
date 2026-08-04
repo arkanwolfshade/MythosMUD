@@ -1,18 +1,20 @@
 # archive QUALITY AUDIT
 
-> 5 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **Phase 1: Quantitative Analysis Results** (5 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **1.1 Test Distribution by Category** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **1.2 Largest Test Files (Splitting/Pruning Candidates)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **1.3 Infrastructure Test Analysis** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Files** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Phase 3: Test Value Scoring** (4 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **3.3 Value Distribution Calculation** (4 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **3.1 Scoring Criteria Matrix** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **3.2 Category Scores** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **🔴 CRITICAL VALUE TESTS (Score ≥75): **1,272 tests (25.6%)**** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **🟡 IMPORTANT VALUE TESTS (Score 50-74): **2,943 tests (59.3%)**** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **🟢 LOW VALUE TESTS (Score <50): **750 tests (15.1%)**** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
 
 ## Relationships
 
-- [archive QUALITY AUDIT](archive_QUALITY_AUDIT.md) (1 shared connections)
+- [archive quality QUALITY](archive_quality_QUALITY.md) (1 shared connections)
 
 ## Source Files
 
@@ -20,7 +22,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

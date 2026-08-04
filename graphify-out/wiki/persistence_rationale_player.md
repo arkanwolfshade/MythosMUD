@@ -31,7 +31,7 @@
 
 - [security headers middleware](security_headers_middleware.md) (5 shared connections)
 - [player service game](player_service_game.md) (2 shared connections)
-- [Loot Generation](Loot_Generation.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
 - [npc combat services](npc_combat_services.md) (1 shared connections)
 - [app factory rationale](app_factory_rationale.md) (1 shared connections)
 

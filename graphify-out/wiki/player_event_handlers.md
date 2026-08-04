@@ -35,16 +35,16 @@
 
 - [lucidity npc combat](lucidity_npc_combat.md) (8 shared connections)
 - [models npc rationale](models_npc_rationale.md) (6 shared connections)
-- [command factories exploration](command_factories_exploration.md) (3 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (3 shared connections)
 - [config models cors](config_models_cors.md) (2 shared connections)
 - [invite models rationale](invite_models_rationale.md) (2 shared connections)
 - [combat validator validators](combat_validator_validators.md) (2 shared connections)
 - [schemas calendar rationale](schemas_calendar_rationale.md) (1 shared connections)
-- [npc shopkeeper rationale](npc_shopkeeper_rationale.md) (1 shared connections)
+- [NPC Combat](NPC_Combat.md) (1 shared connections)
 - [persistence container parse](persistence_container_parse.md) (1 shared connections)
 - [playerHandlers eventHandlers healthEvent](playerHandlers_eventHandlers_healthEvent.md) (1 shared connections)
 - [config models rationale](config_models_rationale.md) (1 shared connections)
-- [time service rationale](time_service_rationale.md) (1 shared connections)
+- [Spell Validation](Spell_Validation.md) (1 shared connections)
 
 ## Source Files
 

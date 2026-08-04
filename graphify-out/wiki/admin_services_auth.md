@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_delete_player_success()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **Test delete_player() successfully deletes player.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_get_regen_multiplier_standing()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Test _get_regen_multiplier() returns 1.0 for standing position.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Relationships
 
-- [room realtime subscription](room_realtime_subscription.md) (1 shared connections)
+- [config rationale reset](config_rationale_reset.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_player_service_mutations.py`
+- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Audit Trail
 

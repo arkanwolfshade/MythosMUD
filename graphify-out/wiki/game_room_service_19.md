@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_register_action_handler()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test register_action_handler() registers handler.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **message_filtering_helper()** (3 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Create a MessageFilteringHelper instance.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Relationships
 
-- [lucidity active service](lucidity_active_service.md) (1 shared connections)
-- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
+- [commands communication say](commands_communication_say.md) (1 shared connections)
+- [message filtering realtime](message_filtering_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_behavior_engine.py`
+- `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Audit Trail
 

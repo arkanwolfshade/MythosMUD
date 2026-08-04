@@ -1,52 +1,61 @@
 # player look commands
 
-> 56 nodes
+> 101 nodes
 
 ## Key Concepts
 
-- **test_health_service.py** (43 connections) — `server/tests/unit/services/test_health_service.py`
-- **get_health_service()** (9 connections) — `server/services/health_service.py`
-- **test_get_health_service_creates_instance()** (4 connections) — `server/tests/unit/services/test_health_service.py`
-- **health_service()** (3 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_get_health_service_returns_singleton()** (3 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_get_health_service_updates_connection_manager()** (3 connections) — `server/tests/unit/services/test_health_service.py`
-- **mock_connection_manager()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_health_service_initialization()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_get_server_uptime()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_get_memory_usage_success()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_get_memory_usage_error()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_get_cpu_usage_success()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_get_cpu_usage_error()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_check_database_health_healthy()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_check_database_health_degraded()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_check_database_health_unhealthy()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_check_database_health_error()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_check_connections_health_healthy()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_check_connections_health_degraded()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_check_connections_health_unhealthy()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_check_connections_health_no_manager()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_check_connections_health_error()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_get_server_component_health_healthy()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_get_server_component_health_degraded()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_get_server_component_health_unhealthy()** (2 connections) — `server/tests/unit/services/test_health_service.py`
-- *... and 31 more nodes in this community*
+- **NPCCombatDataProvider** (39 connections) — `server/services/npc_combat_data_provider.py`
+- **CombatParticipantData** (37 connections) — `server/services/combat_types.py`
+- **.create_combat_instance()** (17 connections) — `server/services/combat_initialization.py`
+- **test_npc_combat_data_provider.py** (17 connections) — `server/tests/unit/services/test_npc_combat_data_provider.py`
+- **combat_initialization.py** (15 connections) — `server/services/combat_initialization.py`
+- **TestCombatInitializer** (15 connections) — `server/tests/unit/services/test_combat_initialization.py`
+- **TestCombatParticipantData** (12 connections) — `server/tests/unit/services/test_combat_types.py`
+- **combat_types.py** (11 connections) — `server/services/combat_types.py`
+- **CombatInitializer** (8 connections) — `server/services/combat_initialization.py`
+- **test_combat_initialization.py** (8 connections) — `server/tests/unit/services/test_combat_initialization.py`
+- **test_combat_types.py** (6 connections) — `server/tests/unit/services/test_combat_types.py`
+- **_build_participant()** (5 connections) — `server/services/combat_initialization.py`
+- **_compute_turn_order()** (5 connections) — `server/services/combat_initialization.py`
+- **.start_combat()** (5 connections) — `server/services/combat_service.py`
+- **.get_npc_definition()** (5 connections) — `server/services/npc_combat_data_provider.py`
+- **UUID** (5 connections)
+- **.get_npc_combat_data()** (5 connections) — `server/services/npc_combat_data_provider.py`
+- **_build_combat_instance()** (4 connections) — `server/services/combat_initialization.py`
+- **Any** (4 connections)
+- **.get_npc_instance()** (4 connections) — `server/services/npc_combat_data_provider.py`
+- **.get_player_combat_data()** (4 connections) — `server/services/npc_combat_data_provider.py`
+- **.__init__()** (3 connections) — `server/services/npc_combat_data_provider.py`
+- **.get_player_name()** (3 connections) — `server/services/npc_combat_data_provider.py`
+- **.get_player_room_id()** (3 connections) — `server/services/npc_combat_data_provider.py`
+- **.get_data_provider()** (3 connections) — `server/services/npc_combat_integration_service.py`
+- *... and 76 more nodes in this community*
 
 ## Relationships
 
-- [grace period login](grace_period_login.md) (15 shared connections)
-- [persistence container extended](persistence_container_extended.md) (4 shared connections)
-- [command combat models](command_combat_models.md) (1 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
+- [models npc rationale](models_npc_rationale.md) (38 shared connections)
+- [NPC Combat](NPC_Combat.md) (11 shared connections)
+- [services combat sync](services_combat_sync.md) (3 shared connections)
+- [Item Instances](Item_Instances.md) (2 shared connections)
+- [room occupant manager](room_occupant_manager.md) (2 shared connections)
+- [logging setup structured](logging_setup_structured.md) (2 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/health_service.py`
-- `server/tests/unit/services/test_health_service.py`
+- `server/services/combat_initialization.py`
+- `server/services/combat_service.py`
+- `server/services/combat_types.py`
+- `server/services/npc_combat_data_provider.py`
+- `server/services/npc_combat_integration_service.py`
+- `server/tests/unit/services/test_combat_initialization.py`
+- `server/tests/unit/services/test_combat_types.py`
+- `server/tests/unit/services/test_npc_combat_data_provider.py`
 
 ## Audit Trail
 
-- EXTRACTED: 136 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 351 (95%)
+- INFERRED: 20 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,22 +4,21 @@
 
 ## Key Concepts
 
-- **sample_preferences()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Create sample player preferences.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_build_chat_event()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _build_chat_event builds event.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [commands rescue rationale](commands_rescue_rationale.md) (1 shared connections)
-- [player preferences service](player_preferences_service.md) (1 shared connections)
+- [message chat nats](message_chat_nats.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_player_preferences_service.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

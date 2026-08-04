@@ -1,33 +1,32 @@
 # error websocket handler
 
-> 7 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **._get_player_mute_file()** (7 connections) — `server/services/user_manager.py`
-- **.__init__()** (4 connections) — `server/services/user_manager.py`
-- **_get_proper_data_dir()** (4 connections) — `server/services/user_manager.py`
-- **Path** (3 connections)
-- **Initialize the user manager.          Args:             data_dir: Directory f** (1 connections) — `server/services/user_manager.py`
-- **Get the mute data file path for a specific player.** (1 connections) — `server/services/user_manager.py`
-- **Get the proper environment-aware data directory for user management.      Uses** (1 connections) — `server/services/user_manager.py`
+- **TestProcessAliasExpansion** (6 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.test_process_alias_expansion_no_alias_storage()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.test_process_alias_expansion_no_alias()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.test_process_alias_expansion_unsafe_alias()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.test_process_alias_expansion_invalid_expanded()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _process_alias_expansion function.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _process_alias_expansion returns None when no alias storage.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _process_alias_expansion returns None when alias not found.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _process_alias_expansion returns error for unsafe alias.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _process_alias_expansion returns error for invalid expanded command.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
 
 ## Relationships
 
-- [services user manager](services_user_manager.md) (5 shared connections)
-- [room realtime occupant](room_realtime_occupant.md) (1 shared connections)
-- [auth invites rationale](auth_invites_rationale.md) (1 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
-- [middleware metrics collector](middleware_metrics_collector.md) (1 shared connections)
+- [command commands handler](command_commands_handler.md) (5 shared connections)
 
 ## Source Files
 
-- `server/services/user_manager.py`
+- `server/tests/unit/commands/test_command_aliases.py`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (95%)
-- INFERRED: 1 (5%)
+- EXTRACTED: 23 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

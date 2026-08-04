@@ -1,23 +1,26 @@
 # models profession rationale
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_heal_player()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **Test heal_player() heals player.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **.__init__()** (3 connections) — `server/game/items/prototype_registry.py`
+- **.invalid_entries()** (3 connections) — `server/game/items/prototype_registry.py`
+- **Any** (2 connections)
+- **Get all invalid entries that failed validation.          Returns:             li** (1 connections) — `server/game/items/prototype_registry.py`
 
 ## Relationships
 
-- [room realtime subscription](room_realtime_subscription.md) (1 shared connections)
+- [MapView GameClientV2ContainerView Tabbed](MapView_GameClientV2ContainerView_Tabbed.md) (2 shared connections)
+- [connection cleaner realtime](connection_cleaner_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_player_service_mutations.py`
+- `server/game/items/prototype_registry.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

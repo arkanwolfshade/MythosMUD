@@ -1,6 +1,6 @@
 # commands magic rationale
 
-> 129 nodes
+> 127 nodes
 
 ## Key Concepts
 
@@ -17,7 +17,6 @@
 - **handle_stop_command()** (9 connections) — `server/commands/magic_commands.py`
 - **.handle_cast_command()** (7 connections) — `server/commands/magic_commands.py`
 - **._build_cast_response()** (6 connections) — `server/commands/magic_commands.py`
-- **._interrupt_rest_for_cast()** (6 connections) — `server/commands/magic_commands.py`
 - **.handle_spell_command()** (6 connections) — `server/commands/magic_commands.py`
 - **.handle_learn_command()** (6 connections) — `server/commands/magic_commands.py`
 - **._resolve_spell_context()** (5 connections) — `server/commands/magic_commands.py`
@@ -29,21 +28,22 @@
 - **._build_spell_detail_lines()** (4 connections) — `server/commands/magic_commands.py`
 - **._announce_spell_cast()** (4 connections) — `server/commands/magic_commands.py`
 - **._build_learn_response()** (4 connections) — `server/commands/magic_commands.py`
-- *... and 104 more nodes in this community*
+- **.handle_stop_command()** (4 connections) — `server/commands/magic_commands.py`
+- *... and 102 more nodes in this community*
 
 ## Relationships
 
-- [commands party examples](commands_party_examples.md) (14 shared connections)
-- [coercion int inventory](coercion_int_inventory.md) (11 shared connections)
+- [commands npc admin](commands_npc_admin.md) (14 shared connections)
+- [coercion int inventory](coercion_int_inventory.md) (12 shared connections)
+- [commands whisper command](commands_whisper_command.md) (7 shared connections)
 - [player respawn event](player_respawn_event.md) (7 shared connections)
-- [commands admin mute](commands_admin_mute.md) (6 shared connections)
-- [rest grace period](rest_grace_period.md) (5 shared connections)
-- [Loot Generation](Loot_Generation.md) (3 shared connections)
+- [rest grace period](rest_grace_period.md) (6 shared connections)
 - [chat service game](chat_service_game.md) (3 shared connections)
-- [admin auth service](admin_auth_service.md) (3 shared connections)
+- [NPC Combat](NPC_Combat.md) (3 shared connections)
 - [spell game magic](spell_game_magic.md) (2 shared connections)
 - [chat game message](chat_game_message.md) (1 shared connections)
-- [Database Config](Database_Config.md) (1 shared connections)
+- [game models player](game_models_player.md) (1 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (1 shared connections)
 - [command commands handler](command_commands_handler.md) (1 shared connections)
 
 ## Source Files
@@ -54,7 +54,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 396 (92%)
+- EXTRACTED: 389 (92%)
 - INFERRED: 34 (8%)
 - AMBIGUOUS: 0 (0%)
 

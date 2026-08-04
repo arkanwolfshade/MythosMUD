@@ -19,7 +19,7 @@
 
 ## Relationships
 
-- [Loot Generation](Loot_Generation.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
 - [models npc rationale](models_npc_rationale.md) (1 shared connections)
 
 ## Source Files

@@ -33,11 +33,12 @@
 
 ## Relationships
 
-- [Database Access Layer](Database_Access_Layer.md) (4 shared connections)
-- [auth users rationale](auth_users_rationale.md) (2 shared connections)
-- [websocket handler realtime](websocket_handler_realtime.md) (2 shared connections)
+- [Loot Generation](Loot_Generation.md) (4 shared connections)
+- [combat commands handler](combat_commands_handler.md) (2 shared connections)
 - [broker infrastructure nats](broker_infrastructure_nats.md) (1 shared connections)
 - [infrastructure nats broker](infrastructure_nats_broker.md) (1 shared connections)
+- [NPC Combat](NPC_Combat.md) (1 shared connections)
+- [container persistence rationale](container_persistence_rationale.md) (1 shared connections)
 
 ## Source Files
 

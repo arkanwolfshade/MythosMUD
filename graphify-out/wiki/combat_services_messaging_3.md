@@ -34,7 +34,7 @@
 ## Relationships
 
 - [combat services messaging](combat_services_messaging.md) (4 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [NPC Combat](NPC_Combat.md) (1 shared connections)
 
 ## Source Files
 

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_subscribe_player_to_room_error()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **Test subscribe_player_to_room() handles subscription errors.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_is_player_in_room_true()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Test is_player_in_room() returns True when player is in room.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Relationships
 
-- [player room event](player_room_event.md) (1 shared connections)
+- [message filtering realtime](message_filtering_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Audit Trail
 

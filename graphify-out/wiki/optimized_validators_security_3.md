@@ -24,7 +24,7 @@
 ## Relationships
 
 - [optimized security validator](optimized_security_validator.md) (8 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [optimized validators security](optimized_validators_security.md) (1 shared connections)
 
 ## Source Files
 

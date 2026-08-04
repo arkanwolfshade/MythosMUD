@@ -36,7 +36,7 @@
 - [Realtime Subscribers](Realtime_Subscribers.md) (11 shared connections)
 - [item models rationale](item_models_rationale.md) (3 shared connections)
 - [schedule services service](schedule_services_service.md) (2 shared connections)
-- [realtime monitoring performance](realtime_monitoring_performance.md) (1 shared connections)
+- [event bus events](event_bus_events.md) (1 shared connections)
 - [NPC Combat](NPC_Combat.md) (1 shared connections)
 
 ## Source Files

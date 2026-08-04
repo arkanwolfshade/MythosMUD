@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_is_valid_json_array_valid()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test _is_valid_json_array with valid JSON array.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_send_messages_to_players_invalid_player_id()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _send_messages_to_players handles invalid player_id.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [player preferences service](player_preferences_service.md) (1 shared connections)
+- [message chat nats](message_chat_nats.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_player_preferences_service.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_send_room_update_to_player_room_not_found()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **Test send_room_update_to_player() handles room not found.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_get_user_manager_global()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Test _get_user_manager() returns global user manager when custom not set.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Relationships
 
-- [player room event](player_room_event.md) (1 shared connections)
+- [message filtering realtime](message_filtering_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Audit Trail
 

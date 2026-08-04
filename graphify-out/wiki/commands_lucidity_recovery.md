@@ -1,6 +1,6 @@
 # commands lucidity recovery
 
-> 38 nodes
+> 53 nodes
 
 ## Key Concepts
 
@@ -16,47 +16,48 @@
 - **handle_flee_command()** (8 connections) — `server/commands/combat_loader.py`
 - **handle_taunt_command()** (8 connections) — `server/commands/combat_loader.py`
 - **_mock_app_with_container()** (8 connections) — `server/tests/unit/commands/test_combat_loader.py`
+- **format_combat_status()** (6 connections) — `server/commands/combat_helpers.py`
+- **get_combat_target()** (6 connections) — `server/commands/combat_helpers.py`
+- **test_combat_helpers.py** (6 connections) — `server/tests/unit/commands/test_combat_helpers.py`
 - **.movement_service()** (3 connections) — `server/commands/combat_handler.py`
 - **.player_position_service()** (3 connections) — `server/commands/combat_handler.py`
+- **test_format_combat_status_in_combat()** (3 connections) — `server/tests/unit/commands/test_combat_helpers.py`
+- **test_format_combat_status_not_in_combat()** (3 connections) — `server/tests/unit/commands/test_combat_helpers.py`
+- **test_get_combat_target()** (3 connections) — `server/tests/unit/commands/test_combat_helpers.py`
+- **test_get_combat_target_not_found()** (3 connections) — `server/tests/unit/commands/test_combat_helpers.py`
 - **test_get_combat_command_handler_creates_singleton()** (3 connections) — `server/tests/unit/commands/test_combat_loader.py`
 - **test_handle_attack_command_delegates()** (3 connections) — `server/tests/unit/commands/test_combat_loader.py`
 - **test_handle_punch_command_sets_type()** (3 connections) — `server/tests/unit/commands/test_combat_loader.py`
 - **test_handle_kick_command_sets_type()** (3 connections) — `server/tests/unit/commands/test_combat_loader.py`
-- **test_handle_strike_command_sets_type()** (3 connections) — `server/tests/unit/commands/test_combat_loader.py`
-- **test_handle_flee_command_delegates()** (3 connections) — `server/tests/unit/commands/test_combat_loader.py`
-- **test_handle_taunt_command_delegates()** (3 connections) — `server/tests/unit/commands/test_combat_loader.py`
-- **test_get_combat_command_handler_requires_app()** (2 connections) — `server/tests/unit/commands/test_combat_loader.py`
-- **test_app_from_request_none()** (2 connections) — `server/tests/unit/commands/test_combat_loader.py`
-- **test_app_from_request_returns_app()** (2 connections) — `server/tests/unit/commands/test_combat_loader.py`
-- **Combat command handlers for the MUD.  This module re-exports combat command hand** (1 connections) — `server/commands/combat.py`
-- *... and 13 more nodes in this community*
+- *... and 28 more nodes in this community*
 
 ## Relationships
 
 - [NPC Combat](NPC_Combat.md) (14 shared connections)
-- [commands party examples](commands_party_examples.md) (7 shared connections)
-- [combat flee commands](combat_flee_commands.md) (5 shared connections)
+- [commands npc admin](commands_npc_admin.md) (7 shared connections)
+- [combat flee commands](combat_flee_commands.md) (4 shared connections)
+- [Error Conversion](Error_Conversion.md) (3 shared connections)
+- [commands whisper command](commands_whisper_command.md) (2 shared connections)
 - [container helpers loot](container_helpers_loot.md) (2 shared connections)
-- [Loot Generation](Loot_Generation.md) (2 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (2 shared connections)
-- [commands admin mute](commands_admin_mute.md) (1 shared connections)
-- [persistence rationale players](persistence_rationale_players.md) (1 shared connections)
-- [realtime monitoring statistics](realtime_monitoring_statistics.md) (1 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (1 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
-- [npc database infrastructure](npc_database_infrastructure.md) (1 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (2 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (2 shared connections)
+- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [command factories communication](command_factories_communication.md) (1 shared connections)
+- [commands emote rationale](commands_emote_rationale.md) (1 shared connections)
 
 ## Source Files
 
 - `server/commands/combat.py`
 - `server/commands/combat_handler.py`
+- `server/commands/combat_helpers.py`
 - `server/commands/combat_loader.py`
+- `server/tests/unit/commands/test_combat_helpers.py`
 - `server/tests/unit/commands/test_combat_loader.py`
 
 ## Audit Trail
 
-- EXTRACTED: 199 (95%)
-- INFERRED: 10 (5%)
+- EXTRACTED: 230 (93%)
+- INFERRED: 18 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

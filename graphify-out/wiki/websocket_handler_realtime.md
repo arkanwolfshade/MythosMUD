@@ -1,65 +1,54 @@
 # websocket handler realtime
 
-> 132 nodes
+> 64 nodes
 
 ## Key Concepts
 
 - **CircuitBreaker** (43 connections) — `server/realtime/circuit_breaker.py`
-- **nats_message_handler.py** (34 connections) — `server/realtime/nats_message_handler.py`
 - **test_circuit_breaker.py** (31 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **DeadLetterMessage** (27 connections) — `server/realtime/dead_letter_queue.py`
-- **NATSMessageHandler** (24 connections) — `server/realtime/nats_message_handler.py`
-- **nats_message_handler_processing.py** (23 connections) — `server/realtime/nats_message_handler_processing.py`
-- **NATSMessageHandlerMixinBase** (19 connections) — `server/realtime/nats_message_handler_base.py`
-- **NATSMessageProcessingMixin** (15 connections) — `server/realtime/nats_message_handler_processing.py`
-- **CircuitBreakerOpen** (14 connections) — `server/realtime/circuit_breaker.py`
 - **circuit_breaker.py** (12 connections) — `server/realtime/circuit_breaker.py`
-- **dead_letter_queue.py** (10 connections) — `server/realtime/dead_letter_queue.py`
-- **nats_message_handler_subscriptions.py** (10 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **.call()** (9 connections) — `server/realtime/circuit_breaker.py`
-- **_ChatMessageFields** (8 connections) — `server/realtime/nats_message_handler_processing.py`
-- **_ValidatedChatFields** (8 connections) — `server/realtime/nats_message_handler_processing.py`
-- **._process_single_message()** (8 connections) — `server/realtime/nats_message_handler_processing.py`
-- **.__init__()** (7 connections) — `server/realtime/nats_message_handler.py`
 - **CircuitState** (6 connections) — `server/realtime/circuit_breaker.py`
-- **._transition_to()** (6 connections) — `server/realtime/circuit_breaker.py`
-- **._handle_nats_message()** (6 connections) — `server/realtime/nats_message_handler_processing.py`
-- **._process_message_with_retry()** (5 connections) — `server/realtime/nats_message_handler_processing.py`
-- **._extract_chat_message_fields()** (5 connections) — `server/realtime/nats_message_handler_processing.py`
-- **._validate_chat_message_fields()** (5 connections) — `server/realtime/nats_message_handler_processing.py`
-- **._build_chat_event()** (5 connections) — `server/realtime/nats_message_handler_processing.py`
-- **._broadcast_by_channel_type()** (5 connections) — `server/realtime/nats_message_handler_processing.py`
-- *... and 107 more nodes in this community*
+- **.__init__()** (3 connections) — `server/realtime/circuit_breaker.py`
+- **.get_state()** (3 connections) — `server/realtime/circuit_breaker.py`
+- **test_circuit_breaker_init()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_circuit_breaker_init_defaults()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_call_success_closed_state()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_call_failure_closed_state()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_call_opens_circuit_after_threshold()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_call_transitions_to_half_open_after_timeout()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_call_closes_from_half_open_on_success()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_call_reopens_from_half_open_on_failure()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_on_success_resets_failure_count_closed()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_on_success_increments_success_count_half_open()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_on_failure_increments_failure_count()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_on_failure_opens_circuit_at_threshold()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_on_failure_resets_success_count()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_should_attempt_reset_returns_false_before_timeout()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_should_attempt_reset_returns_true_after_timeout()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_should_attempt_reset_returns_false_when_not_open()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_time_until_retry_returns_zero_when_not_open()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_time_until_retry_returns_remaining_time()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_time_until_retry_returns_zero_after_timeout()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- *... and 39 more nodes in this community*
 
 ## Relationships
 
-- [container persistence rationale](container_persistence_rationale.md) (25 shared connections)
-- [message filtering realtime](message_filtering_realtime.md) (16 shared connections)
-- [Loot Generation](Loot_Generation.md) (10 shared connections)
-- [middleware metrics collector](middleware_metrics_collector.md) (8 shared connections)
-- [follow game service](follow_game_service.md) (5 shared connections)
-- [startup npc services](startup_npc_services.md) (5 shared connections)
-- [circuit breaker realtime](circuit_breaker_realtime.md) (5 shared connections)
-- [combat validator validators](combat_validator_validators.md) (5 shared connections)
-- [nats message handler](nats_message_handler.md) (4 shared connections)
-- [persistence core infrastructure](persistence_core_infrastructure.md) (4 shared connections)
-- [message broadcast realtime](message_broadcast_realtime.md) (3 shared connections)
-- [realtime messaging message](realtime_messaging_message.md) (3 shared connections)
+- [conftest mock rationale](conftest_mock_rationale.md) (8 shared connections)
+- [NPC Combat](NPC_Combat.md) (7 shared connections)
+- [config rationale config()](config_rationale_config%28%29.md) (5 shared connections)
+- [commands communication say](commands_communication_say.md) (2 shared connections)
+- [nats message handler](nats_message_handler.md) (1 shared connections)
+- [container persistence rationale](container_persistence_rationale.md) (1 shared connections)
 
 ## Source Files
 
 - `server/realtime/circuit_breaker.py`
-- `server/realtime/dead_letter_queue.py`
-- `server/realtime/nats_message_handler.py`
-- `server/realtime/nats_message_handler_base.py`
-- `server/realtime/nats_message_handler_processing.py`
-- `server/realtime/nats_message_handler_subscriptions.py`
 - `server/tests/unit/realtime/test_circuit_breaker.py`
 
 ## Audit Trail
 
-- EXTRACTED: 495 (92%)
-- INFERRED: 43 (8%)
+- EXTRACTED: 204 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

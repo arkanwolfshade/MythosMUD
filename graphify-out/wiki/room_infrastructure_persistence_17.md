@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_mute_channel_already_muted()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test mute_channel() when channel is already muted.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_should_echo_to_sender_not_chat_message()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _should_echo_to_sender returns False for non-chat messages.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [user manager services](user_manager_services.md) (1 shared connections)
+- [message chat nats](message_chat_nats.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_user_manager.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 

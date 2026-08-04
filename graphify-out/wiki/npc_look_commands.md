@@ -34,12 +34,13 @@
 ## Relationships
 
 - [commands quest rationale](commands_quest_rationale.md) (9 shared connections)
-- [commands npc admin](commands_npc_admin.md) (4 shared connections)
+- [logging setup structured](logging_setup_structured.md) (4 shared connections)
 - [connection realtime statistics](connection_realtime_statistics.md) (3 shared connections)
-- [look helpers commands](look_helpers_commands.md) (3 shared connections)
-- [Loot Generation](Loot_Generation.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [combat services turn](combat_services_turn.md) (2 shared connections)
 - [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
 - [commands admin mute](commands_admin_mute.md) (1 shared connections)
+- [look helpers commands](look_helpers_commands.md) (1 shared connections)
 
 ## Source Files
 

@@ -26,8 +26,8 @@
 - [level curve game](level_curve_game.md) (4 shared connections)
 - [channel broadcasting realtime](channel_broadcasting_realtime.md) (4 shared connections)
 - [message filtering helpers](message_filtering_helpers.md) (3 shared connections)
-- [inventory schemas schema](inventory_schemas_schema.md) (2 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (2 shared connections)
+- [Player Stats](Player_Stats.md) (2 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
 
 ## Source Files
 

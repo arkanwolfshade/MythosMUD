@@ -1,45 +1,55 @@
 # calendar models rationale
 
-> 19 nodes
+> 28 nodes
 
 ## Key Concepts
 
-- **NPCSpawnRuleCRUDMixin** (10 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **._execute_create_spawn_rule()** (8 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **_row_to_npc_spawn_rule()** (8 connections) — `server/services/npc_service_models.py`
-- **.create_spawn_rule()** (7 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **.get_spawn_rules()** (6 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **AsyncSession** (6 connections)
-- **.get_spawn_rule()** (6 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **._validate_spawn_rule_inputs()** (4 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **.delete_spawn_rule()** (4 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **Any** (2 connections)
-- **Any** (2 connections)
-- **Mixin providing NPC spawn rule CRUD operations.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **Get all NPC spawn rules.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **Get a specific NPC spawn rule by ID.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **Create a new NPC spawn rule.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **Validate NPC definition existence and population counts for spawn rule creation.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **Execute create_spawn_rule stored procedure and return the created spawn rule.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **Delete an NPC spawn rule.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **Map procedure result row to NPCSpawnRule model.** (1 connections) — `server/services/npc_service_models.py`
+- **quest_chat_notify.py** (20 connections) — `server/game/quest/quest_chat_notify.py`
+- **schedule_personal_system()** (12 connections) — `server/game/chat_npc_system.py`
+- **should_notify_quest_progress()** (10 connections) — `server/game/quest/quest_chat_notify.py`
+- **notify_quest_progress()** (9 connections) — `server/game/quest/quest_chat_notify.py`
+- **notify_quest_started()** (8 connections) — `server/game/quest/quest_chat_notify.py`
+- **notify_quest_completed()** (8 connections) — `server/game/quest/quest_chat_notify.py`
+- **notify_quest_abandoned()** (8 connections) — `server/game/quest/quest_chat_notify.py`
+- **title_from_quest_result()** (7 connections) — `server/game/quest/quest_chat_notify.py`
+- **test_notify_quest_lifecycle_schedules_personal_system()** (6 connections) — `server/tests/unit/game/test_chat_npc_system.py`
+- **UUID** (5 connections)
+- **_goal_is_met()** (5 connections) — `server/game/quest/quest_chat_notify.py`
+- **Any** (4 connections)
+- **_progress_has_any_value()** (4 connections) — `server/game/quest/quest_chat_notify.py`
+- **_as_int()** (3 connections) — `server/game/quest/quest_chat_notify.py`
+- **test_title_from_quest_result_prefers_title_field()** (3 connections) — `server/tests/unit/game/test_chat_npc_system.py`
+- **Schedule personal system chat from sync or async callers.** (1 connections) — `server/game/chat_npc_system.py`
+- **Quest lifecycle and NPC quest-line chat helpers (issue #146 MVP).  # group: ques** (1 connections) — `server/game/quest/quest_chat_notify.py`
+- **Personal system chat when a quest becomes active.** (1 connections) — `server/game/quest/quest_chat_notify.py`
+- **Personal system chat for milestone progress (first tick or goal newly met).** (1 connections) — `server/game/quest/quest_chat_notify.py`
+- **Personal system chat when a quest completes.** (1 connections) — `server/game/quest/quest_chat_notify.py`
+- **Personal system chat when a quest is abandoned.** (1 connections) — `server/game/quest/quest_chat_notify.py`
+- **Coerce progress/config scalars to int; non-numeric becomes default.** (1 connections) — `server/game/quest/quest_chat_notify.py`
+- **Return True if one goal is satisfied given current progress.** (1 connections) — `server/game/quest/quest_chat_notify.py`
+- **True if any goal slot has a non-zero / non-empty progress value.** (1 connections) — `server/game/quest/quest_chat_notify.py`
+- **Return True when a progress personal-system line should be sent.      Notifies o** (1 connections) — `server/game/quest/quest_chat_notify.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [Loot Generation](Loot_Generation.md) (5 shared connections)
-- [models npc rationale](models_npc_rationale.md) (5 shared connections)
-- [Database Config](Database_Config.md) (2 shared connections)
-- [player death service](player_death_service.md) (1 shared connections)
+- [quest chat game](quest_chat_game.md) (12 shared connections)
+- [quest game service](quest_game_service.md) (7 shared connections)
+- [commands quest rationale](commands_quest_rationale.md) (6 shared connections)
+- [collect inventory game](collect_inventory_game.md) (6 shared connections)
+- [chat game message](chat_game_message.md) (4 shared connections)
+- [dialogue service game](dialogue_service_game.md) (2 shared connections)
 
 ## Source Files
 
-- `server/services/npc_service/spawn_rule_crud.py`
-- `server/services/npc_service_models.py`
+- `server/game/chat_npc_system.py`
+- `server/game/quest/quest_chat_notify.py`
+- `server/tests/unit/game/test_chat_npc_system.py`
 
 ## Audit Trail
 
-- EXTRACTED: 70 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 125 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

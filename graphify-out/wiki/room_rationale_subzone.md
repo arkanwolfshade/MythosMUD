@@ -34,12 +34,11 @@
 ## Relationships
 
 - [Realtime Subscribers](Realtime_Subscribers.md) (2 shared connections)
-- [chat game message](chat_game_message.md) (2 shared connections)
-- [alias command models](alias_command_models.md) (1 shared connections)
+- [alias command models](alias_command_models.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
 - [commands logout helpers](commands_logout_helpers.md) (1 shared connections)
-- [websocket handler realtime](websocket_handler_realtime.md) (1 shared connections)
 - [persistence core infrastructure](persistence_core_infrastructure.md) (1 shared connections)
-- [persistence services combat](persistence_services_combat.md) (1 shared connections)
+- [chat services logger](chat_services_logger.md) (1 shared connections)
 
 ## Source Files
 

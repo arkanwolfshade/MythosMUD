@@ -1,14 +1,12 @@
 # party game service
 
-> 54 nodes
+> 48 nodes
 
 ## Key Concepts
 
 - **PartyService** (36 connections) — `server/game/party_service.py`
 - **UUID** (17 connections)
-- **party_service.py** (16 connections) — `server/game/party_service.py`
 - **_str_id()** (16 connections) — `server/game/party_service.py`
-- **Party** (12 connections) — `server/game/party_service.py`
 - **Any** (10 connections)
 - **._emit_party_updated()** (9 connections) — `server/game/party_service.py`
 - **.disband_party()** (8 connections) — `server/game/party_service.py`
@@ -29,19 +27,21 @@
 - **._send_party_invite_to_target()** (5 connections) — `server/game/party_service.py`
 - **.is_leader()** (5 connections) — `server/game/party_service.py`
 - **.is_in_same_party()** (5 connections) — `server/game/party_service.py`
-- *... and 29 more nodes in this community*
+- **.get_party_members()** (4 connections) — `server/game/party_service.py`
+- **.get_party()** (3 connections) — `server/game/party_service.py`
+- *... and 23 more nodes in this community*
 
 ## Relationships
 
-- [Realtime Subscribers](Realtime_Subscribers.md) (14 shared connections)
-- [commands inventory helpers](commands_inventory_helpers.md) (7 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (4 shared connections)
-- [realtime monitoring statistics](realtime_monitoring_statistics.md) (3 shared connections)
-- [Loot Generation](Loot_Generation.md) (3 shared connections)
-- [combat services messaging](combat_services_messaging.md) (2 shared connections)
-- [websocket realtime handler](websocket_realtime_handler.md) (1 shared connections)
-- [nats services service](nats_services_service.md) (1 shared connections)
-- [time service rationale](time_service_rationale.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (14 shared connections)
+- [websocket realtime handler](websocket_realtime_handler.md) (3 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (2 shared connections)
+- [commands inventory helpers](commands_inventory_helpers.md) (1 shared connections)
+- [room realtime subscription](room_realtime_subscription.md) (1 shared connections)
+- [skill game service](skill_game_service.md) (1 shared connections)
+- [NPC Combat](NPC_Combat.md) (1 shared connections)
+- [realtime monitoring statistics](realtime_monitoring_statistics.md) (1 shared connections)
+- [room look commands](room_look_commands.md) (1 shared connections)
 
 ## Source Files
 
@@ -49,8 +49,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 267 (97%)
-- INFERRED: 7 (3%)
+- EXTRACTED: 237 (98%)
+- INFERRED: 4 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

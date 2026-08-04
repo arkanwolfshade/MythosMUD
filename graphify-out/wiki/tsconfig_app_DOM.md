@@ -4,22 +4,21 @@
 
 ## Key Concepts
 
-- **test_soft_delete_character_persistence_fails()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **Test soft_delete_character() when persistence.soft_delete_player fails.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_get_regen_multiplier_sitting()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Test _get_regen_multiplier() returns REST multiplier for sitting.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Relationships
 
-- [Database Config](Database_Config.md) (1 shared connections)
-- [room realtime subscription](room_realtime_subscription.md) (1 shared connections)
+- [config rationale reset](config_rationale_reset.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_player_service_mutations.py`
+- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

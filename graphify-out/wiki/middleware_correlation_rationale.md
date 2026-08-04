@@ -1,12 +1,11 @@
 # middleware correlation rationale
 
-> 50 nodes
+> 47 nodes
 
 ## Key Concepts
 
 - **fastapi_integration.py** (27 connections) — `docs/examples/logging/fastapi_integration.py`
 - **websocket_endpoint()** (9 connections) — `docs/examples/logging/fastapi_integration.py`
-- **update_player_background_task()** (8 connections) — `docs/examples/logging/fastapi_integration.py`
 - **HTTPException** (6 connections)
 - **upload_avatar()** (6 connections) — `docs/examples/logging/fastapi_integration.py`
 - **create_player()** (5 connections) — `docs/examples/logging/fastapi_integration.py`
@@ -28,17 +27,18 @@
 - **.create_player()** (2 connections) — `docs/examples/logging/fastapi_integration.py`
 - **.get_player()** (2 connections) — `docs/examples/logging/fastapi_integration.py`
 - **.list_players()** (2 connections) — `docs/examples/logging/fastapi_integration.py`
-- **.update_player()** (2 connections) — `docs/examples/logging/fastapi_integration.py`
-- *... and 25 more nodes in this community*
+- **.upload_avatar()** (2 connections) — `docs/examples/logging/fastapi_integration.py`
+- **.accept()** (2 connections) — `docs/examples/logging/fastapi_integration.py`
+- *... and 22 more nodes in this community*
 
 ## Relationships
 
 - [world loader room](world_loader_room.md) (6 shared connections)
-- [models player related](models_player_related.md) (6 shared connections)
-- [models lucidity rationale](models_lucidity_rationale.md) (6 shared connections)
-- [handler realtime nats](handler_realtime_nats.md) (3 shared connections)
-- [websocket examples logging](websocket_examples_logging.md) (3 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
+- [models player related](models_player_related.md) (5 shared connections)
+- [models lucidity rationale](models_lucidity_rationale.md) (5 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (3 shared connections)
+- [websocket examples logging](websocket_examples_logging.md) (2 shared connections)
+- [taunt combat commands](taunt_combat_commands.md) (1 shared connections)
 - [player requests schemas](player_requests_schemas.md) (1 shared connections)
 
 ## Source Files
@@ -47,8 +47,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 151 (96%)
-- INFERRED: 7 (4%)
+- EXTRACTED: 143 (97%)
+- INFERRED: 4 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

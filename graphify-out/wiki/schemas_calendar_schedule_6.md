@@ -1,29 +1,23 @@
 # schemas calendar schedule
 
-> 8 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **enum** (8 connections) — `schemas/calendar/schedule.schema.json`
-- **Monday** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **Tuesday** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **Wednesday** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **Thursday** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **Friday** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **Saturday** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **Sunday** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **test_restore_mp_from_meditation_player_not_found()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Test restore_mp_from_meditation() returns error when player not found.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Relationships
 
-- [schemas calendar schedule](schemas_calendar_schedule.md) (1 shared connections)
+- [config rationale reset](config_rationale_reset.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/calendar/schedule.schema.json`
+- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

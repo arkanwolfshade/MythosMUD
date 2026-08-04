@@ -1,6 +1,6 @@
 # persistence container helpers
 
-> 28 nodes
+> 31 nodes
 
 ## Key Concepts
 
@@ -8,11 +8,13 @@
 - **Any** (12 connections)
 - **.load()** (10 connections) — `server/async_persistence_room_loader.py`
 - **._generate_room_id_from_zone_data()** (7 connections) — `server/async_persistence_room_loader.py`
+- **datetime** (6 connections)
 - **._process_combined_rows()** (6 connections) — `server/async_persistence_room_loader.py`
 - **Profession** (5 connections)
 - **._build_room_data_from_row()** (5 connections) — `server/async_persistence_room_loader.py`
 - **._process_exit_rows()** (5 connections) — `server/async_persistence_room_loader.py`
 - **.get_professions()** (4 connections) — `server/async_persistence.py`
+- **.get_decayed_containers()** (4 connections) — `server/async_persistence.py`
 - **._parse_zone_parts()** (4 connections) — `server/async_persistence_room_loader.py`
 - **._process_exits_for_room()** (4 connections) — `server/async_persistence_room_loader.py`
 - **._build_room_objects()** (4 connections) — `server/async_persistence_room_loader.py`
@@ -27,16 +29,15 @@
 - **._log_exit_debug()** (3 connections) — `server/async_persistence_room_loader.py`
 - **.__init__()** (2 connections) — `server/async_persistence_room_loader.py`
 - **._log_room_cache_after_load()** (2 connections) — `server/async_persistence_room_loader.py`
-- **BaseException** (2 connections)
-- **Get all available professions using SQLAlchemy ORM.** (1 connections) — `server/async_persistence.py`
-- *... and 3 more nodes in this community*
+- *... and 6 more nodes in this community*
 
 ## Relationships
 
-- [persistence rationale players](persistence_rationale_players.md) (7 shared connections)
-- [Database Config](Database_Config.md) (6 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (3 shared connections)
-- [Loot Generation](Loot_Generation.md) (3 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (13 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (7 shared connections)
+- [command player state](command_player_state.md) (2 shared connections)
+- [argon2 auth rationale](argon2_auth_rationale.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
 - [room models instance](room_models_instance.md) (1 shared connections)
 
 ## Source Files
@@ -46,8 +47,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 119 (90%)
-- INFERRED: 13 (10%)
+- EXTRACTED: 127 (89%)
+- INFERRED: 16 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -33,10 +33,10 @@
 
 ## Relationships
 
-- [npc spawn validator](npc_spawn_validator.md) (5 shared connections)
-- [commands inventory command](commands_inventory_command.md) (3 shared connections)
-- [container helpers endpoints](container_helpers_endpoints.md) (3 shared connections)
-- [nats services metrics](nats_services_metrics.md) (1 shared connections)
+- [commands inventory command](commands_inventory_command.md) (6 shared connections)
+- [npc spawn validator](npc_spawn_validator.md) (3 shared connections)
+- [MapView GameClientV2ContainerView Tabbed](MapView_GameClientV2ContainerView_Tabbed.md) (2 shared connections)
+- [commands emote rationale](commands_emote_rationale.md) (1 shared connections)
 - [combat npc mixin](combat_npc_mixin.md) (1 shared connections)
 
 ## Source Files

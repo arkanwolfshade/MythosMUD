@@ -1,56 +1,43 @@
 # channel broadcasting strategies
 
-> 37 nodes
+> 19 nodes
 
 ## Key Concepts
 
 - **CommunicationIntegrationProtocol** (10 connections) — `server/npc/npc_protocols.py`
-- **schedule_end_combat_if_npc_died_best_effort()** (8 connections) — `server/npc/npc_combat_schedule.py`
 - **CombatIntegrationProtocol** (7 connections) — `server/npc/npc_protocols.py`
-- **._handle_npc_death()** (6 connections) — `server/npc/npc_base.py`
-- **.take_damage()** (5 connections) — `server/npc/npc_base.py`
-- **test_npc_combat_schedule.py** (5 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
-- **._publish_damage_event()** (4 connections) — `server/npc/npc_base.py`
-- **._schedule_end_combat_if_npc_died()** (4 connections) — `server/npc/npc_base.py`
 - **.speak()** (4 connections) — `server/npc/npc_base.py`
 - **.listen()** (4 connections) — `server/npc/npc_base.py`
 - **npc_protocols.py** (4 connections) — `server/npc/npc_protocols.py`
-- **._update_determination_points()** (3 connections) — `server/npc/npc_base.py`
-- **test_schedule_end_combat_if_npc_died_no_service()** (3 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
-- **test_schedule_end_combat_if_npc_died_no_running_loop()** (3 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
 - **Protocol** (2 connections)
 - **.handle_npc_death()** (2 connections) — `server/npc/npc_protocols.py`
 - **.send_whisper_to_player()** (2 connections) — `server/npc/npc_protocols.py`
 - **.send_message_to_room()** (2 connections) — `server/npc/npc_protocols.py`
 - **.handle_player_message()** (2 connections) — `server/npc/npc_protocols.py`
-- **Update determination points after taking damage; return new DP.** (1 connections) — `server/npc/npc_base.py`
-- **Publish damage event to event bus.** (1 connections) — `server/npc/npc_base.py`
-- **Handle NPC death after taking fatal damage.** (1 connections) — `server/npc/npc_base.py`
-- **Schedule end_combat_if_npc_died so the slain NPC no longer gets combat turns (be** (1 connections) — `server/npc/npc_base.py`
-- **Take damage and update determination points (DP).** (1 connections) — `server/npc/npc_base.py`
 - **NPC speaks a message.** (1 connections) — `server/npc/npc_base.py`
-- *... and 12 more nodes in this community*
+- **NPC receives/listens to a message.** (1 connections) — `server/npc/npc_base.py`
+- **Protocols for NPC combat and communication integration (used by NPCBase).** (1 connections) — `server/npc/npc_protocols.py`
+- **Protocol for combat integration handle_npc_death.** (1 connections) — `server/npc/npc_protocols.py`
+- **Handle NPC death in the combat integration layer.** (1 connections) — `server/npc/npc_protocols.py`
+- **Protocol for communication integration (whisper, room message, handle player mes** (1 connections) — `server/npc/npc_protocols.py`
+- **Send a private whisper from this NPC to a single player.** (1 connections) — `server/npc/npc_protocols.py`
+- **Send a message from this NPC to all players in a room.** (1 connections) — `server/npc/npc_protocols.py`
+- **Handle an incoming player message directed at this NPC.** (1 connections) — `server/npc/npc_protocols.py`
 
 ## Relationships
 
-- [models npc rationale](models_npc_rationale.md) (13 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (2 shared connections)
-- [Loot Generation](Loot_Generation.md) (2 shared connections)
-- [command parser rationale](command_parser_rationale.md) (1 shared connections)
-- [quest chat game](quest_chat_game.md) (1 shared connections)
-- [npc database infrastructure](npc_database_infrastructure.md) (1 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (5 shared connections)
+- [Error Conversion](Error_Conversion.md) (5 shared connections)
 
 ## Source Files
 
 - `server/npc/npc_base.py`
-- `server/npc/npc_combat_schedule.py`
 - `server/npc/npc_protocols.py`
-- `server/tests/unit/npc/test_npc_combat_schedule.py`
 
 ## Audit Trail
 
-- EXTRACTED: 90 (92%)
-- INFERRED: 8 (8%)
+- EXTRACTED: 41 (85%)
+- INFERRED: 7 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

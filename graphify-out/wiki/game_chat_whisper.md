@@ -1,15 +1,13 @@
 # game chat whisper
 
-> 32 nodes
+> 28 nodes
 
 ## Key Concepts
 
 - **ChatPoseManager** (11 connections) — `server/game/chat_pose_manager.py`
 - **ChatWhisperTracker** (10 connections) — `server/game/chat_whisper_tracker.py`
 - **.__init__()** (7 connections) — `server/game/chat_service.py`
-- **chat_pose_manager.py** (5 connections) — `server/game/chat_pose_manager.py`
 - **.normalize_player_id()** (5 connections) — `server/game/chat_pose_manager.py`
-- **chat_whisper_tracker.py** (5 connections) — `server/game/chat_whisper_tracker.py`
 - **.set_pose()** (3 connections) — `server/game/chat_pose_manager.py`
 - **.get_pose()** (3 connections) — `server/game/chat_pose_manager.py`
 - **.clear_pose()** (3 connections) — `server/game/chat_pose_manager.py`
@@ -20,7 +18,6 @@
 - **.get_sender()** (2 connections) — `server/game/chat_whisper_tracker.py`
 - **.clear_sender()** (2 connections) — `server/game/chat_whisper_tracker.py`
 - **.get_all_trackings()** (2 connections) — `server/game/chat_whisper_tracker.py`
-- **Chat pose management utilities.  This module provides pose management functional** (1 connections) — `server/game/chat_pose_manager.py`
 - **Manages in-memory storage of player poses.** (1 connections) — `server/game/chat_pose_manager.py`
 - **Initialize the pose manager.** (1 connections) — `server/game/chat_pose_manager.py`
 - **Normalize player identifiers to string form.** (1 connections) — `server/game/chat_pose_manager.py`
@@ -29,15 +26,18 @@
 - **Clear a player's pose.          Args:             player_id: ID of the player** (1 connections) — `server/game/chat_pose_manager.py`
 - **Get all poses (for testing/debugging).          Returns:             Dictionary** (1 connections) — `server/game/chat_pose_manager.py`
 - **Initialize chat service.          Args:             persistence: Database persis** (1 connections) — `server/game/chat_service.py`
-- *... and 7 more nodes in this community*
+- **Tracks last whisper senders for reply functionality.** (1 connections) — `server/game/chat_whisper_tracker.py`
+- **Initialize the whisper tracker.** (1 connections) — `server/game/chat_whisper_tracker.py`
+- **Store the last whisper sender for a player.          Args:             receiver_** (1 connections) — `server/game/chat_whisper_tracker.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [Loot Generation](Loot_Generation.md) (4 shared connections)
-- [chat game message](chat_game_message.md) (4 shared connections)
 - [chat service game](chat_service_game.md) (4 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [chat game message](chat_game_message.md) (2 shared connections)
 - [dialogue schemas tree](dialogue_schemas_tree.md) (1 shared connections)
-- [room realtime occupant](room_realtime_occupant.md) (1 shared connections)
+- [chat logger services](chat_logger_services.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,7 +47,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 79 (96%)
+- EXTRACTED: 67 (96%)
 - INFERRED: 3 (4%)
 - AMBIGUOUS: 0 (0%)
 

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_can_send_message_player_muted()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test can_send_message() behavior when target player is muted.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_apply_dampening_and_send_message_no_original_content()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _apply_dampening_and_send_message handles missing original_content.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [user manager services](user_manager_services.md) (1 shared connections)
+- [message chat nats](message_chat_nats.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_user_manager.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 

@@ -1,35 +1,42 @@
 # countdown rest task
 
-> 10 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **create_error_context()** (10 connections) — `server/api/player_helpers.py`
-- **test_player_helpers.py** (5 connections) — `server/tests/unit/api/test_player_helpers.py`
-- **test_create_error_context_without_user_sets_metadata()** (3 connections) — `server/tests/unit/api/test_player_helpers.py`
-- **test_create_error_context_with_user_sets_user_id_and_metadata()** (3 connections) — `server/tests/unit/api/test_player_helpers.py`
-- **Request** (1 connections)
-- **Any** (1 connections)
-- **Create error context from request and user.      Helper function to reduce dupli** (1 connections) — `server/api/player_helpers.py`
-- **Unit tests for server.api.player_helpers (error context helper).** (1 connections) — `server/tests/unit/api/test_player_helpers.py`
-- **When current_user is None, context gets metadata only.** (1 connections) — `server/tests/unit/api/test_player_helpers.py`
-- **When current_user is set, user_id is populated and metadata merged.** (1 connections) — `server/tests/unit/api/test_player_helpers.py`
+- **get_npc_population_stats()** (13 connections) — `server/api/admin/npc_population_api.py`
+- **test_npc_population_api.py** (13 connections) — `server/tests/unit/api/admin/test_npc_population_api.py`
+- **get_npc_zone_stats()** (11 connections) — `server/api/admin/npc_population_api.py`
+- **get_npc_system_status()** (11 connections) — `server/api/admin/npc_population_api.py`
+- **Request** (3 connections)
+- **test_get_npc_population_stats_generic_error()** (3 connections) — `server/tests/unit/api/admin/test_npc_population_api.py`
+- **test_get_npc_population_stats_success()** (2 connections) — `server/tests/unit/api/admin/test_npc_population_api.py`
+- **test_get_npc_population_stats_http_exception_reraises()** (2 connections) — `server/tests/unit/api/admin/test_npc_population_api.py`
+- **test_get_npc_zone_stats_success()** (2 connections) — `server/tests/unit/api/admin/test_npc_population_api.py`
+- **test_get_npc_system_status_success()** (2 connections) — `server/tests/unit/api/admin/test_npc_population_api.py`
+- **Get NPC population statistics.** (1 connections) — `server/api/admin/npc_population_api.py`
+- **Get NPC zone statistics.** (1 connections) — `server/api/admin/npc_population_api.py`
+- **Get NPC system status.** (1 connections) — `server/api/admin/npc_population_api.py`
+- **admin_user()** (1 connections) — `server/tests/unit/api/admin/test_npc_population_api.py`
+- **Unit tests for admin NPC population API endpoints.** (1 connections) — `server/tests/unit/api/admin/test_npc_population_api.py`
 
 ## Relationships
 
-- [Loot Generation](Loot_Generation.md) (3 shared connections)
-- [Spell Validation](Spell_Validation.md) (1 shared connections)
-- [player requests schemas](player_requests_schemas.md) (1 shared connections)
+- [player preferences services](player_preferences_services.md) (10 shared connections)
+- [logging setup structured](logging_setup_structured.md) (6 shared connections)
+- [Exception Containers](Exception_Containers.md) (5 shared connections)
+- [player requests schemas](player_requests_schemas.md) (3 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/player_helpers.py`
-- `server/tests/unit/api/test_player_helpers.py`
+- `server/api/admin/npc_population_api.py`
+- `server/tests/unit/api/admin/test_npc_population_api.py`
 
 ## Audit Trail
 
-- EXTRACTED: 27 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 66 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

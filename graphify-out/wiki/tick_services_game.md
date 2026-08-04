@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_get_combat_stats_npc_only_normalized()** (3 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
-- **Invalid UUID with npc_stats returns normalized NPC stats.** (1 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **test_mp_regeneration_service_init_custom_rate()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Test MPRegenerationService initialization with custom regen_rate.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Relationships
 
-- [room conftest toolkit](room_conftest_toolkit.md) (1 shared connections)
-- [services nats service](services_nats_service.md) (1 shared connections)
+- [regeneration service magic](regeneration_service_magic.md) (1 shared connections)
+- [config rationale reset](config_rationale_reset.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Audit Trail
 

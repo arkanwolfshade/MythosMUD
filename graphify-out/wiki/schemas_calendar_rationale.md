@@ -25,14 +25,12 @@
 
 ## Relationships
 
-- [models npc rationale](models_npc_rationale.md) (5 shared connections)
+- [NPC Combat](NPC_Combat.md) (7 shared connections)
 - [command utility models](command_utility_models.md) (4 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (2 shared connections)
-- [Loot Generation](Loot_Generation.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (3 shared connections)
+- [models npc rationale](models_npc_rationale.md) (2 shared connections)
 - [player event handlers](player_event_handlers.md) (1 shared connections)
-- [realtime monitoring statistics](realtime_monitoring_statistics.md) (1 shared connections)
-- [nats services metrics](nats_services_metrics.md) (1 shared connections)
+- [commands emote rationale](commands_emote_rationale.md) (1 shared connections)
 
 ## Source Files
 

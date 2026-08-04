@@ -27,7 +27,7 @@
 - [game room service](game_room_service.md) (2 shared connections)
 - [room toolkit validator](room_toolkit_validator.md) (2 shared connections)
 - [realtime player event](realtime_player_event.md) (2 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
 - [item models rationale](item_models_rationale.md) (1 shared connections)
 - [npc behavior engine](npc_behavior_engine.md) (1 shared connections)
 - [services chat rate](services_chat_rate.md) (1 shared connections)

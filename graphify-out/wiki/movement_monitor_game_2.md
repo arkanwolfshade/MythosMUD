@@ -34,7 +34,7 @@
 ## Relationships
 
 - [lucidity services helpers](lucidity_services_helpers.md) (3 shared connections)
-- [Database Config](Database_Config.md) (2 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (2 shared connections)
 - [container schemas containers](container_schemas_containers.md) (1 shared connections)
 - [Loot Generation](Loot_Generation.md) (1 shared connections)
 

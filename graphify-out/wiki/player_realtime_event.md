@@ -1,27 +1,28 @@
 # player realtime event
 
-> 4 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **.__init__()** (5 connections) — `server/services/chat_logger.py`
-- **._start_writer_thread()** (3 connections) — `server/services/chat_logger.py`
-- **Initialize chat logger.          Args:             log_dir: Directory for log fi** (1 connections) — `server/services/chat_logger.py`
-- **Start the background writer thread for thread-safe file writing.** (1 connections) — `server/services/chat_logger.py`
+- **TestCheckRateLimit** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_rate_limit_allowed()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_rate_limit_blocked()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Test _check_rate_limit function.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Test _check_rate_limit returns None when allowed.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Test _check_rate_limit returns result when blocked.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
 
 ## Relationships
 
-- [chat services logger](chat_services_logger.md) (2 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
-- [persistence services combat](persistence_services_combat.md) (1 shared connections)
+- [command commands handler](command_commands_handler.md) (2 shared connections)
+- [command validation commands](command_validation_commands.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/chat_logger.py`
+- `server/tests/unit/commands/test_command_validation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

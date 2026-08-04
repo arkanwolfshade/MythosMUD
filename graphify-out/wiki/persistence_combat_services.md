@@ -1,12 +1,11 @@
 # persistence combat services
 
-> 35 nodes
+> 33 nodes
 
 ## Key Concepts
 
 - **test_combat_persistence_handler_persistence.py** (21 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
 - **persistence_handler()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
-- **test_persist_player_dp_sync_get_stats_error_new()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
 - **mock_combat_service()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
 - **test_verify_player_save_success()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
 - **test_verify_player_save_player_not_found()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
@@ -29,7 +28,8 @@
 - **Test _verify_player_save handles player not found.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
 - **Test _persist_player_dp_sync persists DP successfully.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
 - **Test _persist_player_dp_sync handles no persistence layer.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
-- *... and 10 more nodes in this community*
+- **Test _persist_player_dp_sync handles player not found.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
@@ -42,8 +42,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 72 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 69 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

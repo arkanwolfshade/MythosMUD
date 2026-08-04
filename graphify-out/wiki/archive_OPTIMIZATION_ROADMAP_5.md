@@ -1,15 +1,14 @@
 # archive OPTIMIZATION ROADMAP
 
-> 6 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Phase 5: Strategic Additions (Week 5)** (6 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Task 5.1: Add MessageBroker Integration Tests (3 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Task 5.2: Add ApplicationContainer Lifecycle Tests (2 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Task 5.3: Add Database Migration Tests (3 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Task 5.4: Add WebSocket Edge Case Tests (4 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Task 5.5: Add Error Recovery Tests (3 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Phase 4: Test Consolidation (Week 4)** (5 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Task 4.1: Parametrize Command Validation Tests (4 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Task 4.2: Parametrize Error Response Tests (3 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Task 4.3: Parametrize Permission Tests (2 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Task 4.4: Consolidate Similar Integration Tests (3 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
 
 ## Relationships
 
@@ -21,7 +20,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

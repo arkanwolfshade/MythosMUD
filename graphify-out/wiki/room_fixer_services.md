@@ -34,8 +34,8 @@
 ## Relationships
 
 - [config models player](config_models_player.md) (6 shared connections)
-- [Loot Generation](Loot_Generation.md) (2 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [room service sync](room_service_sync.md) (2 shared connections)
 - [connection models realtime](connection_models_realtime.md) (1 shared connections)
 
 ## Source Files

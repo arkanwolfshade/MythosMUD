@@ -21,9 +21,9 @@
 ## Relationships
 
 - [map layout useMapLayout](map_layout_useMapLayout.md) (6 shared connections)
-- [Error Conversion](Error_Conversion.md) (3 shared connections)
+- [nats services service](nats_services_service.md) (3 shared connections)
 - [player effects endpoints](player_effects_endpoints.md) (1 shared connections)
-- [commands npc admin](commands_npc_admin.md) (1 shared connections)
+- [logging setup structured](logging_setup_structured.md) (1 shared connections)
 
 ## Source Files
 

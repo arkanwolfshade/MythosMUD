@@ -1,38 +1,27 @@
 # archive quality QUALITY
 
-> 25 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **Phase 4: Recommendations** (17 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **4.1 Pruning Candidates (750 tests, ~5 minutes savings)** (2 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Specific Files to Remove/Drastically Reduce** (2 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Specific Files to Review** (2 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **4.2 Consolidation Opportunities** (2 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **4.3 Coverage Gap Identification** (2 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **4.4 Optimization Recommendations** (2 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **3. Parametrize Repetitive Tests (Save ~1 minute, Reduce ~300 tests)** (2 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **5. Add Critical Integration Tests for New Architecture** (2 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **HIGH-PRIORITY PRUNE (454 tests, ~3 minutes)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **MEDIUM-PRIORITY PRUNE (88 tests, ~1 minute)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **LOW-PRIORITY PRUNE (100+ tests, ~1 minute)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Specific Patterns to Remove** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Example Low-Value Pattern** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Parametrization Opportunities** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Example Consolidation** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Critical Code Lacking Tests** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Immediate Actions (High ROI)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **1. Prune Infrastructure Tests (Save ~3 minutes, Remove ~350 tests)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **2. Consolidate Coverage Tests (Save ~1 minute, Reduce ~60 tests)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Medium-Term Actions** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **4. Migrate Model Tests to Property-Based Testing** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Long-Term Actions** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **6. Continuous Test Quality Review** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **7. Test Performance Optimization** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Test Suite Quality Audit Report** (9 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Summary: Test Quality Metrics** (5 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Specific Actionable Recommendations** (4 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **TEST_QUALITY_AUDIT_REPORT.md** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Current State** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Optimized State (After Pruning)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Value Proposition** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **By removing 15% of tests, we** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Phase A: Quick Wins (1-2 hours effort)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Phase B: Medium Effort (4-8 hours effort)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Phase C: Strategic Enhancements (8-16 hours effort)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
 
 ## Relationships
 
-- [archive QUALITY AUDIT](archive_QUALITY_AUDIT.md) (1 shared connections)
+- [archive QUALITY AUDIT](archive_QUALITY_AUDIT.md) (3 shared connections)
+- [services user manager](services_user_manager.md) (1 shared connections)
+- [archive value QUALITY](archive_value_QUALITY.md) (1 shared connections)
+- [archive quality QUALITY](archive_quality_QUALITY.md) (1 shared connections)
 
 ## Source Files
 
@@ -40,7 +29,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 49 (100%)
+- EXTRACTED: 26 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

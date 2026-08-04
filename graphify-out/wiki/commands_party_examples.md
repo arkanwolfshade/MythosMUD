@@ -1,59 +1,54 @@
 # commands party examples
 
-> 39 nodes
+> 57 nodes
 
 ## Key Concepts
 
-- **AliasStorage** (231 connections) — `server/alias_storage.py`
-- **._get_alias_file_path()** (8 connections) — `server/alias_storage.py`
-- **.get_player_aliases()** (8 connections) — `server/alias_storage.py`
-- **.save_player_aliases()** (7 connections) — `server/alias_storage.py`
-- **.create_alias()** (7 connections) — `server/alias_storage.py`
-- **._validate_alias_payload()** (7 connections) — `server/alias_storage.py`
-- **._load_alias_data()** (6 connections) — `server/alias_storage.py`
-- **._save_alias_data()** (6 connections) — `server/alias_storage.py`
-- **.add_alias()** (6 connections) — `server/alias_storage.py`
-- **Path** (4 connections)
-- **.remove_alias()** (4 connections) — `server/alias_storage.py`
-- **.get_alias()** (4 connections) — `server/alias_storage.py`
-- **.get_alias_count()** (4 connections) — `server/alias_storage.py`
-- **.backup_aliases()** (4 connections) — `server/alias_storage.py`
-- **Any** (3 connections)
-- **.clear_aliases()** (3 connections) — `server/alias_storage.py`
-- **.validate_alias_name()** (3 connections) — `server/alias_storage.py`
-- **.validate_alias_command()** (3 connections) — `server/alias_storage.py`
-- **.delete_player_aliases()** (3 connections) — `server/alias_storage.py`
-- **.__init__()** (2 connections) — `server/alias_storage.py`
-- **.list_alias_files()** (2 connections) — `server/alias_storage.py`
-- **Manages player alias storage in JSON files.      Each player's aliases are store** (1 connections) — `server/alias_storage.py`
-- **Get the file path for a player's aliases.          Human: reject path separators** (1 connections) — `server/alias_storage.py`
-- **Load alias data from JSON file.** (1 connections) — `server/alias_storage.py`
-- **Save alias data to JSON file.** (1 connections) — `server/alias_storage.py`
-- *... and 14 more nodes in this community*
+- **test_container_persistence_async_helpers.py** (40 connections) — `server/tests/unit/persistence/test_container_persistence_async_helpers.py`
+- **container_persistence_async.py** (34 connections) — `server/persistence/container_persistence_async.py`
+- **get_container_async()** (19 connections) — `server/persistence/container_persistence_async.py`
+- **create_container_async()** (15 connections) — `server/persistence/container_persistence_async.py`
+- **_finalize_container_creation()** (13 connections) — `server/persistence/container_persistence_async.py`
+- **update_container_async()** (13 connections) — `server/persistence/container_persistence_async.py`
+- **_populate_container_items_async()** (12 connections) — `server/persistence/container_persistence_async.py`
+- **fetch_container_items_async()** (12 connections) — `server/persistence/container_persistence_async.py`
+- **Any** (11 connections)
+- **delete_container_async()** (11 connections) — `server/persistence/container_persistence_async.py`
+- **_call_create_container_procedure()** (10 connections) — `server/persistence/container_persistence_async.py`
+- **_validate_container_create_params()** (8 connections) — `server/persistence/container_persistence_async.py`
+- **AsyncSession** (8 connections)
+- **_build_item_dict()** (8 connections) — `server/persistence/container_persistence_async.py`
+- **_parse_jsonb()** (7 connections) — `server/persistence/container_persistence_async.py`
+- **_row_to_mapping()** (7 connections) — `server/persistence/container_persistence_async.py`
+- **_prepare_container_create_params()** (6 connections) — `server/persistence/container_persistence_async.py`
+- **_parse_item_metadata()** (6 connections) — `server/persistence/container_persistence_async.py`
+- **UUID** (5 connections)
+- **ContainerData** (4 connections)
+- **test_validate_container_create_params_rejects_invalid()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_async_helpers.py`
+- **test_populate_container_items_skips_invalid_and_failed()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_async_helpers.py`
+- **test_call_create_container_procedure_no_row()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_async_helpers.py`
+- **test_delete_container_async_db_error()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_async_helpers.py`
+- **test_parse_jsonb_delegates_to_helper()** (2 connections) — `server/tests/unit/persistence/test_container_persistence_async_helpers.py`
+- *... and 32 more nodes in this community*
 
 ## Relationships
 
-- [commands npc admin](commands_npc_admin.md) (21 shared connections)
-- [command commands handler](command_commands_handler.md) (16 shared connections)
-- [commands magic rationale](commands_magic_rationale.md) (14 shared connections)
-- [commands admin mute](commands_admin_mute.md) (12 shared connections)
-- [NPC Combat](NPC_Combat.md) (9 shared connections)
-- [commands alias rationale](commands_alias_rationale.md) (7 shared connections)
-- [commands lucidity recovery](commands_lucidity_recovery.md) (7 shared connections)
-- [realtime real time](realtime_real_time.md) (7 shared connections)
-- [Loot Generation](Loot_Generation.md) (6 shared connections)
-- [position player service](position_player_service.md) (6 shared connections)
-- [room validator toolkit](room_validator_toolkit.md) (5 shared connections)
-- [commands inventory pickup](commands_inventory_pickup.md) (5 shared connections)
+- [persistence container item](persistence_container_item.md) (22 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (16 shared connections)
+- [Loot Generation](Loot_Generation.md) (8 shared connections)
+- [auth users rationale](auth_users_rationale.md) (5 shared connections)
+- [command commands service](command_commands_service.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
 
 ## Source Files
 
-- `server/alias_storage.py`
+- `server/persistence/container_persistence_async.py`
+- `server/tests/unit/persistence/test_container_persistence_async_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 321 (94%)
-- INFERRED: 22 (6%)
+- EXTRACTED: 301 (97%)
+- INFERRED: 10 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,25 +1,26 @@
 # character creation validate
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_soft_delete_character_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **Test soft_delete_character() when player not found.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **description** (4 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **minLength** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
 
 ## Relationships
 
-- [Database Access Layer](Database_Access_Layer.md) (1 shared connections)
-- [room realtime subscription](room_realtime_subscription.md) (1 shared connections)
+- [room toolkit validator](room_toolkit_validator.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_player_service_mutations.py`
+- `tools/room_toolkit/room_validator/schemas/zone_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 7 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

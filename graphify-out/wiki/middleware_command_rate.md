@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [Loot Generation](Loot_Generation.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
 - [command commands handler](command_commands_handler.md) (1 shared connections)
 
 ## Source Files

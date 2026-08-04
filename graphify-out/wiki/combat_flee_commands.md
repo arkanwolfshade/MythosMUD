@@ -1,6 +1,6 @@
 # combat flee commands
 
-> 84 nodes
+> 69 nodes
 
 ## Key Concepts
 
@@ -17,9 +17,6 @@
 - **_get_flee_room_id()** (8 connections) — `server/commands/combat_flee.py`
 - **combat_helpers.py** (7 connections) — `server/commands/combat_helpers.py`
 - **run_handle_flee_command()** (6 connections) — `server/commands/combat_flee.py`
-- **format_combat_status()** (6 connections) — `server/commands/combat_helpers.py`
-- **get_combat_target()** (6 connections) — `server/commands/combat_helpers.py`
-- **test_combat_helpers.py** (6 connections) — `server/tests/unit/commands/test_combat_helpers.py`
 - **test_validate_flee_combat_and_room_success()** (5 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
 - **.check_and_interrupt_rest()** (4 connections) — `server/commands/combat_flee.py`
 - **.get_player_and_room()** (4 connections) — `server/commands/combat_flee.py`
@@ -29,29 +26,31 @@
 - **_participant()** (4 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
 - **Protocol** (3 connections)
 - **.change_position()** (3 connections) — `server/commands/combat_flee.py`
-- *... and 59 more nodes in this community*
+- **.combat_service()** (3 connections) — `server/commands/combat_flee.py`
+- **AppWithState** (3 connections)
+- **.get_room_data()** (3 connections) — `server/commands/combat_flee.py`
+- *... and 44 more nodes in this community*
 
 ## Relationships
 
-- [command factories exploration](command_factories_exploration.md) (8 shared connections)
+- [models npc rationale](models_npc_rationale.md) (15 shared connections)
 - [NPC Combat](NPC_Combat.md) (6 shared connections)
-- [npc database infrastructure](npc_database_infrastructure.md) (5 shared connections)
-- [commands lucidity recovery](commands_lucidity_recovery.md) (5 shared connections)
-- [models npc rationale](models_npc_rationale.md) (4 shared connections)
+- [commands lucidity recovery](commands_lucidity_recovery.md) (4 shared connections)
+- [command factories exploration](command_factories_exploration.md) (2 shared connections)
 - [Item Instances](Item_Instances.md) (2 shared connections)
-- [command factories communication](command_factories_communication.md) (2 shared connections)
+- [command factories communication](command_factories_communication.md) (1 shared connections)
+- [combat models rationale](combat_models_rationale.md) (1 shared connections)
 
 ## Source Files
 
 - `server/commands/combat_flee.py`
 - `server/commands/combat_helpers.py`
 - `server/tests/unit/commands/test_combat_flee_helpers.py`
-- `server/tests/unit/commands/test_combat_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 286 (92%)
-- INFERRED: 24 (8%)
+- EXTRACTED: 255 (94%)
+- INFERRED: 16 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

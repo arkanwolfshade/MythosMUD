@@ -34,8 +34,9 @@
 ## Relationships
 
 - [command models moderation](command_models_moderation.md) (5 shared connections)
-- [look helpers commands](look_helpers_commands.md) (4 shared connections)
 - [connection realtime statistics](connection_realtime_statistics.md) (3 shared connections)
+- [combat services turn](combat_services_turn.md) (2 shared connections)
+- [look helpers commands](look_helpers_commands.md) (2 shared connections)
 
 ## Source Files
 

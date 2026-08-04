@@ -26,15 +26,14 @@
 
 ## Relationships
 
-- [combat schemas schema](combat_schemas_schema.md) (4 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (3 shared connections)
-- [combat services messaging](combat_services_messaging.md) (3 shared connections)
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
-- [Loot Generation](Loot_Generation.md) (2 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (4 shared connections)
+- [room websocket updates](room_websocket_updates.md) (4 shared connections)
+- [room look commands](room_look_commands.md) (3 shared connections)
+- [nats services service](nats_services_service.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
 - [websocket helpers realtime](websocket_helpers_realtime.md) (2 shared connections)
 - [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
 - [room models instance](room_models_instance.md) (1 shared connections)
-- [realtime monitoring statistics](realtime_monitoring_statistics.md) (1 shared connections)
 
 ## Source Files
 

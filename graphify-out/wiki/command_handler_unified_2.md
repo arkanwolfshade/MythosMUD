@@ -33,10 +33,10 @@
 
 ## Relationships
 
-- [Exception Containers](Exception_Containers.md) (7 shared connections)
+- [commands follow rationale](commands_follow_rationale.md) (7 shared connections)
 - [Loot Generation](Loot_Generation.md) (2 shared connections)
 - [profession game service](profession_game_service.md) (1 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
+- [taunt combat commands](taunt_combat_commands.md) (1 shared connections)
 
 ## Source Files
 

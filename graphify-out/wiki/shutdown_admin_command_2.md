@@ -1,6 +1,6 @@
 # shutdown admin command
 
-> 38 nodes
+> 36 nodes
 
 ## Key Concepts
 
@@ -8,7 +8,6 @@
 - **test_connection_room_utils.py** (16 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
 - **reconcile_room_presence_impl()** (7 connections) — `server/realtime/connection_room_utils.py`
 - **prune_player_from_all_rooms_impl()** (7 connections) — `server/realtime/connection_room_utils.py`
-- **canonical_room_id_public_impl()** (6 connections) — `server/realtime/connection_manager_methods.py`
 - **.canonical_room_id()** (5 connections) — `server/realtime/connection_manager.py`
 - **._prune_player_from_all_rooms()** (4 connections) — `server/realtime/connection_manager.py`
 - **test_canonical_room_id_impl_database_error()** (4 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
@@ -27,28 +26,26 @@
 - **Resolve a room id to the canonical Room.id value (compatibility method).** (1 connections) — `server/realtime/connection_manager.py`
 - **Ensure room_occupants only contains currently online players (compatibility meth** (1 connections) — `server/realtime/connection_manager.py`
 - **Remove a player from all room subscriptions and occupant lists (compatibility me** (1 connections) — `server/realtime/connection_manager.py`
-- **Resolve a room id to the canonical Room.id value (public method).** (1 connections) — `server/realtime/connection_manager_methods.py`
 - **Resolve a room id to the canonical Room.id value.      Args:         room_id: Th** (1 connections) — `server/realtime/connection_room_utils.py`
-- *... and 13 more nodes in this community*
+- **Ensure room_occupants only contains currently online players.** (1 connections) — `server/realtime/connection_room_utils.py`
+- **Remove a player from all room subscriptions and occupant lists.** (1 connections) — `server/realtime/connection_room_utils.py`
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
-- [Room Broadcast](Room_Broadcast.md) (5 shared connections)
-- [realtime monitoring statistics](realtime_monitoring_statistics.md) (4 shared connections)
-- [Loot Generation](Loot_Generation.md) (4 shared connections)
-- [Database Config](Database_Config.md) (3 shared connections)
-- [connection realtime delegates](connection_realtime_delegates.md) (2 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (10 shared connections)
+- [NPC Combat](NPC_Combat.md) (4 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (3 shared connections)
 
 ## Source Files
 
 - `server/realtime/connection_manager.py`
-- `server/realtime/connection_manager_methods.py`
 - `server/realtime/connection_room_utils.py`
 - `server/tests/unit/realtime/test_connection_room_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 117 (99%)
+- EXTRACTED: 110 (99%)
 - INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 

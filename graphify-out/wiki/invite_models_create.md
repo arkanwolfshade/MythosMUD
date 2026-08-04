@@ -1,25 +1,28 @@
 # invite models create
 
-> 4 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **.respond_to_player()** (3 connections) — `server/npc/passive_mob_npc.py`
-- **._handle_respond_to_greeting()** (3 connections) — `server/npc/passive_mob_npc.py`
-- **Respond to player interaction.** (1 connections) — `server/npc/passive_mob_npc.py`
-- **Handle responding to greeting action.** (1 connections) — `server/npc/passive_mob_npc.py`
+- **.schedule_periodic_auditing()** (4 connections) — `server/app/memory_lifespan_coordinator.py`
+- **._background_audit_cycle()** (4 connections) — `server/app/memory_lifespan_coordinator.py`
+- **._do_full_cleanup_audit()** (4 connections) — `server/app/memory_lifespan_coordinator.py`
+- **Start the background auditing scheduler responsible for identifying orphan vecto** (1 connections) — `server/app/memory_lifespan_coordinator.py`
+- **Primary background cycle consuming auditor implementation.          Executes per** (1 connections) — `server/app/memory_lifespan_coordinator.py`
+- **Core capability for granular investigation cycles.          Repeated universal a** (1 connections) — `server/app/memory_lifespan_coordinator.py`
 
 ## Relationships
 
-- [command input commands](command_input_commands.md) (2 shared connections)
+- [dialogue definitions admin](dialogue_definitions_admin.md) (3 shared connections)
+- [schemas player rationale](schemas_player_rationale.md) (2 shared connections)
 
 ## Source Files
 
-- `server/npc/passive_mob_npc.py`
+- `server/app/memory_lifespan_coordinator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

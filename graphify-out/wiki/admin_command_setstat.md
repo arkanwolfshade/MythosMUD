@@ -34,7 +34,7 @@
 ## Relationships
 
 - [config models rationale](config_models_rationale.md) (8 shared connections)
-- [Loot Generation](Loot_Generation.md) (6 shared connections)
+- [NPC Combat](NPC_Combat.md) (6 shared connections)
 - [lucidity npc combat](lucidity_npc_combat.md) (5 shared connections)
 - [playerHandlers eventHandlers healthEvent](playerHandlers_eventHandlers_healthEvent.md) (2 shared connections)
 - [combat validator validators](combat_validator_validators.md) (2 shared connections)

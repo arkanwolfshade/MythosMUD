@@ -19,8 +19,7 @@
 
 ## Relationships
 
-- [logout command commands](logout_command_commands.md) (2 shared connections)
-- [calendar schemas validate](calendar_schemas_validate.md) (1 shared connections)
+- [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (3 shared connections)
 
 ## Source Files
 

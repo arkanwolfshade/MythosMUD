@@ -1,25 +1,25 @@
 # commands command validation
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_soft_delete_character_wrong_user()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **Test soft_delete_character() when user_id doesn't match.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **description** (3 connections) — `db/static/schemas/room.schema.json`
+- **type** (1 connections) — `db/static/schemas/room.schema.json`
+- **minLength** (1 connections) — `db/static/schemas/room.schema.json`
 
 ## Relationships
 
-- [Database Access Layer](Database_Access_Layer.md) (1 shared connections)
-- [room realtime subscription](room_realtime_subscription.md) (1 shared connections)
+- [static schemas room](static_schemas_room.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_player_service_mutations.py`
+- `db/static/schemas/room.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 5 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,6 +1,6 @@
 # Memory Task Runtime
 
-> 157 nodes
+> 148 nodes
 
 ## Key Concepts
 
@@ -26,30 +26,29 @@
 - **.handle_attack_events_and_xp()** (8 connections) — `server/services/combat_event_handler.py`
 - **test_publish_paths_not_connected()** (8 connections) — `server/tests/unit/services/test_combat_event_publisher.py`
 - **test_publish_paths_no_nats_service()** (8 connections) — `server/tests/unit/services/test_combat_event_publisher.py`
-- **combat_integration_protocols.py** (7 connections) — `server/npc/combat_integration_protocols.py`
-- **CombatEventPublisherProtocol** (7 connections) — `server/npc/combat_integration_protocols.py`
-- **NpcCombatServiceProtocol** (6 connections) — `server/npc/combat_integration_protocols.py`
-- *... and 132 more nodes in this community*
+- **.award_xp_to_player()** (5 connections) — `server/services/combat_event_handler.py`
+- **.publish_combat_ended_event()** (5 connections) — `server/services/combat_event_handler.py`
+- **_npc_attacked_event()** (5 connections) — `server/tests/unit/services/test_combat_event_publisher.py`
+- *... and 123 more nodes in this community*
 
 ## Relationships
 
-- [models npc rationale](models_npc_rationale.md) (25 shared connections)
+- [models npc rationale](models_npc_rationale.md) (37 shared connections)
 - [item models rationale](item_models_rationale.md) (10 shared connections)
-- [npc database infrastructure](npc_database_infrastructure.md) (8 shared connections)
+- [NPC Combat](NPC_Combat.md) (10 shared connections)
 - [Item Instances](Item_Instances.md) (7 shared connections)
-- [Loot Generation](Loot_Generation.md) (6 shared connections)
 - [services combat sync](services_combat_sync.md) (5 shared connections)
-- [combat validator validators](combat_validator_validators.md) (5 shared connections)
-- [message filtering realtime](message_filtering_realtime.md) (5 shared connections)
+- [commands communication say](commands_communication_say.md) (5 shared connections)
 - [nats exceptions services](nats_exceptions_services.md) (5 shared connections)
-- [nats services service](nats_services_service.md) (4 shared connections)
-- [command factories exploration](command_factories_exploration.md) (4 shared connections)
-- [NPC Combat](NPC_Combat.md) (4 shared connections)
+- [services nats service](services_nats_service.md) (3 shared connections)
+- [npc combat base](npc_combat_base.md) (3 shared connections)
+- [combat validator validators](combat_validator_validators.md) (3 shared connections)
+- [manager subject services](manager_subject_services.md) (2 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
 
 ## Source Files
 
 - `server/events/combat_events.py`
-- `server/npc/combat_integration_protocols.py`
 - `server/services/combat_event_handler.py`
 - `server/services/combat_event_publisher.py`
 - `server/services/combat_service.py`
@@ -58,8 +57,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 611 (95%)
-- INFERRED: 34 (5%)
+- EXTRACTED: 585 (95%)
+- INFERRED: 32 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

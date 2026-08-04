@@ -38,7 +38,7 @@
 - [command factories communication](command_factories_communication.md) (3 shared connections)
 - [player service game](player_service_game.md) (2 shared connections)
 - [command communication models](command_communication_models.md) (1 shared connections)
-- [auth endpoints rationale](auth_endpoints_rationale.md) (1 shared connections)
+- [message queue realtime](message_queue_realtime.md) (1 shared connections)
 
 ## Source Files
 

@@ -33,15 +33,12 @@
 
 ## Relationships
 
-- [combat models rationale](combat_models_rationale.md) (8 shared connections)
+- [combat models rationale](combat_models_rationale.md) (9 shared connections)
+- [game models enums](game_models_enums.md) (3 shared connections)
 - [world models rationale](world_models_rationale.md) (3 shared connections)
-- [Loot Generation](Loot_Generation.md) (3 shared connections)
+- [NPC Combat](NPC_Combat.md) (3 shared connections)
 - [Database Config](Database_Config.md) (3 shared connections)
-- [player effects endpoints](player_effects_endpoints.md) (2 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (1 shared connections)
-- [metrics schemas rationale](metrics_schemas_rationale.md) (1 shared connections)
-- [lucidity services helpers](lucidity_services_helpers.md) (1 shared connections)
-- [player requests schemas](player_requests_schemas.md) (1 shared connections)
+- [player requests schemas](player_requests_schemas.md) (2 shared connections)
 
 ## Source Files
 

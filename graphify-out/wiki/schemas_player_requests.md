@@ -19,7 +19,7 @@
 ## Relationships
 
 - [spell game magic](spell_game_magic.md) (3 shared connections)
-- [coercion int inventory](coercion_int_inventory.md) (1 shared connections)
+- [target resolution service](target_resolution_service.md) (1 shared connections)
 
 ## Source Files
 

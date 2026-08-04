@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_calculate_damage_physical_strength_bonus()** (3 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
-- **Physical damage adds strength modifier from base 50.** (1 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **test_is_leader_false_when_member()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **is_leader is False for non-leader member.** (1 connections) — `server/tests/unit/game/test_party_service.py`
 
 ## Relationships
 
-- [room conftest toolkit](room_conftest_toolkit.md) (1 shared connections)
-- [services nats service](services_nats_service.md) (1 shared connections)
+- [commands inventory helpers](commands_inventory_helpers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- `server/tests/unit/game/test_party_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

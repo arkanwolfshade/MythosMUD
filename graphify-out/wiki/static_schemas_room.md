@@ -5,8 +5,8 @@
 ## Key Concepts
 
 - **properties** (10 connections) — `db/static/schemas/room.schema.json`
+- **id** (3 connections) — `db/static/schemas/room.schema.json`
 - **name** (3 connections) — `db/static/schemas/room.schema.json`
-- **description** (3 connections) — `db/static/schemas/room.schema.json`
 - **zone** (3 connections) — `db/static/schemas/room.schema.json`
 - **sub_zone** (3 connections) — `db/static/schemas/room.schema.json`
 - **attributes** (3 connections) — `db/static/schemas/room.schema.json`
@@ -27,7 +27,7 @@
 
 - [static schemas room](static_schemas_room.md) (2 shared connections)
 - [room schema static](room_schema_static.md) (1 shared connections)
-- [schemas calendar schedule](schemas_calendar_schedule.md) (1 shared connections)
+- [commands command validation](commands_command_validation.md) (1 shared connections)
 
 ## Source Files
 

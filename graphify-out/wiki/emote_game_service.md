@@ -29,7 +29,7 @@
 
 ## Relationships
 
-- [connection disconnection realtime](connection_disconnection_realtime.md) (3 shared connections)
+- [taunt combat commands](taunt_combat_commands.md) (3 shared connections)
 
 ## Source Files
 

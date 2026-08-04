@@ -33,8 +33,7 @@
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (9 shared connections)
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (11 shared connections)
 - [websocket helpers realtime](websocket_helpers_realtime.md) (1 shared connections)
 
 ## Source Files

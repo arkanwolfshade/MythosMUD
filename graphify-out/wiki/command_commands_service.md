@@ -33,10 +33,15 @@
 
 ## Relationships
 
-- [Database Config](Database_Config.md) (13 shared connections)
-- [Loot Generation](Loot_Generation.md) (9 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (5 shared connections)
-- [persistence container item](persistence_container_item.md) (3 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (7 shared connections)
+- [Loot Generation](Loot_Generation.md) (6 shared connections)
+- [NPC Combat](NPC_Combat.md) (5 shared connections)
+- [Database Config](Database_Config.md) (4 shared connections)
+- [argon2 auth rationale](argon2_auth_rationale.md) (3 shared connections)
+- [commands party examples](commands_party_examples.md) (2 shared connections)
+- [game models enums](game_models_enums.md) (1 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (1 shared connections)
+- [persistence container item](persistence_container_item.md) (1 shared connections)
 
 ## Source Files
 

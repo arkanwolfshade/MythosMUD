@@ -1,6 +1,6 @@
 # services npc startup
 
-> 24 nodes
+> 22 nodes
 
 ## Key Concepts
 
@@ -15,7 +15,6 @@
 - **test_determine_spawn_room_fallback_not_found()** (5 connections) — `server/tests/unit/services/test_npc_startup_service.py`
 - **test_determine_spawn_room_exception()** (5 connections) — `server/tests/unit/services/test_npc_startup_service.py`
 - **test_determine_spawn_room_no_container()** (5 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_arena_npcs_spawns_each_spawned_definition()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
 - **Create mock container.** (1 connections) — `server/tests/unit/services/test_container_websocket_events.py`
 - **Attach a typed get_instance mock to a patched ApplicationContainer.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
 - **Test _determine_spawn_room() uses NPC's room_id when available.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
@@ -27,13 +26,14 @@
 - **Test _determine_spawn_room() returns None when fallback room not found.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
 - **Test _determine_spawn_room() handles exceptions gracefully.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
 - **Test _determine_spawn_room() handles None container.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **One arena instance per definition_id present in required/optional spawned_npcs.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
 
 ## Relationships
 
-- [realtime player connection](realtime_player_connection.md) (11 shared connections)
-- [map layout useMapLayout](map_layout_useMapLayout.md) (10 shared connections)
-- [task registry app](task_registry_app.md) (2 shared connections)
+- [realtime player connection](realtime_player_connection.md) (10 shared connections)
+- [map layout useMapLayout](map_layout_useMapLayout.md) (9 shared connections)
+- [task registry app](task_registry_app.md) (1 shared connections)
+- [auth rationale access](auth_rationale_access.md) (1 shared connections)
+- [test_spawn_arena_npcs_spawns_each_spawned_definition](test_spawn_arena_npcs_spawns_each_spawned_definition.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,8 +42,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 66 (78%)
-- INFERRED: 19 (22%)
+- EXTRACTED: 61 (76%)
+- INFERRED: 19 (24%)
 - AMBIGUOUS: 0 (0%)
 
 ---

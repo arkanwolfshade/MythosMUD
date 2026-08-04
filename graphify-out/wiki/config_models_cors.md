@@ -35,7 +35,7 @@
 
 - [lucidity npc combat](lucidity_npc_combat.md) (4 shared connections)
 - [player service game](player_service_game.md) (2 shared connections)
-- [Loot Generation](Loot_Generation.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
 - [player event handlers](player_event_handlers.md) (2 shared connections)
 
 ## Source Files

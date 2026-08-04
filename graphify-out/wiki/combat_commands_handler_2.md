@@ -1,56 +1,56 @@
 # combat commands handler
 
-> 76 nodes
+> 130 nodes
 
 ## Key Concepts
 
-- **test_combat_attack_handler.py** (37 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **CombatAttackHandler** (17 connections) — `server/services/combat_attack_handler.py`
-- **._apply_damage()** (9 connections) — `server/services/combat_attack_handler.py`
-- **.validate_and_get_combat_participants()** (6 connections) — `server/services/combat_attack_handler.py`
-- **.apply_attack_damage()** (5 connections) — `server/services/combat_attack_handler.py`
-- **._validate_attack()** (4 connections) — `server/services/combat_attack_handler.py`
-- **._room_has_no_death()** (4 connections) — `server/services/combat_attack_handler.py`
-- **.__init__()** (3 connections) — `server/services/combat_attack_handler.py`
-- **attack_handler()** (3 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **mock_combat()** (3 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **mock_attacker()** (3 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **mock_target_player()** (3 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **mock_target_npc()** (3 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **test_apply_damage_player_no_death_room_caps_damage()** (3 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **test_apply_damage_player_no_death_room_zero_damage_when_at_zero()** (3 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **UUID** (2 connections)
-- **mock_combat_service()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **test_attack_handler_init()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **test_validate_attack_active()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **test_validate_attack_inactive()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **test_apply_damage_player()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **test_apply_damage_player_kills()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **test_apply_damage_player_mortally_wounded()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **test_apply_damage_player_negative_cap()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **test_apply_damage_npc()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- *... and 51 more nodes in this community*
+- **test_nats_service.py** (76 connections) — `server/tests/unit/services/test_nats_service.py`
+- **NATSMetrics** (31 connections) — `server/services/nats_metrics.py`
+- **nats_service()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_service_init_with_config()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
+- **nats_metrics.py** (4 connections) — `server/services/nats_metrics.py`
+- **test_nats_service_init_with_subject_manager()** (4 connections) — `server/tests/unit/services/test_nats_service.py`
+- **.get_metrics()** (3 connections) — `server/services/nats_metrics.py`
+- **nats_config()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_init()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_record_publish_success()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_record_publish_error()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_record_subscribe_success()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_record_subscribe_error()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_record_batch_flush_success()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_record_batch_flush_error()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_update_connection_health()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_update_connection_health_clamped()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_update_pool_utilization()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_update_pool_utilization_clamped()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_get_metrics()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_get_metrics_empty_processing_times()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_message_processing_times_maxlen()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_service_init_connection_pool()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_service_init_message_batch()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_unsubscribe_not_found()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- *... and 105 more nodes in this community*
 
 ## Relationships
 
-- [models npc rationale](models_npc_rationale.md) (9 shared connections)
-- [command factories exploration](command_factories_exploration.md) (8 shared connections)
-- [Item Instances](Item_Instances.md) (7 shared connections)
-- [coercion int inventory](coercion_int_inventory.md) (3 shared connections)
-- [command utility models](command_utility_models.md) (2 shared connections)
-- [npc database infrastructure](npc_database_infrastructure.md) (1 shared connections)
+- [combat validator validators](combat_validator_validators.md) (18 shared connections)
+- [nats exceptions services](nats_exceptions_services.md) (10 shared connections)
+- [connection state machine](connection_state_machine.md) (3 shared connections)
+- [taunt combat commands](taunt_combat_commands.md) (2 shared connections)
+- [manager subject services](manager_subject_services.md) (2 shared connections)
 - [NPC Combat](NPC_Combat.md) (1 shared connections)
-- [websocket helpers realtime](websocket_helpers_realtime.md) (1 shared connections)
+- [metrics schemas rationale](metrics_schemas_rationale.md) (1 shared connections)
+- [nats services service](nats_services_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/combat_attack_handler.py`
-- `server/tests/unit/services/test_combat_attack_handler.py`
+- `server/services/nats_metrics.py`
+- `server/tests/unit/services/test_nats_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 184 (97%)
-- INFERRED: 6 (3%)
+- EXTRACTED: 319 (97%)
+- INFERRED: 9 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

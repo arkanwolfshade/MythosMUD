@@ -19,9 +19,9 @@
 
 ## Relationships
 
-- [Database Access Layer](Database_Access_Layer.md) (3 shared connections)
-- [Loot Generation](Loot_Generation.md) (2 shared connections)
+- [Loot Generation](Loot_Generation.md) (4 shared connections)
 - [profession game service](profession_game_service.md) (2 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (1 shared connections)
 
 ## Source Files
 

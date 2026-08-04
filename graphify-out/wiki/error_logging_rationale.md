@@ -1,26 +1,28 @@
 # error logging rationale
 
-> 2 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **_collect_progress_sync()** (5 connections) — `server/commands/inventory_command_helpers.py`
-- **Return quest_service.sync_collect_progress when it is callable.** (1 connections) — `server/commands/inventory_command_helpers.py`
+- **exception_metrics.py** (4 connections) — `server/monitoring/exception_metrics.py`
+- **get_summary()** (3 connections) — `server/monitoring/exception_metrics.py`
+- **Any** (1 connections)
+- **Exception metrics tracking for monitoring.  This module provides thread-safe exc** (1 connections) — `server/monitoring/exception_metrics.py`
+- **Get a summary of exception counts.      Returns:         dict[str, Any]: Diction** (1 connections) — `server/monitoring/exception_metrics.py`
 
 ## Relationships
 
-- [inventory commands command](inventory_commands_command.md) (2 shared connections)
-- [quest game service](quest_game_service.md) (1 shared connections)
-- [quest service game](quest_service_game.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [NPC Combat](NPC_Combat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/inventory_command_helpers.py`
+- `server/monitoring/exception_metrics.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (67%)
-- INFERRED: 2 (33%)
+- EXTRACTED: 10 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

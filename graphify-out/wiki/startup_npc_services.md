@@ -1,57 +1,51 @@
 # startup npc services
 
-> 30 nodes
+> 23 nodes
 
 ## Key Concepts
 
-- **format_message_content()** (18 connections) — `server/realtime/message_formatters.py`
-- **nats_message_handler_broadcast.py** (16 connections) — `server/realtime/nats_message_handler_broadcast.py`
-- **test_message_formatters.py** (16 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **message_formatters.py** (9 connections) — `server/realtime/message_formatters.py`
-- **test_format_message_content_nats_error()** (4 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **test_format_message_content_say()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **test_format_message_content_local()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **test_format_message_content_global()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **test_format_message_content_emote()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **test_format_message_content_pose()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **test_format_message_content_whisper()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **test_format_message_content_whisper_for_recipient()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **test_format_message_content_system()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **test_format_message_content_admin()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **test_format_message_content_unknown_channel()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **Message formatting utilities for NATS message handler.** (1 connections) — `server/realtime/message_formatters.py`
-- **Format message content based on channel type and sender name.      Args:** (1 connections) — `server/realtime/message_formatters.py`
-- **Room broadcast / mute / dampening mixin for NATSMessageHandler.  Extracted to ke** (1 connections) — `server/realtime/nats_message_handler_broadcast.py`
-- **Unit tests for message formatters.  Tests the message_formatters module function** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **Test format_message_content() formats 'say' channel messages.** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **Test format_message_content() formats 'local' channel messages.** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **Test format_message_content() formats 'global' channel messages.** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **Test format_message_content() formats 'emote' channel messages.** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **Test format_message_content() formats 'pose' channel messages.** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **Test format_message_content() formats 'whisper' channel messages (default).** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- *... and 5 more nodes in this community*
+- **look_container.py** (23 connections) — `server/commands/look_container.py`
+- **Any** (14 connections)
+- **_find_container_in_room_or_equipped()** (14 connections) — `server/commands/look_container.py`
+- **_find_container_via_inner_container()** (13 connections) — `server/commands/look_container.py`
+- **_handle_container_look()** (11 connections) — `server/commands/look_container.py`
+- **_try_lookup_container_implicit()** (10 connections) — `server/commands/look_container.py`
+- **_matches_item_instance_id()** (8 connections) — `server/commands/look_container.py`
+- **_try_match_container_component()** (8 connections) — `server/commands/look_container.py`
+- **_matches_name_or_slot()** (7 connections) — `server/commands/look_container.py`
+- **_get_container_data_from_component()** (7 connections) — `server/commands/look_container.py`
+- **_extract_container_metadata()** (6 connections) — `server/commands/look_container.py`
+- **_find_container_via_wearable_service()** (6 connections) — `server/commands/look_container.py`
+- **Container look functionality for MythosMUD.  This module handles looking at cont** (1 connections) — `server/commands/look_container.py`
+- **Find container via inner_container_id from item.** (1 connections) — `server/commands/look_container.py`
+- **Check if item instance IDs match.** (1 connections) — `server/commands/look_container.py`
+- **Check if container matches by name or slot.** (1 connections) — `server/commands/look_container.py`
+- **Get container data from component ID.** (1 connections) — `server/commands/look_container.py`
+- **Extract metadata from container component.** (1 connections) — `server/commands/look_container.py`
+- **Try to match a container component and return container data if found.** (1 connections) — `server/commands/look_container.py`
+- **Find container via wearable container service.** (1 connections) — `server/commands/look_container.py`
+- **Find container in room or equipped items.      Returns:         tuple: (containe** (1 connections) — `server/commands/look_container.py`
+- **Handle looking at a specific container.** (1 connections) — `server/commands/look_container.py`
+- **Try to find and display a container in implicit lookup.** (1 connections) — `server/commands/look_container.py`
 
 ## Relationships
 
-- [websocket handler realtime](websocket_handler_realtime.md) (5 shared connections)
-- [message filtering realtime](message_filtering_realtime.md) (4 shared connections)
-- [Loot Generation](Loot_Generation.md) (4 shared connections)
-- [combat validator validators](combat_validator_validators.md) (3 shared connections)
-- [message broadcast realtime](message_broadcast_realtime.md) (3 shared connections)
-- [middleware metrics collector](middleware_metrics_collector.md) (2 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (1 shared connections)
-- [lucidity services helpers](lucidity_services_helpers.md) (1 shared connections)
-- [services user manager](services_user_manager.md) (1 shared connections)
+- [DI Container Format](DI_Container_Format.md) (21 shared connections)
+- [schemas validator rationale](schemas_validator_rationale.md) (20 shared connections)
+- [connection realtime statistics](connection_realtime_statistics.md) (5 shared connections)
+- [command processor rationale](command_processor_rationale.md) (4 shared connections)
+- [status game spell](status_game_spell.md) (4 shared connections)
+- [services inventory mutation](services_inventory_mutation.md) (3 shared connections)
+- [look command commands](look_command_commands.md) (3 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
 
 ## Source Files
 
-- `server/realtime/message_formatters.py`
-- `server/realtime/nats_message_handler_broadcast.py`
-- `server/tests/unit/realtime/test_message_formatters.py`
+- `server/commands/look_container.py`
 
 ## Audit Trail
 
-- EXTRACTED: 108 (100%)
+- EXTRACTED: 138 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

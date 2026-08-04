@@ -1,16 +1,10 @@
 # alias graph rationale
 
-> 54 nodes
+> 32 nodes
 
 ## Key Concepts
 
 - **AliasGraph** (18 connections) — `server/utils/alias_graph.py`
-- **alias_expansion.py** (17 connections) — `server/command_handler/alias_expansion.py`
-- **__init__.py** (13 connections) — `server/command_handler/__init__.py`
-- **test_alias_expansion.py** (13 connections) — `server/tests/unit/commands/test_alias_expansion.py`
-- **handle_expanded_command()** (11 connections) — `server/command_handler/alias_expansion.py`
-- **check_alias_safety()** (10 connections) — `server/command_handler/alias_expansion.py`
-- **validate_expanded_command()** (10 connections) — `server/command_handler/alias_expansion.py`
 - **test_alias_graph.py** (9 connections) — `server/tests/unit/utils/test_alias_graph.py`
 - **alias_graph.py** (8 connections) — `server/utils/alias_graph.py`
 - **test_alias_graph_init()** (3 connections) — `server/tests/unit/utils/test_alias_graph.py`
@@ -24,35 +18,35 @@
 - **._extract_alias_references()** (3 connections) — `server/utils/alias_graph.py`
 - **.detect_cycle()** (3 connections) — `server/utils/alias_graph.py`
 - **.is_safe_to_expand()** (3 connections) — `server/utils/alias_graph.py`
-- **Any** (2 connections)
-- **CommandExecutionRequest** (2 connections)
-- **test_check_alias_safety_cycle_detected()** (2 connections) — `server/tests/unit/commands/test_alias_expansion.py`
-- **test_check_alias_safety_depth_too_deep()** (2 connections) — `server/tests/unit/commands/test_alias_expansion.py`
-- **test_check_alias_safety_ok()** (2 connections) — `server/tests/unit/commands/test_alias_expansion.py`
-- *... and 29 more nodes in this community*
+- **.get_expansion_depth()** (2 connections) — `server/utils/alias_graph.py`
+- **.clear()** (2 connections) — `server/utils/alias_graph.py`
+- **Unit tests for alias_graph utilities.  Tests the AliasGraph class.** (1 connections) — `server/tests/unit/utils/test_alias_graph.py`
+- **Test AliasGraph initialization.** (1 connections) — `server/tests/unit/utils/test_alias_graph.py`
+- **Test AliasGraph.build_graph() builds dependency graph.** (1 connections) — `server/tests/unit/utils/test_alias_graph.py`
+- **Test AliasGraph.detect_cycle() returns None when no cycle.** (1 connections) — `server/tests/unit/utils/test_alias_graph.py`
+- **Test AliasGraph.is_safe_to_expand() returns True when safe.** (1 connections) — `server/tests/unit/utils/test_alias_graph.py`
+- **Test AliasGraph.get_expansion_depth() returns depth.** (1 connections) — `server/tests/unit/utils/test_alias_graph.py`
+- **Test AliasGraph.clear() clears the graph.** (1 connections) — `server/tests/unit/utils/test_alias_graph.py`
+- **Alias circular dependency detection using graph analysis.  This module provides** (1 connections) — `server/utils/alias_graph.py`
+- **Graph-based circular dependency detection for alias expansion.      Uses depth-f** (1 connections) — `server/utils/alias_graph.py`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [command commands handler](command_commands_handler.md) (11 shared connections)
-- [Loot Generation](Loot_Generation.md) (9 shared connections)
-- [command validation commands](command_validation_commands.md) (4 shared connections)
-- [logoutHandler logger App](logoutHandler_logger_App.md) (3 shared connections)
-- [commands party examples](commands_party_examples.md) (3 shared connections)
-- [task registry app](task_registry_app.md) (1 shared connections)
-- [command validator validators](command_validator_validators.md) (1 shared connections)
+- [fixtures mock helpers](fixtures_mock_helpers.md) (3 shared connections)
+- [commands npc admin](commands_npc_admin.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [commands whisper command](commands_whisper_command.md) (1 shared connections)
 
 ## Source Files
 
-- `server/command_handler/__init__.py`
-- `server/command_handler/alias_expansion.py`
-- `server/tests/unit/commands/test_alias_expansion.py`
 - `server/tests/unit/utils/test_alias_graph.py`
 - `server/utils/alias_graph.py`
 
 ## Audit Trail
 
-- EXTRACTED: 186 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 88 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

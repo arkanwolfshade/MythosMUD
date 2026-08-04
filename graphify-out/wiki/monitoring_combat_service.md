@@ -34,7 +34,7 @@
 ## Relationships
 
 - [combat monitoring service](combat_monitoring_service.md) (14 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
+- [taunt combat commands](taunt_combat_commands.md) (1 shared connections)
 
 ## Source Files
 

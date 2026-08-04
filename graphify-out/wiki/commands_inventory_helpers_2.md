@@ -1,60 +1,51 @@
 # commands inventory helpers
 
-> 29 nodes
+> 48 nodes
 
 ## Key Concepts
 
-- **PlayerInventory** (25 connections) — `server/models/player.py`
-- **test_player_related_models.py** (19 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **PlayerExploration** (18 connections) — `server/models/player.py`
-- **Base** (4 connections)
-- **InventoryPayload** (4 connections) — `server/persistence/repositories/player_repository_mappers.py`
-- **test_player_inventory_creation()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_inventory_defaults()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_inventory_with_data()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_inventory_repr()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_exploration_creation()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_exploration_repr()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_exploration_multiple_rooms()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_channel_preferences_table_name()** (2 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_inventory_table_name()** (2 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_exploration_table_name()** (2 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **Player inventory model for persistent storage of items.      This matches the pl** (1 connections) — `server/models/player.py`
-- **Junction table tracking which rooms each player has explored.** (1 connections) — `server/models/player.py`
-- **Type hint for inventory payload structure.** (1 connections) — `server/persistence/repositories/player_repository_mappers.py`
-- **Unit tests for Player-related SQLAlchemy models.  Tests PlayerChannelPreferences** (1 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **Test PlayerChannelPreferences has correct table name.** (1 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **Test PlayerInventory can be instantiated with required fields.** (1 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **Test PlayerInventory has correct default values.** (1 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **Test PlayerInventory can have inventory and equipped data.** (1 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **Test PlayerInventory has correct table name.** (1 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **Test PlayerInventory __repr__ method.** (1 connections) — `server/tests/unit/models/test_player_related_models.py`
-- *... and 4 more nodes in this community*
+- **AdminAuthService** (19 connections) — `server/services/admin_auth_service.py`
+- **.validate_permission()** (11 connections) — `server/services/admin_auth_service.py`
+- **AdminRole** (7 connections) — `server/services/admin_auth_service.py`
+- **AdminSession** (6 connections) — `server/services/admin_auth_service.py`
+- **.get_user_role()** (6 connections) — `server/services/admin_auth_service.py`
+- **._update_session()** (6 connections) — `server/services/admin_auth_service.py`
+- **._has_permission()** (5 connections) — `server/services/admin_auth_service.py`
+- **._log_audit_event()** (5 connections) — `server/services/admin_auth_service.py`
+- **_HasIsSuperuser** (4 connections) — `server/services/admin_auth_service.py`
+- **Protocol** (4 connections)
+- **_HasIsAdmin** (4 connections) — `server/services/admin_auth_service.py`
+- **_HasUsername** (4 connections) — `server/services/admin_auth_service.py`
+- **_HasId** (4 connections) — `server/services/admin_auth_service.py`
+- **.get_username()** (4 connections) — `server/services/admin_auth_service.py`
+- **.get_user_id()** (4 connections) — `server/services/admin_auth_service.py`
+- **Request** (4 connections)
+- **._check_rate_limit()** (4 connections) — `server/services/admin_auth_service.py`
+- **admin_auth_service()** (4 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_get_admin_auth_service()** (4 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **.get_active_sessions()** (3 connections) — `server/services/admin_auth_service.py`
+- **.get_audit_log()** (3 connections) — `server/services/admin_auth_service.py`
+- **test_admin_session_init()** (3 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **.__init__()** (2 connections) — `server/services/admin_auth_service.py`
+- **.__init__()** (2 connections) — `server/services/admin_auth_service.py`
+- **Any** (2 connections)
+- *... and 23 more nodes in this community*
 
 ## Relationships
 
-- [Database Config](Database_Config.md) (7 shared connections)
-- [commands rescue rationale](commands_rescue_rationale.md) (6 shared connections)
-- [player room realtime](player_room_realtime.md) (6 shared connections)
-- [combat models rationale](combat_models_rationale.md) (5 shared connections)
-- [npc population stats](npc_population_stats.md) (3 shared connections)
-- [task registry app](task_registry_app.md) (2 shared connections)
-- [world models rationale](world_models_rationale.md) (2 shared connections)
-- [command factories communication](command_factories_communication.md) (2 shared connections)
-- [lucidity services helpers](lucidity_services_helpers.md) (2 shared connections)
-- [Loot Generation](Loot_Generation.md) (2 shared connections)
-- [player requests schemas](player_requests_schemas.md) (2 shared connections)
+- [player preferences services](player_preferences_services.md) (13 shared connections)
+- [inventory schemas schema](inventory_schemas_schema.md) (6 shared connections)
+- [Exception Containers](Exception_Containers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/player.py`
-- `server/persistence/repositories/player_repository_mappers.py`
-- `server/tests/unit/models/test_player_related_models.py`
+- `server/services/admin_auth_service.py`
+- `server/tests/unit/services/test_admin_auth_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 87 (78%)
-- INFERRED: 24 (22%)
+- EXTRACTED: 137 (93%)
+- INFERRED: 11 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,19 +1,16 @@
 # roomHandlers eventHandlers calculateOccu
 
-> 57 nodes
+> 29 nodes
 
 ## Key Concepts
 
-- **useGameConnectionRefactored.ts** (18 connections) — `client/src/hooks/useGameConnectionRefactored.ts`
 - **useWebSocketConnection.ts** (18 connections) — `client/src/hooks/useWebSocketConnection.ts`
 - **useWebSocketConnectionTestFixtures.ts** (12 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
 - **MockWebSocket** (12 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
-- **useGameConnection()** (12 connections) — `client/src/hooks/useGameConnectionRefactored.ts`
 - **useWebSocketConnection()** (12 connections) — `client/src/hooks/useWebSocketConnection.ts`
 - **useWebSocketConnection.pingHeartbeat.test.ts** (11 connections) — `client/src/hooks/__tests__/useWebSocketConnection.pingHeartbeat.test.ts`
 - **useWebSocketConnection.connection.test.ts** (8 connections) — `client/src/hooks/__tests__/useWebSocketConnection.connection.test.ts`
 - **useWebSocketConnection.errorHandling.test.ts** (8 connections) — `client/src/hooks/__tests__/useWebSocketConnection.errorHandling.test.ts`
-- **useConnectionStateMachine.ts** (8 connections) — `client/src/hooks/useConnectionStateMachine.ts`
 - **useWebSocketConnection.callbacks.test.ts** (7 connections) — `client/src/hooks/__tests__/useWebSocketConnection.callbacks.test.ts`
 - **useWebSocketConnection.cleanup.test.ts** (7 connections) — `client/src/hooks/__tests__/useWebSocketConnection.cleanup.test.ts`
 - **useWebSocketConnection.messageHandling.test.ts** (7 connections) — `client/src/hooks/__tests__/useWebSocketConnection.messageHandling.test.ts`
@@ -21,32 +18,30 @@
 - **defaultOptions** (7 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
 - **wsConnectionBeforeEach()** (7 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
 - **wsConnectionAfterEach()** (7 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
-- **useConnectionState.ts** (7 connections) — `client/src/hooks/useConnectionState.ts`
-- **useSessionManagement.ts** (7 connections) — `client/src/hooks/useSessionManagement.ts`
-- **useGameConnection.ts** (5 connections) — `client/src/hooks/useGameConnection.ts`
-- **useConnectionState()** (4 connections) — `client/src/hooks/useConnectionState.ts`
-- **connectionMachine** (4 connections) — `client/src/hooks/useConnectionStateMachine.ts`
-- **useGameConnection.test.ts** (4 connections) — `client/src/hooks/useGameConnection.test.ts`
-- **useSessionManagement()** (4 connections) — `client/src/hooks/useSessionManagement.ts`
-- **useGameConnection.export.test.ts** (3 connections) — `client/src/hooks/__tests__/useGameConnection.export.test.ts`
-- *... and 32 more nodes in this community*
+- **ThrowingWebSocket** (2 connections) — `client/src/hooks/__tests__/useWebSocketConnection.errorHandling.test.ts`
+- **connectOpenAndRunPingInterval()** (2 connections) — `client/src/hooks/__tests__/useWebSocketConnection.pingHeartbeat.test.ts`
+- **.constructor()** (1 connections) — `client/src/hooks/__tests__/useWebSocketConnection.errorHandling.test.ts`
+- **{ mockResourceManager, fetchSpy, mockedSetInterval, mockedClearInterval }** (1 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
+- **.constructor()** (1 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
+- **.send()** (1 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
+- **.close()** (1 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
+- **.simulateOpen()** (1 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
+- **.simulateMessage()** (1 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
+- **.simulateError()** (1 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
+- **.simulateClose()** (1 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
-- [lucidityEventUtils mythosTime MythosTime](lucidityEventUtils_mythosTime_MythosTime.md) (8 shared connections)
-- [mythosApp security submitAuth](mythosApp_security_submitAuth.md) (4 shared connections)
+- [project paths rationale](project_paths_rationale.md) (4 shared connections)
+- [game chat moderation](game_chat_moderation.md) (3 shared connections)
 - [resourceCleanup clientMetricsCollector u](resourceCleanup_clientMetricsCollector_u.md) (3 shared connections)
-- [Game Terminal UI](Game_Terminal_UI.md) (2 shared connections)
-- [realtime maintenance connection](realtime_maintenance_connection.md) (2 shared connections)
 - [mythosApp appLazyScreens mythosAppViewMo](mythosApp_appLazyScreens_mythosAppViewMo.md) (2 shared connections)
-- [GameClientV2Container emptyOccupantsDiag](GameClientV2Container_emptyOccupantsDiag.md) (1 shared connections)
+- [mythosApp security submitAuth](mythosApp_security_submitAuth.md) (2 shared connections)
+- [realtime maintenance connection](realtime_maintenance_connection.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/hooks/__tests__/useConnectionState.test.ts`
-- `client/src/hooks/__tests__/useConnectionStateMachine.test.ts`
-- `client/src/hooks/__tests__/useGameConnection.export.test.ts`
-- `client/src/hooks/__tests__/useSessionManagement.test.ts`
 - `client/src/hooks/__tests__/useWebSocketConnection.callbacks.test.ts`
 - `client/src/hooks/__tests__/useWebSocketConnection.cleanup.test.ts`
 - `client/src/hooks/__tests__/useWebSocketConnection.connection.test.ts`
@@ -54,19 +49,12 @@
 - `client/src/hooks/__tests__/useWebSocketConnection.messageHandling.test.ts`
 - `client/src/hooks/__tests__/useWebSocketConnection.pingHeartbeat.test.ts`
 - `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
-- `client/src/hooks/useConnectionState.ts`
-- `client/src/hooks/useConnectionStateMachine.test.ts`
-- `client/src/hooks/useConnectionStateMachine.ts`
-- `client/src/hooks/useGameConnection.test.ts`
-- `client/src/hooks/useGameConnection.ts`
-- `client/src/hooks/useGameConnectionRefactored.ts`
-- `client/src/hooks/useSessionManagement.ts`
 - `client/src/hooks/useWebSocketConnection.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 248 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 146 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

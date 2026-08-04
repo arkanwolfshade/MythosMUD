@@ -1,26 +1,25 @@
 # services user manager
 
-> 5 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **Phase 2: Categorize and Prioritize Lint Issues** (5 connections) — `.cursor/commands/lint-remediation.md`
-- **🔴 CRITICAL (Fix First - Blocking Issues)** (1 connections) — `.cursor/commands/lint-remediation.md`
-- **🟡 HIGH PRIORITY (Fix Second - Core Functionality)** (1 connections) — `.cursor/commands/lint-remediation.md`
-- **🟢 MEDIUM PRIORITY (Fix Third - Enhancement)** (1 connections) — `.cursor/commands/lint-remediation.md`
-- **🔵 LOW PRIORITY (Fix Last - Polish)** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **Executive Summary** (4 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Key Findings** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Test Value Distribution** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **🟡 IMPORTANT (Medium-Value):**~2,500-3,000 tests (50-60%) —**~15-18 minutes** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
 
 ## Relationships
 
-- [lint remediation commands](lint_remediation_commands.md) (1 shared connections)
+- [archive quality QUALITY](archive_quality_QUALITY.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/commands/lint-remediation.md`
+- `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

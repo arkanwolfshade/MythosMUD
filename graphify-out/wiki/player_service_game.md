@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [player requests schemas](player_requests_schemas.md) (8 shared connections)
+- [player requests schemas](player_requests_schemas.md) (9 shared connections)
 - [npc combat services](npc_combat_services.md) (5 shared connections)
-- [Loot Generation](Loot_Generation.md) (3 shared connections)
-- [command combat models](command_combat_models.md) (2 shared connections)
-- [Player Stats](Player_Stats.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (4 shared connections)
 - [Magic Spell Service](Magic_Spell_Service.md) (2 shared connections)
-- [auth users rationale](auth_users_rationale.md) (2 shared connections)
 - [models npc rationale](models_npc_rationale.md) (2 shared connections)
 - [config models cors](config_models_cors.md) (2 shared connections)
 - [middleware comprehensive logging](middleware_comprehensive_logging.md) (2 shared connections)
 - [middleware error handling](middleware_error_handling.md) (2 shared connections)
 - [persistence rationale player](persistence_rationale_player.md) (2 shared connections)
+- [commands follow rationale](commands_follow_rationale.md) (1 shared connections)
+- [maps handle ascii](maps_handle_ascii.md) (1 shared connections)
+- [metrics schemas rationale](metrics_schemas_rationale.md) (1 shared connections)
 
 ## Source Files
 

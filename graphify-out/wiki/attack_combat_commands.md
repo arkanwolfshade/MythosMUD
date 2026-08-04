@@ -33,11 +33,11 @@
 
 ## Relationships
 
-- [models npc rationale](models_npc_rationale.md) (3 shared connections)
+- [NPC Combat](NPC_Combat.md) (4 shared connections)
 - [MapView GameClientV2ContainerView Tabbed](MapView_GameClientV2ContainerView_Tabbed.md) (3 shared connections)
-- [NPC Combat](NPC_Combat.md) (3 shared connections)
-- [room conftest toolkit](room_conftest_toolkit.md) (2 shared connections)
-- [Loot Generation](Loot_Generation.md) (2 shared connections)
+- [services nats service](services_nats_service.md) (3 shared connections)
+- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [uuid npc combat](uuid_npc_combat.md) (1 shared connections)
 
 ## Source Files
 

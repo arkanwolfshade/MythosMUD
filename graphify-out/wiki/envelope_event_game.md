@@ -1,6 +1,6 @@
 # envelope event game
 
-> 15 nodes
+> 14 nodes
 
 ## Key Concepts
 
@@ -13,7 +13,6 @@
 - **test_learn_spell_no_row_raises()** (3 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
 - **test_update_mastery()** (3 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
 - **test_record_spell_cast()** (3 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
-- **test_row_to_player_spell_maps_fields()** (2 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
 - **repo()** (2 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
 - **test_get_player_spells_db_error()** (2 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
 - **test_get_player_spell_missing()** (2 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
@@ -22,7 +21,7 @@
 
 ## Relationships
 
-- [Database Config](Database_Config.md) (6 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (6 shared connections)
 - [coercion int inventory](coercion_int_inventory.md) (2 shared connections)
 - [Loot Generation](Loot_Generation.md) (1 shared connections)
 
@@ -32,7 +31,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 61 (97%)
+- EXTRACTED: 59 (97%)
 - INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 

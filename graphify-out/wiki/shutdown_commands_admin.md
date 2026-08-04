@@ -1,33 +1,36 @@
 # shutdown commands admin
 
-> 9 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **test_skills_commands.py** (11 connections) — `server/tests/unit/commands/test_skills_commands.py`
-- **test_get_container_services_ok()** (2 connections) — `server/tests/unit/commands/test_skills_commands.py`
-- **test_format_skills_output()** (1 connections) — `server/tests/unit/commands/test_skills_commands.py`
-- **test_resolve_player_id_from_string()** (1 connections) — `server/tests/unit/commands/test_skills_commands.py`
-- **test_resolve_user_id_from_dict()** (1 connections) — `server/tests/unit/commands/test_skills_commands.py`
-- **test_get_container_services_missing()** (1 connections) — `server/tests/unit/commands/test_skills_commands.py`
-- **test_handle_skills_command_no_services()** (1 connections) — `server/tests/unit/commands/test_skills_commands.py`
-- **test_handle_skills_command_success()** (1 connections) — `server/tests/unit/commands/test_skills_commands.py`
-- **Unit tests for skills command helpers.** (1 connections) — `server/tests/unit/commands/test_skills_commands.py`
+- **._is_valid_name_for_occupant()** (7 connections) — `server/realtime/occupant_formatter.py`
+- **._process_dict_occupant_for_update()** (7 connections) — `server/realtime/occupant_formatter.py`
+- **._process_player_name_for_update()** (6 connections) — `server/realtime/occupant_formatter.py`
+- **._process_npc_name_for_update()** (6 connections) — `server/realtime/occupant_formatter.py`
+- **Any** (5 connections)
+- **.separate_occupants_by_type()** (5 connections) — `server/realtime/occupant_formatter.py`
+- **._add_valid_name_to_lists()** (4 connections) — `server/realtime/occupant_formatter.py`
+- **Check if a name is valid for use as an occupant name.          Args:** (1 connections) — `server/realtime/occupant_formatter.py`
+- **Add a valid name to both target list and all occupants list.          Args:** (1 connections) — `server/realtime/occupant_formatter.py`
+- **Process a player name and add to appropriate lists if valid.          Args:** (1 connections) — `server/realtime/occupant_formatter.py`
+- **Process an NPC name and add to appropriate lists if valid.          Args:** (1 connections) — `server/realtime/occupant_formatter.py`
+- **Process a dictionary occupant and add to appropriate lists if valid.          Ar** (1 connections) — `server/realtime/occupant_formatter.py`
+- **Separate occupants into players, NPCs, and all occupants lists.          Args:** (1 connections) — `server/realtime/occupant_formatter.py`
 
 ## Relationships
 
-- [status game spell](status_game_spell.md) (2 shared connections)
-- [npc threading rationale](npc_threading_rationale.md) (1 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [container sql injection](container_sql_injection.md) (6 shared connections)
+- [game magic regeneration](game_magic_regeneration.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_skills_commands.py`
+- `server/realtime/occupant_formatter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 19 (95%)
-- INFERRED: 1 (5%)
+- EXTRACTED: 46 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

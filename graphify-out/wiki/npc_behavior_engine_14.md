@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_update_wearable_container_items()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test update_wearable_container_items updates items.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_subscribe_to_standardized_chat_subjects_nats_subscribe_error_handled()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **Test _subscribe_to_standardized_chat_subjects handles NATSSubscribeError and con** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Relationships
 
-- [wearable container service](wearable_container_service.md) (1 shared connections)
+- [nats exceptions services](nats_exceptions_services.md) (1 shared connections)
+- [nats message handler](nats_message_handler.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

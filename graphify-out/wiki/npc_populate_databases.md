@@ -1,28 +1,33 @@
 # npc populate databases
 
-> 6 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **_row_scalar_one()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_is_room_explored_true()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_is_room_explored_false()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **SQLAlchemy-style result mock with scalar_one() -> value.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **Test is_room_explored() returns True when room is explored.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **Test is_room_explored() returns False when room is not explored.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **schedule_end_combat_if_npc_died_best_effort()** (8 connections) — `server/npc/npc_combat_schedule.py`
+- **test_npc_combat_schedule.py** (5 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
+- **test_schedule_end_combat_if_npc_died_no_service()** (3 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
+- **test_schedule_end_combat_if_npc_died_no_running_loop()** (3 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
+- **Schedule end_combat_if_npc_died so the slain NPC no longer gets combat turns (be** (1 connections) — `server/npc/npc_combat_schedule.py`
+- **Unit tests for best-effort NPC combat cleanup scheduling.** (1 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
+- **When combat service is missing, scheduling is a no-op.** (1 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
+- **Without a running asyncio loop, scheduling fails quietly (RuntimeError path).** (1 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
 
 ## Relationships
 
-- [Loot Generation](Loot_Generation.md) (3 shared connections)
-- [maps handle ascii](maps_handle_ascii.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [models npc rationale](models_npc_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_exploration_service.py`
+- `server/npc/npc_combat_schedule.py`
+- `server/tests/unit/npc/test_npc_combat_schedule.py`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
+- EXTRACTED: 23 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -33,10 +33,11 @@
 
 ## Relationships
 
-- [Database Config](Database_Config.md) (22 shared connections)
-- [persistence container item](persistence_container_item.md) (19 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (9 shared connections)
-- [Loot Generation](Loot_Generation.md) (5 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (23 shared connections)
+- [persistence container item](persistence_container_item.md) (18 shared connections)
+- [Loot Generation](Loot_Generation.md) (11 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [auth users rationale](auth_users_rationale.md) (1 shared connections)
 
 ## Source Files
 

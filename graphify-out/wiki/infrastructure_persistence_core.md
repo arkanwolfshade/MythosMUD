@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_player_room_event_handler_init()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **Test PlayerRoomEventHandler initialization.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_collect_room_targets()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Test collect_room_targets() returns subscribed players.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Relationships
 
-- [player room event](player_room_event.md) (1 shared connections)
+- [message filtering realtime](message_filtering_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Audit Trail
 

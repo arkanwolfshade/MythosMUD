@@ -2,7 +2,7 @@
 
 > God node · 497 connections · `server/exceptions.py`
 
-**Community:** [Database Config](Database_Config.md)
+**Community:** [commands shutdown process](commands_shutdown_process.md)
 
 ## Connections by Relation
 

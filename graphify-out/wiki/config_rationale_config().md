@@ -1,34 +1,39 @@
 # config rationale config()
 
-> 7 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **process_combat_tick()** (9 connections) — `server/app/game_tick_processing.py`
-- **test_process_combat_tick_no_service()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_combat_tick_success()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_combat_tick_calls_service()** (2 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **Process combat auto-progression.** (1 connections) — `server/app/game_tick_processing.py`
-- **Test process_combat_tick() when combat service is not available.** (1 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **Test process_combat_tick() successful execution.** (1 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
+- **CacheService** (24 connections) — `server/caching/cache_service.py`
+- **TestCacheService** (12 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.persistence()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_init_without_npc_service()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_init_with_npc_service()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_cache_stats_and_clear()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_preload_frequently_accessed_data()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_preload_handles_room_failure()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_preload_handles_profession_failure()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.clear_all_caches()** (1 connections) — `server/caching/cache_service.py`
+- **Main cache service that coordinates all caching operations.      This service pr** (1 connections) — `server/caching/cache_service.py`
 
 ## Relationships
 
-- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (3 shared connections)
-- [tick game processing](tick_game_processing.md) (3 shared connections)
-- [player persistence repository](player_persistence_repository.md) (1 shared connections)
-- [persistence combat handler](persistence_combat_handler.md) (1 shared connections)
+- [commands skills rationale](commands_skills_rationale.md) (5 shared connections)
+- [startup npc service](startup_npc_service.md) (4 shared connections)
+- [uuid services npc](uuid_services_npc.md) (4 shared connections)
+- [services lucidity repository](services_lucidity_repository.md) (4 shared connections)
+- [cache caching service](cache_caching_service.md) (2 shared connections)
+- [caching lru cache](caching_lru_cache.md) (1 shared connections)
 
 ## Source Files
 
-- `server/app/game_tick_processing.py`
-- `server/tests/unit/app/test_game_tick_processing.py`
-- `server/tests/unit/app/test_game_tick_processing_async.py`
+- `server/caching/cache_service.py`
+- `server/tests/unit/caching/test_cache_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 38 (73%)
+- INFERRED: 14 (27%)
 - AMBIGUOUS: 0 (0%)
 
 ---

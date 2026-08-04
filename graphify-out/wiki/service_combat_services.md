@@ -1,26 +1,28 @@
 # service combat services
 
-> 3 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **setup_jwt_secret()** (3 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **MonkeyPatch** (2 connections)
-- **Set JWT secret for tests.** (1 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **.__init__()** (4 connections) — `server/models/game.py`
+- **._compute_max_dp_if_missing()** (3 connections) — `server/models/game.py`
+- **Any** (2 connections)
+- **Initialize Stats with provided data.          For random stat generation, use ge** (1 connections) — `server/models/game.py`
+- **Populate max_dp from (CON+SIZ)/5 when not provided (stored value takes precedenc** (1 connections) — `server/models/game.py`
 
 ## Relationships
 
-- [npc lifecycle combat](npc_lifecycle_combat.md) (1 shared connections)
-- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
+- [player service game](player_service_game.md) (2 shared connections)
+- [event connection helpers](event_connection_helpers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/auth/test_auth_utils.py`
+- `server/models/game.py`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (83%)
-- INFERRED: 1 (17%)
+- EXTRACTED: 11 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,61 +1,52 @@
 # commands rescue rationale
 
-> 41 nodes
+> 59 nodes
 
 ## Key Concepts
 
-- **PlayerChannelPreferences** (30 connections) — `server/models/player.py`
-- **PlayerPreferencesService** (19 connections) — `server/services/player_preferences_service.py`
-- **._is_valid_player_id()** (11 connections) — `server/services/player_preferences_service.py`
-- **UUID** (10 connections)
-- **player_preferences_service.py** (9 connections) — `server/services/player_preferences_service.py`
-- **AsyncSession** (8 connections)
-- **Any** (8 connections)
-- **.update_default_channel()** (8 connections) — `server/services/player_preferences_service.py`
-- **.mute_channel()** (8 connections) — `server/services/player_preferences_service.py`
-- **.unmute_channel()** (8 connections) — `server/services/player_preferences_service.py`
-- **.is_channel_muted()** (8 connections) — `server/services/player_preferences_service.py`
-- **.create_player_preferences()** (7 connections) — `server/services/player_preferences_service.py`
-- **.get_player_preferences()** (7 connections) — `server/services/player_preferences_service.py`
-- **.get_muted_channels()** (7 connections) — `server/services/player_preferences_service.py`
-- **.delete_player_preferences()** (7 connections) — `server/services/player_preferences_service.py`
-- **._is_valid_channel()** (6 connections) — `server/services/player_preferences_service.py`
-- **test_player_channel_preferences_creation()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_channel_preferences_defaults()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_channel_preferences_with_muted_channels()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_channel_preferences_repr()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **.__init__()** (2 connections) — `server/services/player_preferences_service.py`
-- **._is_valid_json_array()** (2 connections) — `server/services/player_preferences_service.py`
-- **Player channel preferences model for Advanced Chat Channels.      Stores player** (1 connections) — `server/models/player.py`
-- **Player Preferences Service for Advanced Chat Channels.  This module provides fun** (1 connections) — `server/services/player_preferences_service.py`
-- **Service for managing player channel preferences.      This service handles:** (1 connections) — `server/services/player_preferences_service.py`
-- *... and 16 more nodes in this community*
+- **test_level_service.py** (16 connections) — `server/tests/unit/game/test_level_service.py`
+- **total_xp_for_level()** (15 connections) — `server/game/level_curve.py`
+- **test_level_curve.py** (15 connections) — `server/tests/unit/game/test_level_curve.py`
+- **level_from_total_xp()** (13 connections) — `server/game/level_curve.py`
+- **level_curve.py** (6 connections) — `server/game/level_curve.py`
+- **xp_required_for_level()** (6 connections) — `server/game/level_curve.py`
+- **.grant_xp()** (4 connections) — `server/game/level_service.py`
+- **.check_level_up()** (4 connections) — `server/game/level_service.py`
+- **test_xp_required_for_level_marginal()** (4 connections) — `server/tests/unit/game/test_level_curve.py`
+- **test_level_from_total_xp_roundtrip()** (4 connections) — `server/tests/unit/game/test_level_curve.py`
+- **test_level_from_total_xp_threshold_level_two()** (4 connections) — `server/tests/unit/game/test_level_curve.py`
+- **test_grant_xp_level_up_calls_hook()** (4 connections) — `server/tests/unit/game/test_level_service.py`
+- **UUID** (3 connections)
+- **test_total_xp_for_level_one()** (3 connections) — `server/tests/unit/game/test_level_curve.py`
+- **test_total_xp_for_level_two_positive()** (3 connections) — `server/tests/unit/game/test_level_curve.py`
+- **test_total_xp_for_level_increases()** (3 connections) — `server/tests/unit/game/test_level_curve.py`
+- **test_total_xp_for_level_invalid()** (3 connections) — `server/tests/unit/game/test_level_curve.py`
+- **test_xp_required_for_level_invalid()** (3 connections) — `server/tests/unit/game/test_level_curve.py`
+- **test_level_from_total_xp_zero()** (3 connections) — `server/tests/unit/game/test_level_curve.py`
+- **test_level_from_total_xp_negative()** (3 connections) — `server/tests/unit/game/test_level_curve.py`
+- **level_service()** (3 connections) — `server/tests/unit/game/test_level_service.py`
+- **test_check_level_up_no_change_returns_false()** (3 connections) — `server/tests/unit/game/test_level_service.py`
+- **test_check_level_up_increase_persists_and_returns_true()** (3 connections) — `server/tests/unit/game/test_level_service.py`
+- **mock_persistence()** (2 connections) — `server/tests/unit/game/test_level_service.py`
+- **sample_player()** (2 connections) — `server/tests/unit/game/test_level_service.py`
+- *... and 34 more nodes in this community*
 
 ## Relationships
 
-- [commands inventory helpers](commands_inventory_helpers.md) (6 shared connections)
-- [player room realtime](player_room_realtime.md) (3 shared connections)
-- [Loot Generation](Loot_Generation.md) (3 shared connections)
-- [player preferences service](player_preferences_service.md) (3 shared connections)
-- [argon2 auth rationale](argon2_auth_rationale.md) (3 shared connections)
-- [combat models rationale](combat_models_rationale.md) (2 shared connections)
-- [Database Config](Database_Config.md) (2 shared connections)
-- [world models rationale](world_models_rationale.md) (1 shared connections)
-- [command factories communication](command_factories_communication.md) (1 shared connections)
-- [lucidity services helpers](lucidity_services_helpers.md) (1 shared connections)
-- [player requests schemas](player_requests_schemas.md) (1 shared connections)
-- [room infrastructure persistence](room_infrastructure_persistence.md) (1 shared connections)
+- [websocket realtime handler](websocket_realtime_handler.md) (5 shared connections)
+- [NPC Combat](NPC_Combat.md) (4 shared connections)
 
 ## Source Files
 
-- `server/models/player.py`
-- `server/services/player_preferences_service.py`
-- `server/tests/unit/models/test_player_related_models.py`
+- `server/game/level_curve.py`
+- `server/game/level_service.py`
+- `server/tests/unit/game/test_level_curve.py`
+- `server/tests/unit/game/test_level_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 167 (85%)
-- INFERRED: 29 (15%)
+- EXTRACTED: 171 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

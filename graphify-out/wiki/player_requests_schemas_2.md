@@ -1,36 +1,48 @@
 # player requests schemas
 
-> 13 nodes
+> 21 nodes
 
 ## Key Concepts
 
-- **.move_npc_to_room()** (7 connections) — `server/npc/movement_integration.py`
-- **._get_room_objects()** (4 connections) — `server/npc/movement_integration.py`
-- **._update_room_occupancy()** (4 connections) — `server/npc/movement_integration.py`
-- **._update_npc_instance_room_tracking()** (4 connections) — `server/npc/movement_integration.py`
-- **._validate_room_ids()** (3 connections) — `server/npc/movement_integration.py`
-- **._is_npc_in_combat()** (3 connections) — `server/npc/movement_integration.py`
-- **Room** (2 connections)
-- **Validate room IDs for NPC movement.          Args:             npc_id: ID of** (1 connections) — `server/npc/movement_integration.py`
-- **Return True if the NPC is currently in combat (blocks normal movement).** (1 connections) — `server/npc/movement_integration.py`
-- **Get room objects and validate they exist.          Args:             npc_id:** (1 connections) — `server/npc/movement_integration.py`
-- **Update room occupancy by removing NPC from source and adding to destination.** (1 connections) — `server/npc/movement_integration.py`
-- **Update NPC instance room tracking for occupant queries.          Args:** (1 connections) — `server/npc/movement_integration.py`
-- **Move an NPC to a different room with full integration.          This method pr** (1 connections) — `server/npc/movement_integration.py`
+- **test_item_instance_persistence.py** (16 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
+- **item_instance_persistence.py** (15 connections) — `server/persistence/item_instance_persistence.py`
+- **create_item_instance()** (12 connections) — `server/persistence/item_instance_persistence.py`
+- **ensure_item_instance()** (11 connections) — `server/persistence/item_instance_persistence.py`
+- **get_item_instance()** (7 connections) — `server/persistence/item_instance_persistence.py`
+- **item_instance_exists()** (7 connections) — `server/persistence/item_instance_persistence.py`
+- **Any** (4 connections)
+- **test_create_item_instance_missing_id()** (3 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
+- **test_create_item_instance_db_error()** (3 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
+- **test_item_instance_exists_true()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
+- **test_item_instance_exists_false()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
+- **test_get_item_instance_found()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
+- **test_get_item_instance_not_found()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
+- **test_ensure_item_instance_calls_create()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
+- **test_create_item_instance_success()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
+- **Item instance persistence operations.  As documented in the restricted archives,** (1 connections) — `server/persistence/item_instance_persistence.py`
+- **Create a new item instance in the database.      Args:         conn: Database co** (1 connections) — `server/persistence/item_instance_persistence.py`
+- **Retrieve an item instance by ID.      Args:         conn: Database connection** (1 connections) — `server/persistence/item_instance_persistence.py`
+- **Check if an item instance exists in the database.      Args:         conn: Datab** (1 connections) — `server/persistence/item_instance_persistence.py`
+- **Ensure an item instance exists in the database, creating it if necessary.      T** (1 connections) — `server/persistence/item_instance_persistence.py`
+- **Unit tests for item_instance_persistence helpers.** (1 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
 
 ## Relationships
 
-- [commands logout helpers](commands_logout_helpers.md) (6 shared connections)
-- [commands npc admin](commands_npc_admin.md) (1 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (7 shared connections)
+- [Loot Generation](Loot_Generation.md) (5 shared connections)
+- [persistence container item](persistence_container_item.md) (5 shared connections)
+- [auth users rationale](auth_users_rationale.md) (5 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
 
 ## Source Files
 
-- `server/npc/movement_integration.py`
+- `server/persistence/item_instance_persistence.py`
+- `server/tests/unit/persistence/test_item_instance_persistence.py`
 
 ## Audit Trail
 
-- EXTRACTED: 33 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 92 (96%)
+- INFERRED: 4 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

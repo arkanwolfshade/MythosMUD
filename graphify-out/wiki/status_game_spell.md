@@ -1,52 +1,52 @@
 # status game spell
 
-> 19 nodes
+> 28 nodes
 
 ## Key Concepts
 
-- **SkillService** (37 connections) — `server/game/skill_service.py`
-- **Any** (10 connections)
-- **.set_player_skills()** (9 connections) — `server/game/skill_service.py`
-- **._validate_occupation_slots()** (6 connections) — `server/game/skill_service.py`
-- **._validate_personal_interest()** (6 connections) — `server/game/skill_service.py`
-- **.validate_skills_payload()** (6 connections) — `server/game/skill_service.py`
-- **._validate_no_overlap()** (5 connections) — `server/game/skill_service.py`
-- **._build_profession_mod_by_key()** (5 connections) — `server/game/skill_service.py`
-- **._compute_final_skill_values()** (5 connections) — `server/game/skill_service.py`
-- **.get_skills_catalog()** (3 connections) — `server/game/skill_service.py`
-- **Service for skills catalog, per-character skills, use logging, and improvement r** (1 connections) — `server/game/skill_service.py`
-- **Return list of skill dicts (id, key, name, base_value, allow_at_creation, catego** (1 connections) — `server/game/skill_service.py`
-- **Raise ValueError if occupation_slots are not exactly one 70, two 60, three 50, t** (1 connections) — `server/game/skill_service.py`
-- **Require exactly 4 skill_ids; Cthulhu Mythos not allowed; all skill_ids unique.** (1 connections) — `server/game/skill_service.py`
-- **Raise ValueError if any skill_id appears in both occupation and personal interes** (1 connections) — `server/game/skill_service.py`
-- **Build skill_key -> total modifier from profession skill_modifiers (supports skil** (1 connections) — `server/game/skill_service.py`
-- **Compute final skill_id -> value: base + profession mod, then occupation overlay,** (1 connections) — `server/game/skill_service.py`
-- **Validate skills allocation without persisting. Raises ValueError if invalid.** (1 connections) — `server/game/skill_service.py`
-- **Set all skills for a character at creation.          Validates occupation_slots** (1 connections) — `server/game/skill_service.py`
+- **_find_container_wearable()** (20 connections) — `server/commands/look_container.py`
+- **test_find_container_wearable_success()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_wearable_by_prototype_id()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_wearable_not_found()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_wearable_with_inner_container()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_wearable_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_wearable_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_wearable_found()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_wearable_not_found()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_wearable_empty()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_wearable_no_match()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_wearable_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_wearable_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_wearable_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Find a wearable container in equipped items by name or prototype_id.      This f** (1 connections) — `server/commands/look_container.py`
+- **Test finding wearable container by name.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test finding wearable container by prototype_id.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test finding wearable container when not found.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test finding wearable container with inner_container.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test finding wearable container with instance number.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test finding wearable container with invalid instance number.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test _find_container_wearable() finds wearable container.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Test _find_container_wearable() returns None when container not found.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Test _find_container_wearable() with empty dict.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Test _find_container_wearable() with no matching containers.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [skill service game](skill_service_game.md) (7 shared connections)
-- [Loot Generation](Loot_Generation.md) (6 shared connections)
-- [Database Config](Database_Config.md) (4 shared connections)
-- [profession game service](profession_game_service.md) (3 shared connections)
-- [npc threading rationale](npc_threading_rationale.md) (3 shared connections)
-- [Player Stats](Player_Stats.md) (2 shared connections)
-- [persistence rationale players](persistence_rationale_players.md) (2 shared connections)
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (2 shared connections)
-- [shutdown commands admin](shutdown_commands_admin.md) (2 shared connections)
-- [websocket realtime handler](websocket_realtime_handler.md) (1 shared connections)
-- [nats services service](nats_services_service.md) (1 shared connections)
-- [time service rationale](time_service_rationale.md) (1 shared connections)
+- [schemas validator rationale](schemas_validator_rationale.md) (8 shared connections)
+- [DI Container Format](DI_Container_Format.md) (7 shared connections)
+- [startup npc services](startup_npc_services.md) (4 shared connections)
 
 ## Source Files
 
-- `server/game/skill_service.py`
+- `server/commands/look_container.py`
+- `server/tests/unit/commands/test_look_container.py`
+- `server/tests/unit/commands/test_look_container_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 93 (92%)
-- INFERRED: 8 (8%)
+- EXTRACTED: 73 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

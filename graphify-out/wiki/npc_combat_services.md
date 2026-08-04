@@ -27,13 +27,13 @@
 ## Relationships
 
 - [player service game](player_service_game.md) (5 shared connections)
-- [Loot Generation](Loot_Generation.md) (3 shared connections)
+- [NPC Combat](NPC_Combat.md) (3 shared connections)
 - [app factory rationale](app_factory_rationale.md) (2 shared connections)
 - [Magic Spell Service](Magic_Spell_Service.md) (1 shared connections)
 - [middleware comprehensive logging](middleware_comprehensive_logging.md) (1 shared connections)
 - [middleware error handling](middleware_error_handling.md) (1 shared connections)
 - [persistence rationale player](persistence_rationale_player.md) (1 shared connections)
-- [auth users rationale](auth_users_rationale.md) (1 shared connections)
+- [player requests schemas](player_requests_schemas.md) (1 shared connections)
 - [models npc rationale](models_npc_rationale.md) (1 shared connections)
 
 ## Source Files

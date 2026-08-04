@@ -1,6 +1,6 @@
 # NPC Definitions Admin
 
-> 300 nodes
+> 251 nodes
 
 ## Key Concepts
 
@@ -9,15 +9,10 @@
 - **get_container()** (41 connections) — `server/dependencies.py`
 - **RuntimeError** (37 connections)
 - **Request** (29 connections)
-- **test_level_service.py** (16 connections) — `server/tests/unit/game/test_level_service.py`
-- **total_xp_for_level()** (15 connections) — `server/game/level_curve.py`
-- **test_level_curve.py** (15 connections) — `server/tests/unit/game/test_level_curve.py`
-- **level_from_total_xp()** (13 connections) — `server/game/level_curve.py`
-- **LevelService** (13 connections) — `server/game/level_service.py`
+- **test_dependency_injection.py** (18 connections) — `server/tests/unit/test_dependency_injection.py`
 - **get_player_service()** (12 connections) — `server/dependencies.py`
 - **get_room_service()** (12 connections) — `server/dependencies.py`
 - **get_combat_service()** (10 connections) — `server/dependencies.py`
-- **get_player_service_for_testing()** (9 connections) — `server/dependencies.py`
 - **get_connection_manager()** (9 connections) — `server/dependencies.py`
 - **get_async_persistence()** (9 connections) — `server/dependencies.py`
 - **get_player_respawn_service()** (9 connections) — `server/dependencies.py`
@@ -29,37 +24,38 @@
 - **get_spell_effects()** (9 connections) — `server/dependencies.py`
 - **get_spell_learning_service()** (9 connections) — `server/dependencies.py`
 - **get_mp_regeneration_service()** (9 connections) — `server/dependencies.py`
-- *... and 275 more nodes in this community*
+- **get_npc_lifecycle_manager()** (9 connections) — `server/dependencies.py`
+- **get_npc_spawning_service()** (9 connections) — `server/dependencies.py`
+- **get_npc_population_controller()** (9 connections) — `server/dependencies.py`
+- **get_catatonia_registry()** (9 connections) — `server/dependencies.py`
+- **get_passive_lucidity_flux_service()** (9 connections) — `server/dependencies.py`
+- *... and 226 more nodes in this community*
 
 ## Relationships
 
-- [coercion int inventory](coercion_int_inventory.md) (42 shared connections)
-- [room game service](room_game_service.md) (16 shared connections)
-- [Loot Generation](Loot_Generation.md) (12 shared connections)
-- [persistence rationale players](persistence_rationale_players.md) (6 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (5 shared connections)
-- [player service game](player_service_game.md) (5 shared connections)
-- [player requests schemas](player_requests_schemas.md) (4 shared connections)
-- [Error Conversion](Error_Conversion.md) (4 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (4 shared connections)
-- [profession game service](profession_game_service.md) (3 shared connections)
-- [Player Stats](Player_Stats.md) (3 shared connections)
-- [command parser rationale](command_parser_rationale.md) (3 shared connections)
+- [NPC Combat](NPC_Combat.md) (58 shared connections)
+- [room game service](room_game_service.md) (12 shared connections)
+- [event connection helpers](event_connection_helpers.md) (11 shared connections)
+- [nats services service](nats_services_service.md) (7 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (6 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (5 shared connections)
+- [coercion int inventory](coercion_int_inventory.md) (5 shared connections)
+- [profession game service](profession_game_service.md) (4 shared connections)
+- [models npc rationale](models_npc_rationale.md) (4 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (3 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (3 shared connections)
+- [Error Conversion](Error_Conversion.md) (3 shared connections)
 
 ## Source Files
 
-- `server/database.py`
 - `server/dependencies.py`
-- `server/game/level_curve.py`
-- `server/game/level_service.py`
-- `server/tests/unit/game/test_level_curve.py`
-- `server/tests/unit/game/test_level_service.py`
 - `server/tests/unit/infrastructure/test_dependencies.py`
+- `server/tests/unit/test_dependency_injection.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1034 (90%)
-- INFERRED: 112 (10%)
+- EXTRACTED: 882 (88%)
+- INFERRED: 125 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

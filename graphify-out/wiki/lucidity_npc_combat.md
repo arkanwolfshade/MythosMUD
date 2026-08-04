@@ -39,10 +39,10 @@
 - [config models rationale](config_models_rationale.md) (4 shared connections)
 - [invite models rationale](invite_models_rationale.md) (3 shared connections)
 - [persistence container parse](persistence_container_parse.md) (3 shared connections)
+- [NPC Combat](NPC_Combat.md) (3 shared connections)
 - [combat validator validators](combat_validator_validators.md) (2 shared connections)
 - [playerHandlers eventHandlers healthEvent](playerHandlers_eventHandlers_healthEvent.md) (2 shared connections)
-- [time service rationale](time_service_rationale.md) (2 shared connections)
-- [Loot Generation](Loot_Generation.md) (2 shared connections)
+- [time service rationale](time_service_rationale.md) (1 shared connections)
 
 ## Source Files
 

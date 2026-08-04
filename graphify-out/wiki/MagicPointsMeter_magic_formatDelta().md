@@ -1,23 +1,25 @@
 # MagicPointsMeter magic formatDelta()
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **mock_persistence()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **.__init__()** (4 connections) — `server/game/level_service.py`
+- **Any** (1 connections)
+- **LevelUpHook** (1 connections)
+- **Initialize the level service.          Args:             async_persistence: Asyn** (1 connections) — `server/game/level_service.py`
 
 ## Relationships
 
-- [room realtime subscription](room_realtime_subscription.md) (1 shared connections)
+- [websocket realtime handler](websocket_realtime_handler.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_player_service_mutations.py`
+- `server/game/level_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

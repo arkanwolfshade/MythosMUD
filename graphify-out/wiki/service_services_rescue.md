@@ -1,23 +1,24 @@
 # service services rescue
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_validate_player_name_empty()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **Test validate_player_name() with empty string.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **.get_system_stats()** (3 connections) — `server/services/rate_limiter.py`
+- **Any** (2 connections)
+- **Get system-wide rate limiting statistics.          Returns:             Dictiona** (1 connections) — `server/services/rate_limiter.py`
 
 ## Relationships
 
-- [room realtime subscription](room_realtime_subscription.md) (1 shared connections)
+- [event events serialization](event_events_serialization.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_player_service_mutations.py`
+- `server/services/rate_limiter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

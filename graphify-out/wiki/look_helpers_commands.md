@@ -1,13 +1,11 @@
 # look helpers commands
 
-> 96 nodes
+> 92 nodes
 
 ## Key Concepts
 
 - **test_look_room.py** (35 connections) — `server/tests/unit/commands/test_look_room.py`
-- **look_room.py** (28 connections) — `server/commands/look_room.py`
 - **test_look_room_helpers.py** (20 connections) — `server/tests/unit/commands/test_look_room_helpers.py`
-- **_filter_other_players()** (17 connections) — `server/commands/look_room.py`
 - **_handle_room_look()** (17 connections) — `server/commands/look_room.py`
 - **_format_items_section()** (11 connections) — `server/commands/look_room.py`
 - **_get_room_description()** (10 connections) — `server/commands/look_room.py`
@@ -29,17 +27,17 @@
 - **test_format_npcs_section_empty()** (3 connections) — `server/tests/unit/commands/test_look_room.py`
 - **test_filter_other_players_excludes_current()** (3 connections) — `server/tests/unit/commands/test_look_room.py`
 - **test_filter_other_players_no_name_attribute()** (3 connections) — `server/tests/unit/commands/test_look_room.py`
-- *... and 71 more nodes in this community*
+- **test_format_players_section_empty()** (3 connections) — `server/tests/unit/commands/test_look_room.py`
+- **test_format_players_section_with_players()** (3 connections) — `server/tests/unit/commands/test_look_room.py`
+- *... and 67 more nodes in this community*
 
 ## Relationships
 
-- [combat services turn](combat_services_turn.md) (7 shared connections)
-- [command utility models](command_utility_models.md) (6 shared connections)
-- [connection realtime statistics](connection_realtime_statistics.md) (5 shared connections)
-- [room renderer functions](room_renderer_functions.md) (4 shared connections)
-- [npc look commands](npc_look_commands.md) (3 shared connections)
-- [player disconnect handlers](player_disconnect_handlers.md) (3 shared connections)
-- [Loot Generation](Loot_Generation.md) (2 shared connections)
+- [combat services turn](combat_services_turn.md) (19 shared connections)
+- [connection realtime statistics](connection_realtime_statistics.md) (4 shared connections)
+- [room renderer functions](room_renderer_functions.md) (2 shared connections)
+- [npc look commands](npc_look_commands.md) (1 shared connections)
+- [look command commands](look_command_commands.md) (1 shared connections)
 
 ## Source Files
 
@@ -49,7 +47,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 352 (100%)
+- EXTRACTED: 305 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,11 +1,15 @@
 # EdgeCreationModal map STANDARD
 
-> 32 nodes
+> 36 nodes
 
 ## Key Concepts
 
 - **EdgeCreationModal.tsx** (39 connections) — `client/src/components/map/EdgeCreationModal.tsx`
 - **useEdgeCreationModal()** (13 connections) — `client/src/components/map/EdgeCreationModal.tsx`
+- **EdgeCreationModal.test.tsx** (7 connections) — `client/src/components/map/__tests__/EdgeCreationModal.test.tsx`
+- **EdgeValidationResult** (6 connections) — `client/src/components/map/hooks/useMapEditing.ts`
+- **EdgeCreationData** (5 connections) — `client/src/components/map/hooks/useMapEditing.ts`
+- **EdgeCreationModalProps** (4 connections) — `client/src/components/map/EdgeCreationModal.tsx`
 - **getInitialEdgeFormState()** (4 connections) — `client/src/components/map/EdgeCreationModal.tsx`
 - **EdgeCreationModal()** (4 connections) — `client/src/components/map/EdgeCreationModal.tsx`
 - **isStandardExitDirection()** (3 connections) — `client/src/components/map/EdgeCreationModal.tsx`
@@ -25,23 +29,21 @@
 - **applyModalBodyScrollLock()** (2 connections) — `client/src/components/map/EdgeCreationModal.tsx`
 - **EdgeFormResetters** (2 connections) — `client/src/components/map/EdgeCreationModal.tsx`
 - **EdgeModalValidationMessagesProps** (2 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **STANDARD_DIRECTIONS** (1 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **EdgeFormFields** (1 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **EdgeModalValidationMessages()** (1 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **EDGE_MODAL_MESSAGE_TONE_CLASSES** (1 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- *... and 7 more nodes in this community*
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
-- [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (11 shared connections)
+- [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (13 shared connections)
 
 ## Source Files
 
 - `client/src/components/map/EdgeCreationModal.tsx`
+- `client/src/components/map/__tests__/EdgeCreationModal.test.tsx`
+- `client/src/components/map/hooks/useMapEditing.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 109 (100%)
+- EXTRACTED: 131 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

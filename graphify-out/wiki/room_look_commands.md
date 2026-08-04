@@ -1,53 +1,62 @@
 # room look commands
 
-> 23 nodes
+> 80 nodes
 
 ## Key Concepts
 
-- **websocket_handler_message_loop.py** (26 connections) — `server/realtime/websocket_handler_message_loop.py`
-- **handle_message_loop_exception()** (10 connections) — `server/realtime/websocket_handler_message_loop.py`
-- **handle_websocket_runtime_error()** (8 connections) — `server/realtime/websocket_handler_message_loop.py`
-- **send_websocket_error_response()** (7 connections) — `server/realtime/websocket_handler_message_loop.py`
-- **WebSocket** (7 connections)
-- **handle_json_decode_error()** (6 connections) — `server/realtime/websocket_handler_message_loop.py`
-- **UUID** (6 connections)
-- **handle_websocket_generic_exception()** (6 connections) — `server/realtime/websocket_handler_message_loop.py`
-- **process_exception_in_message_loop()** (6 connections) — `server/realtime/websocket_handler_message_loop.py`
-- **handle_websocket_message_loop()** (6 connections) — `server/realtime/websocket_handler_message_loop.py`
-- **process_websocket_inbound_message()** (5 connections) — `server/realtime/websocket_handler_message_loop.py`
-- **handle_websocket_disconnect()** (4 connections) — `server/realtime/websocket_handler_message_loop.py`
-- **Exception** (3 connections)
-- **WebSocket message loop, per-message processing, and loop exception handling.  Ex** (1 connections) — `server/realtime/websocket_handler_message_loop.py`
-- **Send error response to client.      Returns:         True if sent successfully,** (1 connections) — `server/realtime/websocket_handler_message_loop.py`
-- **Handle JSON decode error.** (1 connections) — `server/realtime/websocket_handler_message_loop.py`
-- **Handle WebSocket disconnect.      Returns:         True to break the loop** (1 connections) — `server/realtime/websocket_handler_message_loop.py`
-- **Handle RuntimeError.      Returns:         Tuple of (should_break, should_raise)** (1 connections) — `server/realtime/websocket_handler_message_loop.py`
-- **Handle generic exception.      Returns:         True to break the loop** (1 connections) — `server/realtime/websocket_handler_message_loop.py`
-- **Process a single WebSocket message.      Returns:         True to continue loop,** (1 connections) — `server/realtime/websocket_handler_message_loop.py`
-- **Handle exception in message loop.      Returns:         Tuple of (should_break,** (1 connections) — `server/realtime/websocket_handler_message_loop.py`
-- **Process exception in message loop and return (should_break, should_raise).** (1 connections) — `server/realtime/websocket_handler_message_loop.py`
-- **Handle the main WebSocket message loop.** (1 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **build_event()** (116 connections) — `server/realtime/envelope.py`
+- **test_envelope.py** (28 connections) — `server/tests/unit/realtime/test_envelope.py`
+- **envelope.py** (27 connections) — `server/realtime/envelope.py`
+- **player_event_handlers_state.py** (23 connections) — `server/realtime/player_event_handlers_state.py`
+- **admin_teleport_utils.py** (14 connections) — `server/commands/admin_teleport_utils.py`
+- **_dispatch_player_dp_updated_payload()** (10 connections) — `server/realtime/player_event_handlers_state.py`
+- **UUIDEncoder** (8 connections) — `server/realtime/envelope.py`
+- **_send_player_death_notification()** (7 connections) — `server/realtime/player_event_handlers_state.py`
+- **utc_now_z()** (6 connections) — `server/realtime/envelope.py`
+- **_player_snapshot_for_dp()** (6 connections) — `server/realtime/player_event_handlers_state.py`
+- **_SupportsEventSequence** (4 connections) — `server/realtime/envelope.py`
+- **BoundLogger** (4 connections)
+- **_dp_player_update_payload()** (4 connections) — `server/realtime/player_event_handlers_state.py`
+- **.handle_player_xp_awarded()** (4 connections) — `server/realtime/player_event_handlers_state.py`
+- **.handle_player_dp_updated()** (4 connections) — `server/realtime/player_event_handlers_state.py`
+- **.handle_player_died()** (4 connections) — `server/realtime/player_event_handlers_state.py`
+- **.handle_player_dp_decay()** (4 connections) — `server/realtime/player_event_handlers_state.py`
+- **test_build_event_with_connection_manager()** (4 connections) — `server/tests/unit/realtime/test_envelope.py`
+- **test_build_event_sequence_priority()** (4 connections) — `server/tests/unit/realtime/test_envelope.py`
+- **test_build_event_json_serializable()** (4 connections) — `server/tests/unit/realtime/test_envelope.py`
+- **_get_next_global_sequence()** (3 connections) — `server/realtime/envelope.py`
+- **_dp_posture_from_stats()** (3 connections) — `server/realtime/player_event_handlers_state.py`
+- **test_uuid_encoder_handles_uuid()** (3 connections) — `server/tests/unit/realtime/test_envelope.py`
+- **test_uuid_encoder_handles_other_types()** (3 connections) — `server/tests/unit/realtime/test_envelope.py`
+- **test_uuid_encoder_json_dumps()** (3 connections) — `server/tests/unit/realtime/test_envelope.py`
+- *... and 55 more nodes in this community*
 
 ## Relationships
 
-- [combat schemas schema](combat_schemas_schema.md) (10 shared connections)
-- [Error Handling Core](Error_Handling_Core.md) (6 shared connections)
-- [room websocket updates](room_websocket_updates.md) (6 shared connections)
-- [realtime message validator](realtime_message_validator.md) (4 shared connections)
-- [Loot Generation](Loot_Generation.md) (2 shared connections)
-- [realtime monitoring statistics](realtime_monitoring_statistics.md) (1 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (1 shared connections)
-- [websocket helpers realtime](websocket_helpers_realtime.md) (1 shared connections)
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (1 shared connections)
+- [combat services messaging](combat_services_messaging.md) (15 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (11 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (9 shared connections)
+- [monitoring dashboard rationale](monitoring_dashboard_rationale.md) (8 shared connections)
+- [NPC Combat](NPC_Combat.md) (8 shared connections)
+- [message handler factory](message_handler_factory.md) (7 shared connections)
+- [realtime websocket initial](realtime_websocket_initial.md) (5 shared connections)
+- [item models rationale](item_models_rationale.md) (5 shared connections)
+- [instance game manager](instance_game_manager.md) (4 shared connections)
+- [combat configuration service](combat_configuration_service.md) (4 shared connections)
+- [websocket handler realtime](websocket_handler_realtime.md) (4 shared connections)
+- [command models moderation](command_models_moderation.md) (4 shared connections)
 
 ## Source Files
 
-- `server/realtime/websocket_handler_message_loop.py`
+- `server/commands/admin_teleport_utils.py`
+- `server/realtime/envelope.py`
+- `server/realtime/player_event_handlers_state.py`
+- `server/tests/unit/realtime/test_envelope.py`
 
 ## Audit Trail
 
-- EXTRACTED: 110 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 377 (98%)
+- INFERRED: 6 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

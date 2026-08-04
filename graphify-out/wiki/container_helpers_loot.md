@@ -34,11 +34,11 @@
 ## Relationships
 
 - [NPC Combat](NPC_Combat.md) (7 shared connections)
-- [command factories exploration](command_factories_exploration.md) (4 shared connections)
+- [models npc rationale](models_npc_rationale.md) (6 shared connections)
 - [commands lucidity recovery](commands_lucidity_recovery.md) (2 shared connections)
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
 - [Item Instances](Item_Instances.md) (2 shared connections)
-- [command factories communication](command_factories_communication.md) (2 shared connections)
+- [command factories communication](command_factories_communication.md) (1 shared connections)
+- [combat models rationale](combat_models_rationale.md) (1 shared connections)
 
 ## Source Files
 

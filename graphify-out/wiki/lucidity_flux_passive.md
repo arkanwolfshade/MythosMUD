@@ -37,14 +37,14 @@
 - [combat models rationale](combat_models_rationale.md) (5 shared connections)
 - [rate lucidity services](rate_lucidity_services.md) (4 shared connections)
 - [models lucidity rationale](models_lucidity_rationale.md) (4 shared connections)
-- [Loot Generation](Loot_Generation.md) (3 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (3 shared connections)
 - [services service phantom](services_service_phantom.md) (3 shared connections)
-- [persistence rationale players](persistence_rationale_players.md) (2 shared connections)
-- [Database Config](Database_Config.md) (2 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
+- [NPC Combat](NPC_Combat.md) (3 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (2 shared connections)
+- [taunt combat commands](taunt_combat_commands.md) (1 shared connections)
 - [player room realtime](player_room_realtime.md) (1 shared connections)
-- [player death service](player_death_service.md) (1 shared connections)
-- [NPC Combat](NPC_Combat.md) (1 shared connections)
+- [nats services service](nats_services_service.md) (1 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (1 shared connections)
 
 ## Source Files
 

@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_get_combat_stats_for_player()** (3 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
-- **Player branch returns combat-shaped stats.** (1 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **test_should_apply_mute_check_sensitive_channel()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Test should_apply_mute_check() returns True for sensitive channels.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Relationships
 
-- [room conftest toolkit](room_conftest_toolkit.md) (1 shared connections)
-- [services nats service](services_nats_service.md) (1 shared connections)
+- [message filtering realtime](message_filtering_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

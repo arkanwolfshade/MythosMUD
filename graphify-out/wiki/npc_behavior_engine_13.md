@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_add_items_to_wearable_container()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test add_items_to_wearable_container adds items.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_process_single_message_validation_error_missing_fields()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **Test _process_single_message raises ValueError when required fields are missing.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Relationships
 
-- [wearable container service](wearable_container_service.md) (1 shared connections)
+- [nats message handler](nats_message_handler.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Audit Trail
 

@@ -1,10 +1,9 @@
 # commands admin mute
 
-> 107 nodes
+> 105 nodes
 
 ## Key Concepts
 
-- **command_service.py** (95 connections) — `server/commands/command_service.py`
 - **test_admin_commands.py** (37 connections) — `server/tests/unit/commands/test_admin_commands.py`
 - **admin_commands.py** (33 connections) — `server/commands/admin_commands.py`
 - **admin_mute_commands.py** (29 connections) — `server/commands/admin_mute_commands.py`
@@ -29,35 +28,35 @@
 - **_mute_success_result()** (4 connections) — `server/commands/admin_mute_commands.py`
 - **_mute_display_target()** (4 connections) — `server/commands/admin_mute_commands.py`
 - **_resolve_current_player_id_for_mutes()** (4 connections) — `server/commands/admin_mute_commands.py`
-- *... and 82 more nodes in this community*
+- **.is_admin()** (4 connections) — `server/commands/communication_commands_support.py`
+- *... and 80 more nodes in this community*
 
 ## Relationships
 
-- [Loot Generation](Loot_Generation.md) (16 shared connections)
-- [commands party examples](commands_party_examples.md) (12 shared connections)
-- [realtime game state](realtime_game_state.md) (10 shared connections)
-- [Database Config](Database_Config.md) (8 shared connections)
-- [commands alias rationale](commands_alias_rationale.md) (7 shared connections)
-- [npc service services](npc_service_services.md) (6 shared connections)
-- [realtime real time](realtime_real_time.md) (6 shared connections)
-- [commands magic rationale](commands_magic_rationale.md) (6 shared connections)
-- [commands position system](commands_position_system.md) (4 shared connections)
-- [position player service](position_player_service.md) (4 shared connections)
+- [commands whisper command](commands_whisper_command.md) (12 shared connections)
+- [commands npc admin](commands_npc_admin.md) (11 shared connections)
+- [realtime game state](realtime_game_state.md) (8 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (8 shared connections)
+- [NPC Combat](NPC_Combat.md) (5 shared connections)
 - [container schemas containers](container_schemas_containers.md) (3 shared connections)
 - [command models admin](command_models_admin.md) (3 shared connections)
+- [Loot Generation](Loot_Generation.md) (3 shared connections)
+- [admin structured logging](admin_structured_logging.md) (3 shared connections)
+- [connection realtime manager](connection_realtime_manager.md) (3 shared connections)
+- [npc service services](npc_service_services.md) (2 shared connections)
+- [time service rationale](time_service_rationale.md) (2 shared connections)
 
 ## Source Files
 
 - `server/commands/admin_commands.py`
 - `server/commands/admin_mute_commands.py`
-- `server/commands/command_service.py`
 - `server/commands/communication_commands_support.py`
 - `server/tests/unit/commands/test_admin_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 447 (89%)
-- INFERRED: 58 (11%)
+- EXTRACTED: 351 (86%)
+- INFERRED: 58 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,6 +1,6 @@
 # commands quest rationale
 
-> 87 nodes
+> 83 nodes
 
 ## Key Concepts
 
@@ -15,7 +15,6 @@
 - **_get_quest_service()** (7 connections) — `server/commands/quest_commands.py`
 - **npc_definition_id()** (7 connections) — `server/commands/quest_commands.py`
 - **emit_quest_npc_say()** (7 connections) — `server/game/quest/quest_chat_notify.py`
-- **title_from_quest_result()** (7 connections) — `server/game/quest/quest_chat_notify.py`
 - **_enter_quest_command_patches()** (7 connections) — `server/tests/unit/commands/test_quest_commands.py`
 - **_resolve_player_id()** (6 connections) — `server/commands/quest_commands.py`
 - **UUID** (6 connections)
@@ -29,18 +28,22 @@
 - **_format_quest_log()** (5 connections) — `server/commands/quest_commands.py`
 - **_handle_quest_abandon()** (5 connections) — `server/commands/quest_commands.py`
 - **ExitStack** (5 connections)
-- *... and 62 more nodes in this community*
+- **test_quest_ask_success()** (5 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- *... and 58 more nodes in this community*
 
 ## Relationships
 
-- [quest chat game](quest_chat_game.md) (13 shared connections)
 - [npc look commands](npc_look_commands.md) (9 shared connections)
-- [player cache rationale](player_cache_rationale.md) (5 shared connections)
-- [Loot Generation](Loot_Generation.md) (4 shared connections)
-- [quest service game](quest_service_game.md) (4 shared connections)
-- [commands party examples](commands_party_examples.md) (3 shared connections)
-- [commands admin mute](commands_admin_mute.md) (3 shared connections)
+- [calendar models rationale](calendar_models_rationale.md) (6 shared connections)
+- [dialogue service game](dialogue_service_game.md) (5 shared connections)
+- [quest chat game](quest_chat_game.md) (5 shared connections)
+- [commands whisper command](commands_whisper_command.md) (4 shared connections)
+- [commands npc admin](commands_npc_admin.md) (3 shared connections)
+- [quest game service](quest_game_service.md) (3 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
 - [connection realtime manager](connection_realtime_manager.md) (2 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [quest service game](quest_service_game.md) (1 shared connections)
 - [player preferences services](player_preferences_services.md) (1 shared connections)
 
 ## Source Files
@@ -52,7 +55,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 348 (98%)
+- EXTRACTED: 336 (98%)
 - INFERRED: 8 (2%)
 - AMBIGUOUS: 0 (0%)
 

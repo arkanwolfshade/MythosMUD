@@ -1,10 +1,9 @@
 # quest service game
 
-> 86 nodes
+> 83 nodes
 
 ## Key Concepts
 
-- **QuestService** (84 connections) — `server/game/quest/quest_service.py`
 - **test_quest_service.py** (42 connections) — `server/tests/unit/game/test_quest_service.py`
 - **_MockDefRepo** (31 connections) — `server/tests/unit/game/test_quest_service.py`
 - **_MockInstanceRepo** (26 connections) — `server/tests/unit/game/test_quest_service.py`
@@ -29,32 +28,27 @@
 - **test_get_quest_log_returns_entries()** (7 connections) — `server/tests/unit/game/test_quest_service.py`
 - **_make_turn_in_definition_row()** (7 connections) — `server/tests/unit/game/test_quest_service.py`
 - **test_turn_in_success()** (7 connections) — `server/tests/unit/game/test_quest_service.py`
-- *... and 61 more nodes in this community*
+- **test_turn_in_no_active_instance_returns_error()** (7 connections) — `server/tests/unit/game/test_quest_service.py`
+- *... and 58 more nodes in this community*
 
 ## Relationships
 
-- [quest game service](quest_game_service.md) (26 shared connections)
-- [commands quest rationale](commands_quest_rationale.md) (4 shared connections)
-- [Database Config](Database_Config.md) (4 shared connections)
-- [collect quest service](collect_quest_service.md) (4 shared connections)
-- [health realtime monitoring](health_realtime_monitoring.md) (3 shared connections)
-- [combat death services](combat_death_services.md) (3 shared connections)
-- [Player Stats](Player_Stats.md) (2 shared connections)
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (2 shared connections)
-- [websocket realtime handler](websocket_realtime_handler.md) (1 shared connections)
-- [time service rationale](time_service_rationale.md) (1 shared connections)
-- [command parser rationale](command_parser_rationale.md) (1 shared connections)
-- [container main rationale](container_main_rationale.md) (1 shared connections)
+- [quest game service](quest_game_service.md) (35 shared connections)
+- [collect inventory game](collect_inventory_game.md) (1 shared connections)
+- [commands inventory command](commands_inventory_command.md) (1 shared connections)
+- [commands quest rationale](commands_quest_rationale.md) (1 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
+- [nats services metrics](nats_services_metrics.md) (1 shared connections)
+- [help content websocket](help_content_websocket.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/quest/quest_service.py`
 - `server/tests/unit/game/test_quest_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 477 (97%)
-- INFERRED: 17 (3%)
+- EXTRACTED: 397 (98%)
+- INFERRED: 10 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

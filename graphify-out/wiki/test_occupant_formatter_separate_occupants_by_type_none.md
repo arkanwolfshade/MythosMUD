@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_handle_unequip_wearable_container_no_allowed_roles()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test handle_unequip_wearable_container when container has no allowed_roles.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_handle_nats_message_unknown_channel_defaults()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **Test _handle_nats_message uses 'unknown' as default channel when missing.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Relationships
 
-- [wearable container service](wearable_container_service.md) (1 shared connections)
+- [nats message handler](nats_message_handler.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Audit Trail
 

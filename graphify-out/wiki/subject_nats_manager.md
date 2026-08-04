@@ -33,15 +33,14 @@
 
 ## Relationships
 
-- [coercion int inventory](coercion_int_inventory.md) (8 shared connections)
 - [spell game magic](spell_game_magic.md) (8 shared connections)
+- [NPC Combat](NPC_Combat.md) (6 shared connections)
+- [coercion int inventory](coercion_int_inventory.md) (3 shared connections)
 - [player respawn event](player_respawn_event.md) (2 shared connections)
+- [models npc rationale](models_npc_rationale.md) (2 shared connections)
 - [room realtime rationale](room_realtime_rationale.md) (1 shared connections)
 - [magic completion game](magic_completion_game.md) (1 shared connections)
-- [admin auth service](admin_auth_service.md) (1 shared connections)
 - [manager room npcs](manager_room_npcs.md) (1 shared connections)
-- [npc database infrastructure](npc_database_infrastructure.md) (1 shared connections)
-- [Player Stats](Player_Stats.md) (1 shared connections)
 - [realtime monitoring statistics](realtime_monitoring_statistics.md) (1 shared connections)
 
 ## Source Files

@@ -33,10 +33,11 @@
 
 ## Relationships
 
-- [websocket handler realtime](websocket_handler_realtime.md) (3 shared connections)
 - [player_event_handler_utils](player_event_handler_utils.md) (3 shared connections)
+- [commands communication say](commands_communication_say.md) (2 shared connections)
 - [inventory mutation guard](inventory_mutation_guard.md) (2 shared connections)
-- [realtime monitoring performance](realtime_monitoring_performance.md) (1 shared connections)
+- [NPC Combat](NPC_Combat.md) (1 shared connections)
+- [event bus events](event_bus_events.md) (1 shared connections)
 
 ## Source Files
 

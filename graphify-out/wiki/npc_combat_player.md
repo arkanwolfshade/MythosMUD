@@ -27,7 +27,7 @@
 
 ## Relationships
 
-- [models npc rationale](models_npc_rationale.md) (4 shared connections)
+- [NPC Combat](NPC_Combat.md) (4 shared connections)
 
 ## Source Files
 

@@ -2,7 +2,7 @@
 
 > God node · 582 connections · `server/exceptions.py`
 
-**Community:** [Database Access Layer](Database_Access_Layer.md)
+**Community:** [Loot Generation](Loot_Generation.md)
 
 ## Connections by Relation
 

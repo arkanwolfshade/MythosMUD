@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_update_player_location_success()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **Test update_player_location() successfully updates location.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_restore_mp_from_item_restores_mp()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Test restore_mp_from_item() restores MP.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Relationships
 
-- [room realtime subscription](room_realtime_subscription.md) (1 shared connections)
+- [config rationale reset](config_rationale_reset.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_player_service_mutations.py`
+- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Audit Trail
 

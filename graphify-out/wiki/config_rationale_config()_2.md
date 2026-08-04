@@ -1,42 +1,39 @@
 # config rationale config()
 
-> 14 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **CacheService** (24 connections) — `server/caching/cache_service.py`
-- **TestCacheService** (12 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.get_room_sync()** (4 connections) — `server/caching/cache_service.py`
-- **.preload_frequently_accessed_data()** (4 connections) — `server/caching/cache_service.py`
-- **.test_init_without_npc_service()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_init_with_npc_service()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_get_cache_stats_and_clear()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_preload_frequently_accessed_data()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_preload_handles_room_failure()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_preload_handles_profession_failure()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.clear_all_caches()** (1 connections) — `server/caching/cache_service.py`
-- **Get room data with caching (synchronous version).          Args:             roo** (1 connections) — `server/caching/cache_service.py`
-- **Main cache service that coordinates all caching operations.      This service pr** (1 connections) — `server/caching/cache_service.py`
-- **Preload frequently accessed data into caches.          This method loads commonl** (1 connections) — `server/caching/cache_service.py`
+- **CircuitBreakerOpen** (14 connections) — `server/realtime/circuit_breaker.py`
+- **test_call_rejects_when_open()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_circuit_breaker_open_exception()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_handle_nats_message_circuit_breaker_open()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_handle_nats_message_unknown_message_id_defaults()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **Exception** (1 connections)
+- **Exception raised when circuit breaker is open.      Indicates the protected serv** (1 connections) — `server/realtime/circuit_breaker.py`
+- **Test call() raises CircuitBreakerOpen when circuit is OPEN.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **Test CircuitBreakerOpen exception.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **Test _handle_nats_message() handles circuit breaker open.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **Test _handle_nats_message uses 'unknown' as default message_id when missing.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Relationships
 
-- [startup npc service](startup_npc_service.md) (5 shared connections)
-- [commands skills rationale](commands_skills_rationale.md) (5 shared connections)
-- [uuid services npc](uuid_services_npc.md) (4 shared connections)
-- [services lucidity repository](services_lucidity_repository.md) (4 shared connections)
-- [cache caching service](cache_caching_service.md) (3 shared connections)
-- [caching lru cache](caching_lru_cache.md) (1 shared connections)
+- [websocket handler realtime](websocket_handler_realtime.md) (5 shared connections)
+- [container persistence rationale](container_persistence_rationale.md) (3 shared connections)
+- [nats message handler](nats_message_handler.md) (3 shared connections)
+- [conftest mock rationale](conftest_mock_rationale.md) (1 shared connections)
+- [NPC Combat](NPC_Combat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/caching/cache_service.py`
-- `server/tests/unit/caching/test_cache_service.py`
+- `server/realtime/circuit_breaker.py`
+- `server/tests/unit/realtime/test_circuit_breaker.py`
+- `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 46 (77%)
-- INFERRED: 14 (23%)
+- EXTRACTED: 28 (85%)
+- INFERRED: 5 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

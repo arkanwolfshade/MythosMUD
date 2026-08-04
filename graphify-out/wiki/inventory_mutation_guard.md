@@ -33,14 +33,14 @@
 
 ## Relationships
 
-- [realtime monitoring performance](realtime_monitoring_performance.md) (5 shared connections)
+- [event bus events](event_bus_events.md) (5 shared connections)
 - [Realtime Subscribers](Realtime_Subscribers.md) (3 shared connections)
+- [realtime monitoring performance](realtime_monitoring_performance.md) (2 shared connections)
 - [schedule services service](schedule_services_service.md) (2 shared connections)
 - [player_event_handler_utils](player_event_handler_utils.md) (2 shared connections)
 - [Player Name Validation](Player_Name_Validation.md) (2 shared connections)
-- [player occupant processor](player_occupant_processor.md) (2 shared connections)
 - [realtime messaging message](realtime_messaging_message.md) (2 shared connections)
-- [combat services messaging](combat_services_messaging.md) (1 shared connections)
+- [room look commands](room_look_commands.md) (1 shared connections)
 
 ## Source Files
 

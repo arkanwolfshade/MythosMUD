@@ -33,9 +33,9 @@
 ## Relationships
 
 - [useDraggablePanelInteractions draggableP](useDraggablePanelInteractions_draggableP.md) (8 shared connections)
-- [Loot Generation](Loot_Generation.md) (2 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
-- [Database Config](Database_Config.md) (1 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [taunt combat commands](taunt_combat_commands.md) (1 shared connections)
+- [shutdown command commands](shutdown_command_commands.md) (1 shared connections)
 
 ## Source Files
 

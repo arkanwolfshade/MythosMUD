@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_is_cache_valid_false_expired()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test _is_cache_valid() returns False for expired cache.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_unsubscribe_from_subject_error()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **Test _unsubscribe_from_subject() handles errors.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Relationships
 
-- [user manager services](user_manager_services.md) (1 shared connections)
+- [commands communication say](commands_communication_say.md) (1 shared connections)
+- [nats message handler](nats_message_handler.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_user_manager.py`
+- `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,54 +1,53 @@
 # player cache rationale
 
-> 21 nodes
+> 32 nodes
 
 ## Key Concepts
 
-- **talk_command.py** (27 connections) — `server/commands/talk_command.py`
-- **handle_talk_command()** (11 connections) — `server/commands/talk_command.py`
-- **get_dialogue_service()** (9 connections) — `server/game/dialogue/dialogue_service.py`
-- **_emit_prompt()** (8 connections) — `server/commands/talk_command.py`
-- **_talk_with_npc()** (8 connections) — `server/commands/talk_command.py`
-- **format_dialogue_prompt()** (7 connections) — `server/game/dialogue/dialogue_service.py`
-- **_talk_by_option_index()** (6 connections) — `server/commands/talk_command.py`
-- **_resolve_player_id()** (5 connections) — `server/commands/talk_command.py`
-- **UUID** (5 connections)
-- **_remainder_from_command_data()** (3 connections) — `server/commands/talk_command.py`
-- **test_format_dialogue_prompt_numbers_options()** (3 connections) — `server/tests/unit/game/test_dialogue_service.py`
-- **talk / talk <n> command for NPC dialogue trees (#583).** (1 connections) — `server/commands/talk_command.py`
-- **Extract player UUID from player model.** (1 connections) — `server/commands/talk_command.py`
-- **Join talk args into a single remainder string.** (1 connections) — `server/commands/talk_command.py`
-- **Send personal system message for a node; return short command result.** (1 connections) — `server/commands/talk_command.py`
-- **Advance an active dialogue by numbered option.** (1 connections) — `server/commands/talk_command.py`
-- **Start dialogue with a same-room NPC.** (1 connections) — `server/commands/talk_command.py`
-- **Handle talk <npc> or talk <n> against same-room NPCs.** (1 connections) — `server/commands/talk_command.py`
-- **Build personal-system message body for a dialogue node.** (1 connections) — `server/game/dialogue/dialogue_service.py`
-- **Return process-wide DialogueService singleton.** (1 connections) — `server/game/dialogue/dialogue_service.py`
-- **Prompt includes NPC line and numbered options.** (1 connections) — `server/tests/unit/game/test_dialogue_service.py`
+- **test_inventory_service.py** (20 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **InventoryValidationError** (13 connections) — `server/services/inventory_service.py`
+- **inventory_service()** (3 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **test_add_stack_capacity_error()** (3 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **test_add_stack_validation_error_missing_field()** (3 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **test_add_stack_validation_error_invalid_quantity()** (3 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **test_split_stack_invalid_index()** (3 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **test_split_stack_invalid_quantity_zero()** (3 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **test_split_stack_invalid_quantity_negative()** (3 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **test_split_stack_quantity_too_large()** (3 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **test_split_stack_capacity_error()** (3 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **test_add_stack_new_item()** (2 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **test_add_stack_merges_existing()** (2 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **test_split_stack_success()** (2 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **test_begin_mutation_success()** (2 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **test_begin_mutation_with_string_id()** (2 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **Raised when item payloads are malformed or incomplete.** (1 connections) — `server/services/inventory_service.py`
+- **Unit tests for inventory service.  Tests the InventoryService class for inventor** (1 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **Create an InventoryService instance.** (1 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **Test add_stack adds new item to inventory.** (1 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **Test add_stack merges with existing stack.** (1 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **Test add_stack raises InventoryCapacityError when at capacity.** (1 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **Test add_stack raises InventoryValidationError for missing fields.** (1 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **Test add_stack raises InventoryValidationError for invalid quantity.** (1 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **Test split_stack successfully splits a stack.** (1 connections) — `server/tests/unit/services/test_inventory_service.py`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [dialogue service game](dialogue_service_game.md) (10 shared connections)
-- [rate limiter services](rate_limiter_services.md) (6 shared connections)
-- [commands quest rationale](commands_quest_rationale.md) (5 shared connections)
-- [Loot Generation](Loot_Generation.md) (4 shared connections)
-- [quest chat game](quest_chat_game.md) (3 shared connections)
-- [commands party examples](commands_party_examples.md) (2 shared connections)
-- [commands admin mute](commands_admin_mute.md) (2 shared connections)
-- [commands command rationale](commands_command_rationale.md) (2 shared connections)
-- [commands communication flows](commands_communication_flows.md) (1 shared connections)
-- [connection realtime manager](connection_realtime_manager.md) (1 shared connections)
+- [Exception Containers](Exception_Containers.md) (14 shared connections)
+- [payload realtime optimizer](payload_realtime_optimizer.md) (2 shared connections)
+- [container helpers endpoints](container_helpers_endpoints.md) (2 shared connections)
+- [commands inventory command](commands_inventory_command.md) (1 shared connections)
+- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/talk_command.py`
-- `server/game/dialogue/dialogue_service.py`
-- `server/tests/unit/game/test_dialogue_service.py`
+- `server/services/inventory_service.py`
+- `server/tests/unit/services/test_inventory_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 101 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 73 (85%)
+- INFERRED: 13 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

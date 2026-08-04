@@ -1,6 +1,6 @@
 # Security Validator Tests
 
-> 218 nodes
+> 222 nodes
 
 ## Key Concepts
 
@@ -24,29 +24,30 @@
 - **check_injection_patterns()** (6 connections) — `server/validators/security_validator.py`
 - **get_dangerous_characters()** (5 connections) — `server/validators/security_validator.py`
 - **get_injection_patterns()** (5 connections) — `server/validators/security_validator.py`
-- **.validate_player_name_field()** (3 connections) — `server/models/command_admin.py`
 - **.validate_alias_name_field()** (3 connections) — `server/models/command_alias.py`
 - **.validate_command()** (3 connections) — `server/models/command_alias.py`
 - **.validate_target()** (3 connections) — `server/models/command_combat.py`
 - **.validate_target()** (3 connections) — `server/models/command_combat.py`
-- *... and 193 more nodes in this community*
+- **.validate_action()** (3 connections) — `server/models/command_communication.py`
+- *... and 197 more nodes in this community*
 
 ## Relationships
 
-- [command factories create](command_factories_create.md) (46 shared connections)
+- [command factories create](command_factories_create.md) (42 shared connections)
 - [command communication models](command_communication_models.md) (9 shared connections)
+- [command validator validators](command_validator_validators.md) (5 shared connections)
 - [commands who helpers](commands_who_helpers.md) (4 shared connections)
-- [command validator validators](command_validator_validators.md) (4 shared connections)
-- [auth endpoints rationale](auth_endpoints_rationale.md) (3 shared connections)
-- [Loot Generation](Loot_Generation.md) (3 shared connections)
+- [command commands talk](command_commands_talk.md) (3 shared connections)
+- [commands whisper command](commands_whisper_command.md) (2 shared connections)
+- [auth endpoints rationale](auth_endpoints_rationale.md) (2 shared connections)
+- [admin auth service](admin_auth_service.md) (2 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
 - [logoutHandler logger App](logoutHandler_logger_App.md) (1 shared connections)
-- [commands admin mute](commands_admin_mute.md) (1 shared connections)
 - [combat services initialization](combat_services_initialization.md) (1 shared connections)
-- [commands party examples](commands_party_examples.md) (1 shared connections)
+- [commands npc admin](commands_npc_admin.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/command_admin.py`
 - `server/models/command_alias.py`
 - `server/models/command_combat.py`
 - `server/models/command_communication.py`
@@ -57,7 +58,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 665 (99%)
+- EXTRACTED: 673 (99%)
 - INFERRED: 10 (1%)
 - AMBIGUOUS: 0 (0%)
 

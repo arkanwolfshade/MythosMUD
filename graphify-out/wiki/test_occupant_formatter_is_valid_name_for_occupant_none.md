@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_handle_equip_wearable_container_multiple_existing_containers()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test handle_equip_wearable_container with multiple existing containers.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_unsubscribe_from_event_subjects_partial()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **Test unsubscribe_from_event_subjects handles partial success.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
 
 ## Relationships
 
-- [wearable container service](wearable_container_service.md) (1 shared connections)
+- [subzone realtime nats](subzone_realtime_nats.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
 
 ## Audit Trail
 

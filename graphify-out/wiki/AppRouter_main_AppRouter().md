@@ -1,25 +1,29 @@
 # AppRouter main AppRouter()
 
-> 4 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **Specific Actionable Recommendations** (4 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Phase A: Quick Wins (1-2 hours effort)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Phase B: Medium Effort (4-8 hours effort)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Phase C: Strategic Enhancements (8-16 hours effort)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **TestEnsureAliasStorage** (5 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.test_ensure_alias_storage_returns_existing()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.test_ensure_alias_storage_initializes_new()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.test_ensure_alias_storage_handles_error()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _ensure_alias_storage function.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _ensure_alias_storage returns existing storage if provided.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _ensure_alias_storage initializes new storage when None.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _ensure_alias_storage returns None on initialization error.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
 
 ## Relationships
 
-- [archive QUALITY AUDIT](archive_QUALITY_AUDIT.md) (1 shared connections)
+- [command commands handler](command_commands_handler.md) (4 shared connections)
 
 ## Source Files
 
-- `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- `server/tests/unit/commands/test_command_aliases.py`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

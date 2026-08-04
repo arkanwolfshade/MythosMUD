@@ -1,56 +1,59 @@
 # auth rationale access
 
-> 57 nodes
+> 137 nodes
 
 ## Key Concepts
 
-- **create_access_token()** (32 connections) — `server/auth_utils.py`
-- **decode_access_token()** (25 connections) — `server/auth_utils.py`
-- **test_decode_access_token_success()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_decode_access_token_expired()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_create_access_token_with_custom_secret()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_create_access_token_with_none_secret()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_decode_access_token_none_secret()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_decode_access_token_wrong_secret()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_create_access_token_jwt_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_create_access_token_value_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_decode_access_token_value_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_decode_access_token_type_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_decode_access_token_runtime_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_decode_access_token_with_custom_algorithm()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_decode_access_token_with_wrong_algorithm()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_create_access_token_runtime_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_create_access_token_with_audience()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_decode_access_token_with_expired_token_immediately()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_create_access_token_success()** (3 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_create_access_token_with_expires_delta()** (3 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_decode_access_token_invalid()** (3 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_decode_access_token_none_token()** (3 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_create_access_token_with_empty_data()** (3 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_create_access_token_with_custom_algorithm()** (3 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_create_access_token_with_none_expires_delta()** (3 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- *... and 32 more nodes in this community*
+- **test_container_websocket_events.py** (23 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_container_events.py** (22 connections) — `server/tests/unit/api/test_container_events.py`
+- **container_events.py** (21 connections) — `server/api/container_events.py`
+- **emit_transfer_event()** (17 connections) — `server/api/container_events.py`
+- **emit_loot_all_event()** (17 connections) — `server/api/container_events.py`
+- **container_websocket_events.py** (17 connections) — `server/services/container_websocket_events.py`
+- **emit_container_opened_events()** (16 connections) — `server/api/container_events.py`
+- **_emit_close_container_event()** (14 connections) — `server/api/container_events.py`
+- **emit_container_opened()** (14 connections) — `server/services/container_websocket_events.py`
+- **TestEmitLootAllEvent** (13 connections) — `server/tests/unit/api/test_container_events.py`
+- **container_models.py** (12 connections) — `server/api/container_models.py`
+- **emit_container_opened_to_room()** (12 connections) — `server/services/container_websocket_events.py`
+- **TestEmitTransferEvent** (12 connections) — `server/tests/unit/api/test_container_events.py`
+- **TestEmitCloseContainerEvent** (12 connections) — `server/tests/unit/api/test_container_events.py`
+- **TestEmitContainerOpenedEvents** (11 connections) — `server/tests/unit/api/test_container_events.py`
+- **emit_container_updated()** (10 connections) — `server/services/container_websocket_events.py`
+- **emit_container_closed()** (9 connections) — `server/services/container_websocket_events.py`
+- **emit_container_decayed()** (8 connections) — `server/services/container_websocket_events.py`
+- **TestEmitTransferEventDirections** (8 connections) — `server/tests/unit/api/test_container_events.py`
+- **TestEmitContainerOpenedEventsEdgeCases** (8 connections) — `server/tests/unit/api/test_container_events.py`
+- **UUID** (6 connections)
+- **UUID** (5 connections)
+- **Any** (5 connections)
+- **Any** (4 connections)
+- **.test_emit_transfer_event_success()** (4 connections) — `server/tests/unit/api/test_container_events.py`
+- *... and 112 more nodes in this community*
 
 ## Relationships
 
-- [npc lifecycle combat](npc_lifecycle_combat.md) (28 shared connections)
-- [Error Handling Core](Error_Handling_Core.md) (6 shared connections)
-- [websocket helpers realtime](websocket_helpers_realtime.md) (3 shared connections)
-- [combat commands handler](combat_commands_handler.md) (3 shared connections)
-- [player requests schemas](player_requests_schemas.md) (2 shared connections)
-- [Loot Generation](Loot_Generation.md) (2 shared connections)
-- [connection realtime delegates](connection_realtime_delegates.md) (2 shared connections)
-- [Database Config](Database_Config.md) (1 shared connections)
+- [Exception Containers](Exception_Containers.md) (32 shared connections)
+- [commands follow rationale](commands_follow_rationale.md) (31 shared connections)
+- [task registry app](task_registry_app.md) (10 shared connections)
+- [NPC Combat](NPC_Combat.md) (4 shared connections)
+- [room look commands](room_look_commands.md) (3 shared connections)
+- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (2 shared connections)
+- [tick game processing](tick_game_processing.md) (1 shared connections)
+- [services npc startup](services_npc_startup.md) (1 shared connections)
 
 ## Source Files
 
-- `server/auth_utils.py`
-- `server/tests/unit/auth/test_auth_utils.py`
+- `server/api/container_events.py`
+- `server/api/container_models.py`
+- `server/services/container_websocket_events.py`
+- `server/tests/unit/api/test_container_events.py`
+- `server/tests/unit/services/test_container_websocket_events.py`
 
 ## Audit Trail
 
-- EXTRACTED: 176 (97%)
-- INFERRED: 5 (3%)
+- EXTRACTED: 488 (95%)
+- INFERRED: 24 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

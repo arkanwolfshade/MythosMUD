@@ -4,25 +4,23 @@
 
 ## Key Concepts
 
-- **properties** (10 connections) — `schemas/calendar/schedule.schema.json`
-- **start_hour** (4 connections) — `schemas/calendar/schedule.schema.json`
-- **name** (3 connections) — `schemas/calendar/schedule.schema.json`
-- **category** (3 connections) — `schemas/calendar/schedule.schema.json`
-- **notes** (2 connections) — `schemas/calendar/schedule.schema.json`
+- **days** (4 connections) — `schemas/calendar/schedule.schema.json`
+- **applies_to** (4 connections) — `schemas/calendar/schedule.schema.json`
+- **items** (3 connections) — `schemas/calendar/schedule.schema.json`
+- **type** (3 connections) — `schemas/calendar/schedule.schema.json`
+- **items** (3 connections) — `schemas/calendar/schedule.schema.json`
+- **effects** (3 connections) — `schemas/calendar/schedule.schema.json`
+- **items** (3 connections) — `schemas/calendar/schedule.schema.json`
+- **pattern** (2 connections) — `schemas/calendar/schedule.schema.json`
 - **type** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **minLength** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **minItems** (1 connections) — `schemas/calendar/schedule.schema.json`
 - **type** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **minLength** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **minimum** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **maximum** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **minItems** (1 connections) — `schemas/calendar/schedule.schema.json`
 - **type** (1 connections) — `schemas/calendar/schedule.schema.json`
 
 ## Relationships
 
 - [schemas calendar schedule](schemas_calendar_schedule.md) (4 shared connections)
-- [config rationale reset](config_rationale_reset.md) (1 shared connections)
-- [lucidity services npc](lucidity_services_npc.md) (1 shared connections)
 
 ## Source Files
 

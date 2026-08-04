@@ -14,7 +14,7 @@
 ## Relationships
 
 - [spawn npc services](spawn_npc_services.md) (3 shared connections)
-- [inventory schemas schema](inventory_schemas_schema.md) (1 shared connections)
+- [Player Stats](Player_Stats.md) (1 shared connections)
 - [level curve game](level_curve_game.md) (1 shared connections)
 - [message filtering helpers](message_filtering_helpers.md) (1 shared connections)
 - [professions endpoints all](professions_endpoints_all.md) (1 shared connections)

@@ -20,7 +20,7 @@
 ## Relationships
 
 - [Error Handling Core](Error_Handling_Core.md) (2 shared connections)
-- [combat schemas schema](combat_schemas_schema.md) (1 shared connections)
+- [room websocket updates](room_websocket_updates.md) (1 shared connections)
 
 ## Source Files
 

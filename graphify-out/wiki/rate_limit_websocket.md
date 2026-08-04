@@ -19,7 +19,7 @@
 
 ## Relationships
 
-- [combat schemas schema](combat_schemas_schema.md) (1 shared connections)
+- [room websocket updates](room_websocket_updates.md) (1 shared connections)
 
 ## Source Files
 

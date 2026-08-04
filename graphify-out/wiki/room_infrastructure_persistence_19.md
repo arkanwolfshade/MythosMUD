@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_unmute_global_success()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test unmute_global() successfully unmutes a player.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_should_echo_to_sender_no_targets_not_notified()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _should_echo_to_sender returns True when no targets but not notified.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [user manager services](user_manager_services.md) (1 shared connections)
+- [message chat nats](message_chat_nats.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_user_manager.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 

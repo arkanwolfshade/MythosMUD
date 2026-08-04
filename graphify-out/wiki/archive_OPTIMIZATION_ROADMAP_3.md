@@ -4,11 +4,11 @@
 
 ## Key Concepts
 
-- **Phase 2: Infrastructure Test Reduction (Week 2)** (5 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Task 2.1: Reduce Dependency Injection Tests (2 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Task 2.2: Consolidate Dependency Injection Test Files (2 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Task 2.3: Reduce App Factory Tests (1 hour)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Task 2.4: Review Lifespan Tests (1 hour)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Phase 1: Quick Wins (Week 1)** (5 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Task 1.1: Remove Placeholder Tests (30 minutes)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Task 1.2: Remove Trivial Type Assertions (1 hour)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Task 1.3: Remove Duplicate Tests (30 minutes)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Task 1.4: Delete Empty Test File (5 minutes)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
 
 ## Relationships
 

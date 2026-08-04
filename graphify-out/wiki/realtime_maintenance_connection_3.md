@@ -33,11 +33,9 @@
 
 ## Relationships
 
-- [Database Config](Database_Config.md) (9 shared connections)
-- [connection disconnection realtime](connection_disconnection_realtime.md) (4 shared connections)
-- [services npc startup](services_npc_startup.md) (2 shared connections)
-- [lucidity active service](lucidity_active_service.md) (2 shared connections)
-- [container service services](container_service_services.md) (1 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (9 shared connections)
+- [taunt combat commands](taunt_combat_commands.md) (6 shared connections)
+- [lucidity active service](lucidity_active_service.md) (3 shared connections)
 
 ## Source Files
 

@@ -31,8 +31,9 @@
 ## Relationships
 
 - [retry rationale transient()](retry_rationale_transient%28%29.md) (8 shared connections)
-- [Database Config](Database_Config.md) (3 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (2 shared connections)
 - [config models game](config_models_game.md) (1 shared connections)
+- [shutdown command commands](shutdown_command_commands.md) (1 shared connections)
 
 ## Source Files
 

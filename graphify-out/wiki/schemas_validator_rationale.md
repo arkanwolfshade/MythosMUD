@@ -1,56 +1,54 @@
 # schemas validator rationale
 
-> 33 nodes
+> 34 nodes
 
 ## Key Concepts
 
-- **EmoteService** (21 connections) — `server/game/emote_service.py`
-- **test_emote_service.py** (15 connections) — `server/tests/unit/game/test_emote_service.py`
-- **_service_with_emotes()** (10 connections) — `server/tests/unit/game/test_emote_service.py`
-- **EmoteDefinition** (7 connections) — `server/game/emote_service.py`
-- **.format_emote_messages()** (5 connections) — `server/game/emote_service.py`
-- **._load_emotes()** (4 connections) — `server/game/emote_service.py`
-- **._async_load_emotes()** (4 connections) — `server/game/emote_service.py`
-- **.get_emote_definition()** (4 connections) — `server/game/emote_service.py`
-- **.__init__()** (3 connections) — `server/game/emote_service.py`
-- **.reload_emotes()** (3 connections) — `server/game/emote_service.py`
-- **._validate_emote_payload()** (3 connections) — `server/game/emote_service.py`
-- **test_format_emote_messages_unknown_raises()** (3 connections) — `server/tests/unit/game/test_emote_service.py`
-- **.is_emote_alias()** (2 connections) — `server/game/emote_service.py`
-- **.list_available_emotes()** (2 connections) — `server/game/emote_service.py`
-- **test_emote_service_init_loads_via_mock()** (2 connections) — `server/tests/unit/game/test_emote_service.py`
-- **test_is_emote_alias_and_get_definition()** (2 connections) — `server/tests/unit/game/test_emote_service.py`
-- **test_format_emote_messages()** (2 connections) — `server/tests/unit/game/test_emote_service.py`
-- **test_list_available_emotes()** (2 connections) — `server/tests/unit/game/test_emote_service.py`
-- **test_reload_emotes_calls_load()** (2 connections) — `server/tests/unit/game/test_emote_service.py`
-- **test_validate_emote_payload_no_validator()** (2 connections) — `server/tests/unit/game/test_emote_service.py`
-- **test_validate_emote_payload_with_validator()** (2 connections) — `server/tests/unit/game/test_emote_service.py`
-- **Public emote payload returned by EmoteService lookups.** (1 connections) — `server/game/emote_service.py`
-- **Service for managing predefined emote actions and their messages.** (1 connections) — `server/game/emote_service.py`
-- **Initialize the EmoteService.          Args:             emote_file_path: DEPRECA** (1 connections) — `server/game/emote_service.py`
-- **Load emote definitions from PostgreSQL database.** (1 connections) — `server/game/emote_service.py`
-- *... and 8 more nodes in this community*
+- **test_look_container_helpers.py** (45 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **_format_container_contents()** (11 connections) — `server/commands/look_container.py`
+- **test_format_container_contents_with_quantity()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_via_inner_container_no_inner_container()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_via_inner_container_invalid_uuid()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_via_inner_container_no_get_container()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_matches_item_instance_id_true()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_matches_item_instance_id_false()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_matches_item_instance_id_none()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_matches_name_or_slot_slot_match()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_matches_name_or_slot_name_match()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_matches_name_or_slot_no_match()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_get_container_data_from_component_no_container_id()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_get_container_data_from_component_no_get_container()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_extract_container_metadata_no_metadata()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_format_container_contents_empty()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_format_container_contents_with_quantity()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Format container contents as list of lines.** (1 connections) — `server/commands/look_container.py`
+- **Test formatting container contents with quantity > 1.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Unit tests for look container helper functions.  Tests the helper functions in l** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Test _find_container_via_inner_container() when item has no inner_container.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Test _find_container_via_inner_container() with invalid UUID.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Test _find_container_via_inner_container() when persistence has no get_container** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Test _matches_item_instance_id() returns True when IDs match.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Test _matches_item_instance_id() returns False when IDs don't match.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [commands recovery lucidity](commands_recovery_lucidity.md) (8 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (3 shared connections)
-- [command commands handler](command_commands_handler.md) (2 shared connections)
-- [commands emote rationale](commands_emote_rationale.md) (2 shared connections)
-- [chat game message](chat_game_message.md) (2 shared connections)
-- [rate lucidity services](rate_lucidity_services.md) (1 shared connections)
-- [Database Config](Database_Config.md) (1 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [startup npc services](startup_npc_services.md) (20 shared connections)
+- [command processor rationale](command_processor_rationale.md) (10 shared connections)
+- [status game spell](status_game_spell.md) (8 shared connections)
+- [services inventory mutation](services_inventory_mutation.md) (6 shared connections)
+- [DI Container Format](DI_Container_Format.md) (4 shared connections)
 
 ## Source Files
 
-- `server/game/emote_service.py`
-- `server/tests/unit/game/test_emote_service.py`
+- `server/commands/look_container.py`
+- `server/tests/unit/commands/test_look_container.py`
+- `server/tests/unit/commands/test_look_container_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 108 (96%)
-- INFERRED: 4 (4%)
+- EXTRACTED: 118 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

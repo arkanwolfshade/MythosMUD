@@ -1,47 +1,67 @@
 # logging setup structured
 
-> 23 nodes
+> 71 nodes
 
 ## Key Concepts
 
-- **test_logging_file_setup.py** (14 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **test_queue_listener_has_aggregator_handlers()** (7 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **test_warning_and_error_reach_aggregator_files()** (7 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **get_queue_listener()** (6 connections) — `server/structured_logging/logging_file_setup.py`
-- **stop_queue_listener()** (6 connections) — `server/structured_logging/logging_file_setup.py`
-- **_root_handlers_snapshot()** (6 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **_restore_root_handlers()** (6 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **test_aggregator_handlers_on_root_when_async()** (6 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **test_log_directory_under_env()** (5 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **QueueListener** (2 connections)
-- **temp_log_base()** (2 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **default_log_config()** (2 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **Return the global QueueListener if running (for tests and shutdown).      Return** (1 connections) — `server/structured_logging/logging_file_setup.py`
-- **Stop the global QueueListener and reset state (for tests and shutdown).      All** (1 connections) — `server/structured_logging/logging_file_setup.py`
-- **Unit tests for logging file setup.  Verifies aggregator handlers attached to roo** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **Temporary directory used as log_base for setup.** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **Default log config with rotation.** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **Return a copy of root logger handlers (for restore).** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **Replace root logger handlers with the given list.** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **H1: With async enabled, root logger has a QueueHandler for the aggregator path (** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **H3: QueueListener is started and includes aggregator handlers.** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **H2/H5: WARNING and ERROR logged from root appear in warnings.log and errors.log.** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **H4 (setup): Log files are created under env_log_dir (e.g. .../test/).** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **get_npc_instance_service()** (79 connections) — `server/services/npc_instance_service.py`
+- **npc_instances_api.py** (27 connections) — `server/api/admin/npc_instances_api.py`
+- **test_npc_instances_api.py** (21 connections) — `server/tests/unit/api/test_npc_instances_api.py`
+- **npc_admin.py** (15 connections) — `server/schemas/admin/npc_admin.py`
+- **AdminSession** (14 connections) — `server/schemas/admin/admin_data.py`
+- **AuditLogEntry** (14 connections) — `server/schemas/admin/admin_data.py`
+- **spawn_npc_instance()** (13 connections) — `server/api/admin/npc_instances_api.py`
+- **__init__.py** (13 connections) — `server/schemas/admin/__init__.py`
+- **despawn_npc_instance()** (12 connections) — `server/api/admin/npc_instances_api.py`
+- **move_npc_instance()** (12 connections) — `server/api/admin/npc_instances_api.py`
+- **get_npc_instances()** (11 connections) — `server/api/admin/npc_instances_api.py`
+- **get_npc_stats()** (11 connections) — `server/api/admin/npc_instances_api.py`
+- **BaseModel** (10 connections)
+- **NPCSpawnResponse** (9 connections) — `server/schemas/admin/npc_admin.py`
+- **NPCDespawnResponse** (9 connections) — `server/schemas/admin/npc_admin.py`
+- **NPCMoveResponse** (9 connections) — `server/schemas/admin/npc_admin.py`
+- **NPCStatsResponse** (9 connections) — `server/schemas/admin/npc_admin.py`
+- **NPCPopulationStatsResponse** (9 connections) — `server/schemas/admin/npc_admin.py`
+- **NPCZoneStatsResponse** (9 connections) — `server/schemas/admin/npc_admin.py`
+- **NPCSystemStatusResponse** (9 connections) — `server/schemas/admin/npc_admin.py`
+- **AdminSessionsResponse** (9 connections) — `server/schemas/admin/npc_admin.py`
+- **AdminAuditLogResponse** (9 connections) — `server/schemas/admin/npc_admin.py`
+- **AdminCleanupSessionsResponse** (9 connections) — `server/schemas/admin/npc_admin.py`
+- **NPCSpawnRequest** (7 connections) — `server/api/admin/npc_schemas.py`
+- **NPCMoveRequest** (7 connections) — `server/api/admin/npc_schemas.py`
+- *... and 46 more nodes in this community*
 
 ## Relationships
 
-- [logging handlers structured](logging_handlers_structured.md) (9 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
+- [player preferences services](player_preferences_services.md) (26 shared connections)
+- [commands npc admin](commands_npc_admin.md) (13 shared connections)
+- [Exception Containers](Exception_Containers.md) (11 shared connections)
+- [Player Stats](Player_Stats.md) (11 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (10 shared connections)
+- [persistence container rationale](persistence_container_rationale.md) (6 shared connections)
+- [NPC Combat](NPC_Combat.md) (6 shared connections)
+- [countdown rest task](countdown_rest_task.md) (6 shared connections)
+- [npc look commands](npc_look_commands.md) (4 shared connections)
+- [command models moderation](command_models_moderation.md) (4 shared connections)
+- [npc event handlers](npc_event_handlers.md) (3 shared connections)
+- [event bus events](event_bus_events.md) (3 shared connections)
 
 ## Source Files
 
-- `server/structured_logging/logging_file_setup.py`
-- `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- `server/api/admin/npc_instances_api.py`
+- `server/api/admin/npc_schemas.py`
+- `server/commands/combat_handler.py`
+- `server/schemas/admin/__init__.py`
+- `server/schemas/admin/admin_data.py`
+- `server/schemas/admin/npc_admin.py`
+- `server/services/npc_instance_service.py`
+- `server/tests/unit/api/test_npc_instances_api.py`
+- `server/tests/unit/services/test_npc_instance_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 80 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 392 (90%)
+- INFERRED: 43 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

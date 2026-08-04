@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_handle_equip_wearable_container_no_inner_container()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test handle_equip_wearable_container returns None when no inner_container.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_handle_nats_message_event_data_detection()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **Test _handle_nats_message detects event messages by event_data.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Relationships
 
-- [wearable container service](wearable_container_service.md) (1 shared connections)
+- [nats message handler](nats_message_handler.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Audit Trail
 

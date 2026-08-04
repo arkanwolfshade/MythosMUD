@@ -33,10 +33,10 @@
 
 ## Relationships
 
-- [Error Handling Core](Error_Handling_Core.md) (18 shared connections)
-- [handler realtime nats](handler_realtime_nats.md) (9 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (19 shared connections)
+- [handler realtime nats](handler_realtime_nats.md) (8 shared connections)
 - [Spell Validation](Spell_Validation.md) (4 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (2 shared connections)
+- [health service services](health_service_services.md) (2 shared connections)
 - [Loot Generation](Loot_Generation.md) (1 shared connections)
 
 ## Source Files

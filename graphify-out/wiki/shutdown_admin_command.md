@@ -41,10 +41,10 @@
 - [connection manager realtime](connection_manager_realtime.md) (4 shared connections)
 - [motd loader rationale](motd_loader_rationale.md) (3 shared connections)
 - [player requests schemas](player_requests_schemas.md) (2 shared connections)
-- [commands party examples](commands_party_examples.md) (2 shared connections)
-- [websocket helpers realtime](websocket_helpers_realtime.md) (1 shared connections)
-- [room websocket updates](room_websocket_updates.md) (1 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (2 shared connections)
+- [commands npc admin](commands_npc_admin.md) (2 shared connections)
+- [commands whisper command](commands_whisper_command.md) (1 shared connections)
+- [taunt combat commands](taunt_combat_commands.md) (1 shared connections)
 
 ## Source Files
 

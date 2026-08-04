@@ -1,12 +1,11 @@
 # infrastructure nats broker
 
-> 47 nodes
+> 45 nodes
 
 ## Key Concepts
 
 - **NATSMessageBroker** (31 connections) — `server/infrastructure/nats_broker.py`
 - **.publish()** (6 connections) — `server/infrastructure/nats_broker.py`
-- **.__init__()** (5 connections) — `server/infrastructure/nats_broker.py`
 - **.connect()** (5 connections) — `server/infrastructure/nats_broker.py`
 - **.disconnect()** (5 connections) — `server/infrastructure/nats_broker.py`
 - **.is_connected()** (5 connections) — `server/infrastructure/nats_broker.py`
@@ -29,16 +28,16 @@
 - **nats_broker()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
 - **Exception** (2 connections)
 - **test_connect_with_user_password()** (2 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- *... and 22 more nodes in this community*
+- **NATS implementation of MessageBroker protocol.      This class wraps NATS client** (1 connections) — `server/infrastructure/nats_broker.py`
+- *... and 20 more nodes in this community*
 
 ## Relationships
 
 - [broker infrastructure nats](broker_infrastructure_nats.md) (17 shared connections)
-- [combat validator validators](combat_validator_validators.md) (2 shared connections)
-- [commands communication support](commands_communication_support.md) (1 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [NPC Combat](NPC_Combat.md) (1 shared connections)
 - [schemas nats messages](schemas_nats_messages.md) (1 shared connections)
 - [tsconfig src/**/* spec](tsconfig_src-__-__spec.md) (1 shared connections)
+- [combat validator validators](combat_validator_validators.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,7 +46,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 141 (96%)
+- EXTRACTED: 135 (96%)
 - INFERRED: 6 (4%)
 - AMBIGUOUS: 0 (0%)
 

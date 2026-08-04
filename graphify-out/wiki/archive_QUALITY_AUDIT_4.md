@@ -12,7 +12,7 @@
 
 ## Relationships
 
-- [archive QUALITY AUDIT](archive_QUALITY_AUDIT.md) (1 shared connections)
+- [archive quality QUALITY](archive_quality_QUALITY.md) (1 shared connections)
 
 ## Source Files
 

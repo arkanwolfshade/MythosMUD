@@ -2,7 +2,7 @@
 
 > God node · 186 connections · `server/models/combat.py`
 
-**Community:** [command factories exploration](command_factories_exploration.md)
+**Community:** [models npc rationale](models_npc_rationale.md)
 
 ## Connections by Relation
 

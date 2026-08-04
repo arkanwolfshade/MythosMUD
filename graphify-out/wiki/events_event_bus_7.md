@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_get_npc_stats_defaults()** (3 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
-- **Empty npc_stats yields default strength/constitution.** (1 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **test_remove_member_leader_leaves_disbands()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **When leader leaves, party is disbanded.** (1 connections) — `server/tests/unit/game/test_party_service.py`
 
 ## Relationships
 
-- [room conftest toolkit](room_conftest_toolkit.md) (1 shared connections)
-- [services nats service](services_nats_service.md) (1 shared connections)
+- [commands inventory helpers](commands_inventory_helpers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- `server/tests/unit/game/test_party_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

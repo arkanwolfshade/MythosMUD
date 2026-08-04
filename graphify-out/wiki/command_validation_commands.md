@@ -1,6 +1,6 @@
 # command validation commands
 
-> 86 nodes
+> 72 nodes
 
 ## Key Concepts
 
@@ -8,6 +8,7 @@
 - **test_command_validation.py** (22 connections) — `server/tests/unit/commands/test_command_validation.py`
 - **TestCatatoniaChecks** (21 connections) — `server/tests/unit/commands/test_command_validation.py`
 - **check_catatonia_block()** (17 connections) — `server/command_handler/catatonia_check.py`
+- **command_request_app_state()** (14 connections) — `server/command_handler/command_execution_request.py`
 - **_load_player_for_catatonia_check()** (11 connections) — `server/command_handler/catatonia_check.py`
 - **_is_catatonic()** (10 connections) — `server/command_handler/catatonia_check.py`
 - **_check_catatonia_registry()** (9 connections) — `server/command_handler/catatonia_check.py`
@@ -18,9 +19,7 @@
 - **_fetch_lucidity_record()** (8 connections) — `server/command_handler/catatonia_check.py`
 - **_registry_player_id_value()** (7 connections) — `server/command_handler/catatonia_check.py`
 - **_PersistenceGetPlayerByName** (6 connections) — `server/command_handler/catatonia_check.py`
-- **TestCheckCastingState** (6 connections) — `server/tests/unit/commands/test_command_validation.py`
 - **_convert_player_id_to_uuid()** (4 connections) — `server/command_handler/catatonia_check.py`
-- **TestCheckRateLimit** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
 - **CommandExecutionRequest** (3 connections)
 - **.test_registry_player_id_value_preserves_uuid_and_str()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
 - **.test_registry_player_id_value_stringifies_non_string_ids()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
@@ -29,30 +28,34 @@
 - **.test_is_catatonic_with_negative_lcd()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
 - **.test_is_catatonic_not_catatonic()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
 - **.test_is_catatonic_none()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- *... and 61 more nodes in this community*
+- **.test_fetch_lucidity_record()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- *... and 47 more nodes in this community*
 
 ## Relationships
 
-- [command commands handler](command_commands_handler.md) (20 shared connections)
-- [commands logout rationale](commands_logout_rationale.md) (5 shared connections)
-- [alias graph rationale](alias_graph_rationale.md) (4 shared connections)
+- [command commands handler](command_commands_handler.md) (10 shared connections)
+- [request context realtime](request_context_realtime.md) (6 shared connections)
+- [player game schema](player_game_schema.md) (5 shared connections)
 - [lucidity services helpers](lucidity_services_helpers.md) (4 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (3 shared connections)
+- [combat npc services](combat_npc_services.md) (3 shared connections)
 - [logoutHandler logger App](logoutHandler_logger_App.md) (3 shared connections)
-- [Loot Generation](Loot_Generation.md) (2 shared connections)
+- [commands recovery lucidity](commands_recovery_lucidity.md) (2 shared connections)
+- [command player state](command_player_state.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [fixtures mock helpers](fixtures_mock_helpers.md) (2 shared connections)
+- [game models enums](game_models_enums.md) (1 shared connections)
 - [player room realtime](player_room_realtime.md) (1 shared connections)
-- [catatonia registry services](catatonia_registry_services.md) (1 shared connections)
-- [config models app](config_models_app.md) (1 shared connections)
 
 ## Source Files
 
 - `server/command_handler/catatonia_check.py`
+- `server/command_handler/command_execution_request.py`
 - `server/tests/unit/commands/test_command_validation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 294 (95%)
-- INFERRED: 14 (5%)
+- EXTRACTED: 272 (95%)
+- INFERRED: 15 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

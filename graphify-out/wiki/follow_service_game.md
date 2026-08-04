@@ -1,46 +1,45 @@
 # follow service game
 
-> 50 nodes
+> 78 nodes
 
 ## Key Concepts
 
 - **TaskRegistry** (49 connections) — `server/app/task_registry.py`
 - **test_task_registry.py** (23 connections) — `server/tests/unit/app/test_task_registry.py`
 - **task_registry.py** (11 connections) — `server/app/task_registry.py`
+- **Any** (10 connections)
+- **._setup_task_tracking()** (9 connections) — `server/app/task_registry.py`
 - **get_registry()** (9 connections) — `server/app/task_registry.py`
 - **_sleep_briefly()** (9 connections) — `server/tests/unit/app/test_task_registry.py`
+- **Task** (8 connections)
+- **TaskMetadata** (7 connections) — `server/app/task_registry.py`
+- **.register_task()** (7 connections) — `server/app/task_registry.py`
 - **.shutdown_all()** (7 connections) — `server/app/task_registry.py`
 - **unregister_task()** (7 connections) — `server/app/task_registry.py`
 - **register_task()** (6 connections) — `server/app/task_registry.py`
+- **._create_task_completion_callback()** (5 connections) — `server/app/task_registry.py`
 - **.get_task_lifecycle_metrics()** (5 connections) — `server/app/task_registry.py`
 - **test_module_level_helpers()** (5 connections) — `server/tests/unit/app/test_task_registry.py`
+- **.__init__()** (4 connections) — `server/app/task_registry.py`
+- **.unregister_task()** (4 connections) — `server/app/task_registry.py`
+- **.cancel_task()** (4 connections) — `server/app/task_registry.py`
 - **._cleanup_registry_collections()** (4 connections) — `server/app/task_registry.py`
 - **test_register_closes_coro_when_create_task_fails()** (4 connections) — `server/tests/unit/app/test_task_registry.py`
+- **._ensure_unique_task_name()** (3 connections) — `server/app/task_registry.py`
+- **._track_task_creation_metrics()** (3 connections) — `server/app/task_registry.py`
+- **._extract_service_name()** (3 connections) — `server/app/task_registry.py`
 - **._cancel_lifecycle_tasks()** (3 connections) — `server/app/task_registry.py`
-- **._cancel_remaining_tasks()** (3 connections) — `server/app/task_registry.py`
-- **._wait_for_task_completion()** (3 connections) — `server/app/task_registry.py`
-- **._forcible_cleanup_on_timeout()** (3 connections) — `server/app/task_registry.py`
-- **.get_active_task_count()** (3 connections) — `server/app/task_registry.py`
-- **.get_task_stats_by_type()** (3 connections) — `server/app/task_registry.py`
-- **_hang_until_cancelled()** (3 connections) — `server/tests/unit/app/test_task_registry.py`
-- **test_task_metadata_repr()** (3 connections) — `server/tests/unit/app/test_task_registry.py`
-- **test_register_and_unregister_task()** (3 connections) — `server/tests/unit/app/test_task_registry.py`
-- **test_register_duplicate_name_gets_suffix()** (3 connections) — `server/tests/unit/app/test_task_registry.py`
-- **test_register_during_shutdown_raises()** (3 connections) — `server/tests/unit/app/test_task_registry.py`
-- **test_cancel_task_by_name()** (3 connections) — `server/tests/unit/app/test_task_registry.py`
-- **test_shutdown_all_clears_active_tasks()** (3 connections) — `server/tests/unit/app/test_task_registry.py`
-- *... and 25 more nodes in this community*
+- *... and 53 more nodes in this community*
 
 ## Relationships
 
-- [command commands aliases](command_commands_aliases.md) (16 shared connections)
 - [schemas player rationale](schemas_player_rationale.md) (5 shared connections)
 - [time service rationale](time_service_rationale.md) (4 shared connections)
-- [command combat models](command_combat_models.md) (3 shared connections)
-- [Loot Generation](Loot_Generation.md) (2 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (2 shared connections)
-- [nats services service](nats_services_service.md) (1 shared connections)
-- [health models rationale](health_models_rationale.md) (1 shared connections)
+- [nats services service](nats_services_service.md) (3 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [health models rationale](health_models_rationale.md) (2 shared connections)
+- [metrics memory leak](metrics_memory_leak.md) (1 shared connections)
+- [command combat models](command_combat_models.md) (1 shared connections)
 
 ## Source Files
 
@@ -49,7 +48,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 209 (98%)
+- EXTRACTED: 297 (98%)
 - INFERRED: 5 (2%)
 - AMBIGUOUS: 0 (0%)
 

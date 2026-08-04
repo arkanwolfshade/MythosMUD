@@ -33,10 +33,10 @@
 
 ## Relationships
 
-- [Database Config](Database_Config.md) (5 shared connections)
-- [Loot Generation](Loot_Generation.md) (3 shared connections)
-- [realtime monitoring statistics](realtime_monitoring_statistics.md) (2 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (1 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (5 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (3 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
 
 ## Source Files
 

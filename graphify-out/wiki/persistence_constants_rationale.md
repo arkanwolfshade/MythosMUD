@@ -1,24 +1,25 @@
 # persistence constants rationale
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **._normalize_npc_stats()** (3 connections) — `server/npc/combat_integration.py`
-- **Normalize NPC stats to include 'hp' for backward compatibility.** (1 connections) — `server/npc/combat_integration.py`
+- **Structured Logging Patterns** (4 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Basic Logging** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Error Logging with Context** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Performance Logging** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
 
 ## Relationships
 
-- [room conftest toolkit](room_conftest_toolkit.md) (1 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (1 shared connections)
+- [archive LOGGING BEST](archive_LOGGING_BEST.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/combat_integration.py`
+- `docs/archive/LOGGING_BEST_PRACTICES.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,12 +1,13 @@
 # archive OPTIMIZATION ROADMAP
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **Monitoring and Validation** (3 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Weekly Metrics** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Monthly Review Questions** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Net Impact Projection** (4 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **After Month 1 (Pruning Phase)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **After Month 2 (Consolidation + Additions)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **After Month 3+ (Continuous Improvement)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
 
 ## Relationships
 
@@ -18,7 +19,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

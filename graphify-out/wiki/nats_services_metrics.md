@@ -1,10 +1,9 @@
 # nats services metrics
 
-> 46 nodes
+> 44 nodes
 
 ## Key Concepts
 
-- **.state()** (36 connections) — `server/realtime/connection_state_machine.py`
 - **GameStateProvider** (26 connections) — `server/realtime/integration/game_state_provider.py`
 - **UUID** (15 connections)
 - **Any** (13 connections)
@@ -29,33 +28,33 @@
 - **.get_npcs_batch()** (4 connections) — `server/realtime/integration/game_state_provider.py`
 - **_not_configured_async()** (3 connections) — `server/realtime/nats_message_handler.py`
 - **Any** (2 connections)
-- *... and 21 more nodes in this community*
+- **Provides initial game state for newly connected players.      This class provide** (1 connections) — `server/realtime/integration/game_state_provider.py`
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [command utility models](command_utility_models.md) (8 shared connections)
-- [websocket handler realtime](websocket_handler_realtime.md) (5 shared connections)
-- [combat commands handler](combat_commands_handler.md) (2 shared connections)
-- [rate limiter services](rate_limiter_services.md) (2 shared connections)
-- [command helpers functions](command_helpers_functions.md) (2 shared connections)
-- [npc combat base](npc_combat_base.md) (2 shared connections)
-- [connection state machine](connection_state_machine.md) (2 shared connections)
-- [player presence tracker](player_presence_tracker.md) (2 shared connections)
-- [websocket helpers realtime](websocket_helpers_realtime.md) (2 shared connections)
-- [services npc startup](services_npc_startup.md) (2 shared connections)
+- [combat services turn](combat_services_turn.md) (6 shared connections)
+- [command utility models](command_utility_models.md) (4 shared connections)
+- [commands emote rationale](commands_emote_rationale.md) (3 shared connections)
+- [taunt combat commands](taunt_combat_commands.md) (2 shared connections)
 - [game state provider](game_state_provider.md) (2 shared connections)
-- [player disconnect handlers](player_disconnect_handlers.md) (2 shared connections)
+- [subject admin controller](subject_admin_controller.md) (1 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (1 shared connections)
+- [logging setup structured](logging_setup_structured.md) (1 shared connections)
+- [models player related](models_player_related.md) (1 shared connections)
+- [quest service game](quest_service_game.md) (1 shared connections)
+- [room look commands](room_look_commands.md) (1 shared connections)
+- [NPC Combat](NPC_Combat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_state_machine.py`
 - `server/realtime/integration/game_state_provider.py`
 - `server/realtime/nats_message_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 193 (80%)
-- INFERRED: 48 (20%)
+- EXTRACTED: 189 (93%)
+- INFERRED: 15 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

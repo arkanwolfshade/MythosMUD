@@ -1,55 +1,59 @@
 # message nats handler
 
-> 37 nodes
+> 52 nodes
 
 ## Key Concepts
 
-- **test_communication_commands_say_me_pose.py** (22 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **handle_say_command()** (16 connections) — `server/commands/communication_commands.py`
-- **handle_pose_command()** (13 connections) — `server/commands/communication_commands.py`
-- **handle_me_command()** (7 connections) — `server/commands/communication_commands.py`
-- **test_handle_say_command_player_not_found()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_say_command_success()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_say_command_delegates_broadcast_to_chat_service_with_ids()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_pose_command_player_not_found()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_pose_command_clear_pose()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_pose_command_set_pose()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_say_command_no_room()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_say_command_no_player_id()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_say_command_chat_service_failure()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_say_command_exception()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_say_command_no_message()** (3 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_say_command_no_services()** (3 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_me_command_no_action()** (3 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_me_command_success()** (3 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_handle_pose_command_no_persistence()** (3 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **Room-wide say; returns user-facing result dict.** (1 connections) — `server/commands/communication_commands.py`
-- **Set or clear persistent pose text.** (1 connections) — `server/commands/communication_commands.py`
-- **Unit tests for say, me, and pose communication command handlers.** (1 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **Test handle_say_command with no message.** (1 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **Test handle_say_command when services are not available.** (1 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **Test handle_say_command when player is not found.** (1 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- *... and 12 more nodes in this community*
+- **MovementService** (43 connections) — `server/game/movement_service.py`
+- **UUID** (16 connections)
+- **.move_player()** (14 connections) — `server/game/movement_service.py`
+- **._validate_movement()** (9 connections) — `server/game/movement_service.py`
+- **._handle_movement_error()** (8 connections) — `server/game/movement_service.py`
+- **._validate_move_params()** (6 connections) — `server/game/movement_service.py`
+- **._resolve_player_for_movement()** (6 connections) — `server/game/movement_service.py`
+- **._get_rooms_for_movement()** (6 connections) — `server/game/movement_service.py`
+- **._validate_player_room_membership()** (6 connections) — `server/game/movement_service.py`
+- **.add_player_to_room()** (6 connections) — `server/game/movement_service.py`
+- **._validate_remove_player_params()** (6 connections) — `server/game/movement_service.py`
+- **.remove_player_from_room()** (6 connections) — `server/game/movement_service.py`
+- **.get_player_room()** (6 connections) — `server/game/movement_service.py`
+- **.__init__()** (5 connections) — `server/game/movement_service.py`
+- **._execute_room_transfer()** (5 connections) — `server/game/movement_service.py`
+- **._mark_room_explored()** (5 connections) — `server/game/movement_service.py`
+- **._check_combat_state()** (5 connections) — `server/game/movement_service.py`
+- **._check_player_posture()** (5 connections) — `server/game/movement_service.py`
+- **Any** (4 connections)
+- **Room** (4 connections)
+- **._persist_player_location()** (4 connections) — `server/game/movement_service.py`
+- **._handle_tutorial_exit_if_applicable()** (4 connections) — `server/game/movement_service.py`
+- **._extract_player_id()** (4 connections) — `server/game/movement_service.py`
+- **._validate_exit()** (4 connections) — `server/game/movement_service.py`
+- **.get_room_players()** (4 connections) — `server/game/movement_service.py`
+- *... and 27 more nodes in this community*
 
 ## Relationships
 
-- [commands whisper command](commands_whisper_command.md) (12 shared connections)
-- [commands communication flows](commands_communication_flows.md) (5 shared connections)
-- [commands party examples](commands_party_examples.md) (3 shared connections)
-- [commands alias rationale](commands_alias_rationale.md) (3 shared connections)
-- [commands admin mute](commands_admin_mute.md) (3 shared connections)
-- [rate limiter services](rate_limiter_services.md) (2 shared connections)
-- [connection realtime manager](connection_realtime_manager.md) (1 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (18 shared connections)
+- [Loot Generation](Loot_Generation.md) (8 shared connections)
+- [NPC Combat](NPC_Combat.md) (4 shared connections)
+- [websocket realtime handler](websocket_realtime_handler.md) (3 shared connections)
+- [party service game](party_service_game.md) (3 shared connections)
+- [commands command rationale](commands_command_rationale.md) (2 shared connections)
+- [movement service game](movement_service_game.md) (2 shared connections)
+- [events event bus](events_event_bus.md) (2 shared connections)
+- [health models rationale](health_models_rationale.md) (2 shared connections)
+- [retry nats handler](retry_nats_handler.md) (1 shared connections)
+- [spell game magic](spell_game_magic.md) (1 shared connections)
+- [coercion int inventory](coercion_int_inventory.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/communication_commands.py`
-- `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- `server/game/movement_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 130 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 203 (91%)
+- INFERRED: 19 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

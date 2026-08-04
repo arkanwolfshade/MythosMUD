@@ -1,22 +1,18 @@
 # combat attack handler
 
-> 51 nodes
+> 42 nodes
 
 ## Key Concepts
 
 - **MemoryThresholdMonitor** (25 connections) — `server/app/memory_cleanup_service.py`
 - **test_memory_cleanup_service.py** (20 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **memory_cleanup_service.py** (11 connections) — `server/app/memory_cleanup_service.py`
 - **create_memory_cleanup_monitor()** (8 connections) — `server/app/memory_cleanup_service.py`
-- **.get_memory_status_report()** (6 connections) — `server/app/memory_cleanup_service.py`
 - **get_managed_task_cleanup_implementation_for_task_four_spec_compliance()** (6 connections) — `server/app/memory_cleanup_service.py`
-- **.managed_task_cleanup()** (4 connections) — `server/app/memory_cleanup_service.py`
 - **test_create_memory_cleanup_monitor()** (4 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
 - **test_task_four_spec_factory()** (4 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
 - **.__init__()** (3 connections) — `server/app/memory_cleanup_service.py`
-- **._get_current_memory_usage()** (3 connections) — `server/app/memory_cleanup_service.py`
-- **._get_active_task_count()** (3 connections) — `server/app/memory_cleanup_service.py`
 - **._flush_memory_indexes_cache()** (3 connections) — `server/app/memory_cleanup_service.py`
-- **.__init__()** (3 connections) — `server/app/memory_lifespan_coordinator.py`
 - **monitor()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
 - **test_get_current_memory_usage_success()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
 - **test_get_current_memory_usage_failure()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
@@ -29,23 +25,28 @@
 - **test_managed_task_cleanup_success()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
 - **test_managed_task_cleanup_timeout()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
 - **test_managed_task_cleanup_execution_failure()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
-- *... and 26 more nodes in this community*
+- **Managed Task Cleanup Service - Runtime Detection for Memory Threshold Monitoring** (1 connections) — `server/app/memory_cleanup_service.py`
+- **Runtime monitor for detecting memory threshold violations requiring cleanup.** (1 connections) — `server/app/memory_cleanup_service.py`
+- **Initialize the memory threshold monitoring service.          Args:             m** (1 connections) — `server/app/memory_cleanup_service.py`
+- **Flush persistent in-memory indexes associated with cached memory residency.** (1 connections) — `server/app/memory_cleanup_service.py`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [schemas player rationale](schemas_player_rationale.md) (5 shared connections)
-- [dialogue definitions admin](dialogue_definitions_admin.md) (2 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
+- [realtime message nats](realtime_message_nats.md) (4 shared connections)
+- [dialogue definitions admin](dialogue_definitions_admin.md) (3 shared connections)
+- [schemas player rationale](schemas_player_rationale.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [taunt combat commands](taunt_combat_commands.md) (2 shared connections)
 
 ## Source Files
 
 - `server/app/memory_cleanup_service.py`
-- `server/app/memory_lifespan_coordinator.py`
 - `server/tests/unit/app/test_memory_cleanup_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 152 (99%)
+- EXTRACTED: 139 (99%)
 - INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 

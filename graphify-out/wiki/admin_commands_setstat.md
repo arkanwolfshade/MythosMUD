@@ -33,10 +33,11 @@
 
 ## Relationships
 
-- [spell game magic](spell_game_magic.md) (10 shared connections)
-- [coercion int inventory](coercion_int_inventory.md) (5 shared connections)
+- [spell game magic](spell_game_magic.md) (11 shared connections)
 - [command factories exploration](command_factories_exploration.md) (3 shared connections)
 - [command factories communication](command_factories_communication.md) (3 shared connections)
+- [target resolution service](target_resolution_service.md) (2 shared connections)
+- [retry nats handler](retry_nats_handler.md) (2 shared connections)
 
 ## Source Files
 

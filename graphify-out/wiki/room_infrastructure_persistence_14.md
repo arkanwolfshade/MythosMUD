@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_mute_channel_invalid_channel()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test muting channel with invalid channel name.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_extract_chat_message_fields_system_target_id()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Personal system chat maps target_id to target_player_id and keeps speaker_kind.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [player preferences service](player_preferences_service.md) (1 shared connections)
+- [message chat nats](message_chat_nats.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_player_preferences_service.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 

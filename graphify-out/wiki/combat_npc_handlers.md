@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [models npc rationale](models_npc_rationale.md) (3 shared connections)
+- [NPC Combat](NPC_Combat.md) (3 shared connections)
 
 ## Source Files
 

@@ -33,12 +33,11 @@
 
 ## Relationships
 
+- [taunt combat commands](taunt_combat_commands.md) (5 shared connections)
 - [Realtime Subscribers](Realtime_Subscribers.md) (4 shared connections)
-- [services npc startup](services_npc_startup.md) (3 shared connections)
-- [combat services messaging](combat_services_messaging.md) (3 shared connections)
-- [connection disconnection realtime](connection_disconnection_realtime.md) (2 shared connections)
-- [Loot Generation](Loot_Generation.md) (2 shared connections)
-- [command utility models](command_utility_models.md) (1 shared connections)
+- [room look commands](room_look_commands.md) (3 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [combat services turn](combat_services_turn.md) (1 shared connections)
 - [nats services metrics](nats_services_metrics.md) (1 shared connections)
 
 ## Source Files

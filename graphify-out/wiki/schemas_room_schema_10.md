@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_validate_player_name_invalid_characters()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **Test validate_player_name() with invalid characters.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **mock_player_service()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Create a mock player service.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Relationships
 
-- [room realtime subscription](room_realtime_subscription.md) (1 shared connections)
+- [config rationale reset](config_rationale_reset.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_player_service_mutations.py`
+- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Audit Trail
 

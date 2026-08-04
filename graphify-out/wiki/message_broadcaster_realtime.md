@@ -1,53 +1,58 @@
 # message broadcaster realtime
 
-> 28 nodes
+> 39 nodes
 
 ## Key Concepts
 
-- **WearableContainerServiceError** (22 connections) — `server/services/wearable_container_service.py`
-- **test_handle_equip_wearable_container_capacity_exceeded()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_add_items_to_wearable_container_not_found()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_add_items_to_wearable_container_capacity_exceeded()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_handle_container_overflow_player_not_found()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_handle_equip_wearable_container_creation_error()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_add_items_to_wearable_container_wrong_player()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_add_items_to_wearable_container_wrong_source_type()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_add_items_to_wearable_container_update_fails()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_update_wearable_container_items_not_found()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_update_wearable_container_items_capacity_exceeded()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_update_wearable_container_items_update_fails()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_update_wearable_container_items_wrong_player()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_update_wearable_container_items_wrong_source_type()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Base exception for wearable container service operations.** (1 connections) — `server/services/wearable_container_service.py`
-- **Test handle_equip_wearable_container raises error when capacity exceeded.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test add_items_to_wearable_container raises error when container not found.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test add_items_to_wearable_container raises error when capacity exceeded.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test handle_container_overflow raises error when player not found.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test handle_equip_wearable_container handles container creation error.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test add_items_to_wearable_container raises error when container belongs to diff** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test add_items_to_wearable_container raises error when container is not equipmen** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test add_items_to_wearable_container raises error when update fails.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test update_wearable_container_items raises error when container not found.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test update_wearable_container_items raises error when capacity exceeded.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- *... and 3 more nodes in this community*
+- **DialogueDefinitionRepository** (32 connections) — `server/persistence/repositories/dialogue_definition_repository.py`
+- **test_dialogue_definition_repository.py** (20 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
+- **DialogueDefinition** (13 connections) — `server/models/dialogue.py`
+- **_row_to_dialogue()** (11 connections) — `server/persistence/repositories/dialogue_definition_repository.py`
+- **.list_all()** (8 connections) — `server/persistence/repositories/dialogue_definition_repository.py`
+- **.get_by_id()** (8 connections) — `server/persistence/repositories/dialogue_definition_repository.py`
+- **.get_by_npc_definition_id()** (8 connections) — `server/persistence/repositories/dialogue_definition_repository.py`
+- **.upsert()** (8 connections) — `server/persistence/repositories/dialogue_definition_repository.py`
+- **_DialogueRow** (7 connections) — `server/persistence/repositories/dialogue_definition_repository.py`
+- **_as_dialogue_row()** (7 connections) — `server/persistence/repositories/dialogue_definition_repository.py`
+- **_definition_dict()** (6 connections) — `server/persistence/repositories/dialogue_definition_repository.py`
+- **_mock_session_with_rows()** (6 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
+- **test_list_all_success()** (3 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
+- **test_list_all_db_error()** (3 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
+- **test_get_by_id_found()** (3 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
+- **test_get_by_id_not_found()** (3 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
+- **test_get_by_npc_definition_id_found()** (3 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
+- **test_upsert_success()** (3 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
+- **.__init__()** (2 connections) — `server/game/dialogue/dialogue_service.py`
+- **.__init__()** (2 connections) — `server/persistence/repositories/dialogue_definition_repository.py`
+- **test_definition_dict_non_dict()** (2 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
+- **test_definition_dict_coerces_keys()** (2 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
+- **test_row_to_dialogue()** (2 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
+- **repo()** (2 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
+- **test_delete_true()** (2 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
-- [wearable container service](wearable_container_service.md) (14 shared connections)
-- [command admin setlucidity](command_admin_setlucidity.md) (4 shared connections)
-- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
-- [container helpers endpoints](container_helpers_endpoints.md) (1 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (20 shared connections)
+- [player preferences services](player_preferences_services.md) (6 shared connections)
+- [dialogue service game](dialogue_service_game.md) (5 shared connections)
+- [Database Config](Database_Config.md) (4 shared connections)
+- [world models rationale](world_models_rationale.md) (3 shared connections)
+- [argon2 auth rationale](argon2_auth_rationale.md) (1 shared connections)
+- [NPC Combat](NPC_Combat.md) (1 shared connections)
 - [Loot Generation](Loot_Generation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/wearable_container_service.py`
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `server/game/dialogue/dialogue_service.py`
+- `server/models/dialogue.py`
+- `server/persistence/repositories/dialogue_definition_repository.py`
+- `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
 
 ## Audit Trail
 
-- EXTRACTED: 45 (60%)
-- INFERRED: 30 (40%)
+- EXTRACTED: 166 (92%)
+- INFERRED: 15 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,13 +1,12 @@
 # manager services nats
 
-> 69 nodes
+> 67 nodes
 
 ## Key Concepts
 
 - **test_metrics.py** (27 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
 - **SubjectManagerMetrics** (16 connections) — `server/services/nats_subject_manager/metrics.py`
 - **._calculate_percentile()** (6 connections) — `server/services/nats_subject_manager/metrics.py`
-- **metrics.py** (5 connections) — `server/services/nats_subject_manager/metrics.py`
 - **.get_metrics()** (4 connections) — `server/services/nats_subject_manager/metrics.py`
 - **.__init__()** (3 connections) — `server/services/nats_subject_manager/metrics.py`
 - **metrics()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
@@ -29,14 +28,15 @@
 - **test_record_build_multiple()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
 - **test_record_build_stores_times()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
 - **test_record_error_pattern_not_found()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
-- *... and 44 more nodes in this community*
+- **test_record_error_missing_parameter()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
+- *... and 42 more nodes in this community*
 
 ## Relationships
 
-- [commands communication support](commands_communication_support.md) (3 shared connections)
-- [subject validation services](subject_validation_services.md) (2 shared connections)
+- [subject validation services](subject_validation_services.md) (4 shared connections)
+- [manager subject services](manager_subject_services.md) (1 shared connections)
 - [pattern matcher services](pattern_matcher_services.md) (1 shared connections)
-- [mythos mud mapbuilder](mythos_mud_mapbuilder.md) (1 shared connections)
+- [taunt combat commands](taunt_combat_commands.md) (1 shared connections)
 
 ## Source Files
 
@@ -45,7 +45,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 155 (99%)
+- EXTRACTED: 149 (99%)
 - INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 

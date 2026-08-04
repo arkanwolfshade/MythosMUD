@@ -28,11 +28,11 @@
 
 ## Relationships
 
-- [Loot Generation](Loot_Generation.md) (4 shared connections)
-- [commands party examples](commands_party_examples.md) (3 shared connections)
-- [target resolution service](target_resolution_service.md) (3 shared connections)
-- [commands admin mute](commands_admin_mute.md) (2 shared connections)
-- [coercion int inventory](coercion_int_inventory.md) (2 shared connections)
+- [target resolution service](target_resolution_service.md) (5 shared connections)
+- [commands whisper command](commands_whisper_command.md) (3 shared connections)
+- [commands npc admin](commands_npc_admin.md) (3 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
 - [models player related](models_player_related.md) (1 shared connections)
 - [connection realtime manager](connection_realtime_manager.md) (1 shared connections)
 

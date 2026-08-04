@@ -37,7 +37,7 @@
 - [connection realtime statistics](connection_realtime_statistics.md) (5 shared connections)
 - [main rationale failure()](main_rationale_failure%28%29.md) (4 shared connections)
 - [room sync service](room_sync_service.md) (4 shared connections)
-- [Loot Generation](Loot_Generation.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
 - [cache caching lru](cache_caching_lru.md) (1 shared connections)
 - [admin shutdown commands](admin_shutdown_commands.md) (1 shared connections)
 - [commands admin shutdown](commands_admin_shutdown.md) (1 shared connections)

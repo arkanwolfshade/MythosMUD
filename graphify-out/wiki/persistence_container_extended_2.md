@@ -1,6 +1,6 @@
 # persistence container extended
 
-> 34 nodes
+> 36 nodes
 
 ## Key Concepts
 
@@ -21,6 +21,7 @@
 - **.__init__()** (3 connections) — `server/services/health_service.py`
 - **.get_memory_usage()** (3 connections) — `server/services/health_service.py`
 - **.get_cpu_usage()** (3 connections) — `server/services/health_service.py`
+- **health_service()** (3 connections) — `server/tests/unit/services/test_health_service.py`
 - **HealthStatus** (2 connections)
 - **Health monitoring service for MythosMUD server.      Provides comprehensive heal** (1 connections) — `server/services/health_service.py`
 - **Initialize the health service.          Args:             connection_manager: Co** (1 connections) — `server/services/health_service.py`
@@ -28,24 +29,23 @@
 - **Get current memory usage in MB.** (1 connections) — `server/services/health_service.py`
 - **Get current CPU usage percentage.** (1 connections) — `server/services/health_service.py`
 - **Create a standardized health check response dictionary.          Args:** (1 connections) — `server/services/health_service.py`
-- **Check database connectivity and health with actual query validation.          Th** (1 connections) — `server/services/health_service.py`
-- *... and 9 more nodes in this community*
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
-- [grace period login](grace_period_login.md) (9 shared connections)
-- [player look commands](player_look_commands.md) (4 shared connections)
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [grace period login](grace_period_login.md) (13 shared connections)
+- [nats services service](nats_services_service.md) (2 shared connections)
 - [room service game](room_service_game.md) (2 shared connections)
-- [command combat models](command_combat_models.md) (1 shared connections)
+- [health models rationale](health_models_rationale.md) (1 shared connections)
 
 ## Source Files
 
 - `server/services/health_service.py`
+- `server/tests/unit/services/test_health_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 117 (98%)
+- EXTRACTED: 121 (98%)
 - INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,12 +1,13 @@
 # command handler processing
 
-> 17 nodes
+> 19 nodes
 
 ## Key Concepts
 
 - **__init__.py** (10 connections) — `server/schemas/maps/__init__.py`
 - **map.py** (9 connections) — `server/schemas/maps/map.py`
 - **BaseModel** (7 connections)
+- **AsciiMapResponse** (7 connections) — `server/schemas/maps/map.py`
 - **AsciiMinimapResponse** (7 connections) — `server/schemas/maps/map.py`
 - **CoordinateRecalculationResponse** (7 connections) — `server/schemas/maps/map.py`
 - **MapOriginSetResponse** (7 connections) — `server/schemas/maps/map.py`
@@ -16,6 +17,7 @@
 - **Maps domain schemas: map API responses.** (1 connections) — `server/schemas/maps/__init__.py`
 - **Map API response schemas for MythosMUD server.  This module provides Pydantic mo** (1 connections) — `server/schemas/maps/map.py`
 - **Viewport information for map rendering.** (1 connections) — `server/schemas/maps/map.py`
+- **Response model for ASCII map endpoint.** (1 connections) — `server/schemas/maps/map.py`
 - **Response model for ASCII minimap endpoint.** (1 connections) — `server/schemas/maps/map.py`
 - **Response model for coordinate generation endpoint.** (1 connections) — `server/schemas/maps/map.py`
 - **Response model for coordinate validation endpoint.** (1 connections) — `server/schemas/maps/map.py`
@@ -24,8 +26,9 @@
 
 ## Relationships
 
-- [maps handle ascii](maps_handle_ascii.md) (9 shared connections)
-- [inventory schemas schema](inventory_schemas_schema.md) (4 shared connections)
+- [maps handle ascii](maps_handle_ascii.md) (7 shared connections)
+- [Player Stats](Player_Stats.md) (5 shared connections)
+- [corpse lifecycle service](corpse_lifecycle_service.md) (1 shared connections)
 
 ## Source Files
 
@@ -34,7 +37,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 67 (100%)
+- EXTRACTED: 75 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -33,12 +33,9 @@
 
 ## Relationships
 
-- [health models rationale](health_models_rationale.md) (9 shared connections)
+- [health models rationale](health_models_rationale.md) (11 shared connections)
+- [NPC Combat](NPC_Combat.md) (5 shared connections)
 - [player model models](player_model_models.md) (5 shared connections)
-- [Loot Generation](Loot_Generation.md) (3 shared connections)
-- [command combat models](command_combat_models.md) (2 shared connections)
-- [npc shopkeeper rationale](npc_shopkeeper_rationale.md) (1 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
 
 ## Source Files
 

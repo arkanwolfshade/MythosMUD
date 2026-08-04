@@ -1,10 +1,11 @@
 # event realtime publisher
 
-> 48 nodes
+> 72 nodes
 
 ## Key Concepts
 
 - **StatisticsAggregator** (29 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **test_statistics_aggregator.py** (14 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
 - **._build_connection_stats()** (10 connections) — `server/realtime/monitoring/statistics_aggregator.py`
 - **.get_connection_health_stats()** (8 connections) — `server/realtime/monitoring/statistics_aggregator.py`
 - **._compose_memory_stats()** (7 connections) — `server/realtime/monitoring/statistics_aggregator.py`
@@ -26,25 +27,22 @@
 - **._analyze_connection_types()** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
 - **._analyze_session_health()** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
 - **._calculate_session_health_percentages()** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **statistics_aggregator()** (3 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
 - **.__init__()** (2 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **.get_memory_alerts()** (2 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **TypedDict** (1 connections)
-- *... and 23 more nodes in this community*
+- *... and 47 more nodes in this community*
 
 ## Relationships
 
-- [services chat logger](services_chat_logger.md) (3 shared connections)
-- [connection disconnection realtime](connection_disconnection_realtime.md) (3 shared connections)
-- [services npc startup](services_npc_startup.md) (2 shared connections)
-- [cleanup combat handler](cleanup_combat_handler.md) (2 shared connections)
+- [taunt combat commands](taunt_combat_commands.md) (9 shared connections)
 
 ## Source Files
 
 - `server/realtime/monitoring/statistics_aggregator.py`
+- `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 154 (99%)
+- EXTRACTED: 203 (99%)
 - INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 

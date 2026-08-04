@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **._publish_attack_event()** (3 connections) — `server/npc/combat_integration.py`
-- **Publish NPC attack event to event bus.** (1 connections) — `server/npc/combat_integration.py`
+- **test_process_tick_regeneration_sitting_position()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Test process_tick_regeneration() uses REST multiplier for sitting position.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Relationships
 
-- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
-- [room conftest toolkit](room_conftest_toolkit.md) (1 shared connections)
+- [config rationale reset](config_rationale_reset.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/combat_integration.py`
+- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

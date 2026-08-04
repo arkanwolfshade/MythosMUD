@@ -33,12 +33,14 @@
 
 ## Relationships
 
-- [Loot Generation](Loot_Generation.md) (4 shared connections)
 - [commands admin mute](commands_admin_mute.md) (3 shared connections)
-- [combat services messaging](combat_services_messaging.md) (3 shared connections)
-- [npc service services](npc_service_services.md) (3 shared connections)
-- [commands party examples](commands_party_examples.md) (2 shared connections)
-- [Database Config](Database_Config.md) (2 shared connections)
+- [room look commands](room_look_commands.md) (3 shared connections)
+- [admin structured logging](admin_structured_logging.md) (3 shared connections)
+- [commands npc admin](commands_npc_admin.md) (2 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [commands whisper command](commands_whisper_command.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
 - [models player related](models_player_related.md) (1 shared connections)
 
 ## Source Files

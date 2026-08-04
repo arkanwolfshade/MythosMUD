@@ -27,9 +27,8 @@
 
 ## Relationships
 
-- [services user manager](services_user_manager.md) (16 shared connections)
-- [middleware metrics collector](middleware_metrics_collector.md) (1 shared connections)
-- [error websocket handler](error_websocket_handler.md) (1 shared connections)
+- [services user manager](services_user_manager.md) (17 shared connections)
+- [NPC Combat](NPC_Combat.md) (1 shared connections)
 
 ## Source Files
 

@@ -34,8 +34,8 @@
 ## Relationships
 
 - [npc spawn validator](npc_spawn_validator.md) (4 shared connections)
-- [Database Config](Database_Config.md) (2 shared connections)
-- [commands inventory put](commands_inventory_put.md) (1 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (2 shared connections)
+- [inventory commands command](inventory_commands_command.md) (1 shared connections)
 - [Loot Generation](Loot_Generation.md) (1 shared connections)
 
 ## Source Files

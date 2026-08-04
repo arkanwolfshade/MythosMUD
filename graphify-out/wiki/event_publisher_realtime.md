@@ -1,12 +1,11 @@
 # event publisher realtime
 
-> 81 nodes
+> 79 nodes
 
 ## Key Concepts
 
 - **EventPublisher** (29 connections) — `server/realtime/event_publisher.py`
 - **test_event_publisher.py** (25 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **event_publisher.py** (10 connections) — `server/realtime/event_publisher.py`
 - **test_event_publisher_helpers.py** (9 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
 - **._create_event_message()** (7 connections) — `server/realtime/event_publisher.py`
 - **Any** (6 connections)
@@ -29,18 +28,16 @@
 - **.reset_sequence_number()** (2 connections) — `server/realtime/event_publisher.py`
 - **mock_nats_service()** (2 connections) — `server/tests/unit/realtime/test_event_publisher.py`
 - **mock_subject_manager()** (2 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- *... and 56 more nodes in this community*
+- **test_event_publisher_init()** (2 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- *... and 54 more nodes in this community*
 
 ## Relationships
 
-- [Error Conversion](Error_Conversion.md) (3 shared connections)
-- [realtime monitoring statistics](realtime_monitoring_statistics.md) (2 shared connections)
-- [commands communication support](commands_communication_support.md) (2 shared connections)
-- [Loot Generation](Loot_Generation.md) (2 shared connections)
-- [schemas player rationale](schemas_player_rationale.md) (2 shared connections)
-- [nats services service](nats_services_service.md) (2 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (1 shared connections)
-- [services npc startup](services_npc_startup.md) (1 shared connections)
+- [nats services service](nats_services_service.md) (4 shared connections)
+- [NPC Combat](NPC_Combat.md) (4 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (2 shared connections)
+- [taunt combat commands](taunt_combat_commands.md) (1 shared connections)
+- [manager subject services](manager_subject_services.md) (1 shared connections)
 
 ## Source Files
 
@@ -50,7 +47,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 219 (99%)
+- EXTRACTED: 208 (99%)
 - INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 

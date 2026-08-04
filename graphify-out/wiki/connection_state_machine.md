@@ -33,9 +33,10 @@
 
 ## Relationships
 
-- [combat validator validators](combat_validator_validators.md) (6 shared connections)
-- [Loot Generation](Loot_Generation.md) (2 shared connections)
-- [nats services metrics](nats_services_metrics.md) (2 shared connections)
+- [combat validator validators](combat_validator_validators.md) (3 shared connections)
+- [combat commands handler](combat_commands_handler.md) (3 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [commands emote rationale](commands_emote_rationale.md) (2 shared connections)
 
 ## Source Files
 

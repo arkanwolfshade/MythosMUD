@@ -1,55 +1,61 @@
 # rate limiter services
 
-> 27 nodes
+> 37 nodes
 
 ## Key Concepts
 
-- **test_communication_commands_support.py** (21 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
-- **get_services_from_container()** (15 connections) — `server/commands/communication_commands_support.py`
-- **primary_id()** (13 connections) — `server/commands/communication_commands_support.py`
-- **app_from_request()** (12 connections) — `server/commands/communication_commands_support.py`
-- **get_pose_persistence()** (11 connections) — `server/commands/communication_commands_support.py`
-- **AsyncPersistenceForPose** (6 connections) — `server/commands/communication_commands_support.py`
-- **.get_player_by_name()** (2 connections) — `server/commands/communication_commands_support.py`
-- **.save_player()** (2 connections) — `server/commands/communication_commands_support.py`
-- **test_app_from_request_none()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
-- **test_app_from_request_with_app()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
-- **test_primary_id_prefers_id()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
-- **test_primary_id_falls_back_to_player_id()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
-- **test_get_services_from_container_no_app()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
-- **test_get_services_from_container_via_container()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
-- **test_get_services_from_container_state_fallback()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
-- **test_get_pose_persistence_from_container()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
-- **test_get_pose_persistence_state_fallback()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
-- **test_chat_result_map_dict()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
-- **test_chat_result_map_non_dict()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
-- **test_message_id_from_result_nested()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
-- **test_message_id_from_result_no_id()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
-- **Minimal persistence for pose read/write in emote/pose flows.** (1 connections) — `server/commands/communication_commands_support.py`
-- **Return ``request.app`` if present, else None.** (1 connections) — `server/commands/communication_commands_support.py`
-- **Resolve id or player_id from a player-like object without propagating Any.** (1 connections) — `server/commands/communication_commands_support.py`
-- **Get services from container with backward compatibility fallback.      Args:** (1 connections) — `server/commands/communication_commands_support.py`
-- *... and 2 more nodes in this community*
+- **projectorHandlersMessages.ts** (26 connections) — `client/src/components/ui-v2/eventLog/projectorHandlersMessages.ts`
+- **projectorHandlersState.ts** (23 connections) — `client/src/components/ui-v2/eventLog/projectorHandlersState.ts`
+- **projectorRoom.ts** (18 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
+- **projectorMessageUtils.ts** (11 connections) — `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
+- **roomMergeUtils.ts** (10 connections) — `client/src/components/ui-v2/utils/roomMergeUtils.ts`
+- **messageMapper.ts** (8 connections) — `client/src/components/ui-v2/eventLog/messageMapper.ts`
+- **messageMapper.test.ts** (7 connections) — `client/src/components/ui-v2/eventLog/__tests__/messageMapper.test.ts`
+- **mergeRoomState()** (7 connections) — `client/src/components/ui-v2/utils/roomMergeUtils.ts`
+- **deriveRoomFromRoomUpdate()** (6 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
+- **deriveRoomFromRoomOccupants()** (5 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
+- **buildChatMessage()** (4 connections) — `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
+- **appendMessage()** (4 connections) — `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
+- **appendMovementMessage()** (4 connections) — `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
+- **roomMergeUtils.test.ts** (4 connections) — `client/src/components/ui-v2/utils/__tests__/roomMergeUtils.test.ts`
+- **formatNpcTookDamageLine()** (3 connections) — `client/src/components/ui-v2/eventLog/messageMapper.ts`
+- **formatNpcAttackedLine()** (3 connections) — `client/src/components/ui-v2/eventLog/messageMapper.ts`
+- **formatPlayerAttackedLine()** (3 connections) — `client/src/components/ui-v2/eventLog/messageMapper.ts`
+- **mergePlayerDpFromPlayerAttackedPayload()** (3 connections) — `client/src/components/ui-v2/eventLog/messageMapper.ts`
+- **createRoomUpdateWithPreservedOccupants()** (3 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
+- **deriveRoomFromRoomState()** (3 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
+- **selectPlayersArray()** (3 connections) — `client/src/components/ui-v2/utils/roomMergeUtils.ts`
+- **selectNpcsArray()** (3 connections) — `client/src/components/ui-v2/utils/roomMergeUtils.ts`
+- **messageHandlers** (2 connections) — `client/src/components/ui-v2/eventLog/projectorHandlersMessages.ts`
+- **ProjectorHandler** (2 connections) — `client/src/components/ui-v2/eventLog/projectorHandlersState.ts`
+- **stateHandlers** (2 connections) — `client/src/components/ui-v2/eventLog/projectorHandlersState.ts`
+- *... and 12 more nodes in this community*
 
 ## Relationships
 
-- [commands communication flows](commands_communication_flows.md) (30 shared connections)
-- [player cache rationale](player_cache_rationale.md) (6 shared connections)
-- [inventory commands command](inventory_commands_command.md) (2 shared connections)
-- [message nats handler](message_nats_handler.md) (2 shared connections)
-- [nats services metrics](nats_services_metrics.md) (2 shared connections)
-- [models player related](models_player_related.md) (1 shared connections)
-- [add hashed password](add_hashed_password.md) (1 shared connections)
+- [Game Terminal UI](Game_Terminal_UI.md) (20 shared connections)
+- [PanelSystem PanelManager panelLayoutClam](PanelSystem_PanelManager_panelLayoutClam.md) (7 shared connections)
+- [game terminal lucidity](game_terminal_lucidity.md) (7 shared connections)
+- [lucidityEventUtils mythosTime MythosTime](lucidityEventUtils_mythosTime_MythosTime.md) (5 shared connections)
+- [project paths rationale](project_paths_rationale.md) (2 shared connections)
+- [panels chatPanelRuntimeUtils chatPanelEx](panels_chatPanelRuntimeUtils_chatPanelEx.md) (2 shared connections)
+- [character creation service](character_creation_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/communication_commands_support.py`
-- `server/tests/unit/commands/test_communication_commands_support.py`
+- `client/src/components/ui-v2/eventLog/__tests__/messageMapper.test.ts`
+- `client/src/components/ui-v2/eventLog/messageMapper.ts`
+- `client/src/components/ui-v2/eventLog/projectorHandlersMessages.ts`
+- `client/src/components/ui-v2/eventLog/projectorHandlersState.ts`
+- `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
+- `client/src/components/ui-v2/eventLog/projectorRoom.ts`
+- `client/src/components/ui-v2/utils/__tests__/roomMergeUtils.test.ts`
+- `client/src/components/ui-v2/utils/roomMergeUtils.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 108 (95%)
-- INFERRED: 6 (5%)
+- EXTRACTED: 190 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

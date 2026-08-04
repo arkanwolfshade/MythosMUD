@@ -4,11 +4,11 @@
 
 ## Key Concepts
 
-- **Phase 4: Test Consolidation (Week 4)** (5 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Task 4.1: Parametrize Command Validation Tests (4 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Task 4.2: Parametrize Error Response Tests (3 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Task 4.3: Parametrize Permission Tests (2 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Task 4.4: Consolidate Similar Integration Tests (3 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Phase 2: Infrastructure Test Reduction (Week 2)** (5 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Task 2.1: Reduce Dependency Injection Tests (2 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Task 2.2: Consolidate Dependency Injection Test Files (2 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Task 2.3: Reduce App Factory Tests (1 hour)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Task 2.4: Review Lifespan Tests (1 hour)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
 
 ## Relationships
 

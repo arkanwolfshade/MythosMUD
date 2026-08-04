@@ -1,10 +1,11 @@
 # player respawn event
 
-> 41 nodes
+> 43 nodes
 
 ## Key Concepts
 
 - **test_goto_helpers.py** (32 connections) — `server/tests/unit/commands/test_goto_helpers.py`
+- **goto_helpers.py** (21 connections) — `server/commands/goto_helpers.py`
 - **validate_goto_context()** (13 connections) — `server/commands/goto_helpers.py`
 - **execute_goto_teleport()** (13 connections) — `server/commands/goto_helpers.py`
 - **validate_confirm_goto_context()** (11 connections) — `server/commands/goto_helpers.py`
@@ -28,14 +29,16 @@
 - **test_resolve_target_player_for_goto()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
 - **test_execute_confirm_goto()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
 - **test_resolve_goto_target_not_in_database()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
-- **test_validate_confirm_goto_context_no_app()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
-- *... and 16 more nodes in this community*
+- *... and 18 more nodes in this community*
 
 ## Relationships
 
-- [npc service services](npc_service_services.md) (22 shared connections)
+- [npc service services](npc_service_services.md) (15 shared connections)
+- [monitoring dashboard rationale](monitoring_dashboard_rationale.md) (8 shared connections)
 - [realtime game state](realtime_game_state.md) (7 shared connections)
-- [monitoring dashboard rationale](monitoring_dashboard_rationale.md) (5 shared connections)
+- [admin structured logging](admin_structured_logging.md) (5 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [room look commands](room_look_commands.md) (1 shared connections)
 
 ## Source Files
 
@@ -44,7 +47,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 172 (100%)
+- EXTRACTED: 194 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

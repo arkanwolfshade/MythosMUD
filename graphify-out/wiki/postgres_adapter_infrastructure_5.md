@@ -26,7 +26,7 @@
 ## Relationships
 
 - [postgres adapter infrastructure](postgres_adapter_infrastructure.md) (16 shared connections)
-- [Loot Generation](Loot_Generation.md) (3 shared connections)
+- [NPC Combat](NPC_Combat.md) (3 shared connections)
 
 ## Source Files
 

@@ -1,24 +1,23 @@
 # schemas calendar schedule
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Testing Logging** (3 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Unit Tests for Logging** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Integration Tests** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **test_restore_mp_from_meditation_at_max()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Test restore_mp_from_meditation() returns message when MP already at max.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Relationships
 
-- [archive LOGGING BEST](archive_LOGGING_BEST.md) (1 shared connections)
+- [config rationale reset](config_rationale_reset.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/LOGGING_BEST_PRACTICES.md`
+- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

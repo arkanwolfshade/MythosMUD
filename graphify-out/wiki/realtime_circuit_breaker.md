@@ -25,7 +25,7 @@
 - [persistence protocols rationale](persistence_protocols_rationale.md) (9 shared connections)
 - [config models game](config_models_game.md) (4 shared connections)
 - [combat models rationale](combat_models_rationale.md) (3 shared connections)
-- [Loot Generation](Loot_Generation.md) (2 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (2 shared connections)
 - [room models instance](room_models_instance.md) (2 shared connections)
 - [persistence container item](persistence_container_item.md) (2 shared connections)
 - [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)

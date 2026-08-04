@@ -1,19 +1,15 @@
 # combat validator validators
 
-> 307 nodes
+> 168 nodes
 
 ## Key Concepts
 
 - **NATSService** (120 connections) — `server/services/nats_service.py`
-- **test_nats_service.py** (76 connections) — `server/tests/unit/services/test_nats_service.py`
 - **test_nats_service_helpers.py** (54 connections) — `server/tests/unit/services/test_nats_service_helpers.py`
-- **nats_exceptions.py** (36 connections) — `server/services/nats_exceptions.py`
-- **NATSMetrics** (31 connections) — `server/services/nats_metrics.py`
 - **NATSConfig** (26 connections) — `server/config/models/nats.py`
 - **nats_service.py** (24 connections) — `server/services/nats_service.py`
 - **Any** (17 connections)
 - **NATSUnsubscribeError** (14 connections) — `server/services/nats_exceptions.py`
-- **NATSRequestError** (11 connections) — `server/services/nats_exceptions.py`
 - **.disconnect()** (11 connections) — `server/services/nats_service.py`
 - **.publish_with_pool()** (10 connections) — `server/services/nats_service.py`
 - **._create_tracked_task()** (9 connections) — `server/services/nats_service.py`
@@ -27,38 +23,41 @@
 - **._on_error()** (5 connections) — `server/services/nats_service.py`
 - **._get_connection()** (5 connections) — `server/services/nats_service.py`
 - **._retry_failed_batch_groups()** (5 connections) — `server/services/nats_service.py`
-- **nats_service()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_nats_service_init_with_config()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
-- *... and 282 more nodes in this community*
+- **._build_connect_options()** (4 connections) — `server/services/nats_service.py`
+- **._configure_tls()** (4 connections) — `server/services/nats_service.py`
+- **._close_all_subscriptions()** (4 connections) — `server/services/nats_service.py`
+- **._health_check_loop()** (4 connections) — `server/services/nats_service.py`
+- **.subscribe()** (4 connections) — `server/services/nats_service.py`
+- **.unsubscribe()** (4 connections) — `server/services/nats_service.py`
+- *... and 143 more nodes in this community*
 
 ## Relationships
 
-- [nats exceptions services](nats_exceptions_services.md) (21 shared connections)
-- [models npc rationale](models_npc_rationale.md) (7 shared connections)
-- [connection state machine](connection_state_machine.md) (6 shared connections)
-- [websocket handler realtime](websocket_handler_realtime.md) (5 shared connections)
-- [Memory Task Runtime](Memory_Task_Runtime.md) (5 shared connections)
-- [commands communication support](commands_communication_support.md) (5 shared connections)
+- [combat commands handler](combat_commands_handler.md) (18 shared connections)
+- [nats exceptions services](nats_exceptions_services.md) (12 shared connections)
+- [NPC Combat](NPC_Combat.md) (8 shared connections)
 - [broker infrastructure nats](broker_infrastructure_nats.md) (4 shared connections)
-- [message filtering realtime](message_filtering_realtime.md) (4 shared connections)
-- [startup npc services](startup_npc_services.md) (3 shared connections)
-- [services combat sync](services_combat_sync.md) (3 shared connections)
-- [nats message handler](nats_message_handler.md) (3 shared connections)
+- [models npc rationale](models_npc_rationale.md) (4 shared connections)
 - [item models rationale](item_models_rationale.md) (3 shared connections)
+- [connection state machine](connection_state_machine.md) (3 shared connections)
+- [Memory Task Runtime](Memory_Task_Runtime.md) (3 shared connections)
+- [nats services service](nats_services_service.md) (3 shared connections)
+- [lucidity npc combat](lucidity_npc_combat.md) (2 shared connections)
+- [player event handlers](player_event_handlers.md) (2 shared connections)
+- [admin command setstat](admin_command_setstat.md) (2 shared connections)
 
 ## Source Files
 
 - `server/config/models/nats.py`
 - `server/services/nats_exceptions.py`
-- `server/services/nats_metrics.py`
 - `server/services/nats_service.py`
 - `server/tests/unit/services/test_nats_service.py`
 - `server/tests/unit/services/test_nats_service_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 992 (97%)
-- INFERRED: 33 (3%)
+- EXTRACTED: 620 (97%)
+- INFERRED: 18 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

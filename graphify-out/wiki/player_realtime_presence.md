@@ -1,47 +1,48 @@
 # player realtime presence
 
-> 35 nodes
+> 38 nodes
 
 ## Key Concepts
 
-- **.get_room()** (11 connections) — `server/game/room_service.py`
-- **Any** (10 connections)
-- **.get_room_info()** (7 connections) — `server/game/room_service.py`
-- **.get_adjacent_rooms()** (6 connections) — `server/game/room_service.py`
-- **.filter_rooms_by_exploration()** (5 connections) — `server/game/room_service.py`
-- **.get_local_chat_scope()** (4 connections) — `server/game/room_service.py`
-- **.get_room_occupants()** (4 connections) — `server/game/room_service.py`
-- **.get_room_exits()** (4 connections) — `server/game/room_service.py`
-- **.get_room_by_name()** (3 connections) — `server/game/room_service.py`
-- **.list_rooms_in_zone()** (3 connections) — `server/game/room_service.py`
-- **.validate_room_exists()** (3 connections) — `server/game/room_service.py`
-- **.validate_exit_exists()** (3 connections) — `server/game/room_service.py`
-- **.validate_player_in_room()** (3 connections) — `server/game/room_service.py`
-- **.list_rooms()** (3 connections) — `server/game/room_service.py`
-- **.get_environment_state()** (3 connections) — `server/game/room_service.py`
-- **.search_rooms_by_name()** (3 connections) — `server/game/room_service.py`
-- **.get_rooms_in_zone()** (3 connections) — `server/game/room_service.py`
-- **UUID** (2 connections)
-- **AsyncSession** (1 connections)
-- **Get room information by room ID with caching.          Args:             room_id** (1 connections) — `server/game/room_service.py`
-- **Get room information by room name.          Args:             room_name: The roo** (1 connections) — `server/game/room_service.py`
-- **Get a list of all rooms in a specific zone.          Args:             zone_id:** (1 connections) — `server/game/room_service.py`
-- **Get a list of rooms adjacent to the specified room.          Args:             r** (1 connections) — `server/game/room_service.py`
-- **Get the scope of rooms for local chat (current room + adjacent rooms).** (1 connections) — `server/game/room_service.py`
-- **Validate that a room exists using cached data.          Args:             room_i** (1 connections) — `server/game/room_service.py`
-- *... and 10 more nodes in this community*
+- **test_command_parser_helpers.py** (24 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_normalize_command_removes_slash_prefix()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_normalize_command_cleans_whitespace()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_normalize_command_strips_whitespace()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_normalize_command_no_slash()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_parse_command_parts_simple()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_parse_command_parts_with_args()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_parse_command_parts_lowercases_command()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_parse_command_parts_empty_raises()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_parse_command_parts_whitespace_only_raises()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_get_command_help_specific_command()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_get_command_help_unknown_command()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_get_command_help_none()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_create_command_object_with_alias_l()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_create_command_object_with_alias_g()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_create_command_object_with_alias_w()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_create_command_object_unsupported_command()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_create_command_object_pydantic_validation_error()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_create_command_object_value_error()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **Unit tests for command_parser helper methods.  Tests the helper methods in Comma** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **Test _normalize_command() removes leading slash.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **Test _normalize_command() cleans multiple whitespace.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **Test _normalize_command() strips leading/trailing whitespace.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **Test _normalize_command() handles command without slash.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **Test _parse_command_parts() parses simple command.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [room game service](room_game_service.md) (17 shared connections)
+- [Loot Generation](Loot_Generation.md) (3 shared connections)
+- [command parser rationale](command_parser_rationale.md) (2 shared connections)
 
 ## Source Files
 
-- `server/game/room_service.py`
+- `server/tests/unit/utils/test_command_parser_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 97 (100%)
+- EXTRACTED: 79 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

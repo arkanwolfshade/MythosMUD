@@ -1,13 +1,15 @@
 # PanelSystem PanelManager panelLayoutClam
 
-> 87 nodes
+> 96 nodes
 
 ## Key Concepts
 
+- **types.ts** (79 connections) — `client/src/components/ui-v2/types.ts`
 - **panelReducerHandlers.ts** (24 connections) — `client/src/components/ui-v2/PanelSystem/panelReducerHandlers.ts`
 - **PanelState** (24 connections) — `client/src/components/ui-v2/types.ts`
 - **panelManagerReducer.ts** (20 connections) — `client/src/components/ui-v2/PanelSystem/panelManagerReducer.ts`
 - **panelReducerHandlers.test.ts** (19 connections) — `client/src/components/ui-v2/PanelSystem/__tests__/panelReducerHandlers.test.ts`
+- **PanelContainer.tsx** (16 connections) — `client/src/components/ui-v2/PanelSystem/PanelContainer.tsx`
 - **GameClientV2Minimap.tsx** (15 connections) — `client/src/components/ui-v2/GameClientV2Minimap.tsx`
 - **savePanelLayout()** (13 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutValidation.ts`
 - **panelMinimizeDock.ts** (13 connections) — `client/src/components/ui-v2/PanelSystem/panelMinimizeDock.ts`
@@ -27,16 +29,20 @@
 - **relayoutMinimizedDock()** (8 connections) — `client/src/components/ui-v2/PanelSystem/panelMinimizeDock.ts`
 - **handleToggleMinimize()** (8 connections) — `client/src/components/ui-v2/PanelSystem/panelReducerHandlers.ts`
 - **usePanelManager.ts** (8 connections) — `client/src/components/ui-v2/PanelSystem/usePanelManager.ts`
-- **panelLayoutBootstrap.test.ts** (7 connections) — `client/src/components/ui-v2/PanelSystem/__tests__/panelLayoutBootstrap.test.ts`
-- **usePanelManagerProviderState.test.ts** (7 connections) — `client/src/components/ui-v2/PanelSystem/__tests__/usePanelManagerProviderState.test.ts`
-- *... and 62 more nodes in this community*
+- *... and 71 more nodes in this community*
 
 ## Relationships
 
-- [game terminal lucidity](game_terminal_lucidity.md) (35 shared connections)
-- [panels chat ChatPanelRuntimeViewParts](panels_chat_ChatPanelRuntimeViewParts.md) (5 shared connections)
+- [game terminal lucidity](game_terminal_lucidity.md) (22 shared connections)
+- [character creation service](character_creation_service.md) (22 shared connections)
+- [Game Terminal UI](Game_Terminal_UI.md) (14 shared connections)
+- [rate limiter services](rate_limiter_services.md) (7 shared connections)
+- [panels chat ChatPanelRuntimeViewParts](panels_chat_ChatPanelRuntimeViewParts.md) (6 shared connections)
+- [lucidityEventUtils mythosTime MythosTime](lucidityEventUtils_mythosTime_MythosTime.md) (3 shared connections)
 - [map maps useAsciiMap](map_maps_useAsciiMap.md) (2 shared connections)
-- [GameClientV2Container emptyOccupantsDiag](GameClientV2Container_emptyOccupantsDiag.md) (1 shared connections)
+- [lucidity active service](lucidity_active_service.md) (2 shared connections)
+- [project paths rationale](project_paths_rationale.md) (2 shared connections)
+- [persistence services combat](persistence_services_combat.md) (1 shared connections)
 - [panels GameClientV2Dock gameLogPanelUtil](panels_GameClientV2Dock_gameLogPanelUtil.md) (1 shared connections)
 - [e2e fixtures spec](e2e_fixtures_spec.md) (1 shared connections)
 
@@ -48,6 +54,7 @@
 - `client/src/components/ui-v2/PanelSystem/PanelContainer.tsx`
 - `client/src/components/ui-v2/PanelSystem/PanelManager.tsx`
 - `client/src/components/ui-v2/PanelSystem/PanelManagerContext.tsx`
+- `client/src/components/ui-v2/PanelSystem/__tests__/PanelContainer.test.tsx`
 - `client/src/components/ui-v2/PanelSystem/__tests__/PanelManager.test.tsx`
 - `client/src/components/ui-v2/PanelSystem/__tests__/panelLayoutBootstrap.test.ts`
 - `client/src/components/ui-v2/PanelSystem/__tests__/panelLayoutClamp.test.ts`
@@ -61,11 +68,10 @@
 - `client/src/components/ui-v2/PanelSystem/panelLayoutValidationTypeCheck.ts`
 - `client/src/components/ui-v2/PanelSystem/panelLayoutValidationTypeCheckImpl.ts`
 - `client/src/components/ui-v2/PanelSystem/panelManagerReducer.ts`
-- `client/src/components/ui-v2/PanelSystem/panelMinimizeDock.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 494 (99%)
+- EXTRACTED: 606 (99%)
 - INFERRED: 5 (1%)
 - AMBIGUOUS: 0 (0%)
 

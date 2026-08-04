@@ -33,10 +33,10 @@
 
 ## Relationships
 
-- [command factories create](command_factories_create.md) (27 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (24 shared connections)
-- [command inventory models](command_inventory_models.md) (4 shared connections)
-- [Loot Generation](Loot_Generation.md) (2 shared connections)
+- [Loot Generation](Loot_Generation.md) (24 shared connections)
+- [command factories create](command_factories_create.md) (21 shared connections)
+- [command inventory factories](command_inventory_factories.md) (6 shared connections)
+- [command inventory models](command_inventory_models.md) (6 shared connections)
 
 ## Source Files
 

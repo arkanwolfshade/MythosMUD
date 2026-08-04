@@ -34,15 +34,15 @@
 ## Relationships
 
 - [shutdown admin command](shutdown_admin_command.md) (13 shared connections)
-- [Loot Generation](Loot_Generation.md) (3 shared connections)
+- [commands whisper command](commands_whisper_command.md) (5 shared connections)
 - [motd loader rationale](motd_loader_rationale.md) (3 shared connections)
 - [services service hallucination](services_service_hallucination.md) (3 shared connections)
 - [occupant realtime formatter](occupant_realtime_formatter.md) (3 shared connections)
 - [shutdown commands sequence](shutdown_commands_sequence.md) (3 shared connections)
-- [commands party examples](commands_party_examples.md) (2 shared connections)
-- [commands alias rationale](commands_alias_rationale.md) (2 shared connections)
+- [commands npc admin](commands_npc_admin.md) (2 shared connections)
 - [lucidity models rationale](lucidity_models_rationale.md) (2 shared connections)
-- [commands admin mute](commands_admin_mute.md) (2 shared connections)
+- [admin structured logging](admin_structured_logging.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
 - [connection manager realtime](connection_manager_realtime.md) (2 shared connections)
 - [profession game service](profession_game_service.md) (1 shared connections)
 

@@ -20,7 +20,7 @@
 
 ## Relationships
 
-- [commands npc admin](commands_npc_admin.md) (2 shared connections)
+- [logging setup structured](logging_setup_structured.md) (2 shared connections)
 - [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
 
 ## Source Files

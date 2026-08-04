@@ -1,63 +1,58 @@
 # auth users rationale
 
-> 144 nodes
+> 27 nodes
 
 ## Key Concepts
 
-- **test_users.py** (53 connections) — `server/tests/unit/auth/test_users.py`
-- **users.py** (49 connections) — `server/auth/users.py`
-- **UserManager** (46 connections) — `server/auth/users.py`
-- **RestartInvalidatingJWTStrategy** (15 connections) — `server/auth/jwt_strategy.py`
-- **get_user_manager()** (13 connections) — `server/auth/users.py`
-- **get_auth_backend()** (12 connections) — `server/auth/users.py`
-- **test_email_utils.py** (12 connections) — `server/tests/unit/auth/test_email_utils.py`
-- **get_user_db()** (11 connections) — `server/auth/users.py`
-- **email_utils.py** (10 connections) — `server/auth/email_utils.py`
-- **UsernameAuthenticationBackend** (9 connections) — `server/auth/users.py`
-- **get_username_auth_backend()** (9 connections) — `server/auth/users.py`
-- **generate_unique_bogus_email()** (8 connections) — `server/auth/email_utils.py`
-- **is_bogus_email()** (7 connections) — `server/auth/email_utils.py`
-- **validate_bogus_email_format()** (7 connections) — `server/auth/email_utils.py`
-- **UUID** (7 connections)
-- **.login()** (6 connections) — `server/auth/users.py`
-- **.__init__()** (5 connections) — `server/auth/users.py`
-- **.on_after_register()** (5 connections) — `server/auth/users.py`
-- **.on_after_forgot_password()** (4 connections) — `server/auth/users.py`
-- **.on_after_request_verify()** (4 connections) — `server/auth/users.py`
-- **test_user_manager_on_after_register_bogus_email()** (4 connections) — `server/tests/unit/auth/test_users.py`
-- **test_user_manager_on_after_register_non_bogus_email()** (4 connections) — `server/tests/unit/auth/test_users.py`
-- **test_user_manager_on_after_register_no_email()** (4 connections) — `server/tests/unit/auth/test_users.py`
-- **test_user_manager_on_after_register_with_request()** (4 connections) — `server/tests/unit/auth/test_users.py`
-- **test_user_manager_on_after_forgot_password()** (4 connections) — `server/tests/unit/auth/test_users.py`
-- *... and 119 more nodes in this community*
+- **npc_spawn_rules_api.py** (23 connections) — `server/api/admin/npc_spawn_rules_api.py`
+- **test_npc_spawn_rules_api.py** (16 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
+- **get_npc_spawn_rules()** (14 connections) — `server/api/admin/npc_spawn_rules_api.py`
+- **create_npc_spawn_rule()** (14 connections) — `server/api/admin/npc_spawn_rules_api.py`
+- **delete_npc_spawn_rule()** (11 connections) — `server/api/admin/npc_spawn_rules_api.py`
+- **NPCSpawnRuleResponse** (7 connections) — `server/api/admin/npc_schemas.py`
+- **.from_orm()** (6 connections) — `server/api/admin/npc_schemas.py`
+- **NPCSpawnRuleCreate** (5 connections) — `server/api/admin/npc_schemas.py`
+- **Request** (3 connections)
+- **AsyncSession** (3 connections)
+- **test_get_npc_spawn_rules_generic_error()** (3 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
+- **test_create_npc_spawn_rule_rolls_back()** (3 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
+- **test_delete_npc_spawn_rule_not_found()** (3 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
+- **test_get_npc_spawn_rules_success()** (2 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
+- **test_get_npc_spawn_rules_http_exception_propagates()** (2 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
+- **test_create_npc_spawn_rule_success()** (2 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
+- **test_delete_npc_spawn_rule_success()** (2 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
+- **Model for creating NPC spawn rules.** (1 connections) — `server/api/admin/npc_schemas.py`
+- **Model for NPC spawn rule responses.** (1 connections) — `server/api/admin/npc_schemas.py`
+- **Create response from ORM object.** (1 connections) — `server/api/admin/npc_schemas.py`
+- **NPC spawn rule admin endpoints.  Split out from server.api.admin.npc to keep fil** (1 connections) — `server/api/admin/npc_spawn_rules_api.py`
+- **Get all NPC spawn rules.** (1 connections) — `server/api/admin/npc_spawn_rules_api.py`
+- **Create a new NPC spawn rule.** (1 connections) — `server/api/admin/npc_spawn_rules_api.py`
+- **Delete an NPC spawn rule.** (1 connections) — `server/api/admin/npc_spawn_rules_api.py`
+- **mock_user()** (1 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [player requests schemas](player_requests_schemas.md) (39 shared connections)
-- [Loot Generation](Loot_Generation.md) (8 shared connections)
-- [Magic Spell Service](Magic_Spell_Service.md) (7 shared connections)
-- [inventory schemas schema](inventory_schemas_schema.md) (5 shared connections)
-- [npc lifecycle combat](npc_lifecycle_combat.md) (4 shared connections)
-- [metrics schemas rationale](metrics_schemas_rationale.md) (3 shared connections)
-- [Player Stats](Player_Stats.md) (2 shared connections)
-- [player service game](player_service_game.md) (2 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (2 shared connections)
-- [channel broadcasting strategies](channel_broadcasting_strategies.md) (2 shared connections)
-- [player preferences services](player_preferences_services.md) (1 shared connections)
-- [profession game service](profession_game_service.md) (1 shared connections)
+- [player preferences services](player_preferences_services.md) (12 shared connections)
+- [Exception Containers](Exception_Containers.md) (8 shared connections)
+- [persistence container rationale](persistence_container_rationale.md) (6 shared connections)
+- [player requests schemas](player_requests_schemas.md) (6 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [container events rationale](container_events_rationale.md) (1 shared connections)
+- [game models enums](game_models_enums.md) (1 shared connections)
+- [command player state](command_player_state.md) (1 shared connections)
 
 ## Source Files
 
-- `server/auth/email_utils.py`
-- `server/auth/jwt_strategy.py`
-- `server/auth/users.py`
-- `server/tests/unit/auth/test_email_utils.py`
-- `server/tests/unit/auth/test_users.py`
+- `server/api/admin/npc_schemas.py`
+- `server/api/admin/npc_spawn_rules_api.py`
+- `server/tests/unit/api/test_npc_spawn_rules_api.py`
 
 ## Audit Trail
 
-- EXTRACTED: 506 (96%)
-- INFERRED: 21 (4%)
+- EXTRACTED: 126 (98%)
+- INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

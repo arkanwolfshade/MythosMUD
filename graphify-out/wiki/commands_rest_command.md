@@ -1,29 +1,32 @@
 # commands rest command
 
-> 6 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **graceful_degradation()** (5 connections) — `server/legacy_error_handlers.py`
-- **.test_graceful_degradation_success()** (3 connections) — `server/tests/unit/test_legacy_error_handlers.py`
-- **.test_graceful_degradation_failure()** (3 connections) — `server/tests/unit/test_legacy_error_handlers.py`
-- **Context manager for graceful degradation.      Provides fallback behavior when o** (1 connections) — `server/legacy_error_handlers.py`
-- **Test graceful_degradation with successful operation.** (1 connections) — `server/tests/unit/test_legacy_error_handlers.py`
-- **Test graceful_degradation catches exceptions.** (1 connections) — `server/tests/unit/test_legacy_error_handlers.py`
+- **populate_test_npc_databases.py** (6 connections) — `scripts/populate_test_npc_databases.py`
+- **main()** (5 connections) — `scripts/populate_test_npc_databases.py`
+- **get_npc_data_from_source()** (4 connections) — `scripts/populate_test_npc_databases.py`
+- **populate_database()** (4 connections) — `scripts/populate_test_npc_databases.py`
+- **get_npc_database_url()** (3 connections) — `scripts/populate_test_npc_databases.py`
+- **Get NPC database URL for the specified environment.      Args:         environme** (1 connections) — `scripts/populate_test_npc_databases.py`
+- **Extract NPC data from the source PostgreSQL database.      Args:         source_** (1 connections) — `scripts/populate_test_npc_databases.py`
+- **Populate a PostgreSQL database with NPC data.      Args:         target_url: Pos** (1 connections) — `scripts/populate_test_npc_databases.py`
+- **Main function to populate test NPC databases.** (1 connections) — `scripts/populate_test_npc_databases.py`
 
 ## Relationships
 
-- [Error Handling Core](Error_Handling_Core.md) (4 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (3 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/legacy_error_handlers.py`
-- `server/tests/unit/test_legacy_error_handlers.py`
+- `scripts/populate_test_npc_databases.py`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 24 (92%)
+- INFERRED: 2 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

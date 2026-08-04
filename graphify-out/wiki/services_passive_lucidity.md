@@ -1,32 +1,33 @@
 # services passive lucidity
 
-> 8 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **normalize_path_from_url_or_path()** (5 connections) — `server/container/utils.py`
-- **._get_project_root()** (4 connections) — `server/container/main.py`
-- **._normalize_path_from_url_or_path()** (4 connections) — `server/container/main.py`
-- **Path** (2 connections)
-- **Return and cache the repository root directory.** (1 connections) — `server/container/main.py`
-- **Delegate to shared util. Kept for backward compatibility.** (1 connections) — `server/container/main.py`
-- **Path** (1 connections)
-- **Normalize an item database override into a filesystem path.      DEPRECATED: Ite** (1 connections) — `server/container/utils.py`
+- **.validate_current_vs_max_stats()** (5 connections) — `server/models/game.py`
+- **._calculate_max_magic_points()** (4 connections) — `server/models/game.py`
+- **._calculate_max_lucidity()** (4 connections) — `server/models/game.py`
+- **.max_magic_points()** (3 connections) — `server/models/game.py`
+- **.max_lucidity()** (3 connections) — `server/models/game.py`
+- **._calculate_max_dp()** (3 connections) — `server/models/game.py`
+- **Calculate max magic points (MP) using formula: 20% of Power (ceiling rounded).** (1 connections) — `server/models/game.py`
+- **Calculate max lucidity based on education.          AI: This computed field uses** (1 connections) — `server/models/game.py`
+- **Calculate max determination points (DP) using formula: (CON + SIZ) / 5.** (1 connections) — `server/models/game.py`
+- **Calculate max magic points (MP) using formula: 20% of Power (ceiling rounded).** (1 connections) — `server/models/game.py`
+- **Calculate max lucidity based on education.          AI: Helper method to calcula** (1 connections) — `server/models/game.py`
+- **Ensure current_dp (DP), magic_points (MP), and lucidity don't exceed their max v** (1 connections) — `server/models/game.py`
 
 ## Relationships
 
-- [Error Conversion](Error_Conversion.md) (3 shared connections)
-- [websocket realtime handler](websocket_realtime_handler.md) (1 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [player service game](player_service_game.md) (6 shared connections)
 
 ## Source Files
 
-- `server/container/main.py`
-- `server/container/utils.py`
+- `server/models/game.py`
 
 ## Audit Trail
 
-- EXTRACTED: 19 (100%)
+- EXTRACTED: 28 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

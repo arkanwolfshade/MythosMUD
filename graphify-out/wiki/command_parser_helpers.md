@@ -34,13 +34,12 @@
 ## Relationships
 
 - [Exception Containers](Exception_Containers.md) (19 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (14 shared connections)
-- [Loot Generation](Loot_Generation.md) (9 shared connections)
+- [Loot Generation](Loot_Generation.md) (14 shared connections)
+- [NPC Combat](NPC_Combat.md) (9 shared connections)
 - [player requests schemas](player_requests_schemas.md) (4 shared connections)
-- [coercion int inventory](coercion_int_inventory.md) (2 shared connections)
-- [game models stats](game_models_stats.md) (2 shared connections)
+- [Player Stats](Player_Stats.md) (3 shared connections)
+- [command player state](command_player_state.md) (2 shared connections)
 - [room game service](room_game_service.md) (2 shared connections)
-- [inventory schemas schema](inventory_schemas_schema.md) (1 shared connections)
 
 ## Source Files
 

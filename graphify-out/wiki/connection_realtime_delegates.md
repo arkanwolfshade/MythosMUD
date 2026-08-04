@@ -1,61 +1,48 @@
 # connection realtime delegates
 
-> 141 nodes
+> 23 nodes
 
 ## Key Concepts
 
-- **connection_manager_methods.py** (80 connections) — `server/realtime/connection_manager_methods.py`
-- **test_connection_delegates.py** (51 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
-- **connection_delegates.py** (38 connections) — `server/realtime/connection_delegates.py`
-- **validate_token_impl()** (15 connections) — `server/realtime/connection_delegates.py`
 - **cleanup_dead_websocket_impl()** (14 connections) — `server/realtime/connection_delegates.py`
-- **delegate_game_state_provider()** (12 connections) — `server/realtime/connection_delegates.py`
-- **delegate_message_broadcaster()** (12 connections) — `server/realtime/connection_delegates.py`
-- **delegate_health_monitor()** (11 connections) — `server/realtime/connection_delegates.py`
-- **delegate_connection_cleaner()** (11 connections) — `server/realtime/connection_delegates.py`
-- **delegate_personal_message_sender()** (11 connections) — `server/realtime/connection_delegates.py`
-- **UUID** (10 connections)
-- **delegate_health_monitor_sync()** (10 connections) — `server/realtime/connection_delegates.py`
-- **delegate_connection_cleaner_sync()** (9 connections) — `server/realtime/connection_delegates.py`
-- **delegate_personal_message_sender_sync()** (9 connections) — `server/realtime/connection_delegates.py`
-- **delegate_room_event_handler()** (9 connections) — `server/realtime/connection_delegates.py`
-- **_async_callable()** (8 connections) — `server/realtime/connection_delegates.py`
-- **delegate_game_state_provider_sync()** (8 connections) — `server/realtime/connection_delegates.py`
-- **broadcast_global_event_impl()** (8 connections) — `server/realtime/connection_manager_methods.py`
 - **_WebsocketCleanupManager** (7 connections) — `server/realtime/connection_delegates.py`
-- **_close_dead_websocket_if_open()** (7 connections) — `server/realtime/connection_delegates.py`
-- **get_message_delivery_stats_impl()** (7 connections) — `server/realtime/connection_manager_methods.py`
-- **broadcast_global_impl()** (7 connections) — `server/realtime/connection_manager_methods.py`
 - **_PlayerIdCarrier** (6 connections) — `server/realtime/connection_delegates.py`
 - **_TokenPersistence** (6 connections) — `server/realtime/connection_delegates.py`
-- **_TokenValidateManager** (6 connections) — `server/realtime/connection_delegates.py`
-- *... and 116 more nodes in this community*
+- **_remove_connection_from_player_list()** (5 connections) — `server/realtime/connection_delegates.py`
+- **Protocol** (4 connections)
+- **.get_player_by_user_id()** (4 connections) — `server/realtime/connection_delegates.py`
+- **test_cleanup_dead_websocket_impl_success()** (3 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
+- **test_cleanup_dead_websocket_impl_none_websocket()** (3 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
+- **test_cleanup_dead_websocket_impl_not_in_active()** (3 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
+- **test_cleanup_dead_websocket_impl_close_timeout()** (3 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
+- **test_cleanup_dead_websocket_impl_error()** (3 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
+- **Minimal player shape for token validation.** (1 connections) — `server/realtime/connection_delegates.py`
+- **Persistence surface used by validate_token_impl.** (1 connections) — `server/realtime/connection_delegates.py`
+- **Look up a player by auth user id.** (1 connections) — `server/realtime/connection_delegates.py`
+- **ConnectionManager surface used by cleanup_dead_websocket_impl.** (1 connections) — `server/realtime/connection_delegates.py`
+- **Drop connection_id from player_websockets; delete empty player entries.** (1 connections) — `server/realtime/connection_delegates.py`
+- **Clean up a dead WebSocket connection.      Args:         player_id: The player's** (1 connections) — `server/realtime/connection_delegates.py`
+- **Test cleanup_dead_websocket_impl() successfully cleans up websocket.** (1 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
+- **Test cleanup_dead_websocket_impl() handles None websocket.** (1 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
+- **Test cleanup_dead_websocket_impl() handles websocket not in active_websockets.** (1 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
+- **Test cleanup_dead_websocket_impl() handles close timeout.** (1 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
+- **Test cleanup_dead_websocket_impl() handles errors.** (1 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
 
 ## Relationships
 
-- [Room Broadcast](Room_Broadcast.md) (52 shared connections)
-- [realtime monitoring statistics](realtime_monitoring_statistics.md) (27 shared connections)
-- [connection disconnection realtime](connection_disconnection_realtime.md) (10 shared connections)
-- [container service services](container_service_services.md) (9 shared connections)
-- [Loot Generation](Loot_Generation.md) (6 shared connections)
-- [Database Config](Database_Config.md) (6 shared connections)
-- [connection realtime error](connection_realtime_error.md) (6 shared connections)
-- [persistence rationale room](persistence_rationale_room.md) (6 shared connections)
-- [game chat service](game_chat_service.md) (5 shared connections)
-- [services inventory mutation](services_inventory_mutation.md) (3 shared connections)
-- [auth rationale access](auth_rationale_access.md) (2 shared connections)
-- [realtime message filtering](realtime_message_filtering.md) (2 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (18 shared connections)
+- [persistence rationale room](persistence_rationale_room.md) (3 shared connections)
+- [connection disconnection realtime](connection_disconnection_realtime.md) (3 shared connections)
 
 ## Source Files
 
 - `server/realtime/connection_delegates.py`
-- `server/realtime/connection_manager_methods.py`
 - `server/tests/unit/realtime/test_connection_delegates.py`
 
 ## Audit Trail
 
-- EXTRACTED: 608 (98%)
-- INFERRED: 10 (2%)
+- EXTRACTED: 66 (92%)
+- INFERRED: 6 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

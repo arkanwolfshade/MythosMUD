@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_validate_player_name_whitespace()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **Test validate_player_name() with whitespace only.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **.reset_player_limits()** (2 connections) — `server/services/rate_limiter.py`
+- **Reset rate limiting for a player.          Args:             player_id: Player I** (1 connections) — `server/services/rate_limiter.py`
 
 ## Relationships
 
-- [room realtime subscription](room_realtime_subscription.md) (1 shared connections)
+- [event events serialization](event_events_serialization.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_player_service_mutations.py`
+- `server/services/rate_limiter.py`
 
 ## Audit Trail
 

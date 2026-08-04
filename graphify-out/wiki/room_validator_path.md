@@ -1,41 +1,45 @@
 # room validator path
 
-> 14 nodes
+> 23 nodes
 
 ## Key Concepts
 
-- **handle_new_game_session()** (11 connections) — `server/api/real_time.py`
-- **_ensure_connection_manager()** (10 connections) — `server/api/real_time.py`
-- **get_player_connections()** (9 connections) — `server/api/real_time.py`
-- **get_connection_statistics()** (7 connections) — `server/api/real_time.py`
-- **Request** (4 connections)
-- **test_ensure_connection_manager_missing()** (3 connections) — `server/tests/unit/api/test_real_time_helpers.py`
-- **test_handle_new_game_session_missing_session_id()** (3 connections) — `server/tests/unit/api/test_real_time_helpers.py`
-- **test_handle_new_game_session_invalid_json()** (3 connections) — `server/tests/unit/api/test_real_time_helpers.py`
-- **test_get_player_connections()** (2 connections) — `server/tests/unit/api/test_real_time_helpers.py`
-- **test_handle_new_game_session()** (2 connections) — `server/tests/unit/api/test_real_time_helpers.py`
-- **Ensure connection manager is available.     Raises LoggedHTTPException with prop** (1 connections) — `server/api/real_time.py`
-- **Get connection information for a player.     Returns detailed connection metadat** (1 connections) — `server/api/real_time.py`
-- **Handle a new game session for a player.     This will disconnect existing connec** (1 connections) — `server/api/real_time.py`
-- **Get comprehensive connection statistics.     Returns detailed statistics about a** (1 connections) — `server/api/real_time.py`
+- **test_combat_persistence_handler.py** (14 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **persistence_handler()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **mock_combat_service()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **test_persistence_handler_init()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **test_get_persistence_layer()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **test_get_persistence_layer_no_container()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **test_get_persistence_layer_container_error()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **test_get_persistence_layer_no_async_persistence()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **test_log_death_state_changes_death_threshold()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **test_log_death_state_changes_mortally_wounded()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **test_persist_player_dp_background_public_api()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **mock_player()** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **Unit tests for combat persistence handler - core functionality.  Tests initializ** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **Create mock combat service.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **Create CombatPersistenceHandler instance.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **Test CombatPersistenceHandler initialization.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **Test _get_persistence_layer gets persistence from container.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **Test _get_persistence_layer returns None when container unavailable.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **Test _get_persistence_layer handles container errors.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **Test _get_persistence_layer handles container without async_persistence.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **Test _log_death_state_changes logs death threshold.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **Test _log_death_state_changes logs mortally wounded.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **Test persist_player_dp_background public API method.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
 
 ## Relationships
 
-- [combat commands handler](combat_commands_handler.md) (8 shared connections)
-- [Exception Containers](Exception_Containers.md) (5 shared connections)
-- [auth users rationale](auth_users_rationale.md) (5 shared connections)
-- [command processor rationale](command_processor_rationale.md) (5 shared connections)
-- [Loot Generation](Loot_Generation.md) (3 shared connections)
+- [commands communication say](commands_communication_say.md) (3 shared connections)
 
 ## Source Files
 
-- `server/api/real_time.py`
-- `server/tests/unit/api/test_real_time_helpers.py`
+- `server/tests/unit/services/test_combat_persistence_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 55 (95%)
-- INFERRED: 3 (5%)
+- EXTRACTED: 47 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

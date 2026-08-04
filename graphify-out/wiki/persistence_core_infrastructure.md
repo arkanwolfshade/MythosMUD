@@ -33,7 +33,9 @@
 
 ## Relationships
 
-- [websocket handler realtime](websocket_handler_realtime.md) (4 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [commands communication say](commands_communication_say.md) (1 shared connections)
+- [container persistence rationale](container_persistence_rationale.md) (1 shared connections)
 - [room rationale subzone](room_rationale_subzone.md) (1 shared connections)
 
 ## Source Files

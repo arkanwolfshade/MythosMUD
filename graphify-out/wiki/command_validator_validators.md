@@ -1,14 +1,17 @@
 # command validator validators
 
-> 106 nodes
+> 120 nodes
 
 ## Key Concepts
 
 - **test_command_validator.py** (52 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **command_validator.py** (17 connections) — `server/validators/command_validator.py`
+- **CommandValidator** (14 connections) — `server/validators/command_validator.py`
 - **.validate_command_content()** (11 connections) — `server/validators/command_validator.py`
 - **__init__.py** (9 connections) — `server/validators/__init__.py`
 - **clean_command_input()** (9 connections) — `server/validators/command_validator.py`
 - **validate_command_format()** (9 connections) — `server/validators/command_validator.py`
+- **.is_security_sensitive()** (9 connections) — `server/validators/command_validator.py`
 - **normalize_command()** (8 connections) — `server/validators/command_validator.py`
 - **is_suspicious_input()** (8 connections) — `server/validators/command_validator.py`
 - **.validate_expanded_command()** (8 connections) — `server/validators/command_validator.py`
@@ -26,19 +29,18 @@
 - **test_is_suspicious_input_xss()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
 - **test_clean_command_input_basic()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
 - **test_clean_command_input_whitespace()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **test_clean_command_input_empty()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **test_clean_command_input_unicode()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **test_validate_command_length_valid()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
-- *... and 81 more nodes in this community*
+- *... and 95 more nodes in this community*
 
 ## Relationships
 
-- [Loot Generation](Loot_Generation.md) (14 shared connections)
-- [logoutHandler logger App](logoutHandler_logger_App.md) (5 shared connections)
-- [Security Validator Tests](Security_Validator_Tests.md) (4 shared connections)
-- [command commands handler](command_commands_handler.md) (2 shared connections)
-- [command factories create](command_factories_create.md) (1 shared connections)
-- [alias graph rationale](alias_graph_rationale.md) (1 shared connections)
+- [Security Validator Tests](Security_Validator_Tests.md) (5 shared connections)
+- [command commands handler](command_commands_handler.md) (4 shared connections)
+- [logoutHandler logger App](logoutHandler_logger_App.md) (4 shared connections)
+- [fixtures mock helpers](fixtures_mock_helpers.md) (3 shared connections)
+- [command factories create](command_factories_create.md) (2 shared connections)
+- [commands recovery lucidity](commands_recovery_lucidity.md) (2 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
 
 ## Source Files
 
@@ -48,7 +50,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 317 (100%)
+- EXTRACTED: 376 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

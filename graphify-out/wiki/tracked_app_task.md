@@ -13,9 +13,8 @@
 
 ## Relationships
 
-- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (3 shared connections)
-- [Player Stats](Player_Stats.md) (2 shared connections)
-- [player persistence repository](player_persistence_repository.md) (1 shared connections)
+- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (4 shared connections)
+- [models npc rationale](models_npc_rationale.md) (2 shared connections)
 - [Magic Spell Service](Magic_Spell_Service.md) (1 shared connections)
 
 ## Source Files

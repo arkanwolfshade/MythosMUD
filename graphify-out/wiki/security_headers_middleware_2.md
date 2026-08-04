@@ -1,23 +1,26 @@
 # security headers middleware
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_gain_occult_knowledge()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **Test gain_occult_knowledge() increases occult knowledge.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **.to_dict()** (4 connections) — `server/exceptions.py`
+- **._log_error()** (2 connections) — `server/exceptions.py`
+- **Log the error with structured context.** (2 connections) — `server/exceptions.py`
+- **Convert error to dictionary for API responses.** (1 connections) — `server/exceptions.py`
 
 ## Relationships
 
-- [room realtime subscription](room_realtime_subscription.md) (1 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (2 shared connections)
+- [Spell Validation](Spell_Validation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_player_service_mutations.py`
+- `server/exceptions.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

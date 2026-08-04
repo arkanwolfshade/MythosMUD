@@ -1,6 +1,6 @@
 # connection realtime statistics
 
-> 57 nodes
+> 59 nodes
 
 ## Key Concepts
 
@@ -8,6 +8,7 @@
 - **test_look_command.py** (22 connections) — `server/tests/unit/commands/test_look_command.py`
 - **Any** (12 connections)
 - **handle_look_command()** (12 connections) — `server/commands/look_command.py`
+- **exploration_commands.py** (11 connections) — `server/commands/exploration_commands.py`
 - **_route_look_command()** (10 connections) — `server/commands/look_command.py`
 - **_validate_look_prerequisites()** (9 connections) — `server/commands/look_command.py`
 - **_get_room_drops()** (9 connections) — `server/commands/look_command.py`
@@ -28,31 +29,32 @@
 - **test_setup_look_command_success()** (3 connections) — `server/tests/unit/commands/test_look_command.py`
 - **test_handle_look_command_setup_failure()** (3 connections) — `server/tests/unit/commands/test_look_command.py`
 - **test_handle_look_command_routes_to_room_look()** (3 connections) — `server/tests/unit/commands/test_look_command.py`
-- **test_try_direction_look_delegates()** (3 connections) — `server/tests/unit/commands/test_look_command.py`
-- *... and 32 more nodes in this community*
+- *... and 34 more nodes in this community*
 
 ## Relationships
 
-- [DI Container Format](DI_Container_Format.md) (5 shared connections)
+- [look command commands](look_command_commands.md) (8 shared connections)
+- [startup npc services](startup_npc_services.md) (5 shared connections)
 - [npc realtime occupant](npc_realtime_occupant.md) (5 shared connections)
-- [combat services turn](combat_services_turn.md) (5 shared connections)
-- [look helpers commands](look_helpers_commands.md) (5 shared connections)
-- [Loot Generation](Loot_Generation.md) (4 shared connections)
-- [look command commands](look_command_commands.md) (3 shared connections)
+- [commands whisper command](commands_whisper_command.md) (4 shared connections)
+- [look helpers commands](look_helpers_commands.md) (4 shared connections)
+- [commands npc admin](commands_npc_admin.md) (3 shared connections)
 - [npc look commands](npc_look_commands.md) (3 shared connections)
 - [room renderer functions](room_renderer_functions.md) (3 shared connections)
-- [commands party examples](commands_party_examples.md) (2 shared connections)
+- [commands emote rationale](commands_emote_rationale.md) (2 shared connections)
 - [commands command rationale](commands_command_rationale.md) (2 shared connections)
-- [connection realtime manager](connection_realtime_manager.md) (1 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [combat services turn](combat_services_turn.md) (1 shared connections)
 
 ## Source Files
 
+- `server/commands/exploration_commands.py`
 - `server/commands/look_command.py`
 - `server/tests/unit/commands/test_look_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 233 (100%)
+- EXTRACTED: 245 (100%)
 - INFERRED: 1 (0%)
 - AMBIGUOUS: 0 (0%)
 

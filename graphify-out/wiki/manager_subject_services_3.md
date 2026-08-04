@@ -1,11 +1,12 @@
 # manager subject services
 
-> 40 nodes
+> 50 nodes
 
 ## Key Concepts
 
 - **test_message_handlers.py** (24 connections) — `server/tests/unit/realtime/test_message_handlers.py`
 - **message_handlers.py** (14 connections) — `server/realtime/message_handlers.py`
+- **handle_follow_response_message()** (14 connections) — `server/realtime/message_handlers.py`
 - **handle_party_invite_response_message()** (13 connections) — `server/realtime/message_handlers.py`
 - **handle_command_message()** (11 connections) — `server/realtime/message_handlers.py`
 - **handle_chat_message()** (10 connections) — `server/realtime/message_handlers.py`
@@ -21,26 +22,23 @@
 - **test_handle_ping_message()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
 - **test_handle_ping_message_with_data()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
 - **test_handle_client_error_report_message()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
+- **test_handle_follow_response_invalid_request_id()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
+- **test_handle_follow_response_no_container()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
 - **test_handle_party_invite_response_invalid()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
 - **test_handle_party_invite_response_accept()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
 - **test_handle_party_invite_response_decline()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
-- **test_handle_party_invite_response_no_container()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
-- **Message handler implementations for WebSocket message routing.  This module cont** (1 connections) — `server/realtime/message_handlers.py`
-- **Handle client_error_report: log client-reported errors to errors.log (via ERROR-** (1 connections) — `server/realtime/message_handlers.py`
-- **Handle command message type.** (1 connections) — `server/realtime/message_handlers.py`
-- **Handle chat message type.** (1 connections) — `server/realtime/message_handlers.py`
-- *... and 15 more nodes in this community*
+- **test_handle_follow_response_accept_success()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
+- **test_handle_follow_response_decline()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
+- *... and 25 more nodes in this community*
 
 ## Relationships
 
-- [models profession rationale](models_profession_rationale.md) (8 shared connections)
-- [tsconfig src/**/* spec](tsconfig_src-__-__spec.md) (5 shared connections)
-- [game chat moderation](game_chat_moderation.md) (5 shared connections)
-- [combat services messaging](combat_services_messaging.md) (3 shared connections)
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
-- [combat schemas schema](combat_schemas_schema.md) (2 shared connections)
-- [Loot Generation](Loot_Generation.md) (2 shared connections)
-- [realtime monitoring statistics](realtime_monitoring_statistics.md) (1 shared connections)
+- [tsconfig src/**/* spec](tsconfig_src-__-__spec.md) (12 shared connections)
+- [room look commands](room_look_commands.md) (4 shared connections)
+- [nats services service](nats_services_service.md) (3 shared connections)
+- [realtime monitoring statistics](realtime_monitoring_statistics.md) (2 shared connections)
+- [command commands handler](command_commands_handler.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
 - [websocket handler realtime](websocket_handler_realtime.md) (1 shared connections)
 
 ## Source Files
@@ -50,7 +48,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 156 (99%)
+- EXTRACTED: 187 (99%)
 - INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 

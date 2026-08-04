@@ -21,9 +21,9 @@
 
 ## Relationships
 
-- [Database Config](Database_Config.md) (4 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (4 shared connections)
 - [Loot Generation](Loot_Generation.md) (1 shared connections)
-- [player presence tracker](player_presence_tracker.md) (1 shared connections)
+- [help content websocket](help_content_websocket.md) (1 shared connections)
 
 ## Source Files
 

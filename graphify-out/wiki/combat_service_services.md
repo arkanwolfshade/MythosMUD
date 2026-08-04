@@ -34,7 +34,7 @@
 ## Relationships
 
 - [game terminal lucidity](game_terminal_lucidity.md) (3 shared connections)
-- [panels GameClientV2Dock gameLogPanelUtil](panels_GameClientV2Dock_gameLogPanelUtil.md) (3 shared connections)
+- [stores connectionStore commandStore](stores_connectionStore_commandStore.md) (3 shared connections)
 
 ## Source Files
 

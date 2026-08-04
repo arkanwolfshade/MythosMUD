@@ -1,14 +1,12 @@
 # tick service services
 
-> 58 nodes
+> 54 nodes
 
 ## Key Concepts
 
 - **GameTickService** (30 connections) — `server/services/game_tick_service.py`
 - **TestGameTickService** (20 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.start()** (4 connections) — `server/services/game_tick_service.py`
 - **test_game_tick_service.py** (4 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **._tick_loop()** (3 connections) — `server/services/game_tick_service.py`
 - **.test_init_default_interval()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
 - **.test_init_custom_interval()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
 - **.test_start_success()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
@@ -29,11 +27,14 @@
 - **.__init__()** (2 connections) — `server/services/game_tick_service.py`
 - **.stop()** (2 connections) — `server/services/game_tick_service.py`
 - **.get_tick_count()** (2 connections) — `server/services/game_tick_service.py`
-- *... and 33 more nodes in this community*
+- **.reset_tick_count()** (2 connections) — `server/services/game_tick_service.py`
+- **.get_tick_interval()** (2 connections) — `server/services/game_tick_service.py`
+- *... and 29 more nodes in this community*
 
 ## Relationships
 
-- [schemas player rationale](schemas_player_rationale.md) (3 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [realtime maintenance connection](realtime_maintenance_connection.md) (2 shared connections)
 
 ## Source Files
 
@@ -42,7 +43,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 153 (99%)
+- EXTRACTED: 144 (99%)
 - INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 

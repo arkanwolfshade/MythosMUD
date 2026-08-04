@@ -1,53 +1,52 @@
 # command admin setlucidity
 
-> 27 nodes
+> 36 nodes
 
 ## Key Concepts
 
-- **_get_enum_value()** (9 connections) — `server/services/wearable_container_service.py`
-- **_filter_container_data()** (9 connections) — `server/services/wearable_container_service.py`
-- **Any** (8 connections)
-- **.add_items_to_wearable_container()** (8 connections) — `server/services/wearable_container_service.py`
-- **.update_wearable_container_items()** (8 connections) — `server/services/wearable_container_service.py`
-- **UUID** (7 connections)
-- **.handle_equip_wearable_container()** (6 connections) — `server/services/wearable_container_service.py`
-- **.handle_unequip_wearable_container()** (6 connections) — `server/services/wearable_container_service.py`
-- **.handle_container_overflow()** (6 connections) — `server/services/wearable_container_service.py`
-- **.get_wearable_containers_for_player()** (5 connections) — `server/services/wearable_container_service.py`
-- **.__init__()** (3 connections) — `server/services/wearable_container_service.py`
-- **test_get_enum_value_with_enum()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_get_enum_value_with_string()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_filter_container_data()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **ContainerComponent** (1 connections)
-- **Safely get enum value, handling both enum instances and string values.      When** (1 connections) — `server/services/wearable_container_service.py`
-- **Filter out database-only fields from container data before validation.      The** (1 connections) — `server/services/wearable_container_service.py`
-- **Initialize the wearable container service.          Args:             persistenc** (1 connections) — `server/services/wearable_container_service.py`
-- **Handle equipping a wearable container item.          Creates a container in Post** (1 connections) — `server/services/wearable_container_service.py`
-- **Handle unequipping a wearable container item.          Preserves the container a** (1 connections) — `server/services/wearable_container_service.py`
-- **Get all wearable containers for a player.          Args:             player_id:** (1 connections) — `server/services/wearable_container_service.py`
-- **Add items to a wearable container.          Args:             player_id: UUID of** (1 connections) — `server/services/wearable_container_service.py`
-- **Update items in a wearable container.          Args:             player_id: UUID** (1 connections) — `server/services/wearable_container_service.py`
-- **Handle container overflow by spilling items to inventory or ground.          Arg** (1 connections) — `server/services/wearable_container_service.py`
-- **Test _get_enum_value returns value from enum instance.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- *... and 2 more nodes in this community*
+- **.change_position()** (12 connections) — `server/services/player_position_service.py`
+- **Player** (8 connections)
+- **PositionChangeResponse** (6 connections) — `server/services/player_position_service.py`
+- **SupportsPlayerPersistence** (6 connections) — `server/services/player_position_service.py`
+- **._get_player_for_position_change()** (6 connections) — `server/services/player_position_service.py`
+- **._update_player_position()** (6 connections) — `server/services/player_position_service.py`
+- **.save_player()** (5 connections) — `server/services/player_position_service.py`
+- **SupportsConnectionManager** (5 connections) — `server/services/player_position_service.py`
+- **._apply_player_info()** (5 connections) — `server/services/player_position_service.py`
+- **._load_player_stats()** (5 connections) — `server/services/player_position_service.py`
+- **._get_current_position()** (5 connections) — `server/services/player_position_service.py`
+- **._update_connection_manager()** (5 connections) — `server/services/player_position_service.py`
+- **.get_player_by_name()** (4 connections) — `server/services/player_position_service.py`
+- **.__init__()** (4 connections) — `server/services/player_position_service.py`
+- **._initial_response()** (4 connections) — `server/services/player_position_service.py`
+- **.get_online_player_by_display_name()** (3 connections) — `server/services/player_position_service.py`
+- **.ensure_default_aliases()** (3 connections) — `server/services/player_position_service.py`
+- **._validate_position()** (3 connections) — `server/services/player_position_service.py`
+- **Protocol** (2 connections)
+- **TypedDict** (1 connections)
+- **Result payload for a posture transition attempt.** (1 connections) — `server/services/player_position_service.py`
+- **Persistence surface required for posture updates.** (1 connections) — `server/services/player_position_service.py`
+- **Look up a player by name.** (1 connections) — `server/services/player_position_service.py`
+- **Persist player posture and related state.** (1 connections) — `server/services/player_position_service.py`
+- **Live presence surface used to mirror posture into online player records.** (1 connections) — `server/services/player_position_service.py`
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
-- [container helpers endpoints](container_helpers_endpoints.md) (7 shared connections)
-- [wearable container service](wearable_container_service.md) (5 shared connections)
-- [message broadcaster realtime](message_broadcaster_realtime.md) (4 shared connections)
-- [Database Config](Database_Config.md) (4 shared connections)
-- [Loot Generation](Loot_Generation.md) (3 shared connections)
+- [position player service](position_player_service.md) (11 shared connections)
+- [commands whisper command](commands_whisper_command.md) (3 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (1 shared connections)
+- [commands npc admin](commands_npc_admin.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/wearable_container_service.py`
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `server/services/player_position_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 93 (96%)
-- INFERRED: 4 (4%)
+- EXTRACTED: 111 (97%)
+- INFERRED: 3 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

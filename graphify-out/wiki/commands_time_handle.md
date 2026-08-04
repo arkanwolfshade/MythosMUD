@@ -1,42 +1,35 @@
 # commands time handle
 
-> 15 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **handle_time_command()** (13 connections) — `server/commands/time_commands.py`
-- **test_time_commands.py** (8 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **test_handle_time_command_success()** (3 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **test_handle_time_command_with_holidays()** (3 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **test_handle_time_command_no_holidays()** (3 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **test_handle_time_command_holiday_service_error()** (3 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **test_handle_time_command_no_holiday_service()** (3 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **Any** (1 connections)
-- **Handle the time command, exposing the current Mythos time and active holidays.** (1 connections) — `server/commands/time_commands.py`
-- **Unit tests for time command handlers.  Tests the time command functionality.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **Test handle_time_command() returns time information.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **Test handle_time_command() includes active holidays.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **Test handle_time_command() handles no active holidays.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **Test handle_time_command() handles holiday service errors.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **Test handle_time_command() handles missing holiday service.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **run_quality_fragmentation_guard.py** (12 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **main()** (6 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **_run_git()** (5 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **_resolved_changed_files()** (5 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **_git_executable()** (4 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **_changed_files_between()** (4 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **_local_changed_files()** (4 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **_build_guard_command()** (4 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **_resolve_base_sha()** (3 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **_is_graphify_path()** (3 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **_argv_char_len()** (2 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **Path** (1 connections)
+- **Generated graphify trees are not product code; skip guard/lint argv bloat.** (1 connections) — `scripts/run_quality_fragmentation_guard.py`
 
 ## Relationships
 
-- [Loot Generation](Loot_Generation.md) (2 shared connections)
-- [commands party examples](commands_party_examples.md) (1 shared connections)
-- [nats services metrics](nats_services_metrics.md) (1 shared connections)
-- [time service rationale](time_service_rationale.md) (1 shared connections)
-- [commands who rationale](commands_who_rationale.md) (1 shared connections)
+- [scripts run guard](scripts_run_guard.md) (6 shared connections)
 
 ## Source Files
 
-- `server/commands/time_commands.py`
-- `server/tests/unit/commands/test_time_commands.py`
+- `scripts/run_quality_fragmentation_guard.py`
 
 ## Audit Trail
 
-- EXTRACTED: 43 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 54 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,6 +1,6 @@
 # player room realtime
 
-> 134 nodes
+> 131 nodes
 
 ## Key Concepts
 
@@ -14,7 +14,6 @@
 - **lucidity_repository.py** (12 connections) — `server/services/lucidity_repository.py`
 - **UUID** (9 connections)
 - **_utc_now()** (8 connections) — `server/models/lucidity.py`
-- **LucidityActionCode** (8 connections) — `server/models/lucidity.py`
 - **_utc_now()** (7 connections) — `server/services/lucidity_repository.py`
 - **test_lucidity_utils.py** (7 connections) — `server/tests/unit/models/test_lucidity_utils.py`
 - **.increment_exposure_state()** (6 connections) — `server/services/lucidity_repository.py`
@@ -29,22 +28,23 @@
 - **Base** (4 connections)
 - **.__init__()** (4 connections) — `server/models/lucidity.py`
 - **.__init__()** (4 connections) — `server/models/lucidity.py`
-- *... and 109 more nodes in this community*
+- **test_get_player_lucidity_returns_record()** (4 connections) — `server/tests/unit/services/test_lucidity_repository.py`
+- *... and 106 more nodes in this community*
 
 ## Relationships
 
-- [lucidity services helpers](lucidity_services_helpers.md) (30 shared connections)
+- [lucidity services helpers](lucidity_services_helpers.md) (31 shared connections)
+- [world models rationale](world_models_rationale.md) (9 shared connections)
 - [combat models rationale](combat_models_rationale.md) (9 shared connections)
-- [combat services persistence](combat_services_persistence.md) (6 shared connections)
-- [world models rationale](world_models_rationale.md) (6 shared connections)
-- [commands inventory helpers](commands_inventory_helpers.md) (6 shared connections)
-- [task registry app](task_registry_app.md) (4 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (3 shared connections)
-- [commands rescue rationale](commands_rescue_rationale.md) (3 shared connections)
-- [command helpers functions](command_helpers_functions.md) (2 shared connections)
+- [npc population stats](npc_population_stats.md) (6 shared connections)
+- [combat services persistence](combat_services_persistence.md) (5 shared connections)
+- [aggro threat services](aggro_threat_services.md) (3 shared connections)
+- [player preferences service](player_preferences_service.md) (3 shared connections)
 - [services service phantom](services_service_phantom.md) (2 shared connections)
-- [Async Query Helpers](Async_Query_Helpers.md) (2 shared connections)
-- [rescue service services](rescue_service_services.md) (2 shared connections)
+- [command validation commands](command_validation_commands.md) (1 shared connections)
+- [lucidity flux passive](lucidity_flux_passive.md) (1 shared connections)
+- [Async Query Helpers](Async_Query_Helpers.md) (1 shared connections)
+- [command helpers functions](command_helpers_functions.md) (1 shared connections)
 
 ## Source Files
 
@@ -56,8 +56,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 463 (94%)
-- INFERRED: 28 (6%)
+- EXTRACTED: 455 (95%)
+- INFERRED: 26 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

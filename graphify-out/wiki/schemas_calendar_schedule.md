@@ -1,24 +1,27 @@
 # schemas calendar schedule
 
-> 3 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **id** (3 connections) — `db/static/schemas/room.schema.json`
-- **type** (1 connections) — `db/static/schemas/room.schema.json`
-- **minLength** (1 connections) — `db/static/schemas/room.schema.json`
+- **schedules** (4 connections) — `schemas/calendar/schedule.schema.json`
+- **properties** (2 connections) — `schemas/calendar/schedule.schema.json`
+- **items** (2 connections) — `schemas/calendar/schedule.schema.json`
+- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **minItems** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **$ref** (1 connections) — `schemas/calendar/schedule.schema.json`
 
 ## Relationships
 
-- [static schemas room](static_schemas_room.md) (1 shared connections)
+- [schedule schema schemas](schedule_schema_schemas.md) (1 shared connections)
 
 ## Source Files
 
-- `db/static/schemas/room.schema.json`
+- `schemas/calendar/schedule.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

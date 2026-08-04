@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_add_admin_success()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test add_admin() successfully adds admin.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_connection_manager_setter()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **Test connection_manager setter updates references.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Relationships
 
-- [user manager services](user_manager_services.md) (1 shared connections)
+- [nats message handler](nats_message_handler.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_user_manager.py`
+- `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Audit Trail
 

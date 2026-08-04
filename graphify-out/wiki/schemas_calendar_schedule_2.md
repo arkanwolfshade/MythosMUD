@@ -1,19 +1,26 @@
 # schemas calendar schedule
 
-> 6 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **schedules** (4 connections) — `schemas/calendar/schedule.schema.json`
-- **properties** (2 connections) — `schemas/calendar/schedule.schema.json`
-- **items** (2 connections) — `schemas/calendar/schedule.schema.json`
+- **required** (8 connections) — `schemas/calendar/schedule.schema.json`
+- **scheduleEntry** (5 connections) — `schemas/calendar/schedule.schema.json`
+- **$defs** (2 connections) — `schemas/calendar/schedule.schema.json`
 - **type** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **minItems** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **$ref** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **additionalProperties** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **id** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **name** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **category** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **start_hour** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **end_hour** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **days** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **applies_to** (1 connections) — `schemas/calendar/schedule.schema.json`
 
 ## Relationships
 
 - [schedule schema schemas](schedule_schema_schemas.md) (1 shared connections)
+- [schemas calendar schedule](schemas_calendar_schedule.md) (1 shared connections)
 
 ## Source Files
 
@@ -21,7 +28,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 24 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

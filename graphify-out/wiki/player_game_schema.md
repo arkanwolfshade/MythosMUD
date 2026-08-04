@@ -4,44 +4,47 @@
 
 ## Key Concepts
 
-- **Any** (12 connections)
-- **._try_evaluators()** (7 connections) — `server/npc/behavior_engine.py`
-- **.evaluate_condition()** (6 connections) — `server/npc/behavior_engine.py`
-- **.get_applicable_rules()** (5 connections) — `server/npc/behavior_engine.py`
-- **.execute_applicable_rules()** (5 connections) — `server/npc/behavior_engine.py`
-- **._evaluate_equality()** (4 connections) — `server/npc/behavior_engine.py`
-- **._evaluate_inequality()** (4 connections) — `server/npc/behavior_engine.py`
-- **._evaluate_numeric_comparison()** (4 connections) — `server/npc/behavior_engine.py`
-- **._evaluate_boolean_condition()** (4 connections) — `server/npc/behavior_engine.py`
-- **.execute_action()** (4 connections) — `server/npc/behavior_engine.py`
-- **.add_rule()** (3 connections) — `server/npc/behavior_engine.py`
-- **.get_rules()** (3 connections) — `server/npc/behavior_engine.py`
-- **.register_action_handler()** (3 connections) — `server/npc/behavior_engine.py`
-- **Add a behavior rule to the engine.          Args:             rule: Rule diction** (1 connections) — `server/npc/behavior_engine.py`
-- **Get all behavior rules.** (1 connections) — `server/npc/behavior_engine.py`
-- **Evaluate equality condition (==).          Returns:             bool if conditio** (1 connections) — `server/npc/behavior_engine.py`
-- **Evaluate inequality condition (!=).          Returns:             bool if condit** (1 connections) — `server/npc/behavior_engine.py`
-- **Evaluate numeric comparison conditions (>=, <=, >, <).          Args:** (1 connections) — `server/npc/behavior_engine.py`
-- **Try multiple evaluator methods in sequence.          Args:             condition** (1 connections) — `server/npc/behavior_engine.py`
-- **Evaluate boolean conditions and variable lookups.          Args:             con** (1 connections) — `server/npc/behavior_engine.py`
-- **Evaluate a condition string against context.          Args:             conditio** (1 connections) — `server/npc/behavior_engine.py`
-- **Get rules that are applicable given the current context.          Args:** (1 connections) — `server/npc/behavior_engine.py`
-- **Register an action handler for a specific action.          Args:             act** (1 connections) — `server/npc/behavior_engine.py`
-- **Execute a specific action.          Args:             action_name: Name of the a** (1 connections) — `server/npc/behavior_engine.py`
-- **Execute all applicable rules based on context.          Args:             contex** (1 connections) — `server/npc/behavior_engine.py`
+- **get_cached_player()** (15 connections) — `server/utils/player_cache.py`
+- **cache_player()** (13 connections) — `server/utils/player_cache.py`
+- **test_player_cache.py** (11 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **player_cache.py** (7 connections) — `server/utils/player_cache.py`
+- **_get_request_state()** (6 connections) — `server/utils/player_cache.py`
+- **test_cache_and_get_player()** (4 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **test_cache_player_multiple()** (4 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **test_cache_player_overwrite()** (4 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **test_get_cached_player_none()** (3 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **test_get_cached_player_nonexistent()** (3 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **test_get_cached_player_no_state()** (3 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **test_cache_player_no_state()** (3 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **Any** (3 connections)
+- **Unit tests for player_cache utilities.  Tests the player caching functions for r** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **Test get_cached_player() returns None when no cache exists.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **Test cache_player() and get_cached_player() operations.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **Test get_cached_player() returns None for nonexistent key.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **Test cache_player() can cache multiple players.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **Test cache_player() overwrites existing entries.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **Test get_cached_player() handles missing state.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **Test cache_player() handles missing state gracefully.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **Helpers for caching player objects during a single command request.  This avoids** (1 connections) — `server/utils/player_cache.py`
+- **Safely extract the state object from a FastAPI/Starlette request.** (1 connections) — `server/utils/player_cache.py`
+- **Return a cached player object for this request if one exists.** (1 connections) — `server/utils/player_cache.py`
+- **Cache a player object on the request for reuse within the command.** (1 connections) — `server/utils/player_cache.py`
 
 ## Relationships
 
-- [lucidity active service](lucidity_active_service.md) (12 shared connections)
+- [command validation commands](command_validation_commands.md) (5 shared connections)
+- [commands logout rationale](commands_logout_rationale.md) (5 shared connections)
+- [commands emote rationale](commands_emote_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/behavior_engine.py`
+- `server/tests/unit/utils/test_player_cache.py`
+- `server/utils/player_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 76 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 90 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

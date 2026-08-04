@@ -1,65 +1,62 @@
 # player service game
 
-> 146 nodes
+> 69 nodes
 
 ## Key Concepts
 
 - **Stats** (88 connections) — `server/models/game.py`
-- **StatsGenerator** (48 connections) — `server/game/stats_generator.py`
 - **test_game_stats_methods.py** (31 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **test_stats_generator.py** (19 connections) — `server/tests/unit/game/test_stats_generator.py`
-- **stats_generator.py** (15 connections) — `server/game/stats_generator.py`
-- **generate_random_stats()** (12 connections) — `server/game/stats_generator.py`
-- **Stats** (11 connections)
-- **.roll_stats_with_profession()** (7 connections) — `server/game/stats_generator.py`
-- **.roll_stats()** (6 connections) — `server/game/stats_generator.py`
-- **._roll_size()** (5 connections) — `server/game/stats_generator.py`
-- **._roll_3d6()** (5 connections) — `server/game/stats_generator.py`
-- **.get_available_classes()** (5 connections) — `server/game/stats_generator.py`
-- **.roll_stats_with_validation()** (5 connections) — `server/game/stats_generator.py`
-- **.validate_current_vs_max_stats()** (5 connections) — `server/models/game.py`
-- **._roll_4d6_drop_lowest()** (4 connections) — `server/game/stats_generator.py`
-- **._roll_point_buy()** (4 connections) — `server/game/stats_generator.py`
-- **.validate_class_prerequisites()** (4 connections) — `server/game/stats_generator.py`
-- **._check_profession_requirements()** (4 connections) — `server/game/stats_generator.py`
-- **.get_stat_summary()** (4 connections) — `server/game/stats_generator.py`
-- **.__init__()** (4 connections) — `server/models/game.py`
-- **._calculate_max_magic_points()** (4 connections) — `server/models/game.py`
-- **._calculate_max_lucidity()** (4 connections) — `server/models/game.py`
-- **.test_get_stats_generator()** (4 connections) — `server/tests/unit/test_dependency_injection.py`
-- **.test_get_stats_generator_stateless()** (4 connections) — `server/tests/unit/test_dependency_injection.py`
-- **._compute_max_dp_if_missing()** (3 connections) — `server/models/game.py`
-- *... and 121 more nodes in this community*
+- **test_create_player_with_stats_character_limit()** (4 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_create_player_with_stats_success()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_stats_validate_current_vs_max_stats_caps_dp()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_validate_current_vs_max_stats_caps_magic_points()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_validate_current_vs_max_stats_caps_lucidity()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_validate_current_vs_max_stats_allows_valid_values()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_get_attribute_modifier_negative()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_get_attribute_modifier_zero()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_get_attribute_modifier_different_attribute()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_max_dp_calculation()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_max_dp_calculation_alternative()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_max_dp_with_none()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_max_magic_points_calculation()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_max_magic_points_calculation_alternative()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_max_lucidity_calculation()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_max_lucidity_calculation_alternative()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_is_lucid_true()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_is_lucid_false()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_is_corrupted_true()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_is_corrupted_false()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_is_delirious_true()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_is_delirious_false()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_get_attribute_modifier_positive()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- *... and 44 more nodes in this community*
 
 ## Relationships
 
-- [command factories communication](command_factories_communication.md) (14 shared connections)
-- [profession game service](profession_game_service.md) (12 shared connections)
-- [npc rationale extract](npc_rationale_extract.md) (10 shared connections)
-- [room game service](room_game_service.md) (8 shared connections)
-- [Loot Generation](Loot_Generation.md) (7 shared connections)
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (5 shared connections)
-- [command commands handler](command_commands_handler.md) (5 shared connections)
-- [player event state](player_event_state.md) (4 shared connections)
-- [Player Stats](Player_Stats.md) (3 shared connections)
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [command factories communication](command_factories_communication.md) (10 shared connections)
+- [event connection helpers](event_connection_helpers.md) (10 shared connections)
+- [services passive lucidity](services_passive_lucidity.md) (6 shared connections)
+- [Player Stats](Player_Stats.md) (6 shared connections)
+- [npc rationale extract](npc_rationale_extract.md) (6 shared connections)
+- [profession game service](profession_game_service.md) (5 shared connections)
+- [commands inventory put](commands_inventory_put.md) (3 shared connections)
+- [player event state](player_event_state.md) (3 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
+- [service combat services](service_combat_services.md) (2 shared connections)
+- [npc idle movement](npc_idle_movement.md) (2 shared connections)
 - [memory profiler rationale](memory_profiler_rationale.md) (2 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/stats_generator.py`
 - `server/models/game.py`
 - `server/tests/unit/api/test_character_creation.py`
-- `server/tests/unit/game/test_character_creation_service.py`
-- `server/tests/unit/game/test_stats_generator.py`
+- `server/tests/unit/game/test_player_service.py`
 - `server/tests/unit/models/test_game_stats_methods.py`
-- `server/tests/unit/test_dependency_injection.py`
 
 ## Audit Trail
 
-- EXTRACTED: 503 (95%)
-- INFERRED: 26 (5%)
+- EXTRACTED: 239 (96%)
+- INFERRED: 10 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

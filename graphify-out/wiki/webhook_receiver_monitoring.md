@@ -15,8 +15,8 @@
 
 ## Relationships
 
-- [handler realtime nats](handler_realtime_nats.md) (1 shared connections)
-- [Database Config](Database_Config.md) (1 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (1 shared connections)
 
 ## Source Files
 

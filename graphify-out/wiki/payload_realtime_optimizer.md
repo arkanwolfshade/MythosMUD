@@ -1,32 +1,37 @@
 # payload realtime optimizer
 
-> 8 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **.initialize_nats_combat()** (7 connections) — `server/container/bundles/combat.py`
-- **._validate_nats_combat_prerequisites()** (4 connections) — `server/container/bundles/combat.py`
-- **._start_nats_message_handler()** (4 connections) — `server/container/bundles/combat.py`
-- **._handle_nats_unavailable()** (3 connections) — `server/container/bundles/combat.py`
-- **Raise if prerequisites for NATS combat are missing.** (1 connections) — `server/container/bundles/combat.py`
-- **Start NATS message handler if available. Logs and swallows errors.** (1 connections) — `server/container/bundles/combat.py`
-- **Handle case when NATS is not connected. Raises in prod, sets combat_service to N** (1 connections) — `server/container/bundles/combat.py`
-- **Initialize NATS-dependent combat service and start NATS message handler.** (1 connections) — `server/container/bundles/combat.py`
+- **._clone_stack()** (9 connections) — `server/services/inventory_service.py`
+- **.add_stack()** (8 connections) — `server/services/inventory_service.py`
+- **.split_stack()** (8 connections) — `server/services/inventory_service.py`
+- **Any** (7 connections)
+- **._validate_and_clone_optional_fields()** (7 connections) — `server/services/inventory_service.py`
+- **._clone_with_quantity()** (7 connections) — `server/services/inventory_service.py`
+- **._extract_required_fields()** (4 connections) — `server/services/inventory_service.py`
+- **._can_merge()** (4 connections) — `server/services/inventory_service.py`
+- **._normalize_metadata()** (4 connections) — `server/services/inventory_service.py`
+- **Add or merge an item stack into the inventory.          Args:             invent** (1 connections) — `server/services/inventory_service.py`
+- **Split a stack into two, inserting the new stack immediately after the source slo** (1 connections) — `server/services/inventory_service.py`
+- **Extract required fields from stack.          Returns:             Tuple of (item** (1 connections) — `server/services/inventory_service.py`
+- **Validate and clone optional fields (metadata, flags, origin, etc.).          Arg** (1 connections) — `server/services/inventory_service.py`
 
 ## Relationships
 
-- [nats services service](nats_services_service.md) (4 shared connections)
-- [Error Conversion](Error_Conversion.md) (3 shared connections)
-- [npc database infrastructure](npc_database_infrastructure.md) (1 shared connections)
+- [Exception Containers](Exception_Containers.md) (12 shared connections)
+- [container helpers endpoints](container_helpers_endpoints.md) (8 shared connections)
+- [player cache rationale](player_cache_rationale.md) (2 shared connections)
 
 ## Source Files
 
-- `server/container/bundles/combat.py`
+- `server/services/inventory_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 22 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 61 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,47 +1,55 @@
 # cleanup combat handler
 
-> 24 nodes
+> 33 nodes
 
 ## Key Concepts
 
-- **test_statistics_aggregator.py** (14 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **statistics_aggregator()** (3 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **mock_memory_monitor()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **mock_rate_limiter()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **mock_message_queue()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **mock_room_manager()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **mock_performance_tracker()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **test_statistics_aggregator_init()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **test_get_memory_stats()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **test_get_connection_stats()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **test_get_connection_health_stats()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **test_get_memory_alerts()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **Unit tests for statistics aggregator.  Tests the StatisticsAggregator class.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **Create a mock memory monitor.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **Create a mock rate limiter.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **Create a mock message queue.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **Create a mock room manager.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **Create a mock performance tracker.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **Create a StatisticsAggregator instance.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **Test StatisticsAggregator initialization.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **Test get_memory_stats() returns comprehensive statistics.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **Test get_connection_stats() returns connection statistics.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **Test get_connection_health_stats() returns health statistics.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **Test get_memory_alerts() returns memory alerts.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **test_time_bundle.py** (20 connections) — `server/tests/unit/container/test_time_bundle.py`
+- **TimeBundle** (14 connections) — `server/container/bundles/time.py`
+- **.initialize()** (5 connections) — `server/container/bundles/time.py`
+- **_season_for_month()** (5 connections) — `server/time/time_service.py`
+- **isolated_chronicle()** (4 connections) — `server/tests/unit/container/test_time_bundle.py`
+- **test_get_mythos_chronicle_singleton()** (4 connections) — `server/tests/unit/container/test_time_bundle.py`
+- **.reset_instance()** (4 connections) — `server/time/time_service.py`
+- **test_ensure_utc_naive_datetime()** (3 connections) — `server/tests/unit/container/test_time_bundle.py`
+- **test_season_for_month()** (3 connections) — `server/tests/unit/container/test_time_bundle.py`
+- **test_time_bundle_initialize_with_deps()** (2 connections) — `server/tests/unit/container/test_container_bundles.py`
+- **test_time_bundle_initialize_missing_deps()** (2 connections) — `server/tests/unit/container/test_container_bundles.py`
+- **test_time_bundle_initialize_with_dependencies()** (2 connections) — `server/tests/unit/container/test_time_bundle.py`
+- **test_time_bundle_initialize_missing_dependencies()** (2 connections) — `server/tests/unit/container/test_time_bundle.py`
+- **test_chronicle_calendar_and_dayparts()** (2 connections) — `server/tests/unit/container/test_time_bundle.py`
+- **test_chronicle_time_conversion()** (2 connections) — `server/tests/unit/container/test_time_bundle.py`
+- **test_chronicle_advance_and_freeze()** (2 connections) — `server/tests/unit/container/test_time_bundle.py`
+- **test_chronicle_format_clock()** (2 connections) — `server/tests/unit/container/test_time_bundle.py`
+- **test_chronicle_advance_rejects_negative_delta()** (2 connections) — `server/tests/unit/container/test_time_bundle.py`
+- **Mythos time consumer service.** (1 connections) — `server/container/bundles/time.py`
+- **Initialize Mythos time event consumer.** (1 connections) — `server/container/bundles/time.py`
+- **test_time_bundle_attrs()** (1 connections) — `server/tests/unit/container/test_time_bundle.py`
+- **Unit tests for TimeBundle container wiring.** (1 connections) — `server/tests/unit/container/test_time_bundle.py`
+- **Naive datetimes are normalized to UTC.** (1 connections) — `server/tests/unit/container/test_time_bundle.py`
+- **Season mapping follows month bands.** (1 connections) — `server/tests/unit/container/test_time_bundle.py`
+- **Chronicle with isolated state file.** (1 connections) — `server/tests/unit/container/test_time_bundle.py`
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [event realtime publisher](event_realtime_publisher.md) (2 shared connections)
-- [connection disconnection realtime](connection_disconnection_realtime.md) (1 shared connections)
+- [time service rationale](time_service_rationale.md) (9 shared connections)
+- [nats services service](nats_services_service.md) (8 shared connections)
+- [taunt combat commands](taunt_combat_commands.md) (2 shared connections)
+- [command service commands](command_service_commands.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- `server/container/bundles/time.py`
+- `server/tests/unit/container/test_container_bundles.py`
+- `server/tests/unit/container/test_time_bundle.py`
+- `server/time/time_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 49 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 93 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -19,9 +19,8 @@
 
 ## Relationships
 
-- [npc lifecycle combat](npc_lifecycle_combat.md) (2 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
+- [npc lifecycle combat](npc_lifecycle_combat.md) (3 shared connections)
+- [room models instance](room_models_instance.md) (1 shared connections)
 - [Async Query Helpers](Async_Query_Helpers.md) (1 shared connections)
 
 ## Source Files

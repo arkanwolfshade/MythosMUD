@@ -33,8 +33,7 @@
 - [panels chat ChatPanelRuntimeViewParts](panels_chat_ChatPanelRuntimeViewParts.md) (9 shared connections)
 - [panels chatPanelRuntimeUtils chatPanelEx](panels_chatPanelRuntimeUtils_chatPanelEx.md) (5 shared connections)
 - [command parser rationale](command_parser_rationale.md) (2 shared connections)
-- [stores connectionStore commandStore](stores_connectionStore_commandStore.md) (1 shared connections)
-- [panels GameClientV2Dock gameLogPanelUtil](panels_GameClientV2Dock_gameLogPanelUtil.md) (1 shared connections)
+- [stores connectionStore commandStore](stores_connectionStore_commandStore.md) (2 shared connections)
 
 ## Source Files
 

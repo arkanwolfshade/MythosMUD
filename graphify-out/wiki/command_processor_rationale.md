@@ -1,49 +1,52 @@
 # command processor rationale
 
-> 21 nodes
+> 32 nodes
 
 ## Key Concepts
 
-- **test_real_time_helpers.py** (31 connections) — `server/tests/unit/api/test_real_time_helpers.py`
-- **_parse_websocket_token()** (9 connections) — `server/api/real_time.py`
-- **_extract_bearer_token()** (6 connections) — `server/api/real_time.py`
-- **_parse_subprotocol_token()** (5 connections) — `server/api/real_time.py`
-- **test_resolve_player_id_from_token_no_player()** (3 connections) — `server/tests/unit/api/test_real_time_helpers.py`
-- **test_resolve_player_id_missing_token_and_player_id()** (3 connections) — `server/tests/unit/api/test_real_time_helpers.py`
-- **test_parse_websocket_token_header_parse_error()** (3 connections) — `server/tests/unit/api/test_real_time_helpers.py`
-- **test_extract_bearer_token_with_marker()** (2 connections) — `server/tests/unit/api/test_real_time_helpers.py`
-- **test_extract_bearer_token_last_part()** (2 connections) — `server/tests/unit/api/test_real_time_helpers.py`
-- **test_extract_bearer_token_empty()** (2 connections) — `server/tests/unit/api/test_real_time_helpers.py`
-- **test_parse_subprotocol_token()** (2 connections) — `server/tests/unit/api/test_real_time_helpers.py`
-- **test_resolve_connection_manager_from_state()** (2 connections) — `server/tests/unit/api/test_real_time_helpers.py`
-- **test_resolve_player_id_from_test()** (2 connections) — `server/tests/unit/api/test_real_time_helpers.py`
-- **test_parse_websocket_token_from_query()** (2 connections) — `server/tests/unit/api/test_real_time_helpers.py`
-- **test_parse_websocket_token_from_subprotocol()** (2 connections) — `server/tests/unit/api/test_real_time_helpers.py`
-- **test_validate_websocket_connection_manager()** (2 connections) — `server/tests/unit/api/test_real_time_helpers.py`
-- **test_resolve_player_id_from_token_with_character_id()** (2 connections) — `server/tests/unit/api/test_real_time_helpers.py`
-- **Extract bearer token from parsed subprotocol parts.      If 'bearer' marker is p** (1 connections) — `server/api/real_time.py`
-- **Parse token from WebSocket subprotocol header.      Example formats: "bearer, <t** (1 connections) — `server/api/real_time.py`
-- **Parse token from WebSocket subprotocol (preferred) or query params (fallback).** (1 connections) — `server/api/real_time.py`
-- **Unit tests for real_time API helper functions.** (1 connections) — `server/tests/unit/api/test_real_time_helpers.py`
+- **_find_container_in_room()** (22 connections) — `server/commands/look_container.py`
+- **test_find_container_in_room_success()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_in_room_by_container_id()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_in_room_not_found()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_in_room_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_in_room_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_in_room_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_in_room_found()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_in_room_not_found()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_in_room_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_in_room_empty()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_in_room_no_match()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_in_room_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_in_room_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_in_room_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_in_room_instance_number_zero()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Find a container in room containers by name or container_id.      Args:** (1 connections) — `server/commands/look_container.py`
+- **Test finding container in room by name.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test finding container in room by container_id.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test finding container in room when not found.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test finding container in room with multiple matches.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test finding container in room with instance number.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test finding container in room with invalid instance number.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test _find_container_in_room() finds container by name.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Test _find_container_in_room() returns None when container not found.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [combat commands handler](combat_commands_handler.md) (18 shared connections)
-- [room validator path](room_validator_path.md) (5 shared connections)
-- [auth users rationale](auth_users_rationale.md) (4 shared connections)
-- [Exception Containers](Exception_Containers.md) (3 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
-- [websocket helpers realtime](websocket_helpers_realtime.md) (1 shared connections)
+- [schemas validator rationale](schemas_validator_rationale.md) (10 shared connections)
+- [DI Container Format](DI_Container_Format.md) (7 shared connections)
+- [startup npc services](startup_npc_services.md) (4 shared connections)
 
 ## Source Files
 
-- `server/api/real_time.py`
-- `server/tests/unit/api/test_real_time_helpers.py`
+- `server/commands/look_container.py`
+- `server/tests/unit/commands/test_look_container.py`
+- `server/tests/unit/commands/test_look_container_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 81 (96%)
-- INFERRED: 3 (4%)
+- EXTRACTED: 83 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -31,17 +31,17 @@
 ## Relationships
 
 - [services exploration service](services_exploration_service.md) (11 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (4 shared connections)
+- [Error Conversion](Error_Conversion.md) (3 shared connections)
 - [realtime player event](realtime_player_event.md) (3 shared connections)
 - [game room service](game_room_service.md) (2 shared connections)
 - [room toolkit validator](room_toolkit_validator.md) (2 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
 - [item models rationale](item_models_rationale.md) (1 shared connections)
 - [services ascii map](services_ascii_map.md) (1 shared connections)
 - [npc behavior engine](npc_behavior_engine.md) (1 shared connections)
 - [services chat rate](services_chat_rate.md) (1 shared connections)
 - [room infrastructure persistence](room_infrastructure_persistence.md) (1 shared connections)
 - [infrastructure security rationale](infrastructure_security_rationale.md) (1 shared connections)
-- [infrastructure persistence room](infrastructure_persistence_room.md) (1 shared connections)
 
 ## Source Files
 

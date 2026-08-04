@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_compute_dp_update_fields()** (3 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
-- **After damage, old_dp reflects pre-hit value.** (1 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **party_service()** (3 connections) — `server/tests/unit/game/test_party_service.py`
+- **PartyService with no dependencies (in-memory only).** (1 connections) — `server/tests/unit/game/test_party_service.py`
 
 ## Relationships
 
-- [room conftest toolkit](room_conftest_toolkit.md) (1 shared connections)
-- [services nats service](services_nats_service.md) (1 shared connections)
+- [party game service](party_game_service.md) (1 shared connections)
+- [commands inventory helpers](commands_inventory_helpers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- `server/tests/unit/game/test_party_service.py`
 
 ## Audit Trail
 

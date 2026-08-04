@@ -1,6 +1,6 @@
 # memoryMonitor memoryLeakDetector constru
 
-> 52 nodes
+> 53 nodes
 
 ## Key Concepts
 
@@ -8,6 +8,7 @@
 - **MemoryLeakDetector** (16 connections) — `client/src/utils/memoryLeakDetector.ts`
 - **memoryMonitor.ts** (11 connections) — `client/src/utils/memoryMonitor.ts`
 - **memoryLeakDetector.ts** (8 connections) — `client/src/utils/memoryLeakDetector.ts`
+- **useMemoryMonitor()** (8 connections) — `client/src/utils/memoryMonitor.ts`
 - **memoryLeakDetector.test.ts** (7 connections) — `client/src/utils/__tests__/memoryLeakDetector.test.ts`
 - **memoryMonitor.test.ts** (7 connections) — `client/src/utils/__tests__/memoryMonitor.test.ts`
 - **MemorySnapshot** (7 connections) — `client/src/utils/memoryLeakDetector.ts`
@@ -28,13 +29,12 @@
 - **.handleMemoryWarning()** (3 connections) — `client/src/utils/memoryMonitor.ts`
 - **.handleMemoryCritical()** (3 connections) — `client/src/utils/memoryMonitor.ts`
 - **.handleComponentMemoryWarning()** (3 connections) — `client/src/utils/memoryMonitor.ts`
-- **.handleComponentMemoryCritical()** (3 connections) — `client/src/utils/memoryMonitor.ts`
-- *... and 27 more nodes in this community*
+- *... and 28 more nodes in this community*
 
 ## Relationships
 
-- [containers stores containerStore](containers_stores_containerStore.md) (7 shared connections)
 - [mythosApp useMythosAppState useStatsRoll](mythosApp_useMythosAppState_useStatsRoll.md) (4 shared connections)
+- [containers stores containerStore](containers_stores_containerStore.md) (3 shared connections)
 
 ## Source Files
 
@@ -45,7 +45,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 181 (100%)
+- EXTRACTED: 189 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

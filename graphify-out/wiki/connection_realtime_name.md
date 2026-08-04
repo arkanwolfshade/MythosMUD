@@ -23,9 +23,9 @@
 
 ## Relationships
 
-- [Loot Generation](Loot_Generation.md) (2 shared connections)
-- [realtime monitoring statistics](realtime_monitoring_statistics.md) (1 shared connections)
-- [commands npc admin](commands_npc_admin.md) (1 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (1 shared connections)
+- [logging setup structured](logging_setup_structured.md) (1 shared connections)
 - [websocket helpers realtime](websocket_helpers_realtime.md) (1 shared connections)
 
 ## Source Files

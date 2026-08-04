@@ -1,48 +1,54 @@
 # command commands aliases
 
-> 28 nodes
+> 46 nodes
 
 ## Key Concepts
 
-- **Any** (10 connections)
-- **._setup_task_tracking()** (9 connections) — `server/app/task_registry.py`
-- **Task** (8 connections)
-- **TaskMetadata** (7 connections) — `server/app/task_registry.py`
-- **.register_task()** (7 connections) — `server/app/task_registry.py`
-- **._create_task_completion_callback()** (5 connections) — `server/app/task_registry.py`
-- **.__init__()** (4 connections) — `server/app/task_registry.py`
-- **.unregister_task()** (4 connections) — `server/app/task_registry.py`
-- **.cancel_task()** (4 connections) — `server/app/task_registry.py`
-- **._ensure_unique_task_name()** (3 connections) — `server/app/task_registry.py`
-- **._track_task_creation_metrics()** (3 connections) — `server/app/task_registry.py`
-- **._extract_service_name()** (3 connections) — `server/app/task_registry.py`
-- **.list_active_tasks()** (3 connections) — `server/app/task_registry.py`
-- **.get_registry_info()** (3 connections) — `server/app/task_registry.py`
-- **.__repr__()** (2 connections) — `server/app/task_registry.py`
-- **Metadata for tracked asyncio.Tasks.** (1 connections) — `server/app/task_registry.py`
-- **Initialize task metadata.          Args:             task: The asyncio.Task inst** (1 connections) — `server/app/task_registry.py`
-- **String representation of task metadata for logging.** (1 connections) — `server/app/task_registry.py`
-- **Ensure task name is unique by appending timestamp if needed.** (1 connections) — `server/app/task_registry.py`
-- **Track task creation for metrics.** (1 connections) — `server/app/task_registry.py`
-- **Extract service name from task name or use task type.** (1 connections) — `server/app/task_registry.py`
-- **Create callback function for task completion cleanup.** (1 connections) — `server/app/task_registry.py`
-- **Set up tracking for a newly created task.** (1 connections) — `server/app/task_registry.py`
-- **Register and create a tracked asyncio.Task.          Args:             coro: The** (1 connections) — `server/app/task_registry.py`
-- **Unregister task from tracking, optionally force-cancelling.          Args:** (1 connections) — `server/app/task_registry.py`
-- *... and 3 more nodes in this community*
+- **test_websocket_handler_app_state_connection.py** (23 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **resolve_and_setup_app_state_services()** (20 connections) — `server/realtime/websocket_handler_app_state.py`
+- **websocket_handler_app_state.py** (11 connections) — `server/realtime/websocket_handler_app_state.py`
+- **_services_from_container()** (4 connections) — `server/realtime/websocket_handler_app_state.py`
+- **_mirror_service_to_app_state()** (3 connections) — `server/realtime/websocket_handler_app_state.py`
+- **test_resolve_and_setup_app_state_services_services_already_set()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_missing_services()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_no_app_state()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_container_no_services()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_no_container_attribute()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_only_player_service()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_only_user_manager()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_player_service_already_set()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_user_manager_already_set()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_player_service_no_hasattr()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_user_manager_no_hasattr()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_handle_websocket_connection_shutdown_rejected()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_handle_websocket_connection_connect_failure()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_handle_websocket_connection_initial_state_exit()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_handle_websocket_connection_with_room_and_death()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_handle_websocket_connection_initial_setup_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_cleanup_connection_mute_cleanup_error()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_handle_websocket_message_loop()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **WebSocket app.state / container service wiring for command processing.  Extrac** (1 connections) — `server/realtime/websocket_handler_app_state.py`
+- **Read player_service and user_manager from app_state.container.** (1 connections) — `server/realtime/websocket_handler_app_state.py`
+- *... and 21 more nodes in this community*
 
 ## Relationships
 
-- [follow service game](follow_service_game.md) (16 shared connections)
+- [combat commands handler](combat_commands_handler.md) (6 shared connections)
+- [room websocket updates](room_websocket_updates.md) (3 shared connections)
+- [websocket handler realtime](websocket_handler_realtime.md) (3 shared connections)
+- [request context realtime](request_context_realtime.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [models player related](models_player_related.md) (2 shared connections)
 
 ## Source Files
 
-- `server/app/task_registry.py`
+- `server/realtime/websocket_handler_app_state.py`
+- `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
 
 ## Audit Trail
 
-- EXTRACTED: 88 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 134 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -25,9 +25,9 @@
 - [combat models rationale](combat_models_rationale.md) (3 shared connections)
 - [player requests schemas](player_requests_schemas.md) (3 shared connections)
 - [message filtering helpers](message_filtering_helpers.md) (2 shared connections)
-- [inventory schemas schema](inventory_schemas_schema.md) (1 shared connections)
+- [Player Stats](Player_Stats.md) (1 shared connections)
 - [level curve game](level_curve_game.md) (1 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
 
 ## Source Files
 

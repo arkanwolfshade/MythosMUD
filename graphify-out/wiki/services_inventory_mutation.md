@@ -1,42 +1,51 @@
 # services inventory mutation
 
-> 16 nodes
+> 26 nodes
 
 ## Key Concepts
 
-- **safe_close_websocket_impl()** (10 connections) — `server/realtime/connection_manager_methods.py`
-- **is_websocket_open_impl()** (7 connections) — `server/realtime/connection_manager_methods.py`
-- **get_connection_id_from_websocket_impl()** (6 connections) — `server/realtime/connection_manager_methods.py`
-- **.connect_websocket()** (5 connections) — `server/realtime/connection_manager.py`
-- **._is_websocket_open()** (4 connections) — `server/realtime/connection_manager.py`
-- **WebSocket** (4 connections)
-- **._safe_close_websocket()** (4 connections) — `server/realtime/connection_manager.py`
-- **.get_connection_id_from_websocket()** (4 connections) — `server/realtime/connection_manager.py`
-- **WebSocket** (3 connections)
-- **Check if a WebSocket is open.** (1 connections) — `server/realtime/connection_manager.py`
-- **Safely close a WebSocket connection.** (1 connections) — `server/realtime/connection_manager.py`
-- **Connect a WebSocket for a player.** (1 connections) — `server/realtime/connection_manager.py`
-- **Get connection ID from a WebSocket instance.** (1 connections) — `server/realtime/connection_manager.py`
-- **Get connection ID from a WebSocket instance.** (1 connections) — `server/realtime/connection_manager_methods.py`
-- **Check if a WebSocket is open.** (1 connections) — `server/realtime/connection_manager_methods.py`
-- **Safely close a WebSocket connection.** (1 connections) — `server/realtime/connection_manager_methods.py`
+- **_format_container_display()** (19 connections) — `server/commands/look_container.py`
+- **test_format_container_display_basic()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_format_container_display_with_description()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_format_container_display_locked()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_format_container_display_sealed()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_format_container_display_with_contents()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_format_container_display_with_target_type()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_format_container_display_with_metadata_name()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_format_container_display_fallback_name()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_format_container_display_locked()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_format_container_display_sealed()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_format_container_display_with_look_in()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_format_container_display_with_target_type_container()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Format the complete container display text.** (1 connections) — `server/commands/look_container.py`
+- **Test formatting container display with basic info.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test formatting container display with description.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test formatting container display when locked.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test formatting container display when sealed.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test formatting container display with look_in flag.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test formatting container display with target_type container.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test formatting container display uses metadata name.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test formatting container display uses fallback when no metadata name.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test _format_container_display() with locked container.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Test _format_container_display() with sealed container.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Test _format_container_display() with look_in flag.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [Room Broadcast](Room_Broadcast.md) (8 shared connections)
-- [realtime monitoring statistics](realtime_monitoring_statistics.md) (3 shared connections)
-- [connection realtime delegates](connection_realtime_delegates.md) (3 shared connections)
-- [connection disconnection realtime](connection_disconnection_realtime.md) (3 shared connections)
-- [connection establishment realtime](connection_establishment_realtime.md) (1 shared connections)
+- [DI Container Format](DI_Container_Format.md) (9 shared connections)
+- [schemas validator rationale](schemas_validator_rationale.md) (6 shared connections)
+- [startup npc services](startup_npc_services.md) (3 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_manager.py`
-- `server/realtime/connection_manager_methods.py`
+- `server/commands/look_container.py`
+- `server/tests/unit/commands/test_look_container.py`
+- `server/tests/unit/commands/test_look_container_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 54 (100%)
+- EXTRACTED: 68 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

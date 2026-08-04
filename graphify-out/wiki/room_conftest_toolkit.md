@@ -1,57 +1,50 @@
 # room conftest toolkit
 
-> 22 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **NPCCombatIntegration** (103 connections) — `server/npc/combat_integration.py`
-- **test_combat_integration_base.py** (24 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
-- **_resolve_npc_combat_service_raw()** (7 connections) — `server/npc/combat_integration_base.py`
-- **integration()** (3 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
-- **test_apply_combat_effects_validation_error()** (3 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
-- **test_resolve_npc_combat_service_from_container()** (2 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
-- **test_calculate_damage_minimum_on_bad_stats()** (2 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
-- **test_apply_combat_effects_npc_target()** (2 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
-- **test_apply_combat_effects_invalid_uuid_raises()** (2 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
-- **test_apply_combat_effects_player()** (2 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
-- **test_convert_target_id_to_uuid()** (2 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
-- **test_handle_unexpected_error_logs()** (2 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
-- **test_is_target_in_login_grace_period_false()** (2 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
-- **test_apply_combat_effects_grace_period_blocks_damage()** (2 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
-- **test_apply_mental_effects_occult()** (2 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
-- **test_handle_npc_attack_direct_path()** (2 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
-- **test_calculate_damage_with_stats()** (2 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
-- **test_perform_direct_npc_attack()** (2 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
-- **test_handle_npc_attack_delegated()** (2 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
-- **Integrates NPCs with the existing combat and game mechanics systems.      Extend** (1 connections) — `server/npc/combat_integration.py`
-- **Return the live NPC combat integration service for delegation.      Prefer ``C** (1 connections) — `server/npc/combat_integration_base.py`
-- **Unit tests for NPCCombatIntegrationBase helpers.** (1 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
+- **inventory_drop_command.py** (25 connections) — `server/commands/inventory_drop_command.py`
+- **handle_drop_command()** (14 connections) — `server/commands/inventory_drop_command.py`
+- **_drop_resolve_stack_or_error()** (12 connections) — `server/commands/inventory_drop_command.py`
+- **CommandResponse** (7 connections)
+- **_drop_parsed_quantity_or_error()** (6 connections) — `server/commands/inventory_drop_command.py`
+- **_drop_finish_after_persist()** (6 connections) — `server/commands/inventory_drop_command.py`
+- **_drop_quantity_or_error()** (4 connections) — `server/commands/inventory_drop_command.py`
+- **_inventory_rows_after_drop()** (4 connections) — `server/commands/inventory_drop_command.py`
+- **_drop_slot_index_or_error()** (4 connections) — `server/commands/inventory_drop_command.py`
+- **_drop_quantity_bounds_or_error()** (4 connections) — `server/commands/inventory_drop_command.py`
+- **Player** (3 connections)
+- **test_handle_drop_command()** (3 connections) — `server/tests/unit/commands/test_inventory_commands.py`
+- **_DropResolved** (1 connections)
+- **Drop command: move an inventory stack to the room floor.** (1 connections) — `server/commands/inventory_drop_command.py`
+- **Apply partial or full removal of one inventory slot (1-based index).** (1 connections) — `server/commands/inventory_drop_command.py`
+- **Resolve 1-based inventory slot from command data or return a usage / range error** (1 connections) — `server/commands/inventory_drop_command.py`
+- **Return an error response if drop quantity is out of range for the stack.** (1 connections) — `server/commands/inventory_drop_command.py`
+- **Parse quantity from command + stack; return error dict or a validated int (may s** (1 connections) — `server/commands/inventory_drop_command.py`
+- **Drop an inventory stack into the current room.** (1 connections) — `server/commands/inventory_drop_command.py`
+- **Test handle_drop_command() drops item.** (1 connections) — `server/tests/unit/commands/test_inventory_commands.py`
 
 ## Relationships
 
-- [services nats service](services_nats_service.md) (26 shared connections)
-- [models npc rationale](models_npc_rationale.md) (9 shared connections)
-- [message queue realtime](message_queue_realtime.md) (7 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (6 shared connections)
-- [memory lifespan app](memory_lifespan_app.md) (5 shared connections)
-- [schemas items item](schemas_items_item.md) (4 shared connections)
-- [event bus events](event_bus_events.md) (4 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (3 shared connections)
-- [npc aggressive mob](npc_aggressive_mob.md) (3 shared connections)
-- [player death service](player_death_service.md) (2 shared connections)
-- [attack combat commands](attack_combat_commands.md) (2 shared connections)
-- [lucidity event services](lucidity_event_services.md) (2 shared connections)
+- [commands inventory command](commands_inventory_command.md) (12 shared connections)
+- [Async Query Helpers](Async_Query_Helpers.md) (5 shared connections)
+- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (5 shared connections)
+- [commands inventory pickup](commands_inventory_pickup.md) (3 shared connections)
+- [commands npc admin](commands_npc_admin.md) (2 shared connections)
+- [combat models rationale](combat_models_rationale.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [commands whisper command](commands_whisper_command.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/combat_integration.py`
-- `server/npc/combat_integration_base.py`
-- `server/tests/unit/npc/test_combat_integration_base.py`
+- `server/commands/inventory_drop_command.py`
+- `server/tests/unit/commands/test_inventory_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 160 (94%)
-- INFERRED: 11 (6%)
+- EXTRACTED: 91 (91%)
+- INFERRED: 9 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

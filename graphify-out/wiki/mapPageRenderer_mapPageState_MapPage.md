@@ -28,10 +28,9 @@
 
 ## Relationships
 
-- [calendar schemas validate](calendar_schemas_validate.md) (4 shared connections)
-- [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (2 shared connections)
+- [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (6 shared connections)
 - [mythosApp appLazyScreens mythosAppViewMo](mythosApp_appLazyScreens_mythosAppViewMo.md) (2 shared connections)
-- [lucidityEventUtils mythosTime MythosTime](lucidityEventUtils_mythosTime_MythosTime.md) (2 shared connections)
+- [project paths rationale](project_paths_rationale.md) (2 shared connections)
 - [mythosApp security submitAuth](mythosApp_security_submitAuth.md) (2 shared connections)
 
 ## Source Files

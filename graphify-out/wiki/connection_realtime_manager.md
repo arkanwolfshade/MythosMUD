@@ -36,15 +36,15 @@
 - [Loot Generation](Loot_Generation.md) (11 shared connections)
 - [commands admin mute](commands_admin_mute.md) (3 shared connections)
 - [commands position system](commands_position_system.md) (3 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (2 shared connections)
+- [lucidity services helpers](lucidity_services_helpers.md) (3 shared connections)
 - [command factories create](command_factories_create.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
 - [command commands handler](command_commands_handler.md) (2 shared connections)
 - [commands logout rationale](commands_logout_rationale.md) (2 shared connections)
 - [commands quest rationale](commands_quest_rationale.md) (2 shared connections)
-- [command helpers functions](command_helpers_functions.md) (2 shared connections)
 - [argon2 auth rationale](argon2_auth_rationale.md) (1 shared connections)
 - [rest grace period](rest_grace_period.md) (1 shared connections)
-- [NPC Combat](NPC_Combat.md) (1 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (1 shared connections)
 
 ## Source Files
 

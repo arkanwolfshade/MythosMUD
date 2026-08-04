@@ -1,40 +1,48 @@
 # memory lifespan app
 
-> 12 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **._build_player_attacked_event()** (8 connections) — `server/npc/combat_integration.py`
-- **._compute_dp_update_fields()** (6 connections) — `server/npc/combat_integration.py`
-- **._calculate_max_dp()** (6 connections) — `server/npc/combat_integration.py`
-- **._get_int_stat()** (5 connections) — `server/npc/combat_integration.py`
-- **._get_player_combat_stats()** (4 connections) — `server/npc/combat_integration.py`
-- **.get_stats()** (3 connections) — `server/npc/npc_base.py`
-- **Compute old_dp, new_dp, and max_dp values for PlayerDPUpdated.** (1 connections) — `server/npc/combat_integration.py`
-- **Construct the PlayerAttackedEvent payload for NATS publication.** (1 connections) — `server/npc/combat_integration.py`
-- **Return an integer stat from stats[key], handling common primitive types.** (1 connections) — `server/npc/combat_integration.py`
-- **Calculate max_dp from stats with fallbacks.** (1 connections) — `server/npc/combat_integration.py`
-- **Get combat stats for a player.** (1 connections) — `server/npc/combat_integration.py`
-- **Get current NPC stats.** (1 connections) — `server/npc/npc_base.py`
+- **useDraggablePanelInteractions.ts** (11 connections) — `client/src/components/useDraggablePanelInteractions.ts`
+- **DraggablePanel()** (10 connections) — `client/src/components/DraggablePanelCore.tsx`
+- **DraggablePanel.tsx** (8 connections) — `client/src/components/DraggablePanel.tsx`
+- **draggablePanelUtils.ts** (7 connections) — `client/src/components/draggablePanelUtils.ts`
+- **useDraggablePanelInteractions()** (7 connections) — `client/src/components/useDraggablePanelInteractions.ts`
+- **relativeToAbsolute()** (3 connections) — `client/src/components/draggablePanelUtils.ts`
+- **relativeSizeToAbsolute()** (3 connections) — `client/src/components/draggablePanelUtils.ts`
+- **isPanelDragBlockedTarget()** (3 connections) — `client/src/components/draggablePanelUtils.ts`
+- **isMouseEventOnHeader()** (3 connections) — `client/src/components/draggablePanelUtils.ts`
+- **DraggablePanelProps** (2 connections) — `client/src/components/DraggablePanelCore.tsx`
+- **DraggablePanel.grid-positioning.test.tsx** (2 connections) — `client/src/components/__tests__/DraggablePanel.grid-positioning.test.tsx`
+- **DraggablePanel.test.tsx** (2 connections) — `client/src/components/__tests__/DraggablePanel.test.tsx`
+- **updateDragPosition()** (2 connections) — `client/src/components/useDraggablePanelInteractions.ts`
+- **updateResizePosition()** (2 connections) — `client/src/components/useDraggablePanelInteractions.ts`
+- **PANEL_DRAG_BLOCK_SELECTORS** (1 connections) — `client/src/components/draggablePanelUtils.ts`
+- **Size** (1 connections) — `client/src/components/useDraggablePanelInteractions.ts`
+- **Position** (1 connections) — `client/src/components/useDraggablePanelInteractions.ts`
+- **UseDraggablePanelInteractionsArgs** (1 connections) — `client/src/components/useDraggablePanelInteractions.ts`
+- **UseDraggablePanelInteractionsResult** (1 connections) — `client/src/components/useDraggablePanelInteractions.ts`
 
 ## Relationships
 
-- [room conftest toolkit](room_conftest_toolkit.md) (5 shared connections)
-- [message queue realtime](message_queue_realtime.md) (3 shared connections)
-- [Memory Task Runtime](Memory_Task_Runtime.md) (1 shared connections)
-- [schemas items item](schemas_items_item.md) (1 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (1 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
+- [panels chat ChatPanelRuntimeViewParts](panels_chat_ChatPanelRuntimeViewParts.md) (10 shared connections)
+- [game terminal lucidity](game_terminal_lucidity.md) (2 shared connections)
+- [stores connectionStore commandStore](stores_connectionStore_commandStore.md) (2 shared connections)
 
 ## Source Files
 
-- `server/npc/combat_integration.py`
-- `server/npc/npc_base.py`
+- `client/src/components/DraggablePanel.tsx`
+- `client/src/components/DraggablePanelCore.tsx`
+- `client/src/components/__tests__/DraggablePanel.grid-positioning.test.tsx`
+- `client/src/components/__tests__/DraggablePanel.test.tsx`
+- `client/src/components/draggablePanelUtils.ts`
+- `client/src/components/useDraggablePanelInteractions.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 36 (95%)
-- INFERRED: 2 (5%)
+- EXTRACTED: 70 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

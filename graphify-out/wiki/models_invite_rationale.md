@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_apply_fear()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **Test apply_fear() applies fear.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_restore_mp_from_item_calculates_max_from_power()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Test restore_mp_from_item() calculates max_mp from power if not present.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Relationships
 
-- [room realtime subscription](room_realtime_subscription.md) (1 shared connections)
+- [config rationale reset](config_rationale_reset.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_player_service_mutations.py`
+- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Audit Trail
 

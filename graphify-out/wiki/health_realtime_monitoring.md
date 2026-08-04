@@ -1,29 +1,32 @@
 # health realtime monitoring
 
-> 6 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **__init__.py** (3 connections) — `server/game/quest/__init__.py`
-- **.set_spell_learning_service()** (3 connections) — `server/game/quest/quest_service.py`
-- **.resolve_name_to_quest_id()** (3 connections) — `server/game/quest/quest_service.py`
-- **Quest subsystem: service, goal progression, rewards.** (1 connections) — `server/game/quest/__init__.py`
-- **Set the spell learning service (e.g. when wired after construction by the contai** (1 connections) — `server/game/quest/quest_service.py`
-- **Resolve quest common name to quest_id. Returns None if not found.** (1 connections) — `server/game/quest/quest_service.py`
+- **TestCheckCastingState** (6 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_casting_state_allowed_command()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_casting_state_no_magic_service()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_casting_state_player_casting()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_casting_state_handles_error()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Test _check_casting_state function.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Test _check_casting_state allows stop/interrupt/status during casting.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Test _check_casting_state returns None when no magic service.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Test _check_casting_state returns block result when player is casting.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Test _check_casting_state returns None on error.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
 
 ## Relationships
 
-- [quest game service](quest_game_service.md) (3 shared connections)
-- [quest service game](quest_service_game.md) (3 shared connections)
+- [command commands handler](command_commands_handler.md) (4 shared connections)
+- [command validation commands](command_validation_commands.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/quest/__init__.py`
-- `server/game/quest/quest_service.py`
+- `server/tests/unit/commands/test_command_validation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 23 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

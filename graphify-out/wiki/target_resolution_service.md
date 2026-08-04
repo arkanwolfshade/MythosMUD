@@ -1,12 +1,13 @@
 # target resolution service
 
-> 165 nodes
+> 167 nodes
 
 ## Key Concepts
 
 - **TargetResolutionService** (53 connections) — `server/services/target_resolution_service.py`
 - **TargetResolutionResult** (42 connections) — `server/schemas/shared/target_resolution.py`
 - **test_target_resolution_service.py** (40 connections) — `server/tests/unit/services/test_target_resolution_service.py`
+- **TargetType** (39 connections) — `server/schemas/shared/target_resolution.py`
 - **target_resolution_service.py** (27 connections) — `server/services/target_resolution_service.py`
 - **TargetMetadata** (16 connections) — `server/schemas/shared/target_metadata.py`
 - **test_target_resolution.py** (16 connections) — `server/tests/unit/schemas/test_target_resolution.py`
@@ -28,23 +29,22 @@
 - **Player** (5 connections)
 - **PlayerServiceProtocol** (5 connections) — `server/services/target_resolution_service.py`
 - **._build_target_result()** (5 connections) — `server/services/target_resolution_service.py`
-- **._fetch_players_in_room()** (5 connections) — `server/services/target_resolution_service.py`
-- *... and 140 more nodes in this community*
+- *... and 142 more nodes in this community*
 
 ## Relationships
 
+- [NPC Combat](NPC_Combat.md) (34 shared connections)
 - [spell game magic](spell_game_magic.md) (31 shared connections)
-- [NPC Combat](NPC_Combat.md) (24 shared connections)
-- [coercion int inventory](coercion_int_inventory.md) (13 shared connections)
-- [commands position system](commands_position_system.md) (8 shared connections)
-- [npc population stats](npc_population_stats.md) (4 shared connections)
-- [models player related](models_player_related.md) (4 shared connections)
+- [commands position system](commands_position_system.md) (10 shared connections)
+- [models player related](models_player_related.md) (6 shared connections)
+- [services ascii map](services_ascii_map.md) (5 shared connections)
+- [game models player](game_models_player.md) (5 shared connections)
+- [logging file setup](logging_file_setup.md) (4 shared connections)
+- [uuid npc combat](uuid_npc_combat.md) (4 shared connections)
 - [message filtering helpers](message_filtering_helpers.md) (3 shared connections)
-- [services ascii map](services_ascii_map.md) (3 shared connections)
-- [models npc rationale](models_npc_rationale.md) (3 shared connections)
-- [commands npc admin](commands_npc_admin.md) (3 shared connections)
-- [room validator toolkit](room_validator_toolkit.md) (2 shared connections)
-- [combat models rationale](combat_models_rationale.md) (2 shared connections)
+- [party service game](party_service_game.md) (3 shared connections)
+- [coercion int inventory](coercion_int_inventory.md) (3 shared connections)
+- [Error Conversion](Error_Conversion.md) (3 shared connections)
 
 ## Source Files
 
@@ -58,8 +58,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 550 (94%)
-- INFERRED: 34 (6%)
+- EXTRACTED: 588 (94%)
+- INFERRED: 35 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

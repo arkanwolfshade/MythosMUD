@@ -35,7 +35,7 @@
 
 - [realtime circuit breaker](realtime_circuit_breaker.md) (9 shared connections)
 - [config models game](config_models_game.md) (2 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (1 shared connections)
 - [combat models rationale](combat_models_rationale.md) (1 shared connections)
 - [room models instance](room_models_instance.md) (1 shared connections)
 - [persistence container item](persistence_container_item.md) (1 shared connections)

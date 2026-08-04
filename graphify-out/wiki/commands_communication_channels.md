@@ -1,52 +1,60 @@
 # commands communication channels
 
-> 39 nodes
+> 48 nodes
 
 ## Key Concepts
 
-- **MemoryMonitor** (27 connections) — `server/realtime/memory_monitor.py`
-- **test_memory_monitor.py** (21 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
-- **memory_monitor.py** (10 connections) — `server/realtime/memory_monitor.py`
-- **_max_connection_age_seconds()** (7 connections) — `server/realtime/memory_monitor.py`
-- **.get_memory_usage()** (4 connections) — `server/realtime/memory_monitor.py`
-- **.get_memory_alerts()** (4 connections) — `server/realtime/memory_monitor.py`
-- **.__init__()** (3 connections) — `server/realtime/memory_monitor.py`
-- **.should_cleanup()** (3 connections) — `server/realtime/memory_monitor.py`
-- **.get_memory_stats()** (3 connections) — `server/realtime/memory_monitor.py`
-- **Any** (2 connections)
-- **.update_cleanup_time()** (2 connections) — `server/realtime/memory_monitor.py`
-- **.force_garbage_collection()** (2 connections) — `server/realtime/memory_monitor.py`
-- **test_max_connection_age_local()** (2 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
-- **test_max_connection_age_default()** (2 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
-- **test_should_cleanup_time_based()** (2 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
-- **test_should_cleanup_memory_threshold()** (2 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
-- **test_get_memory_usage_success()** (2 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
-- **test_get_memory_usage_error_returns_zero()** (2 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
-- **test_get_memory_stats()** (2 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
-- **test_get_memory_alerts()** (2 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
-- **test_update_cleanup_time_and_gc()** (2 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
-- **test_should_cleanup_returns_false()** (2 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
-- **test_max_connection_age_e2e()** (2 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
-- **test_get_memory_stats_error_returns_empty()** (2 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
-- **test_get_memory_alerts_warning_and_info_levels()** (2 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
-- *... and 14 more nodes in this community*
+- **RealTimeEventHandler** (44 connections) — `server/realtime/event_handler.py`
+- **.__init__()** (9 connections) — `server/realtime/event_handler.py`
+- **._initialize_modules()** (8 connections) — `server/realtime/event_handler.py`
+- **event_handler()** (6 connections) — `server/tests/unit/realtime/test_event_handler.py`
+- **Any** (4 connections)
+- **._create_player_entered_message()** (4 connections) — `server/realtime/event_handler.py`
+- **._create_player_left_message()** (4 connections) — `server/realtime/event_handler.py`
+- **._handle_player_entered()** (3 connections) — `server/realtime/event_handler.py`
+- **._handle_player_left()** (3 connections) — `server/realtime/event_handler.py`
+- **._handle_npc_entered()** (3 connections) — `server/realtime/event_handler.py`
+- **._handle_npc_left()** (3 connections) — `server/realtime/event_handler.py`
+- **._handle_player_xp_awarded()** (3 connections) — `server/realtime/event_handler.py`
+- **._handle_player_dp_updated()** (3 connections) — `server/realtime/event_handler.py`
+- **._handle_player_died()** (3 connections) — `server/realtime/event_handler.py`
+- **._handle_player_dp_decay()** (3 connections) — `server/realtime/event_handler.py`
+- **._handle_player_delirium_respawned()** (3 connections) — `server/realtime/event_handler.py`
+- **._send_room_occupants_update_internal()** (3 connections) — `server/realtime/event_handler.py`
+- **.send_room_occupants_update()** (3 connections) — `server/realtime/event_handler.py`
+- **._get_room_occupants()** (3 connections) — `server/realtime/event_handler.py`
+- **._send_occupants_snapshot_to_player()** (3 connections) — `server/realtime/event_handler.py`
+- **test_event_handler_init()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
+- **test_event_handler_init_no_event_bus()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
+- **._get_next_sequence()** (2 connections) — `server/realtime/event_handler.py`
+- **UUID** (2 connections)
+- **.shutdown()** (2 connections) — `server/realtime/event_handler.py`
+- *... and 23 more nodes in this community*
 
 ## Relationships
 
-- [connection disconnection realtime](connection_disconnection_realtime.md) (4 shared connections)
-- [services npc startup](services_npc_startup.md) (3 shared connections)
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
-- [Loot Generation](Loot_Generation.md) (2 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (17 shared connections)
+- [realtime websocket initial](realtime_websocket_initial.md) (8 shared connections)
+- [nats services service](nats_services_service.md) (3 shared connections)
+- [realtime monitoring performance](realtime_monitoring_performance.md) (2 shared connections)
+- [npc event handlers](npc_event_handlers.md) (2 shared connections)
+- [schedule services service](schedule_services_service.md) (2 shared connections)
+- [Player Name Validation](Player_Name_Validation.md) (2 shared connections)
+- [event bus events](event_bus_events.md) (2 shared connections)
+- [item models rationale](item_models_rationale.md) (2 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (1 shared connections)
+- [NATS Messaging](NATS_Messaging.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/memory_monitor.py`
-- `server/tests/unit/realtime/test_memory_monitor.py`
+- `server/realtime/event_handler.py`
+- `server/tests/unit/realtime/test_event_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 131 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 135 (88%)
+- INFERRED: 18 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

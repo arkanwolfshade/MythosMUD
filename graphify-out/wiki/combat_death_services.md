@@ -1,28 +1,33 @@
 # combat death services
 
-> 6 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **._check_prerequisites()** (7 connections) — `server/game/quest/quest_service.py`
-- **._all_required_completed()** (4 connections) — `server/game/quest/quest_service.py`
-- **._any_required_completed()** (4 connections) — `server/game/quest/quest_service.py`
-- **Return True if the player has completed every quest in quest_ids.** (1 connections) — `server/game/quest/quest_service.py`
-- **Return True if the player has completed at least one quest in quest_ids.** (1 connections) — `server/game/quest/quest_service.py`
-- **Check DAG: requires_all (all must be completed) and requires_any (at least one).** (1 connections) — `server/game/quest/quest_service.py`
+- **test_database.py** (7 connections) — `server/tests/unit/infrastructure/test_database.py`
+- **test_database_manager_singleton()** (4 connections) — `server/tests/unit/infrastructure/test_database.py`
+- **test_database_manager_reset_instance()** (4 connections) — `server/tests/unit/infrastructure/test_database.py`
+- **test_database_manager_direct_init_raises()** (4 connections) — `server/tests/unit/infrastructure/test_database.py`
+- **test_database_manager_initial_state()** (4 connections) — `server/tests/unit/infrastructure/test_database.py`
+- **Unit tests for database initialization.** (1 connections) — `server/tests/unit/infrastructure/test_database.py`
+- **Test that DatabaseManager is a singleton.** (1 connections) — `server/tests/unit/infrastructure/test_database.py`
+- **Test resetting the singleton instance.** (1 connections) — `server/tests/unit/infrastructure/test_database.py`
+- **Test that direct initialization raises RuntimeError when instance exists.** (1 connections) — `server/tests/unit/infrastructure/test_database.py`
+- **Test initial state of database manager.** (1 connections) — `server/tests/unit/infrastructure/test_database.py`
 
 ## Relationships
 
-- [quest game service](quest_game_service.md) (5 shared connections)
-- [quest service game](quest_service_game.md) (3 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (7 shared connections)
+- [aggro threat services](aggro_threat_services.md) (2 shared connections)
+- [game models enums](game_models_enums.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/quest/quest_service.py`
+- `server/tests/unit/infrastructure/test_database.py`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
+- EXTRACTED: 28 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

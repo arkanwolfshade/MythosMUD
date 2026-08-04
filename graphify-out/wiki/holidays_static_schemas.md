@@ -1,24 +1,25 @@
 # holidays static schemas
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **player_service()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **Create a PlayerService instance.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **start_hour** (4 connections) — `schemas/calendar/schedule.schema.json`
+- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **minimum** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **maximum** (1 connections) — `schemas/calendar/schedule.schema.json`
 
 ## Relationships
 
-- [coercion int inventory](coercion_int_inventory.md) (1 shared connections)
-- [room realtime subscription](room_realtime_subscription.md) (1 shared connections)
+- [schemas calendar schedule](schemas_calendar_schedule.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_player_service_mutations.py`
+- `schemas/calendar/schedule.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

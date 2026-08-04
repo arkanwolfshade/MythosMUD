@@ -1,39 +1,33 @@
 # lucidity commands services
 
-> 13 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **PlayerCreationService** (9 connections) — `server/game/player_creation_service.py`
-- **.create_player_with_stats()** (9 connections) — `server/game/player_creation_service.py`
-- **.create_player()** (8 connections) — `server/game/player_creation_service.py`
-- **._resolve_tutorial_start_room()** (5 connections) — `server/game/player_creation_service.py`
-- **UUID** (4 connections)
-- **.__init__()** (3 connections) — `server/game/player_creation_service.py`
-- **Any** (1 connections)
-- **Stats** (1 connections)
-- **Service for player creation operations.** (1 connections) — `server/game/player_creation_service.py`
-- **Initialize with persistence layer, schema converter, and optional instance manag** (1 connections) — `server/game/player_creation_service.py`
-- **Resolve starting room and tutorial instance ID.          For tutorial players, r** (1 connections) — `server/game/player_creation_service.py`
-- **Create a new player character.          Args:             name: The player's nam** (1 connections) — `server/game/player_creation_service.py`
-- **Create a new player character with specific stats.          Args:             na** (1 connections) — `server/game/player_creation_service.py`
+- **TestCheckAllCommandBlocks** (6 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_all_command_blocks_catatonia()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_all_command_blocks_grace_period()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_all_command_blocks_casting()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_all_command_blocks_no_blocks()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Test _check_all_command_blocks function.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Test _check_all_command_blocks returns block result for catatonia.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Test _check_all_command_blocks returns block result for grace period.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Test _check_all_command_blocks returns block result for casting.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Test _check_all_command_blocks returns None when no blocks.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
 
 ## Relationships
 
-- [Loot Generation](Loot_Generation.md) (5 shared connections)
-- [coercion int inventory](coercion_int_inventory.md) (2 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (2 shared connections)
-- [combat models rationale](combat_models_rationale.md) (2 shared connections)
-- [Player Stats](Player_Stats.md) (2 shared connections)
+- [command commands handler](command_commands_handler.md) (4 shared connections)
+- [command validation commands](command_validation_commands.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/player_creation_service.py`
+- `server/tests/unit/commands/test_command_validation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 42 (93%)
-- INFERRED: 3 (7%)
+- EXTRACTED: 23 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

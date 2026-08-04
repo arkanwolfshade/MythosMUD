@@ -33,9 +33,8 @@
 
 ## Relationships
 
-- [auth dependencies rationale](auth_dependencies_rationale.md) (2 shared connections)
+- [scripts run guard](scripts_run_guard.md) (3 shared connections)
 - [NPC Definitions Admin](NPC_Definitions_Admin.md) (2 shared connections)
-- [scripts run guard](scripts_run_guard.md) (1 shared connections)
 
 ## Source Files
 

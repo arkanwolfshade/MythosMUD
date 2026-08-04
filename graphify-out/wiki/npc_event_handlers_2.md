@@ -1,49 +1,51 @@
 # npc event handlers
 
-> 76 nodes
+> 36 nodes
 
 ## Key Concepts
 
-- **test_npc_event_handlers.py** (44 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_handle_npc_entered_room()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_handle_npc_left_room()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_handle_npc_entered_room_with_npc_instance()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_handle_npc_left_room_with_npc_instance()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_handle_npc_entered_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_handle_npc_entered_no_persistence()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_handle_npc_entered_room_not_found()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_handle_npc_left_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_handle_npc_left_no_persistence()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_handle_npc_left_room_not_found()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **mock_message_builder()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **mock_send_occupants_update()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_npc_event_handler_init()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_get_npc_instance_not_found()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_get_behavior_config_from_instance_private_attr()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_get_behavior_config_from_instance_method()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_get_behavior_config_from_instance_public_attr()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_get_behavior_config_from_instance_none()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_parse_behavior_config_dict()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_parse_behavior_config_string()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_parse_behavior_config_invalid_json()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_get_npc_instance_found()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_get_npc_instance_no_service()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- *... and 51 more nodes in this community*
+- **PayloadOptimizer** (23 connections) — `server/realtime/payload_optimizer.py`
+- **test_payload_optimizer.py** (19 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **get_payload_optimizer()** (9 connections) — `server/realtime/payload_optimizer.py`
+- **payload_optimizer.py** (6 connections) — `server/realtime/payload_optimizer.py`
+- **.optimize_payload()** (5 connections) — `server/realtime/payload_optimizer.py`
+- **.get_payload_size()** (4 connections) — `server/realtime/payload_optimizer.py`
+- **Any** (4 connections)
+- **.compress_payload()** (4 connections) — `server/realtime/payload_optimizer.py`
+- **_CompareExplodes** (4 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **.create_incremental_update()** (3 connections) — `server/realtime/payload_optimizer.py`
+- **optimizer()** (3 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **test_create_incremental_update_fallback_on_error()** (3 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **.__init__()** (2 connections) — `server/realtime/payload_optimizer.py`
+- **test_get_payload_size_returns_byte_length()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **test_get_payload_size_returns_zero_on_serialization_error()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **test_compress_payload_round_trip_metadata()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **test_optimize_payload_returns_small_payload_unchanged()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **test_optimize_payload_compresses_large_payload()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **test_optimize_payload_force_compression_when_beneficial()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **test_optimize_payload_raises_when_uncompressible_and_oversized()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **test_optimize_payload_raises_when_compressed_still_too_large()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **test_create_incremental_update_no_previous_returns_full()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **test_create_incremental_update_detects_changes()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **test_create_incremental_update_empty_when_unchanged()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **test_get_payload_optimizer_returns_singleton()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
-- [Realtime Subscribers](Realtime_Subscribers.md) (14 shared connections)
-- [realtime monitoring performance](realtime_monitoring_performance.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [realtime connection helpers](realtime_connection_helpers.md) (2 shared connections)
+- [services npc startup](services_npc_startup.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_npc_event_handlers.py`
+- `server/realtime/payload_optimizer.py`
+- `server/tests/unit/realtime/test_payload_optimizer.py`
 
 ## Audit Trail
 
-- EXTRACTED: 166 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 122 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

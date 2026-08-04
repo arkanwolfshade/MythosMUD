@@ -1,53 +1,62 @@
 # uuid npc combat
 
-> 45 nodes
+> 70 nodes
 
 ## Key Concepts
 
-- **test_item.py** (19 connections) — `server/tests/unit/models/test_item.py`
-- **ItemPrototype** (14 connections) — `server/models/item.py`
-- **ItemInstance** (11 connections) — `server/models/item.py`
-- **item.py** (8 connections) — `server/models/item.py`
-- **.unique_key()** (8 connections) — `server/models/item.py`
-- **ItemComponentState** (7 connections) — `server/models/item.py`
-- **Base** (3 connections)
-- **test_item_prototype_primary_slot_with_slots()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_prototype_primary_slot_single_slot()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_prototype_primary_slot_empty()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_prototype_primary_slot_none()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_instance_apply_flag_new_flag()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_instance_apply_flag_existing_flag()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_instance_apply_flag_multiple_flags()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_instance_apply_flag_preserves_order()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_component_state_unique_key()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_component_state_unique_key_different_values()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_component_state_unique_key_same_instance_different_component()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_component_state_unique_key_different_instance_same_component()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_component_state_unique_key_empty_strings()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_component_state_unique_key_static_method()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **.primary_slot()** (2 connections) — `server/models/item.py`
-- **.apply_flag()** (2 connections) — `server/models/item.py`
-- **SQLAlchemy models for MythosMUD item prototypes, instances, and component state.** (1 connections) — `server/models/item.py`
-- **Immutable catalog entry describing a canonical item.** (1 connections) — `server/models/item.py`
-- *... and 20 more nodes in this community*
+- **combat_taunt.py** (32 connections) — `server/commands/combat_taunt.py`
+- **TauntCommandHandler** (29 connections) — `server/commands/combat_taunt.py`
+- **test_combat_taunt.py** (20 connections) — `server/tests/unit/commands/test_combat_taunt.py`
+- **_validate_taunt_context()** (13 connections) — `server/commands/combat_taunt.py`
+- **run_handle_taunt_command()** (13 connections) — `server/commands/combat_taunt.py`
+- **_validate_taunt_target()** (9 connections) — `server/commands/combat_taunt.py`
+- **_resolve_taunt_combat_and_participant()** (9 connections) — `server/commands/combat_taunt.py`
+- **_apply_taunt_and_maybe_broadcast()** (9 connections) — `server/commands/combat_taunt.py`
+- **test_run_handle_taunt_success()** (7 connections) — `server/tests/unit/commands/test_combat_taunt.py`
+- **Any** (6 connections)
+- **_resolve_taunt_room_and_player()** (6 connections) — `server/commands/combat_taunt.py`
+- **UUID** (6 connections)
+- **_validate_taunt_target_name()** (6 connections) — `server/commands/combat_taunt.py`
+- **_RoomWithIdOnly** (6 connections) — `server/tests/unit/commands/test_combat_taunt.py`
+- **.handle_attack_command()** (5 connections) — `server/commands/combat_handler.py`
+- **.handle_taunt_command()** (5 connections) — `server/commands/combat_handler.py`
+- **test_validate_taunt_target_not_npc()** (5 connections) — `server/tests/unit/commands/test_combat_taunt.py`
+- **test_validate_taunt_target_dead()** (5 connections) — `server/tests/unit/commands/test_combat_taunt.py`
+- **test_run_handle_taunt_no_combat_service()** (5 connections) — `server/tests/unit/commands/test_combat_taunt.py`
+- **test_run_handle_taunt_not_in_combat()** (5 connections) — `server/tests/unit/commands/test_combat_taunt.py`
+- **.extract_combat_command_data()** (4 connections) — `server/commands/combat_handler.py`
+- **.handle_flee_command()** (4 connections) — `server/commands/combat_handler.py`
+- **.get_player_and_room()** (4 connections) — `server/commands/combat_taunt.py`
+- **AppWithState** (4 connections)
+- **.resolve_combat_target()** (4 connections) — `server/commands/combat_taunt.py`
+- *... and 45 more nodes in this community*
 
 ## Relationships
 
-- [world models rationale](world_models_rationale.md) (5 shared connections)
-- [task registry app](task_registry_app.md) (4 shared connections)
-- [websocket realtime handler](websocket_realtime_handler.md) (1 shared connections)
-- [nats services service](nats_services_service.md) (1 shared connections)
-- [command commands validation](command_commands_validation.md) (1 shared connections)
+- [NPC Combat](NPC_Combat.md) (14 shared connections)
+- [models npc rationale](models_npc_rationale.md) (14 shared connections)
+- [spell game magic](spell_game_magic.md) (12 shared connections)
+- [commands npc admin](commands_npc_admin.md) (9 shared connections)
+- [Item Instances](Item_Instances.md) (7 shared connections)
+- [room validator toolkit](room_validator_toolkit.md) (5 shared connections)
+- [target resolution service](target_resolution_service.md) (4 shared connections)
+- [npc database infrastructure](npc_database_infrastructure.md) (3 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (1 shared connections)
+- [attack combat commands](attack_combat_commands.md) (1 shared connections)
+- [commands whisper command](commands_whisper_command.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/item.py`
-- `server/tests/unit/models/test_item.py`
+- `server/commands/combat_handler.py`
+- `server/commands/combat_taunt.py`
+- `server/models/combat.py`
+- `server/services/npc_combat_integration_service.py`
+- `server/tests/unit/commands/test_combat_taunt.py`
 
 ## Audit Trail
 
-- EXTRACTED: 133 (96%)
-- INFERRED: 5 (4%)
+- EXTRACTED: 275 (95%)
+- INFERRED: 16 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

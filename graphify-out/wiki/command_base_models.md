@@ -33,10 +33,10 @@
 
 ## Relationships
 
-- [Error Conversion](Error_Conversion.md) (4 shared connections)
+- [nats services service](nats_services_service.md) (4 shared connections)
 - [Magic Spell Service](Magic_Spell_Service.md) (3 shared connections)
-- [time service rationale](time_service_rationale.md) (3 shared connections)
-- [Loot Generation](Loot_Generation.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (3 shared connections)
+- [time service rationale](time_service_rationale.md) (2 shared connections)
 
 ## Source Files
 

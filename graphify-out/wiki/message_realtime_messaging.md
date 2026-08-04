@@ -1,46 +1,52 @@
 # message realtime messaging
 
-> 23 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **Any** (11 connections)
-- **.query_npcs_for_room()** (6 connections) — `server/realtime/npc_occupant_processor.py`
-- **._get_npc_lifecycle_manager()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._validate_npc_room_tracking()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._should_include_npc_in_room()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._scan_active_npcs_for_room()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._get_lifecycle_manager_for_filtering()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._filter_fallback_npcs()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._get_fallback_npcs()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._get_npc_room_id()** (4 connections) — `server/realtime/npc_occupant_processor.py`
-- **._filter_single_fallback_npc()** (4 connections) — `server/realtime/npc_occupant_processor.py`
-- **.process_npcs_for_occupants()** (3 connections) — `server/realtime/npc_occupant_processor.py`
-- **Get and validate NPC lifecycle manager.          Args:             room_id: The** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Get NPC's current room ID from instance.          Args:             npc_instance** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Validate NPC has room tracking and get room ID.          Args:             npc_i** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Determine if NPC should be included in room query results.          Args:** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Scan active NPCs to find those in the target room.          Args:             ac** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Query NPCs for a room from lifecycle manager.          Args:             room_id** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Get lifecycle manager for filtering fallback NPCs.          Returns:** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Check if a single fallback NPC should be included.          Args:             np** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Filter fallback NPCs to only include those in active_npcs and alive.          Ar** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Get fallback NPCs from room.get_npcs() if lifecycle manager query fails.** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Process NPC IDs and convert to occupant information.          Args:** (1 connections) — `server/realtime/npc_occupant_processor.py`
+- **test_lifespan_event_subscriptions.py** (15 connections) — `server/tests/unit/app/test_lifespan_event_subscriptions.py`
+- **subscribe_quest_events()** (13 connections) — `server/app/lifespan_event_subscriptions.py`
+- **QuestCompleted** (13 connections) — `server/events/event_types.py`
+- **lifespan_event_subscriptions.py** (12 connections) — `server/app/lifespan_event_subscriptions.py`
+- **subscribe_room_occupants_refresh()** (11 connections) — `server/app/lifespan_event_subscriptions.py`
+- **test_quest_log_updated_event_envelope_shape()** (5 connections) — `server/tests/unit/app/test_lifespan_event_subscriptions.py`
+- **test_subscribe_room_occupants_refresh_broadcasts_on_event()** (3 connections) — `server/tests/unit/app/test_lifespan_event_subscriptions.py`
+- **test_room_occupants_refresh_no_running_loop_returns_silently()** (3 connections) — `server/tests/unit/app/test_lifespan_event_subscriptions.py`
+- **test_quest_completed_invalid_player_id_logs_warning()** (3 connections) — `server/tests/unit/app/test_lifespan_event_subscriptions.py`
+- **test_quest_completed_missing_services_skips_push()** (3 connections) — `server/tests/unit/app/test_lifespan_event_subscriptions.py`
+- **test_subscribe_room_occupants_refresh_skips_without_event_bus()** (2 connections) — `server/tests/unit/app/test_lifespan_event_subscriptions.py`
+- **Event subscription setup for application startup.  Extracted from lifespan_start** (1 connections) — `server/app/lifespan_event_subscriptions.py`
+- **Subscribe to RoomOccupantsRefreshRequested so Occupants panel updates after NPC** (1 connections) — `server/app/lifespan_event_subscriptions.py`
+- **Subscribe to room events for quest triggers and progress (start on enter, comple** (1 connections) — `server/app/lifespan_event_subscriptions.py`
+- **Event fired when a quest instance is completed (rewards applied, state set to co** (1 connections) — `server/events/event_types.py`
+- **Unit tests for lifespan event subscription producers.** (1 connections) — `server/tests/unit/app/test_lifespan_event_subscriptions.py`
+- **quest_log_updated producer emits a build_event-shaped envelope with player_id.** (1 connections) — `server/tests/unit/app/test_lifespan_event_subscriptions.py`
 
 ## Relationships
 
-- [event bus events](event_bus_events.md) (12 shared connections)
-- [commands npc admin](commands_npc_admin.md) (2 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (9 shared connections)
+- [nats services service](nats_services_service.md) (5 shared connections)
+- [skill game service](skill_game_service.md) (3 shared connections)
+- [room look commands](room_look_commands.md) (2 shared connections)
+- [command models moderation](command_models_moderation.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [Magic Spell Service](Magic_Spell_Service.md) (2 shared connections)
+- [quest game service](quest_game_service.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [item models rationale](item_models_rationale.md) (1 shared connections)
+- [command service commands](command_service_commands.md) (1 shared connections)
+- [collect inventory game](collect_inventory_game.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/npc_occupant_processor.py`
+- `server/app/lifespan_event_subscriptions.py`
+- `server/events/event_types.py`
+- `server/tests/unit/app/test_lifespan_event_subscriptions.py`
 
 ## Audit Trail
 
-- EXTRACTED: 74 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 84 (94%)
+- INFERRED: 5 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

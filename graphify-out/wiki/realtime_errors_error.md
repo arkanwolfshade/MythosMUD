@@ -34,8 +34,8 @@
 ## Relationships
 
 - [models npc rationale](models_npc_rationale.md) (3 shared connections)
-- [services npc startup](services_npc_startup.md) (3 shared connections)
-- [Loot Generation](Loot_Generation.md) (2 shared connections)
+- [taunt combat commands](taunt_combat_commands.md) (3 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
 
 ## Source Files
 

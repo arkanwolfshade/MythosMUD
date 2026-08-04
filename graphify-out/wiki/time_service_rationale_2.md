@@ -1,49 +1,62 @@
 # time service rationale
 
-> 36 nodes
+> 92 nodes
 
 ## Key Concepts
 
-- **test_room_id_utils.py** (15 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
-- **.normalize_room_id_for_comparison()** (7 connections) — `server/realtime/room_id_utils.py`
-- **.check_normalized_ids_match()** (5 connections) — `server/realtime/room_id_utils.py`
-- **.check_normalized_room_matches()** (5 connections) — `server/realtime/room_id_utils.py`
-- **.check_npc_room_match()** (5 connections) — `server/realtime/room_id_utils.py`
-- **.check_fallback_room_matches()** (4 connections) — `server/realtime/room_id_utils.py`
-- **test_room_id_utils_init()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
-- **test_get_canonical_room_id()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
-- **test_get_canonical_room_id_no_manager()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
-- **test_normalize_room_id_for_comparison_none()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
-- **test_normalize_room_id_for_comparison_string()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
-- **test_normalize_room_id_for_comparison_whitespace()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
-- **test_normalize_room_id_for_comparison_empty()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
-- **test_check_normalized_ids_match()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
-- **test_check_normalized_ids_match_none()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
-- **test_check_normalized_room_matches()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
-- **test_check_fallback_room_matches()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
-- **test_check_npc_room_match()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
-- **Normalize room ID for comparison.          Args:             rid: Room ID to nor** (1 connections) — `server/realtime/room_id_utils.py`
-- **Check if two normalized room IDs match.          Args:             id1: First no** (1 connections) — `server/realtime/room_id_utils.py`
-- **Check if normalized NPC room IDs match normalized target room IDs.          Args** (1 connections) — `server/realtime/room_id_utils.py`
-- **Check if NPC room IDs match target room IDs using fallback comparison.** (1 connections) — `server/realtime/room_id_utils.py`
-- **Check if NPC room matches target room using normalized comparison.          Args** (1 connections) — `server/realtime/room_id_utils.py`
-- **Unit tests for room ID utilities.  Tests the RoomIDUtils class for room ID norma** (1 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
-- **Test RoomIDUtils initialization.** (1 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
-- *... and 11 more nodes in this community*
+- **MythosTickScheduler** (29 connections) — `server/time/tick_scheduler.py`
+- **MythosChronicle** (29 connections) — `server/time/time_service.py`
+- **get_mythos_chronicle()** (26 connections) — `server/time/time_service.py`
+- **test_tick_scheduler.py** (17 connections) — `server/tests/unit/time/test_tick_scheduler.py`
+- **tick_scheduler.py** (15 connections) — `server/time/tick_scheduler.py`
+- **datetime** (15 connections)
+- **_ensure_utc()** (13 connections) — `server/time/time_service.py`
+- **.get_calendar_components()** (10 connections) — `server/time/time_service.py`
+- **ChronicleState** (9 connections) — `server/time/time_service.py`
+- **.get_current_mythos_datetime()** (9 connections) — `server/time/time_service.py`
+- **__init__.py** (8 connections) — `server/time/__init__.py`
+- **.get_daypart()** (8 connections) — `server/time/time_service.py`
+- **._load_state()** (8 connections) — `server/time/time_service.py`
+- **._persist_state()** (8 connections) — `server/time/time_service.py`
+- **.__init__()** (7 connections) — `server/time/tick_scheduler.py`
+- **.to_mythos_datetime()** (7 connections) — `server/time/time_service.py`
+- **.is_witching_hour()** (7 connections) — `server/time/time_service.py`
+- **.is_daytime()** (7 connections) — `server/time/time_service.py`
+- **._migrate_old_state_file()** (6 connections) — `server/time/time_service.py`
+- **._run()** (5 connections) — `server/time/tick_scheduler.py`
+- **._emit_pending_ticks()** (5 connections) — `server/time/tick_scheduler.py`
+- **._publish_tick()** (5 connections) — `server/time/tick_scheduler.py`
+- **._truncate_to_hour()** (5 connections) — `server/time/tick_scheduler.py`
+- **.__init__()** (5 connections) — `server/time/time_service.py`
+- **.to_real_datetime()** (5 connections) — `server/time/time_service.py`
+- *... and 67 more nodes in this community*
 
 ## Relationships
 
-- [event bus events](event_bus_events.md) (11 shared connections)
+- [NPC Combat](NPC_Combat.md) (12 shared connections)
+- [cleanup combat handler](cleanup_combat_handler.md) (9 shared connections)
+- [websocket realtime handler](websocket_realtime_handler.md) (8 shared connections)
+- [follow service game](follow_service_game.md) (4 shared connections)
+- [Error Conversion](Error_Conversion.md) (4 shared connections)
+- [command service commands](command_service_commands.md) (3 shared connections)
+- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (3 shared connections)
+- [Spell Validation](Spell_Validation.md) (2 shared connections)
+- [Magic Spell Service](Magic_Spell_Service.md) (2 shared connections)
+- [command base models](command_base_models.md) (2 shared connections)
+- [nats services service](nats_services_service.md) (2 shared connections)
+- [commands admin mute](commands_admin_mute.md) (2 shared connections)
 
 ## Source Files
 
-- `server/realtime/room_id_utils.py`
-- `server/tests/unit/realtime/test_room_id_utils.py`
+- `server/tests/unit/time/test_tick_scheduler.py`
+- `server/time/__init__.py`
+- `server/time/tick_scheduler.py`
+- `server/time/time_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 95 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 372 (98%)
+- INFERRED: 9 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

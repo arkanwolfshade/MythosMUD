@@ -1,55 +1,48 @@
 # lucidity active service
 
-> 22 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **BehaviorEngine** (73 connections) — `server/npc/behavior_engine.py`
-- **.get_behavior_engine()** (3 connections) — `server/npc/npc_base.py`
-- **test_add_rule_replaces_existing()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **test_add_rule_handles_exception()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **test_get_rules()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **test_evaluate_equality_true()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **test_evaluate_numeric_comparison_non_numeric()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **test_get_applicable_rules_matching()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **test_get_applicable_rules_priority_order()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **.__init__()** (2 connections) — `server/npc/behavior_engine.py`
-- **.remove_rule()** (2 connections) — `server/npc/behavior_engine.py`
-- **Deterministic behavior engine for NPCs.      This engine evaluates rules based o** (1 connections) — `server/npc/behavior_engine.py`
-- **Initialize the behavior engine.** (1 connections) — `server/npc/behavior_engine.py`
-- **Remove a behavior rule from the engine.          Args:             rule_name: Na** (1 connections) — `server/npc/behavior_engine.py`
-- **Get the behavior engine for this NPC.** (1 connections) — `server/npc/npc_base.py`
-- **Test add_rule() replaces existing rule with same name.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test add_rule() handles exceptions gracefully.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test get_rules() returns copy of rules.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test _evaluate_equality() returns True for matching condition.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test _evaluate_numeric_comparison() raises ValueError for non-numeric values.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test get_applicable_rules() returns matching rules.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test get_applicable_rules() returns rules in priority order.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **playerHandlers.ts** (22 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
+- **playerHandlers.test.ts** (14 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/playerHandlers.test.ts`
+- **healthEventUtils.ts** (12 connections) — `client/src/utils/healthEventUtils.ts`
+- **buildHealthStatusFromEvent()** (7 connections) — `client/src/utils/healthEventUtils.ts`
+- **healthEventUtils.test.ts** (6 connections) — `client/src/utils/__tests__/healthEventUtils.test.ts`
+- **buildHealthChangeMessage()** (4 connections) — `client/src/utils/healthEventUtils.ts`
+- **handlePlayerRespawned()** (3 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
+- **handlePlayerDpUpdated()** (3 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
+- **handlePlayerEnteredGame()** (2 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
+- **handlePlayerEntered()** (2 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
+- **handlePlayerLeftGame()** (2 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
+- **handlePlayerLeft()** (2 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
+- **handlePlayerDied()** (2 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
+- **handlePlayerDeliriumRespawned()** (2 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
+- **handlePlayerUpdate()** (2 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
+- **parseNumber()** (2 connections) — `client/src/utils/healthEventUtils.ts`
+- **toReasonString()** (2 connections) — `client/src/utils/healthEventUtils.ts`
+- **humanizeReason()** (2 connections) — `client/src/utils/healthEventUtils.ts`
+- **formatSource()** (2 connections) — `client/src/utils/healthEventUtils.ts`
+- **HEALTH_LOG_TAGS** (2 connections) — `client/src/utils/healthEventUtils.ts`
 
 ## Relationships
 
-- [behavior engine npc](behavior_engine_npc.md) (21 shared connections)
-- [room game service](room_game_service.md) (16 shared connections)
-- [player game schema](player_game_schema.md) (12 shared connections)
-- [game room service](game_room_service.md) (10 shared connections)
-- [models npc rationale](models_npc_rationale.md) (4 shared connections)
-- [skill game service](skill_game_service.md) (2 shared connections)
-- [room service game](room_service_game.md) (2 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
-- [rate limiter realtime](rate_limiter_realtime.md) (1 shared connections)
-- [game skill service](game_skill_service.md) (1 shared connections)
+- [game terminal lucidity](game_terminal_lucidity.md) (12 shared connections)
+- [Game Terminal UI](Game_Terminal_UI.md) (5 shared connections)
+- [PanelSystem PanelManager panelLayoutClam](PanelSystem_PanelManager_panelLayoutClam.md) (2 shared connections)
+- [project paths rationale](project_paths_rationale.md) (2 shared connections)
 
 ## Source Files
 
-- `server/npc/behavior_engine.py`
-- `server/npc/npc_base.py`
-- `server/tests/unit/npc/test_behavior_engine.py`
+- `client/src/components/ui-v2/eventHandlers/__tests__/playerHandlers.test.ts`
+- `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
+- `client/src/utils/__tests__/healthEventUtils.test.ts`
+- `client/src/utils/healthEventUtils.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 111 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 95 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

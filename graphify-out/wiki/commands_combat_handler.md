@@ -1,23 +1,25 @@
 # commands combat handler
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_apply_corruption()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **Test apply_corruption() applies corruption.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **sub_zone** (4 connections) — `schemas/room_schema.json`
+- **type** (1 connections) — `schemas/room_schema.json`
+- **pattern** (1 connections) — `schemas/room_schema.json`
+- **description** (1 connections) — `schemas/room_schema.json`
 
 ## Relationships
 
-- [room realtime subscription](room_realtime_subscription.md) (1 shared connections)
+- [schemas room schema](schemas_room_schema.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_player_service_mutations.py`
+- `schemas/room_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -34,14 +34,13 @@
 ## Relationships
 
 - [commands skills rationale](commands_skills_rationale.md) (11 shared connections)
-- [services lucidity repository](services_lucidity_repository.md) (6 shared connections)
 - [uuid services npc](uuid_services_npc.md) (6 shared connections)
-- [config rationale config()](config_rationale_config%28%29.md) (5 shared connections)
+- [services lucidity repository](services_lucidity_repository.md) (5 shared connections)
+- [cache caching service](cache_caching_service.md) (4 shared connections)
+- [config rationale config()](config_rationale_config%28%29.md) (4 shared connections)
 - [room build realtime](room_build_realtime.md) (3 shared connections)
-- [cache caching service](cache_caching_service.md) (3 shared connections)
+- [websocket realtime handler](websocket_realtime_handler.md) (3 shared connections)
 - [caching lru cache](caching_lru_cache.md) (1 shared connections)
-- [websocket realtime handler](websocket_realtime_handler.md) (1 shared connections)
-- [nats services service](nats_services_service.md) (1 shared connections)
 - [room game service](room_game_service.md) (1 shared connections)
 
 ## Source Files

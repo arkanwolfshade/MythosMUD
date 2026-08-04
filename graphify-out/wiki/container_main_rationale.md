@@ -1,29 +1,28 @@
 # container main rationale
 
-> 4 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **._save_player_after_consume()** (5 connections) — `server/game/quest/quest_service.py`
-- **.save_player()** (3 connections) — `server/game/magic/spell_effect_types.py`
-- **Persist player after spell mutations.** (1 connections) — `server/game/magic/spell_effect_types.py`
-- **Persist player after collect_n consumption when async_persistence is wired.** (1 connections) — `server/game/quest/quest_service.py`
+- **game-terminal-integration.spec.tsx** (7 connections) — `client/src/components/__tests__/game-terminal-integration.spec.tsx`
+- **TerminalButtonProps** (1 connections) — `client/src/components/__tests__/game-terminal-integration.spec.tsx`
+- **TerminalInputProps** (1 connections) — `client/src/components/__tests__/game-terminal-integration.spec.tsx`
+- **Channel** (1 connections) — `client/src/components/__tests__/game-terminal-integration.spec.tsx`
+- **ChannelSelectorProps** (1 connections) — `client/src/components/__tests__/game-terminal-integration.spec.tsx`
+- **DraggablePanelProps** (1 connections) — `client/src/components/__tests__/game-terminal-integration.spec.tsx`
 
 ## Relationships
 
-- [quest game service](quest_game_service.md) (2 shared connections)
-- [coercion int inventory](coercion_int_inventory.md) (1 shared connections)
-- [quest service game](quest_service_game.md) (1 shared connections)
+- [game terminal lucidity](game_terminal_lucidity.md) (2 shared connections)
 
 ## Source Files
 
-- `server/game/magic/spell_effect_types.py`
-- `server/game/quest/quest_service.py`
+- `client/src/components/__tests__/game-terminal-integration.spec.tsx`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (80%)
-- INFERRED: 2 (20%)
+- EXTRACTED: 12 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

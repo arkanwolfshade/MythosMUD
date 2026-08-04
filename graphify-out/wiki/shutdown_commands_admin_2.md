@@ -16,7 +16,7 @@
 ## Relationships
 
 - [player effects endpoints](player_effects_endpoints.md) (4 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
 
 ## Source Files
 

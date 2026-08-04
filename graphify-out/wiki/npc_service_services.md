@@ -1,16 +1,13 @@
 # npc service services
 
-> 86 nodes
+> 80 nodes
 
 ## Key Concepts
 
 - **admin_teleport_commands.py** (39 connections) — `server/commands/admin_teleport_commands.py`
 - **test_teleport_helpers.py** (31 connections) — `server/tests/unit/commands/test_teleport_helpers.py`
-- **get_admin_actions_logger()** (27 connections) — `server/structured_logging/admin_actions_logger.py`
 - **teleport_helpers.py** (24 connections) — `server/commands/teleport_helpers.py`
-- **goto_helpers.py** (21 connections) — `server/commands/goto_helpers.py`
 - **validate_admin_permission()** (20 connections) — `server/commands/admin_permission_utils.py`
-- **admin_actions_logger.py** (16 connections) — `server/structured_logging/admin_actions_logger.py`
 - **execute_confirm_teleport()** (11 connections) — `server/commands/teleport_helpers.py`
 - **test_admin_permission_utils.py** (11 connections) — `server/tests/unit/commands/test_admin_permission_utils.py`
 - **update_player_room_location()** (10 connections) — `server/commands/teleport_helpers.py`
@@ -29,36 +26,37 @@
 - **test_validate_admin_permission_attribute_error()** (3 connections) — `server/tests/unit/commands/test_admin_permission_utils.py`
 - **test_validate_admin_permission_logs_secondary_failure()** (3 connections) — `server/tests/unit/commands/test_admin_permission_utils.py`
 - **test_resolve_teleport_services_no_app()** (3 connections) — `server/tests/unit/commands/test_teleport_helpers.py`
-- *... and 61 more nodes in this community*
+- **test_resolve_teleport_services_no_player_service()** (3 connections) — `server/tests/unit/commands/test_teleport_helpers.py`
+- **test_resolve_teleport_services_success()** (3 connections) — `server/tests/unit/commands/test_teleport_helpers.py`
+- **test_resolve_teleport_direction_no_direction()** (3 connections) — `server/tests/unit/commands/test_teleport_helpers.py`
+- *... and 55 more nodes in this community*
 
 ## Relationships
 
-- [player respawn event](player_respawn_event.md) (22 shared connections)
-- [realtime game state](realtime_game_state.md) (19 shared connections)
-- [monitoring dashboard rationale](monitoring_dashboard_rationale.md) (15 shared connections)
-- [Loot Generation](Loot_Generation.md) (12 shared connections)
-- [commands inventory put](commands_inventory_put.md) (6 shared connections)
-- [commands admin mute](commands_admin_mute.md) (6 shared connections)
-- [admin structured logging](admin_structured_logging.md) (5 shared connections)
-- [container schemas containers](container_schemas_containers.md) (4 shared connections)
-- [command models admin](command_models_admin.md) (3 shared connections)
-- [commands party examples](commands_party_examples.md) (1 shared connections)
-- [Database Config](Database_Config.md) (1 shared connections)
-- [eventLog projectorRoom roomMergeUtils](eventLog_projectorRoom_roomMergeUtils.md) (1 shared connections)
+- [realtime game state](realtime_game_state.md) (16 shared connections)
+- [player respawn event](player_respawn_event.md) (15 shared connections)
+- [monitoring dashboard rationale](monitoring_dashboard_rationale.md) (10 shared connections)
+- [admin structured logging](admin_structured_logging.md) (9 shared connections)
+- [NPC Combat](NPC_Combat.md) (6 shared connections)
+- [inventory commands command](inventory_commands_command.md) (3 shared connections)
+- [commands whisper command](commands_whisper_command.md) (2 shared connections)
+- [commands admin mute](commands_admin_mute.md) (2 shared connections)
+- [commands npc admin](commands_npc_admin.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (1 shared connections)
+- [room look commands](room_look_commands.md) (1 shared connections)
 
 ## Source Files
 
 - `server/commands/admin_permission_utils.py`
 - `server/commands/admin_teleport_commands.py`
-- `server/commands/goto_helpers.py`
 - `server/commands/teleport_helpers.py`
-- `server/structured_logging/admin_actions_logger.py`
 - `server/tests/unit/commands/test_admin_permission_utils.py`
 - `server/tests/unit/commands/test_teleport_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 415 (100%)
+- EXTRACTED: 348 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

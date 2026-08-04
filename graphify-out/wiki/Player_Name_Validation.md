@@ -33,17 +33,15 @@
 
 ## Relationships
 
-- [realtime monitoring performance](realtime_monitoring_performance.md) (5 shared connections)
-- [logging processors structured](logging_processors_structured.md) (5 shared connections)
-- [command utility models](command_utility_models.md) (5 shared connections)
+- [combat services turn](combat_services_turn.md) (9 shared connections)
+- [event bus events](event_bus_events.md) (8 shared connections)
 - [player_event_handler_utils](player_event_handler_utils.md) (4 shared connections)
-- [Loot Generation](Loot_Generation.md) (3 shared connections)
+- [NPC Combat](NPC_Combat.md) (3 shared connections)
 - [Realtime Subscribers](Realtime_Subscribers.md) (2 shared connections)
-- [event bus events](event_bus_events.md) (2 shared connections)
+- [commands communication channels](commands_communication_channels.md) (2 shared connections)
 - [schedule services service](schedule_services_service.md) (2 shared connections)
 - [inventory mutation guard](inventory_mutation_guard.md) (2 shared connections)
-- [player occupant processor](player_occupant_processor.md) (2 shared connections)
-- [realtime websocket initial](realtime_websocket_initial.md) (1 shared connections)
+- [command utility models](command_utility_models.md) (1 shared connections)
 - [websocket helpers realtime](websocket_helpers_realtime.md) (1 shared connections)
 
 ## Source Files

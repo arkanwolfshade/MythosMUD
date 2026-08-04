@@ -35,7 +35,7 @@
 
 - [database helpers infrastructure](database_helpers_infrastructure.md) (3 shared connections)
 - [maps handle ascii](maps_handle_ascii.md) (3 shared connections)
-- [Loot Generation](Loot_Generation.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
 
 ## Source Files
 

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **mock_persistence()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Create mock persistence layer.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_start_success()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **Test start() successfully starts handler.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Relationships
 
-- [wearable container service](wearable_container_service.md) (1 shared connections)
+- [nats message handler](nats_message_handler.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Audit Trail
 

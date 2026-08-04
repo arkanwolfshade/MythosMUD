@@ -1,6 +1,6 @@
 # schemas invite user
 
-> 58 nodes
+> 54 nodes
 
 ## Key Concepts
 
@@ -14,8 +14,6 @@
 - **test_async_heal_player_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
 - **test_damage_player_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
 - **test_async_damage_player_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_create_container_with_params()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_create_container_with_kwargs()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
 - **test_get_async_persistence_creates_instance()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
 - **test_get_async_persistence_returns_same_instance()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
 - **test_reset_async_persistence()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
@@ -29,15 +27,16 @@
 - **test_delete_container_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
 - **test_create_item_instance_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
 - **test_ensure_item_instance_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- *... and 33 more nodes in this community*
+- **test_item_instance_exists_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_soft_delete_player_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- *... and 29 more nodes in this community*
 
 ## Relationships
 
 - [persistence rationale players](persistence_rationale_players.md) (23 shared connections)
 - [combat models rationale](combat_models_rationale.md) (11 shared connections)
-- [websocket helpers realtime](websocket_helpers_realtime.md) (4 shared connections)
+- [combat commands handler](combat_commands_handler.md) (4 shared connections)
 - [persistence container item](persistence_container_item.md) (3 shared connections)
-- [Loot Generation](Loot_Generation.md) (2 shared connections)
 
 ## Source Files
 
@@ -46,8 +45,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 153 (94%)
-- INFERRED: 10 (6%)
+- EXTRACTED: 144 (94%)
+- INFERRED: 9 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

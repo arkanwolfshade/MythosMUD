@@ -21,7 +21,7 @@
 - [package eslint plugin](package_eslint_plugin.md) (1 shared connections)
 - [package @asyncapi/generator @stoplight/s](package_%40asyncapi-generator_%40stoplight-s.md) (1 shared connections)
 - [package scripts build](package_scripts_build.md) (1 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [npc lifecycle combat](npc_lifecycle_combat.md) (1 shared connections)
 
 ## Source Files
 

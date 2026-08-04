@@ -9,7 +9,8 @@
 
 ## Relationships
 
-- [command factories create](command_factories_create.md) (2 shared connections)
+- [command factories create](command_factories_create.md) (1 shared connections)
+- [command inventory factories](command_inventory_factories.md) (1 shared connections)
 
 ## Source Files
 

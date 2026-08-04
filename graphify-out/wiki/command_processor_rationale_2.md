@@ -1,6 +1,6 @@
 # command processor rationale
 
-> 77 nodes
+> 79 nodes
 
 ## Key Concepts
 
@@ -8,6 +8,7 @@
 - **CommandProcessor** (15 connections) — `server/utils/command_processor.py`
 - **.extract_command_data()** (5 connections) — `server/utils/command_processor.py`
 - **command_processor()** (4 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_process_command_string_mythos_validation_error()** (4 connections) — `server/tests/unit/utils/test_command_processor.py`
 - **test_get_command_processor()** (4 connections) — `server/tests/unit/utils/test_command_processor.py`
 - **.process_command_string()** (4 connections) — `server/utils/command_processor.py`
 - **._extract_attributes()** (4 connections) — `server/utils/command_processor.py`
@@ -28,16 +29,15 @@
 - **test_is_combat_command_kick()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
 - **test_is_combat_command_strike()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
 - **test_is_combat_command_non_combat()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_extract_command_data_basic()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- *... and 52 more nodes in this community*
+- *... and 54 more nodes in this community*
 
 ## Relationships
 
-- [Loot Generation](Loot_Generation.md) (7 shared connections)
+- [Loot Generation](Loot_Generation.md) (9 shared connections)
 - [command parser rationale](command_parser_rationale.md) (3 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (2 shared connections)
 - [command factories create](command_factories_create.md) (2 shared connections)
 - [websocket helpers realtime](websocket_helpers_realtime.md) (2 shared connections)
+- [health service services](health_service_services.md) (1 shared connections)
 
 ## Source Files
 
@@ -46,8 +46,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 178 (98%)
-- INFERRED: 4 (2%)
+- EXTRACTED: 182 (97%)
+- INFERRED: 5 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

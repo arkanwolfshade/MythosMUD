@@ -15,7 +15,7 @@
 
 - [message filtering helpers](message_filtering_helpers.md) (4 shared connections)
 - [command factories moderation](command_factories_moderation.md) (4 shared connections)
-- [inventory schemas schema](inventory_schemas_schema.md) (2 shared connections)
+- [Player Stats](Player_Stats.md) (2 shared connections)
 - [professions endpoints all](professions_endpoints_all.md) (1 shared connections)
 - [combat models rationale](combat_models_rationale.md) (1 shared connections)
 - [player requests schemas](player_requests_schemas.md) (1 shared connections)

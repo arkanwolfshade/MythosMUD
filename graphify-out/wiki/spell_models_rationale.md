@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [connection disconnection realtime](connection_disconnection_realtime.md) (20 shared connections)
-- [commands npc admin](commands_npc_admin.md) (2 shared connections)
+- [taunt combat commands](taunt_combat_commands.md) (20 shared connections)
+- [logging setup structured](logging_setup_structured.md) (2 shared connections)
 
 ## Source Files
 

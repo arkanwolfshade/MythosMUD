@@ -33,8 +33,7 @@
 
 ## Relationships
 
-- [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (17 shared connections)
-- [calendar schemas validate](calendar_schemas_validate.md) (3 shared connections)
+- [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (20 shared connections)
 
 ## Source Files
 

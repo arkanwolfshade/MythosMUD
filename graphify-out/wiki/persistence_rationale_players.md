@@ -1,72 +1,70 @@
 # persistence rationale players
 
-> 236 nodes
+> 256 nodes
 
 ## Key Concepts
 
 - **AsyncPersistenceLayer** (184 connections) — `server/async_persistence.py`
+- **async_persistence.py** (73 connections) — `server/async_persistence.py`
+- **combat_turn_participant_actions.py** (46 connections) — `server/services/combat_turn_participant_actions.py`
 - **ScheduleService** (30 connections) — `server/services/schedule_service.py`
 - **ScheduleEntry** (29 connections) — `server/schemas/calendar/calendar.py`
 - **schedule_service.py** (25 connections) — `server/services/schedule_service.py`
-- **time_event_consumer.py** (25 connections) — `server/time/time_event_consumer.py`
-- **MythosTimeEventConsumer** (24 connections) — `server/time/time_event_consumer.py`
 - **Player** (22 connections)
 - **UUID** (21 connections)
 - **TestScheduleService** (21 connections) — `server/tests/unit/services/test_schedule_service.py`
 - **Any** (19 connections)
-- **MythosHourTickEvent** (16 connections) — `server/events/event_types.py`
+- **idle_movement.py** (17 connections) — `server/npc/idle_movement.py`
+- **combat_hp_sync.py** (15 connections) — `server/services/combat_hp_sync.py`
 - **._ensure_room_cache_loaded()** (13 connections) — `server/async_persistence.py`
+- **profession_service.py** (13 connections) — `server/game/profession_service.py`
 - **test_schedule_service.py** (12 connections) — `server/tests/unit/services/test_schedule_service.py`
 - **CreateItemInstanceInput** (11 connections) — `server/async_persistence_constants.py`
+- **_weapon_damage_from_equipped_player()** (11 connections) — `server/services/combat_turn_participant_actions.py`
+- **_resolve_npc_target()** (11 connections) — `server/services/combat_turn_participant_actions.py`
+- **process_npc_turn()** (10 connections) — `server/services/combat_turn_participant_actions.py`
+- **process_player_turn()** (10 connections) — `server/services/combat_turn_participant_actions.py`
 - **_schedule_entry_from_row()** (10 connections) — `server/services/schedule_service.py`
-- **test_time_event_consumer.py** (8 connections) — `server/tests/unit/time/test_time_event_consumer.py`
-- **.__init__()** (8 connections) — `server/time/time_event_consumer.py`
-- **._async_load_from_database()** (7 connections) — `server/services/schedule_service.py`
-- **_string_list_from_row()** (6 connections) — `server/services/schedule_service.py`
-- **_lower_string_list_from_row()** (6 connections) — `server/services/schedule_service.py`
-- **_resolve_asyncpg_database_url()** (6 connections) — `server/services/schedule_service.py`
-- **_fetch_schedule_entries()** (6 connections) — `server/services/schedule_service.py`
-- **._handle_tick()** (6 connections) — `server/time/time_event_consumer.py`
-- **.get_player_by_id()** (5 connections) — `server/async_persistence.py`
-- **.get_players_batch()** (5 connections) — `server/async_persistence.py`
-- *... and 211 more nodes in this community*
+- **resolve_player_attack_damage()** (9 connections) — `server/services/combat_turn_participant_actions.py`
+- **_get_combat_container_services()** (8 connections) — `server/services/combat_turn_participant_actions.py`
+- **_select_npc_target()** (7 connections) — `server/services/combat_turn_participant_actions.py`
+- **_execute_player_attack()** (7 connections) — `server/services/combat_turn_participant_actions.py`
+- *... and 231 more nodes in this community*
 
 ## Relationships
 
+- [NPC Combat](NPC_Combat.md) (38 shared connections)
+- [models npc rationale](models_npc_rationale.md) (37 shared connections)
 - [schemas invite user](schemas_invite_user.md) (23 shared connections)
-- [Loot Generation](Loot_Generation.md) (18 shared connections)
-- [websocket realtime handler](websocket_realtime_handler.md) (16 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (13 shared connections)
-- [Database Config](Database_Config.md) (11 shared connections)
-- [models npc rationale](models_npc_rationale.md) (11 shared connections)
-- [NPC Combat](NPC_Combat.md) (10 shared connections)
-- [command parser rationale](command_parser_rationale.md) (10 shared connections)
+- [websocket realtime handler](websocket_realtime_handler.md) (18 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (17 shared connections)
+- [Item Instances](Item_Instances.md) (14 shared connections)
+- [persistence container helpers](persistence_container_helpers.md) (13 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (11 shared connections)
+- [Error Conversion](Error_Conversion.md) (9 shared connections)
 - [holiday service services](holiday_service_services.md) (9 shared connections)
-- [persistence container helpers](persistence_container_helpers.md) (7 shared connections)
-- [room game service](room_game_service.md) (6 shared connections)
-- [nats services service](nats_services_service.md) (6 shared connections)
+- [commands follow rationale](commands_follow_rationale.md) (7 shared connections)
+- [nats services service](nats_services_service.md) (7 shared connections)
 
 ## Source Files
 
 - `server/async_persistence.py`
 - `server/async_persistence_constants.py`
-- `server/events/event_types.py`
-- `server/npc/combat_integration_base.py`
+- `server/commands/combat_handler.py`
+- `server/game/profession_service.py`
 - `server/npc/idle_movement.py`
-- `server/npc/lifecycle_manager.py`
-- `server/npc/movement_integration.py`
 - `server/schemas/calendar/calendar.py`
+- `server/services/combat_hp_sync.py`
+- `server/services/combat_turn_participant_actions.py`
 - `server/services/schedule_service.py`
 - `server/tests/unit/infrastructure/conftest.py`
-- `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- `server/tests/unit/services/test_combat_turn_participant_actions.py`
 - `server/tests/unit/services/test_schedule_service.py`
-- `server/tests/unit/time/test_time_event_consumer.py`
-- `server/time/time_event_consumer.py`
 
 ## Audit Trail
 
-- EXTRACTED: 882 (91%)
-- INFERRED: 88 (9%)
+- EXTRACTED: 1069 (93%)
+- INFERRED: 81 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

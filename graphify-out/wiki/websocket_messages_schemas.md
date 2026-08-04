@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [Database Access Layer](Database_Access_Layer.md) (4 shared connections)
+- [Loot Generation](Loot_Generation.md) (4 shared connections)
 
 ## Source Files
 

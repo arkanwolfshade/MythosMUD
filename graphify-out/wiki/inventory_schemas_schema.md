@@ -1,78 +1,50 @@
 # inventory schemas schema
 
-> 324 nodes
+> 86 nodes
 
 ## Key Concepts
 
-- **__init__.py** (70 connections) — `server/schemas/__init__.py`
 - **test_admin_auth_service.py** (54 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **get_admin_auth_service()** (44 connections) — `server/services/admin_auth_service.py`
-- **validate_admin_permission()** (37 connections) — `server/api/admin/npc_router_core.py`
-- **test_npc_definitions_api.py** (31 connections) — `server/tests/unit/api/test_npc_definitions_api.py`
-- **npc_definitions_api.py** (30 connections) — `server/api/admin/npc_definitions_api.py`
-- **npc_instances_api.py** (27 connections) — `server/api/admin/npc_instances_api.py`
-- **admin_auth_service.py** (24 connections) — `server/services/admin_auth_service.py`
-- **npc_population_api.py** (23 connections) — `server/api/admin/npc_population_api.py`
-- **npc_schemas.py** (23 connections) — `server/api/admin/npc_schemas.py`
-- **npc_spawn_rules_api.py** (23 connections) — `server/api/admin/npc_spawn_rules_api.py`
-- **npc_admin_mgmt_api.py** (21 connections) — `server/api/admin/npc_admin_mgmt_api.py`
-- **test_npc_instances_api.py** (21 connections) — `server/tests/unit/api/test_npc_instances_api.py`
-- **AdminAuthService** (19 connections) — `server/services/admin_auth_service.py`
-- **_update_npc_definition_internal()** (16 connections) — `server/api/admin/npc_definitions_api.py`
-- **npc_router_core.py** (16 connections) — `server/api/admin/npc_router_core.py`
-- **AdminAction** (16 connections) — `server/services/admin_auth_service.py`
-- **test_npc_spawn_rules_api.py** (16 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
-- **npc_admin.py** (15 connections) — `server/schemas/admin/npc_admin.py`
-- **get_npc_definitions()** (14 connections) — `server/api/admin/npc_definitions_api.py`
-- **get_npc_spawn_rules()** (14 connections) — `server/api/admin/npc_spawn_rules_api.py`
-- **create_npc_spawn_rule()** (14 connections) — `server/api/admin/npc_spawn_rules_api.py`
-- **AdminSession** (14 connections) — `server/schemas/admin/admin_data.py`
-- **AuditLogEntry** (14 connections) — `server/schemas/admin/admin_data.py`
-- **create_npc_definition()** (13 connections) — `server/api/admin/npc_definitions_api.py`
-- *... and 299 more nodes in this community*
+- **mock_user()** (3 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **superuser()** (3 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_admin_role_enum()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_admin_action_enum()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_admin_auth_service_init()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_get_user_role_superuser()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_get_user_role_viewer()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_get_user_role_none()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_get_user_role_with_is_admin_attribute()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_get_user_role_with_dict_is_admin()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_get_username_from_user_object()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_get_username_from_dict()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_get_username_none()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_get_username_missing_attribute()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_get_username_dict_without_username()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_get_user_id_from_user_object()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_get_user_id_from_dict()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_get_user_id_none()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_validate_permission_superuser_all_actions()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_validate_permission_viewer_limited()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_validate_permission_none_user()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_validate_permission_rate_limit_exceeded()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_has_permission_superuser()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_has_permission_admin()** (2 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- *... and 61 more nodes in this community*
 
 ## Relationships
 
-- [Exception Containers](Exception_Containers.md) (41 shared connections)
-- [player requests schemas](player_requests_schemas.md) (34 shared connections)
-- [Loot Generation](Loot_Generation.md) (26 shared connections)
-- [player preferences services](player_preferences_services.md) (15 shared connections)
-- [commands npc admin](commands_npc_admin.md) (12 shared connections)
-- [auth users rationale](auth_users_rationale.md) (9 shared connections)
-- [room game service](room_game_service.md) (9 shared connections)
-- [Player Stats](Player_Stats.md) (8 shared connections)
-- [models npc rationale](models_npc_rationale.md) (7 shared connections)
-- [maps handle ascii](maps_handle_ascii.md) (6 shared connections)
-- [metrics schemas rationale](metrics_schemas_rationale.md) (6 shared connections)
-- [commands follow rationale](commands_follow_rationale.md) (5 shared connections)
+- [commands inventory helpers](commands_inventory_helpers.md) (6 shared connections)
+- [player requests schemas](player_requests_schemas.md) (4 shared connections)
+- [player preferences services](player_preferences_services.md) (3 shared connections)
 
 ## Source Files
 
-- `server/api/admin/__init__.py`
-- `server/api/admin/npc.py`
-- `server/api/admin/npc_admin_mgmt_api.py`
-- `server/api/admin/npc_definitions_api.py`
-- `server/api/admin/npc_instances_api.py`
-- `server/api/admin/npc_population_api.py`
-- `server/api/admin/npc_router_core.py`
-- `server/api/admin/npc_schemas.py`
-- `server/api/admin/npc_spawn_rules_api.py`
-- `server/schemas/__init__.py`
-- `server/schemas/admin/__init__.py`
-- `server/schemas/admin/admin_data.py`
-- `server/schemas/admin/npc_admin.py`
-- `server/services/admin_auth_service.py`
-- `server/tests/unit/api/admin/test_npc_admin_mgmt_api.py`
-- `server/tests/unit/api/admin/test_npc_population_api.py`
-- `server/tests/unit/api/test_npc_definitions_api.py`
-- `server/tests/unit/api/test_npc_instances_api.py`
-- `server/tests/unit/api/test_npc_spawn_rules_api.py`
 - `server/tests/unit/services/test_admin_auth_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1467 (96%)
-- INFERRED: 64 (4%)
+- EXTRACTED: 183 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

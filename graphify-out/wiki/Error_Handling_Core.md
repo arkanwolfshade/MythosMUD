@@ -1,11 +1,10 @@
 # Error Handling Core
 
-> 217 nodes
+> 313 nodes
 
 ## Key Concepts
 
 - **MythosMUDError** (88 connections) — `server/exceptions.py`
-- **AuthenticationError** (63 connections) — `server/exceptions.py`
 - **ErrorType** (48 connections) — `server/error_types.py`
 - **legacy_error_handlers.py** (48 connections) — `server/legacy_error_handlers.py`
 - **ErrorMessages** (47 connections) — `server/error_types.py`
@@ -15,10 +14,12 @@
 - **NetworkError** (37 connections) — `server/exceptions.py`
 - **ErrorResponse** (37 connections) — `server/legacy_error_handlers.py`
 - **ResourceNotFoundError** (36 connections) — `server/exceptions.py`
+- **test_exceptions_comprehensive.py** (35 connections) — `server/tests/unit/test_exceptions_comprehensive.py`
 - **TestErrorMapping** (35 connections) — `server/tests/unit/test_legacy_error_handlers.py`
 - **standardized_responses.py** (33 connections) — `server/error_handlers/standardized_responses.py`
 - **create_websocket_error_response()** (32 connections) — `server/error_types.py`
 - **ConfigurationError** (32 connections) — `server/exceptions.py`
+- **JSONResponse** (31 connections) — `docs/examples/logging/fastapi_integration.py`
 - **GameLogicError** (31 connections) — `server/exceptions.py`
 - **TestSanitization** (31 connections) — `server/tests/unit/test_legacy_error_handlers.py`
 - **ErrorSeverity** (30 connections) — `server/error_types.py`
@@ -28,38 +29,42 @@
 - **TestCircuitBreaker** (22 connections) — `server/tests/unit/test_legacy_error_handlers.py`
 - **Request** (21 connections)
 - **test_error_types.py** (21 connections) — `server/tests/unit/test_error_types.py`
-- **_AppWithLegacyConfigState** (20 connections) — `server/legacy_error_handlers.py`
-- *... and 192 more nodes in this community*
+- *... and 288 more nodes in this community*
 
 ## Relationships
 
-- [Exception Containers](Exception_Containers.md) (68 shared connections)
-- [Spell Validation](Spell_Validation.md) (66 shared connections)
-- [handler realtime nats](handler_realtime_nats.md) (63 shared connections)
-- [Loot Generation](Loot_Generation.md) (32 shared connections)
+- [Spell Validation](Spell_Validation.md) (59 shared connections)
+- [Loot Generation](Loot_Generation.md) (50 shared connections)
+- [handler realtime nats](handler_realtime_nats.md) (43 shared connections)
+- [commands follow rationale](commands_follow_rationale.md) (43 shared connections)
+- [Exception Containers](Exception_Containers.md) (36 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (30 shared connections)
 - [websocket validation realtime](websocket_validation_realtime.md) (30 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (28 shared connections)
-- [Database Config](Database_Config.md) (27 shared connections)
-- [npc lifecycle combat](npc_lifecycle_combat.md) (19 shared connections)
-- [game weapon player](game_weapon_player.md) (18 shared connections)
-- [middleware error handling](middleware_error_handling.md) (10 shared connections)
-- [combat schemas schema](combat_schemas_schema.md) (10 shared connections)
-- [websocket handler realtime](websocket_handler_realtime.md) (6 shared connections)
+- [npc lifecycle combat](npc_lifecycle_combat.md) (28 shared connections)
+- [game weapon player](game_weapon_player.md) (19 shared connections)
+- [middleware error handling](middleware_error_handling.md) (11 shared connections)
+- [room websocket updates](room_websocket_updates.md) (10 shared connections)
+- [NPC Combat](NPC_Combat.md) (9 shared connections)
 
 ## Source Files
 
+- `docs/examples/logging/fastapi_integration.py`
 - `server/error_handlers/pydantic_error_handler.py`
 - `server/error_handlers/standardized_responses.py`
 - `server/error_types.py`
 - `server/exceptions.py`
 - `server/legacy_error_handlers.py`
+- `server/services/combat_messaging_service.py`
+- `server/tests/unit/error_handlers/test_standardized_responses_security.py`
 - `server/tests/unit/test_error_types.py`
+- `server/tests/unit/test_exceptions.py`
+- `server/tests/unit/test_exceptions_comprehensive.py`
 - `server/tests/unit/test_legacy_error_handlers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1096 (67%)
-- INFERRED: 538 (33%)
+- EXTRACTED: 1362 (72%)
+- INFERRED: 521 (28%)
 - AMBIGUOUS: 0 (0%)
 
 ---

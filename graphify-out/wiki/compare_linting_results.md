@@ -33,8 +33,7 @@
 
 ## Relationships
 
-- [scripts run guard](scripts_run_guard.md) (1 shared connections)
-- [auth dependencies rationale](auth_dependencies_rationale.md) (1 shared connections)
+- [scripts run guard](scripts_run_guard.md) (2 shared connections)
 
 ## Source Files
 

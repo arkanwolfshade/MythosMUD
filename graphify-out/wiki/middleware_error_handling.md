@@ -33,14 +33,14 @@
 
 ## Relationships
 
-- [Error Handling Core](Error_Handling_Core.md) (10 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (11 shared connections)
 - [Exception Containers](Exception_Containers.md) (6 shared connections)
-- [handler realtime nats](handler_realtime_nats.md) (5 shared connections)
-- [Loot Generation](Loot_Generation.md) (4 shared connections)
+- [handler realtime nats](handler_realtime_nats.md) (4 shared connections)
+- [Loot Generation](Loot_Generation.md) (3 shared connections)
 - [player service game](player_service_game.md) (2 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (1 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
 - [npc combat services](npc_combat_services.md) (1 shared connections)
-- [time service rationale](time_service_rationale.md) (1 shared connections)
+- [Spell Validation](Spell_Validation.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,33 +1,29 @@
 # room realtime occupant
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **chat_logger()** (7 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **.__init__()** (4 connections) — `server/services/rate_limiter.py`
-- **Initialize the rate limiter with configuration-based limits.** (1 connections) — `server/services/rate_limiter.py`
-- **Create a ChatLogger instance with temp directory.** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **.read_token()** (7 connections) — `server/auth/jwt_strategy.py`
+- **BaseUserManager** (1 connections)
+- **UP** (1 connections)
+- **ID** (1 connections)
+- **Reads a JWT token, validating its signature, audience, and server epoch.** (1 connections) — `server/auth/jwt_strategy.py`
 
 ## Relationships
 
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
-- [event events serialization](event_events_serialization.md) (1 shared connections)
-- [game chat whisper](game_chat_whisper.md) (1 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
-- [chat services logger](chat_services_logger.md) (1 shared connections)
-- [error websocket handler](error_websocket_handler.md) (1 shared connections)
-- [chat logger services](chat_logger_services.md) (1 shared connections)
+- [player requests schemas](player_requests_schemas.md) (1 shared connections)
+- [Magic Spell Service](Magic_Spell_Service.md) (1 shared connections)
+- [NPC Combat](NPC_Combat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/rate_limiter.py`
-- `server/tests/unit/services/test_chat_logger.py`
+- `server/auth/jwt_strategy.py`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (62%)
-- INFERRED: 5 (38%)
+- EXTRACTED: 11 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
