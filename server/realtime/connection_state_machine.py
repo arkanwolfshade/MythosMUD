@@ -88,10 +88,14 @@ class NATSConnectionStateMachine(StateMachine):
         """
         Current FSM state as a single State.
 
-        Narrows base class type (Any | MutableSet[State]) for this single-state FSM
-        so mypy accepts .id and state comparisons. CI uses stricter mypy than some locals.
+        Uses python-statemachine 3.x configuration (current_state is deprecated).
+        Narrows to one State for this single-state (non-parallel) FSM so mypy
+        accepts .id and state comparisons.
         """
-        current = self.current_state
+        cfg = self.configuration
+        if len(cfg) != 1:
+            raise TypeError(f"Expected single State for this FSM, got {len(cfg)} active state(s)")
+        current = next(iter(cfg))
         if not isinstance(current, State):
             raise TypeError(f"Expected single State for this FSM, got {type(current).__name__}")
         return current
