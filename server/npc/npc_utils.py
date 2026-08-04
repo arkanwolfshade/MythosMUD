@@ -24,17 +24,26 @@ def extract_room_id_from_npc(npc_instance: Any) -> str:
     return "unknown"
 
 
+def _room_id_from_lifecycle_event(event: Any) -> str | None:
+    """Return usable room_id from a single lifecycle event, if present."""
+    if not isinstance(event, dict):
+        return None
+    details = event.get("details")
+    if not isinstance(details, dict):
+        return None
+    room_id = details.get("room_id")
+    if not isinstance(room_id, str) or not room_id or room_id == "unknown":
+        return None
+    return room_id
+
+
 def extract_room_id_from_lifecycle_record(record: Any | None) -> str | None:
     """Return the latest non-unknown room_id from a lifecycle record's events, if any."""
     if record is None:
         return None
-    events = getattr(record, "events", None) or []
-    for event in reversed(events):
-        details = event.get("details") if isinstance(event, dict) else None
-        if not isinstance(details, dict):
-            continue
-        room_id = details.get("room_id")
-        if isinstance(room_id, str) and room_id and room_id != "unknown":
+    for event in reversed(getattr(record, "events", None) or []):
+        room_id = _room_id_from_lifecycle_event(event)
+        if room_id is not None:
             return room_id
     return None
 

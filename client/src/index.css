@@ -25,10 +25,10 @@ body {
   /* Canonical mythos-terminal palette (matches client/tailwind.config.js) */
   --color-mythos-terminal-background: #0a0a0a;
   --color-mythos-terminal-surface: #1a1a1a;
-  --color-mythos-terminal-border: #333333;
-  --color-mythos-terminal-primary: #00ff00;
+  --color-mythos-terminal-border: #333;
+  --color-mythos-terminal-primary: #0f0;
   --color-mythos-terminal-secondary: #ff9800;
-  --color-mythos-terminal-text: #00ff00;
+  --color-mythos-terminal-text: #0f0;
   --color-mythos-terminal-text-secondary: #4caf50;
   --color-mythos-terminal-error: #f44336;
   --color-mythos-terminal-warning: #ff9800;
@@ -42,7 +42,7 @@ body {
   --mythos-bg-tertiary: #121212;
   --mythos-border-primary: var(--color-mythos-terminal-border);
   --mythos-border-secondary: #2a2a2a;
-  --mythos-border-tertiary: #222222;
+  --mythos-border-tertiary: #222;
   --mythos-text-primary: var(--color-mythos-terminal-text);
   --mythos-text-secondary: var(--color-mythos-terminal-text-secondary);
   --mythos-accent-primary: var(--color-mythos-terminal-primary);
