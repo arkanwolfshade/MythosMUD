@@ -1,52 +1,54 @@
 # commands party examples
 
-> 26 nodes
+> 57 nodes
 
 ## Key Concepts
 
-- **_format_container_display()** (19 connections) — `server/commands/look_container.py`
-- **test_format_container_display_basic()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_format_container_display_with_description()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_format_container_display_locked()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_format_container_display_sealed()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_format_container_display_with_contents()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_format_container_display_with_target_type()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_format_container_display_with_metadata_name()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_format_container_display_fallback_name()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_format_container_display_locked()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_format_container_display_sealed()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_format_container_display_with_look_in()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_format_container_display_with_target_type_container()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Format the complete container display text.** (1 connections) — `server/commands/look_container.py`
-- **Test formatting container display with basic info.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test formatting container display with description.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test formatting container display when locked.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test formatting container display when sealed.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test formatting container display with look_in flag.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test formatting container display with target_type container.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test formatting container display uses metadata name.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test formatting container display uses fallback when no metadata name.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test _format_container_display() with locked container.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _format_container_display() with sealed container.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _format_container_display() with look_in flag.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- *... and 1 more nodes in this community*
+- **test_container_persistence_async_helpers.py** (40 connections) — `server/tests/unit/persistence/test_container_persistence_async_helpers.py`
+- **container_persistence_async.py** (34 connections) — `server/persistence/container_persistence_async.py`
+- **get_container_async()** (19 connections) — `server/persistence/container_persistence_async.py`
+- **create_container_async()** (15 connections) — `server/persistence/container_persistence_async.py`
+- **_finalize_container_creation()** (13 connections) — `server/persistence/container_persistence_async.py`
+- **update_container_async()** (13 connections) — `server/persistence/container_persistence_async.py`
+- **_populate_container_items_async()** (12 connections) — `server/persistence/container_persistence_async.py`
+- **fetch_container_items_async()** (12 connections) — `server/persistence/container_persistence_async.py`
+- **Any** (11 connections)
+- **delete_container_async()** (11 connections) — `server/persistence/container_persistence_async.py`
+- **_call_create_container_procedure()** (10 connections) — `server/persistence/container_persistence_async.py`
+- **_validate_container_create_params()** (8 connections) — `server/persistence/container_persistence_async.py`
+- **AsyncSession** (8 connections)
+- **_build_item_dict()** (8 connections) — `server/persistence/container_persistence_async.py`
+- **_parse_jsonb()** (7 connections) — `server/persistence/container_persistence_async.py`
+- **_row_to_mapping()** (7 connections) — `server/persistence/container_persistence_async.py`
+- **_prepare_container_create_params()** (6 connections) — `server/persistence/container_persistence_async.py`
+- **_parse_item_metadata()** (6 connections) — `server/persistence/container_persistence_async.py`
+- **UUID** (5 connections)
+- **ContainerData** (4 connections)
+- **test_validate_container_create_params_rejects_invalid()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_async_helpers.py`
+- **test_populate_container_items_skips_invalid_and_failed()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_async_helpers.py`
+- **test_call_create_container_procedure_no_row()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_async_helpers.py`
+- **test_delete_container_async_db_error()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_async_helpers.py`
+- **test_parse_jsonb_delegates_to_helper()** (2 connections) — `server/tests/unit/persistence/test_container_persistence_async_helpers.py`
+- *... and 32 more nodes in this community*
 
 ## Relationships
 
-- [DI Container Format](DI_Container_Format.md) (9 shared connections)
-- [models lucidity rationale](models_lucidity_rationale.md) (6 shared connections)
-- [schemas player rationale](schemas_player_rationale.md) (3 shared connections)
+- [persistence container item](persistence_container_item.md) (22 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (16 shared connections)
+- [Loot Generation](Loot_Generation.md) (8 shared connections)
+- [auth users rationale](auth_users_rationale.md) (5 shared connections)
+- [command commands service](command_commands_service.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/look_container.py`
-- `server/tests/unit/commands/test_look_container.py`
-- `server/tests/unit/commands/test_look_container_helpers.py`
+- `server/persistence/container_persistence_async.py`
+- `server/tests/unit/persistence/test_container_persistence_async_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 68 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 301 (97%)
+- INFERRED: 10 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

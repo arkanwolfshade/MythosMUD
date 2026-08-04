@@ -20,7 +20,7 @@
 - [archive LOGGING BEST](archive_LOGGING_BEST.md) (5 shared connections)
 - [archive logging LOGGING](archive_logging_LOGGING.md) (4 shared connections)
 - [models room rationale](models_room_rationale.md) (1 shared connections)
-- [lucidity commands services](lucidity_commands_services.md) (1 shared connections)
+- [persistence constants rationale](persistence_constants_rationale.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,51 +1,59 @@
 # schemas player rationale
 
-> 23 nodes
+> 41 nodes
 
 ## Key Concepts
 
-- **look_container.py** (23 connections) — `server/commands/look_container.py`
-- **Any** (14 connections)
-- **_find_container_in_room_or_equipped()** (14 connections) — `server/commands/look_container.py`
-- **_find_container_via_inner_container()** (13 connections) — `server/commands/look_container.py`
-- **_handle_container_look()** (11 connections) — `server/commands/look_container.py`
-- **_try_lookup_container_implicit()** (10 connections) — `server/commands/look_container.py`
-- **_matches_item_instance_id()** (8 connections) — `server/commands/look_container.py`
-- **_try_match_container_component()** (8 connections) — `server/commands/look_container.py`
-- **_matches_name_or_slot()** (7 connections) — `server/commands/look_container.py`
-- **_get_container_data_from_component()** (7 connections) — `server/commands/look_container.py`
-- **_extract_container_metadata()** (6 connections) — `server/commands/look_container.py`
-- **_find_container_via_wearable_service()** (6 connections) — `server/commands/look_container.py`
-- **Container look functionality for MythosMUD.  This module handles looking at cont** (1 connections) — `server/commands/look_container.py`
-- **Find container via inner_container_id from item.** (1 connections) — `server/commands/look_container.py`
-- **Check if item instance IDs match.** (1 connections) — `server/commands/look_container.py`
-- **Check if container matches by name or slot.** (1 connections) — `server/commands/look_container.py`
-- **Get container data from component ID.** (1 connections) — `server/commands/look_container.py`
-- **Extract metadata from container component.** (1 connections) — `server/commands/look_container.py`
-- **Try to match a container component and return container data if found.** (1 connections) — `server/commands/look_container.py`
-- **Find container via wearable container service.** (1 connections) — `server/commands/look_container.py`
-- **Find container in room or equipped items.      Returns:         tuple: (containe** (1 connections) — `server/commands/look_container.py`
-- **Handle looking at a specific container.** (1 connections) — `server/commands/look_container.py`
-- **Try to find and display a container in implicit lookup.** (1 connections) — `server/commands/look_container.py`
+- **TrackedTaskManager** (22 connections) — `server/app/tracked_task_manager.py`
+- **get_global_tracked_manager()** (20 connections) — `server/app/tracked_task_manager.py`
+- **test_tracked_task_manager.py** (18 connections) — `server/tests/unit/app/test_tracked_task_manager.py`
+- **tracked_task_manager.py** (15 connections) — `server/app/tracked_task_manager.py`
+- **.create_tracked_task()** (5 connections) — `server/app/tracked_task_manager.py`
+- **.create_supervised_task()** (5 connections) — `server/app/tracked_task_manager.py`
+- **memory_leak_prevention_channel_start_session()** (5 connections) — `server/app/tracked_task_manager.py`
+- **reset_global_tracked_manager()** (4 connections) — `server/app/tracked_task_manager.py`
+- **patch_asyncio_create_task_with_tracking()** (4 connections) — `server/app/tracked_task_manager.py`
+- **.__init__()** (3 connections) — `server/app/tracked_task_manager.py`
+- **.set_task_registry()** (3 connections) — `server/app/tracked_task_manager.py`
+- **Any** (2 connections)
+- **Task** (2 connections)
+- **.audit_orphans()** (2 connections) — `server/app/tracked_task_manager.py`
+- **.cleanup_orphaned_tasks()** (2 connections) — `server/app/tracked_task_manager.py`
+- **.actively_tracked_task_count()** (2 connections) — `server/app/tracked_task_manager.py`
+- **reset_global()** (2 connections) — `server/tests/unit/app/test_tracked_task_manager.py`
+- **test_create_tracked_task_runs_coro()** (2 connections) — `server/tests/unit/app/test_tracked_task_manager.py`
+- **test_create_tracked_task_with_registry()** (2 connections) — `server/tests/unit/app/test_tracked_task_manager.py`
+- **test_create_tracked_task_registry_failure_falls_back()** (2 connections) — `server/tests/unit/app/test_tracked_task_manager.py`
+- **test_create_supervised_task_completes()** (2 connections) — `server/tests/unit/app/test_tracked_task_manager.py`
+- **test_audit_orphans_counts_untracked()** (2 connections) — `server/tests/unit/app/test_tracked_task_manager.py`
+- **test_cleanup_orphaned_tasks_cancels_running()** (2 connections) — `server/tests/unit/app/test_tracked_task_manager.py`
+- **test_global_manager_singleton()** (2 connections) — `server/tests/unit/app/test_tracked_task_manager.py`
+- **test_set_task_registry()** (2 connections) — `server/tests/unit/app/test_tracked_task_manager.py`
+- *... and 16 more nodes in this community*
 
 ## Relationships
 
-- [DI Container Format](DI_Container_Format.md) (21 shared connections)
-- [models lucidity rationale](models_lucidity_rationale.md) (20 shared connections)
-- [look command commands](look_command_commands.md) (8 shared connections)
-- [websocket realtime handler](websocket_realtime_handler.md) (4 shared connections)
-- [npc combat service](npc_combat_service.md) (4 shared connections)
-- [commands party examples](commands_party_examples.md) (3 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [follow service game](follow_service_game.md) (5 shared connections)
+- [NPC Combat](NPC_Combat.md) (4 shared connections)
+- [dialogue definitions admin](dialogue_definitions_admin.md) (3 shared connections)
+- [nats services service](nats_services_service.md) (3 shared connections)
+- [npc event handlers](npc_event_handlers.md) (3 shared connections)
+- [combat attack handler](combat_attack_handler.md) (2 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (2 shared connections)
+- [invite models create](invite_models_create.md) (2 shared connections)
+- [taunt combat commands](taunt_combat_commands.md) (2 shared connections)
+- [realtime message nats](realtime_message_nats.md) (1 shared connections)
+- [realtime maintenance connection](realtime_maintenance_connection.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/look_container.py`
+- `server/app/tracked_task_manager.py`
+- `server/tests/unit/app/test_tracked_task_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 138 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 146 (97%)
+- INFERRED: 4 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,45 +1,49 @@
 # persistence combat handler
 
-> 23 nodes
+> 27 nodes
 
 ## Key Concepts
 
-- **test_combat_persistence_handler.py** (14 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **persistence_handler()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **mock_combat_service()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **test_persistence_handler_init()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **test_get_persistence_layer()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **test_get_persistence_layer_no_container()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **test_get_persistence_layer_container_error()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **test_get_persistence_layer_no_async_persistence()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **test_log_death_state_changes_death_threshold()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **test_log_death_state_changes_mortally_wounded()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **test_persist_player_dp_background_public_api()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **mock_player()** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **Unit tests for combat persistence handler - core functionality.  Tests initializ** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **Create mock combat service.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **Create CombatPersistenceHandler instance.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **Test CombatPersistenceHandler initialization.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **Test _get_persistence_layer gets persistence from container.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **Test _get_persistence_layer returns None when container unavailable.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **Test _get_persistence_layer handles container errors.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **Test _get_persistence_layer handles container without async_persistence.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **Test _log_death_state_changes logs death threshold.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **Test _log_death_state_changes logs mortally wounded.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **Test persist_player_dp_background public API method.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **TestLogoutCommand** (13 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **Any** (8 connections)
+- **.test_logout_command_success()** (4 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **.test_logout_command_persists_position()** (4 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **.test_logout_command_no_persistence()** (4 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **.test_logout_command_persistence_error()** (4 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **.test_logout_command_connection_error()** (4 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **.test_logout_command_with_args()** (4 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **.test_logout_command_player_not_found()** (4 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **.test_logout_command_general_error_handling()** (4 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **test_logout_command.py** (3 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **.mock_request()** (2 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **.mock_current_user()** (2 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **.mock_alias_storage()** (2 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **Unit tests for the logout command handler.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **Test cases for the logout command handler.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **Create a mock request object.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **Create a mock current user.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **Create a mock alias storage.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **Test successful logout command execution.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **Ensure logout syncs in-memory position back to persistence.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **Test logout command when persistence is not available.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **Test logout command when persistence operations fail.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **Test logout command when connection cleanup fails.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **Test logout command with arguments (should be ignored).** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [nats exceptions services](nats_exceptions_services.md) (3 shared connections)
+- [commands logout rationale](commands_logout_rationale.md) (8 shared connections)
+- [commands who rationale](commands_who_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_persistence_handler.py`
+- `server/tests/unit/commands/test_logout_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 47 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 67 (89%)
+- INFERRED: 8 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

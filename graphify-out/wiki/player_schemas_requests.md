@@ -1,25 +1,33 @@
 # player schemas requests
 
-> 4 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **_set_default_if_missing()** (3 connections) — `server/models/npc.py`
-- **.__init__()** (3 connections) — `server/models/npc.py`
-- **Apply a default attribute value when SQLAlchemy leaves it unset or None.** (1 connections) — `server/models/npc.py`
-- **Initialize NPCDefinition with defaults.** (1 connections) — `server/models/npc.py`
+- **.select_exit()** (6 connections) — `server/npc/idle_movement.py`
+- **._calculate_exit_weights()** (5 connections) — `server/npc/idle_movement.py`
+- **_cfg_bool()** (3 connections) — `server/npc/idle_movement.py`
+- **._calculate_exit_weight()** (3 connections) — `server/npc/idle_movement.py`
+- **._select_weighted_exit()** (3 connections) — `server/npc/idle_movement.py`
+- **._calculate_distance_to_room()** (3 connections) — `server/npc/idle_movement.py`
+- **Calculate weight for an exit based on distance from spawn.          Args:** (1 connections) — `server/npc/idle_movement.py`
+- **Calculate weights for all exits.          Args:             valid_exits: Dict** (1 connections) — `server/npc/idle_movement.py`
+- **Select exit based on weighted probabilities.          Args:             exit_** (1 connections) — `server/npc/idle_movement.py`
+- **Select an exit using weighted random selection favoring exits closer to spawn ro** (1 connections) — `server/npc/idle_movement.py`
+- **Calculate approximate distance between two rooms.          This is a simplifie** (1 connections) — `server/npc/idle_movement.py`
 
 ## Relationships
 
-- [Realtime Subscribers](Realtime_Subscribers.md) (2 shared connections)
+- [idle movement npc](idle_movement_npc.md) (7 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/npc.py`
+- `server/npc/idle_movement.py`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 28 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

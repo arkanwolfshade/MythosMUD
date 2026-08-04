@@ -1,58 +1,62 @@
 # npc spawn validator
 
-> 94 nodes
+> 32 nodes
 
 ## Key Concepts
 
-- **PopulationStats** (42 connections) — `server/npc/population_stats.py`
-- **test_population_stats.py** (23 connections) — `server/tests/unit/npc/test_population_stats.py`
-- **_PopulationLifecycleManager** (13 connections) — `server/npc/population_control.py`
-- **._should_spawn_npc()** (8 connections) — `server/npc/population_control.py`
-- **.__init__()** (7 connections) — `server/npc/population_control.py`
-- **._check_spawn_requirements_for_room()** (7 connections) — `server/npc/population_control.py`
-- **._spawn_npc()** (7 connections) — `server/npc/population_control.py`
-- **._register_spawned_npc_in_population_stats()** (6 connections) — `server/npc/population_control.py`
-- **._handle_player_entered_room()** (5 connections) — `server/npc/population_control.py`
-- **._get_zone_key_from_room_id()** (5 connections) — `server/npc/population_control.py`
-- **test_should_spawn_npc()** (5 connections) — `server/tests/unit/npc/test_population_control.py`
-- **.spawn_npc()** (4 connections) — `server/npc/population_control.py`
-- **._load_zone_configurations()** (4 connections) — `server/npc/population_control.py`
-- **._handle_player_left_room()** (4 connections) — `server/npc/population_control.py`
-- **._update_player_count()** (4 connections) — `server/npc/population_control.py`
-- **.get_zone_configuration()** (4 connections) — `server/npc/population_control.py`
-- **.get_population_stats()** (4 connections) — `server/npc/population_control.py`
-- **.clear_population_stats()** (3 connections) — `server/npc/population_control.py`
-- **.to_dict()** (3 connections) — `server/npc/population_stats.py`
-- **test_get_population_stats_existing()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_clear_population_stats()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_get_zone_population_summary_with_stats()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_despawn_npc_success()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_population_stats_init()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
-- **test_add_npc_required()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
-- *... and 69 more nodes in this community*
+- **PrototypeRegistryError** (26 connections) — `server/game/items/prototype_registry.py`
+- **ItemFactory** (17 connections) — `server/game/items/item_factory.py`
+- **item_factory.py** (16 connections) — `server/game/items/item_factory.py`
+- **ItemFactoryError** (15 connections) — `server/game/items/item_factory.py`
+- **__init__.py** (11 connections) — `server/game/items/__init__.py`
+- **test_item_factory.py** (11 connections) — `server/tests/unit/game/test_item_factory.py`
+- **ItemInstance** (10 connections) — `server/game/items/item_instance.py`
+- **item_instance.py** (5 connections) — `server/game/items/item_instance.py`
+- **test_item_instance.py** (5 connections) — `server/tests/unit/game/test_item_instance.py`
+- **test_create_instance_prototype_not_found()** (4 connections) — `server/tests/unit/game/test_item_factory.py`
+- **.__init__()** (3 connections) — `server/game/items/item_factory.py`
+- **.to_inventory_stack()** (3 connections) — `server/game/items/item_instance.py`
+- **test_create_instance_invalid_quantity()** (3 connections) — `server/tests/unit/game/test_item_factory.py`
+- **factory()** (2 connections) — `server/tests/unit/game/test_item_factory.py`
+- **test_create_instance_success()** (2 connections) — `server/tests/unit/game/test_item_factory.py`
+- **test_create_instance_with_overrides()** (2 connections) — `server/tests/unit/game/test_item_factory.py`
+- **test_item_instance_to_inventory_stack_minimal()** (2 connections) — `server/tests/unit/game/test_item_instance.py`
+- **test_item_instance_to_inventory_stack_includes_optional_fields()** (2 connections) — `server/tests/unit/game/test_item_instance.py`
+- **Item system package.  This module exposes the prototype schema and registry util** (1 connections) — `server/game/items/__init__.py`
+- **Exception** (1 connections)
+- **Item factory for creating item instances from prototypes.  This module provides** (1 connections) — `server/game/items/item_factory.py`
+- **Raised when the factory cannot produce a valid instance.** (1 connections) — `server/game/items/item_factory.py`
+- **Factory responsible for instantiating runtime item instances.** (1 connections) — `server/game/items/item_factory.py`
+- **Initialize the item factory with a prototype registry.          Args:** (1 connections) — `server/game/items/item_factory.py`
+- **Any** (1 connections)
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [Realtime Subscribers](Realtime_Subscribers.md) (30 shared connections)
-- [item models rationale](item_models_rationale.md) (7 shared connections)
-- [realtime monitoring statistics](realtime_monitoring_statistics.md) (6 shared connections)
-- [spell game magic](spell_game_magic.md) (5 shared connections)
-- [combat services rationale](combat_services_rationale.md) (3 shared connections)
-- [rate limiter realtime](rate_limiter_realtime.md) (1 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
-- [time service rationale](time_service_rationale.md) (1 shared connections)
+- [MapView GameClientV2ContainerView Tabbed](MapView_GameClientV2ContainerView_Tabbed.md) (16 shared connections)
+- [game chat moderation](game_chat_moderation.md) (4 shared connections)
+- [schedule service services](schedule_service_services.md) (4 shared connections)
+- [combat npc mixin](combat_npc_mixin.md) (4 shared connections)
+- [websocket realtime handler](websocket_realtime_handler.md) (3 shared connections)
+- [stats game generator](stats_game_generator.md) (3 shared connections)
+- [command factories communication](command_factories_communication.md) (3 shared connections)
+- [connection cleaner realtime](connection_cleaner_realtime.md) (2 shared connections)
+- [inventory commands command](inventory_commands_command.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
 
 ## Source Files
 
-- `server/npc/population_control.py`
-- `server/npc/population_stats.py`
-- `server/tests/unit/npc/test_population_control.py`
-- `server/tests/unit/npc/test_population_stats.py`
+- `server/game/items/__init__.py`
+- `server/game/items/item_factory.py`
+- `server/game/items/item_instance.py`
+- `server/game/items/prototype_registry.py`
+- `server/tests/unit/game/test_item_factory.py`
+- `server/tests/unit/game/test_item_instance.py`
 
 ## Audit Trail
 
-- EXTRACTED: 269 (95%)
-- INFERRED: 13 (5%)
+- EXTRACTED: 134 (88%)
+- INFERRED: 19 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

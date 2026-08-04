@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_add_items_to_wearable_container()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test add_items_to_wearable_container adds items.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_compare_canonical_rooms_different()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Test compare_canonical_rooms() returns False for different rooms.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Relationships
 
-- [wearable container service](wearable_container_service.md) (1 shared connections)
+- [message filtering realtime](message_filtering_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Audit Trail
 

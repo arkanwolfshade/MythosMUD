@@ -1,65 +1,73 @@
 # container events rationale
 
-> 159 nodes
+> 300 nodes
 
 ## Key Concepts
 
-- **ContainerSourceType** (27 connections) — `server/models/container.py`
-- **container.py** (25 connections) — `server/models/container.py`
-- **test_container_websocket_events.py** (23 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_container_events.py** (22 connections) — `server/tests/unit/api/test_container_events.py`
-- **container_events.py** (21 connections) — `server/api/container_events.py`
-- **corpse_lifecycle_service.py** (19 connections) — `server/services/corpse_lifecycle_service.py`
-- **emit_loot_all_event()** (17 connections) — `server/api/container_events.py`
-- **container_websocket_events.py** (17 connections) — `server/services/container_websocket_events.py`
-- **emit_container_opened_events()** (16 connections) — `server/api/container_events.py`
-- **_emit_close_container_event()** (14 connections) — `server/api/container_events.py`
-- **ContainerLockState** (14 connections) — `server/models/container.py`
-- **emit_container_opened()** (14 connections) — `server/services/container_websocket_events.py`
-- **conftest.py** (14 connections) — `server/tests/unit/api/conftest.py`
-- **TestEmitLootAllEvent** (13 connections) — `server/tests/unit/api/test_container_events.py`
-- **emit_container_opened_to_room()** (12 connections) — `server/services/container_websocket_events.py`
-- **TestEmitCloseContainerEvent** (12 connections) — `server/tests/unit/api/test_container_events.py`
-- **TestEmitContainerOpenedEvents** (11 connections) — `server/tests/unit/api/test_container_events.py`
-- **emit_container_updated()** (10 connections) — `server/services/container_websocket_events.py`
-- **emit_container_closed()** (9 connections) — `server/services/container_websocket_events.py`
-- **Any** (8 connections)
-- **emit_container_decayed()** (8 connections) — `server/services/container_websocket_events.py`
-- **TestEmitContainerOpenedEventsEdgeCases** (8 connections) — `server/tests/unit/api/test_container_events.py`
-- **.create_corpse()** (7 connections) — `server/models/container.py`
-- **.create_environment()** (6 connections) — `server/models/container.py`
-- **.create_equipment()** (6 connections) — `server/models/container.py`
-- *... and 134 more nodes in this community*
+- **NPCDefinition** (121 connections) — `server/models/npc.py`
+- **NPCSpawnRule** (55 connections) — `server/models/npc.py`
+- **test_npc_service.py** (49 connections) — `server/tests/unit/services/test_npc_service.py`
+- **npc.py** (38 connections) — `server/models/npc.py`
+- **test_npc_models.py** (33 connections) — `server/tests/unit/models/test_npc_models.py`
+- **_mock_result_mappings_all()** (29 connections) — `server/tests/unit/services/test_npc_service.py`
+- **NPCDefinitionCRUDMixin** (18 connections) — `server/services/npc_service/definition_crud.py`
+- **_def_row()** (18 connections) — `server/tests/unit/services/test_npc_service.py`
+- **__init__.py** (15 connections) — `server/services/npc_service/__init__.py`
+- **definition_crud.py** (15 connections) — `server/services/npc_service/definition_crud.py`
+- **NPCService** (14 connections) — `server/services/npc_service/__init__.py`
+- **npc_service_models.py** (13 connections) — `server/services/npc_service_models.py`
+- **_row_to_npc_definition()** (12 connections) — `server/services/npc_service_models.py`
+- **NPCDefinitionType** (11 connections) — `server/models/npc.py`
+- **queries.py** (11 connections) — `server/services/npc_service/queries.py`
+- **spawn_rule_crud.py** (11 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **NPCDefinitionUpdateParams** (11 connections) — `server/services/npc_service_models.py`
+- **_JSONDict** (10 connections)
+- **NPCSpawnRuleCRUDMixin** (10 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **NPCRelationship** (9 connections) — `server/models/npc.py`
+- **.update_npc_definition()** (9 connections) — `server/services/npc_service/definition_crud.py`
+- **AsyncSession** (8 connections)
+- **.create_npc_definition()** (8 connections) — `server/services/npc_service/definition_crud.py`
+- **._execute_create_npc_definition()** (8 connections) — `server/services/npc_service/definition_crud.py`
+- **._execute_npc_update()** (8 connections) — `server/services/npc_service/definition_crud.py`
+- *... and 275 more nodes in this community*
 
 ## Relationships
 
-- [Loot Generation](Loot_Generation.md) (58 shared connections)
-- [Memory Task Runtime](Memory_Task_Runtime.md) (18 shared connections)
-- [command inventory factories](command_inventory_factories.md) (9 shared connections)
-- [task registry app](task_registry_app.md) (9 shared connections)
-- [Exception Containers](Exception_Containers.md) (5 shared connections)
-- [Database Config](Database_Config.md) (5 shared connections)
-- [tick game processing](tick_game_processing.md) (4 shared connections)
-- [world models rationale](world_models_rationale.md) (3 shared connections)
-- [combat services messaging](combat_services_messaging.md) (3 shared connections)
-- [container helpers endpoints](container_helpers_endpoints.md) (2 shared connections)
-- [ascii map renderer](ascii_map_renderer.md) (2 shared connections)
-- [alias storage commands](alias_storage_commands.md) (2 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (33 shared connections)
+- [Error Conversion](Error_Conversion.md) (24 shared connections)
+- [spell game magic](spell_game_magic.md) (18 shared connections)
+- [models npc rationale](models_npc_rationale.md) (13 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (13 shared connections)
+- [NPC Combat](NPC_Combat.md) (10 shared connections)
+- [persistence container rationale](persistence_container_rationale.md) (9 shared connections)
+- [commands npc admin](commands_npc_admin.md) (6 shared connections)
+- [world models rationale](world_models_rationale.md) (6 shared connections)
+- [tools generate invite](tools_generate_invite.md) (5 shared connections)
+- [combat services rationale](combat_services_rationale.md) (5 shared connections)
+- [npc shopkeeper rationale](npc_shopkeeper_rationale.md) (5 shared connections)
 
 ## Source Files
 
-- `server/api/container_events.py`
-- `server/models/container.py`
-- `server/services/container_websocket_events.py`
-- `server/services/corpse_lifecycle_service.py`
-- `server/tests/unit/api/conftest.py`
-- `server/tests/unit/api/test_container_events.py`
-- `server/tests/unit/services/test_container_websocket_events.py`
+- `server/models/npc.py`
+- `server/npc/lifecycle_manager.py`
+- `server/npc/lifecycle_types.py`
+- `server/npc/npc_base.py`
+- `server/npc/population_control.py`
+- `server/npc/spawning_models.py`
+- `server/npc/spawning_service.py`
+- `server/services/npc_service/__init__.py`
+- `server/services/npc_service/definition_crud.py`
+- `server/services/npc_service/queries.py`
+- `server/services/npc_service/spawn_rule_crud.py`
+- `server/services/npc_service_models.py`
+- `server/tests/unit/models/test_npc_models.py`
+- `server/tests/unit/services/test_npc_instance_service.py`
+- `server/tests/unit/services/test_npc_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 587 (95%)
-- INFERRED: 28 (5%)
+- EXTRACTED: 1125 (97%)
+- INFERRED: 39 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,35 +1,52 @@
 # status game spell
 
-> 11 nodes
+> 28 nodes
 
 ## Key Concepts
 
-- **UUID** (6 connections)
-- **.player_entered()** (5 connections) — `server/models/room.py`
-- **.player_left()** (4 connections) — `server/models/room.py`
-- **.has_player()** (4 connections) — `server/models/room.py`
-- **.add_player_silently()** (3 connections) — `server/models/room.py`
-- **.remove_player_silently()** (3 connections) — `server/models/room.py`
-- **Add a player to the room and trigger event.          Args:             player_id** (1 connections) — `server/models/room.py`
-- **Add a player to the room without triggering an event.          This method is us** (1 connections) — `server/models/room.py`
-- **Remove a player from the room without triggering an event.          This method** (1 connections) — `server/models/room.py`
-- **Remove a player from the room and trigger event.          Args:             play** (1 connections) — `server/models/room.py`
-- **Check if a player is in the room.          Args:             player_id: The ID o** (1 connections) — `server/models/room.py`
+- **_find_container_wearable()** (20 connections) — `server/commands/look_container.py`
+- **test_find_container_wearable_success()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_wearable_by_prototype_id()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_wearable_not_found()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_wearable_with_inner_container()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_wearable_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_wearable_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_wearable_found()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_wearable_not_found()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_wearable_empty()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_wearable_no_match()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_wearable_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_wearable_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_wearable_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Find a wearable container in equipped items by name or prototype_id.      This f** (1 connections) — `server/commands/look_container.py`
+- **Test finding wearable container by name.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test finding wearable container by prototype_id.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test finding wearable container when not found.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test finding wearable container with inner_container.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test finding wearable container with instance number.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test finding wearable container with invalid instance number.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test _find_container_wearable() finds wearable container.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Test _find_container_wearable() returns None when container not found.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Test _find_container_wearable() with empty dict.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Test _find_container_wearable() with no matching containers.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [room models instance](room_models_instance.md) (5 shared connections)
-- [item models rationale](item_models_rationale.md) (3 shared connections)
-- [websocket helpers realtime](websocket_helpers_realtime.md) (2 shared connections)
+- [schemas validator rationale](schemas_validator_rationale.md) (8 shared connections)
+- [DI Container Format](DI_Container_Format.md) (7 shared connections)
+- [startup npc services](startup_npc_services.md) (4 shared connections)
 
 ## Source Files
 
-- `server/models/room.py`
+- `server/commands/look_container.py`
+- `server/tests/unit/commands/test_look_container.py`
+- `server/tests/unit/commands/test_look_container_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 28 (93%)
-- INFERRED: 2 (7%)
+- EXTRACTED: 73 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

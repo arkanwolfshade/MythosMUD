@@ -1,78 +1,61 @@
 # command inventory factories
 
-> 700 nodes
+> 142 nodes
 
 ## Key Concepts
 
-- **get_logger()** (516 connections) — `server/structured_logging/enhanced_logging_config.py`
-- **enhanced_logging_config.py** (489 connections) — `server/structured_logging/enhanced_logging_config.py`
-- **log_and_raise_enhanced()** (97 connections) — `server/utils/enhanced_error_logging.py`
-- **players.py** (66 connections) — `server/api/players.py`
-- **PlayerRead** (48 connections) — `server/schemas/players/player.py`
-- **test_player_respawn_service.py** (48 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **factory.py** (45 connections) — `server/app/factory.py`
-- **player_service.py** (45 connections) — `server/game/player_service.py`
-- **player_respawn_service.py** (41 connections) — `server/services/player_respawn_service.py`
-- **enhanced_error_logging.py** (38 connections) — `server/utils/enhanced_error_logging.py`
-- **game.py** (32 connections) — `server/models/game.py`
-- **StatusEffect** (32 connections) — `server/models/game.py`
-- **processing.py** (25 connections) — `server/command_handler/processing.py`
-- **monitoring_dashboard.py** (25 connections) — `server/monitoring/monitoring_dashboard.py`
-- **__init__.py** (24 connections) — `server/config/models/__init__.py`
-- **PerformanceMonitor** (24 connections) — `server/monitoring/performance_monitor.py`
-- **ExceptionTracker** (23 connections) — `server/monitoring/exception_tracker.py`
-- **test_player_schemas.py** (21 connections) — `server/tests/unit/schemas/test_player_schemas.py`
-- **app.py** (20 connections) — `server/config/models/app.py`
-- **PositionState** (20 connections) — `server/models/game.py`
-- **performance_monitor.py** (20 connections) — `server/monitoring/performance_monitor.py`
-- **measure_performance()** (20 connections) — `server/monitoring/performance_monitor.py`
-- **player.py** (20 connections) — `server/schemas/players/player.py`
-- **player_schema_converter.py** (19 connections) — `server/game/player_schema_converter.py`
-- **InventoryItem** (19 connections) — `server/models/game.py`
-- *... and 675 more nodes in this community*
+- **BaseCommand** (152 connections) — `server/models/command_base.py`
+- **CommandFactory** (83 connections) — `server/utils/command_factories.py`
+- **_build_command_factory()** (6 connections) — `server/utils/command_parser.py`
+- **.create_npc_command()** (4 connections) — `server/utils/command_factories.py`
+- **.create_spawn_command()** (4 connections) — `server/utils/command_factories.py`
+- **_build_command_factory_part1()** (4 connections) — `server/utils/command_parser.py`
+- **_build_command_factory_part2()** (4 connections) — `server/utils/command_parser.py`
+- **.create_say_command()** (3 connections) — `server/utils/command_factories.py`
+- **.create_local_command()** (3 connections) — `server/utils/command_factories.py`
+- **.create_system_command()** (3 connections) — `server/utils/command_factories.py`
+- **.create_emote_command()** (3 connections) — `server/utils/command_factories.py`
+- **.create_me_command()** (3 connections) — `server/utils/command_factories.py`
+- **.create_pose_command()** (3 connections) — `server/utils/command_factories.py`
+- **.create_whisper_command()** (3 connections) — `server/utils/command_factories.py`
+- **.create_reply_command()** (3 connections) — `server/utils/command_factories.py`
+- **.create_channel_command()** (3 connections) — `server/utils/command_factories.py`
+- **.create_look_command()** (3 connections) — `server/utils/command_factories.py`
+- **.create_go_command()** (3 connections) — `server/utils/command_factories.py`
+- **.create_sit_command()** (3 connections) — `server/utils/command_factories.py`
+- **.create_stand_command()** (3 connections) — `server/utils/command_factories.py`
+- **.create_lie_command()** (3 connections) — `server/utils/command_factories.py`
+- **.create_ground_command()** (3 connections) — `server/utils/command_factories.py`
+- **.create_follow_command()** (3 connections) — `server/utils/command_factories.py`
+- **.create_unfollow_command()** (3 connections) — `server/utils/command_factories.py`
+- **.create_following_command()** (3 connections) — `server/utils/command_factories.py`
+- *... and 117 more nodes in this community*
 
 ## Relationships
 
-- [Database Config](Database_Config.md) (143 shared connections)
-- [command inventory models](command_inventory_models.md) (91 shared connections)
-- [commands admin mute](commands_admin_mute.md) (63 shared connections)
-- [time service rationale](time_service_rationale.md) (47 shared connections)
-- [Error Conversion](Error_Conversion.md) (45 shared connections)
-- [NPC Combat](NPC_Combat.md) (43 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (42 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (40 shared connections)
-- [command factories create](command_factories_create.md) (40 shared connections)
-- [game models player](game_models_player.md) (37 shared connections)
-- [item models rationale](item_models_rationale.md) (30 shared connections)
-- [Player Stats](Player_Stats.md) (29 shared connections)
+- [command factories create](command_factories_create.md) (43 shared connections)
+- [command communication models](command_communication_models.md) (8 shared connections)
+- [message queue realtime](message_queue_realtime.md) (7 shared connections)
+- [admin auth service](admin_auth_service.md) (7 shared connections)
+- [Loot Generation](Loot_Generation.md) (7 shared connections)
+- [commands who helpers](commands_who_helpers.md) (6 shared connections)
+- [npc commands admin](npc_commands_admin.md) (6 shared connections)
+- [auth endpoints rationale](auth_endpoints_rationale.md) (5 shared connections)
+- [player presence tracker](player_presence_tracker.md) (3 shared connections)
+- [command commands talk](command_commands_talk.md) (2 shared connections)
+- [command parser rationale](command_parser_rationale.md) (2 shared connections)
+- [factory](factory.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/__init__.py`
-- `server/api/base.py`
-- `server/api/containers.py`
-- `server/api/players.py`
-- `server/api/skills.py`
-- `server/app/factory.py`
-- `server/app/lifespan.py`
-- `server/caching/__init__.py`
-- `server/caching/cache_service.py`
-- `server/caching/lru_cache.py`
-- `server/command_handler/alias_expansion.py`
-- `server/command_handler/processing.py`
-- `server/commands/container_helpers_inventory_logging.py`
-- `server/config/models/__init__.py`
-- `server/config/models/_helpers.py`
-- `server/config/models/app.py`
-- `server/config/models/chat_time.py`
-- `server/config/models/cors.py`
-- `server/config/models/game.py`
-- `server/config/models/nats.py`
+- `server/models/command_base.py`
+- `server/utils/command_factories.py`
+- `server/utils/command_parser.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4047 (97%)
-- INFERRED: 135 (3%)
+- EXTRACTED: 447 (86%)
+- INFERRED: 73 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

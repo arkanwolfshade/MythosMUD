@@ -252,6 +252,7 @@ class NPCCombatIntegrationService(NPCCombatIntegrationValidationMixin, NPCCombat
             return False
 
         if not await self._validate_combat_location(target_id, npc_id, room_id, npc_instance):
+            await self._end_combat_if_participant_in_combat(target_id, npc_id)
             return False
 
         if not self._combat_service:

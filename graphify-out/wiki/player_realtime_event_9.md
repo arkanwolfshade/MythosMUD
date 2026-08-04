@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **test_create_channel_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_channel_command delegates to communication factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_create_go_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_go_command delegates to exploration factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 

@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **test_create_goto_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_goto_command delegates to utility factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_create_shutdown_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_shutdown_command delegates to utility factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_record_message()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **Test record_message adds timestamp to window.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_remove_member_leader_leaves_disbands()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **When leader leaves, party is disbanded.** (1 connections) — `server/tests/unit/game/test_party_service.py`
 
 ## Relationships
 
-- [rate limiter services](rate_limiter_services.md) (1 shared connections)
+- [commands inventory helpers](commands_inventory_helpers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_rate_limiter.py`
+- `server/tests/unit/game/test_party_service.py`
 
 ## Audit Trail
 

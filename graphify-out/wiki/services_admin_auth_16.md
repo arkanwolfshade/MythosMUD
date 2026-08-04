@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **test_create_logout_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_logout_command delegates to player_state factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_create_strike_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_strike_command delegates to combat factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 

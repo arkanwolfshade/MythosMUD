@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_calculate_distance_to_room_different_subzone()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **Test _calculate_distance_to_room() with rooms in different subzones.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_service_shutdown_removes_subscribers()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test that service shutdown removes all subscribers for that service.      This t** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- [config models player](config_models_player.md) (1 shared connections)
-- [idle movement npc](idle_movement_npc.md) (1 shared connections)
+- [event bus events](event_bus_events.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_idle_movement.py`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

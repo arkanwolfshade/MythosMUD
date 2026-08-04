@@ -33,12 +33,11 @@
 
 ## Relationships
 
-- [Error Conversion](Error_Conversion.md) (3 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (3 shared connections)
-- [Item Instances](Item_Instances.md) (2 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [websocket handler realtime](websocket_handler_realtime.md) (1 shared connections)
+- [NPC Combat](NPC_Combat.md) (4 shared connections)
+- [MapView GameClientV2ContainerView Tabbed](MapView_GameClientV2ContainerView_Tabbed.md) (3 shared connections)
+- [services nats service](services_nats_service.md) (3 shared connections)
+- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [uuid npc combat](uuid_npc_combat.md) (1 shared connections)
 
 ## Source Files
 

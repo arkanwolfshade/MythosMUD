@@ -1,35 +1,24 @@
 # npc behavior engine
 
-> 10 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **validate_security_comprehensive()** (8 connections) — `server/validators/security_validator.py`
-- **test_validate_security_comprehensive_message()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_validate_security_comprehensive_action()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_validate_security_comprehensive_player_name()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_validate_security_comprehensive_default()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **Test comprehensive validation for message type.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **Test comprehensive validation for action type.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **Test comprehensive validation for player_name type.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **Test comprehensive validation with unknown field type defaults to message.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **Comprehensive security validation for any text field.      This is the main vali** (1 connections) — `server/validators/security_validator.py`
+- **test_subscribe_to_subzone_no_subject_manager()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **Test subscribe_to_subzone raises error when subject manager unavailable.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
 
 ## Relationships
 
-- [Security Validator Tests](Security_Validator_Tests.md) (5 shared connections)
-- [command communication models](command_communication_models.md) (1 shared connections)
-- [subject nats manager](subject_nats_manager.md) (1 shared connections)
+- [subzone realtime nats](subzone_realtime_nats.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_security_validator.py`
-- `server/validators/security_validator.py`
+- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
 
 ## Audit Trail
 
-- EXTRACTED: 24 (96%)
-- INFERRED: 1 (4%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

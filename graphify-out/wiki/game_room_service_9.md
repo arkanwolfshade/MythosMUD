@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_set_limit()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **Test set_limit updates channel limit.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_validate_player_room_membership_auto_add()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
+- **Test _validate_player_room_membership adds player when DB room matches.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
 
 ## Relationships
 
-- [rate limiter services](rate_limiter_services.md) (1 shared connections)
+- [movement service game](movement_service_game.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_rate_limiter.py`
+- `server/tests/unit/game/test_movement_service.py`
 
 ## Audit Trail
 

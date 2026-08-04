@@ -30,10 +30,13 @@
 
 ## Relationships
 
-- [game models player](game_models_player.md) (14 shared connections)
-- [target resolution service](target_resolution_service.md) (2 shared connections)
-- [command inventory models](command_inventory_models.md) (1 shared connections)
-- [NPC Combat](NPC_Combat.md) (1 shared connections)
+- [NPC Combat](NPC_Combat.md) (9 shared connections)
+- [player respawn event](player_respawn_event.md) (2 shared connections)
+- [spell game magic](spell_game_magic.md) (2 shared connections)
+- [coercion int inventory](coercion_int_inventory.md) (2 shared connections)
+- [subject nats manager](subject_nats_manager.md) (1 shared connections)
+- [models npc rationale](models_npc_rationale.md) (1 shared connections)
+- [target resolution service](target_resolution_service.md) (1 shared connections)
 
 ## Source Files
 

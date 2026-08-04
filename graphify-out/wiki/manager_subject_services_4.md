@@ -1,18 +1,23 @@
 # manager subject services
 
-> 64 nodes
+> 74 nodes
 
 ## Key Concepts
 
 - **test_manager.py** (48 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- **test_build_subject_pattern_not_found()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- **test_build_subject_missing_parameter()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **subject_manager()** (6 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_build_subject_subject_too_long()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **subject_manager_no_metrics()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **subject_manager_no_cache()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_nats_subject_manager_init()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_nats_subject_manager_init_no_metrics()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_nats_subject_manager_init_no_cache()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_nats_subject_manager_init_strict_validation()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_nats_subject_manager_init_custom_max_length()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
 - **test_build_subject_invalid_parameter_value()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
 - **test_register_pattern_duplicate_name()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
 - **test_register_pattern_invalid_format()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
 - **test_register_pattern_missing_placeholder()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- **test_get_pattern_info_not_found()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- **test_get_subscription_pattern_not_found()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
 - **test_build_subject_success()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
 - **test_build_subject_no_params()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
 - **test_build_subject_multiple_params()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
@@ -24,18 +29,16 @@
 - **test_validate_subject_no_cache()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
 - **test_register_pattern_success()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
 - **test_register_pattern_clears_cache()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- **test_get_pattern_info_success()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- **test_get_all_patterns()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- **test_get_subscription_pattern_success()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- **test_get_chat_subscription_patterns()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- **test_get_event_subscription_patterns()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- *... and 39 more nodes in this community*
+- *... and 49 more nodes in this community*
 
 ## Relationships
 
-- [subject validation services](subject_validation_services.md) (14 shared connections)
-- [manager subject services](manager_subject_services.md) (9 shared connections)
-- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [manager subject services](manager_subject_services.md) (14 shared connections)
+- [commands communication support](commands_communication_support.md) (6 shared connections)
+- [zone npc config](zone_npc_config.md) (4 shared connections)
+- [nats services service](nats_services_service.md) (2 shared connections)
+- [subject validation services](subject_validation_services.md) (1 shared connections)
+- [quest chat game](quest_chat_game.md) (1 shared connections)
 
 ## Source Files
 
@@ -43,7 +46,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 142 (95%)
+- EXTRACTED: 166 (95%)
 - INFERRED: 8 (5%)
 - AMBIGUOUS: 0 (0%)
 

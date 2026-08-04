@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_wearable_container_service_init()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test WearableContainerService initialization.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_should_apply_mute_check_non_sensitive_channel()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Test should_apply_mute_check() returns False for non-sensitive channels.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Relationships
 
-- [wearable container service](wearable_container_service.md) (1 shared connections)
+- [message filtering realtime](message_filtering_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Audit Trail
 

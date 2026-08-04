@@ -19,6 +19,7 @@ from fastapi import WebSocketDisconnect
 
 from ...exceptions import DatabaseError
 from ...structured_logging.enhanced_logging_config import get_logger
+from ..websocket_helpers import is_websocket_disconnect_message
 
 if TYPE_CHECKING:
     from collections.abc import Awaitable
@@ -114,7 +115,7 @@ class PersonalMessageSender:
             from starlette.websockets import WebSocketState
 
             ws_state = getattr(websocket, "application_state", None)
-            if ws_state == WebSocketState.DISCONNECTED:
+            if ws_state in (WebSocketState.DISCONNECTED, WebSocketState.CONNECTING):
                 delivery_status["websocket_failed"] += 1
                 await self.cleanup_dead_websocket(player_id, connection_id)
                 return False
@@ -126,23 +127,22 @@ class PersonalMessageSender:
         except (RuntimeError, ConnectionError, WebSocketDisconnect) as ws_error:
             error_message = str(ws_error)
             err_lower = error_message.lower()
-            # Expected when connection is closing: do not warn (log at debug only)
+            # Expected when connection is closing / never accepted: debug only (E2E teardown noise).
             is_send_after_close = "websocket.send" in err_lower and (
                 "websocket.close" in err_lower or "response already completed" in err_lower
             )
-            is_expected_close = "close message has been sent" in err_lower or "cannot call" in err_lower
-            if not is_send_after_close and not is_expected_close:
+            if is_send_after_close or is_websocket_disconnect_message(error_message) or not error_message.strip():
+                logger.debug(
+                    "WebSocket send skipped (connection closing)",
+                    player_id=player_id,
+                    connection_id=connection_id,
+                )
+            else:
                 logger.warning(
                     "WebSocket send failed",
                     player_id=player_id,
                     connection_id=connection_id,
                     error=error_message,
-                )
-            else:
-                logger.debug(
-                    "WebSocket send skipped (connection closing)",
-                    player_id=player_id,
-                    connection_id=connection_id,
                 )
             delivery_status["websocket_failed"] += 1
             await self.cleanup_dead_websocket(player_id, connection_id)

@@ -1,41 +1,51 @@
 # command processor rationale
 
-> 19 nodes
+> 32 nodes
 
 ## Key Concepts
 
-- **Any** (8 connections)
-- **.spawn_npc_instance()** (4 connections) — `server/services/npc_instance_service.py`
-- **.get_population_stats()** (4 connections) — `server/services/npc_instance_service.py`
-- **.get_zone_stats()** (4 connections) — `server/services/npc_instance_service.py`
-- **._extract_zone_from_room_id()** (4 connections) — `server/services/npc_instance_service.py`
-- **.despawn_npc_instance()** (3 connections) — `server/services/npc_instance_service.py`
-- **.move_npc_instance()** (3 connections) — `server/services/npc_instance_service.py`
-- **.get_npc_instances()** (3 connections) — `server/services/npc_instance_service.py`
-- **.get_npc_stats()** (3 connections) — `server/services/npc_instance_service.py`
-- **.get_system_stats()** (3 connections) — `server/services/npc_instance_service.py`
-- **Spawn a new NPC instance.          Args:             definition_id: ID of the NP** (1 connections) — `server/services/npc_instance_service.py`
-- **Despawn an NPC instance.          Args:             npc_id: ID of the NPC to des** (1 connections) — `server/services/npc_instance_service.py`
-- **Move an NPC instance to a different room.          Args:             npc_id: ID** (1 connections) — `server/services/npc_instance_service.py`
-- **Get all active NPC instances.          Returns:             List of NPC instance** (1 connections) — `server/services/npc_instance_service.py`
-- **Get detailed stats for a specific NPC instance.          Args:             npc_i** (1 connections) — `server/services/npc_instance_service.py`
-- **Get NPC population statistics.          Returns:             Dictionary with pop** (1 connections) — `server/services/npc_instance_service.py`
-- **Get NPC zone statistics.          Returns:             Dictionary with zone stat** (1 connections) — `server/services/npc_instance_service.py`
-- **Get system-wide NPC statistics.          Returns:             Dictionary with sy** (1 connections) — `server/services/npc_instance_service.py`
-- **Extract zone key from room ID.          Args:             room_id: Room ID like** (1 connections) — `server/services/npc_instance_service.py`
+- **_find_container_in_room()** (22 connections) — `server/commands/look_container.py`
+- **test_find_container_in_room_success()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_in_room_by_container_id()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_in_room_not_found()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_in_room_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_in_room_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_in_room_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_in_room_found()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_in_room_not_found()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_in_room_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_in_room_empty()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_in_room_no_match()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_in_room_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_in_room_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_in_room_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_in_room_instance_number_zero()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Find a container in room containers by name or container_id.      Args:** (1 connections) — `server/commands/look_container.py`
+- **Test finding container in room by name.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test finding container in room by container_id.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test finding container in room when not found.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test finding container in room with multiple matches.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test finding container in room with instance number.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test finding container in room with invalid instance number.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **Test _find_container_in_room() finds container by name.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Test _find_container_in_room() returns None when container not found.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [Realtime Subscribers](Realtime_Subscribers.md) (9 shared connections)
-- [command inventory models](command_inventory_models.md) (1 shared connections)
+- [schemas validator rationale](schemas_validator_rationale.md) (10 shared connections)
+- [DI Container Format](DI_Container_Format.md) (7 shared connections)
+- [startup npc services](startup_npc_services.md) (4 shared connections)
 
 ## Source Files
 
-- `server/services/npc_instance_service.py`
+- `server/commands/look_container.py`
+- `server/tests/unit/commands/test_look_container.py`
+- `server/tests/unit/commands/test_look_container_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 48 (100%)
+- EXTRACTED: 83 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_should_idle_move_not_active()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **Test should_idle_move() returns False when NPC is not active.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **event_bus()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Create an EventBus instance.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- [config models player](config_models_player.md) (1 shared connections)
-- [idle movement npc](idle_movement_npc.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [event bus events](event_bus_events.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_idle_movement.py`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 

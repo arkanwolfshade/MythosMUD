@@ -30,10 +30,10 @@ dependencies = [
     "anyio>=4.0.0",  # Unified async API for backend-agnostic code
     "asyncpg>=0.31.0",
     "pytest-asyncio>=1.3.0",
-    "jsonschema>=4.25.1,<4.26.0",
+    "jsonschema>=4.26.0",
     "bleach>=6.4.0",
     "tqdm>=4.67.1",
-    "click>=8.1.8,<8.2.0", # Command line interface for command parsing and validation
+    "click>=8.1.8", # CLI; sqlfluff still caps click<8.4 so lock may not take 8.4.x yet
     "defusedxml>=0.7.1", # Secure XML parsing for coverage reports
     "pwdlib[bcrypt]>=0.3.0", # Required by fastapi-users (we override the hashing)
     "nats-py>=2.12.0", # NATS Python client for messaging
@@ -43,11 +43,11 @@ dependencies = [
     "playwright>=1.57.0",
     "pytest-timeout>=2.4.0",
     "networkx>=3.6.1", # Graph analysis for alias cycle detection (CRITICAL-3 fix)
-    "python-statemachine>=2.5.0,<3",
+    "python-statemachine>=3.2.1",
     "prometheus-client>=0.23.1",
     "numpy>=2.4.1", # Numerical computing for performance monitoring and statistical calculations
     "aiofiles>=24.1.0", # Async file I/O to prevent blocking the event loop
-    "virtualenv==20.36.1",
+    "virtualenv>=21.7.1",
     # Security patches for transitive dependencies (Dependabot alerts #11-21)
     "urllib3>=2.7.0",  # Fixes alerts #15, #16, #18 - CVE-2025-66418, CVE-2025-66471
     "pyasn1>=0.6.4",  # Dependabot #160/#161; prior #11/#19 CVE-2026-23490
@@ -78,12 +78,12 @@ dev = [
     "bandit>=1.9.2",  # Python security linter
     "pylint>=4.0.4",  # Python code quality linter
     "pylint-per-file-ignores>=3.2.0",  # Per-file ignore support for pylint (matches ruff per-file-ignores)
-    "sqlfluff>=4.2.0,<5",  # SQL linting; >=4.1.0 CVE-2026-46373, >=4.2.0 CVE-2026-46374
+    "sqlfluff>=4.2.0",  # SQL linting; >=4.1.0 CVE-2026-46373, >=4.2.0 CVE-2026-46374
     "lizard>=1.19.0",  # Code complexity analyzer (used by Codacy)
     "vulture>=2.11",  # Dead code finder (unused functions, classes, variables)
     # sqlint>=0.2.1 - REMOVED: Conflicts with click>=8.1.8 (sqlint requires click==7.0)
     # Use sqlfluff instead, which provides comprehensive SQL linting
-    "asyncpg-stubs>=0.31.0,<0.32",
+    "asyncpg-stubs>=0.31.0",
 ]
 
 [tool.setuptools.packages.find]
@@ -410,11 +410,11 @@ dev = [
     "types-jsonschema>=4.25.1.20251009",
     "types-psycopg2>=2.9.21.20251012",
     "types-networkx>=3.6.1.20251220",
-    "asyncpg-stubs>=0.31.0,<0.32", # Type stubs for asyncpg (basedpyright reportMissingTypeStubs)
+    "asyncpg-stubs>=0.31.0", # Type stubs for asyncpg (basedpyright reportMissingTypeStubs)
     "bandit>=1.9.2", # Python security linter
     "pylint>=4.0.4", # Python code quality linter
     "pylint-per-file-ignores>=3.2.0", # Per-file ignore support for pylint (matches ruff per-file-ignores)
-    "sqlfluff>=4.2.0,<5", # SQL linting and formatting; >=4.1.0 CVE-2026-46373, >=4.2.0 CVE-2026-46374
+    "sqlfluff>=4.2.0", # SQL linting and formatting; >=4.1.0 CVE-2026-46373, >=4.2.0 CVE-2026-46374
     "lizard>=1.19.0", # Code complexity analyzer (used by Codacy)
     "vulture>=2.11", # Dead code finder (unused functions, classes, variables)
     "pytest-xdist>=3.8.0", # Parallel test execution (required for -n auto in pytest.ini)

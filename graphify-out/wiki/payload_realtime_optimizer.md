@@ -4,33 +4,34 @@
 
 ## Key Concepts
 
-- **PayloadOptimizer** (8 connections) — `server/realtime/payload_optimizer.py`
-- **.optimize_payload()** (5 connections) — `server/realtime/payload_optimizer.py`
-- **.get_payload_size()** (4 connections) — `server/realtime/payload_optimizer.py`
-- **Any** (4 connections)
-- **.compress_payload()** (4 connections) — `server/realtime/payload_optimizer.py`
-- **.create_incremental_update()** (3 connections) — `server/realtime/payload_optimizer.py`
-- **.__init__()** (2 connections) — `server/realtime/payload_optimizer.py`
-- **Optimizes payloads for WebSocket transmission.      Features:     - Size limit e** (1 connections) — `server/realtime/payload_optimizer.py`
-- **Initialize the payload optimizer.          Args:             max_payload_size: M** (1 connections) — `server/realtime/payload_optimizer.py`
-- **Calculate the size of a payload in bytes.          Args:             payload: Th** (1 connections) — `server/realtime/payload_optimizer.py`
-- **Compress a large payload using gzip compression.          Args:             payl** (1 connections) — `server/realtime/payload_optimizer.py`
-- **Optimize a payload by applying size limits and compression if needed.          A** (1 connections) — `server/realtime/payload_optimizer.py`
-- **Create an incremental update payload containing only changed fields.          Ar** (1 connections) — `server/realtime/payload_optimizer.py`
+- **._clone_stack()** (9 connections) — `server/services/inventory_service.py`
+- **.add_stack()** (8 connections) — `server/services/inventory_service.py`
+- **.split_stack()** (8 connections) — `server/services/inventory_service.py`
+- **Any** (7 connections)
+- **._validate_and_clone_optional_fields()** (7 connections) — `server/services/inventory_service.py`
+- **._clone_with_quantity()** (7 connections) — `server/services/inventory_service.py`
+- **._extract_required_fields()** (4 connections) — `server/services/inventory_service.py`
+- **._can_merge()** (4 connections) — `server/services/inventory_service.py`
+- **._normalize_metadata()** (4 connections) — `server/services/inventory_service.py`
+- **Add or merge an item stack into the inventory.          Args:             invent** (1 connections) — `server/services/inventory_service.py`
+- **Split a stack into two, inserting the new stack immediately after the source slo** (1 connections) — `server/services/inventory_service.py`
+- **Extract required fields from stack.          Returns:             Tuple of (item** (1 connections) — `server/services/inventory_service.py`
+- **Validate and clone optional fields (metadata, flags, origin, etc.).          Arg** (1 connections) — `server/services/inventory_service.py`
 
 ## Relationships
 
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (1 shared connections)
+- [Exception Containers](Exception_Containers.md) (12 shared connections)
+- [container helpers endpoints](container_helpers_endpoints.md) (8 shared connections)
+- [player cache rationale](player_cache_rationale.md) (2 shared connections)
 
 ## Source Files
 
-- `server/realtime/payload_optimizer.py`
+- `server/services/inventory_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 36 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 61 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

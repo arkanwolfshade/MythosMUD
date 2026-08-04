@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_room_occupants_empty()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **Test get_room_occupants() returns empty list when no occupants.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_handle_nats_message_retry_on_failure()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **Test _handle_nats_message() uses circuit breaker which handles retries.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Relationships
 
-- [room subscription manager](room_subscription_manager.md) (1 shared connections)
+- [nats message handler](nats_message_handler.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager.py`
+- `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Audit Trail
 

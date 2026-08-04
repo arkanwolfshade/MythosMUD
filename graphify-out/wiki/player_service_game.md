@@ -1,52 +1,60 @@
 # player service game
 
-> 68 nodes
+> 28 nodes
 
 ## Key Concepts
 
-- **test_player_combat_service.py** (37 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **PlayerCombatState** (14 connections) — `server/services/player_combat_service.py`
-- **test_is_player_in_combat_sync_true()** (4 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_cleanup_stale_combat_states()** (4 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_player_combat_service_init()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_track_player_combat_state()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_get_player_combat_state()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_get_player_combat_state_not_found()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_clear_player_combat_state()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_is_player_in_combat_sync_false()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_is_player_in_combat()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_get_players_in_combat()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_handle_combat_start()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_handle_combat_end()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_award_xp_on_npc_death_success()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_award_xp_on_npc_death_player_not_found()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_award_xp_on_npc_death_error()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_calculate_xp_reward_from_mapping()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_calculate_xp_reward_from_database()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_calculate_xp_reward_default()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_get_combat_stats()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_get_combat_stats_multiple_combats()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_handle_npc_death_error()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_award_xp_on_npc_death_delegates_to_rewards_when_available()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_award_xp_on_npc_death_no_player_combat_service()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- *... and 43 more nodes in this community*
+- **factory.py** (45 connections) — `server/app/factory.py`
+- **CORSConfigDict** (7 connections) — `server/app/factory.py`
+- **_register_v1_routers()** (7 connections) — `server/app/factory.py`
+- **_get_cors_config_from_app_config()** (6 connections) — `server/app/factory.py`
+- **_parse_cors_env_vars()** (6 connections) — `server/app/factory.py`
+- **_configure_cors()** (6 connections) — `server/app/factory.py`
+- **UserRead** (6 connections) — `server/auth/endpoints.py`
+- **_apply_cors_env_overrides()** (5 connections) — `server/app/factory.py`
+- **CORSConfigOverrides** (4 connections) — `server/app/factory.py`
+- **_get_default_cors_config()** (4 connections) — `server/app/factory.py`
+- **_parse_cors_origin_list()** (4 connections) — `server/app/factory.py`
+- **_first_set_env()** (3 connections) — `server/app/factory.py`
+- **_try_json_str_list()** (3 connections) — `server/app/factory.py`
+- **FastAPI** (3 connections)
+- **TypedDict** (2 connections)
+- **FastAPI application factory for MythosMUD server.  This module handles FastAPI a** (1 connections) — `server/app/factory.py`
+- **Type definition for CORS configuration dictionary.** (1 connections) — `server/app/factory.py`
+- **Partial CORS overrides from environment variables.** (1 connections) — `server/app/factory.py`
+- **Get default CORS configuration values.      Returns:         CORSConfigDict: Dic** (1 connections) — `server/app/factory.py`
+- **Get CORS configuration from AppConfig, with fallback to defaults.      Returns:** (1 connections) — `server/app/factory.py`
+- **Return the first non-empty environment value among keys.** (1 connections) — `server/app/factory.py`
+- **Parse candidate as a JSON string list, or None on failure.** (1 connections) — `server/app/factory.py`
+- **Parse CORS origins env value as JSON array or comma-separated list.** (1 connections) — `server/app/factory.py`
+- **Parse CORS-related environment variables and return overrides.      Environment** (1 connections) — `server/app/factory.py`
+- **Merge environment CORS overrides into the full config in place.** (1 connections) — `server/app/factory.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (27 shared connections)
-- [item models rationale](item_models_rationale.md) (6 shared connections)
-- [command input commands](command_input_commands.md) (2 shared connections)
-- [combat attack handler](combat_attack_handler.md) (2 shared connections)
+- [player requests schemas](player_requests_schemas.md) (9 shared connections)
+- [npc combat services](npc_combat_services.md) (5 shared connections)
+- [NPC Combat](NPC_Combat.md) (4 shared connections)
+- [Magic Spell Service](Magic_Spell_Service.md) (2 shared connections)
+- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [config models cors](config_models_cors.md) (2 shared connections)
+- [middleware comprehensive logging](middleware_comprehensive_logging.md) (2 shared connections)
+- [middleware error handling](middleware_error_handling.md) (2 shared connections)
+- [persistence rationale player](persistence_rationale_player.md) (2 shared connections)
+- [commands follow rationale](commands_follow_rationale.md) (1 shared connections)
+- [maps handle ascii](maps_handle_ascii.md) (1 shared connections)
+- [metrics schemas rationale](metrics_schemas_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/player_combat_service.py`
-- `server/tests/unit/services/test_player_combat_service.py`
+- `server/app/factory.py`
+- `server/auth/endpoints.py`
 
 ## Audit Trail
 
-- EXTRACTED: 175 (98%)
-- INFERRED: 4 (2%)
+- EXTRACTED: 118 (95%)
+- INFERRED: 6 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

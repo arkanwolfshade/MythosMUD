@@ -1,40 +1,51 @@
 # room sync service
 
-> 15 nodes
+> 26 nodes
 
 ## Key Concepts
 
-- **__init__.py** (9 connections) — `server/schemas/quest/__init__.py`
-- **quest.py** (8 connections) — `server/schemas/quest/quest.py`
-- **QuestLogEntryResponse** (7 connections) — `server/schemas/quest/quest.py`
-- **QuestLogResponse** (7 connections) — `server/schemas/quest/quest.py`
-- **BaseModel** (6 connections)
-- **QuestGoalSchema** (4 connections) — `server/schemas/quest/quest.py`
-- **QuestRewardSchema** (4 connections) — `server/schemas/quest/quest.py`
-- **QuestTriggerSchema** (4 connections) — `server/schemas/quest/quest.py`
-- **Quest subsystem schemas: definition, progress, API responses.** (1 connections) — `server/schemas/quest/__init__.py`
-- **Quest subsystem Pydantic schemas for MythosMUD server.  Defines schemas for ques** (1 connections) — `server/schemas/quest/quest.py`
-- **Single goal in a quest definition (complete_activity, kill_n, collect_n, etc.).** (1 connections) — `server/schemas/quest/quest.py`
-- **Single reward in a quest definition (xp, item, spell).** (1 connections) — `server/schemas/quest/quest.py`
-- **Single trigger that can start a quest (room, npc, item).** (1 connections) — `server/schemas/quest/quest.py`
-- **Single quest entry in GET /quests (quest log) response.** (1 connections) — `server/schemas/quest/quest.py`
-- **Response model for GET /quests (quest log).** (1 connections) — `server/schemas/quest/quest.py`
+- **_find_item_in_room_drops()** (23 connections) — `server/commands/look_item.py`
+- **test_find_item_in_room_drops_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_room_drops_by_prototype_id()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_room_drops_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_room_drops_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_room_drops_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_room_drops_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_room_drops_by_item_id()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_room_drops_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_room_drops_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_room_drops_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_room_drops_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_room_drops_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Find an item in room drops by name or prototype_id.      Args:         room_drop** (1 connections) — `server/commands/look_item.py`
+- **Test finding item in room drops by name.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test finding item in room drops by prototype_id.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test finding item in room drops when not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test finding item in room drops with multiple matches.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test finding item in room drops with instance number.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test finding item in room drops with invalid instance number.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test finding item in room drops by item_id.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test _find_item_in_room_drops() finds item by name.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_room_drops() returns None when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_room_drops() with instance number.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_room_drops() with multiple matches (ambiguous).** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [admin auth service](admin_auth_service.md) (3 shared connections)
-- [quest game service](quest_game_service.md) (3 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [Player Stats](Player_Stats.md) (2 shared connections)
+- [scripts worktree ops](scripts_worktree_ops.md) (10 shared connections)
+- [Item Lookup](Item_Lookup.md) (8 shared connections)
+- [npc realtime occupant](npc_realtime_occupant.md) (4 shared connections)
 
 ## Source Files
 
-- `server/schemas/quest/__init__.py`
-- `server/schemas/quest/quest.py`
+- `server/commands/look_item.py`
+- `server/tests/unit/commands/test_look_item.py`
+- `server/tests/unit/commands/test_look_item_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 56 (100%)
+- EXTRACTED: 72 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

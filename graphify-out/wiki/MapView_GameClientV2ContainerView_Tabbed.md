@@ -1,70 +1,63 @@
 # MapView GameClientV2ContainerView Tabbed
 
-> 38 nodes
+> 50 nodes
 
 ## Key Concepts
 
-- **GameClientV2ContainerView.tsx** (22 connections) — `client/src/components/ui-v2/GameClientV2ContainerView.tsx`
-- **MapView.tsx** (10 connections) — `client/src/components/MapView.tsx`
-- **TabbedInterface.tsx** (8 connections) — `client/src/components/ui-v2/TabbedInterface.tsx`
-- **TabbedInterfaceOverlay.tsx** (7 connections) — `client/src/components/ui-v2/components/TabbedInterfaceOverlay.tsx`
-- **Tab** (6 connections) — `client/src/components/ui-v2/TabbedInterface.tsx`
-- **useTabbedInterface.ts** (5 connections) — `client/src/components/ui-v2/useTabbedInterface.ts`
-- **ModalContainer.tsx** (5 connections) — `client/src/components/ui/ModalContainer.tsx`
-- **DeathInterstitial.tsx** (4 connections) — `client/src/components/DeathInterstitial.tsx`
-- **MainMenuModal.tsx** (4 connections) — `client/src/components/MainMenuModal.tsx`
-- **MapView()** (4 connections) — `client/src/components/MapView.tsx`
-- **GameClientV2ContainerView.test.tsx** (4 connections) — `client/src/components/ui-v2/__tests__/GameClientV2ContainerView.test.tsx`
-- **useTabbedInterface.test.ts** (4 connections) — `client/src/components/ui-v2/__tests__/useTabbedInterface.test.ts`
-- **TabbedInterfaceOverlay.test.tsx** (4 connections) — `client/src/components/ui-v2/components/__tests__/TabbedInterfaceOverlay.test.tsx`
-- **useTabbedInterface()** (4 connections) — `client/src/components/ui-v2/useTabbedInterface.ts`
-- **DeathInterstitial()** (3 connections) — `client/src/components/DeathInterstitial.tsx`
-- **DeliriumInterstitial.tsx** (3 connections) — `client/src/components/DeliriumInterstitial.tsx`
-- **MainMenuModal()** (3 connections) — `client/src/components/MainMenuModal.tsx`
-- **GameClientV2ContainerView()** (3 connections) — `client/src/components/ui-v2/GameClientV2ContainerView.tsx`
-- **TabbedInterfaceOverlay()** (3 connections) — `client/src/components/ui-v2/components/TabbedInterfaceOverlay.tsx`
-- **ModalContainer()** (3 connections) — `client/src/components/ui/ModalContainer.tsx`
-- **layout.ts** (3 connections) — `client/src/constants/layout.ts`
-- **DeliriumInterstitial()** (2 connections) — `client/src/components/DeliriumInterstitial.tsx`
-- **DeathInterstitial.test.tsx** (2 connections) — `client/src/components/__tests__/DeathInterstitial.test.tsx`
-- **MainMenuModal.test.tsx** (2 connections) — `client/src/components/__tests__/MainMenuModal.test.tsx`
-- **MapView.test.tsx** (2 connections) — `client/src/components/map/__tests__/MapView.test.tsx`
-- *... and 13 more nodes in this community*
+- **PrototypeRegistry** (41 connections) — `server/game/items/prototype_registry.py`
+- **prototype_registry.py** (22 connections) — `server/game/items/prototype_registry.py`
+- **resolve_weapon_attack_from_equipped()** (22 connections) — `server/game/weapons.py`
+- **test_weapons.py** (18 connections) — `server/tests/unit/game/test_weapons.py`
+- **test_prototype_registry.py** (17 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
+- **weapons.py** (12 connections) — `server/game/weapons.py`
+- **test_combat_weapon_resolution.py** (12 connections) — `server/tests/integration/test_combat_weapon_resolution.py`
+- **models.py** (9 connections) — `server/game/items/models.py`
+- **WeaponAttackInfo** (9 connections) — `server/game/weapons.py`
+- **_make_prototype()** (5 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
+- **test_resolve_weapon_attack_from_equipped_registry_error_returns_none()** (5 connections) — `server/tests/unit/game/test_weapons.py`
+- **test_resolve_weapon_attack_from_equipped_no_weapon_metadata_returns_none()** (5 connections) — `server/tests/unit/game/test_weapons.py`
+- **test_resolve_weapon_attack_from_equipped_weapon_missing_min_max_returns_none()** (5 connections) — `server/tests/unit/game/test_weapons.py`
+- **test_resolve_weapon_attack_from_equipped_weapon_returns_info_in_range()** (5 connections) — `server/tests/unit/game/test_weapons.py`
+- **test_resolve_weapon_attack_from_equipped_weapon_with_modifier()** (5 connections) — `server/tests/unit/game/test_weapons.py`
+- **test_resolve_weapon_attack_from_equipped_empty_damage_types_uses_physical()** (5 connections) — `server/tests/unit/game/test_weapons.py`
+- **test_weapon_resolution_switchblade_damage_in_range()** (4 connections) — `server/tests/integration/test_combat_weapon_resolution.py`
+- **test_resolve_weapon_attack_from_equipped_none_stack_returns_none()** (4 connections) — `server/tests/unit/game/test_weapons.py`
+- **test_resolve_weapon_attack_from_equipped_missing_prototype_id_returns_none()** (4 connections) — `server/tests/unit/game/test_weapons.py`
+- **registry_with_switchblade()** (3 connections) — `server/tests/integration/test_combat_weapon_resolution.py`
+- **test_weapon_resolution_switchblade_no_main_hand_returns_none()** (3 connections) — `server/tests/integration/test_combat_weapon_resolution.py`
+- **test_get_returns_prototype()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
+- **test_get_missing_raises()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
+- **test_find_by_tag()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
+- **test_all_returns_values()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
+- *... and 25 more nodes in this community*
 
 ## Relationships
 
-- [GameClientV2Container emptyOccupantsDiag](GameClientV2Container_emptyOccupantsDiag.md) (7 shared connections)
-- [PanelSystem PanelManager panelLayoutClam](PanelSystem_PanelManager_panelLayoutClam.md) (3 shared connections)
-- [map maps useAsciiMap](map_maps_useAsciiMap.md) (2 shared connections)
-- [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (2 shared connections)
-- [Game Terminal UI](Game_Terminal_UI.md) (2 shared connections)
-- [panels chat ChatPanelRuntimeViewParts](panels_chat_ChatPanelRuntimeViewParts.md) (2 shared connections)
-- [mythosApp appLazyScreens mythosAppViewMo](mythosApp_appLazyScreens_mythosAppViewMo.md) (1 shared connections)
+- [connection cleaner realtime](connection_cleaner_realtime.md) (17 shared connections)
+- [npc spawn validator](npc_spawn_validator.md) (16 shared connections)
+- [combat npc mixin](combat_npc_mixin.md) (9 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (7 shared connections)
+- [NPC Combat](NPC_Combat.md) (4 shared connections)
+- [websocket realtime handler](websocket_realtime_handler.md) (3 shared connections)
+- [attack combat commands](attack_combat_commands.md) (3 shared connections)
+- [stats game generator](stats_game_generator.md) (2 shared connections)
+- [room cache services](room_cache_services.md) (2 shared connections)
+- [command factories communication](command_factories_communication.md) (2 shared connections)
+- [models profession rationale](models_profession_rationale.md) (2 shared connections)
 
 ## Source Files
 
-- `client/src/components/DeathInterstitial.tsx`
-- `client/src/components/DeliriumInterstitial.tsx`
-- `client/src/components/MainMenuModal.tsx`
-- `client/src/components/MapView.tsx`
-- `client/src/components/__tests__/DeathInterstitial.test.tsx`
-- `client/src/components/__tests__/MainMenuModal.test.tsx`
-- `client/src/components/map/__tests__/MapView.test.tsx`
-- `client/src/components/ui-v2/GameClientV2ContainerView.tsx`
-- `client/src/components/ui-v2/TabbedInterface.tsx`
-- `client/src/components/ui-v2/__tests__/GameClientV2ContainerView.test.tsx`
-- `client/src/components/ui-v2/__tests__/TabbedInterface.test.tsx`
-- `client/src/components/ui-v2/__tests__/useTabbedInterface.test.ts`
-- `client/src/components/ui-v2/components/TabbedInterfaceOverlay.tsx`
-- `client/src/components/ui-v2/components/__tests__/TabbedInterfaceOverlay.test.tsx`
-- `client/src/components/ui-v2/useTabbedInterface.ts`
-- `client/src/components/ui/ModalContainer.tsx`
-- `client/src/constants/layout.ts`
+- `server/game/items/models.py`
+- `server/game/items/prototype_registry.py`
+- `server/game/weapons.py`
+- `server/tests/integration/test_combat_weapon_resolution.py`
+- `server/tests/unit/game/items/test_prototype_registry.py`
+- `server/tests/unit/game/test_weapons.py`
 
 ## Audit Trail
 
-- EXTRACTED: 137 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 224 (88%)
+- INFERRED: 31 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

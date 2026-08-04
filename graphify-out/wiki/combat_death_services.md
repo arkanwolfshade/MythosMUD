@@ -1,25 +1,33 @@
 # combat death services
 
-> 4 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **end_hour** (4 connections) — `schemas/calendar/schedule.schema.json`
-- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **minimum** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **maximum** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **test_database.py** (7 connections) — `server/tests/unit/infrastructure/test_database.py`
+- **test_database_manager_singleton()** (4 connections) — `server/tests/unit/infrastructure/test_database.py`
+- **test_database_manager_reset_instance()** (4 connections) — `server/tests/unit/infrastructure/test_database.py`
+- **test_database_manager_direct_init_raises()** (4 connections) — `server/tests/unit/infrastructure/test_database.py`
+- **test_database_manager_initial_state()** (4 connections) — `server/tests/unit/infrastructure/test_database.py`
+- **Unit tests for database initialization.** (1 connections) — `server/tests/unit/infrastructure/test_database.py`
+- **Test that DatabaseManager is a singleton.** (1 connections) — `server/tests/unit/infrastructure/test_database.py`
+- **Test resetting the singleton instance.** (1 connections) — `server/tests/unit/infrastructure/test_database.py`
+- **Test that direct initialization raises RuntimeError when instance exists.** (1 connections) — `server/tests/unit/infrastructure/test_database.py`
+- **Test initial state of database manager.** (1 connections) — `server/tests/unit/infrastructure/test_database.py`
 
 ## Relationships
 
-- [schemas calendar schedule](schemas_calendar_schedule.md) (1 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (7 shared connections)
+- [aggro threat services](aggro_threat_services.md) (2 shared connections)
+- [game models enums](game_models_enums.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/calendar/schedule.schema.json`
+- `server/tests/unit/infrastructure/test_database.py`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 28 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

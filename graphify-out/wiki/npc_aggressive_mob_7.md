@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_perform_recovery_action_invalid_string_player_id()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **Test perform_recovery_action() raises error for invalid string player_id.** (1 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_resolve_player_by_name()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
+- **Test _resolve_player_for_movement resolves player by name.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
 
 ## Relationships
 
-- [lucidity active service](lucidity_active_service.md) (1 shared connections)
+- [movement service game](movement_service_game.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_active_lucidity_service.py`
+- `server/tests/unit/game/test_movement_service.py`
 
 ## Audit Trail
 

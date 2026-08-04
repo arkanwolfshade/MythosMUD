@@ -1,52 +1,67 @@
 # coercion int inventory
 
-> 22 nodes
+> 95 nodes
 
 ## Key Concepts
 
-- **MPRegenerationService** (20 connections) — `server/game/magic/mp_regeneration_service.py`
-- **.process_tick_regeneration()** (6 connections) — `server/game/magic/mp_regeneration_service.py`
-- **UUID** (5 connections)
+- **SpellLearningService** (43 connections) — `server/game/magic/spell_learning_service.py`
+- **PlayerSpellRepository** (38 connections) — `server/persistence/repositories/player_spell_repository.py`
+- **SpellRegistry** (37 connections) — `server/game/magic/spell_registry.py`
+- **lifespan_magic.py** (34 connections) — `server/app/lifespan_magic.py`
+- **spell_learning_service.py** (22 connections) — `server/game/magic/spell_learning_service.py`
+- **initialize_magic_services()** (15 connections) — `server/app/lifespan_magic.py`
+- **test_spell_learning_service.py** (15 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
+- **_initialize_magic_service()** (13 connections) — `server/app/lifespan_magic.py`
+- **FastAPI** (9 connections)
+- **_initialize_spell_targeting_service()** (9 connections) — `server/app/lifespan_magic.py`
+- **_initialize_spell_effects()** (9 connections) — `server/app/lifespan_magic.py`
+- **_initialize_spell_learning_service()** (8 connections) — `server/app/lifespan_magic.py`
+- **.__init__()** (8 connections) — `server/commands/magic_commands.py`
+- **.learn_spell()** (8 connections) — `server/game/magic/spell_learning_service.py`
+- **.combat_service()** (7 connections) — `server/game/magic/spell_effects.py`
+- **UUID** (7 connections)
+- **_initialize_spell_repositories()** (6 connections) — `server/app/lifespan_magic.py`
+- **_initialize_spell_registry()** (6 connections) — `server/app/lifespan_magic.py`
+- **_initialize_mp_regeneration_service()** (6 connections) — `server/app/lifespan_magic.py`
+- **_link_magic_to_combat()** (6 connections) — `server/app/lifespan_magic.py`
+- **._validate_prerequisites()** (6 connections) — `server/game/magic/spell_learning_service.py`
+- **.__init__()** (5 connections) — `server/game/magic/spell_learning_service.py`
 - **Any** (5 connections)
-- **._get_regen_multiplier()** (4 connections) — `server/game/magic/mp_regeneration_service.py`
-- **.restore_mp_from_rest()** (4 connections) — `server/game/magic/mp_regeneration_service.py`
-- **.restore_mp_from_meditation()** (4 connections) — `server/game/magic/mp_regeneration_service.py`
-- **.restore_mp_from_item()** (4 connections) — `server/game/magic/mp_regeneration_service.py`
-- **mp_regeneration_service()** (4 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **.__init__()** (3 connections) — `server/game/magic/mp_regeneration_service.py`
-- **test_mp_regeneration_service_init()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_mp_regeneration_service_init_custom_rate()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **Service for managing MP regeneration.      Handles passive regeneration over tim** (1 connections) — `server/game/magic/mp_regeneration_service.py`
-- **Initialize the MP regeneration service.          Args:             player_servic** (1 connections) — `server/game/magic/mp_regeneration_service.py`
-- **Process MP regeneration for a player on a game tick.          Args:** (1 connections) — `server/game/magic/mp_regeneration_service.py`
-- **Get MP regeneration multiplier based on player state.          Args:** (1 connections) — `server/game/magic/mp_regeneration_service.py`
-- **Restore MP from resting (accelerated regeneration).          Args:             p** (1 connections) — `server/game/magic/mp_regeneration_service.py`
-- **Restore MP from meditation (highly accelerated regeneration).          Args:** (1 connections) — `server/game/magic/mp_regeneration_service.py`
-- **Restore MP from consuming an item.          Args:             player_id: Player** (1 connections) — `server/game/magic/mp_regeneration_service.py`
-- **Create an MPRegenerationService instance.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **Test MPRegenerationService initialization.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **Test MPRegenerationService initialization with custom regen_rate.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **.learn_spell_from_book()** (5 connections) — `server/game/magic/spell_learning_service.py`
+- **.learn_spell_from_npc()** (5 connections) — `server/game/magic/spell_learning_service.py`
+- *... and 70 more nodes in this community*
 
 ## Relationships
 
-- [regeneration service magic](regeneration_service_magic.md) (4 shared connections)
-- [Error Conversion](Error_Conversion.md) (3 shared connections)
-- [game models player](game_models_player.md) (2 shared connections)
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (2 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [command inventory models](command_inventory_models.md) (2 shared connections)
-- [connection manager realtime](connection_manager_realtime.md) (1 shared connections)
-- [commands admin mute](commands_admin_mute.md) (1 shared connections)
+- [NPC Combat](NPC_Combat.md) (30 shared connections)
+- [nats services service](nats_services_service.md) (22 shared connections)
+- [spell game magic](spell_game_magic.md) (19 shared connections)
+- [commands magic rationale](commands_magic_rationale.md) (12 shared connections)
+- [game models player](game_models_player.md) (11 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (11 shared connections)
+- [player respawn event](player_respawn_event.md) (7 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (5 shared connections)
+- [target resolution service](target_resolution_service.md) (3 shared connections)
+- [Magic Spell Service](Magic_Spell_Service.md) (3 shared connections)
+- [subject nats manager](subject_nats_manager.md) (3 shared connections)
+- [regeneration service magic](regeneration_service_magic.md) (2 shared connections)
 
 ## Source Files
 
-- `server/game/magic/mp_regeneration_service.py`
-- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- `server/app/lifespan_magic.py`
+- `server/commands/magic_commands.py`
+- `server/game/magic/spell_effects.py`
+- `server/game/magic/spell_learning_service.py`
+- `server/game/magic/spell_registry.py`
+- `server/persistence/repositories/player_spell_repository.py`
+- `server/tests/unit/game/magic/test_spell_learning_service.py`
+- `server/tests/unit/game/magic/test_spell_registry.py`
+- `server/tests/unit/game/magic/test_spell_targeting.py`
 
 ## Audit Trail
 
-- EXTRACTED: 71 (95%)
-- INFERRED: 4 (5%)
+- EXTRACTED: 399 (88%)
+- INFERRED: 54 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -78,7 +78,7 @@ help:
 	@echo "  grype          - Dependency SCA from project root (excludes E2E harness trees; not in make all)"
 	@echo "  lizard         - Code complexity analyzer"
 	@echo "  quality-fragmentation-guard - Run local PR fragmentation/complexity guard"
-	@echo "  codacy-tools   - Run all Codacy tools"
+	@echo "  codacy-tools   - Run all Codacy tools (fail-fast)"
 	@echo ""
 	@echo "Database Setup:"
 	@echo "  setup-test-env         - Create test environment files"
@@ -94,8 +94,8 @@ help:
 	@echo "  sync-obsidian-graphify - Sync graphify community wiki into Obsidian LLM vault"
 	@echo ""
 	@echo "Testing:"
-	@echo "  test                  - Run all tests (client + server, no coverage)"
-	@echo "  test-coverage         - Run all tests with coverage"
+	@echo "  test                  - Run all tests (client + server; fail-fast)"
+	@echo "  test-coverage         - Run all tests with coverage (fail-fast)"
 	@echo "  test-client           - Run client unit tests only (no coverage)"
 	@echo "  test-client-e2e       - Run client E2E tests (Playwright)"
 	@echo "  test-playwright   - Run client E2E + server integration tests (requires running server; mucks with runtime data)"
@@ -204,7 +204,11 @@ vulture:
 
 # Run all Codacy tools (except those already in lint/format).
 # Grype is standalone: make grype (project-root SCA; not part of E2E or make all).
-codacy-tools: bandit pylint sqlfluff hadolint shellcheck psscriptanalyzer stylelint markdownlint jackson-linter lizard vulture
+# Fail-fast: stop on first non-zero exit or traceback in stage output (see run_make_stages.py).
+CODACY_TOOL_STAGES := bandit pylint sqlfluff hadolint shellcheck psscriptanalyzer \
+	stylelint markdownlint jackson-linter lizard vulture
+codacy-tools:
+	@$(PYTHON) scripts/run_make_stages.py --make "$(MAKE)" -- $(CODACY_TOOL_STAGES)
 
 # ============================================================================
 # DATABASE SETUP
@@ -299,9 +303,12 @@ test-server-coverage: setup-test-env setup-postgresql-test-db
 	$(POWERSHELL) scripts/apply_dialogue_migration.ps1 -TargetDbs mythos_unit
 	$(UV) pytest server/tests/ -m "not integration" $(PYTEST_OPTS) $(PYTEST_COV_OPTS)
 
-test: test-client test-server
+# Fail-fast multi-stage runners (loud banner + skip remaining stages on first failure).
+test:
+	@$(PYTHON) scripts/run_make_stages.py --make "$(MAKE)" -- test-client test-server
 
-test-coverage: test-client-coverage test-server-coverage
+test-coverage:
+	@$(PYTHON) scripts/run_make_stages.py --make "$(MAKE)" -- test-client-coverage test-server-coverage
 
 # CI/CD test suite (with coverage, enforces thresholds)
 # Runs in Docker locally to match CI/CD Ubuntu environment
@@ -346,4 +353,14 @@ run-production:
 # COMPOSITE TARGETS
 # ============================================================================
 
-all: format mypy lint lint-sqlalchemy codacy-tools quality-fragmentation-guard check-postgresql build openapi-spec test-coverage sync-obsidian-graphify
+# Flattened stages so FAIL-FAST names the exact leaf target (not a nested composite).
+# Warning: grepping tool "WARNING" strings is intentionally not a fail condition here;
+# tools already exit non-zero for real failures. Tracebacks still fail even on exit 0.
+ALL_STAGES := format mypy lint lint-sqlalchemy \
+	$(CODACY_TOOL_STAGES) \
+	quality-fragmentation-guard check-postgresql build openapi-spec \
+	test-client-coverage test-server-coverage \
+	sync-obsidian-graphify
+
+all:
+	@$(PYTHON) scripts/run_make_stages.py --make "$(MAKE)" -- $(ALL_STAGES)

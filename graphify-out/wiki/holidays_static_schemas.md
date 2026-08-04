@@ -1,23 +1,25 @@
 # holidays static schemas
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_handle_spells_command_with_spells()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test spells command when player has spells.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **start_hour** (4 connections) — `schemas/calendar/schedule.schema.json`
+- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **minimum** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **maximum** (1 connections) — `schemas/calendar/schedule.schema.json`
 
 ## Relationships
 
-- [commands magic rationale](commands_magic_rationale.md) (1 shared connections)
+- [schemas calendar schedule](schemas_calendar_schedule.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `schemas/calendar/schedule.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

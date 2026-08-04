@@ -4,17 +4,16 @@
 
 ## Key Concepts
 
-- **.test_start_failure()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **Test start handles exceptions gracefully.** (1 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **test_combat_audit_logger_log_combat_start_with_timestamp()** (3 connections) — `server/tests/unit/structured_logging/test_combat_audit.py`
+- **Test CombatAuditLogger.log_combat_start() uses provided timestamp.** (1 connections) — `server/tests/unit/structured_logging/test_combat_audit.py`
 
 ## Relationships
 
-- [tick service services](tick_service_services.md) (1 shared connections)
-- [tick game service](tick_game_service.md) (1 shared connections)
+- [combat audit structured](combat_audit_structured.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_game_tick_service.py`
+- `server/tests/unit/structured_logging/test_combat_audit.py`
 
 ## Audit Trail
 

@@ -35,7 +35,7 @@ from server.structured_logging.logging_context import (
     log_with_context as _log_with_context,
 )
 from server.structured_logging.logging_file_setup import setup_enhanced_file_logging
-from server.structured_logging.logging_handlers import create_aggregator_handler
+from server.structured_logging.logging_handlers import AsyncioConnLostWriteFilter, create_aggregator_handler
 from server.structured_logging.logging_processors import (
     add_correlation_id,
     add_request_context,
@@ -291,6 +291,12 @@ def _configure_third_party_log_levels() -> None:
     for logger_name in ("nats", "nats.aio", "nats.aio.client"):
         third_party = logging.getLogger(logger_name)
         third_party.setLevel(logging.CRITICAL)
+
+    # asyncio warns after repeated writes on a lost socket (WS teardown / Playwright). No exception
+    # object or stack — just "socket.send() raised exception." Drop that specific message.
+    asyncio_logger = logging.getLogger("asyncio")
+    if not any(isinstance(f, AsyncioConnLostWriteFilter) for f in asyncio_logger.filters):
+        asyncio_logger.addFilter(AsyncioConnLostWriteFilter())
 
 
 def get_enhanced_logger(name: str) -> BoundLogger:

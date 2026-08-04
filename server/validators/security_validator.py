@@ -20,6 +20,10 @@ from collections.abc import Callable
 import ftfy
 import strip_ansi
 
+# NPC instance IDs include prototype + room + timestamp and routinely exceed 50 chars.
+# Keep in sync with AttackCommand/PunchCommand Field(max_length=...).
+MAX_COMBAT_TARGET_LENGTH = 200
+
 # Patterns to reject for command injection (expand as needed)
 # These patterns are more specific than the command model validators
 # to avoid false positives while still catching injection attempts
@@ -481,8 +485,8 @@ def validate_combat_target(value: str) -> str:
     if len(value) < 1:
         raise ValueError("Combat target name cannot be empty")
 
-    if len(value) > 50:
-        raise ValueError("Combat target name must be 50 characters or less")
+    if len(value) > MAX_COMBAT_TARGET_LENGTH:
+        raise ValueError(f"Combat target name must be {MAX_COMBAT_TARGET_LENGTH} characters or less")
 
     # Check that it starts with a letter or number (allows NPC titles like "Dr.")
     if not re.match(r"^[a-zA-Z0-9]", value):

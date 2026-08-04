@@ -1,23 +1,25 @@
 # commands combat handler
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_handle_spell_command_no_spell_name()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test spell command when no spell name is provided.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **sub_zone** (4 connections) — `schemas/room_schema.json`
+- **type** (1 connections) — `schemas/room_schema.json`
+- **pattern** (1 connections) — `schemas/room_schema.json`
+- **description** (1 connections) — `schemas/room_schema.json`
 
 ## Relationships
 
-- [commands magic rationale](commands_magic_rationale.md) (1 shared connections)
+- [schemas room schema](schemas_room_schema.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `schemas/room_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

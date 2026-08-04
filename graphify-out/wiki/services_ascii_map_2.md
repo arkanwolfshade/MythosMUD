@@ -1,23 +1,35 @@
 # services ascii map
 
-> 2 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **test_handle_learn_command_with_corruption()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test learn command with corruption applied.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **chat_moderation.py** (11 connections) — `server/game/chat_moderation.py`
+- **PlayerServiceProtocol** (5 connections) — `server/game/chat_moderation.py`
+- **._format_mute_duration()** (4 connections) — `server/game/chat_moderation.py`
+- **Protocol** (2 connections)
+- **datetime** (2 connections)
+- **Chat moderation utilities.  This module provides moderation functionality includ** (1 connections) — `server/game/chat_moderation.py`
+- **Protocol for player service.** (1 connections) — `server/game/chat_moderation.py`
+- **Format mute duration text with remaining time or expiration status.** (1 connections) — `server/game/chat_moderation.py`
 
 ## Relationships
 
-- [commands magic rationale](commands_magic_rationale.md) (1 shared connections)
+- [chat moderation game](chat_moderation_game.md) (4 shared connections)
+- [dialogue schemas tree](dialogue_schemas_tree.md) (2 shared connections)
+- [player helpers error](player_helpers_error.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [chat game message](chat_game_message.md) (1 shared connections)
+- [eventLog eventStore projector](eventLog_eventStore_projector.md) (1 shared connections)
+- [command parser build](command_parser_build.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `server/game/chat_moderation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 27 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

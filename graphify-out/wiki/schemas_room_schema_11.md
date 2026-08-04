@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_announce_spell_cast_no_player_id()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test announce spell cast when player has no ID.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **test_restore_mp_from_meditation_higher_than_rest()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Test restore_mp_from_meditation() restores more MP than rest.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Relationships
 
-- [commands magic rationale](commands_magic_rationale.md) (1 shared connections)
+- [config rationale reset](config_rationale_reset.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Audit Trail
 

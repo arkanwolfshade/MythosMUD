@@ -1,35 +1,33 @@
 # startup services npc
 
-> 12 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **_errors_len()** (7 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_required_npcs_no_spawn_room()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_required_npcs_exception()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_optional_npcs_exception()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_npcs_on_startup_exception_in_session()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_npcs_on_startup_critical_exception()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Narrow spawn/startup result dict for len(results['errors']) without propagating** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test _spawn_required_npcs() handles missing spawn room.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test _spawn_required_npcs() handles exceptions during spawning.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test _spawn_optional_npcs() handles exceptions during spawning.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test spawn_npcs_on_startup() handles exceptions during session processing.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test spawn_npcs_on_startup() handles critical exceptions.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **TestHandleSpecialCommandRouting** (7 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_handle_special_command_routing_alias_command()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_handle_special_command_routing_alias_storage_none()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_handle_special_command_routing_emote_conversion()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_handle_special_command_routing_returns_none()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **Tests for _handle_special_command_routing function.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **Test _handle_special_command_routing processes alias commands.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **Test _handle_special_command_routing returns error when alias_storage is None.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **Test _handle_special_command_routing converts single-word emotes.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **Test _handle_special_command_routing returns None for normal commands.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
 
 ## Relationships
 
-- [startup npc service](startup_npc_service.md) (6 shared connections)
-- [player respawn event](player_respawn_event.md) (5 shared connections)
+- [command commands handler](command_commands_handler.md) (5 shared connections)
+- [commands npc admin](commands_npc_admin.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_npc_startup_service.py`
+- `server/tests/unit/commands/test_command_handler_unified_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 33 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 23 (96%)
+- INFERRED: 1 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

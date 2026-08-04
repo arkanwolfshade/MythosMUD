@@ -4,22 +4,22 @@
 
 ## Key Concepts
 
-- **test_profession_meets_stat_requirements_invalid_json()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **Test meets_stat_requirements returns True when stat_requirements is invalid JSON** (1 connections) — `server/tests/unit/models/test_profession.py`
+- **test_handle_event_async_async_subscriber_error()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test _handle_event_async() handles async subscriber errors.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- [persistence core infrastructure](persistence_core_infrastructure.md) (1 shared connections)
-- [profession models rationale](profession_models_rationale.md) (1 shared connections)
+- [event bus events](event_bus_events.md) (1 shared connections)
+- [services exploration service](services_exploration_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/models/test_profession.py`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

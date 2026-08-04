@@ -33,16 +33,16 @@
 
 ## Relationships
 
-- [admin commands setstat](admin_commands_setstat.md) (6 shared connections)
+- [commands time handle](commands_time_handle.md) (6 shared connections)
 - [quality fragmentation scripts](quality_fragmentation_scripts.md) (3 shared connections)
 - [dependency scripts analyzer](dependency_scripts_analyzer.md) (3 shared connections)
 - [compare linting results](compare_linting_results.md) (2 shared connections)
 - [grype scripts rationale](grype_scripts_rationale.md) (2 shared connections)
 - [runner scripts rationale](runner_scripts_rationale.md) (2 shared connections)
-- [logging setup structured](logging_setup_structured.md) (1 shared connections)
-- [player preferences service](player_preferences_service.md) (1 shared connections)
-- [npc shopkeeper rationale](npc_shopkeeper_rationale.md) (1 shared connections)
-- [time service rationale](time_service_rationale.md) (1 shared connections)
+- [logging structured utilities](logging_structured_utilities.md) (1 shared connections)
+- [player requests schemas](player_requests_schemas.md) (1 shared connections)
+- [NPC Combat](NPC_Combat.md) (1 shared connections)
+- [taunt combat commands](taunt_combat_commands.md) (1 shared connections)
 - [fragmentation quality scripts](fragmentation_quality_scripts.md) (1 shared connections)
 
 ## Source Files

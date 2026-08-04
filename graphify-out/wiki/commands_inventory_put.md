@@ -1,36 +1,50 @@
 # commands inventory put
 
-> 8 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **close_db()** (9 connections) — `server/database_helpers.py`
-- **test_close_db_engine_initialization_failure()** (4 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **test_close_db_success()** (3 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **test_close_db_raises_runtime_error_on_failure()** (3 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **Close database connections.** (1 connections) — `server/database_helpers.py`
-- **Test close_db successfully closes database connections.** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **Test close_db raises RuntimeError when closing fails.** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **Test close_db handles failure when engine initialization fails.** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **character_creation_service.py** (13 connections) — `server/game/character_creation_service.py`
+- **CharacterCreationService** (12 connections) — `server/game/character_creation_service.py`
+- **.create_character_with_stats()** (7 connections) — `server/game/character_creation_service.py`
+- **.validate_character_stats()** (6 connections) — `server/game/character_creation_service.py`
+- **Any** (5 connections)
+- **.roll_character_stats()** (5 connections) — `server/game/character_creation_service.py`
+- **.__init__()** (4 connections) — `server/game/character_creation_service.py`
+- **.get_available_classes_info()** (4 connections) — `server/game/character_creation_service.py`
+- **._get_class_description()** (3 connections) — `server/game/character_creation_service.py`
+- **character_creation_service()** (3 connections) — `server/tests/unit/game/test_character_creation_service.py`
+- **test_character_creation_service_init()** (3 connections) — `server/tests/unit/game/test_character_creation_service.py`
+- **UUID** (2 connections)
+- **Character creation service for MythosMUD server.  This module handles all charac** (1 connections) — `server/game/character_creation_service.py`
+- **Service class for character creation and stats generation business operations.** (1 connections) — `server/game/character_creation_service.py`
+- **Initialize the character creation service with a player service.** (1 connections) — `server/game/character_creation_service.py`
+- **Roll random stats for character creation.          Args:             method: The** (1 connections) — `server/game/character_creation_service.py`
+- **Validate character stats against class prerequisites.          Args:** (1 connections) — `server/game/character_creation_service.py`
+- **Create a new character with specific stats.          Args:             name: The** (1 connections) — `server/game/character_creation_service.py`
+- **Get information about all available character classes and their prerequisites.** (1 connections) — `server/game/character_creation_service.py`
+- **Get a description for a character class.** (1 connections) — `server/game/character_creation_service.py`
+- **Create a CharacterCreationService instance.** (1 connections) — `server/tests/unit/game/test_character_creation_service.py`
+- **Test CharacterCreationService initialization.** (1 connections) — `server/tests/unit/game/test_character_creation_service.py`
 
 ## Relationships
 
-- [lucidity npc combat](lucidity_npc_combat.md) (4 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (1 shared connections)
-- [command commands talk](command_commands_talk.md) (1 shared connections)
-- [npc idle movement](npc_idle_movement.md) (1 shared connections)
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (1 shared connections)
-- [command inventory models](command_inventory_models.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (5 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (5 shared connections)
+- [event connection helpers](event_connection_helpers.md) (4 shared connections)
+- [npc rationale extract](npc_rationale_extract.md) (4 shared connections)
+- [player service game](player_service_game.md) (3 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
 
 ## Source Files
 
-- `server/database_helpers.py`
-- `server/tests/unit/infrastructure/test_database_helpers.py`
+- `server/game/character_creation_service.py`
+- `server/tests/unit/game/test_character_creation_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 22 (96%)
-- INFERRED: 1 (4%)
+- EXTRACTED: 73 (95%)
+- INFERRED: 4 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

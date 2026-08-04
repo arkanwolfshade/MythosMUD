@@ -1,43 +1,43 @@
 # services user manager
 
-> 9 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **user_manager.py** (20 connections) — `server/services/user_manager.py`
-- **chat_logger()** (7 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **.__init__()** (4 connections) — `server/services/user_manager.py`
-- **_get_proper_data_dir()** (4 connections) — `server/services/user_manager.py`
-- **Path** (3 connections)
-- **User management service for MythosMUD chat system.  This module provides compr** (1 connections) — `server/services/user_manager.py`
-- **Initialize the user manager.          Args:             data_dir: Directory f** (1 connections) — `server/services/user_manager.py`
-- **Get the proper environment-aware data directory for user management.      Uses** (1 connections) — `server/services/user_manager.py`
-- **Create a ChatLogger instance with temp directory.** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **._cleanup_player_mutes()** (8 connections) — `server/services/user_manager.py`
+- **datetime** (7 connections)
+- **.get_player_mutes()** (7 connections) — `server/services/user_manager.py`
+- **._cleanup_expired_mutes()** (6 connections) — `server/services/user_manager.py`
+- **._get_active_player_mutes()** (5 connections) — `server/services/user_manager.py`
+- **._get_active_channel_mutes()** (5 connections) — `server/services/user_manager.py`
+- **._get_active_global_mutes()** (5 connections) — `server/services/user_manager.py`
+- **._cleanup_channel_mutes()** (4 connections) — `server/services/user_manager.py`
+- **._cleanup_global_mutes()** (4 connections) — `server/services/user_manager.py`
+- **.get_system_stats()** (3 connections) — `server/services/user_manager.py`
+- **Get active player mutes for a player.** (1 connections) — `server/services/user_manager.py`
+- **Get active channel mutes for a player.** (1 connections) — `server/services/user_manager.py`
+- **Get active global mutes applied by a player.** (1 connections) — `server/services/user_manager.py`
+- **Get all mutes applied by a player.          Args:             player_id: Play** (1 connections) — `server/services/user_manager.py`
+- **Get system-wide user management statistics.          Returns:             Dic** (1 connections) — `server/services/user_manager.py`
+- **Clean up expired player mutes.** (1 connections) — `server/services/user_manager.py`
+- **Clean up expired channel mutes.** (1 connections) — `server/services/user_manager.py`
+- **Clean up expired global mutes.** (1 connections) — `server/services/user_manager.py`
+- **Clean up expired mutes from all storage.** (1 connections) — `server/services/user_manager.py`
+- **Remove mute data for a player from memory and optionally delete their file.** (1 connections) — `server/services/user_manager.py`
 
 ## Relationships
 
-- [services user manager](services_user_manager.md) (5 shared connections)
-- [circuit breaker realtime](circuit_breaker_realtime.md) (3 shared connections)
-- [Item Instances](Item_Instances.md) (2 shared connections)
-- [chat game message](chat_game_message.md) (2 shared connections)
-- [chat services logger](chat_services_logger.md) (2 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [Database Config](Database_Config.md) (1 shared connections)
+- [services user manager](services_user_manager.md) (17 shared connections)
 - [NPC Combat](NPC_Combat.md) (1 shared connections)
-- [Error Conversion](Error_Conversion.md) (1 shared connections)
-- [follow game service](follow_game_service.md) (1 shared connections)
-- [nats exceptions services](nats_exceptions_services.md) (1 shared connections)
-- [user manager services](user_manager_services.md) (1 shared connections)
 
 ## Source Files
 
 - `server/services/user_manager.py`
-- `server/tests/unit/services/test_chat_logger.py`
 
 ## Audit Trail
 
-- EXTRACTED: 37 (88%)
-- INFERRED: 5 (12%)
+- EXTRACTED: 64 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

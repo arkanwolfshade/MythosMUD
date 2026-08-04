@@ -9,6 +9,7 @@ from unittest.mock import MagicMock
 from server.npc.npc_utils import (
     extract_definition_id_from_npc,
     extract_npc_metadata,
+    extract_room_id_from_lifecycle_record,
     extract_room_id_from_npc,
     get_zone_key_from_room_id,
 )
@@ -36,27 +37,60 @@ def test_extract_room_id_from_npc_room_id() -> None:
     npc = MagicMock()
     npc.current_room = None
     npc.current_room_id = None
+    npc.spawn_room_id = None
     npc.room_id = "room-789"
     result = extract_room_id_from_npc(npc)
     assert result == "room-789"
 
 
-def test_extract_room_id_from_npc_not_found() -> None:
-    """Test extract_room_id_from_npc() returns 'unknown' when not found."""
+def test_extract_room_id_from_npc_spawn_room_id() -> None:
+    """Test extract_room_id_from_npc() falls back to spawn_room_id."""
     npc = MagicMock()
     npc.current_room = None
     npc.current_room_id = None
-    # No room_id attribute
+    npc.spawn_room_id = "room-spawn"
+    npc.room_id = None
+    result = extract_room_id_from_npc(npc)
+    assert result == "room-spawn"
+
+
+def test_extract_room_id_from_npc_skips_unknown_sentinel() -> None:
+    """Literal 'unknown' on current_room must fall through to a real attr."""
+    npc = MagicMock()
+    npc.current_room = "unknown"
+    npc.current_room_id = None
+    npc.spawn_room_id = "earth_arkhamcity_sanitarium_room_foyer_001"
+    npc.room_id = None
+    assert extract_room_id_from_npc(npc) == "earth_arkhamcity_sanitarium_room_foyer_001"
+
+
+def test_extract_room_id_from_npc_not_found() -> None:
+    """Test extract_room_id_from_npc() returns 'unknown' when not found."""
+    npc = MagicMock(spec=[])
     result = extract_room_id_from_npc(npc)
     assert result == "unknown"
 
 
 def test_extract_room_id_from_npc_non_string() -> None:
     """Test extract_room_id_from_npc() returns 'unknown' for non-string value."""
-    npc = MagicMock()
+    npc = MagicMock(spec=["current_room", "current_room_id", "spawn_room_id", "room_id"])
     npc.current_room = 123  # Not a string
+    npc.current_room_id = None
+    npc.spawn_room_id = None
+    npc.room_id = None
     result = extract_room_id_from_npc(npc)
     assert result == "unknown"
+
+
+def test_extract_room_id_from_lifecycle_record() -> None:
+    record = MagicMock()
+    record.events = [
+        {"details": {"room_id": "room-a"}},
+        {"details": {"room_id": "unknown"}},
+        {"details": {"reason": "manual"}},
+    ]
+    assert extract_room_id_from_lifecycle_record(record) == "room-a"
+    assert extract_room_id_from_lifecycle_record(None) is None
 
 
 def test_extract_npc_metadata_valid() -> None:

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_parse_command_parts_with_args()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **Test _parse_command_parts() parses command with arguments.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_build_chat_event_includes_speaker_kind()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Chat WebSocket event carries speaker_kind for client pass-through.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [command parser helpers](command_parser_helpers.md) (1 shared connections)
+- [message chat nats](message_chat_nats.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_parser_helpers.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 

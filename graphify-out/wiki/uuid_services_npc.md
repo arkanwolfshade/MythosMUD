@@ -1,33 +1,45 @@
 # uuid services npc
 
-> 11 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **MockPersistence** (7 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **mock_persistence()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **.get_player_by_name()** (2 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **.get_room_by_id()** (2 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **.__setattr__()** (2 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **.__init__()** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **Mock persistence layer with async methods.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **Mock async method that uses configured mock.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **Mock method that uses configured mock.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **Allow setting get_player_by_name and get_room_by_id to mocks.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **NPCCacheService** (30 connections) — `server/caching/cache_service.py`
+- **TestNPCCacheService** (12 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **_NpcDef** (9 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **_SpawnRule** (8 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_invalidate_caches()** (4 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.npc_service()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_definitions_cache_hit()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_npc_definition_hit_and_miss()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_spawn_rules_cache_hit()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.invalidate_npc_definitions()** (2 connections) — `server/caching/cache_service.py`
+- **.invalidate_spawn_rules()** (2 connections) — `server/caching/cache_service.py`
+- **.test_get_definitions_cache_miss()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_spawn_rules_cache_miss()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **Service for caching NPC definitions and spawn rules.** (1 connections) — `server/caching/cache_service.py`
+- **Invalidate all NPC definition caches.** (1 connections) — `server/caching/cache_service.py`
+- **Invalidate all NPC spawn rule caches.** (1 connections) — `server/caching/cache_service.py`
 
 ## Relationships
 
-- [rest grace period](rest_grace_period.md) (2 shared connections)
+- [commands skills rationale](commands_skills_rationale.md) (7 shared connections)
+- [startup npc service](startup_npc_service.md) (6 shared connections)
+- [services lucidity repository](services_lucidity_repository.md) (5 shared connections)
+- [cache caching service](cache_caching_service.md) (4 shared connections)
+- [config rationale config()](config_rationale_config%28%29.md) (4 shared connections)
+- [ascii map renderer](ascii_map_renderer.md) (3 shared connections)
+- [caching lru cache](caching_lru_cache.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_rest_command.py`
+- `server/caching/cache_service.py`
+- `server/tests/unit/caching/test_cache_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 22 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 63 (73%)
+- INFERRED: 23 (27%)
 - AMBIGUOUS: 0 (0%)
 
 ---

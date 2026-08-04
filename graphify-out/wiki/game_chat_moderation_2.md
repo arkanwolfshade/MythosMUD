@@ -1,29 +1,39 @@
 # game chat moderation
 
-> 6 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **TestGetChatService** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_chat_service_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_chat_service_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Tests for get_chat_service dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_chat_service returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_chat_service raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **initialize_components()** (9 connections) — `server/game/items/component_hooks.py`
+- **component_hooks.py** (6 connections) — `server/game/items/component_hooks.py`
+- **.create_instance()** (6 connections) — `server/game/items/item_factory.py`
+- **test_component_hooks.py** (6 connections) — `server/tests/unit/game/items/test_component_hooks.py`
+- **test_initialize_components_empty_prototype()** (2 connections) — `server/tests/unit/game/items/test_component_hooks.py`
+- **test_initialize_components_records_prototype_components()** (2 connections) — `server/tests/unit/game/items/test_component_hooks.py`
+- **test_initialize_components_merges_overrides()** (2 connections) — `server/tests/unit/game/items/test_component_hooks.py`
+- **Any** (1 connections)
+- **Component hook coordination for freshly minted item instances.** (1 connections) — `server/game/items/component_hooks.py`
+- **Prepare component state metadata for a new item instance.      This routine curr** (1 connections) — `server/game/items/component_hooks.py`
+- **Any** (1 connections)
+- **ItemInstance** (1 connections)
+- **Create an item instance from a prototype.          Args:             prototype_i** (1 connections) — `server/game/items/item_factory.py`
+- **Unit tests for item component hooks.** (1 connections) — `server/tests/unit/game/items/test_component_hooks.py`
 
 ## Relationships
 
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (3 shared connections)
-- [command inventory models](command_inventory_models.md) (1 shared connections)
+- [npc spawn validator](npc_spawn_validator.md) (4 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_dependencies.py`
+- `server/game/items/component_hooks.py`
+- `server/game/items/item_factory.py`
+- `server/tests/unit/game/items/test_component_hooks.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (93%)
-- INFERRED: 1 (7%)
+- EXTRACTED: 40 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

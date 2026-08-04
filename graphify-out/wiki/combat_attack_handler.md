@@ -1,53 +1,53 @@
 # combat attack handler
 
-> 35 nodes
+> 42 nodes
 
 ## Key Concepts
 
-- **player_combat_service_support.py** (19 connections) — `server/services/player_combat_service_support.py`
-- **NPCCombatIntegrationReadApi** (10 connections) — `server/services/player_combat_service_support.py`
-- **PlayerXpLike** (9 connections) — `server/services/player_combat_service_support.py`
-- **Protocol** (6 connections)
-- **NPCCombatRewardsLike** (6 connections) — `server/services/player_combat_service_support.py`
-- **UUIDMappingXP** (6 connections) — `server/services/player_combat_service_support.py`
-- **PersistenceWithNpcLifecycleManager** (6 connections) — `server/services/player_combat_service_support.py`
-- **original_string_id_for_npc()** (5 connections) — `server/services/player_combat_service_support.py`
-- **lifecycle_lookup_id()** (5 connections) — `server/services/player_combat_service_support.py`
-- **async_load_lifecycle_manager()** (5 connections) — `server/services/player_combat_service_support.py`
-- **log_missing_lifecycle_npc()** (5 connections) — `server/services/player_combat_service_support.py`
-- **UUID** (4 connections)
-- **available_lifecycle_npc_ids()** (4 connections) — `server/services/player_combat_service_support.py`
-- **.get_xp_value()** (3 connections) — `server/services/player_combat_service_support.py`
-- **.get_rewards_service()** (3 connections) — `server/services/player_combat_service_support.py`
-- **.get_uuid_mapping()** (3 connections) — `server/services/player_combat_service_support.py`
-- **xp_int_from_base_stats_mapping()** (3 connections) — `server/services/player_combat_service_support.py`
-- **.award_xp_to_killer()** (2 connections) — `server/services/player_combat_service_support.py`
-- **.add_experience()** (1 connections) — `server/services/player_combat_service_support.py`
-- **Protocols and module-level helpers for player combat XP and lifecycle lookup.** (1 connections) — `server/services/player_combat_service_support.py`
-- **NPC combat rewards helper.** (1 connections) — `server/services/player_combat_service_support.py`
-- **Award XP to the killer for an NPC defeat.** (1 connections) — `server/services/player_combat_service_support.py`
-- **UUID mapping helper with XP lookup (NPCCombatUUIDMapping).** (1 connections) — `server/services/player_combat_service_support.py`
-- **Return stored XP for npc_id when present.** (1 connections) — `server/services/player_combat_service_support.py`
-- **Public read API from NPC combat integration.** (1 connections) — `server/services/player_combat_service_support.py`
-- *... and 10 more nodes in this community*
+- **MemoryThresholdMonitor** (25 connections) — `server/app/memory_cleanup_service.py`
+- **test_memory_cleanup_service.py** (20 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **memory_cleanup_service.py** (11 connections) — `server/app/memory_cleanup_service.py`
+- **create_memory_cleanup_monitor()** (8 connections) — `server/app/memory_cleanup_service.py`
+- **get_managed_task_cleanup_implementation_for_task_four_spec_compliance()** (6 connections) — `server/app/memory_cleanup_service.py`
+- **test_create_memory_cleanup_monitor()** (4 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **test_task_four_spec_factory()** (4 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **.__init__()** (3 connections) — `server/app/memory_cleanup_service.py`
+- **._flush_memory_indexes_cache()** (3 connections) — `server/app/memory_cleanup_service.py`
+- **monitor()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **test_get_current_memory_usage_success()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **test_get_current_memory_usage_failure()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **test_get_active_task_count_no_loop()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **test_get_active_task_count_with_loop()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **test_flush_memory_indexes_cache_error()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **test_get_memory_status_report()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **test_managed_task_cleanup_skips_on_cooldown()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **test_managed_task_cleanup_skips_when_below_threshold()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **test_managed_task_cleanup_success()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **test_managed_task_cleanup_timeout()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **test_managed_task_cleanup_execution_failure()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **Managed Task Cleanup Service - Runtime Detection for Memory Threshold Monitoring** (1 connections) — `server/app/memory_cleanup_service.py`
+- **Runtime monitor for detecting memory threshold violations requiring cleanup.** (1 connections) — `server/app/memory_cleanup_service.py`
+- **Initialize the memory threshold monitoring service.          Args:             m** (1 connections) — `server/app/memory_cleanup_service.py`
+- **Flush persistent in-memory indexes associated with cached memory residency.** (1 connections) — `server/app/memory_cleanup_service.py`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [item models rationale](item_models_rationale.md) (12 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (10 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [player service game](player_service_game.md) (2 shared connections)
+- [realtime message nats](realtime_message_nats.md) (4 shared connections)
+- [dialogue definitions admin](dialogue_definitions_admin.md) (3 shared connections)
+- [schemas player rationale](schemas_player_rationale.md) (2 shared connections)
 - [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [schemas players profession](schemas_players_profession.md) (1 shared connections)
+- [taunt combat commands](taunt_combat_commands.md) (2 shared connections)
 
 ## Source Files
 
-- `server/services/player_combat_service_support.py`
+- `server/app/memory_cleanup_service.py`
+- `server/tests/unit/app/test_memory_cleanup_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 108 (89%)
-- INFERRED: 13 (11%)
+- EXTRACTED: 139 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

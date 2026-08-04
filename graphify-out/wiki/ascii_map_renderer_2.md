@@ -1,24 +1,24 @@
 # ascii map renderer
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_handle_alias_command_view_existing()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **Test handle_alias_command viewing existing alias.** (1 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **.__init__()** (3 connections) — `server/middleware/correlation_middleware.py`
+- **ASGIApp** (1 connections)
+- **Initialize the correlation middleware.          Args:             app: ASGI appl** (1 connections) — `server/middleware/correlation_middleware.py`
 
 ## Relationships
 
-- [commands alias rationale](commands_alias_rationale.md) (1 shared connections)
-- [scripts worktree ops](scripts_worktree_ops.md) (1 shared connections)
+- [app factory rationale](app_factory_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_alias_commands.py`
+- `server/middleware/correlation_middleware.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

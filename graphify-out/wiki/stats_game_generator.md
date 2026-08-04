@@ -1,48 +1,53 @@
 # stats game generator
 
-> 24 nodes
+> 27 nodes
 
 ## Key Concepts
 
-- **Stats** (11 connections)
-- **.roll_stats_with_profession()** (7 connections) — `server/game/stats_generator.py`
-- **.roll_stats()** (6 connections) — `server/game/stats_generator.py`
-- **._roll_size()** (5 connections) — `server/game/stats_generator.py`
-- **._roll_3d6()** (5 connections) — `server/game/stats_generator.py`
-- **.get_available_classes()** (5 connections) — `server/game/stats_generator.py`
-- **.roll_stats_with_validation()** (5 connections) — `server/game/stats_generator.py`
-- **._roll_4d6_drop_lowest()** (4 connections) — `server/game/stats_generator.py`
-- **._roll_point_buy()** (4 connections) — `server/game/stats_generator.py`
-- **.validate_class_prerequisites()** (4 connections) — `server/game/stats_generator.py`
-- **._check_profession_requirements()** (4 connections) — `server/game/stats_generator.py`
-- **.get_stat_summary()** (4 connections) — `server/game/stats_generator.py`
-- **Any** (2 connections)
-- **Roll character stats using the specified method.          Args:             meth** (1 connections) — `server/game/stats_generator.py`
-- **Roll Size using formula: (2D6+6)*5 (range 40-90).** (1 connections) — `server/game/stats_generator.py`
-- **Roll stats using 3d6 method (scaled to 15-90 range).** (1 connections) — `server/game/stats_generator.py`
-- **Roll stats using 4d6 drop lowest method (more generous, scaled to 15-90 range).** (1 connections) — `server/game/stats_generator.py`
-- **Generate stats using a point-buy system (balanced, scaled to 1-100 range).** (1 connections) — `server/game/stats_generator.py`
-- **Check if stats meet the prerequisites for a given class.          Args:** (1 connections) — `server/game/stats_generator.py`
-- **Get a list of classes that the character qualifies for.          Args:** (1 connections) — `server/game/stats_generator.py`
-- **Roll stats and validate against class requirements.          Args:             m** (1 connections) — `server/game/stats_generator.py`
-- **Roll stats and validate against profession requirements.          Args:** (1 connections) — `server/game/stats_generator.py`
-- **Check if stats meet profession requirements.          Args:             stats: T** (1 connections) — `server/game/stats_generator.py`
-- **Get a summary of the character's stats including modifiers and totals.** (1 connections) — `server/game/stats_generator.py`
+- **test_inventory_command_prototype.py** (21 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
+- **infer_equip_slot_from_prototype()** (18 connections) — `server/commands/inventory_command_prototype.py`
+- **inventory_command_prototype.py** (13 connections) — `server/commands/inventory_command_prototype.py`
+- **prototype_registry_from_request()** (8 connections) — `server/commands/inventory_command_prototype.py`
+- **prototype_from_registry()** (8 connections) — `server/commands/inventory_command_prototype.py`
+- **_first_normalized_wear_slot()** (3 connections) — `server/commands/inventory_command_prototype.py`
+- **test_prototype_from_registry_swallows_registry_error()** (3 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
+- **_inventory_prototype_id()** (2 connections) — `server/commands/inventory_command_prototype.py`
+- **_wear_slots_from_prototype()** (2 connections) — `server/commands/inventory_command_prototype.py`
+- **test_prototype_registry_from_request_missing_app()** (2 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
+- **test_prototype_registry_from_request_returns_registry()** (2 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
+- **test_prototype_from_registry_missing_get()** (2 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
+- **test_prototype_from_registry_returns_prototype()** (2 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
+- **test_infer_equip_slot_non_inventory_stack()** (2 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
+- **test_infer_equip_slot_no_registry()** (2 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
+- **test_infer_equip_slot_from_wear_slots()** (2 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
+- **test_infer_equip_slot_missing_prototype()** (2 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
+- **test_infer_equip_slot_empty_wear_slots()** (2 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
+- **test_prototype_registry_from_request_no_state()** (2 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
+- **test_infer_equip_slot_uses_item_id()** (2 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
+- **test_infer_equip_slot_non_string_wear_slot()** (2 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
+- **test_infer_equip_slot_invalid_prototype_id_type()** (2 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
+- **Prototype registry access and equip-slot inference for inventory items.** (1 connections) — `server/commands/inventory_command_prototype.py`
+- **Resolve prototype registry from FastAPI-style request (agent-readable indirectio** (1 connections) — `server/commands/inventory_command_prototype.py`
+- **Return the prototype object for ``prototype_id``, or None if missing or invalid.** (1 connections) — `server/commands/inventory_command_prototype.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [profession game service](profession_game_service.md) (11 shared connections)
-- [schemas unified room](schemas_unified_room.md) (1 shared connections)
-- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [commands inventory command](commands_inventory_command.md) (6 shared connections)
+- [npc spawn validator](npc_spawn_validator.md) (3 shared connections)
+- [MapView GameClientV2ContainerView Tabbed](MapView_GameClientV2ContainerView_Tabbed.md) (2 shared connections)
+- [commands emote rationale](commands_emote_rationale.md) (1 shared connections)
+- [combat npc mixin](combat_npc_mixin.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/stats_generator.py`
+- `server/commands/inventory_command_prototype.py`
+- `server/tests/unit/commands/test_inventory_command_prototype.py`
 
 ## Audit Trail
 
-- EXTRACTED: 77 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 107 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_wearable_containers_for_player_exception_in_validation()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test get_wearable_containers_for_player handles validation errors gracefully.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_is_player_in_room_false()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Test is_player_in_room() returns False when player is not in room.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Relationships
 
-- [wearable container service](wearable_container_service.md) (1 shared connections)
+- [message filtering realtime](message_filtering_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Audit Trail
 

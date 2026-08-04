@@ -1,37 +1,48 @@
 # player realtime presence
 
-> 15 nodes
+> 38 nodes
 
 ## Key Concepts
 
-- **Any** (8 connections)
-- **.set_stat_requirements()** (3 connections) — `server/models/profession.py`
-- **.get_mechanical_effects()** (3 connections) — `server/models/profession.py`
-- **.set_mechanical_effects()** (3 connections) — `server/models/profession.py`
-- **.get_stat_modifiers()** (3 connections) — `server/models/profession.py`
-- **.set_stat_modifiers()** (3 connections) — `server/models/profession.py`
-- **.get_skill_modifiers()** (3 connections) — `server/models/profession.py`
-- **.set_skill_modifiers()** (3 connections) — `server/models/profession.py`
-- **Set profession stat requirements from dictionary.** (1 connections) — `server/models/profession.py`
-- **Get profession mechanical effects as dictionary.** (1 connections) — `server/models/profession.py`
-- **Set profession mechanical effects from dictionary.** (1 connections) — `server/models/profession.py`
-- **Get stat modifiers as list of {stat, value}.** (1 connections) — `server/models/profession.py`
-- **Set stat modifiers from list of {stat, value}.** (1 connections) — `server/models/profession.py`
-- **Get skill modifiers as list of {skill_key, value}.** (1 connections) — `server/models/profession.py`
-- **Set skill modifiers from list of {skill_key, value}.** (1 connections) — `server/models/profession.py`
+- **test_command_parser_helpers.py** (24 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_normalize_command_removes_slash_prefix()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_normalize_command_cleans_whitespace()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_normalize_command_strips_whitespace()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_normalize_command_no_slash()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_parse_command_parts_simple()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_parse_command_parts_with_args()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_parse_command_parts_lowercases_command()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_parse_command_parts_empty_raises()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_parse_command_parts_whitespace_only_raises()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_get_command_help_specific_command()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_get_command_help_unknown_command()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_get_command_help_none()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_create_command_object_with_alias_l()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_create_command_object_with_alias_g()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_create_command_object_with_alias_w()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_create_command_object_unsupported_command()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_create_command_object_pydantic_validation_error()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_create_command_object_value_error()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **Unit tests for command_parser helper methods.  Tests the helper methods in Comma** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **Test _normalize_command() removes leading slash.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **Test _normalize_command() cleans multiple whitespace.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **Test _normalize_command() strips leading/trailing whitespace.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **Test _normalize_command() handles command without slash.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **Test _parse_command_parts() parses simple command.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [persistence core infrastructure](persistence_core_infrastructure.md) (7 shared connections)
-- [message handlers realtime](message_handlers_realtime.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (3 shared connections)
+- [command parser rationale](command_parser_rationale.md) (2 shared connections)
 
 ## Source Files
 
-- `server/models/profession.py`
+- `server/tests/unit/utils/test_command_parser_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 36 (100%)
+- EXTRACTED: 79 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

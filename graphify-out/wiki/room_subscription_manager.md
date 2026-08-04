@@ -1,27 +1,39 @@
 # room subscription manager
 
-> 8 nodes
+> 52 nodes
 
 ## Key Concepts
 
 - **test_room_subscription_manager.py** (28 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
 - **subscription_manager()** (3 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_room_subscription_manager_init()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_set_async_persistence()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
 - **test_subscribe_to_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_subscribe_to_room_multiple_players()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_unsubscribe_from_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_unsubscribe_from_room_not_subscribed()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_unsubscribe_from_room_removes_empty_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_subscribe_to_room_error()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_unsubscribe_from_room_error()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_get_room_subscribers()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_get_room_subscribers_empty()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_get_room_subscribers_error()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_add_room_occupant()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_add_room_occupant_multiple()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_add_room_occupant_new_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_add_room_occupant_existing_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_remove_room_occupant()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_remove_room_occupant_not_occupant()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_remove_room_occupant_removes_empty_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_add_room_occupant_error_handling()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_remove_room_occupant_error_handling()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
 - **test_get_room_occupants()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **Unit tests for room subscription manager.  Tests the RoomSubscriptionManager cla** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **Create a RoomSubscriptionManager instance.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **Test subscribe_to_room() subscribes player to room.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **Test get_room_occupants() returns occupants.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_get_room_occupants_empty()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- *... and 27 more nodes in this community*
 
 ## Relationships
 
-- [npc behavior engine](npc_behavior_engine.md) (9 shared connections)
-- [room infrastructure persistence](room_infrastructure_persistence.md) (5 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (3 shared connections)
-- [room cache infrastructure](room_cache_infrastructure.md) (3 shared connections)
-- [infrastructure persistence room](infrastructure_persistence_room.md) (2 shared connections)
-- [idle npc movement](idle_npc_movement.md) (2 shared connections)
-- [idle movement npc](idle_movement_npc.md) (1 shared connections)
+- [taunt combat commands](taunt_combat_commands.md) (3 shared connections)
 
 ## Source Files
 
@@ -29,7 +41,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 39 (100%)
+- EXTRACTED: 105 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

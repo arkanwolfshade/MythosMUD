@@ -1,6 +1,6 @@
 # NPC Definitions Admin
 
-> 72 nodes
+> 251 nodes
 
 ## Key Concepts
 
@@ -29,34 +29,33 @@
 - **get_npc_population_controller()** (9 connections) — `server/dependencies.py`
 - **get_catatonia_registry()** (9 connections) — `server/dependencies.py`
 - **get_passive_lucidity_flux_service()** (9 connections) — `server/dependencies.py`
-- *... and 47 more nodes in this community*
+- *... and 226 more nodes in this community*
 
 ## Relationships
 
-- [game models player](game_models_player.md) (12 shared connections)
-- [command inventory factories](command_inventory_factories.md) (9 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (9 shared connections)
-- [profession game service](profession_game_service.md) (8 shared connections)
-- [NPC Combat](NPC_Combat.md) (8 shared connections)
-- [command inventory models](command_inventory_models.md) (7 shared connections)
-- [room game service](room_game_service.md) (7 shared connections)
-- [Database Config](Database_Config.md) (6 shared connections)
-- [Error Conversion](Error_Conversion.md) (6 shared connections)
-- [config rationale config()](config_rationale_config%28%29.md) (6 shared connections)
-- [nats services service](nats_services_service.md) (5 shared connections)
-- [npc realtime occupant](npc_realtime_occupant.md) (5 shared connections)
+- [NPC Combat](NPC_Combat.md) (58 shared connections)
+- [room game service](room_game_service.md) (12 shared connections)
+- [event connection helpers](event_connection_helpers.md) (11 shared connections)
+- [nats services service](nats_services_service.md) (7 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (6 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (5 shared connections)
+- [coercion int inventory](coercion_int_inventory.md) (5 shared connections)
+- [profession game service](profession_game_service.md) (4 shared connections)
+- [models npc rationale](models_npc_rationale.md) (4 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (3 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (3 shared connections)
+- [Error Conversion](Error_Conversion.md) (3 shared connections)
 
 ## Source Files
 
-- `server/database.py`
 - `server/dependencies.py`
 - `server/tests/unit/infrastructure/test_dependencies.py`
 - `server/tests/unit/test_dependency_injection.py`
 
 ## Audit Trail
 
-- EXTRACTED: 489 (85%)
-- INFERRED: 83 (15%)
+- EXTRACTED: 882 (88%)
+- INFERRED: 125 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

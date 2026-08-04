@@ -1,6 +1,6 @@
 # SkillAssignmentScreen helpers CharacterN
 
-> 19 nodes
+> 20 nodes
 
 ## Key Concepts
 
@@ -8,6 +8,7 @@
 - **SkillAssignmentScreen.tsx** (15 connections) — `client/src/components/SkillAssignmentScreen.tsx`
 - **SkillAssignmentScreen.helpers.tsx** (12 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
 - **SkillAssignmentScreen()** (5 connections) — `client/src/components/SkillAssignmentScreen.tsx`
+- **getCreateCharacterErrorMessage()** (4 connections) — `client/src/components/CharacterNameScreen.tsx`
 - **CharacterNameScreen()** (4 connections) — `client/src/components/CharacterNameScreen.tsx`
 - **SkillsPayload** (3 connections) — `client/src/components/CharacterNameScreen.tsx`
 - **SkillAssignmentScreenProps** (3 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
@@ -28,7 +29,7 @@
 
 - [mythosApp useMythosAppState useStatsRoll](mythosApp_useMythosAppState_useStatsRoll.md) (6 shared connections)
 - [mythosApp CharacterSelectionScreen chara](mythosApp_CharacterSelectionScreen_chara.md) (5 shared connections)
-- [Game Terminal UI](Game_Terminal_UI.md) (4 shared connections)
+- [project paths rationale](project_paths_rationale.md) (4 shared connections)
 - [App helpers professionSystemErrorHandlin](App_helpers_professionSystemErrorHandlin.md) (2 shared connections)
 
 ## Source Files
@@ -39,7 +40,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 89 (100%)
+- EXTRACTED: 93 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

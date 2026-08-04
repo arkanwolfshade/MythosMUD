@@ -1,62 +1,63 @@
 # command models moderation
 
-> 156 nodes
+> 88 nodes
 
 ## Key Concepts
 
-- **test_command_moderation.py** (38 connections) — `server/tests/unit/models/test_command_moderation.py`
-- **test_command_factories_moderation.py** (29 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
-- **validate_player_name()** (23 connections) — `server/validators/security_validator.py`
-- **MuteCommand** (18 connections) — `server/models/command_moderation.py`
-- **MuteGlobalCommand** (15 connections) — `server/models/command_moderation.py`
-- **AdminCommand** (15 connections) — `server/models/command_moderation.py`
-- **UnmuteCommand** (10 connections) — `server/models/command_moderation.py`
-- **UnmuteGlobalCommand** (10 connections) — `server/models/command_moderation.py`
-- **AddAdminCommand** (10 connections) — `server/models/command_moderation.py`
-- **.create_mute_command()** (9 connections) — `server/utils/command_factories_moderation.py`
-- **.create_mute_global_command()** (9 connections) — `server/utils/command_factories_moderation.py`
-- **.create_unmute_command()** (7 connections) — `server/utils/command_factories_moderation.py`
-- **.create_unmute_global_command()** (7 connections) — `server/utils/command_factories_moderation.py`
-- **.create_add_admin_command()** (7 connections) — `server/utils/command_factories_moderation.py`
-- **.create_admin_command()** (7 connections) — `server/utils/command_factories_moderation.py`
-- **.create_mutes_command()** (6 connections) — `server/utils/command_factories_moderation.py`
-- **test_mute_command_duration_validation_min()** (4 connections) — `server/tests/unit/models/test_command_moderation.py`
-- **test_mute_command_duration_validation_max()** (4 connections) — `server/tests/unit/models/test_command_moderation.py`
-- **test_mute_command_reason_max_length()** (4 connections) — `server/tests/unit/models/test_command_moderation.py`
-- **test_mute_global_command_duration_validation_min()** (4 connections) — `server/tests/unit/models/test_command_moderation.py`
-- **test_mute_global_command_duration_validation_max()** (4 connections) — `server/tests/unit/models/test_command_moderation.py`
-- **test_admin_command_validate_subcommand_invalid()** (4 connections) — `server/tests/unit/models/test_command_moderation.py`
-- **test_admin_command_subcommand_min_length()** (4 connections) — `server/tests/unit/models/test_command_moderation.py`
-- **test_admin_command_subcommand_max_length()** (4 connections) — `server/tests/unit/models/test_command_moderation.py`
-- **test_create_mute_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
-- *... and 131 more nodes in this community*
+- **websocket_room_updates.py** (36 connections) — `server/realtime/websocket_room_updates.py`
+- **test_websocket_room_updates.py** (32 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **broadcast_room_update()** (26 connections) — `server/realtime/websocket_room_updates.py`
+- **build_room_update_event()** (13 connections) — `server/realtime/websocket_room_updates.py`
+- **get_npc_name_from_instance()** (12 connections) — `server/realtime/websocket_helpers.py`
+- **get_player_occupants()** (11 connections) — `server/realtime/websocket_room_updates.py`
+- **get_npc_occupants_from_lifecycle_manager()** (11 connections) — `server/realtime/websocket_room_updates.py`
+- **get_npc_occupants_fallback()** (9 connections) — `server/realtime/websocket_room_updates.py`
+- **update_player_room_subscription()** (8 connections) — `server/realtime/websocket_room_updates.py`
+- **UUID** (6 connections)
+- **_decorate_occupant_name()** (6 connections) — `server/realtime/websocket_room_updates.py`
+- **test_websocket_room_updates_build_event.py** (6 connections) — `server/tests/unit/realtime/test_websocket_room_updates_build_event.py`
+- **_resolve_room_with_fallback()** (5 connections) — `server/realtime/websocket_room_updates.py`
+- **_parse_occupant_player_id()** (4 connections) — `server/realtime/websocket_room_updates.py`
+- **test_get_player_occupants_handles_exception()** (4 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_get_npc_occupants_from_lifecycle_manager_handles_exception()** (4 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_broadcast_room_update_fallback_npc_method()** (4 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_get_npc_name_from_instance_not_found()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_get_npc_name_from_instance_no_name_attribute()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_get_npc_name_from_instance_import_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_get_npc_name_from_instance_runtime_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_get_player_occupants_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_get_player_occupants_empty()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_get_npc_occupants_from_lifecycle_manager_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- **test_get_npc_occupants_from_lifecycle_manager_filters_dead()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
+- *... and 63 more nodes in this community*
 
 ## Relationships
 
-- [command factories create](command_factories_create.md) (42 shared connections)
-- [command inventory models](command_inventory_models.md) (20 shared connections)
-- [command inventory factories](command_inventory_factories.md) (8 shared connections)
-- [npc behavior engine](npc_behavior_engine.md) (4 shared connections)
-- [command communication models](command_communication_models.md) (3 shared connections)
-- [Security Validator Tests](Security_Validator_Tests.md) (3 shared connections)
-- [Database Config](Database_Config.md) (1 shared connections)
-- [commands admin mute](commands_admin_mute.md) (1 shared connections)
-- [services admin auth](services_admin_auth.md) (1 shared connections)
-- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
+- [room websocket updates](room_websocket_updates.md) (8 shared connections)
+- [combat services turn](combat_services_turn.md) (6 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (5 shared connections)
+- [room renderer functions](room_renderer_functions.md) (5 shared connections)
+- [logging setup structured](logging_setup_structured.md) (4 shared connections)
+- [room look commands](room_look_commands.md) (4 shared connections)
+- [command utility models](command_utility_models.md) (3 shared connections)
+- [NPC Combat](NPC_Combat.md) (3 shared connections)
+- [nats services service](nats_services_service.md) (2 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (2 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (2 shared connections)
+- [realtime websocket initial](realtime_websocket_initial.md) (2 shared connections)
 
 ## Source Files
 
-- `server/models/command_admin.py`
-- `server/models/command_moderation.py`
-- `server/tests/unit/models/test_command_moderation.py`
-- `server/tests/unit/utils/test_command_factories_moderation.py`
-- `server/utils/command_factories_moderation.py`
-- `server/validators/security_validator.py`
+- `server/realtime/websocket_helpers.py`
+- `server/realtime/websocket_room_updates.py`
+- `server/tests/unit/realtime/test_websocket_helpers.py`
+- `server/tests/unit/realtime/test_websocket_room_updates.py`
+- `server/tests/unit/realtime/test_websocket_room_updates_build_event.py`
 
 ## Audit Trail
 
-- EXTRACTED: 470 (94%)
-- INFERRED: 32 (6%)
+- EXTRACTED: 315 (99%)
+- INFERRED: 4 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

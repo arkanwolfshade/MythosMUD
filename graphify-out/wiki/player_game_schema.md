@@ -1,34 +1,50 @@
 # player game schema
 
-> 9 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **UUID** (6 connections)
-- **._memory_connections_section()** (6 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._memory_sessions_section()** (5 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._safe_ratio()** (5 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._count_orphaned_connections()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **Count active connections not tied to any online player.** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **Build the connections subsection of memory stats.** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **Build the sessions subsection of memory stats.** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **Return numerator/denominator, or 0 when denominator is empty.** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **get_cached_player()** (15 connections) — `server/utils/player_cache.py`
+- **cache_player()** (13 connections) — `server/utils/player_cache.py`
+- **test_player_cache.py** (11 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **player_cache.py** (7 connections) — `server/utils/player_cache.py`
+- **_get_request_state()** (6 connections) — `server/utils/player_cache.py`
+- **test_cache_and_get_player()** (4 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **test_cache_player_multiple()** (4 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **test_cache_player_overwrite()** (4 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **test_get_cached_player_none()** (3 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **test_get_cached_player_nonexistent()** (3 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **test_get_cached_player_no_state()** (3 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **test_cache_player_no_state()** (3 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **Any** (3 connections)
+- **Unit tests for player_cache utilities.  Tests the player caching functions for r** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **Test get_cached_player() returns None when no cache exists.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **Test cache_player() and get_cached_player() operations.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **Test get_cached_player() returns None for nonexistent key.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **Test cache_player() can cache multiple players.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **Test cache_player() overwrites existing entries.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **Test get_cached_player() handles missing state.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **Test cache_player() handles missing state gracefully.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **Helpers for caching player objects during a single command request.  This avoids** (1 connections) — `server/utils/player_cache.py`
+- **Safely extract the state object from a FastAPI/Starlette request.** (1 connections) — `server/utils/player_cache.py`
+- **Return a cached player object for this request if one exists.** (1 connections) — `server/utils/player_cache.py`
+- **Cache a player object on the request for reuse within the command.** (1 connections) — `server/utils/player_cache.py`
 
 ## Relationships
 
-- [target services resolution](target_services_resolution.md) (4 shared connections)
-- [persistence container helpers](persistence_container_helpers.md) (3 shared connections)
-- [subject admin controller](subject_admin_controller.md) (2 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (1 shared connections)
+- [command validation commands](command_validation_commands.md) (5 shared connections)
+- [commands logout rationale](commands_logout_rationale.md) (5 shared connections)
+- [commands emote rationale](commands_emote_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/monitoring/statistics_aggregator.py`
+- `server/tests/unit/utils/test_player_cache.py`
+- `server/utils/player_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 30 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 90 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

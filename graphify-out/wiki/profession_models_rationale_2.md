@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_comprehensive_sanitize_input_removes_zero_width_chars()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **Test that comprehensive sanitization removes zero-width characters.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_unsubscribe_from_subject_error()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **Test _unsubscribe_from_subject() handles errors.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Relationships
 
-- [Security Validator Tests](Security_Validator_Tests.md) (1 shared connections)
-- [command communication models](command_communication_models.md) (1 shared connections)
+- [commands communication say](commands_communication_say.md) (1 shared connections)
+- [nats message handler](nats_message_handler.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_security_validator.py`
+- `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Audit Trail
 

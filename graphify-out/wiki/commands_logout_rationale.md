@@ -33,12 +33,14 @@
 
 ## Relationships
 
-- [logout command commands](logout_command_commands.md) (8 shared connections)
-- [player cache rationale](player_cache_rationale.md) (5 shared connections)
-- [commands admin mute](commands_admin_mute.md) (4 shared connections)
-- [command factories create](command_factories_create.md) (3 shared connections)
-- [commands emote rationale](commands_emote_rationale.md) (3 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [persistence combat handler](persistence_combat_handler.md) (8 shared connections)
+- [player game schema](player_game_schema.md) (5 shared connections)
+- [commands npc admin](commands_npc_admin.md) (3 shared connections)
+- [commands who rationale](commands_who_rationale.md) (3 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [connection realtime manager](connection_realtime_manager.md) (2 shared connections)
+- [commands whisper command](commands_whisper_command.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,47 +1,62 @@
 # player respawn event
 
-> 20 nodes
+> 70 nodes
 
 ## Key Concepts
 
-- **NPCStartupService** (44 connections) — `server/services/npc_startup_service.py`
-- **npc_startup_service()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_get_npc_startup_service()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_npcs_on_startup()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_npcs_on_startup_with_required_npcs()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_required_npcs_spawn_failure()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_get_default_room_for_sub_zone()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_get_default_room_for_sub_zone_unknown()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_optional_npcs_no_spawn_room()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **.__init__()** (2 connections) — `server/services/npc_startup_service.py`
-- **Service for automatic NPC spawning during server startup.      This service coor** (1 connections) — `server/services/npc_startup_service.py`
-- **Initialize the NPC startup service.** (1 connections) — `server/services/npc_startup_service.py`
-- **Create an NPCStartupService instance.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test spawn_npcs_on_startup() processes startup spawning.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test spawn_npcs_on_startup() spawns required NPCs.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test _spawn_required_npcs() handles spawn failures.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test _get_default_room_for_sub_zone() returns correct room for known sub-zone.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test _get_default_room_for_sub_zone() returns None for unknown sub-zone.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test get_npc_startup_service() returns service instance.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test _spawn_optional_npcs() handles missing spawn room.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **MagicService** (57 connections) — `server/game/magic/magic_service.py`
+- **test_magic_service.py** (47 connections) — `server/tests/unit/game/magic/test_magic_service.py`
+- **CastingStateManager** (27 connections) — `server/game/magic/casting_state_manager.py`
+- **UUID** (26 connections)
+- **test_casting_state_manager.py** (10 connections) — `server/tests/unit/game/magic/test_casting_state_manager.py`
+- **CastingState** (8 connections) — `server/game/magic/casting_state_manager.py`
+- **UUID** (8 connections)
+- **_spell()** (8 connections) — `server/tests/unit/game/magic/test_casting_state_manager.py`
+- **.start_casting()** (5 connections) — `server/game/magic/casting_state_manager.py`
+- **test_can_cast_spell_unknown_and_materials()** (5 connections) — `server/tests/unit/game/magic/test_magic_service.py`
+- **test_cast_spell_material_consume_failure()** (5 connections) — `server/tests/unit/game/magic/test_magic_service.py`
+- **test_check_casting_progress_completes()** (5 connections) — `server/tests/unit/game/magic/test_magic_service.py`
+- **test_start_delayed_cast_in_combat()** (5 connections) — `server/tests/unit/game/magic/test_magic_service.py`
+- **test_start_delayed_cast_value_error()** (5 connections) — `server/tests/unit/game/magic/test_magic_service.py`
+- **.get_casting_state()** (4 connections) — `server/game/magic/casting_state_manager.py`
+- **.complete_casting()** (4 connections) — `server/game/magic/casting_state_manager.py`
+- **.interrupt_casting()** (4 connections) — `server/game/magic/casting_state_manager.py`
+- **_build_magic_service()** (4 connections) — `server/tests/unit/game/magic/test_magic_service.py`
+- **test_can_cast_spell_paths()** (4 connections) — `server/tests/unit/game/magic/test_magic_service.py`
+- **test_cast_spell_delayed()** (4 connections) — `server/tests/unit/game/magic/test_magic_service.py`
+- **test_interrupt_casting_luck_pass()** (4 connections) — `server/tests/unit/game/magic/test_magic_service.py`
+- **test_interrupt_casting_luck_fail()** (4 connections) — `server/tests/unit/game/magic/test_magic_service.py`
+- **test_complete_casting_via_combat_queue()** (4 connections) — `server/tests/unit/game/magic/test_magic_service.py`
+- **.is_casting()** (3 connections) — `server/game/magic/casting_state_manager.py`
+- **.update_casting_progress()** (3 connections) — `server/game/magic/casting_state_manager.py`
+- *... and 45 more nodes in this community*
 
 ## Relationships
 
-- [startup npc service](startup_npc_service.md) (18 shared connections)
-- [services npc startup](services_npc_startup.md) (16 shared connections)
-- [startup services npc](startup_services_npc.md) (5 shared connections)
-- [Magic Spell Service](Magic_Spell_Service.md) (3 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (2 shared connections)
+- [spell game magic](spell_game_magic.md) (19 shared connections)
+- [NPC Combat](NPC_Combat.md) (14 shared connections)
+- [game models player](game_models_player.md) (8 shared connections)
+- [commands magic rationale](commands_magic_rationale.md) (7 shared connections)
+- [coercion int inventory](coercion_int_inventory.md) (7 shared connections)
+- [nats services service](nats_services_service.md) (3 shared connections)
+- [magic completion game](magic_completion_game.md) (2 shared connections)
+- [subject nats manager](subject_nats_manager.md) (2 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (2 shared connections)
+- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [room realtime rationale](room_realtime_rationale.md) (1 shared connections)
+- [manager room npcs](manager_room_npcs.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/npc_startup_service.py`
-- `server/tests/unit/services/test_npc_startup_service.py`
+- `server/game/magic/casting_state_manager.py`
+- `server/game/magic/magic_service.py`
+- `server/tests/unit/game/magic/test_casting_state_manager.py`
+- `server/tests/unit/game/magic/test_magic_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 78 (95%)
-- INFERRED: 4 (5%)
+- EXTRACTED: 335 (94%)
+- INFERRED: 22 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,29 +1,42 @@
 # message filtering helpers
 
-> 6 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **TestGetConnectionManager** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_connection_manager_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_connection_manager_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Tests for get_connection_manager dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_connection_manager returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_connection_manager raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **SecureBaseModel** (10 connections) — `server/schemas/shared/base.py`
+- **user.py** (9 connections) — `server/schemas/auth/user.py`
+- **invite.py** (8 connections) — `server/schemas/auth/invite.py`
+- **base.py** (6 connections) — `server/schemas/shared/base.py`
+- **ResponseBaseModel** (6 connections) — `server/schemas/shared/base.py`
+- **BaseModel** (2 connections)
+- **Pydantic schemas for Invite model.  This module defines Pydantic schemas for inv** (1 connections) — `server/schemas/auth/invite.py`
+- **Pydantic schemas for User model.  This module defines Pydantic schemas for user** (1 connections) — `server/schemas/auth/user.py`
+- **Base Pydantic model classes for MythosMUD schemas.  This module provides base cl** (1 connections) — `server/schemas/shared/base.py`
+- **Base model with standard security configuration.      All models that handle use** (1 connections) — `server/schemas/shared/base.py`
+- **Base model for API response schemas.      Response models may need additional co** (1 connections) — `server/schemas/shared/base.py`
 
 ## Relationships
 
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (3 shared connections)
-- [command inventory models](command_inventory_models.md) (1 shared connections)
+- [level curve game](level_curve_game.md) (4 shared connections)
+- [command factories moderation](command_factories_moderation.md) (3 shared connections)
+- [target resolution service](target_resolution_service.md) (3 shared connections)
+- [professions endpoints all](professions_endpoints_all.md) (2 shared connections)
+- [spawn npc services](spawn_npc_services.md) (2 shared connections)
+- [channel broadcasting realtime](channel_broadcasting_realtime.md) (2 shared connections)
+- [combat models rationale](combat_models_rationale.md) (1 shared connections)
+- [player requests schemas](player_requests_schemas.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_dependencies.py`
+- `server/schemas/auth/invite.py`
+- `server/schemas/auth/user.py`
+- `server/schemas/shared/base.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (93%)
-- INFERRED: 1 (7%)
+- EXTRACTED: 46 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

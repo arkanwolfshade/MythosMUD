@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_register_new_connection_existing_player()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _register_new_connection() adds to existing player connections.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_movement_service_init()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
+- **Test MovementService initialization.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
 
 ## Relationships
 
-- [player event state](player_event_state.md) (1 shared connections)
-- [connection establishment realtime](connection_establishment_realtime.md) (1 shared connections)
+- [message nats handler](message_nats_handler.md) (1 shared connections)
+- [movement service game](movement_service_game.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_connection_establishment.py`
+- `server/tests/unit/game/test_movement_service.py`
 
 ## Audit Trail
 

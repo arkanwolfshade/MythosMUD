@@ -1,52 +1,62 @@
 # realtime monitoring statistics
 
-> 86 nodes
+> 45 nodes
 
 ## Key Concepts
 
-- **test_population_control.py** (65 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_check_spawn_requirements_for_room_with_definitions()** (4 connections) — `server/tests/unit/npc/test_population_control.py`
-- **mock_event_bus()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **population_controller()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_population_controller_init()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_population_controller_init_requires_async_persistence()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_load_npc_definitions()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_load_npc_definitions_overwrites()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_get_zone_configuration_exact_match()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_get_zone_configuration_zone_fallback()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_get_zone_configuration_no_slash()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_handle_player_entered_room()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_handle_player_left_room()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_handle_npc_entered_room()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_handle_npc_left_room()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_spawn_npc_no_lifecycle_manager()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_spawn_npc_success()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_spawn_npc_spawn_fails()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_spawn_npc_handles_exception()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_spawn_npc_public_api()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **mock_async_persistence()** (2 connections) — `server/tests/unit/npc/test_population_control.py`
-- **mock_lifecycle_manager()** (2 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_load_spawn_rules_empty()** (2 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_update_game_state()** (2 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_update_game_state_partial()** (2 connections) — `server/tests/unit/npc/test_population_control.py`
-- *... and 61 more nodes in this community*
+- **send_game_event()** (30 connections) — `server/realtime/connection_manager_api.py`
+- **connection_manager_api.py** (21 connections) — `server/realtime/connection_manager_api.py`
+- **broadcast_game_event()** (12 connections) — `server/realtime/connection_manager_api.py`
+- **resolve_connection_manager()** (10 connections) — `server/realtime/connection_manager_utils.py`
+- **test_connection_manager_api.py** (10 connections) — `server/tests/unit/realtime/test_connection_manager_api.py`
+- **__getattr__()** (9 connections) — `server/realtime/connection_manager.py`
+- **send_room_event()** (8 connections) — `server/realtime/connection_manager_api.py`
+- **connection_manager_utils.py** (8 connections) — `server/realtime/connection_manager_utils.py`
+- **_ConnectionManagerAPI** (7 connections) — `server/realtime/connection_manager_api.py`
+- **_require_manager()** (7 connections) — `server/realtime/connection_manager_api.py`
+- **send_system_notification()** (7 connections) — `server/realtime/connection_manager_api.py`
+- **send_player_status_update()** (7 connections) — `server/realtime/connection_manager_api.py`
+- **send_room_description()** (7 connections) — `server/realtime/connection_manager_api.py`
+- **UUID** (6 connections)
+- **_ensure_async_compat()** (4 connections) — `server/realtime/connection_manager_utils.py`
+- **.send_personal_message()** (3 connections) — `server/realtime/connection_manager_api.py`
+- **_coerce_connection_manager()** (3 connections) — `server/realtime/connection_manager_utils.py`
+- **_make_async_compat_wrapper()** (3 connections) — `server/realtime/connection_manager_utils.py`
+- **.broadcast_global()** (2 connections) — `server/realtime/connection_manager_api.py`
+- **.broadcast_to_room()** (2 connections) — `server/realtime/connection_manager_api.py`
+- **Lazy import for API utility functions to avoid circular dependencies.** (1 connections) — `server/realtime/connection_manager.py`
+- **Protocol** (1 connections)
+- **Public API utility functions for connection manager.  This module provides conve** (1 connections) — `server/realtime/connection_manager_api.py`
+- **Structural type for API helpers; avoids importing ConnectionManager.** (1 connections) — `server/realtime/connection_manager_api.py`
+- **Resolve manager without importing ConnectionManager (import cycle).** (1 connections) — `server/realtime/connection_manager_api.py`
+- *... and 20 more nodes in this community*
 
 ## Relationships
 
-- [Realtime Subscribers](Realtime_Subscribers.md) (19 shared connections)
-- [item models rationale](item_models_rationale.md) (9 shared connections)
-- [npc spawn validator](npc_spawn_validator.md) (6 shared connections)
-- [spell game magic](spell_game_magic.md) (6 shared connections)
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (9 shared connections)
+- [NPC Combat](NPC_Combat.md) (9 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (7 shared connections)
+- [party service game](party_service_game.md) (5 shared connections)
+- [room look commands](room_look_commands.md) (4 shared connections)
+- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (3 shared connections)
+- [manager subject services](manager_subject_services.md) (2 shared connections)
+- [lucidity services helpers](lucidity_services_helpers.md) (2 shared connections)
+- [nats services service](nats_services_service.md) (2 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [room realtime rationale](room_realtime_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_population_control.py`
+- `server/realtime/connection_manager.py`
+- `server/realtime/connection_manager_api.py`
+- `server/realtime/connection_manager_utils.py`
+- `server/tests/unit/realtime/test_connection_manager_api.py`
 
 ## Audit Trail
 
-- EXTRACTED: 203 (96%)
-- INFERRED: 9 (4%)
+- EXTRACTED: 171 (90%)
+- INFERRED: 20 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

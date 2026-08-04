@@ -1,43 +1,60 @@
 # commands communication channels
 
-> 18 nodes
+> 48 nodes
 
 ## Key Concepts
 
-- **test_metadata.py** (11 connections) — `server/tests/unit/test_metadata.py`
-- **metadata.py** (3 connections) — `server/metadata.py`
-- **npc_metadata.py** (3 connections) — `server/npc_metadata.py`
-- **test_base_is_declarative_base()** (3 connections) — `server/tests/unit/test_metadata.py`
-- **test_base_has_metadata()** (3 connections) — `server/tests/unit/test_metadata.py`
-- **test_base_can_be_instantiated()** (3 connections) — `server/tests/unit/test_metadata.py`
-- **test_metadata_is_metadata_instance()** (2 connections) — `server/tests/unit/test_metadata.py`
-- **test_npc_metadata_is_metadata_instance()** (2 connections) — `server/tests/unit/test_metadata.py`
-- **test_metadata_and_npc_metadata_are_different()** (2 connections) — `server/tests/unit/test_metadata.py`
-- **Shared SQLAlchemy metadata for MythosMUD models.  This module provides the share** (1 connections) — `server/metadata.py`
-- **NPC Database metadata for MythosMUD.  This module defines the SQLAlchemy metadat** (1 connections) — `server/npc_metadata.py`
-- **Unit tests for metadata modules.  Tests the shared SQLAlchemy metadata instances** (1 connections) — `server/tests/unit/test_metadata.py`
-- **Test that metadata is a MetaData instance.** (1 connections) — `server/tests/unit/test_metadata.py`
-- **Test that npc_metadata is a MetaData instance.** (1 connections) — `server/tests/unit/test_metadata.py`
-- **Test that metadata and npc_metadata are separate instances.** (1 connections) — `server/tests/unit/test_metadata.py`
-- **Test that Base is a DeclarativeBase subclass.** (1 connections) — `server/tests/unit/test_metadata.py`
-- **Test that Base has metadata attribute set to shared metadata.** (1 connections) — `server/tests/unit/test_metadata.py`
-- **Test that Base can be instantiated (though meant to be subclassed).** (1 connections) — `server/tests/unit/test_metadata.py`
+- **RealTimeEventHandler** (44 connections) — `server/realtime/event_handler.py`
+- **.__init__()** (9 connections) — `server/realtime/event_handler.py`
+- **._initialize_modules()** (8 connections) — `server/realtime/event_handler.py`
+- **event_handler()** (6 connections) — `server/tests/unit/realtime/test_event_handler.py`
+- **Any** (4 connections)
+- **._create_player_entered_message()** (4 connections) — `server/realtime/event_handler.py`
+- **._create_player_left_message()** (4 connections) — `server/realtime/event_handler.py`
+- **._handle_player_entered()** (3 connections) — `server/realtime/event_handler.py`
+- **._handle_player_left()** (3 connections) — `server/realtime/event_handler.py`
+- **._handle_npc_entered()** (3 connections) — `server/realtime/event_handler.py`
+- **._handle_npc_left()** (3 connections) — `server/realtime/event_handler.py`
+- **._handle_player_xp_awarded()** (3 connections) — `server/realtime/event_handler.py`
+- **._handle_player_dp_updated()** (3 connections) — `server/realtime/event_handler.py`
+- **._handle_player_died()** (3 connections) — `server/realtime/event_handler.py`
+- **._handle_player_dp_decay()** (3 connections) — `server/realtime/event_handler.py`
+- **._handle_player_delirium_respawned()** (3 connections) — `server/realtime/event_handler.py`
+- **._send_room_occupants_update_internal()** (3 connections) — `server/realtime/event_handler.py`
+- **.send_room_occupants_update()** (3 connections) — `server/realtime/event_handler.py`
+- **._get_room_occupants()** (3 connections) — `server/realtime/event_handler.py`
+- **._send_occupants_snapshot_to_player()** (3 connections) — `server/realtime/event_handler.py`
+- **test_event_handler_init()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
+- **test_event_handler_init_no_event_bus()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
+- **._get_next_sequence()** (2 connections) — `server/realtime/event_handler.py`
+- **UUID** (2 connections)
+- **.shutdown()** (2 connections) — `server/realtime/event_handler.py`
+- *... and 23 more nodes in this community*
 
 ## Relationships
 
-- [world models rationale](world_models_rationale.md) (6 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (17 shared connections)
+- [realtime websocket initial](realtime_websocket_initial.md) (8 shared connections)
+- [nats services service](nats_services_service.md) (3 shared connections)
+- [realtime monitoring performance](realtime_monitoring_performance.md) (2 shared connections)
+- [npc event handlers](npc_event_handlers.md) (2 shared connections)
+- [schedule services service](schedule_services_service.md) (2 shared connections)
+- [Player Name Validation](Player_Name_Validation.md) (2 shared connections)
+- [event bus events](event_bus_events.md) (2 shared connections)
+- [item models rationale](item_models_rationale.md) (2 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (1 shared connections)
+- [NATS Messaging](NATS_Messaging.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
 
 ## Source Files
 
-- `server/metadata.py`
-- `server/npc_metadata.py`
-- `server/tests/unit/test_metadata.py`
+- `server/realtime/event_handler.py`
+- `server/tests/unit/realtime/test_event_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 39 (95%)
-- INFERRED: 2 (5%)
+- EXTRACTED: 135 (88%)
+- INFERRED: 18 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,24 +1,51 @@
 # realtime messaging message
 
-> 2 nodes
+> 32 nodes
 
 ## Key Concepts
 
-- **test_profession_set_stat_requirements_empty_dict()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **Test set_stat_requirements handles empty dict.** (1 connections) — `server/tests/unit/models/test_profession.py`
+- **conftest.py** (22 connections) — `server/tests/unit/realtime/conftest.py`
+- **nats_message_handler()** (3 connections) — `server/tests/unit/realtime/conftest.py`
+- **mock_utils()** (3 connections) — `server/tests/unit/realtime/conftest.py`
+- **player_room_event_handler()** (3 connections) — `server/tests/unit/realtime/conftest.py`
+- **mock_nats_service()** (2 connections) — `server/tests/unit/realtime/conftest.py`
+- **mock_subject_manager()** (2 connections) — `server/tests/unit/realtime/conftest.py`
+- **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/conftest.py`
+- **mock_websocket()** (2 connections) — `server/tests/unit/realtime/conftest.py`
+- **mock_ws_connection_manager()** (2 connections) — `server/tests/unit/realtime/conftest.py`
+- **mock_user_manager()** (2 connections) — `server/tests/unit/realtime/conftest.py`
+- **mock_room_sync_service()** (2 connections) — `server/tests/unit/realtime/conftest.py`
+- **mock_chat_logger()** (2 connections) — `server/tests/unit/realtime/conftest.py`
+- **mock_message_builder()** (2 connections) — `server/tests/unit/realtime/conftest.py`
+- **mock_name_extractor()** (2 connections) — `server/tests/unit/realtime/conftest.py`
+- **mock_occupant_manager()** (2 connections) — `server/tests/unit/realtime/conftest.py`
+- **mock_logger()** (2 connections) — `server/tests/unit/realtime/conftest.py`
+- **Shared fixtures for realtime unit tests.  Provides fixtures used by NATS message** (1 connections) — `server/tests/unit/realtime/conftest.py`
+- **Create a mock NATS service.** (1 connections) — `server/tests/unit/realtime/conftest.py`
+- **Create a mock subject manager.** (1 connections) — `server/tests/unit/realtime/conftest.py`
+- **Create a mock connection manager (NATS / general).** (1 connections) — `server/tests/unit/realtime/conftest.py`
+- **Create mock WebSocket for handler tests.** (1 connections) — `server/tests/unit/realtime/conftest.py`
+- **Create mock connection manager for WebSocket handler tests.** (1 connections) — `server/tests/unit/realtime/conftest.py`
+- **Create a mock user manager.** (1 connections) — `server/tests/unit/realtime/conftest.py`
+- **Create a NATSMessageHandler instance.** (1 connections) — `server/tests/unit/realtime/conftest.py`
+- **Create a mock room sync service.** (1 connections) — `server/tests/unit/realtime/conftest.py`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [persistence core infrastructure](persistence_core_infrastructure.md) (1 shared connections)
-- [profession models rationale](profession_models_rationale.md) (1 shared connections)
+- [player_event_handler_utils](player_event_handler_utils.md) (3 shared connections)
+- [commands communication say](commands_communication_say.md) (2 shared connections)
+- [inventory mutation guard](inventory_mutation_guard.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (1 shared connections)
+- [event bus events](event_bus_events.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/models/test_profession.py`
+- `server/tests/unit/realtime/conftest.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 71 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,53 +1,70 @@
 # command factories communication
 
-> 44 nodes
+> 182 nodes
 
 ## Key Concepts
 
+- **game.py** (32 connections) — `server/models/game.py`
+- **StatusEffect** (32 connections) — `server/models/game.py`
 - **Player** (26 connections) — `server/models/game.py`
+- **spell_effects_status.py** (24 connections) — `server/game/magic/spell_effects_status.py`
 - **test_game_player.py** (23 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_add_item_existing()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_remove_item_success()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_remove_item_removes_when_zero()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_remove_item_insufficient_quantity()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_add_status_effect()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_remove_status_effect_success()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_get_active_status_effects()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_get_active_status_effects_all_active()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_can_carry_weight_true()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_can_carry_weight_false()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **.add_item()** (3 connections) — `server/models/game.py`
-- **.add_status_effect()** (3 connections) — `server/models/game.py`
-- **test_player_add_item_new()** (3 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_add_item_default_quantity()** (3 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_remove_item_not_found()** (3 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_remove_status_effect_not_found()** (3 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_update_last_active()** (3 connections) — `server/tests/unit/models/test_game_player.py`
-- **.remove_item()** (2 connections) — `server/models/game.py`
-- **.update_last_active()** (2 connections) — `server/models/game.py`
-- **.can_carry_weight()** (2 connections) — `server/models/game.py`
-- **Pydantic Player model for game logic and validation.      This is separate from** (1 connections) — `server/models/game.py`
-- **Add an item to the player's inventory.          Args:             item_id: Uniqu** (1 connections) — `server/models/game.py`
-- **Remove an item from the player's inventory.          Args:             item_id:** (1 connections) — `server/models/game.py`
-- *... and 19 more nodes in this community*
+- **player_schema_converter.py** (19 connections) — `server/game/player_schema_converter.py`
+- **InventoryItem** (19 connections) — `server/models/game.py`
+- **test_player_schema_converter_weapon.py** (19 connections) — `server/tests/unit/game/test_player_schema_converter_weapon.py`
+- **StatusEffectType** (18 connections) — `server/models/game.py`
+- **PlayerSchemaConverter** (16 connections) — `server/game/player_schema_converter.py`
+- **test_game_status_effect.py** (13 connections) — `server/tests/unit/models/test_game_status_effect.py`
+- **_weapon_from_prototype_registry()** (12 connections) — `server/game/player_schema_converter.py`
+- **.create_player_read_from_object()** (12 connections) — `server/game/player_schema_converter.py`
+- **Any** (11 connections)
+- **_inventory_item_with_weapon()** (11 connections) — `server/game/player_schema_converter.py`
+- **test_game_enums.py** (11 connections) — `server/tests/unit/models/test_game_enums.py`
+- **_apply_player_status_with_grace_check()** (10 connections) — `server/game/magic/spell_effects_status.py`
+- **_handle_player_status_effect()** (10 connections) — `server/game/magic/spell_effects_status.py`
+- **run_status_effect()** (10 connections) — `server/game/magic/spell_effects_status.py`
+- **.create_player_read_from_dict()** (10 connections) — `server/game/player_schema_converter.py`
+- **_apply_status_effect_to_player()** (9 connections) — `server/game/magic/spell_effects_status.py`
+- **Any** (8 connections)
+- **.convert_player_to_schema()** (8 connections) — `server/game/player_schema_converter.py`
+- **AttributeType** (8 connections) — `server/models/game.py`
+- **_grace_period_blocks_negative_status_effect()** (7 connections) — `server/game/magic/spell_effects_status.py`
+- *... and 157 more nodes in this community*
 
 ## Relationships
 
-- [command inventory factories](command_inventory_factories.md) (15 shared connections)
-- [schemas unified room](schemas_unified_room.md) (3 shared connections)
-- [command factories exploration](command_factories_exploration.md) (2 shared connections)
-- [models invite Any](models_invite_Any.md) (1 shared connections)
-- [time service rationale](time_service_rationale.md) (1 shared connections)
+- [spell game magic](spell_game_magic.md) (21 shared connections)
+- [player service game](player_service_game.md) (10 shared connections)
+- [NPC Combat](NPC_Combat.md) (9 shared connections)
+- [combat models rationale](combat_models_rationale.md) (8 shared connections)
+- [Player Stats](Player_Stats.md) (8 shared connections)
+- [Loot Generation](Loot_Generation.md) (7 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (4 shared connections)
+- [world models rationale](world_models_rationale.md) (4 shared connections)
+- [admin commands setstat](admin_commands_setstat.md) (3 shared connections)
+- [command utility models](command_utility_models.md) (3 shared connections)
+- [npc spawn validator](npc_spawn_validator.md) (3 shared connections)
+- [commands follow rationale](commands_follow_rationale.md) (3 shared connections)
 
 ## Source Files
 
+- `server/commands/combat_handler.py`
+- `server/game/magic/spell_effects_status.py`
+- `server/game/player_schema_converter.py`
 - `server/models/game.py`
+- `server/npc/idle_movement.py`
+- `server/npc/npc_base.py`
+- `server/schemas/game/weapon.py`
+- `server/tests/unit/game/test_player_schema_converter_weapon.py`
+- `server/tests/unit/models/test_game_enums.py`
+- `server/tests/unit/models/test_game_inventory_item.py`
 - `server/tests/unit/models/test_game_player.py`
+- `server/tests/unit/models/test_game_status_effect.py`
 
 ## Audit Trail
 
-- EXTRACTED: 138 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 696 (96%)
+- INFERRED: 30 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

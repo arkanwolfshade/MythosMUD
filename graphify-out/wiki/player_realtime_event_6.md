@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **test_combat_audit_logger_log_combat_start_with_timestamp()** (3 connections) — `server/tests/unit/structured_logging/test_combat_audit.py`
-- **Test CombatAuditLogger.log_combat_start() uses provided timestamp.** (1 connections) — `server/tests/unit/structured_logging/test_combat_audit.py`
+- **test_combat_audit_logger_get_combat_audit_summary()** (3 connections) — `server/tests/unit/structured_logging/test_combat_audit.py`
+- **Test CombatAuditLogger.get_combat_audit_summary() returns summary.** (1 connections) — `server/tests/unit/structured_logging/test_combat_audit.py`
 
 ## Relationships
 

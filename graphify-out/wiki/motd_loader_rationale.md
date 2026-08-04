@@ -1,35 +1,29 @@
 # motd loader rationale
 
-> 12 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **load_motd()** (8 connections) — `server/utils/motd_loader.py`
-- **test_motd_loader.py** (7 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **test_load_motd_file_exists()** (3 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **test_load_motd_file_not_exists()** (3 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **test_load_motd_file_read_error()** (3 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **test_load_motd_empty_file()** (3 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **Unit tests for motd_loader utilities.  Tests the MOTD loading functions.** (1 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **Test load_motd() loads MOTD from file.** (1 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **Test load_motd() returns default when file doesn't exist.** (1 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **Test load_motd() handles file read errors.** (1 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **Test load_motd() handles empty file.** (1 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **Load the Message of the Day from the configured file.      Returns:         str:** (1 connections) — `server/utils/motd_loader.py`
+- **broadcast_shutdown_notification()** (7 connections) — `server/commands/admin_shutdown_command.py`
+- **test_broadcast_shutdown_notification_success()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_broadcast_shutdown_notification_failure()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **Broadcast shutdown notification to all players.      Args:         connection_ma** (1 connections) — `server/commands/admin_shutdown_command.py`
+- **Test broadcast_shutdown_notification() successfully broadcasts.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **Test broadcast_shutdown_notification() handles errors.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
 
 ## Relationships
 
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [Item Instances](Item_Instances.md) (1 shared connections)
+- [eventLog projectorRoom roomMergeUtils](eventLog_projectorRoom_roomMergeUtils.md) (3 shared connections)
+- [shutdown admin command](shutdown_admin_command.md) (3 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_motd_loader.py`
-- `server/utils/motd_loader.py`
+- `server/commands/admin_shutdown_command.py`
+- `server/tests/unit/commands/test_admin_shutdown_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 33 (100%)
+- EXTRACTED: 16 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

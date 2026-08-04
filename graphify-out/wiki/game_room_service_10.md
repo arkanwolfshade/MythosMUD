@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_record_message_cleanup_old()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **Test record_message cleans up old entries.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_is_in_same_party_false_when_one_not_in_party()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **is_in_same_party returns False when one player is not in a party.** (1 connections) — `server/tests/unit/game/test_party_service.py`
 
 ## Relationships
 
-- [rate limiter services](rate_limiter_services.md) (1 shared connections)
+- [commands inventory helpers](commands_inventory_helpers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_rate_limiter.py`
+- `server/tests/unit/game/test_party_service.py`
 
 ## Audit Trail
 

@@ -1,50 +1,50 @@
 # chat game message
 
-> 85 nodes
+> 100 nodes
 
 ## Key Concepts
 
 - **chat_service.py** (49 connections) — `server/game/chat_service.py`
-- **ChatMessage** (33 connections) — `server/game/chat_message.py`
-- **chat_message_senders.py** (26 connections) — `server/game/chat_message_senders.py`
-- **publish_chat_message_to_nats()** (24 connections) — `server/game/chat_nats_publisher.py`
-- **chat_message.py** (14 connections) — `server/game/chat_message.py`
-- **chat_pose_helpers.py** (14 connections) — `server/game/chat_pose_helpers.py`
-- **chat_logger.py** (14 connections) — `server/services/chat_logger.py`
-- **send_global_message()** (13 connections) — `server/game/chat_message_senders.py`
-- **send_local_message()** (12 connections) — `server/game/chat_message_senders.py`
-- **chat_message_helpers.py** (11 connections) — `server/game/chat_message_helpers.py`
-- **create_and_log_chat_message()** (11 connections) — `server/game/chat_message_helpers.py`
+- **ChatMessage** (41 connections) — `server/game/chat_message.py`
+- **chat_npc_system.py** (33 connections) — `server/game/chat_npc_system.py`
+- **publish_chat_message_to_nats()** (30 connections) — `server/game/chat_nats_publisher.py`
+- **chat_message_senders.py** (27 connections) — `server/game/chat_message_senders.py`
+- **test_chat_message_senders.py** (24 connections) — `server/tests/unit/game/test_chat_message_senders.py`
+- **chat_message.py** (17 connections) — `server/game/chat_message.py`
+- **send_global_message()** (16 connections) — `server/game/chat_message_senders.py`
+- **send_local_message()** (15 connections) — `server/game/chat_message_senders.py`
+- **create_and_log_chat_message()** (13 connections) — `server/game/chat_message_helpers.py`
+- **send_system_message()** (13 connections) — `server/game/chat_message_senders.py`
+- **send_whisper_message()** (13 connections) — `server/game/chat_message_senders.py`
+- **send_predefined_emote()** (13 connections) — `server/game/chat_message_senders.py`
+- **chat_message_helpers.py** (12 connections) — `server/game/chat_message_helpers.py`
+- **test_chat_message_helpers.py** (12 connections) — `server/tests/unit/game/test_chat_message_helpers.py`
+- **store_message_in_room_history()** (11 connections) — `server/game/chat_message_helpers.py`
+- **normalize_player_id()** (11 connections) — `server/game/chat_message_senders.py`
+- **send_party_message()** (11 connections) — `server/game/chat_message_senders.py`
+- **send_personal_system_message()** (11 connections) — `server/game/chat_npc_system.py`
 - **chat_validation_helpers.py** (11 connections) — `server/game/chat_validation_helpers.py`
-- **send_predefined_emote()** (10 connections) — `server/game/chat_message_senders.py`
+- **_player()** (11 connections) — `server/tests/unit/game/test_chat_message_senders.py`
 - **.send_say_message()** (10 connections) — `server/game/chat_service.py`
 - **.send_emote_message()** (10 connections) — `server/game/chat_service.py`
-- **store_message_in_room_history()** (9 connections) — `server/game/chat_message_helpers.py`
-- **normalize_player_id()** (9 connections) — `server/game/chat_message_senders.py`
-- **send_system_message()** (9 connections) — `server/game/chat_message_senders.py`
-- **send_whisper_message()** (9 connections) — `server/game/chat_message_senders.py`
-- **send_party_message()** (9 connections) — `server/game/chat_message_senders.py`
 - **check_channel_permissions()** (9 connections) — `server/game/chat_validation_helpers.py`
-- **rate_limiter.py** (9 connections) — `server/services/rate_limiter.py`
-- **set_player_pose()** (8 connections) — `server/game/chat_pose_helpers.py`
-- **Any** (7 connections)
-- **UUID** (7 connections)
-- *... and 60 more nodes in this community*
+- **create_and_log_say_message()** (7 connections) — `server/game/chat_message_helpers.py`
+- *... and 75 more nodes in this community*
 
 ## Relationships
 
+- [quest chat game](quest_chat_game.md) (27 shared connections)
 - [chat service game](chat_service_game.md) (21 shared connections)
-- [quest chat game](quest_chat_game.md) (20 shared connections)
-- [command inventory factories](command_inventory_factories.md) (16 shared connections)
-- [room rationale subzone](room_rationale_subzone.md) (16 shared connections)
-- [commands admin mute](commands_admin_mute.md) (3 shared connections)
-- [chat moderation game](chat_moderation_game.md) (3 shared connections)
+- [alias command models](alias_command_models.md) (20 shared connections)
+- [NPC Combat](NPC_Combat.md) (16 shared connections)
+- [combat messaging service](combat_messaging_service.md) (10 shared connections)
+- [app tick game](app_tick_game.md) (6 shared connections)
+- [calendar models rationale](calendar_models_rationale.md) (4 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (3 shared connections)
+- [commands recovery lucidity](commands_recovery_lucidity.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
 - [game chat whisper](game_chat_whisper.md) (2 shared connections)
-- [services user manager](services_user_manager.md) (2 shared connections)
-- [Item Instances](Item_Instances.md) (2 shared connections)
-- [rate limiter services](rate_limiter_services.md) (2 shared connections)
-- [Magic Spell Service](Magic_Spell_Service.md) (1 shared connections)
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (1 shared connections)
+- [nats exceptions services](nats_exceptions_services.md) (1 shared connections)
 
 ## Source Files
 
@@ -52,17 +52,17 @@
 - `server/game/chat_message_helpers.py`
 - `server/game/chat_message_senders.py`
 - `server/game/chat_nats_publisher.py`
-- `server/game/chat_pose_helpers.py`
+- `server/game/chat_npc_system.py`
 - `server/game/chat_service.py`
 - `server/game/chat_validation_helpers.py`
-- `server/services/chat_logger.py`
-- `server/services/rate_limiter.py`
+- `server/tests/unit/game/test_chat_message_helpers.py`
+- `server/tests/unit/game/test_chat_message_senders.py`
 - `vulture_allowlist.py`
 
 ## Audit Trail
 
-- EXTRACTED: 474 (99%)
-- INFERRED: 4 (1%)
+- EXTRACTED: 604 (99%)
+- INFERRED: 7 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

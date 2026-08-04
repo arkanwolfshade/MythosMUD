@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_apply_encounter_lucidity_loss_with_location()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **Test apply_encounter_lucidity_loss() includes location_id in metadata.** (1 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_get_room_players()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
+- **Test get_room_players() returns list of player IDs.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
 
 ## Relationships
 
-- [lucidity active service](lucidity_active_service.md) (1 shared connections)
+- [movement service game](movement_service_game.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_active_lucidity_service.py`
+- `server/tests/unit/game/test_movement_service.py`
 
 ## Audit Trail
 

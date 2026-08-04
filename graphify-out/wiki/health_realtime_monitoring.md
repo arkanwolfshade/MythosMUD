@@ -1,24 +1,32 @@
 # health realtime monitoring
 
-> 3 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **.set_main_loop()** (3 connections) — `server/events/event_bus.py`
-- **AbstractEventLoop** (1 connections)
-- **Set the main event loop - now properly managed for async compatibility.** (1 connections) — `server/events/event_bus.py`
+- **TestCheckCastingState** (6 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_casting_state_allowed_command()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_casting_state_no_magic_service()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_casting_state_player_casting()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_casting_state_handles_error()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Test _check_casting_state function.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Test _check_casting_state allows stop/interrupt/status during casting.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Test _check_casting_state returns None when no magic service.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Test _check_casting_state returns block result when player is casting.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Test _check_casting_state returns None on error.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
 
 ## Relationships
 
-- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
+- [command commands handler](command_commands_handler.md) (4 shared connections)
+- [command validation commands](command_validation_commands.md) (1 shared connections)
 
 ## Source Files
 
-- `server/events/event_bus.py`
+- `server/tests/unit/commands/test_command_validation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 23 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

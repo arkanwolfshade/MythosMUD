@@ -1,25 +1,32 @@
 # commands rest command
 
-> 2 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **test_perform_recovery_action_unknown_action()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **Test perform_recovery_action() raises error for unknown action.** (1 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **populate_test_npc_databases.py** (6 connections) — `scripts/populate_test_npc_databases.py`
+- **main()** (5 connections) — `scripts/populate_test_npc_databases.py`
+- **get_npc_data_from_source()** (4 connections) — `scripts/populate_test_npc_databases.py`
+- **populate_database()** (4 connections) — `scripts/populate_test_npc_databases.py`
+- **get_npc_database_url()** (3 connections) — `scripts/populate_test_npc_databases.py`
+- **Get NPC database URL for the specified environment.      Args:         environme** (1 connections) — `scripts/populate_test_npc_databases.py`
+- **Extract NPC data from the source PostgreSQL database.      Args:         source_** (1 connections) — `scripts/populate_test_npc_databases.py`
+- **Populate a PostgreSQL database with NPC data.      Args:         target_url: Pos** (1 connections) — `scripts/populate_test_npc_databases.py`
+- **Main function to populate test NPC databases.** (1 connections) — `scripts/populate_test_npc_databases.py`
 
 ## Relationships
 
-- [commands admin mute](commands_admin_mute.md) (1 shared connections)
-- [lucidity active service](lucidity_active_service.md) (1 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (3 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_active_lucidity_service.py`
+- `scripts/populate_test_npc_databases.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 24 (92%)
+- INFERRED: 2 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

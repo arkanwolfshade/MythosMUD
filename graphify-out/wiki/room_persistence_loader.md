@@ -1,35 +1,56 @@
 # room persistence loader
 
-> 10 nodes
+> 34 nodes
 
 ## Key Concepts
 
-- **init_db()** (8 connections) — `server/database_helpers.py`
-- **test_init_db_success()** (3 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **test_init_db_raises_on_error()** (3 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **test_init_db_configure_mappers_failure()** (3 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **test_init_db_connection_verification_failure()** (3 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **Initialize database connection and verify configuration.      NOTE: DDL (table c** (1 connections) — `server/database_helpers.py`
-- **Test init_db successfully initializes database.** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **Test init_db raises exception on initialization failure.** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **Test init_db raises exception when configure_mappers fails.** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **Test init_db raises exception when connection verification fails.** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **GameMechanicsService** (27 connections) — `server/game/mechanics.py`
+- **test_mechanics.py** (16 connections) — `server/tests/unit/game/test_mechanics.py`
+- **_player()** (8 connections) — `server/tests/unit/game/test_mechanics.py`
+- **.gain_occult_knowledge()** (6 connections) — `server/game/mechanics.py`
+- **.apply_lucidity_loss()** (5 connections) — `server/game/mechanics.py`
+- **.__init__()** (5 connections) — `server/npc/combat_integration_base.py`
+- **.apply_fear()** (4 connections) — `server/game/mechanics.py`
+- **.apply_corruption()** (4 connections) — `server/game/mechanics.py`
+- **.heal_player()** (4 connections) — `server/game/mechanics.py`
+- **.damage_player()** (4 connections) — `server/game/mechanics.py`
+- **.gain_experience()** (4 connections) — `server/game/mechanics.py`
+- **.__init__()** (3 connections) — `server/game/mechanics.py`
+- **test_apply_lucidity_loss_success()** (3 connections) — `server/tests/unit/game/test_mechanics.py`
+- **test_apply_lucidity_loss_player_not_found()** (3 connections) — `server/tests/unit/game/test_mechanics.py`
+- **test_apply_fear_success()** (3 connections) — `server/tests/unit/game/test_mechanics.py`
+- **test_apply_corruption_success()** (3 connections) — `server/tests/unit/game/test_mechanics.py`
+- **test_gain_occult_knowledge_success()** (3 connections) — `server/tests/unit/game/test_mechanics.py`
+- **test_heal_player_success()** (3 connections) — `server/tests/unit/game/test_mechanics.py`
+- **test_damage_player_success()** (3 connections) — `server/tests/unit/game/test_mechanics.py`
+- **test_gain_experience_success()** (3 connections) — `server/tests/unit/game/test_mechanics.py`
+- **service()** (2 connections) — `server/tests/unit/game/test_mechanics.py`
+- **Any** (1 connections)
+- **Service class for game mechanics operations.** (1 connections) — `server/game/mechanics.py`
+- **Initialize the game mechanics service with a persistence layer.** (1 connections) — `server/game/mechanics.py`
+- **Apply lucidity loss to a player.** (1 connections) — `server/game/mechanics.py`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [lucidity npc combat](lucidity_npc_combat.md) (5 shared connections)
-- [command commands talk](command_commands_talk.md) (1 shared connections)
-- [npc idle movement](npc_idle_movement.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (10 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (7 shared connections)
+- [NPC Combat](NPC_Combat.md) (6 shared connections)
+- [argon2 auth rationale](argon2_auth_rationale.md) (2 shared connections)
+- [npc combat base](npc_combat_base.md) (2 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
 
 ## Source Files
 
-- `server/database_helpers.py`
-- `server/tests/unit/infrastructure/test_database_helpers.py`
+- `server/game/mechanics.py`
+- `server/npc/combat_integration_base.py`
+- `server/tests/unit/game/test_mechanics.py`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 120 (93%)
+- INFERRED: 9 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

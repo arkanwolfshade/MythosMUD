@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_announce_spell_cast_no_chat_service()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test announce spell cast when chat service is not available.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **mock_player()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Create a mock player.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Relationships
 
-- [commands magic rationale](commands_magic_rationale.md) (1 shared connections)
+- [config rationale reset](config_rationale_reset.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Audit Trail
 

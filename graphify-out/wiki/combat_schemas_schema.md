@@ -1,58 +1,56 @@
 # combat schemas schema
 
-> 43 nodes
+> 72 nodes
 
 ## Key Concepts
 
-- **test_websocket_handler_coverage_gaps.py** (24 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **handle_chat_message()** (18 connections) — `server/realtime/websocket_handler.py`
-- **UUID** (3 connections)
-- **test_handle_chat_message()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_handle_websocket_connection_full_flow()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_process_websocket_command_resolve_connection_manager_from_app()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_handle_chat_message_resolve_connection_manager_from_app()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_handle_chat_message_exception_handling()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_handle_chat_message_runtime_error_handling()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_handle_websocket_connection_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_handle_websocket_connection_connect_failed()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_handle_websocket_connection_setup_fails()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_handle_websocket_connection_welcome_fails()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_handle_chat_message_no_player()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_message_loop_should_raise_exception()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_process_exception_in_message_loop()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_setup_initial_connection_state_should_exit()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_setup_initial_connection_state_with_room()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_setup_initial_connection_state_websocket_disconnect()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_send_welcome_event_already_disconnected()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_send_welcome_event_close_message_sent()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_send_welcome_event_cannot_call_error()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **Handle a chat message from a player.      Args:         websocket: The WebSocket** (1 connections) — `server/realtime/websocket_handler.py`
-- **Test handle_chat_message handles chat message.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **Unit tests to fill coverage gaps in websocket_handler.py.  These tests target sp** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- *... and 18 more nodes in this community*
+- **test_websocket_handler_validation_errors.py** (39 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **send_system_message()** (13 connections) — `server/realtime/websocket_handler.py`
+- **test_websocket_handler_system_message.py** (8 connections) — `server/tests/unit/realtime/test_websocket_handler_system_message.py`
+- **test_send_system_message()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **test_send_system_message_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_system_message.py`
+- **test_send_system_message_warning()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_system_message.py`
+- **test_send_system_message_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_system_message.py`
+- **test_send_system_message_disconnected()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_system_message.py`
+- **test_validate_message_validation_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_validate_message_restores_csrf_from_message_jwt_when_metadata_token_missing()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_handle_game_command_with_broadcast()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_handle_game_command_broadcast_no_player()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_handle_game_command_broadcast_no_current_room_id()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_handle_game_command_with_args()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_handle_game_command_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_send_system_message_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_process_websocket_command_player_no_current_room_id()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **mock_websocket()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_system_message.py`
+- **test_is_websocket_disconnected()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_check_rate_limit_no_connection_id()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_check_rate_limit_passed()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_check_rate_limit_exceeded()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_validate_message_success()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_validate_message_passes_expected_token_from_connection_metadata()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_send_error_response_websocket_disconnect()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- *... and 47 more nodes in this community*
 
 ## Relationships
 
-- [combat commands handler](combat_commands_handler.md) (7 shared connections)
-- [websocket validation realtime](websocket_validation_realtime.md) (6 shared connections)
-- [websocket realtime handler](websocket_realtime_handler.md) (3 shared connections)
-- [room look commands](room_look_commands.md) (3 shared connections)
-- [combat services messaging](combat_services_messaging.md) (2 shared connections)
-- [websocket handler realtime](websocket_handler_realtime.md) (2 shared connections)
-- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [websocket handler realtime](websocket_handler_realtime.md) (11 shared connections)
+- [realtime message validator](realtime_message_validator.md) (4 shared connections)
+- [room websocket updates](room_websocket_updates.md) (3 shared connections)
+- [command commands handler](command_commands_handler.md) (3 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (2 shared connections)
+- [room look commands](room_look_commands.md) (1 shared connections)
 
 ## Source Files
 
 - `server/realtime/websocket_handler.py`
 - `server/tests/unit/realtime/test_websocket_handler_core.py`
-- `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- `server/tests/unit/realtime/test_websocket_handler_system_message.py`
 - `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
 
 ## Audit Trail
 
-- EXTRACTED: 114 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 170 (97%)
+- INFERRED: 6 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

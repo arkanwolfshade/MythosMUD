@@ -1,26 +1,29 @@
 # player realtime event
 
-> 2 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **.npc_entered()** (4 connections) — `server/models/room.py`
-- **Add an NPC to the room and trigger event.          Args:             npc_id: The** (1 connections) — `server/models/room.py`
+- **TestCheckRateLimit** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_rate_limit_allowed()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_rate_limit_blocked()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Test _check_rate_limit function.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Test _check_rate_limit returns None when allowed.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Test _check_rate_limit returns result when blocked.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
 
 ## Relationships
 
-- [item models rationale](item_models_rationale.md) (1 shared connections)
-- [room models instance](room_models_instance.md) (1 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
+- [command commands handler](command_commands_handler.md) (2 shared connections)
+- [command validation commands](command_validation_commands.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/room.py`
+- `server/tests/unit/commands/test_command_validation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (80%)
-- INFERRED: 1 (20%)
+- EXTRACTED: 13 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

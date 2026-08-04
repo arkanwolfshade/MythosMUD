@@ -1,35 +1,51 @@
 # startup npc services
 
-> 14 nodes
+> 23 nodes
 
 ## Key Concepts
 
-- **.learn_spell()** (8 connections) — `server/game/magic/spell_learning_service.py`
-- **UUID** (7 connections)
-- **._validate_prerequisites()** (6 connections) — `server/game/magic/spell_learning_service.py`
-- **Any** (5 connections)
-- **.learn_spell_from_book()** (5 connections) — `server/game/magic/spell_learning_service.py`
-- **.learn_spell_from_npc()** (5 connections) — `server/game/magic/spell_learning_service.py`
-- **.learn_spell_from_quest()** (5 connections) — `server/game/magic/spell_learning_service.py`
-- **.increase_mastery_on_cast()** (3 connections) — `server/game/magic/spell_learning_service.py`
-- **Learn a spell for a player.          Args:             player_id: Player ID** (1 connections) — `server/game/magic/spell_learning_service.py`
-- **Validate prerequisites for learning a spell.          Args:             player_i** (1 connections) — `server/game/magic/spell_learning_service.py`
-- **Learn a spell from a spellbook item.          Args:             player_id: Playe** (1 connections) — `server/game/magic/spell_learning_service.py`
-- **Learn a spell from an NPC teacher.          Args:             player_id: Player** (1 connections) — `server/game/magic/spell_learning_service.py`
-- **Learn a spell as a quest reward.          Args:             player_id: Player ID** (1 connections) — `server/game/magic/spell_learning_service.py`
-- **Increase mastery level after casting a spell.          Args:             player_** (1 connections) — `server/game/magic/spell_learning_service.py`
+- **look_container.py** (23 connections) — `server/commands/look_container.py`
+- **Any** (14 connections)
+- **_find_container_in_room_or_equipped()** (14 connections) — `server/commands/look_container.py`
+- **_find_container_via_inner_container()** (13 connections) — `server/commands/look_container.py`
+- **_handle_container_look()** (11 connections) — `server/commands/look_container.py`
+- **_try_lookup_container_implicit()** (10 connections) — `server/commands/look_container.py`
+- **_matches_item_instance_id()** (8 connections) — `server/commands/look_container.py`
+- **_try_match_container_component()** (8 connections) — `server/commands/look_container.py`
+- **_matches_name_or_slot()** (7 connections) — `server/commands/look_container.py`
+- **_get_container_data_from_component()** (7 connections) — `server/commands/look_container.py`
+- **_extract_container_metadata()** (6 connections) — `server/commands/look_container.py`
+- **_find_container_via_wearable_service()** (6 connections) — `server/commands/look_container.py`
+- **Container look functionality for MythosMUD.  This module handles looking at cont** (1 connections) — `server/commands/look_container.py`
+- **Find container via inner_container_id from item.** (1 connections) — `server/commands/look_container.py`
+- **Check if item instance IDs match.** (1 connections) — `server/commands/look_container.py`
+- **Check if container matches by name or slot.** (1 connections) — `server/commands/look_container.py`
+- **Get container data from component ID.** (1 connections) — `server/commands/look_container.py`
+- **Extract metadata from container component.** (1 connections) — `server/commands/look_container.py`
+- **Try to match a container component and return container data if found.** (1 connections) — `server/commands/look_container.py`
+- **Find container via wearable container service.** (1 connections) — `server/commands/look_container.py`
+- **Find container in room or equipped items.      Returns:         tuple: (containe** (1 connections) — `server/commands/look_container.py`
+- **Handle looking at a specific container.** (1 connections) — `server/commands/look_container.py`
+- **Try to find and display a container in implicit lookup.** (1 connections) — `server/commands/look_container.py`
 
 ## Relationships
 
-- [game models player](game_models_player.md) (8 shared connections)
+- [DI Container Format](DI_Container_Format.md) (21 shared connections)
+- [schemas validator rationale](schemas_validator_rationale.md) (20 shared connections)
+- [connection realtime statistics](connection_realtime_statistics.md) (5 shared connections)
+- [command processor rationale](command_processor_rationale.md) (4 shared connections)
+- [status game spell](status_game_spell.md) (4 shared connections)
+- [services inventory mutation](services_inventory_mutation.md) (3 shared connections)
+- [look command commands](look_command_commands.md) (3 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
 
 ## Source Files
 
-- `server/game/magic/spell_learning_service.py`
+- `server/commands/look_container.py`
 
 ## Audit Trail
 
-- EXTRACTED: 50 (100%)
+- EXTRACTED: 138 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

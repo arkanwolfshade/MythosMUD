@@ -1,11 +1,11 @@
 # chat service game
 
-> 140 nodes
+> 148 nodes
 
 ## Key Concepts
 
-- **ChatService** (87 connections) — `server/game/chat_service.py`
-- **test_chat_service.py** (39 connections) — `server/tests/unit/game/test_chat_service.py`
+- **ChatService** (91 connections) — `server/game/chat_service.py`
+- **test_chat_service.py** (43 connections) — `server/tests/unit/game/test_chat_service.py`
 - **UUID** (27 connections)
 - **Any** (16 connections)
 - **.send_local_message()** (4 connections) — `server/game/chat_service.py`
@@ -29,20 +29,20 @@
 - **.is_player_muted()** (3 connections) — `server/game/chat_service.py`
 - **.mute_global()** (3 connections) — `server/game/chat_service.py`
 - **.unmute_global()** (3 connections) — `server/game/chat_service.py`
-- *... and 115 more nodes in this community*
+- *... and 123 more nodes in this community*
 
 ## Relationships
 
 - [chat game message](chat_game_message.md) (21 shared connections)
+- [nats services service](nats_services_service.md) (4 shared connections)
 - [game chat whisper](game_chat_whisper.md) (4 shared connections)
-- [Error Conversion](Error_Conversion.md) (3 shared connections)
-- [Magic Spell Service](Magic_Spell_Service.md) (2 shared connections)
-- [commands admin mute](commands_admin_mute.md) (2 shared connections)
-- [game models player](game_models_player.md) (2 shared connections)
+- [commands magic rationale](commands_magic_rationale.md) (3 shared connections)
+- [quest chat game](quest_chat_game.md) (3 shared connections)
 - [NPC Definitions Admin](NPC_Definitions_Admin.md) (2 shared connections)
-- [chat moderation game](chat_moderation_game.md) (2 shared connections)
-- [quest chat game](quest_chat_game.md) (2 shared connections)
-- [item models rationale](item_models_rationale.md) (1 shared connections)
+- [coercion int inventory](coercion_int_inventory.md) (1 shared connections)
+- [player helpers error](player_helpers_error.md) (1 shared connections)
+- [dialogue schemas tree](dialogue_schemas_tree.md) (1 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
 - [command exploration models](command_exploration_models.md) (1 shared connections)
 
 ## Source Files
@@ -53,7 +53,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 435 (98%)
+- EXTRACTED: 459 (98%)
 - INFERRED: 9 (2%)
 - AMBIGUOUS: 0 (0%)
 

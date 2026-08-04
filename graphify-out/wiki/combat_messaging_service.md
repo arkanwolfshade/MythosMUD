@@ -1,43 +1,51 @@
 # combat messaging service
 
-> 15 nodes
+> 26 nodes
 
 ## Key Concepts
 
-- **LRUCache** (27 connections) — `server/caching/lru_cache.py`
-- **.delete()** (3 connections) — `server/caching/lru_cache.py`
-- **.clear()** (3 connections) — `server/caching/lru_cache.py`
-- **.size()** (3 connections) — `server/caching/lru_cache.py`
-- **.__len__()** (3 connections) — `server/caching/lru_cache.py`
-- **.clear_all_caches()** (3 connections) — `server/caching/lru_cache.py`
-- **.__init__()** (2 connections) — `server/caching/lru_cache.py`
-- **.is_full()** (2 connections) — `server/caching/lru_cache.py`
-- **Thread-safe LRU (Least Recently Used) cache implementation.      This cache auto** (1 connections) — `server/caching/lru_cache.py`
-- **Initialize the LRU cache.          Args:             max_size: Maximum number of** (1 connections) — `server/caching/lru_cache.py`
-- **Delete an item from the cache.          Args:             key: The key to delete** (1 connections) — `server/caching/lru_cache.py`
-- **Clear all items from the cache.** (1 connections) — `server/caching/lru_cache.py`
-- **Get the current number of items in the cache.** (1 connections) — `server/caching/lru_cache.py`
-- **Check if the cache is at maximum capacity.** (1 connections) — `server/caching/lru_cache.py`
-- **Get the number of items in the cache.** (1 connections) — `server/caching/lru_cache.py`
+- **test_chat_pose_helpers.py** (17 connections) — `server/tests/unit/game/test_chat_pose_helpers.py`
+- **chat_pose_helpers.py** (15 connections) — `server/game/chat_pose_helpers.py`
+- **set_player_pose()** (15 connections) — `server/game/chat_pose_helpers.py`
+- **get_player_pose()** (7 connections) — `server/game/chat_pose_helpers.py`
+- **clear_player_pose()** (7 connections) — `server/game/chat_pose_helpers.py`
+- **normalize_player_id()** (6 connections) — `server/game/chat_pose_helpers.py`
+- **get_room_poses()** (6 connections) — `server/game/chat_pose_helpers.py`
+- **Any** (5 connections)
+- **UUID** (4 connections)
+- **test_get_and_clear_player_pose()** (3 connections) — `server/tests/unit/game/test_chat_pose_helpers.py`
+- **test_get_room_poses()** (3 connections) — `server/tests/unit/game/test_chat_pose_helpers.py`
+- **test_normalize_player_id()** (2 connections) — `server/tests/unit/game/test_chat_pose_helpers.py`
+- **test_set_player_pose_empty()** (2 connections) — `server/tests/unit/game/test_chat_pose_helpers.py`
+- **test_set_player_pose_too_long()** (2 connections) — `server/tests/unit/game/test_chat_pose_helpers.py`
+- **test_set_player_pose_player_not_found()** (2 connections) — `server/tests/unit/game/test_chat_pose_helpers.py`
+- **test_set_player_pose_no_room()** (2 connections) — `server/tests/unit/game/test_chat_pose_helpers.py`
+- **test_set_player_pose_success()** (2 connections) — `server/tests/unit/game/test_chat_pose_helpers.py`
+- **test_set_player_pose_nats_failure()** (2 connections) — `server/tests/unit/game/test_chat_pose_helpers.py`
+- **_player()** (2 connections) — `server/tests/unit/game/test_chat_pose_helpers.py`
+- **Pose management helpers for chat service.** (1 connections) — `server/game/chat_pose_helpers.py`
+- **Normalize player identifiers to string form.** (1 connections) — `server/game/chat_pose_helpers.py`
+- **Set a player's pose (temporary, in-memory only).      Args:         player_id: I** (1 connections) — `server/game/chat_pose_helpers.py`
+- **Get a player's current pose.      Args:         player_id: ID of the player** (1 connections) — `server/game/chat_pose_helpers.py`
+- **Clear a player's pose.      Args:         player_id: ID of the player         po** (1 connections) — `server/game/chat_pose_helpers.py`
+- **Get all poses for players in a room.      Args:         room_id: ID of the room** (1 connections) — `server/game/chat_pose_helpers.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [caching lru cache](caching_lru_cache.md) (9 shared connections)
-- [command inventory factories](command_inventory_factories.md) (4 shared connections)
-- [time service rationale](time_service_rationale.md) (4 shared connections)
-- [services lucidity repository](services_lucidity_repository.md) (2 shared connections)
-- [cache caching service](cache_caching_service.md) (2 shared connections)
-- [commands skills rationale](commands_skills_rationale.md) (1 shared connections)
-- [cache lru caching](cache_lru_caching.md) (1 shared connections)
+- [chat game message](chat_game_message.md) (10 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [alias command models](alias_command_models.md) (1 shared connections)
 
 ## Source Files
 
-- `server/caching/lru_cache.py`
+- `server/game/chat_pose_helpers.py`
+- `server/tests/unit/game/test_chat_pose_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 49 (92%)
-- INFERRED: 4 (8%)
+- EXTRACTED: 111 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

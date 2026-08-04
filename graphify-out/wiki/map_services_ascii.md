@@ -1,10 +1,10 @@
 # map services ascii
 
-> 97 nodes
+> 100 nodes
 
 ## Key Concepts
 
-- **AsciiMapRenderer** (52 connections) — `server/services/ascii_map_renderer.py`
+- **AsciiMapRenderer** (54 connections) — `server/services/ascii_map_renderer.py`
 - **Any** (14 connections)
 - **.render_map()** (10 connections) — `server/services/ascii_map_renderer.py`
 - **test_ascii_map_renderer_exits.py** (9 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
@@ -12,6 +12,7 @@
 - **ascii_map_renderer.py** (8 connections) — `server/services/ascii_map_renderer.py`
 - **TestHorizontalExitCharBetween** (7 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
 - **TestResolveExitTarget** (7 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **test_ascii_map_renderer_grid.py** (7 connections) — `server/tests/unit/services/test_ascii_map_renderer_grid.py`
 - **._build_grid()** (6 connections) — `server/services/ascii_map_renderer.py`
 - **._exit_is_bidirectional()** (5 connections) — `server/services/ascii_map_renderer.py`
 - **._resolve_exit_target()** (5 connections) — `server/services/ascii_map_renderer.py`
@@ -23,19 +24,18 @@
 - **._get_vertical_exit_char()** (5 connections) — `server/services/ascii_map_renderer.py`
 - **._determine_map_style()** (5 connections) — `server/services/ascii_map_renderer.py`
 - **TestGetExitEntriesForRoom** (5 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **test_ascii_map_renderer_grid.py** (5 connections) — `server/tests/unit/services/test_ascii_map_renderer_grid.py`
 - **._horizontal_exit_char_between()** (4 connections) — `server/services/ascii_map_renderer.py`
 - **._vertical_exit_char_between()** (4 connections) — `server/services/ascii_map_renderer.py`
 - **._get_room_symbol()** (4 connections) — `server/services/ascii_map_renderer.py`
 - **TestGetHorizontalExitCharViewportBounds** (4 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
 - **TestBuildGridPlayerMarker** (4 connections) — `server/tests/unit/services/test_ascii_map_renderer_grid.py`
-- *... and 72 more nodes in this community*
+- *... and 75 more nodes in this community*
 
 ## Relationships
 
 - [database helpers infrastructure](database_helpers_infrastructure.md) (3 shared connections)
 - [maps handle ascii](maps_handle_ascii.md) (3 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
 
 ## Source Files
 
@@ -45,7 +45,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 304 (96%)
+- EXTRACTED: 314 (96%)
 - INFERRED: 12 (4%)
 - AMBIGUOUS: 0 (0%)
 

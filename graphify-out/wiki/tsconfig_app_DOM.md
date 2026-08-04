@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_check_item_in_location_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test checking item in location successfully.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_get_regen_multiplier_sitting()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Test _get_regen_multiplier() returns REST multiplier for sitting.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Relationships
 
-- [health service services](health_service_services.md) (1 shared connections)
-- [Item Lookup](Item_Lookup.md) (1 shared connections)
+- [config rationale reset](config_rationale_reset.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_item.py`
+- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

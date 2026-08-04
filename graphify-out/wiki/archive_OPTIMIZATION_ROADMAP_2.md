@@ -1,18 +1,23 @@
 # archive OPTIMIZATION ROADMAP
 
-> 5 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **Phase 1: Quick Wins (Week 1)** (5 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Task 1.1: Remove Placeholder Tests (30 minutes)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Task 1.2: Remove Trivial Type Assertions (1 hour)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Task 1.3: Remove Duplicate Tests (30 minutes)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Task 1.4: Delete Empty Test File (5 minutes)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Test Suite Optimization Roadmap** (15 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Monitoring and Validation** (3 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Risk Mitigation Strategy** (2 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **TEST_OPTIMIZATION_ROADMAP.md** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Safety Measures** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Weekly Metrics** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Monthly Review Questions** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Rollback Plan** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Recommended Execution Order** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
 
 ## Relationships
 
-- [archive OPTIMIZATION ROADMAP](archive_OPTIMIZATION_ROADMAP.md) (1 shared connections)
+- [archive OPTIMIZATION ROADMAP](archive_OPTIMIZATION_ROADMAP.md) (7 shared connections)
+- [archive optimization OPTIMIZATION](archive_optimization_OPTIMIZATION.md) (3 shared connections)
 
 ## Source Files
 
@@ -20,7 +25,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 26 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

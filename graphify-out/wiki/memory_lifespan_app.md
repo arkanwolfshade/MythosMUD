@@ -1,32 +1,47 @@
 # memory lifespan app
 
-> 7 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **ensure_database_directory()** (7 connections) — `server/database_helpers.py`
-- **test_ensure_database_directory_no_op_for_postgresql()** (3 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **test_ensure_database_directory_creates_directory()** (3 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **Ensure database directory exists (deprecated for PostgreSQL).      This function** (2 connections) — `server/database.py`
-- **Ensure database directory exists.      DEPRECATED: PostgreSQL does not use file** (1 connections) — `server/database_helpers.py`
-- **Test ensure_database_directory is no-op for PostgreSQL (returns None).** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **Test ensure_database_directory creates directory when path exists.** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **useDraggablePanelInteractions.ts** (11 connections) — `client/src/components/useDraggablePanelInteractions.ts`
+- **DraggablePanel()** (10 connections) — `client/src/components/DraggablePanelCore.tsx`
+- **DraggablePanel.tsx** (8 connections) — `client/src/components/DraggablePanel.tsx`
+- **draggablePanelUtils.ts** (7 connections) — `client/src/components/draggablePanelUtils.ts`
+- **useDraggablePanelInteractions()** (7 connections) — `client/src/components/useDraggablePanelInteractions.ts`
+- **relativeToAbsolute()** (3 connections) — `client/src/components/draggablePanelUtils.ts`
+- **relativeSizeToAbsolute()** (3 connections) — `client/src/components/draggablePanelUtils.ts`
+- **isPanelDragBlockedTarget()** (3 connections) — `client/src/components/draggablePanelUtils.ts`
+- **isMouseEventOnHeader()** (3 connections) — `client/src/components/draggablePanelUtils.ts`
+- **DraggablePanelProps** (2 connections) — `client/src/components/DraggablePanelCore.tsx`
+- **DraggablePanel.grid-positioning.test.tsx** (2 connections) — `client/src/components/__tests__/DraggablePanel.grid-positioning.test.tsx`
+- **DraggablePanel.test.tsx** (2 connections) — `client/src/components/__tests__/DraggablePanel.test.tsx`
+- **updateDragPosition()** (2 connections) — `client/src/components/useDraggablePanelInteractions.ts`
+- **updateResizePosition()** (2 connections) — `client/src/components/useDraggablePanelInteractions.ts`
+- **PANEL_DRAG_BLOCK_SELECTORS** (1 connections) — `client/src/components/draggablePanelUtils.ts`
+- **Size** (1 connections) — `client/src/components/useDraggablePanelInteractions.ts`
+- **Position** (1 connections) — `client/src/components/useDraggablePanelInteractions.ts`
+- **UseDraggablePanelInteractionsArgs** (1 connections) — `client/src/components/useDraggablePanelInteractions.ts`
+- **UseDraggablePanelInteractionsResult** (1 connections) — `client/src/components/useDraggablePanelInteractions.ts`
 
 ## Relationships
 
-- [lucidity npc combat](lucidity_npc_combat.md) (4 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (1 shared connections)
-- [command commands talk](command_commands_talk.md) (1 shared connections)
+- [panels chat ChatPanelRuntimeViewParts](panels_chat_ChatPanelRuntimeViewParts.md) (10 shared connections)
+- [game terminal lucidity](game_terminal_lucidity.md) (2 shared connections)
+- [stores connectionStore commandStore](stores_connectionStore_commandStore.md) (2 shared connections)
 
 ## Source Files
 
-- `server/database.py`
-- `server/database_helpers.py`
-- `server/tests/unit/infrastructure/test_database_helpers.py`
+- `client/src/components/DraggablePanel.tsx`
+- `client/src/components/DraggablePanelCore.tsx`
+- `client/src/components/__tests__/DraggablePanel.grid-positioning.test.tsx`
+- `client/src/components/__tests__/DraggablePanel.test.tsx`
+- `client/src/components/draggablePanelUtils.ts`
+- `client/src/components/useDraggablePanelInteractions.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
+- EXTRACTED: 70 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

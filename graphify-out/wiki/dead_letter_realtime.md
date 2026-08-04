@@ -1,25 +1,24 @@
 # dead letter realtime
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **.__init__()** (4 connections) — `server/game/level_service.py`
-- **Any** (1 connections)
-- **LevelUpHook** (1 connections)
-- **Initialize the level service.          Args:             async_persistence: Asyn** (1 connections) — `server/game/level_service.py`
+- **test_check_equipped_item_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test checking equipped item when not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
 
 ## Relationships
 
-- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [npc realtime occupant](npc_realtime_occupant.md) (1 shared connections)
+- [Item Lookup](Item_Lookup.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/level_service.py`
+- `server/tests/unit/commands/test_look_item.py`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

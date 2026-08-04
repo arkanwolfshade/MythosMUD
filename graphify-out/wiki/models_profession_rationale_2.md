@@ -1,29 +1,27 @@
 # models profession rationale
 
-> 6 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **TestGetPlayerCombatService** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_player_combat_service_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_player_combat_service_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Tests for get_player_combat_service dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_player_combat_service returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_player_combat_service raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.__init__()** (3 connections) — `server/game/items/prototype_registry.py`
+- **.invalid_entries()** (3 connections) — `server/game/items/prototype_registry.py`
+- **Any** (2 connections)
+- **Get all invalid entries that failed validation.          Returns:             li** (1 connections) — `server/game/items/prototype_registry.py`
 
 ## Relationships
 
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (3 shared connections)
-- [command inventory models](command_inventory_models.md) (1 shared connections)
+- [MapView GameClientV2ContainerView Tabbed](MapView_GameClientV2ContainerView_Tabbed.md) (2 shared connections)
+- [connection cleaner realtime](connection_cleaner_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_dependencies.py`
+- `server/game/items/prototype_registry.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (93%)
-- INFERRED: 1 (7%)
+- EXTRACTED: 9 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

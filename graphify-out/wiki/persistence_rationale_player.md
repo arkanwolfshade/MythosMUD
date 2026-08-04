@@ -1,51 +1,49 @@
 # persistence rationale player
 
-> 19 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **inventory_put_command.py** (21 connections) — `server/commands/inventory_put_command.py`
-- **handle_put_command()** (12 connections) — `server/commands/inventory_put_command.py`
-- **_put_resolve_container_id()** (9 connections) — `server/commands/inventory_put_command.py`
-- **_put_transfer_finish()** (8 connections) — `server/commands/inventory_put_command.py`
-- **_put_run_validated()** (7 connections) — `server/commands/inventory_put_command.py`
-- **remove_item_from_inventory()** (5 connections) — `server/commands/inventory_command_helpers.py`
-- **PutCommandRuntime** (4 connections) — `server/commands/inventory_put_command.py`
-- **PutValidatedWork** (4 connections) — `server/commands/inventory_put_command.py`
-- **CommandResponse** (4 connections)
-- **UUID** (3 connections)
-- **test_handle_put_command()** (3 connections) — `server/tests/unit/commands/test_inventory_commands.py`
-- **Player** (2 connections)
-- **Remove or update item quantity in player inventory after transfer.** (1 connections) — `server/commands/inventory_command_helpers.py`
-- **Put command: move inventory items into a container.** (1 connections) — `server/commands/inventory_put_command.py`
-- **Services and request scope for put-after-validation.** (1 connections) — `server/commands/inventory_put_command.py`
-- **Validated inventory item and command fields for put.** (1 connections) — `server/commands/inventory_put_command.py`
-- **Locate a room or wearable container id, or return an error response.** (1 connections) — `server/commands/inventory_put_command.py`
-- **Put an item from inventory into a container.** (1 connections) — `server/commands/inventory_put_command.py`
-- **Test handle_put_command() puts item in container.** (1 connections) — `server/tests/unit/commands/test_inventory_commands.py`
+- **SecurityHeadersMiddleware** (13 connections) — `server/middleware/security_headers.py`
+- **security_headers.py** (6 connections) — `server/middleware/security_headers.py`
+- **.__call__()** (5 connections) — `server/middleware/security_headers.py`
+- **.dispatch()** (5 connections) — `server/middleware/security_headers.py`
+- **._add_security_headers_to_response()** (4 connections) — `server/middleware/security_headers.py`
+- **.__init__()** (3 connections) — `server/middleware/security_headers.py`
+- **test_security_headers_middleware_init()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **test_security_headers_middleware_init_with_env_vars()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **Any** (2 connections)
+- **ASGIApp** (1 connections)
+- **Scope** (1 connections)
+- **Receive** (1 connections)
+- **Send** (1 connections)
+- **Request** (1 connections)
+- **Security headers middleware for MythosMUD server.  This module provides comprehe** (1 connections) — `server/middleware/security_headers.py`
+- **Pure ASGI middleware to add comprehensive security headers to all HTTP responses** (1 connections) — `server/middleware/security_headers.py`
+- **Initialize security headers middleware.          Args:             app: ASGI app** (1 connections) — `server/middleware/security_headers.py`
+- **ASGI application interface.          Args:             scope: ASGI connection sc** (1 connections) — `server/middleware/security_headers.py`
+- **Backward-compatible dispatch method for BaseHTTPMiddleware interface.          T** (1 connections) — `server/middleware/security_headers.py`
+- **Add security headers to Response object (compatibility method).** (1 connections) — `server/middleware/security_headers.py`
+- **Test SecurityHeadersMiddleware initialization.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **Test SecurityHeadersMiddleware initialization with environment variables.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
 
 ## Relationships
 
-- [inventory commands command](inventory_commands_command.md) (5 shared connections)
-- [commands inventory command](commands_inventory_command.md) (5 shared connections)
-- [container inventory helpers](container_inventory_helpers.md) (4 shared connections)
-- [commands admin mute](commands_admin_mute.md) (3 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [container find inventory](container_find_inventory.md) (2 shared connections)
-- [commands inventory pickup](commands_inventory_pickup.md) (2 shared connections)
-- [world models rationale](world_models_rationale.md) (1 shared connections)
-- [combat models rationale](combat_models_rationale.md) (1 shared connections)
+- [security headers middleware](security_headers_middleware.md) (5 shared connections)
+- [player service game](player_service_game.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [npc combat services](npc_combat_services.md) (1 shared connections)
+- [app factory rationale](app_factory_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/inventory_command_helpers.py`
-- `server/commands/inventory_put_command.py`
-- `server/tests/unit/commands/test_inventory_commands.py`
+- `server/middleware/security_headers.py`
+- `server/tests/unit/middleware/test_security_headers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 81 (91%)
-- INFERRED: 8 (9%)
+- EXTRACTED: 56 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

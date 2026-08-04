@@ -1,48 +1,53 @@
 # command commands talk
 
-> 13 nodes
+> 34 nodes
 
 ## Key Concepts
 
-- **database_helpers.py** (30 connections) — `server/database_helpers.py`
-- **reset_database()** (8 connections) — `server/database_helpers.py`
-- **_reset_database_url_state()** (5 connections) — `server/database.py`
-- **_get_database_url_state()** (4 connections) — `server/database.py`
-- **test_reset_database()** (4 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **reset_db()** (3 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **Get database URL state for testing.      This is a public function to access the** (1 connections) — `server/database.py`
-- **Reset database URL state for testing.      This is a public function to reset th** (1 connections) — `server/database.py`
-- **Database utility functions.  This module provides module-level utility functions** (1 connections) — `server/database_helpers.py`
-- **Reset database state for testing.      This function resets the DatabaseManager** (1 connections) — `server/database_helpers.py`
-- **# NOTE: NPC models are NOT imported here - they belong to the NPC database** (1 connections) — `server/database_helpers.py`
-- **Reset database state before each test.** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **Test reset_database resets DatabaseManager singleton and module state.** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **test_command_alias.py** (18 connections) — `server/tests/unit/models/test_command_alias.py`
+- **AliasCommand** (17 connections) — `server/models/command_alias.py`
+- **UnaliasCommand** (12 connections) — `server/models/command_alias.py`
+- **test_alias_command_alias_name_min_length()** (4 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_alias_command_alias_name_max_length()** (4 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_alias_command_command_max_length()** (4 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_unalias_command_alias_name_min_length()** (4 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_unalias_command_alias_name_max_length()** (4 connections) — `server/tests/unit/models/test_command_alias.py`
+- **.validate_alias_name_field()** (3 connections) — `server/models/command_alias.py`
+- **test_alias_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_alias_command_with_command()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_alias_command_validate_alias_name_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_alias_command_validate_command_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_alias_command_validate_command_none()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_aliases_command_no_fields()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_unalias_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_unalias_command_validate_alias_name_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
+- **Command for creating or viewing command aliases.** (1 connections) — `server/models/command_alias.py`
+- **Command for removing an alias.** (1 connections) — `server/models/command_alias.py`
+- **Validate alias name format using centralized validation.** (1 connections) — `server/models/command_alias.py`
+- **Unit tests for alias command models.  Tests the alias command models and their v** (1 connections) — `server/tests/unit/models/test_command_alias.py`
+- **Test AliasCommand requires alias_name.** (1 connections) — `server/tests/unit/models/test_command_alias.py`
+- **Test AliasCommand can have optional command.** (1 connections) — `server/tests/unit/models/test_command_alias.py`
+- **Test AliasCommand calls validate_alias_name.** (1 connections) — `server/tests/unit/models/test_command_alias.py`
+- **Test AliasCommand calls validate_command_content when command provided.** (1 connections) — `server/tests/unit/models/test_command_alias.py`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [Database Access Layer](Database_Access_Layer.md) (11 shared connections)
-- [lucidity npc combat](lucidity_npc_combat.md) (6 shared connections)
-- [world models rationale](world_models_rationale.md) (3 shared connections)
-- [manager subject services](manager_subject_services.md) (2 shared connections)
+- [command factories create](command_factories_create.md) (9 shared connections)
+- [Loot Generation](Loot_Generation.md) (5 shared connections)
+- [Security Validator Tests](Security_Validator_Tests.md) (3 shared connections)
 - [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [commands inventory put](commands_inventory_put.md) (1 shared connections)
-- [memory lifespan app](memory_lifespan_app.md) (1 shared connections)
-- [game models enums](game_models_enums.md) (1 shared connections)
-- [npc idle movement](npc_idle_movement.md) (1 shared connections)
-- [room persistence loader](room_persistence_loader.md) (1 shared connections)
-- [Database Config](Database_Config.md) (1 shared connections)
-- [command inventory models](command_inventory_models.md) (1 shared connections)
+- [exceptions rationale error](exceptions_rationale_error.md) (2 shared connections)
 
 ## Source Files
 
-- `server/database.py`
-- `server/database_helpers.py`
-- `server/tests/unit/infrastructure/test_database_helpers.py`
+- `server/models/command_alias.py`
+- `server/tests/unit/models/test_command_alias.py`
 
 ## Audit Trail
 
-- EXTRACTED: 61 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 102 (92%)
+- INFERRED: 9 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

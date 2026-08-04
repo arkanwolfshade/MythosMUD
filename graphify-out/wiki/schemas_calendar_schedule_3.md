@@ -5,25 +5,24 @@
 ## Key Concepts
 
 - **properties** (10 connections) — `schemas/calendar/schedule.schema.json`
-- **id** (4 connections) — `schemas/calendar/schedule.schema.json`
+- **end_hour** (4 connections) — `schemas/calendar/schedule.schema.json`
 - **name** (3 connections) — `schemas/calendar/schedule.schema.json`
 - **category** (3 connections) — `schemas/calendar/schedule.schema.json`
 - **notes** (2 connections) — `schemas/calendar/schedule.schema.json`
 - **type** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **pattern** (1 connections) — `schemas/calendar/schedule.schema.json`
 - **minLength** (1 connections) — `schemas/calendar/schedule.schema.json`
 - **type** (1 connections) — `schemas/calendar/schedule.schema.json`
 - **minLength** (1 connections) — `schemas/calendar/schedule.schema.json`
 - **type** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **minLength** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **minimum** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **maximum** (1 connections) — `schemas/calendar/schedule.schema.json`
 - **type** (1 connections) — `schemas/calendar/schedule.schema.json`
 
 ## Relationships
 
-- [schemas calendar schedule](schemas_calendar_schedule.md) (3 shared connections)
-- [services user manager](services_user_manager.md) (1 shared connections)
-- [combat death services](combat_death_services.md) (1 shared connections)
-- [realtime monitoring health](realtime_monitoring_health.md) (1 shared connections)
+- [schemas calendar schedule](schemas_calendar_schedule.md) (4 shared connections)
+- [lucidity services npc](lucidity_services_npc.md) (1 shared connections)
+- [holidays static schemas](holidays_static_schemas.md) (1 shared connections)
 
 ## Source Files
 

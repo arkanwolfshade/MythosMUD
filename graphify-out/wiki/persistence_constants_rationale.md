@@ -1,24 +1,25 @@
 # persistence constants rationale
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **handler()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Create a MagicCommandHandler instance.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Structured Logging Patterns** (4 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Basic Logging** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Error Logging with Context** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Performance Logging** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
 
 ## Relationships
 
-- [commands admin mute](commands_admin_mute.md) (1 shared connections)
-- [commands magic rationale](commands_magic_rationale.md) (1 shared connections)
+- [archive LOGGING BEST](archive_LOGGING_BEST.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `docs/archive/LOGGING_BEST_PRACTICES.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

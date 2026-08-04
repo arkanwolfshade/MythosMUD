@@ -1,23 +1,31 @@
 # services ascii map
 
-> 2 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **test_ensure_room_cache_loaded_runtime_error()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _ensure_room_cache_loaded handles RuntimeError gracefully.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **.get_mute_status()** (8 connections) — `server/game/chat_moderation.py`
+- **.get_player_mutes()** (6 connections) — `server/game/chat_moderation.py`
+- **.is_admin()** (5 connections) — `server/game/chat_moderation.py`
+- **.load_player_mutes()** (2 connections) — `server/game/chat_moderation.py`
+- **Check if a player is an admin.** (1 connections) — `server/game/chat_moderation.py`
+- **Get all mutes applied by a player.** (1 connections) — `server/game/chat_moderation.py`
+- **Get comprehensive mute status for a player.          Args:             player_id** (1 connections) — `server/game/chat_moderation.py`
 
 ## Relationships
 
-- [room persistence loading](room_persistence_loading.md) (1 shared connections)
+- [chat moderation game](chat_moderation_game.md) (6 shared connections)
+- [dialogue schemas tree](dialogue_schemas_tree.md) (3 shared connections)
+- [command parser build](command_parser_build.md) (2 shared connections)
+- [player helpers error](player_helpers_error.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- `server/game/chat_moderation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 24 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

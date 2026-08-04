@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_validate_player_name_rejects_invalid_chars()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **Test that validate_player_name rejects invalid characters.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_subscribe_to_subject_nats_error_returns_false()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **Test _subscribe_to_subject returns False on NATSError.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Relationships
 
-- [Security Validator Tests](Security_Validator_Tests.md) (1 shared connections)
-- [command models moderation](command_models_moderation.md) (1 shared connections)
+- [commands communication say](commands_communication_say.md) (1 shared connections)
+- [nats message handler](nats_message_handler.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_security_validator.py`
+- `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Audit Trail
 

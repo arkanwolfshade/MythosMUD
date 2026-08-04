@@ -35,7 +35,7 @@ def test_nats_connection_state_machine_init():
     assert fsm.last_error is None
     assert fsm.total_connections == 0
     assert fsm.total_disconnections == 0
-    assert fsm.current_state.id == "disconnected"
+    assert fsm.state.id == "disconnected"
 
 
 def test_nats_connection_state_machine_init_defaults():
@@ -47,9 +47,9 @@ def test_nats_connection_state_machine_init_defaults():
 def test_connect_transition():
     """Test connect() transition from disconnected to connecting."""
     fsm = NATSConnectionStateMachine(connection_id="test-connection")
-    assert fsm.current_state.id == "disconnected"
+    assert fsm.state.id == "disconnected"
     fsm.connect()
-    assert fsm.current_state.id == "connecting"
+    assert fsm.state.id == "connecting"
     assert fsm.reconnect_attempts == 0
 
 
@@ -57,9 +57,9 @@ def test_connected_successfully_from_connecting():
     """Test connected_successfully() transition from connecting to connected."""
     fsm = NATSConnectionStateMachine(connection_id="test-connection")
     fsm.connect()
-    assert fsm.current_state.id == "connecting"
+    assert fsm.state.id == "connecting"
     fsm.connected_successfully()
-    assert fsm.current_state.id == "connected"
+    assert fsm.state.id == "connected"
     assert fsm.total_connections == 1
     assert fsm.last_connected_time is not None
 
@@ -70,9 +70,9 @@ def test_connected_successfully_from_reconnecting():
     fsm.connect()
     fsm.connection_failed()
     fsm.start_reconnect()
-    assert fsm.current_state.id == "reconnecting"
+    assert fsm.state.id == "reconnecting"
     fsm.connected_successfully()
-    assert fsm.current_state.id == "connected"
+    assert fsm.state.id == "connected"
     assert fsm.reconnect_attempts == 0  # Reset on successful connection
 
 
@@ -82,7 +82,7 @@ def test_connection_failed_from_connecting():
     fsm.connect()
     error = Exception("Connection failed")
     fsm.connection_failed(error)
-    assert fsm.current_state.id == "disconnected"
+    assert fsm.state.id == "disconnected"
     assert fsm.last_error == error
     assert fsm.reconnect_attempts == 1
 
@@ -93,10 +93,10 @@ def test_connection_failed_from_reconnecting():
     fsm.connect()
     fsm.connection_failed()
     fsm.start_reconnect()
-    assert fsm.current_state.id == "reconnecting"
+    assert fsm.state.id == "reconnecting"
     error = Exception("Reconnection failed")
     fsm.connection_failed(error)
-    assert fsm.current_state.id == "disconnected"
+    assert fsm.state.id == "disconnected"
     assert fsm.reconnect_attempts == 2
 
 
@@ -105,9 +105,9 @@ def test_disconnect_from_connected():
     fsm = NATSConnectionStateMachine(connection_id="test-connection")
     fsm.connect()
     fsm.connected_successfully()
-    assert fsm.current_state.id == "connected"
+    assert fsm.state.id == "connected"
     fsm.disconnect()
-    assert fsm.current_state.id == "disconnected"
+    assert fsm.state.id == "disconnected"
     assert fsm.total_disconnections == 1
 
 
@@ -117,17 +117,17 @@ def test_disconnect_from_degraded():
     fsm.connect()
     fsm.connected_successfully()
     fsm.degrade()
-    assert fsm.current_state.id == "degraded"
+    assert fsm.state.id == "degraded"
     fsm.disconnect()
-    assert fsm.current_state.id == "disconnected"
+    assert fsm.state.id == "disconnected"
 
 
 def test_start_reconnect():
     """Test start_reconnect() transition from disconnected to reconnecting."""
     fsm = NATSConnectionStateMachine(connection_id="test-connection")
-    assert fsm.current_state.id == "disconnected"
+    assert fsm.state.id == "disconnected"
     fsm.start_reconnect()
-    assert fsm.current_state.id == "reconnecting"
+    assert fsm.state.id == "reconnecting"
 
 
 def test_degrade():
@@ -135,9 +135,9 @@ def test_degrade():
     fsm = NATSConnectionStateMachine(connection_id="test-connection")
     fsm.connect()
     fsm.connected_successfully()
-    assert fsm.current_state.id == "connected"
+    assert fsm.state.id == "connected"
     fsm.degrade()
-    assert fsm.current_state.id == "degraded"
+    assert fsm.state.id == "degraded"
 
 
 def test_recover():
@@ -146,9 +146,9 @@ def test_recover():
     fsm.connect()
     fsm.connected_successfully()
     fsm.degrade()
-    assert fsm.current_state.id == "degraded"
+    assert fsm.state.id == "degraded"
     fsm.recover()
-    assert fsm.current_state.id == "connected"
+    assert fsm.state.id == "connected"
 
 
 def test_open_circuit():
@@ -157,9 +157,9 @@ def test_open_circuit():
     fsm.connect()
     fsm.connection_failed()
     fsm.start_reconnect()
-    assert fsm.current_state.id == "reconnecting"
+    assert fsm.state.id == "reconnecting"
     fsm.open_circuit()
-    assert fsm.current_state.id == "circuit_open"
+    assert fsm.state.id == "circuit_open"
 
 
 def test_close_circuit():
@@ -169,15 +169,15 @@ def test_close_circuit():
     fsm.connection_failed()
     fsm.start_reconnect()
     fsm.open_circuit()
-    assert fsm.current_state.id == "circuit_open"
+    assert fsm.state.id == "circuit_open"
     fsm.close_circuit()
-    assert fsm.current_state.id == "disconnected"
+    assert fsm.state.id == "disconnected"
 
 
 def test_can_attempt_connection_disconnected():
     """Test can_attempt_connection() returns True when disconnected."""
     fsm = NATSConnectionStateMachine(connection_id="test-connection")
-    assert fsm.current_state.id == "disconnected"
+    assert fsm.state.id == "disconnected"
     assert fsm.can_attempt_connection() is True
 
 
@@ -185,7 +185,7 @@ def test_can_attempt_connection_connecting():
     """Test can_attempt_connection() returns True when connecting."""
     fsm = NATSConnectionStateMachine(connection_id="test-connection")
     fsm.connect()
-    assert fsm.current_state.id == "connecting"
+    assert fsm.state.id == "connecting"
     # Connecting state allows connection attempts (it's already attempting)
     assert fsm.can_attempt_connection() is True
 
@@ -195,7 +195,7 @@ def test_can_attempt_connection_connected():
     fsm = NATSConnectionStateMachine(connection_id="test-connection")
     fsm.connect()
     fsm.connected_successfully()
-    assert fsm.current_state.id == "connected"
+    assert fsm.state.id == "connected"
     assert fsm.can_attempt_connection() is False
 
 
@@ -206,7 +206,7 @@ def test_can_attempt_connection_circuit_open():
     fsm.connection_failed()
     fsm.start_reconnect()
     fsm.open_circuit()
-    assert fsm.current_state.id == "circuit_open"
+    assert fsm.state.id == "circuit_open"
     assert fsm.can_attempt_connection() is False
 
 
@@ -216,7 +216,7 @@ def test_can_attempt_connection_reconnecting():
     fsm.connect()
     fsm.connection_failed()
     fsm.start_reconnect()
-    assert fsm.current_state.id == "reconnecting"
+    assert fsm.state.id == "reconnecting"
     # Reconnecting state allows connection attempts
     assert fsm.can_attempt_connection() is True
 

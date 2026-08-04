@@ -1,34 +1,61 @@
 # connection realtime manager
 
-> 8 nodes
+> 80 nodes
 
 ## Key Concepts
 
-- **schedule_end_combat_if_npc_died_best_effort()** (8 connections) — `server/npc/npc_combat_schedule.py`
-- **test_npc_combat_schedule.py** (5 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
-- **test_schedule_end_combat_if_npc_died_no_service()** (3 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
-- **test_schedule_end_combat_if_npc_died_no_running_loop()** (3 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
-- **Schedule end_combat_if_npc_died so the slain NPC no longer gets combat turns (be** (1 connections) — `server/npc/npc_combat_schedule.py`
-- **Unit tests for best-effort NPC combat cleanup scheduling.** (1 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
-- **When combat service is missing, scheduling is a no-op.** (1 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
-- **Without a running asyncio loop, scheduling fails quietly (RuntimeError path).** (1 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
+- **get_username_from_user()** (53 connections) — `server/utils/command_helpers.py`
+- **test_command_helpers.py** (27 connections) — `server/tests/unit/utils/test_command_helpers.py`
+- **command_helpers.py** (18 connections) — `server/utils/command_helpers.py`
+- **test_command_helpers_functions.py** (17 connections) — `server/tests/unit/utils/test_command_helpers_functions.py`
+- **validate_command_safety()** (17 connections) — `server/utils/command_helpers.py`
+- **get_command_help()** (12 connections) — `server/utils/command_helpers.py`
+- **test_validate_command_safety_safe_commands()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
+- **test_validate_command_safety_shell_metacharacters()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
+- **test_validate_command_safety_sql_injection()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
+- **test_validate_command_safety_python_injection()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
+- **test_validate_command_safety_format_string_injection()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
+- **test_validate_command_safety_xss_attempts()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
+- **test_get_command_help_no_command()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
+- **test_get_command_help_specific_commands()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
+- **test_get_command_help_unknown_command()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
+- **test_get_command_help_case_insensitive()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
+- **test_get_username_from_user_player_object()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
+- **test_get_username_from_user_username_attribute()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
+- **test_get_username_from_user_name_attribute()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
+- **test_get_username_from_user_dict_username()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
+- **test_get_username_from_user_dict_name()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
+- **test_get_username_from_user_invalid()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
+- **test_get_username_from_user_empty_dict()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
+- **test_get_username_from_user_none()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
+- **test_get_username_from_user_priority_player_over_username()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
+- *... and 55 more nodes in this community*
 
 ## Relationships
 
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
-- [rate limiter realtime](rate_limiter_realtime.md) (1 shared connections)
-- [NPC Combat](NPC_Combat.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (11 shared connections)
+- [commands admin mute](commands_admin_mute.md) (3 shared connections)
+- [commands position system](commands_position_system.md) (3 shared connections)
+- [lucidity services helpers](lucidity_services_helpers.md) (3 shared connections)
+- [command factories create](command_factories_create.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [command commands handler](command_commands_handler.md) (2 shared connections)
+- [commands logout rationale](commands_logout_rationale.md) (2 shared connections)
+- [commands quest rationale](commands_quest_rationale.md) (2 shared connections)
+- [argon2 auth rationale](argon2_auth_rationale.md) (1 shared connections)
+- [rest grace period](rest_grace_period.md) (1 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/npc_combat_schedule.py`
-- `server/tests/unit/npc/test_npc_combat_schedule.py`
+- `server/tests/unit/utils/test_command_helpers.py`
+- `server/tests/unit/utils/test_command_helpers_functions.py`
+- `server/utils/command_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 253 (87%)
+- INFERRED: 37 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,19 +1,14 @@
 # exceptions rationale error
 
-> 182 nodes
+> 122 nodes
 
 ## Key Concepts
 
 - **test_command_factories_utility.py** (51 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
-- **test_command_magic.py** (27 connections) — `server/tests/unit/models/test_command_magic.py`
-- **CastCommand** (20 connections) — `server/models/command_magic.py`
+- **UtilityCommandFactory** (20 connections) — `server/utils/command_factories_utility.py`
 - **.create_summon_command()** (14 connections) — `server/utils/command_factories_utility.py`
-- **SpellCommand** (13 connections) — `server/models/command_magic.py`
-- **LearnCommand** (13 connections) — `server/models/command_magic.py`
 - **.create_cast_command()** (12 connections) — `server/utils/command_factories_utility.py`
 - **.create_teleport_command()** (11 connections) — `server/utils/command_factories_utility.py`
-- **command_magic.py** (10 connections) — `server/models/command_magic.py`
-- **SpellsCommand** (8 connections) — `server/models/command_magic.py`
 - **.create_alias_command()** (7 connections) — `server/utils/command_factories_utility.py`
 - **.create_unalias_command()** (7 connections) — `server/utils/command_factories_utility.py`
 - **.create_spell_command()** (7 connections) — `server/utils/command_factories_utility.py`
@@ -24,33 +19,39 @@
 - **.create_help_command()** (5 connections) — `server/utils/command_factories_utility.py`
 - **.create_npc_command()** (5 connections) — `server/utils/command_factories_utility.py`
 - **.create_shutdown_command()** (5 connections) — `server/utils/command_factories_utility.py`
-- **test_cast_command_validate_spell_name_empty()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
-- **test_cast_command_validate_spell_name_whitespace_only()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
-- **test_cast_command_spell_name_max_length()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
-- **test_cast_command_target_max_length()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
-- **test_spell_command_validate_spell_name_empty()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
-- *... and 157 more nodes in this community*
+- **test_create_alias_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
+- **test_create_aliases_command_with_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
+- **test_create_unalias_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
+- **test_create_unalias_command_multiple_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
+- **test_create_summon_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
+- **test_create_summon_command_invalid_quantity()** (4 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
+- **test_create_summon_command_negative_quantity()** (4 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
+- **test_create_summon_command_invalid_token()** (4 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
+- **test_create_summon_command_extra_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
+- **test_create_teleport_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
+- *... and 97 more nodes in this community*
 
 ## Relationships
 
-- [command factories create](command_factories_create.md) (40 shared connections)
-- [command inventory models](command_inventory_models.md) (28 shared connections)
-- [command inventory factories](command_inventory_factories.md) (11 shared connections)
-- [feature services flag](feature_services_flag.md) (2 shared connections)
-- [time service rationale](time_service_rationale.md) (2 shared connections)
-- [Database Config](Database_Config.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (32 shared connections)
+- [auth endpoints rationale](auth_endpoints_rationale.md) (5 shared connections)
+- [command factories create](command_factories_create.md) (4 shared connections)
+- [player presence tracker](player_presence_tracker.md) (4 shared connections)
+- [command commands talk](command_commands_talk.md) (2 shared connections)
+- [Spell Validation](Spell_Validation.md) (2 shared connections)
+- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [commands who helpers](commands_who_helpers.md) (1 shared connections)
+- [message queue realtime](message_queue_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/command_magic.py`
-- `server/tests/unit/models/test_command_magic.py`
 - `server/tests/unit/utils/test_command_factories_utility.py`
 - `server/utils/command_factories_utility.py`
 
 ## Audit Trail
 
-- EXTRACTED: 530 (93%)
-- INFERRED: 38 (7%)
+- EXTRACTED: 365 (95%)
+- INFERRED: 21 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

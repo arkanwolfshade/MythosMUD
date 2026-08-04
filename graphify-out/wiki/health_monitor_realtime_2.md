@@ -1,10 +1,10 @@
 # health monitor realtime
 
-> 28 nodes
+> 38 nodes
 
 ## Key Concepts
 
-- **test_health_monitor.py** (16 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **test_health_monitor.py** (26 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
 - **health_monitor()** (3 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
 - **test_health_monitor_init_custom_intervals()** (3 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
 - **mock_is_websocket_open()** (2 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
@@ -18,22 +18,22 @@
 - **test_check_all_connections_health()** (2 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
 - **test_start_periodic_checks()** (2 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
 - **test_stop_periodic_checks()** (2 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **test_find_player_id_for_cleanup()** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **test_check_connection_stale()** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **test_check_websocket_open()** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **test_validate_and_update_token()** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **test_process_single_connection_paths()** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **test_cleanup_stale_connections()** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **test_check_all_connections_health_with_metadata()** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **test_periodic_health_check_task_cancel()** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **test_wait_for_task_cancellation()** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **test_start_periodic_checks_already_running()** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
 - **Unit tests for health monitor.  Tests the HealthMonitor class.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- **Create a mock is_websocket_open callback.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- **Create a mock validate_token callback.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- **Create a mock cleanup_dead_websocket callback.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- **Create a mock performance tracker.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- **Create a HealthMonitor instance.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- **Test HealthMonitor initialization.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- **Test check_player_connection_health() returns health status.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- **Test check_player_connection_health() when player has no websockets.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- **Test check_player_connection_health() when websockets are unhealthy.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- **Test check_all_connections_health() checks all connections.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- *... and 3 more nodes in this community*
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [Room Broadcast](Room_Broadcast.md) (4 shared connections)
+- [taunt combat commands](taunt_combat_commands.md) (4 shared connections)
 
 ## Source Files
 
@@ -41,7 +41,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 58 (100%)
+- EXTRACTED: 78 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

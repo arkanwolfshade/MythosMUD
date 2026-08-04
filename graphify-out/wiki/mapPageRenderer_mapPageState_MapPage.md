@@ -28,12 +28,10 @@
 
 ## Relationships
 
-- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (4 shared connections)
-- [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (2 shared connections)
+- [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (6 shared connections)
 - [mythosApp appLazyScreens mythosAppViewMo](mythosApp_appLazyScreens_mythosAppViewMo.md) (2 shared connections)
-- [Game Terminal UI](Game_Terminal_UI.md) (2 shared connections)
-- [panels domPurifyClient chat](panels_domPurifyClient_chat.md) (1 shared connections)
-- [mythosApp security submitAuth](mythosApp_security_submitAuth.md) (1 shared connections)
+- [project paths rationale](project_paths_rationale.md) (2 shared connections)
+- [mythosApp security submitAuth](mythosApp_security_submitAuth.md) (2 shared connections)
 
 ## Source Files
 

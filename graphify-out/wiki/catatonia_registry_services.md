@@ -33,13 +33,11 @@
 
 ## Relationships
 
-- [Magic Spell Service](Magic_Spell_Service.md) (3 shared connections)
+- [nats services service](nats_services_service.md) (5 shared connections)
+- [NPC Combat](NPC_Combat.md) (4 shared connections)
 - [NPC Definitions Admin](NPC_Definitions_Admin.md) (3 shared connections)
-- [command base models](command_base_models.md) (3 shared connections)
-- [container helpers endpoints](container_helpers_endpoints.md) (2 shared connections)
+- [Exception Containers](Exception_Containers.md) (2 shared connections)
 - [lucidity services helpers](lucidity_services_helpers.md) (2 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [npc shopkeeper rationale](npc_shopkeeper_rationale.md) (1 shared connections)
 - [command validation commands](command_validation_commands.md) (1 shared connections)
 
 ## Source Files

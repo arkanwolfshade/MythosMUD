@@ -34,10 +34,10 @@
 ## Relationships
 
 - [chat service game](chat_service_game.md) (4 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
 - [chat game message](chat_game_message.md) (2 shared connections)
-- [chat moderation game](chat_moderation_game.md) (1 shared connections)
-- [services user manager](services_user_manager.md) (1 shared connections)
+- [dialogue schemas tree](dialogue_schemas_tree.md) (1 shared connections)
+- [chat logger services](chat_logger_services.md) (1 shared connections)
 
 ## Source Files
 

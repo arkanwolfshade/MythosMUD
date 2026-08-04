@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_handle_unequip_wearable_container_with_allowed_roles()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test handle_unequip_wearable_container preserves allowed_roles.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_compare_canonical_rooms_same()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Test compare_canonical_rooms() returns True for same rooms.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Relationships
 
-- [wearable container service](wearable_container_service.md) (1 shared connections)
+- [message filtering realtime](message_filtering_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Audit Trail
 

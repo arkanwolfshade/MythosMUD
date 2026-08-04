@@ -33,12 +33,12 @@
 
 ## Relationships
 
-- [maps handle ascii](maps_handle_ascii.md) (10 shared connections)
 - [room game service](room_game_service.md) (10 shared connections)
+- [maps handle ascii](maps_handle_ascii.md) (9 shared connections)
 - [map helpers rationale](map_helpers_rationale.md) (6 shared connections)
 - [map services ascii](map_services_ascii.md) (3 shared connections)
-- [corpse lifecycle service](corpse_lifecycle_service.md) (2 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [corpse lifecycle service](corpse_lifecycle_service.md) (3 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
 
 ## Source Files
 

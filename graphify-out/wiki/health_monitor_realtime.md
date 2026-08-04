@@ -1,34 +1,35 @@
 # health monitor realtime
 
-> 12 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **_occupation_slots_9()** (11 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_duplicate_occupation_skill_ids_raises()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_cthulhu_mythos_in_personal_rejected()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_personal_interest_not_four_raises()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_duplicate_personal_skill_ids_raises()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_overlap_occupation_and_personal_raises()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **Valid 9 slots: one 70, two 60, three 50, three 40; 9 distinct skill_ids (no over** (1 connections) — `server/tests/unit/game/test_skill_service.py`
-- **Personal interest with Cthulhu Mythos raises ValueError.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
-- **personal_interest must have exactly 4 entries.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
-- **occupation_slots with duplicate skill_id raises ValueError.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
-- **personal_interest with duplicate skill_id raises ValueError.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
-- **Occupation and personal interest sharing a skill_id raises ValueError.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **shutdown_process_termination.py** (12 connections) — `server/commands/shutdown_process_termination.py`
+- **_find_uvicorn_processes()** (3 connections) — `server/commands/shutdown_process_termination.py`
+- **_terminate_uvicorn_processes()** (3 connections) — `server/commands/shutdown_process_termination.py`
+- **Any** (2 connections)
+- **_terminate_child_processes()** (2 connections) — `server/commands/shutdown_process_termination.py`
+- **_terminate_with_signals()** (2 connections) — `server/commands/shutdown_process_termination.py`
+- **Process termination utilities for graceful server shutdown.  This module handles** (1 connections) — `server/commands/shutdown_process_termination.py`
+- **Find all uvicorn processes using psutil.** (1 connections) — `server/commands/shutdown_process_termination.py`
+- **Terminate all uvicorn processes.** (1 connections) — `server/commands/shutdown_process_termination.py`
+- **Terminate all child processes of the current process.** (1 connections) — `server/commands/shutdown_process_termination.py`
+- **Fallback signal-based termination when psutil is not available.** (1 connections) — `server/commands/shutdown_process_termination.py`
 
 ## Relationships
 
-- [skill service game](skill_service_game.md) (6 shared connections)
-- [realtime monitoring performance](realtime_monitoring_performance.md) (5 shared connections)
+- [NPC Combat](NPC_Combat.md) (3 shared connections)
+- [shutdown commands sequence](shutdown_commands_sequence.md) (2 shared connections)
+- [taunt combat commands](taunt_combat_commands.md) (1 shared connections)
+- [middleware security headers](middleware_security_headers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_skill_service.py`
+- `server/commands/shutdown_process_termination.py`
 
 ## Audit Trail
 
-- EXTRACTED: 33 (100%)
+- EXTRACTED: 29 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

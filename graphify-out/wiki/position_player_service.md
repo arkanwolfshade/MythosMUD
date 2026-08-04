@@ -33,11 +33,11 @@
 
 ## Relationships
 
-- [game chat service](game_chat_service.md) (11 shared connections)
-- [commands admin mute](commands_admin_mute.md) (4 shared connections)
-- [Error Conversion](Error_Conversion.md) (3 shared connections)
-- [follow game service](follow_game_service.md) (3 shared connections)
-- [Database Config](Database_Config.md) (3 shared connections)
+- [command admin setlucidity](command_admin_setlucidity.md) (11 shared connections)
+- [commands whisper command](commands_whisper_command.md) (4 shared connections)
+- [websocket realtime handler](websocket_realtime_handler.md) (3 shared connections)
+- [party service game](party_service_game.md) (3 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (3 shared connections)
 - [rest grace period](rest_grace_period.md) (2 shared connections)
 
 ## Source Files

@@ -1,67 +1,78 @@
 # Loot Generation
 
-> 209 nodes
+> 250 nodes
 
 ## Key Concepts
 
-- **ContainerComponent** (104 connections) — `server/models/container.py`
-- **LootAllRequest** (62 connections) — `server/api/container_models.py`
-- **container_helpers.py** (44 connections) — `server/api/container_helpers.py`
-- **loot_all_items()** (38 connections) — `server/api/container_endpoints_loot.py`
-- **test_container.py** (38 connections) — `server/tests/unit/models/test_container.py`
-- **container_endpoints_loot.py** (36 connections) — `server/api/container_endpoints_loot.py`
-- **test_container_helpers_loot.py** (24 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
-- **transfer_all_items_from_container()** (21 connections) — `server/api/container_helpers.py`
-- **TestTransferAllItemsFromContainer** (20 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
-- **get_player_id_from_user()** (19 connections) — `server/api/container_helpers.py`
-- **handle_container_service_error()** (19 connections) — `server/api/container_helpers.py`
-- **TestLootAllItems** (19 connections) — `server/tests/unit/api/test_container_endpoints_loot.py`
-- **get_container_and_player_for_loot_all()** (17 connections) — `server/api/container_helpers.py`
-- **get_container_service()** (16 connections) — `server/api/container_helpers.py`
-- **test_container_endpoints_loot.py** (15 connections) — `server/tests/unit/api/test_container_endpoints_loot.py`
-- **TestHandleContainerServiceErrorEdgeCases** (15 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
-- **TestRegisterLootEndpoints** (14 connections) — `server/tests/unit/api/test_container_endpoints_loot_register.py`
-- **TestGetContainerAndPlayerForLootAll** (14 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
-- **container_models.py** (12 connections) — `server/api/container_models.py`
-- **validate_user_for_loot_all()** (10 connections) — `server/api/container_helpers.py`
-- **test_container_endpoints_loot_register.py** (10 connections) — `server/tests/unit/api/test_container_endpoints_loot_register.py`
-- **register_loot_endpoints()** (8 connections) — `server/api/container_endpoints_loot.py`
-- **Any** (6 connections)
-- **UUID** (6 connections)
-- **.test_loot_all_items_container_not_found()** (6 connections) — `server/tests/unit/api/test_container_endpoints_loot.py`
-- *... and 184 more nodes in this community*
+- **ValidationError** (582 connections) — `server/exceptions.py`
+- **exceptions.py** (238 connections) — `server/exceptions.py`
+- **log_and_raise_enhanced()** (97 connections) — `server/utils/enhanced_error_logging.py`
+- **command_parser.py** (46 connections) — `server/utils/command_parser.py`
+- **enhanced_error_logging.py** (38 connections) — `server/utils/enhanced_error_logging.py`
+- **test_command_factories_player_state.py** (27 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- **processing.py** (26 connections) — `server/command_handler/processing.py`
+- **command_factories.py** (20 connections) — `server/utils/command_factories.py`
+- **PlayerStateCommandFactory** (18 connections) — `server/utils/command_factories_player_state.py`
+- **validate_room_data()** (16 connections) — `server/world_loader.py`
+- **player_respawn_wrapper.py** (15 connections) — `server/game/player_respawn_wrapper.py`
+- **PlayerRespawnWrapper** (15 connections) — `server/game/player_respawn_wrapper.py`
+- **command_factories_inventory.py** (15 connections) — `server/utils/command_factories_inventory.py`
+- **player_creation_service.py** (14 connections) — `server/game/player_creation_service.py`
+- **world_loader.py** (14 connections) — `server/world_loader.py`
+- **test_player_respawn_wrapper.py** (13 connections) — `server/tests/unit/game/test_player_respawn_wrapper.py`
+- **command_processor.py** (13 connections) — `server/utils/command_processor.py`
+- **get_room_environment()** (13 connections) — `server/world_loader.py`
+- **PlayerStateService** (12 connections) — `server/game/player_state_service.py`
+- **TestGetRoomEnvironment** (12 connections) — `server/tests/unit/test_world_loader.py`
+- **TestValidateRoomData** (11 connections) — `server/tests/unit/test_world_loader.py`
+- **command_factories_communication.py** (11 connections) — `server/utils/command_factories_communication.py`
+- **command_factories_exploration.py** (11 connections) — `server/utils/command_factories_exploration.py`
+- **command_factories_moderation.py** (11 connections) — `server/utils/command_factories_moderation.py`
+- **command_factories_player_state.py** (11 connections) — `server/utils/command_factories_player_state.py`
+- *... and 225 more nodes in this community*
 
 ## Relationships
 
-- [Exception Containers](Exception_Containers.md) (77 shared connections)
-- [container events rationale](container_events_rationale.md) (58 shared connections)
-- [Memory Task Runtime](Memory_Task_Runtime.md) (48 shared connections)
-- [alias storage commands](alias_storage_commands.md) (20 shared connections)
-- [task registry app](task_registry_app.md) (18 shared connections)
-- [ascii map renderer](ascii_map_renderer.md) (12 shared connections)
-- [command inventory factories](command_inventory_factories.md) (8 shared connections)
-- [Database Config](Database_Config.md) (7 shared connections)
-- [websocket helpers realtime](websocket_helpers_realtime.md) (6 shared connections)
-- [container helpers endpoints](container_helpers_endpoints.md) (4 shared connections)
-- [logging file setup](logging_file_setup.md) (3 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (3 shared connections)
+- [NPC Combat](NPC_Combat.md) (59 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (50 shared connections)
+- [command inventory models](command_inventory_models.md) (47 shared connections)
+- [Exception Containers](Exception_Containers.md) (35 shared connections)
+- [Spell Validation](Spell_Validation.md) (32 shared connections)
+- [exceptions rationale error](exceptions_rationale_error.md) (32 shared connections)
+- [command factories create](command_factories_create.md) (31 shared connections)
+- [Inventory Equip](Inventory_Equip.md) (27 shared connections)
+- [services chat logger](services_chat_logger.md) (26 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (24 shared connections)
+- [npc commands admin](npc_commands_admin.md) (24 shared connections)
+- [npc combat service](npc_combat_service.md) (23 shared connections)
 
 ## Source Files
 
-- `server/api/container_endpoints_loot.py`
-- `server/api/container_helpers.py`
-- `server/api/container_models.py`
-- `server/models/container.py`
-- `server/tests/unit/api/test_container_endpoints_loot.py`
-- `server/tests/unit/api/test_container_endpoints_loot_register.py`
-- `server/tests/unit/api/test_container_helpers_loot.py`
-- `server/tests/unit/api/test_containers.py`
-- `server/tests/unit/models/test_container.py`
+- `server/command_handler/processing.py`
+- `server/exceptions.py`
+- `server/game/player_creation_service.py`
+- `server/game/player_respawn_wrapper.py`
+- `server/game/player_service.py`
+- `server/game/player_state_service.py`
+- `server/monitoring/exception_metrics.py`
+- `server/tests/unit/game/test_player_respawn_wrapper.py`
+- `server/tests/unit/game/test_player_service.py`
+- `server/tests/unit/game/test_player_service_mutations.py`
+- `server/tests/unit/test_world_loader.py`
+- `server/tests/unit/utils/test_command_factories_player_state.py`
+- `server/tests/unit/utils/test_enhanced_error_logging.py`
+- `server/utils/command_factories.py`
+- `server/utils/command_factories_communication.py`
+- `server/utils/command_factories_exploration.py`
+- `server/utils/command_factories_inventory.py`
+- `server/utils/command_factories_moderation.py`
+- `server/utils/command_factories_player_state.py`
+- `server/utils/command_factories_utility.py`
 
 ## Audit Trail
 
-- EXTRACTED: 894 (90%)
-- INFERRED: 103 (10%)
+- EXTRACTED: 1375 (73%)
+- INFERRED: 498 (27%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,38 +1,59 @@
 # command commands service
 
-> 16 nodes
+> 36 nodes
 
 ## Key Concepts
 
-- **test_message_filtering_helpers.py** (10 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
-- **message_filtering_helper()** (3 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
-- **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
-- **test_extract_chat_event_info()** (2 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
-- **test_should_apply_mute_check()** (2 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
-- **test_compare_canonical_rooms()** (2 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
-- **test_get_player_room_from_online_players()** (2 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
-- **test_get_player_room_from_online_players_not_found()** (2 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
-- **Unit tests for message filtering helper functions.  Tests the helper functions i** (1 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
-- **Create a mock connection manager.** (1 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
-- **Create a MessageFilteringHelper instance.** (1 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
-- **Test extract_chat_event_info() extracts event information.** (1 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
-- **Test should_apply_mute_check() determines if mute check needed.** (1 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
-- **Test compare_canonical_rooms() compares room IDs.** (1 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
-- **Test get_player_room_from_online_players() gets room from cache.** (1 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
-- **Test get_player_room_from_online_players() returns None when not found.** (1 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
+- **ItemRepository** (15 connections) — `server/persistence/repositories/item_repository.py`
+- **create_item_instance_async()** (14 connections) — `server/persistence/item_instance_persistence_async.py`
+- **item_instance_persistence_async.py** (13 connections) — `server/persistence/item_instance_persistence_async.py`
+- **test_item_instance_persistence_async.py** (13 connections) — `server/tests/unit/persistence/test_item_instance_persistence_async.py`
+- **item_repository.py** (12 connections) — `server/persistence/repositories/item_repository.py`
+- **ensure_item_instance_async()** (11 connections) — `server/persistence/item_instance_persistence_async.py`
+- **item_instance_exists_async()** (7 connections) — `server/persistence/item_instance_persistence_async.py`
+- **test_item_repository.py** (7 connections) — `server/tests/unit/persistence/repositories/test_item_repository.py`
+- **.create_item_instance()** (5 connections) — `server/persistence/repositories/item_repository.py`
+- **.ensure_item_instance()** (5 connections) — `server/persistence/repositories/item_repository.py`
+- **.__init__()** (4 connections) — `server/persistence/repositories/item_repository.py`
+- **.item_instance_exists()** (4 connections) — `server/persistence/repositories/item_repository.py`
+- **AsyncSession** (3 connections)
+- **Any** (3 connections)
+- **test_create_item_instance_async_missing_id()** (3 connections) — `server/tests/unit/persistence/test_item_instance_persistence_async.py`
+- **test_create_item_instance_async_db_error()** (3 connections) — `server/tests/unit/persistence/test_item_instance_persistence_async.py`
+- **Any** (2 connections)
+- **repository()** (2 connections) — `server/tests/unit/persistence/repositories/test_item_repository.py`
+- **test_create_item_instance_delegates()** (2 connections) — `server/tests/unit/persistence/repositories/test_item_repository.py`
+- **test_ensure_item_instance_delegates()** (2 connections) — `server/tests/unit/persistence/repositories/test_item_repository.py`
+- **test_item_instance_exists_delegates()** (2 connections) — `server/tests/unit/persistence/repositories/test_item_repository.py`
+- **test_create_item_instance_async_success()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence_async.py`
+- **test_item_instance_exists_async()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence_async.py`
+- **test_ensure_item_instance_async_delegates()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence_async.py`
+- **Async item instance persistence operations.  Provides async implementations usin** (1 connections) — `server/persistence/item_instance_persistence_async.py`
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
-- [circuit breaker realtime](circuit_breaker_realtime.md) (3 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (7 shared connections)
+- [Loot Generation](Loot_Generation.md) (6 shared connections)
+- [NPC Combat](NPC_Combat.md) (5 shared connections)
+- [Database Config](Database_Config.md) (4 shared connections)
+- [argon2 auth rationale](argon2_auth_rationale.md) (3 shared connections)
+- [commands party examples](commands_party_examples.md) (2 shared connections)
+- [game models enums](game_models_enums.md) (1 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (1 shared connections)
+- [persistence container item](persistence_container_item.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_message_filtering_helpers.py`
+- `server/persistence/item_instance_persistence_async.py`
+- `server/persistence/repositories/item_repository.py`
+- `server/tests/unit/persistence/repositories/test_item_repository.py`
+- `server/tests/unit/persistence/test_item_instance_persistence_async.py`
 
 ## Audit Trail
 
-- EXTRACTED: 33 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 146 (97%)
+- INFERRED: 4 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

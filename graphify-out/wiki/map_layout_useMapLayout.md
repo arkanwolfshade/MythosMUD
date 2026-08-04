@@ -1,53 +1,47 @@
 # map layout useMapLayout
 
-> 24 nodes
+> 18 nodes
 
 ## Key Concepts
 
-- **layout.ts** (26 connections) — `client/src/components/map/utils/layout.ts`
-- **useMapLayout.ts** (22 connections) — `client/src/components/map/hooks/useMapLayout.ts`
-- **applyForceLayout()** (10 connections) — `client/src/components/map/utils/layout.ts`
-- **applyGridLayout()** (7 connections) — `client/src/components/map/utils/layout.ts`
-- **applyForceLayout.test.ts** (6 connections) — `client/src/components/map/utils/__tests__/applyForceLayout.test.ts`
-- **applyGridLayout.test.ts** (6 connections) — `client/src/components/map/utils/__tests__/applyGridLayout.test.ts`
-- **calculateGridPosition.test.ts** (6 connections) — `client/src/components/map/utils/__tests__/calculateGridPosition.test.ts`
-- **GridLayoutConfig** (6 connections) — `client/src/components/map/utils/layout.ts`
-- **defaultGridLayoutConfig** (5 connections) — `client/src/components/map/utils/layout.ts`
-- **UseMapLayoutOptions** (4 connections) — `client/src/components/map/hooks/useMapLayout.ts`
-- **ForceLayoutConfig** (4 connections) — `client/src/components/map/utils/layout.ts`
-- **defaultForceLayoutConfig** (4 connections) — `client/src/components/map/utils/layout.ts`
-- **applyCrossingMinimizationForces()** (4 connections) — `client/src/components/map/utils/layout.ts`
-- **layout-config.test.ts** (3 connections) — `client/src/components/map/utils/__tests__/layout-config.test.ts`
-- **calculateGridPosition()** (3 connections) — `client/src/components/map/utils/layout.ts`
-- **applyChargeForces()** (3 connections) — `client/src/components/map/utils/layout.ts`
-- **doLineSegmentsIntersect()** (3 connections) — `client/src/components/map/utils/layout.ts`
-- **doesEdgeCrossNode()** (3 connections) — `client/src/components/map/utils/layout.ts`
-- **initializeNodePositions()** (2 connections) — `client/src/components/map/utils/layout.ts`
-- **applyLinkForces()** (2 connections) — `client/src/components/map/utils/layout.ts`
-- **applyCollisionForces()** (2 connections) — `client/src/components/map/utils/layout.ts`
-- **applyCenterForce()** (2 connections) — `client/src/components/map/utils/layout.ts`
-- **updateNodePositions()** (2 connections) — `client/src/components/map/utils/layout.ts`
-- **NodeState** (1 connections) — `client/src/components/map/utils/layout.ts`
+- **NPCStartupService** (44 connections) — `server/services/npc_startup_service.py`
+- **test_npc_startup_service_init()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_required_npcs_spawn_failure()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_get_default_room_for_sub_zone()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_get_default_room_for_sub_zone_case_insensitive()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_npcs_on_startup_with_optional_npcs()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_arena_npcs_no_prior_spawns_returns_empty()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_arena_npcs_skips_unknown_definition_id()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **.__init__()** (2 connections) — `server/services/npc_startup_service.py`
+- **Service for automatic NPC spawning during server startup.      This service coor** (1 connections) — `server/services/npc_startup_service.py`
+- **Initialize the NPC startup service.** (1 connections) — `server/services/npc_startup_service.py`
+- **Test NPCStartupService initialization.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _spawn_required_npcs() handles spawn failures.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _get_default_room_for_sub_zone() returns correct room for known sub-zone.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _get_default_room_for_sub_zone() is case insensitive.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test spawn_npcs_on_startup() spawns optional NPCs.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Arena pass is skipped when required/optional passes spawned nothing.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Stale definition_id in spawned_npcs that is not in definitions list is ignored.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
 
 ## Relationships
 
-- [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (15 shared connections)
-- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (13 shared connections)
-- [performance map debounce()](performance_map_debounce%28%29.md) (2 shared connections)
+- [realtime player connection](realtime_player_connection.md) (16 shared connections)
+- [services npc startup](services_npc_startup.md) (9 shared connections)
+- [panels monitoringPanelTestFixtures Monit](panels_monitoringPanelTestFixtures_Monit.md) (6 shared connections)
+- [quests players rationale](quests_players_rationale.md) (5 shared connections)
+- [player death service](player_death_service.md) (3 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (2 shared connections)
+- [test_spawn_arena_npcs_spawns_each_spawned_definition](test_spawn_arena_npcs_spawns_each_spawned_definition.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/map/hooks/useMapLayout.ts`
-- `client/src/components/map/utils/__tests__/applyForceLayout.test.ts`
-- `client/src/components/map/utils/__tests__/applyGridLayout.test.ts`
-- `client/src/components/map/utils/__tests__/calculateGridPosition.test.ts`
-- `client/src/components/map/utils/__tests__/layout-config.test.ts`
-- `client/src/components/map/utils/layout.ts`
+- `server/services/npc_startup_service.py`
+- `server/tests/unit/services/test_npc_startup_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 136 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 74 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

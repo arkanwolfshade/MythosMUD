@@ -50,11 +50,30 @@ describe('panelLayout', () => {
       const layout = createDefaultPanelLayout(1920, 1080);
 
       Object.values(layout).forEach(panel => {
-        expect(panel.isMinimized).toBe(false);
         expect(panel.isMaximized).toBe(false);
         expect(panel.isVisible).toBe(true);
         expect(panel.zIndex).toBeGreaterThan(0);
       });
+
+      // Primary surfaces stay expanded
+      expect(layout.chatHistory.isMinimized).toBe(false);
+      expect(layout.commandInput.isMinimized).toBe(false);
+      expect(layout.gameInfo.isMinimized).toBe(false);
+
+      // Auxiliary panels start minimized (legibility under pressure)
+      expect(layout.occupants.isMinimized).toBe(true);
+      expect(layout.commandHistory.isMinimized).toBe(true);
+      expect(layout.questLog.isMinimized).toBe(true);
+    });
+
+    it('should give command input a wider primary footprint', () => {
+      const viewportWidth = 1920;
+      const padding = 20;
+      const columnWidth = (viewportWidth - padding * 4) / 3;
+      const layout = createDefaultPanelLayout(viewportWidth, 1080);
+
+      expect(layout.commandInput.size.width).toBe(columnWidth + padding + columnWidth);
+      expect(layout.chatHistory.size.height).toBeGreaterThan(layout.roomDescription.size.height);
     });
 
     it('should calculate correct column widths for three-column layout', () => {
@@ -73,10 +92,10 @@ describe('panelLayout', () => {
       // Middle column panel
       expect(layout.gameInfo.size.width).toBe(expectedColumnWidth);
 
-      // Right column panels should have same width
+      // Right column panels should have same width (command input spans middle+right)
       expect(layout.characterInfo.size.width).toBe(expectedColumnWidth);
       expect(layout.commandHistory.size.width).toBe(expectedColumnWidth);
-      expect(layout.commandInput.size.width).toBe(expectedColumnWidth);
+      expect(layout.commandInput.size.width).toBe(expectedColumnWidth + padding + expectedColumnWidth);
     });
 
     it('should position panels in correct columns', () => {
@@ -99,10 +118,10 @@ describe('panelLayout', () => {
       // Middle column panel
       expect(layout.gameInfo.position.x).toBe(middleColumnX);
 
-      // Right column panels
+      // Right column panels; command input anchors at middle (spans right)
       expect(layout.characterInfo.position.x).toBe(rightColumnX);
       expect(layout.commandHistory.position.x).toBe(rightColumnX);
-      expect(layout.commandInput.position.x).toBe(rightColumnX);
+      expect(layout.commandInput.position.x).toBe(middleColumnX);
     });
 
     it('should position panels below header', () => {

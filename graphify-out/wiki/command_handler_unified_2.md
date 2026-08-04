@@ -33,11 +33,10 @@
 
 ## Relationships
 
-- [Memory Task Runtime](Memory_Task_Runtime.md) (5 shared connections)
-- [Database Config](Database_Config.md) (2 shared connections)
+- [commands follow rationale](commands_follow_rationale.md) (7 shared connections)
 - [Loot Generation](Loot_Generation.md) (2 shared connections)
 - [profession game service](profession_game_service.md) (1 shared connections)
-- [time service rationale](time_service_rationale.md) (1 shared connections)
+- [taunt combat commands](taunt_combat_commands.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,52 +1,52 @@
 # npc combat service
 
-> 28 nodes
+> 66 nodes
 
 ## Key Concepts
 
-- **_find_container_wearable()** (20 connections) — `server/commands/look_container.py`
-- **test_find_container_wearable_success()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_find_container_wearable_by_prototype_id()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_find_container_wearable_not_found()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_find_container_wearable_with_inner_container()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_find_container_wearable_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_find_container_wearable_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_find_container_wearable_found()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_wearable_not_found()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_wearable_empty()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_wearable_no_match()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_wearable_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_wearable_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_wearable_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Find a wearable container in equipped items by name or prototype_id.      This f** (1 connections) — `server/commands/look_container.py`
-- **Test finding wearable container by name.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test finding wearable container by prototype_id.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test finding wearable container when not found.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test finding wearable container with inner_container.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test finding wearable container with instance number.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test finding wearable container with invalid instance number.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Test _find_container_wearable() finds wearable container.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _find_container_wearable() returns None when container not found.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _find_container_wearable() with empty dict.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _find_container_wearable() with no matching containers.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- *... and 3 more nodes in this community*
+- **test_command_factories_moderation.py** (29 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
+- **ModerationCommandFactory** (13 connections) — `server/utils/command_factories_moderation.py`
+- **.create_mute_command()** (9 connections) — `server/utils/command_factories_moderation.py`
+- **.create_mute_global_command()** (9 connections) — `server/utils/command_factories_moderation.py`
+- **.create_unmute_command()** (7 connections) — `server/utils/command_factories_moderation.py`
+- **.create_unmute_global_command()** (7 connections) — `server/utils/command_factories_moderation.py`
+- **.create_add_admin_command()** (7 connections) — `server/utils/command_factories_moderation.py`
+- **.create_admin_command()** (7 connections) — `server/utils/command_factories_moderation.py`
+- **.create_mutes_command()** (6 connections) — `server/utils/command_factories_moderation.py`
+- **test_create_mute_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
+- **test_create_unmute_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
+- **test_create_add_admin_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
+- **test_create_unmute_command_with_multiple_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
+- **test_create_mute_global_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
+- **test_create_unmute_global_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
+- **test_create_unmute_global_command_with_multiple_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
+- **test_create_admin_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
+- **test_create_admin_command_status_with_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
+- **test_create_mutes_command_with_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
+- **test_create_add_admin_command_with_multiple_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
+- **test_create_mute_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
+- **test_create_unmute_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
+- **test_create_add_admin_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
+- **test_create_mute_command_with_duration()** (3 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
+- **test_create_mute_command_with_duration_and_reason()** (3 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
+- *... and 41 more nodes in this community*
 
 ## Relationships
 
-- [models lucidity rationale](models_lucidity_rationale.md) (8 shared connections)
-- [DI Container Format](DI_Container_Format.md) (7 shared connections)
-- [schemas player rationale](schemas_player_rationale.md) (4 shared connections)
+- [Loot Generation](Loot_Generation.md) (23 shared connections)
+- [command factories create](command_factories_create.md) (7 shared connections)
+- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [commands who helpers](commands_who_helpers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/look_container.py`
-- `server/tests/unit/commands/test_look_container.py`
-- `server/tests/unit/commands/test_look_container_helpers.py`
+- `server/tests/unit/utils/test_command_factories_moderation.py`
+- `server/utils/command_factories_moderation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 73 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 198 (94%)
+- INFERRED: 12 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

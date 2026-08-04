@@ -4,56 +4,52 @@
 
 ## Key Concepts
 
-- **FollowService** (37 connections) — `server/game/follow_service.py`
-- **follow_service.py** (24 connections) — `server/game/follow_service.py`
-- **UUID** (14 connections)
-- **_str_id()** (13 connections) — `server/game/follow_service.py`
-- **.__init__()** (10 connections) — `server/game/follow_service.py`
-- **.request_follow()** (9 connections) — `server/game/follow_service.py`
-- **._handle_player_follower_move()** (9 connections) — `server/game/follow_service.py`
-- **._handle_npc_follower_move()** (9 connections) — `server/game/follow_service.py`
-- **._send_result_to_player()** (8 connections) — `server/game/follow_service.py`
-- **._send_follow_state_to_player()** (8 connections) — `server/game/follow_service.py`
-- **.unfollow()** (8 connections) — `server/game/follow_service.py`
-- **Any** (7 connections)
-- **._expire_pending_requests()** (7 connections) — `server/game/follow_service.py`
-- **.accept_follow()** (7 connections) — `server/game/follow_service.py`
-- **.decline_follow()** (7 connections) — `server/game/follow_service.py`
-- **_is_npc_follow_value()** (6 connections) — `server/game/follow_service.py`
-- **.get_followers()** (6 connections) — `server/game/follow_service.py`
-- **.get_following_display()** (6 connections) — `server/game/follow_service.py`
-- **._ensure_follower_standing()** (6 connections) — `server/game/follow_service.py`
-- **._on_player_entered_room()** (6 connections) — `server/game/follow_service.py`
-- **._send_follow_request_to_target()** (5 connections) — `server/game/follow_service.py`
-- **.get_following()** (5 connections) — `server/game/follow_service.py`
-- **.get_following_display_name()** (5 connections) — `server/game/follow_service.py`
-- **._on_npc_entered_room()** (5 connections) — `server/game/follow_service.py`
-- **._send_result_and_player_update()** (4 connections) — `server/game/follow_service.py`
+- **EventHandler** (34 connections) — `server/realtime/event_handlers.py`
+- **test_event_handlers_combat.py** (22 connections) — `server/tests/unit/realtime/test_event_handlers_combat.py`
+- **_send_combat_participant_updates()** (10 connections) — `server/realtime/event_handlers.py`
+- **_as_event_data_dict()** (8 connections) — `server/realtime/event_handlers.py`
+- **_participant_key_strings()** (5 connections) — `server/realtime/event_handlers.py`
+- **_npc_died_ids_or_warn()** (5 connections) — `server/realtime/event_handlers.py`
+- **.handle_event_message()** (5 connections) — `server/realtime/event_handlers.py`
+- **.__init__()** (3 connections) — `server/realtime/event_handlers.py`
+- **.get_event_handler_map()** (3 connections) — `server/realtime/event_handlers.py`
+- **.validate_event_message()** (3 connections) — `server/realtime/event_handlers.py`
+- **.handle_combat_started_event()** (3 connections) — `server/realtime/event_handlers.py`
+- **.handle_combat_ended_event()** (3 connections) — `server/realtime/event_handlers.py`
+- **.handle_player_attacked_event()** (3 connections) — `server/realtime/event_handlers.py`
+- **.handle_npc_attacked_event()** (3 connections) — `server/realtime/event_handlers.py`
+- **.handle_npc_took_damage_event()** (3 connections) — `server/realtime/event_handlers.py`
+- **test_handle_npc_took_damage_flattens_event_data_for_websocket()** (3 connections) — `server/tests/unit/realtime/test_event_handlers_combat.py`
+- **.handle_player_entered_event()** (2 connections) — `server/realtime/event_handlers.py`
+- **.handle_player_left_event()** (2 connections) — `server/realtime/event_handlers.py`
+- **.handle_game_tick_event()** (2 connections) — `server/realtime/event_handlers.py`
+- **test_as_event_data_dict_normalizes_mapping()** (2 connections) — `server/tests/unit/realtime/test_event_handlers_combat.py`
+- **test_participant_key_strings()** (2 connections) — `server/tests/unit/realtime/test_event_handlers_combat.py`
+- **test_validate_event_message()** (2 connections) — `server/tests/unit/realtime/test_event_handlers_combat.py`
+- **test_handle_event_message_dispatches_handler()** (2 connections) — `server/tests/unit/realtime/test_event_handlers_combat.py`
+- **test_handle_event_message_invalid_skips()** (2 connections) — `server/tests/unit/realtime/test_event_handlers_combat.py`
+- **test_handle_combat_started_event()** (2 connections) — `server/tests/unit/realtime/test_event_handlers_combat.py`
 - *... and 27 more nodes in this community*
 
 ## Relationships
 
-- [item models rationale](item_models_rationale.md) (11 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (4 shared connections)
-- [Database Config](Database_Config.md) (4 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (4 shared connections)
-- [connection manager realtime](connection_manager_realtime.md) (4 shared connections)
-- [position player service](position_player_service.md) (3 shared connections)
-- [services user manager](services_user_manager.md) (3 shared connections)
-- [command inventory factories](command_inventory_factories.md) (3 shared connections)
-- [persistence services combat](persistence_services_combat.md) (3 shared connections)
-- [party service game](party_service_game.md) (3 shared connections)
-- [target resolution service](target_resolution_service.md) (3 shared connections)
-- [Error Conversion](Error_Conversion.md) (3 shared connections)
+- [NPC Combat](NPC_Combat.md) (8 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (3 shared connections)
+- [commands communication say](commands_communication_say.md) (3 shared connections)
+- [realtime dead letter](realtime_dead_letter.md) (2 shared connections)
+- [room look commands](room_look_commands.md) (1 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
+- [container persistence rationale](container_persistence_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/follow_service.py`
+- `server/realtime/event_handlers.py`
+- `server/tests/unit/realtime/test_event_handlers_combat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 250 (96%)
-- INFERRED: 11 (4%)
+- EXTRACTED: 164 (97%)
+- INFERRED: 5 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

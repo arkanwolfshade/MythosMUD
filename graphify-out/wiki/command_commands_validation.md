@@ -1,32 +1,29 @@
 # command commands validation
 
-> 10 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **TestCheckCastingState** (6 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_casting_state_allowed_command()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_casting_state_no_magic_service()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_casting_state_player_casting()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_casting_state_handles_error()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _check_casting_state function.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _check_casting_state allows stop/interrupt/status during casting.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _check_casting_state returns None when no magic service.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _check_casting_state returns block result when player is casting.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _check_casting_state returns None on error.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **TestHandleSpecialCommandRouting** (5 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.test_handle_special_command_routing_alias_command()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.test_handle_special_command_routing_alias_command_no_storage()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.test_handle_special_command_routing_emote_conversion()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _handle_special_command_routing function.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _handle_special_command_routing handles alias management commands.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _handle_special_command_routing returns error when alias storage unavailabl** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _handle_special_command_routing converts single-word emotes.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
 
 ## Relationships
 
 - [command commands handler](command_commands_handler.md) (4 shared connections)
-- [command validation commands](command_validation_commands.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_validation.py`
+- `server/tests/unit/commands/test_command_aliases.py`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

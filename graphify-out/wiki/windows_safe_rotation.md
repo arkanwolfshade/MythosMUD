@@ -5,7 +5,7 @@
 ## Key Concepts
 
 - **test_windows_safe_rotation.py** (23 connections) — `server/tests/unit/structured_logging/test_windows_safe_rotation.py`
-- **WindowsSafeRotatingFileHandler** (20 connections) — `server/structured_logging/windows_safe_rotation.py`
+- **WindowsSafeRotatingFileHandler** (21 connections) — `server/structured_logging/windows_safe_rotation.py`
 - **Path** (12 connections)
 - **WindowsSafeTimedRotatingFileHandler** (11 connections) — `server/structured_logging/windows_safe_rotation.py`
 - **windows_safe_rotation.py** (7 connections) — `server/structured_logging/windows_safe_rotation.py`
@@ -33,9 +33,9 @@
 
 ## Relationships
 
-- [logging handlers structured](logging_handlers_structured.md) (4 shared connections)
-- [logging setup structured](logging_setup_structured.md) (4 shared connections)
-- [time service rationale](time_service_rationale.md) (1 shared connections)
+- [logging handlers structured](logging_handlers_structured.md) (5 shared connections)
+- [logging structured utilities](logging_structured_utilities.md) (4 shared connections)
+- [taunt combat commands](taunt_combat_commands.md) (1 shared connections)
 
 ## Source Files
 
@@ -44,8 +44,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 164 (97%)
-- INFERRED: 5 (3%)
+- EXTRACTED: 164 (96%)
+- INFERRED: 6 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

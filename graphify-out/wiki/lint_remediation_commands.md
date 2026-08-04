@@ -21,7 +21,7 @@
 ## Relationships
 
 - [commands communication flows](commands_communication_flows.md) (1 shared connections)
-- [skill game service](skill_game_service.md) (1 shared connections)
+- [services user manager](services_user_manager.md) (1 shared connections)
 
 ## Source Files
 

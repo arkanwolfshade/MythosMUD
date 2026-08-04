@@ -1,55 +1,70 @@
 # persistence rationale players
 
-> 129 nodes
+> 256 nodes
 
 ## Key Concepts
 
-- **RoomCacheLoader** (29 connections) — `server/async_persistence_room_loader.py`
+- **AsyncPersistenceLayer** (184 connections) — `server/async_persistence.py`
+- **async_persistence.py** (73 connections) — `server/async_persistence.py`
+- **combat_turn_participant_actions.py** (46 connections) — `server/services/combat_turn_participant_actions.py`
+- **ScheduleService** (30 connections) — `server/services/schedule_service.py`
+- **ScheduleEntry** (29 connections) — `server/schemas/calendar/calendar.py`
+- **schedule_service.py** (25 connections) — `server/services/schedule_service.py`
 - **Player** (22 connections)
 - **UUID** (21 connections)
+- **TestScheduleService** (21 connections) — `server/tests/unit/services/test_schedule_service.py`
 - **Any** (19 connections)
+- **idle_movement.py** (17 connections) — `server/npc/idle_movement.py`
+- **combat_hp_sync.py** (15 connections) — `server/services/combat_hp_sync.py`
 - **._ensure_room_cache_loaded()** (13 connections) — `server/async_persistence.py`
-- **Any** (12 connections)
+- **profession_service.py** (13 connections) — `server/game/profession_service.py`
+- **test_schedule_service.py** (12 connections) — `server/tests/unit/services/test_schedule_service.py`
 - **CreateItemInstanceInput** (11 connections) — `server/async_persistence_constants.py`
-- **.load()** (10 connections) — `server/async_persistence_room_loader.py`
-- **._generate_room_id_from_zone_data()** (7 connections) — `server/async_persistence_room_loader.py`
-- **datetime** (6 connections)
-- **._process_combined_rows()** (6 connections) — `server/async_persistence_room_loader.py`
-- **.get_player_by_id()** (5 connections) — `server/async_persistence.py`
-- **.get_players_batch()** (5 connections) — `server/async_persistence.py`
-- **Profession** (5 connections)
-- **._build_room_data_from_row()** (5 connections) — `server/async_persistence_room_loader.py`
-- **._process_exit_rows()** (5 connections) — `server/async_persistence_room_loader.py`
-- **.get_player_by_name()** (4 connections) — `server/async_persistence.py`
-- **.get_players_by_user_id()** (4 connections) — `server/async_persistence.py`
-- **.get_active_players_by_user_id()** (4 connections) — `server/async_persistence.py`
-- **.get_player_by_user_id()** (4 connections) — `server/async_persistence.py`
-- **.list_players()** (4 connections) — `server/async_persistence.py`
-- **.get_players_in_room()** (4 connections) — `server/async_persistence.py`
-- **.update_player_last_active()** (4 connections) — `server/async_persistence.py`
-- **.get_professions()** (4 connections) — `server/async_persistence.py`
-- **.apply_lucidity_loss()** (4 connections) — `server/async_persistence.py`
-- *... and 104 more nodes in this community*
+- **_weapon_damage_from_equipped_player()** (11 connections) — `server/services/combat_turn_participant_actions.py`
+- **_resolve_npc_target()** (11 connections) — `server/services/combat_turn_participant_actions.py`
+- **process_npc_turn()** (10 connections) — `server/services/combat_turn_participant_actions.py`
+- **process_player_turn()** (10 connections) — `server/services/combat_turn_participant_actions.py`
+- **_schedule_entry_from_row()** (10 connections) — `server/services/schedule_service.py`
+- **resolve_player_attack_damage()** (9 connections) — `server/services/combat_turn_participant_actions.py`
+- **_get_combat_container_services()** (8 connections) — `server/services/combat_turn_participant_actions.py`
+- **_select_npc_target()** (7 connections) — `server/services/combat_turn_participant_actions.py`
+- **_execute_player_attack()** (7 connections) — `server/services/combat_turn_participant_actions.py`
+- *... and 231 more nodes in this community*
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (51 shared connections)
-- [Database Config](Database_Config.md) (17 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (2 shared connections)
-- [persistence container item](persistence_container_item.md) (1 shared connections)
-- [commands recovery lucidity](commands_recovery_lucidity.md) (1 shared connections)
-- [room models instance](room_models_instance.md) (1 shared connections)
+- [NPC Combat](NPC_Combat.md) (38 shared connections)
+- [models npc rationale](models_npc_rationale.md) (37 shared connections)
+- [schemas invite user](schemas_invite_user.md) (23 shared connections)
+- [websocket realtime handler](websocket_realtime_handler.md) (18 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (17 shared connections)
+- [Item Instances](Item_Instances.md) (14 shared connections)
+- [persistence container helpers](persistence_container_helpers.md) (13 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (11 shared connections)
+- [Error Conversion](Error_Conversion.md) (9 shared connections)
+- [holiday service services](holiday_service_services.md) (9 shared connections)
+- [commands follow rationale](commands_follow_rationale.md) (7 shared connections)
+- [nats services service](nats_services_service.md) (7 shared connections)
 
 ## Source Files
 
 - `server/async_persistence.py`
 - `server/async_persistence_constants.py`
-- `server/async_persistence_room_loader.py`
+- `server/commands/combat_handler.py`
+- `server/game/profession_service.py`
+- `server/npc/idle_movement.py`
+- `server/schemas/calendar/calendar.py`
+- `server/services/combat_hp_sync.py`
+- `server/services/combat_turn_participant_actions.py`
+- `server/services/schedule_service.py`
+- `server/tests/unit/infrastructure/conftest.py`
+- `server/tests/unit/services/test_combat_turn_participant_actions.py`
+- `server/tests/unit/services/test_schedule_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 403 (93%)
-- INFERRED: 32 (7%)
+- EXTRACTED: 1069 (93%)
+- INFERRED: 81 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

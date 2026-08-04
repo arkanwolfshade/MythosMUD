@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_validate_player_name_sanitizes_unicode()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **Test that validate_player_name sanitizes Unicode.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_handle_nats_message_validation_error()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **Test _handle_nats_message handles validation errors and adds to DLQ.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Relationships
 
-- [Security Validator Tests](Security_Validator_Tests.md) (1 shared connections)
-- [command models moderation](command_models_moderation.md) (1 shared connections)
+- [nats message handler](nats_message_handler.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_security_validator.py`
+- `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

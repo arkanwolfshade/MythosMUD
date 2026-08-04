@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_validate_action_content_normal()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **Test validating normal action content.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_subscribe_to_standardized_chat_subjects_nats_subscribe_error_handled()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **Test _subscribe_to_standardized_chat_subjects handles NATSSubscribeError and con** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Relationships
 
-- [Security Validator Tests](Security_Validator_Tests.md) (1 shared connections)
-- [command communication models](command_communication_models.md) (1 shared connections)
+- [nats exceptions services](nats_exceptions_services.md) (1 shared connections)
+- [nats message handler](nats_message_handler.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_security_validator.py`
+- `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Audit Trail
 

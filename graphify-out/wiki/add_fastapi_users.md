@@ -1,27 +1,26 @@
 # add fastapi users
 
-> 5 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **add_fastapi_users_columns.py** (4 connections) — `server/scripts/add_fastapi_users_columns.py`
-- **apply_migration()** (3 connections) — `server/scripts/add_fastapi_users_columns.py`
-- **main()** (3 connections) — `server/scripts/add_fastapi_users_columns.py`
-- **Apply the migration to add FastAPI Users columns.      Args:         database_ur** (1 connections) — `server/scripts/add_fastapi_users_columns.py`
-- **Main entry point for the migration script.** (1 connections) — `server/scripts/add_fastapi_users_columns.py`
+- **mp_regeneration_service()** (4 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Create an MPRegenerationService instance.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Relationships
 
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [realtime real time](realtime_real_time.md) (1 shared connections)
+- [regeneration service magic](regeneration_service_magic.md) (1 shared connections)
+- [config rationale reset](config_rationale_reset.md) (1 shared connections)
 
 ## Source Files
 
-- `server/scripts/add_fastapi_users_columns.py`
+- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 4 (80%)
+- INFERRED: 1 (20%)
 - AMBIGUOUS: 0 (0%)
 
 ---

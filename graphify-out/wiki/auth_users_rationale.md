@@ -1,71 +1,58 @@
 # auth users rationale
 
-> 246 nodes
+> 27 nodes
 
 ## Key Concepts
 
-- **endpoints.py** (61 connections) — `server/auth/endpoints.py`
-- **test_users.py** (50 connections) — `server/tests/unit/auth/test_users.py`
-- **users.py** (49 connections) — `server/auth/users.py`
-- **UserManager** (46 connections) — `server/auth/users.py`
-- **login_user()** (33 connections) — `server/auth/endpoints.py`
-- **register_user()** (31 connections) — `server/auth/endpoints.py`
-- **UserCreate** (27 connections) — `server/auth/endpoints.py`
-- **InviteManager** (25 connections) — `server/auth/invites.py`
-- **test_endpoints_register.py** (22 connections) — `server/tests/unit/auth/test_endpoints_register.py`
-- **dependencies.py** (18 connections) — `server/auth/dependencies.py`
-- **invites.py** (16 connections) — `server/auth/invites.py`
-- **list_invites()** (13 connections) — `server/auth/endpoints.py`
-- **get_user_manager()** (13 connections) — `server/auth/users.py`
-- **get_current_superuser()** (12 connections) — `server/auth/dependencies.py`
-- **RestartInvalidatingJWTStrategy** (12 connections) — `server/auth/jwt_strategy.py`
-- **get_auth_backend()** (12 connections) — `server/auth/users.py`
-- **create_invite()** (11 connections) — `server/auth/endpoints.py`
-- **get_user_db()** (11 connections) — `server/auth/users.py`
-- **invite.py** (11 connections) — `server/models/invite.py`
-- **set_auth_epoch()** (10 connections) — `server/auth/token_epoch.py`
-- **get_invite_manager()** (9 connections) — `server/auth/invites.py`
-- **UsernameAuthenticationBackend** (9 connections) — `server/auth/users.py`
-- **get_username_auth_backend()** (9 connections) — `server/auth/users.py`
-- **test_jwt_strategy.py** (9 connections) — `server/tests/unit/auth/test_jwt_strategy.py`
-- **_check_shutdown_status()** (8 connections) — `server/auth/endpoints.py`
-- *... and 221 more nodes in this community*
+- **npc_spawn_rules_api.py** (23 connections) — `server/api/admin/npc_spawn_rules_api.py`
+- **test_npc_spawn_rules_api.py** (16 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
+- **get_npc_spawn_rules()** (14 connections) — `server/api/admin/npc_spawn_rules_api.py`
+- **create_npc_spawn_rule()** (14 connections) — `server/api/admin/npc_spawn_rules_api.py`
+- **delete_npc_spawn_rule()** (11 connections) — `server/api/admin/npc_spawn_rules_api.py`
+- **NPCSpawnRuleResponse** (7 connections) — `server/api/admin/npc_schemas.py`
+- **.from_orm()** (6 connections) — `server/api/admin/npc_schemas.py`
+- **NPCSpawnRuleCreate** (5 connections) — `server/api/admin/npc_schemas.py`
+- **Request** (3 connections)
+- **AsyncSession** (3 connections)
+- **test_get_npc_spawn_rules_generic_error()** (3 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
+- **test_create_npc_spawn_rule_rolls_back()** (3 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
+- **test_delete_npc_spawn_rule_not_found()** (3 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
+- **test_get_npc_spawn_rules_success()** (2 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
+- **test_get_npc_spawn_rules_http_exception_propagates()** (2 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
+- **test_create_npc_spawn_rule_success()** (2 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
+- **test_delete_npc_spawn_rule_success()** (2 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
+- **Model for creating NPC spawn rules.** (1 connections) — `server/api/admin/npc_schemas.py`
+- **Model for NPC spawn rule responses.** (1 connections) — `server/api/admin/npc_schemas.py`
+- **Create response from ORM object.** (1 connections) — `server/api/admin/npc_schemas.py`
+- **NPC spawn rule admin endpoints.  Split out from server.api.admin.npc to keep fil** (1 connections) — `server/api/admin/npc_spawn_rules_api.py`
+- **Get all NPC spawn rules.** (1 connections) — `server/api/admin/npc_spawn_rules_api.py`
+- **Create a new NPC spawn rule.** (1 connections) — `server/api/admin/npc_spawn_rules_api.py`
+- **Delete an NPC spawn rule.** (1 connections) — `server/api/admin/npc_spawn_rules_api.py`
+- **mock_user()** (1 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [ascii map renderer](ascii_map_renderer.md) (62 shared connections)
-- [command inventory factories](command_inventory_factories.md) (18 shared connections)
-- [Exception Containers](Exception_Containers.md) (18 shared connections)
-- [player requests schemas](player_requests_schemas.md) (16 shared connections)
-- [command factories moderation](command_factories_moderation.md) (14 shared connections)
-- [player preferences service](player_preferences_service.md) (11 shared connections)
-- [useWebSocketConnectionTestFixtures useWe](useWebSocketConnectionTestFixtures_useWe.md) (9 shared connections)
-- [logging file setup](logging_file_setup.md) (9 shared connections)
-- [Database Config](Database_Config.md) (7 shared connections)
-- [auth users rationale](auth_users_rationale.md) (6 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (6 shared connections)
-- [admin auth service](admin_auth_service.md) (6 shared connections)
+- [player preferences services](player_preferences_services.md) (12 shared connections)
+- [Exception Containers](Exception_Containers.md) (8 shared connections)
+- [persistence container rationale](persistence_container_rationale.md) (6 shared connections)
+- [player requests schemas](player_requests_schemas.md) (6 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [container events rationale](container_events_rationale.md) (1 shared connections)
+- [game models enums](game_models_enums.md) (1 shared connections)
+- [command player state](command_player_state.md) (1 shared connections)
 
 ## Source Files
 
-- `server/app/factory.py`
-- `server/auth/__init__.py`
-- `server/auth/dependencies.py`
-- `server/auth/endpoints.py`
-- `server/auth/invites.py`
-- `server/auth/jwt_strategy.py`
-- `server/auth/token_epoch.py`
-- `server/auth/users.py`
-- `server/models/invite.py`
-- `server/tests/unit/auth/conftest.py`
-- `server/tests/unit/auth/test_endpoints_register.py`
-- `server/tests/unit/auth/test_jwt_strategy.py`
-- `server/tests/unit/auth/test_users.py`
+- `server/api/admin/npc_schemas.py`
+- `server/api/admin/npc_spawn_rules_api.py`
+- `server/tests/unit/api/test_npc_spawn_rules_api.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1015 (94%)
-- INFERRED: 68 (6%)
+- EXTRACTED: 126 (98%)
+- INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

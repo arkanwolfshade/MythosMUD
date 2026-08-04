@@ -1,51 +1,44 @@
 # manager subject services
 
-> 24 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **get_async_session()** (13 connections) — `server/database_helpers.py`
-- **get_session_maker()** (9 connections) — `server/database_helpers.py`
-- **test_get_session_maker_raises_validation_error()** (5 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **AsyncSession** (4 connections)
-- **test_get_session_maker()** (4 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **test_get_async_session_success()** (3 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **test_get_async_session_http_exception_propagates()** (3 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **test_get_async_session_rollback_on_error()** (3 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **test_get_async_session_rollback_failure()** (3 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **test_get_async_session_http_exception_passthrough()** (3 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **test_get_async_session_finally_block_executes()** (3 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **test_get_async_session_rollback_success()** (3 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **Dependency to get NPC database session.      Yields:         AsyncSession: Datab** (2 connections) — `server/npc_database.py`
-- **Get the async session maker, initializing if necessary.      Returns:         as** (1 connections) — `server/database_helpers.py`
-- **Dependency to get database session.      Yields:         AsyncSession: Database** (1 connections) — `server/database_helpers.py`
-- **Test get_session_maker returns session maker from DatabaseManager.** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **Test get_session_maker raises ValidationError when database cannot be initialize** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **Test get_async_session yields session and handles cleanup.** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **Test get_async_session re-raises HTTPException without rollback.** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **Test get_async_session rolls back on exception.** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **Test get_async_session handles rollback failure.** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **Test get_async_session re-raises HTTPException without logging as database error** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **Test get_async_session finally block executes even on success.** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **Test get_async_session successfully rolls back on exception.** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **get_asyncpg_server_settings_for_database_url()** (19 connections) — `server/database_config_helpers.py`
+- **test_database_config_helpers_asyncpg_settings.py** (9 connections) — `server/tests/unit/test_database_config_helpers_asyncpg_settings.py`
+- **test_respects_postgres_search_path_when_matches_db_name()** (4 connections) — `server/tests/unit/test_database_config_helpers_asyncpg_settings.py`
+- **test_unknown_database_uses_postgres_search_path_when_set()** (4 connections) — `server/tests/unit/test_database_config_helpers_asyncpg_settings.py`
+- **clear_postgres_search_path()** (3 connections) — `server/tests/unit/test_database_config_helpers_asyncpg_settings.py`
+- **MonkeyPatch** (3 connections)
+- **test_mythos_unit_defaults_search_path_to_db_name()** (3 connections) — `server/tests/unit/test_database_config_helpers_asyncpg_settings.py`
+- **test_unknown_database_empty_when_no_env()** (3 connections) — `server/tests/unit/test_database_config_helpers_asyncpg_settings.py`
+- **test_mythos_e2e_defaults_search_path_to_db_name()** (2 connections) — `server/tests/unit/test_database_config_helpers_asyncpg_settings.py`
+- **Build asyncpg ``server_settings`` so unqualified table names resolve like SQLAlc** (1 connections) — `server/database_config_helpers.py`
+- **Unit tests for get_asyncpg_server_settings_for_database_url.** (1 connections) — `server/tests/unit/test_database_config_helpers_asyncpg_settings.py`
+- **Ensure POSTGRES_SEARCH_PATH does not leak between cases.** (1 connections) — `server/tests/unit/test_database_config_helpers_asyncpg_settings.py`
+- **Known env DBs must set search_path to the database name when env override is uns** (1 connections) — `server/tests/unit/test_database_config_helpers_asyncpg_settings.py`
+- **When POSTGRES_SEARCH_PATH matches the DB name, keep that search_path.** (1 connections) — `server/tests/unit/test_database_config_helpers_asyncpg_settings.py`
+- **Non-mythos_* URLs still honor POSTGRES_SEARCH_PATH.** (1 connections) — `server/tests/unit/test_database_config_helpers_asyncpg_settings.py`
+- **Other databases without POSTGRES_SEARCH_PATH get no server_settings.** (1 connections) — `server/tests/unit/test_database_config_helpers_asyncpg_settings.py`
 
 ## Relationships
 
-- [lucidity npc combat](lucidity_npc_combat.md) (11 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (4 shared connections)
-- [command inventory models](command_inventory_models.md) (4 shared connections)
-- [command commands talk](command_commands_talk.md) (2 shared connections)
+- [game models enums](game_models_enums.md) (3 shared connections)
+- [commands recovery lucidity](commands_recovery_lucidity.md) (2 shared connections)
+- [spell game magic](spell_game_magic.md) (2 shared connections)
+- [websocket realtime handler](websocket_realtime_handler.md) (2 shared connections)
+- [rate lucidity services](rate_lucidity_services.md) (2 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (2 shared connections)
 
 ## Source Files
 
-- `server/database_helpers.py`
-- `server/npc_database.py`
-- `server/tests/unit/infrastructure/test_database_helpers.py`
+- `server/database_config_helpers.py`
+- `server/tests/unit/test_database_config_helpers_asyncpg_settings.py`
 
 ## Audit Trail
 
-- EXTRACTED: 67 (97%)
-- INFERRED: 2 (3%)
+- EXTRACTED: 57 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

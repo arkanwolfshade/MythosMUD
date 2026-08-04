@@ -1,6 +1,6 @@
 # ConnectionManager
 
-> God node · 221 connections · `server/realtime/connection_manager.py`
+> God node · 233 connections · `server/realtime/connection_manager.py`
 
 **Community:** [Room Broadcast](Room_Broadcast.md)
 
@@ -29,9 +29,9 @@
 - websocket_handler_commands.py `EXTRACTED`
 - test_envelope.py `EXTRACTED`
 - player_disconnect_handlers.py `EXTRACTED`
-- game.py `EXTRACTED`
 - combat_loader.py `EXTRACTED`
 - websocket_handler_message_loop.py `EXTRACTED`
+- game.py `EXTRACTED`
 - follow_service.py `EXTRACTED`
 
 ### indirect_call
@@ -75,6 +75,7 @@
 - .__init__() `EXTRACTED`
 - .__init__() `EXTRACTED`
 - safe_close_websocket_impl() `EXTRACTED`
+- _send_combat_participant_updates() `EXTRACTED`
 - _dispatch_player_dp_updated_payload() `EXTRACTED`
 - broadcast_global_event_impl() `EXTRACTED`
 - broadcast_room_event_impl() `EXTRACTED`
@@ -82,7 +83,6 @@
 - get_player_impl() `EXTRACTED`
 - get_players_batch_impl() `EXTRACTED`
 - send_initial_game_state_impl() `EXTRACTED`
-- _send_combat_participant_updates() `EXTRACTED`
 - _connection_manager_from_config_app() `EXTRACTED`
 - broadcast_global_impl() `EXTRACTED`
 
@@ -94,14 +94,14 @@
 - RealTimeEventHandler `INFERRED`
 - FollowService `INFERRED`
 - PartyService `INFERRED`
-- PlayerRespawnEventHandler `INFERRED`
-- CombatCommandHandlerExtras `INFERRED`
 - EventHandler `INFERRED`
-- NATSMessageHandler `INFERRED`
+- PlayerRespawnEventHandler `INFERRED`
 - EventPublisher `INFERRED`
+- CombatCommandHandlerExtras `INFERRED`
+- RealtimeBundle `INFERRED`
+- NATSMessageHandler `INFERRED`
 - ConnectionMetadata `INFERRED`
 - _NpcWithLife `INFERRED`
-- RealtimeBundle `INFERRED`
 - PlayerStateEventHandler `INFERRED`
 - RespawnPlayerEventPayload `INFERRED`
 - Party `INFERRED`

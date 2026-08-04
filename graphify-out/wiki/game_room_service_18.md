@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_handle_container_overflow()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test handle_container_overflow handles overflow.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Create a mock connection manager.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Relationships
 
-- [wearable container service](wearable_container_service.md) (1 shared connections)
+- [message filtering realtime](message_filtering_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Audit Trail
 

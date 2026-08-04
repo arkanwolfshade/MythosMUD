@@ -14,6 +14,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 from server.services.npc_combat_integration_service import NPCCombatIntegrationService
+from server.services.player_respawn_service import LIMBO_ROOM_ID
 
 if TYPE_CHECKING:
     pass
@@ -597,6 +598,34 @@ async def test_validate_combat_location_false_when_room_id_format_invalid_but_ma
     npc.current_room = malformed_room_id
     ok = await integration_service._validate_combat_location("player-1", "npc-1", malformed_room_id, npc)
     assert ok is False
+
+
+@pytest.mark.asyncio
+async def test_validate_combat_location_limbo_cross_room_uses_debug(
+    integration_service: NPCCombatIntegrationService,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Player in death limbo vs NPC elsewhere is expected; do not warn."""
+    debug = MagicMock()
+    warning = MagicMock()
+    monkeypatch.setattr(
+        "server.services.npc_combat_integration_validation_mixin.logger",
+        MagicMock(debug=debug, warning=warning),
+    )
+    integration_service._data_provider = MagicMock()
+    integration_service._data_provider.get_player_room_id = AsyncMock(return_value=LIMBO_ROOM_ID)
+    npc = MagicMock()
+    npc.current_room = "earth_arkhamcity_sanitarium_room_foyer_001"
+    ok = await integration_service._validate_combat_location("player-1", "npc-1", "room_a", npc)
+    assert ok is False
+    debug.assert_any_call(
+        "Cross-room attack attempt blocked",
+        player_id="player-1",
+        npc_id="npc-1",
+        player_room_id=LIMBO_ROOM_ID,
+        npc_room_id="earth_arkhamcity_sanitarium_room_foyer_001",
+    )
+    warning.assert_not_called()
 
 
 # Removed test_setup_npc_for_combat - the method setup_npc_for_combat doesn't exist on NPCCombatIntegrationService

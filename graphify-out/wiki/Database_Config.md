@@ -1,78 +1,69 @@
 # Database Config
 
-> 797 nodes
+> 136 nodes
 
 ## Key Concepts
 
-- **DatabaseError** (440 connections) — `server/exceptions.py`
-- **exceptions.py** (199 connections) — `server/exceptions.py`
-- **log_and_raise()** (170 connections) — `server/utils/error_logging.py`
 - **get_session_maker()** (97 connections) — `server/database.py`
-- **async_persistence.py** (73 connections) — `server/async_persistence.py`
-- **test_container_persistence.py** (61 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
-- **error_logging.py** (56 connections) — `server/utils/error_logging.py`
-- **MovementService** (43 connections) — `server/game/movement_service.py`
-- **test_async_persistence_core.py** (40 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_player_repository.py** (40 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **container_persistence_async.py** (33 connections) — `server/persistence/container_persistence_async.py`
-- **PlayerRepository** (31 connections) — `server/persistence/repositories/player_repository.py`
-- **__init__.py** (30 connections) — `server/persistence/repositories/__init__.py`
-- **_parse_jsonb_column()** (28 connections) — `server/container_persistence/container_persistence.py`
-- **movement_service.py** (28 connections) — `server/game/movement_service.py`
-- **player_repository.py** (28 connections) — `server/persistence/repositories/player_repository.py`
-- **Skill** (27 connections) — `server/models/skill.py`
-- **container_helpers.py** (26 connections) — `server/persistence/container_helpers.py`
-- **_fetch_container_items()** (25 connections) — `server/container_persistence/container_persistence.py`
-- **ContainerData** (23 connections) — `server/container_persistence/container_persistence.py`
-- **create_container()** (23 connections) — `server/container_persistence/container_persistence.py`
-- **container_query_helpers_async.py** (23 connections) — `server/persistence/container_query_helpers_async.py`
-- **container_repository.py** (23 connections) — `server/persistence/repositories/container_repository.py`
-- **DialogueDefinitionRepository** (22 connections) — `server/persistence/repositories/dialogue_definition_repository.py`
 - **test_quest_instance_repository.py** (22 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
-- *... and 772 more nodes in this community*
+- **QuestInstance** (21 connections) — `server/models/quest.py`
+- **test_quest_definition_repository.py** (20 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **quest_instance_repository.py** (19 connections) — `server/persistence/repositories/quest_instance_repository.py`
+- **QuestInstanceRepository** (19 connections) — `server/persistence/repositories/quest_instance_repository.py`
+- **QuestDefinitionRepository** (17 connections) — `server/persistence/repositories/quest_definition_repository.py`
+- **quest_definition_repository.py** (16 connections) — `server/persistence/repositories/quest_definition_repository.py`
+- **test_quest_flow.py** (15 connections) — `server/tests/integration/test_quest_flow.py`
+- **quest.py** (13 connections) — `server/models/quest.py`
+- **QuestDefinition** (13 connections) — `server/models/quest.py`
+- **_make_session_context()** (13 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
+- **_make_session_context()** (11 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **.create()** (10 connections) — `server/persistence/repositories/quest_instance_repository.py`
+- **.get_by_player_and_quest()** (9 connections) — `server/persistence/repositories/quest_instance_repository.py`
+- **.list_active_by_player()** (9 connections) — `server/persistence/repositories/quest_instance_repository.py`
+- **.list_completed_by_player()** (9 connections) — `server/persistence/repositories/quest_instance_repository.py`
+- **UUID** (8 connections)
+- **_row_to_quest_instance()** (8 connections) — `server/persistence/repositories/quest_instance_repository.py`
+- **.update_state_and_progress()** (8 connections) — `server/persistence/repositories/quest_instance_repository.py`
+- **.get_by_id()** (7 connections) — `server/persistence/repositories/quest_definition_repository.py`
+- **.get_by_name()** (7 connections) — `server/persistence/repositories/quest_definition_repository.py`
+- **_str_player_id()** (7 connections) — `server/persistence/repositories/quest_instance_repository.py`
+- **test_quest_start_log_abandon_flow()** (7 connections) — `server/tests/integration/test_quest_flow.py`
+- **test_quest_start_by_trigger_then_abandon()** (7 connections) — `server/tests/integration/test_quest_flow.py`
+- *... and 111 more nodes in this community*
 
 ## Relationships
 
-- [command inventory factories](command_inventory_factories.md) (143 shared connections)
-- [command inventory models](command_inventory_models.md) (67 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (66 shared connections)
-- [Error Handling Core](Error_Handling_Core.md) (60 shared connections)
-- [world models rationale](world_models_rationale.md) (60 shared connections)
-- [commands admin mute](commands_admin_mute.md) (34 shared connections)
-- [persistence container item](persistence_container_item.md) (33 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (33 shared connections)
-- [follow service game](follow_service_game.md) (32 shared connections)
-- [NPC Combat](NPC_Combat.md) (24 shared connections)
-- [game models player](game_models_player.md) (23 shared connections)
-- [combat models rationale](combat_models_rationale.md) (21 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (63 shared connections)
+- [shutdown command commands](shutdown_command_commands.md) (13 shared connections)
+- [game models enums](game_models_enums.md) (12 shared connections)
+- [world models rationale](world_models_rationale.md) (9 shared connections)
+- [quest game service](quest_game_service.md) (9 shared connections)
+- [persistence container item](persistence_container_item.md) (8 shared connections)
+- [argon2 auth rationale](argon2_auth_rationale.md) (7 shared connections)
+- [NPC Combat](NPC_Combat.md) (6 shared connections)
+- [websocket realtime handler](websocket_realtime_handler.md) (6 shared connections)
+- [message broadcaster realtime](message_broadcaster_realtime.md) (4 shared connections)
+- [command commands service](command_commands_service.md) (4 shared connections)
+- [effect player repository](effect_player_repository.md) (4 shared connections)
 
 ## Source Files
 
-- `server/api/player_helpers.py`
-- `server/async_persistence.py`
-- `server/async_persistence_direct_queries.py`
-- `server/auth/argon2_utils.py`
-- `server/auth_utils.py`
-- `server/container_persistence/__init__.py`
-- `server/container_persistence/container_persistence.py`
+- `e2e-tests/load-tests/get_invite_codes.py`
 - `server/database.py`
-- `server/exceptions.py`
-- `server/game/character_creation_service.py`
-- `server/game/mechanics.py`
-- `server/game/movement_service.py`
-- `server/game/profession_service.py`
-- `server/game/skill_service.py`
-- `server/models/dialogue.py`
-- `server/models/profession.py`
 - `server/models/quest.py`
-- `server/models/skill.py`
-- `server/npc/combat_integration_base.py`
-- `server/persistence/container_create_params.py`
+- `server/persistence/repositories/quest_definition_repository.py`
+- `server/persistence/repositories/quest_instance_repository.py`
+- `server/scripts/check_invite_status.py`
+- `server/scripts/list_active_invites.py`
+- `server/tests/integration/test_quest_flow.py`
+- `server/tests/unit/persistence/test_quest_definition_repository.py`
+- `server/tests/unit/persistence/test_quest_instance_repository.py`
+- `tools/invite_tools/check_invites.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3985 (88%)
-- INFERRED: 557 (12%)
+- EXTRACTED: 597 (94%)
+- INFERRED: 35 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

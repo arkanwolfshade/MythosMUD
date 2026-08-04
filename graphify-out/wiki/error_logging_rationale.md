@@ -1,29 +1,27 @@
 # error logging rationale
 
-> 8 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **test_error_logging.py** (5 connections) — `server/tests/unit/utils/test_error_logging.py`
-- **test_create_error_context()** (2 connections) — `server/tests/unit/utils/test_error_logging.py`
-- **test_create_error_context_with_metadata()** (2 connections) — `server/tests/unit/utils/test_error_logging.py`
-- **test_error_context_to_dict()** (2 connections) — `server/tests/unit/utils/test_error_logging.py`
-- **Unit tests for error_logging utilities.  Tests error logging helper functions.** (1 connections) — `server/tests/unit/utils/test_error_logging.py`
-- **Test create_error_context() creates error context.** (1 connections) — `server/tests/unit/utils/test_error_logging.py`
-- **Test create_error_context() can include metadata.** (1 connections) — `server/tests/unit/utils/test_error_logging.py`
-- **Test error context to_dict() method.** (1 connections) — `server/tests/unit/utils/test_error_logging.py`
+- **exception_metrics.py** (4 connections) — `server/monitoring/exception_metrics.py`
+- **get_summary()** (3 connections) — `server/monitoring/exception_metrics.py`
+- **Any** (1 connections)
+- **Exception metrics tracking for monitoring.  This module provides thread-safe exc** (1 connections) — `server/monitoring/exception_metrics.py`
+- **Get a summary of exception counts.      Returns:         dict[str, Any]: Diction** (1 connections) — `server/monitoring/exception_metrics.py`
 
 ## Relationships
 
-- [Database Config](Database_Config.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [NPC Combat](NPC_Combat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_error_logging.py`
+- `server/monitoring/exception_metrics.py`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
+- EXTRACTED: 10 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

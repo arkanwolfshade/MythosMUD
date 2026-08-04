@@ -19,8 +19,9 @@
 
 ## Relationships
 
-- [schemas room schema](schemas_room_schema.md) (8 shared connections)
+- [schemas room schema](schemas_room_schema.md) (7 shared connections)
 - [room schema schemas](room_schema_schemas.md) (1 shared connections)
+- [commands combat handler](commands_combat_handler.md) (1 shared connections)
 
 ## Source Files
 

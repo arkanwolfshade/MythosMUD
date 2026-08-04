@@ -1,31 +1,30 @@
 # level game curve
 
-> 6 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **TestGetRoomService** (7 connections) — `server/tests/unit/test_dependency_injection.py`
-- **.test_get_room_service_success()** (4 connections) — `server/tests/unit/test_dependency_injection.py`
-- **.test_get_room_service_not_initialized()** (3 connections) — `server/tests/unit/test_dependency_injection.py`
-- **Test get_room_service() function.** (1 connections) — `server/tests/unit/test_dependency_injection.py`
-- **Test get_room_service() returns room service from container.** (1 connections) — `server/tests/unit/test_dependency_injection.py`
-- **Test get_room_service() raises error when service not initialized.** (1 connections) — `server/tests/unit/test_dependency_injection.py`
+- **test_run_make_stages.py** (7 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
+- **_load_module()** (5 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
+- **test_stage_failed_from_output_nonzero()** (2 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
+- **test_stage_failed_from_output_traceback()** (2 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
+- **test_stage_failed_from_output_ok()** (2 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
+- **test_keep_going_requested()** (2 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
+- **test_makefile_composites_use_fail_fast_runner()** (1 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
+- **Tests for scripts/run_make_stages.py fail-fast helpers.** (1 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
 
 ## Relationships
 
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (3 shared connections)
-- [room game service](room_game_service.md) (2 shared connections)
-- [command inventory models](command_inventory_models.md) (1 shared connections)
-- [profession game service](profession_game_service.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/test_dependency_injection.py`
+- `server/tests/unit/scripts/test_run_make_stages.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (76%)
-- INFERRED: 4 (24%)
+- EXTRACTED: 22 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

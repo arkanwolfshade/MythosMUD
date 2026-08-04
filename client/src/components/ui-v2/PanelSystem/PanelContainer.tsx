@@ -159,7 +159,7 @@ export const PanelContainer: React.FC<PanelContainerProps> = React.memo(
 
     // Get variant classes; opaque panels use full opacity so they stay readable over other panels
     const variantClasses = useMemo(() => {
-      const base = 'bg-mythos-terminal-surface border-gray-700';
+      const base = 'bg-mythos-terminal-surface border-mythos-terminal-border';
       if (opaque) {
         return `${base} bg-opacity-100`;
       }
@@ -167,7 +167,7 @@ export const PanelContainer: React.FC<PanelContainerProps> = React.memo(
         case 'eldritch':
           return 'bg-mythos-terminal-surface border-mythos-terminal-primary';
         case 'elevated':
-          return 'bg-mythos-terminal-surface border-gray-600 shadow-lg';
+          return 'bg-mythos-terminal-surface border-mythos-terminal-border shadow-lg';
         default:
           return base;
       }

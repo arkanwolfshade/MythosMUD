@@ -1,43 +1,46 @@
 # magic healing game
 
-> 16 nodes
+> 18 nodes
 
 ## Key Concepts
 
-- **MagicServiceHealingMixin** (15 connections) — `server/game/magic/magic_healing_events.py`
-- **._send_healing_update_event()** (7 connections) — `server/game/magic/magic_healing_events.py`
-- **._publish_dp_event()** (7 connections) — `server/game/magic/magic_healing_events.py`
-- **UUID** (6 connections)
-- **._publish_or_send_dp_update()** (6 connections) — `server/game/magic/magic_healing_events.py`
-- **._is_heal_other_target()** (5 connections) — `server/game/magic/magic_healing_events.py`
-- **Any** (5 connections)
-- **._send_instant_heal_event_if_applied()** (5 connections) — `server/game/magic/magic_healing_events.py`
-- **._effect_result_has_healing()** (4 connections) — `server/game/magic/magic_healing_events.py`
-- **Mixin for MagicService: send DP update events when spells apply healing.** (1 connections) — `server/game/magic/magic_healing_events.py`
-- **True when healing was applied to another player (heal-other, not steal-life or s** (1 connections) — `server/game/magic/magic_healing_events.py`
-- **True if effect result indicates healing was applied (success, effect_applied, he** (1 connections) — `server/game/magic/magic_healing_events.py`
-- **Send player_dp_updated event for the healed player (target for heal other, caste** (1 connections) — `server/game/magic/magic_healing_events.py`
-- **Load player stats and delegate DP event publishing.** (1 connections) — `server/game/magic/magic_healing_events.py`
-- **Publish DP update via event bus, or send fallback game event.** (1 connections) — `server/game/magic/magic_healing_events.py`
-- **If instant cast applied healing, send DP update event to the healed player.** (1 connections) — `server/game/magic/magic_healing_events.py`
+- **reset_database()** (16 connections) — `server/database.py`
+- **test_reset_database_resets_singleton()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_reset_database()** (5 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **test_reset_database_resets_singleton()** (4 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **reset_db_state()** (3 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_reset_database_resets_module_url()** (3 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **reset_db_state()** (3 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **reset_db()** (3 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **test_reset_database_resets_module_url()** (3 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **Reset the database connection state (for testing).      This resets the Database** (1 connections) — `server/database.py`
+- **Reset database state before each test.** (1 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **Test reset_database resets singleton.** (1 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **Test reset_database resets module-level _database_url.** (1 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **Reset database state before each test.** (1 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **Test reset_database resets both singleton and module-level URL.** (1 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **Reset database state before each test.** (1 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **Test reset_database resets module-level _database_url.** (1 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **Test reset_database resets DatabaseManager singleton.** (1 connections) — `server/tests/unit/infrastructure/test_database_init.py`
 
 ## Relationships
 
-- [game models player](game_models_player.md) (6 shared connections)
-- [item models rationale](item_models_rationale.md) (2 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [command inventory models](command_inventory_models.md) (1 shared connections)
-- [Error Conversion](Error_Conversion.md) (1 shared connections)
-- [connection manager realtime](connection_manager_realtime.md) (1 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (14 shared connections)
+- [command player state](command_player_state.md) (3 shared connections)
+- [game models enums](game_models_enums.md) (2 shared connections)
+- [aggro threat services](aggro_threat_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/magic/magic_healing_events.py`
+- `server/database.py`
+- `server/tests/unit/infrastructure/test_database_error_handling.py`
+- `server/tests/unit/infrastructure/test_database_extended.py`
+- `server/tests/unit/infrastructure/test_database_init.py`
 
 ## Audit Trail
 
-- EXTRACTED: 61 (91%)
-- INFERRED: 6 (9%)
+- EXTRACTED: 54 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

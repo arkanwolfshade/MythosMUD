@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **.test_start_already_running()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **Test start returns True when already running.** (1 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **test_create_learn_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_learn_command delegates to utility factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- [tick service services](tick_service_services.md) (1 shared connections)
-- [tick game service](tick_game_service.md) (1 shared connections)
+- [command factories create](command_factories_create.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_game_tick_service.py`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

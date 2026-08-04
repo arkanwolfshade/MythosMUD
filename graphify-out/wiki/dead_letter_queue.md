@@ -1,35 +1,49 @@
 # dead letter queue
 
-> 8 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **CommandMessageHandler** (9 connections) — `server/realtime/message_handler_factory.py`
-- **test_message_handler_factory_get_handler_found()** (4 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **test_message_handler_factory_game_command_alias()** (4 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **test_command_message_handler_handle()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **Handler for command messages.** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Test CommandMessageHandler.handle() calls handle_command_message.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **Test MessageHandlerFactory.get_handler() returns handler when found.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **Test MessageHandlerFactory handles game_command as alias for command.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **CombatDPSync** (13 connections) — `server/services/combat_hp_sync.py`
+- **UUID** (9 connections)
+- **._persist_player_dp_sync()** (8 connections) — `server/services/combat_hp_sync.py`
+- **._publish_player_dp_update_event()** (6 connections) — `server/services/combat_hp_sync.py`
+- **._publish_player_dp_correction_event()** (6 connections) — `server/services/combat_hp_sync.py`
+- **._get_persistence()** (5 connections) — `server/services/combat_hp_sync.py`
+- **._update_and_save_player_dp()** (5 connections) — `server/services/combat_hp_sync.py`
+- **._verify_player_save()** (4 connections) — `server/services/combat_hp_sync.py`
+- **._log_death_threshold_events()** (4 connections) — `server/services/combat_hp_sync.py`
+- **.__init__()** (3 connections) — `server/services/combat_hp_sync.py`
+- **._persist_player_dp_background()** (3 connections) — `server/services/combat_hp_sync.py`
+- **Any** (2 connections)
+- **Handles DP synchronization for combat operations.** (1 connections) — `server/services/combat_hp_sync.py`
+- **Initialize DP sync with reference to parent combat service.** (1 connections) — `server/services/combat_hp_sync.py`
+- **Persist player DP to database in background (fire-and-forget).          This met** (1 connections) — `server/services/combat_hp_sync.py`
+- **Get persistence layer from application container.          Args:             pla** (1 connections) — `server/services/combat_hp_sync.py`
+- **Verify that player DP was successfully saved to database.          Args:** (1 connections) — `server/services/combat_hp_sync.py`
+- **Log death threshold events based on DP changes.          Args:             curre** (1 connections) — `server/services/combat_hp_sync.py`
+- **Update player DP and save to database.          Args:             persistence: P** (1 connections) — `server/services/combat_hp_sync.py`
+- **Synchronously persist player DP to database.          This is the actual persist** (1 connections) — `server/services/combat_hp_sync.py`
+- **Publish a PlayerDPUpdated event for real-time UI updates.** (1 connections) — `server/services/combat_hp_sync.py`
+- **Publish a correction event when database persistence fails.** (1 connections) — `server/services/combat_hp_sync.py`
 
 ## Relationships
 
-- [message handler factory](message_handler_factory.md) (6 shared connections)
-- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
-- [command commands aliases](command_commands_aliases.md) (1 shared connections)
-- [game chat moderation](game_chat_moderation.md) (1 shared connections)
-- [tsconfig src/**/* spec](tsconfig_src-__-__spec.md) (1 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (3 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (2 shared connections)
+- [services combat sync](services_combat_sync.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (2 shared connections)
+- [nats services service](nats_services_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/message_handler_factory.py`
-- `server/tests/unit/realtime/test_message_handler_factory.py`
+- `server/services/combat_hp_sync.py`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (83%)
-- INFERRED: 4 (17%)
+- EXTRACTED: 75 (96%)
+- INFERRED: 3 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

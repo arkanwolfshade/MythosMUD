@@ -1,13 +1,15 @@
 # archive OPTIMIZATION ROADMAP
 
-> 4 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **Implementation Timeline** (4 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Month 1: Pruning and Quick Wins** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Month 2: Consolidation and Additions** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Month 3+: Continuous Improvement** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Phase 5: Strategic Additions (Week 5)** (6 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Task 5.1: Add MessageBroker Integration Tests (3 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Task 5.2: Add ApplicationContainer Lifecycle Tests (2 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Task 5.3: Add Database Migration Tests (3 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Task 5.4: Add WebSocket Edge Case Tests (4 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Task 5.5: Add Error Recovery Tests (3 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
 
 ## Relationships
 
@@ -19,7 +21,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

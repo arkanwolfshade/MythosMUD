@@ -1,27 +1,26 @@
 # realtime maintenance connection
 
-> 5 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **.get_player_stats()** (5 connections) — `server/services/rate_limiter.py`
-- **.get_system_stats()** (3 connections) — `server/services/rate_limiter.py`
-- **Any** (2 connections)
-- **Get rate limiting statistics for a player.          Args:             player_id:** (1 connections) — `server/services/rate_limiter.py`
-- **Get system-wide rate limiting statistics.          Returns:             Dictiona** (1 connections) — `server/services/rate_limiter.py`
+- **.start()** (4 connections) — `server/services/game_tick_service.py`
+- **._tick_loop()** (3 connections) — `server/services/game_tick_service.py`
+- **Start the game tick service.          Returns:             bool: True if started** (1 connections) — `server/services/game_tick_service.py`
+- **Main tick loop that runs at the specified interval.** (1 connections) — `server/services/game_tick_service.py`
 
 ## Relationships
 
-- [rate limiter services](rate_limiter_services.md) (2 shared connections)
-- [schedule service services](schedule_service_services.md) (2 shared connections)
+- [tick service services](tick_service_services.md) (2 shared connections)
+- [schemas player rationale](schemas_player_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/rate_limiter.py`
+- `server/services/game_tick_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

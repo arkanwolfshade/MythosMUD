@@ -1,25 +1,29 @@
 # AppRouter main AppRouter()
 
-> 3 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **.get_npc_instance()** (4 connections) — `server/commands/combat_handler.py`
-- **Get NPC instance from the spawning service. Public API.** (1 connections) — `server/commands/combat_handler.py`
-- **Get NPC instance from the spawning service.** (1 connections) — `server/commands/combat_handler.py`
+- **TestEnsureAliasStorage** (5 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.test_ensure_alias_storage_returns_existing()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.test_ensure_alias_storage_initializes_new()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.test_ensure_alias_storage_handles_error()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _ensure_alias_storage function.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _ensure_alias_storage returns existing storage if provided.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _ensure_alias_storage initializes new storage when None.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _ensure_alias_storage returns None on initialization error.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (1 shared connections)
-- [commands npc admin](commands_npc_admin.md) (1 shared connections)
+- [command commands handler](command_commands_handler.md) (4 shared connections)
 
 ## Source Files
 
-- `server/commands/combat_handler.py`
+- `server/tests/unit/commands/test_command_aliases.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [item models rationale](item_models_rationale.md) (7 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (7 shared connections)
 
 ## Source Files
 

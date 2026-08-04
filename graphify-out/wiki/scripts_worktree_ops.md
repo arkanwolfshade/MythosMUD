@@ -1,42 +1,47 @@
 # scripts worktree ops
 
-> 14 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **test_alias_commands.py** (30 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_no_args()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_invalid_command_too_long()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_invalid_name_empty()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_view_from_structured_data()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **mock_alias_storage()** (2 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **mock_alias()** (2 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **Unit tests for alias command handlers.  Tests the alias, aliases, and unalias co** (1 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **Create a mock alias storage.** (1 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **Create a mock alias object.** (1 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **Test handle_alias_command with no arguments.** (1 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **Test handle_alias_command with command too long.** (1 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **Test handle_alias_command with empty alias name.** (1 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **Test handle_alias_command viewing alias from structured data.** (1 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_look_item_helpers.py** (28 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_equipped_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_equipped_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_room_drops_empty()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_room_drops_no_match()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_room_drops_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_room_drops_instance_number_zero()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_equipped_empty()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_equipped_no_match()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_equipped_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_equipped_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_equipped_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Unit tests for look item helper functions.  Tests the helper functions in look_i** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_equipped() finds item by name.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_equipped() returns None when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_room_drops() with empty list.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_room_drops() with no matching items.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_room_drops() with instance number out of range.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_room_drops() with instance number zero.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_equipped() with empty dict.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_equipped() with no matching items.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_equipped() with multiple matches (ambiguous).** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_equipped() with instance number.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_equipped() with instance number out of range.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
 
 ## Relationships
 
-- [commands alias rationale](commands_alias_rationale.md) (11 shared connections)
-- [emote game service](emote_game_service.md) (6 shared connections)
-- [schemas calendar rationale](schemas_calendar_rationale.md) (5 shared connections)
-- [realtime circuit breaker](realtime_circuit_breaker.md) (1 shared connections)
-- [combat services messaging](combat_services_messaging.md) (1 shared connections)
-- [schemas player requests](schemas_player_requests.md) (1 shared connections)
-- [headers middleware security](headers_middleware_security.md) (1 shared connections)
-- [ascii map renderer](ascii_map_renderer.md) (1 shared connections)
+- [room sync service](room_sync_service.md) (10 shared connections)
+- [npc realtime occupant](npc_realtime_occupant.md) (9 shared connections)
+- [main rationale failure()](main_rationale_failure%28%29.md) (8 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_alias_commands.py`
+- `server/tests/unit/commands/test_look_item_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 53 (100%)
+- EXTRACTED: 73 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

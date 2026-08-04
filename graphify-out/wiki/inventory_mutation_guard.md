@@ -1,11 +1,10 @@
 # inventory mutation guard
 
-> 72 nodes
+> 42 nodes
 
 ## Key Concepts
 
 - **PlayerRoomEventHandler** (30 connections) — `server/realtime/player_event_handlers_room.py`
-- **conftest.py** (22 connections) — `server/tests/unit/realtime/conftest.py`
 - **UUID** (12 connections)
 - **Any** (10 connections)
 - **.handle_player_entered()** (9 connections) — `server/realtime/player_event_handlers_room.py`
@@ -27,28 +26,30 @@
 - **._process_player_entered_event()** (4 connections) — `server/realtime/player_event_handlers_room.py`
 - **.unsubscribe_player_from_room()** (4 connections) — `server/realtime/player_event_handlers_room.py`
 - **.broadcast_player_left_message()** (4 connections) — `server/realtime/player_event_handlers_room.py`
-- **mock_utils()** (3 connections) — `server/tests/unit/realtime/conftest.py`
-- **player_room_event_handler()** (3 connections) — `server/tests/unit/realtime/conftest.py`
-- *... and 47 more nodes in this community*
+- **Handles room-related player events (entered, left, occupants).** (1 connections) — `server/realtime/player_event_handlers_room.py`
+- **Initialize room event handler.          Args:             connection_manager: Co** (1 connections) — `server/realtime/player_event_handlers_room.py`
+- **Log player movement for AI processing.          Args:             player_id: The** (1 connections) — `server/realtime/player_event_handlers_room.py`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [Player Name Validation](Player_Name_Validation.md) (9 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (6 shared connections)
-- [item models rationale](item_models_rationale.md) (3 shared connections)
-- [circuit breaker realtime](circuit_breaker_realtime.md) (3 shared connections)
-- [player occupant processor](player_occupant_processor.md) (2 shared connections)
-- [combat services messaging](combat_services_messaging.md) (1 shared connections)
+- [event bus events](event_bus_events.md) (5 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (3 shared connections)
+- [realtime monitoring performance](realtime_monitoring_performance.md) (2 shared connections)
+- [schedule services service](schedule_services_service.md) (2 shared connections)
+- [player_event_handler_utils](player_event_handler_utils.md) (2 shared connections)
+- [Player Name Validation](Player_Name_Validation.md) (2 shared connections)
+- [realtime messaging message](realtime_messaging_message.md) (2 shared connections)
+- [room look commands](room_look_commands.md) (1 shared connections)
 
 ## Source Files
 
 - `server/realtime/player_event_handlers_room.py`
-- `server/tests/unit/realtime/conftest.py`
 
 ## Audit Trail
 
-- EXTRACTED: 237 (98%)
-- INFERRED: 5 (2%)
+- EXTRACTED: 170 (97%)
+- INFERRED: 5 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -33,16 +33,18 @@
 
 ## Relationships
 
-- [Database Config](Database_Config.md) (6 shared connections)
-- [commands admin mute](commands_admin_mute.md) (5 shared connections)
 - [rest grace period](rest_grace_period.md) (5 shared connections)
-- [command inventory models](command_inventory_models.md) (2 shared connections)
+- [Loot Generation](Loot_Generation.md) (4 shared connections)
+- [NPC Combat](NPC_Combat.md) (4 shared connections)
+- [commands npc admin](commands_npc_admin.md) (2 shared connections)
+- [connection realtime statistics](connection_realtime_statistics.md) (2 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (2 shared connections)
 - [dialogue service game](dialogue_service_game.md) (2 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [command factories create](command_factories_create.md) (2 shared connections)
-- [commands logout helpers](commands_logout_helpers.md) (1 shared connections)
-- [NPC Combat](NPC_Combat.md) (1 shared connections)
-- [room websocket updates](room_websocket_updates.md) (1 shared connections)
+- [message nats handler](message_nats_handler.md) (2 shared connections)
+- [commands whisper command](commands_whisper_command.md) (1 shared connections)
+- [connection realtime manager](connection_realtime_manager.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (1 shared connections)
 
 ## Source Files
 

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_perform_recovery_action_sets_cooldown()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **Test perform_recovery_action() sets cooldown after action.** (1 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_validate_movement_success()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
+- **Test _validate_movement returns True for valid movement.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
 
 ## Relationships
 
-- [lucidity active service](lucidity_active_service.md) (1 shared connections)
+- [movement service game](movement_service_game.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_active_lucidity_service.py`
+- `server/tests/unit/game/test_movement_service.py`
 
 ## Audit Trail
 

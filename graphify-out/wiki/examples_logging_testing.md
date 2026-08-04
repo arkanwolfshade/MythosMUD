@@ -1,6 +1,6 @@
 # examples logging testing
 
-> 53 nodes
+> 57 nodes
 
 ## Key Concepts
 
@@ -9,6 +9,7 @@
 - **test_websocket_logging()** (4 connections) — `docs/examples/logging/testing_examples.py`
 - **process_batch()** (4 connections) — `docs/examples/logging/testing_examples.py`
 - **WebSocket** (4 connections) — `docs/examples/logging/testing_examples.py`
+- **test_context_binding()** (3 connections) — `docs/examples/logging/testing_examples.py`
 - **test_performance_logging()** (3 connections) — `docs/examples/logging/testing_examples.py`
 - **test_exception_tracking()** (3 connections) — `docs/examples/logging/testing_examples.py`
 - **test_api_request_logging()** (3 connections) — `docs/examples/logging/testing_examples.py`
@@ -17,6 +18,7 @@
 - **test_batch_logging()** (3 connections) — `docs/examples/logging/testing_examples.py`
 - **test_logging_error_handling()** (3 connections) — `docs/examples/logging/testing_examples.py`
 - **test_logging_performance_metrics()** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **test_logging_correlation_ids()** (3 connections) — `docs/examples/logging/testing_examples.py`
 - **test_fastapi_endpoint_logging()** (3 connections) — `docs/examples/logging/testing_examples.py`
 - **async_operation()** (3 connections) — `docs/examples/logging/testing_examples.py`
 - **risky_operation()** (3 connections) — `docs/examples/logging/testing_examples.py`
@@ -27,14 +29,13 @@
 - **.get()** (3 connections) — `docs/examples/logging/testing_examples.py`
 - **.connect()** (3 connections) — `docs/examples/logging/testing_examples.py`
 - **LoggingMiddleware** (3 connections) — `docs/examples/logging/testing_examples.py`
-- **.process_request()** (3 connections) — `docs/examples/logging/testing_examples.py`
-- **request** (3 connections) — `docs/examples/logging/testing_examples.py`
-- *... and 28 more nodes in this community*
+- *... and 32 more nodes in this community*
 
 ## Relationships
 
-- [command inventory factories](command_inventory_factories.md) (7 shared connections)
-- [middleware correlation rationale](middleware_correlation_rationale.md) (2 shared connections)
+- [models lucidity rationale](models_lucidity_rationale.md) (4 shared connections)
+- [websocket examples logging](websocket_examples_logging.md) (3 shared connections)
+- [world loader room](world_loader_room.md) (2 shared connections)
 - [deprecated logging patterns](deprecated_logging_patterns.md) (1 shared connections)
 
 ## Source Files
@@ -43,8 +44,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 135 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 141 (97%)
+- INFERRED: 5 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

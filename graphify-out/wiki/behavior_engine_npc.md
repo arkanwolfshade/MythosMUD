@@ -1,6 +1,6 @@
 # behavior engine npc
 
-> 137 nodes
+> 139 nodes
 
 ## Key Concepts
 
@@ -20,6 +20,7 @@
 - **.add_rule()** (3 connections) — `server/npc/behavior_engine.py`
 - **.get_rules()** (3 connections) — `server/npc/behavior_engine.py`
 - **.register_action_handler()** (3 connections) — `server/npc/behavior_engine.py`
+- **.get_behavior_engine()** (3 connections) — `server/npc/npc_base.py`
 - **test_behavior_engine_init()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 - **test_add_rule_success()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 - **test_add_rule_missing_fields()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
@@ -28,24 +29,24 @@
 - **test_remove_rule_success()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 - **test_remove_rule_not_found()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 - **test_remove_rule_handles_exception()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **test_get_rules()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- *... and 112 more nodes in this community*
+- *... and 114 more nodes in this community*
 
 ## Relationships
 
-- [rate limiter realtime](rate_limiter_realtime.md) (3 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [npc shopkeeper rationale](npc_shopkeeper_rationale.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (4 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
 - [Realtime Subscribers](Realtime_Subscribers.md) (2 shared connections)
+- [rate limiter realtime](rate_limiter_realtime.md) (1 shared connections)
 
 ## Source Files
 
 - `server/npc/behavior_engine.py`
+- `server/npc/npc_base.py`
 - `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 422 (100%)
+- EXTRACTED: 426 (100%)
 - INFERRED: 1 (0%)
 - AMBIGUOUS: 0 (0%)
 

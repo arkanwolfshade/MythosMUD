@@ -1,42 +1,45 @@
 # room validator path
 
-> 20 nodes
+> 23 nodes
 
 ## Key Concepts
 
-- **TestPathValidator** (11 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **.validator()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **test_path_validator.py** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **.zone_transition_rooms()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **.test_zone_transition_detection()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **.test_broken_zone_transition()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **.test_get_room_zone()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **.test_missing_zone_info()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **.test_one_way_zone_transition()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **.test_mismatched_return_path()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **Tests for path validator functionality.  Validates room connectivity analysis wi** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **Test suite for path validation functionality.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **Create a path validator instance.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **Sample rooms with zone transitions.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **Test detection of zone transitions in room connections.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **Test detection of broken zone transitions.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **Test extraction of zone information from room data.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **Test handling of rooms with missing zone information.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **Test one-way exits across zone boundaries.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **Test detection of mismatched return paths across zones.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **test_combat_persistence_handler.py** (14 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **persistence_handler()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **mock_combat_service()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **test_persistence_handler_init()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **test_get_persistence_layer()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **test_get_persistence_layer_no_container()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **test_get_persistence_layer_container_error()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **test_get_persistence_layer_no_async_persistence()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **test_log_death_state_changes_death_threshold()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **test_log_death_state_changes_mortally_wounded()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **test_persist_player_dp_background_public_api()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **mock_player()** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **Unit tests for combat persistence handler - core functionality.  Tests initializ** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **Create mock combat service.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **Create CombatPersistenceHandler instance.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **Test CombatPersistenceHandler initialization.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **Test _get_persistence_layer gets persistence from container.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **Test _get_persistence_layer returns None when container unavailable.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **Test _get_persistence_layer handles container errors.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **Test _get_persistence_layer handles container without async_persistence.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **Test _log_death_state_changes logs death threshold.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **Test _log_death_state_changes logs mortally wounded.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **Test persist_player_dp_background public API method.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
 
 ## Relationships
 
-- [player service mutations](player_service_mutations.md) (2 shared connections)
+- [commands communication say](commands_communication_say.md) (3 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- `server/tests/unit/services/test_combat_persistence_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 38 (95%)
-- INFERRED: 2 (5%)
+- EXTRACTED: 47 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

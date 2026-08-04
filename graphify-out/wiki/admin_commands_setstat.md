@@ -1,35 +1,54 @@
 # admin commands setstat
 
-> 13 nodes
+> 30 nodes
 
 ## Key Concepts
 
-- **run_quality_fragmentation_guard.py** (12 connections) — `scripts/run_quality_fragmentation_guard.py`
-- **main()** (6 connections) — `scripts/run_quality_fragmentation_guard.py`
-- **_run_git()** (5 connections) — `scripts/run_quality_fragmentation_guard.py`
-- **_resolved_changed_files()** (5 connections) — `scripts/run_quality_fragmentation_guard.py`
-- **_git_executable()** (4 connections) — `scripts/run_quality_fragmentation_guard.py`
-- **_changed_files_between()** (4 connections) — `scripts/run_quality_fragmentation_guard.py`
-- **_local_changed_files()** (4 connections) — `scripts/run_quality_fragmentation_guard.py`
-- **_build_guard_command()** (4 connections) — `scripts/run_quality_fragmentation_guard.py`
-- **_resolve_base_sha()** (3 connections) — `scripts/run_quality_fragmentation_guard.py`
-- **_is_graphify_path()** (3 connections) — `scripts/run_quality_fragmentation_guard.py`
-- **_argv_char_len()** (2 connections) — `scripts/run_quality_fragmentation_guard.py`
-- **Path** (1 connections)
-- **Generated graphify trees are not product code; skip guard/lint argv bloat.** (1 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **run_flee_effect()** (25 connections) — `server/game/magic/spell_effect_flee.py`
+- **spell_effect_flee.py** (18 connections) — `server/game/magic/spell_effect_flee.py`
+- **test_spell_effect_flee.py** (17 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
+- **Any** (10 connections)
+- **_flee_effect_validate_room_exits()** (7 connections) — `server/game/magic/spell_effect_flee.py`
+- **_player_target()** (7 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
+- **_flee_effect_services_available()** (6 connections) — `server/game/magic/spell_effect_flee.py`
+- **_flee_effect_not_in_combat_response()** (4 connections) — `server/game/magic/spell_effect_flee.py`
+- **_flee_effect_success_response()** (4 connections) — `server/game/magic/spell_effect_flee.py`
+- **_flee_effect_failure_response()** (4 connections) — `server/game/magic/spell_effect_flee.py`
+- **_flee_effect_invalid_target_type_response()** (3 connections) — `server/game/magic/spell_effect_flee.py`
+- **_flee_effect_services_unavailable_response()** (3 connections) — `server/game/magic/spell_effect_flee.py`
+- **_flee_effect_invalid_target_response()** (3 connections) — `server/game/magic/spell_effect_flee.py`
+- **_flee_effect_room_error_response()** (3 connections) — `server/game/magic/spell_effect_flee.py`
+- **.get_room_by_id()** (3 connections) — `server/game/magic/spell_effects.py`
+- **test_run_flee_effect_invalid_target_type()** (3 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
+- **test_run_flee_effect_services_unavailable()** (3 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
+- **test_run_flee_effect_invalid_uuid()** (3 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
+- **test_run_flee_effect_not_in_combat()** (3 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
+- **test_run_flee_effect_room_error()** (3 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
+- **test_run_flee_effect_success_and_failure()** (3 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
+- **UUID** (2 connections)
+- **test_flee_effect_services_available()** (2 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
+- **test_flee_effect_validate_room_exits()** (2 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
+- **Flee spell effect: voluntary flee mechanics (success roll, lose-attack-on-fail,** (1 connections) — `server/game/magic/spell_effect_flee.py`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
-- [scripts run guard](scripts_run_guard.md) (6 shared connections)
+- [spell game magic](spell_game_magic.md) (11 shared connections)
+- [command factories exploration](command_factories_exploration.md) (3 shared connections)
+- [command factories communication](command_factories_communication.md) (3 shared connections)
+- [target resolution service](target_resolution_service.md) (2 shared connections)
+- [retry nats handler](retry_nats_handler.md) (2 shared connections)
 
 ## Source Files
 
-- `scripts/run_quality_fragmentation_guard.py`
+- `server/game/magic/spell_effect_flee.py`
+- `server/game/magic/spell_effects.py`
+- `server/tests/unit/game/magic/test_spell_effect_flee.py`
 
 ## Audit Trail
 
-- EXTRACTED: 54 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 145 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_action_cooldown_invalid_string_player_id()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **Test get_action_cooldown() raises error for invalid string player_id.** (1 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_is_leader_false_when_not_in_party()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **is_leader is False when not in a party.** (1 connections) — `server/tests/unit/game/test_party_service.py`
 
 ## Relationships
 
-- [lucidity active service](lucidity_active_service.md) (1 shared connections)
+- [commands inventory helpers](commands_inventory_helpers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_active_lucidity_service.py`
+- `server/tests/unit/game/test_party_service.py`
 
 ## Audit Trail
 

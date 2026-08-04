@@ -1,37 +1,43 @@
 # emote game service
 
-> 12 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **handle_unalias_command()** (12 connections) — `server/commands/alias_commands.py`
-- **test_handle_unalias_command_no_storage()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_unalias_command_no_args()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_unalias_command_alias_not_found()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_unalias_command_success()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_unalias_command_error()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **Handle the unalias command for removing aliases.      Args:         command_data** (1 connections) — `server/commands/alias_commands.py`
-- **Test handle_unalias_command when alias storage is not available.** (1 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **Test handle_unalias_command with no arguments.** (1 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **Test handle_unalias_command when alias doesn't exist.** (1 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **Test handle_unalias_command successful removal.** (1 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **Test handle_unalias_command when removal fails.** (1 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_room_subscription_manager_npcs.py** (13 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **subscription_manager()** (3 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **test_get_npc_name_from_lifecycle_manager()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **test_get_npc_name_from_lifecycle_manager_not_found()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **test_get_npc_name_from_lifecycle_manager_error()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **test_add_npc_to_occupants()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **test_query_npcs_from_lifecycle_manager()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **test_filter_fallback_npcs()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **test_filter_fallback_npcs_error()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **test_get_room_occupants_with_npcs()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **test_get_room_occupants_fallback_npcs()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **Unit tests for room subscription manager NPC helpers.  Tests NPC-related helpers** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **Create a RoomSubscriptionManager instance.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **Test _get_npc_name_from_lifecycle_manager gets NPC name.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **Test _get_npc_name_from_lifecycle_manager returns ID when NPC not found.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **Test _get_npc_name_from_lifecycle_manager handles errors gracefully.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **Test _add_npc_to_occupants adds NPC to list.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **Test _query_npcs_from_lifecycle_manager queries NPCs.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **Test _filter_fallback_npcs filters dead NPCs.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **Test _filter_fallback_npcs handles errors gracefully.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **Test get_room_occupants() includes NPCs from lifecycle manager.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **Test get_room_occupants() falls back to room.get_npcs() when lifecycle manager f** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
 
 ## Relationships
 
-- [scripts worktree ops](scripts_worktree_ops.md) (6 shared connections)
-- [commands admin mute](commands_admin_mute.md) (3 shared connections)
-- [realtime circuit breaker](realtime_circuit_breaker.md) (1 shared connections)
-- [commands alias rationale](commands_alias_rationale.md) (1 shared connections)
+- [taunt combat commands](taunt_combat_commands.md) (3 shared connections)
 
 ## Source Files
 
-- `server/commands/alias_commands.py`
-- `server/tests/unit/commands/test_alias_commands.py`
+- `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
 
 ## Audit Trail
 
-- EXTRACTED: 33 (100%)
+- EXTRACTED: 45 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

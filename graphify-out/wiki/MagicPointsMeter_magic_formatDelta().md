@@ -1,23 +1,25 @@
 # MagicPointsMeter magic formatDelta()
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_handle_spells_command_no_spells()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test spells command when player has no spells.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **.__init__()** (4 connections) — `server/game/level_service.py`
+- **Any** (1 connections)
+- **LevelUpHook** (1 connections)
+- **Initialize the level service.          Args:             async_persistence: Asyn** (1 connections) — `server/game/level_service.py`
 
 ## Relationships
 
-- [commands magic rationale](commands_magic_rationale.md) (1 shared connections)
+- [websocket realtime handler](websocket_realtime_handler.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `server/game/level_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

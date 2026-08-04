@@ -1,34 +1,46 @@
 # caching lru cache
 
-> 16 nodes
+> 45 nodes
 
 ## Key Concepts
 
+- **LRUCache** (27 connections) — `server/caching/lru_cache.py`
 - **.items()** (8 connections) — `server/caching/lru_cache.py`
 - **K** (7 connections)
-- **.get_or_set()** (7 connections) — `server/caching/lru_cache.py`
 - **.get()** (6 connections) — `server/caching/lru_cache.py`
 - **.put()** (6 connections) — `server/caching/lru_cache.py`
+- **.get_or_set()** (6 connections) — `server/caching/lru_cache.py`
 - **V** (5 connections)
+- **.get_stats()** (5 connections) — `server/caching/lru_cache.py`
+- **.keys()** (5 connections) — `server/caching/lru_cache.py`
+- **.get_cache()** (5 connections) — `server/caching/lru_cache.py`
+- **.get_all_stats()** (5 connections) — `server/caching/lru_cache.py`
 - **._evict_expired_entries()** (4 connections) — `server/caching/lru_cache.py`
+- **Any** (4 connections)
 - **.values()** (4 connections) — `server/caching/lru_cache.py`
+- **.create_cache()** (4 connections) — `server/caching/lru_cache.py`
+- **.delete()** (3 connections) — `server/caching/lru_cache.py`
+- **.clear()** (3 connections) — `server/caching/lru_cache.py`
+- **.size()** (3 connections) — `server/caching/lru_cache.py`
+- **.__len__()** (3 connections) — `server/caching/lru_cache.py`
 - **.__contains__()** (3 connections) — `server/caching/lru_cache.py`
-- **Get an item from the cache.          Args:             key: The key to look up** (1 connections) — `server/caching/lru_cache.py`
-- **Remove expired entries from cache.          Returns:             Count of expire** (1 connections) — `server/caching/lru_cache.py`
-- **Put an item into the cache.          Args:             key: The key to store** (1 connections) — `server/caching/lru_cache.py`
-- **Get an item from the cache, or set it using a factory function if not found.** (1 connections) — `server/caching/lru_cache.py`
-- **Get all values in the cache.** (1 connections) — `server/caching/lru_cache.py`
-- **Get all key-value pairs in the cache.** (1 connections) — `server/caching/lru_cache.py`
-- **Check if a key exists in the cache.** (1 connections) — `server/caching/lru_cache.py`
+- **.__repr__()** (3 connections) — `server/caching/lru_cache.py`
+- **.clear_all_caches()** (3 connections) — `server/caching/lru_cache.py`
+- **.__init__()** (2 connections) — `server/caching/lru_cache.py`
+- **.is_full()** (2 connections) — `server/caching/lru_cache.py`
+- **.get_cache_names()** (2 connections) — `server/caching/lru_cache.py`
+- *... and 20 more nodes in this community*
 
 ## Relationships
 
-- [combat messaging service](combat_messaging_service.md) (9 shared connections)
-- [time service rationale](time_service_rationale.md) (2 shared connections)
-- [commands skills rationale](commands_skills_rationale.md) (1 shared connections)
-- [rescue service services](rescue_service_services.md) (1 shared connections)
+- [commands skills rationale](commands_skills_rationale.md) (9 shared connections)
+- [startup npc service](startup_npc_service.md) (1 shared connections)
+- [uuid services npc](uuid_services_npc.md) (1 shared connections)
+- [services lucidity repository](services_lucidity_repository.md) (1 shared connections)
+- [config rationale config()](config_rationale_config%28%29.md) (1 shared connections)
+- [cache lru caching](cache_lru_caching.md) (1 shared connections)
 - [container inventory display](container_inventory_display.md) (1 shared connections)
-- [alias storage commands](alias_storage_commands.md) (1 shared connections)
+- [Exception Containers](Exception_Containers.md) (1 shared connections)
 
 ## Source Files
 
@@ -36,8 +48,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 54 (95%)
-- INFERRED: 3 (5%)
+- EXTRACTED: 142 (96%)
+- INFERRED: 6 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

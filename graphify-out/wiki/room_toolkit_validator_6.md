@@ -1,6 +1,6 @@
 # room toolkit validator
 
-> 83 nodes
+> 81 nodes
 
 ## Key Concepts
 
@@ -29,14 +29,13 @@
 - **.load_config_file()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
 - **.test_init_with_default_path()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_room_loader.py`
 - **.test_init_with_custom_path()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_room_loader.py`
-- *... and 58 more nodes in this community*
+- *... and 56 more nodes in this community*
 
 ## Relationships
 
+- [validator room toolkit](validator_room_toolkit.md) (9 shared connections)
 - [room validator toolkit](room_validator_toolkit.md) (8 shared connections)
-- [player service mutations](player_service_mutations.md) (8 shared connections)
-- [logging structured utilities](logging_structured_utilities.md) (3 shared connections)
-- [validator room toolkit](validator_room_toolkit.md) (1 shared connections)
+- [player service mutations](player_service_mutations.md) (3 shared connections)
 
 ## Source Files
 
@@ -45,8 +44,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 214 (83%)
-- INFERRED: 44 (17%)
+- EXTRACTED: 211 (83%)
+- INFERRED: 43 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

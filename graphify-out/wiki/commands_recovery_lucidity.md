@@ -1,54 +1,65 @@
 # commands recovery lucidity
 
-> 58 nodes
+> 122 nodes
 
 ## Key Concepts
 
-- **validate_room_data()** (16 connections) — `server/world_loader.py`
-- **get_room_environment()** (13 connections) — `server/world_loader.py`
-- **TestGetRoomEnvironment** (12 connections) — `server/tests/unit/test_world_loader.py`
-- **TestValidateRoomData** (11 connections) — `server/tests/unit/test_world_loader.py`
-- **test_world_loader.py** (10 connections) — `server/tests/unit/test_world_loader.py`
-- **generate_room_id()** (9 connections) — `server/world_loader.py`
-- **TestGenerateRoomId** (7 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_validate_room_data_strict_validation_raises()** (4 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_validate_room_data_validation_exception_strict()** (4 connections) — `server/tests/unit/test_world_loader.py`
-- **Any** (4 connections)
-- **.test_generate_room_id_basic()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_generate_room_id_with_underscores()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_generate_room_id_empty_components()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_generate_room_id_special_characters()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_get_room_environment_from_room_data()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_get_room_environment_from_subzone()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_get_room_environment_from_zone()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_get_room_environment_default()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_get_room_environment_room_takes_priority()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_get_room_environment_subzone_takes_priority_over_zone()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_get_room_environment_subzone_none()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_get_room_environment_zone_none()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_get_room_environment_empty_string_in_room_data()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_validate_room_data_validation_not_available()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_validate_room_data_with_validator()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- *... and 33 more nodes in this community*
+- **SchemaValidator** (27 connections) — `schemas/validator.py`
+- **EmoteService** (21 connections) — `server/game/emote_service.py`
+- **emote_service.py** (20 connections) — `server/game/emote_service.py`
+- **test_emote_service.py** (15 connections) — `server/tests/unit/game/test_emote_service.py`
+- **command_input.py** (14 connections) — `server/command_handler/command_input.py`
+- **__init__.py** (13 connections) — `server/command_handler/__init__.py`
+- **normalize_command()** (12 connections) — `server/command_handler/command_input.py`
+- **TestCommandNormalization** (12 connections) — `server/tests/unit/commands/test_command_input.py`
+- **create_validator()** (10 connections) — `schemas/validator.py`
+- **clean_command_input()** (10 connections) — `server/command_handler/command_input.py`
+- **should_treat_as_emote()** (10 connections) — `server/command_handler/command_input.py`
+- **_service_with_emotes()** (10 connections) — `server/tests/unit/game/test_emote_service.py`
+- **_is_predefined_emote()** (8 connections) — `server/command_handler/command_input.py`
+- **test_command_input.py** (8 connections) — `server/tests/unit/commands/test_command_input.py`
+- **TestEmoteDetection** (8 connections) — `server/tests/unit/commands/test_command_input.py`
+- **schema_validator.py** (8 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
+- **validator.py** (7 connections) — `schemas/validator.py`
+- **Any** (7 connections)
+- **EmoteDefinition** (7 connections) — `server/game/emote_service.py`
+- **.validate_data()** (6 connections) — `schemas/validator.py`
+- **.validate_room()** (6 connections) — `schemas/validator.py`
+- **.format_emote_messages()** (5 connections) — `server/game/emote_service.py`
+- **.__init__()** (4 connections) — `schemas/validator.py`
+- **.validate_room_file()** (4 connections) — `schemas/validator.py`
+- **.validate_room_database()** (4 connections) — `schemas/validator.py`
+- *... and 97 more nodes in this community*
 
 ## Relationships
 
-- [command inventory models](command_inventory_models.md) (9 shared connections)
-- [command inventory factories](command_inventory_factories.md) (5 shared connections)
-- [commands admin mute](commands_admin_mute.md) (3 shared connections)
-- [Database Config](Database_Config.md) (1 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (1 shared connections)
-- [persistence rationale players](persistence_rationale_players.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (13 shared connections)
+- [room validator toolkit](room_validator_toolkit.md) (6 shared connections)
+- [command commands handler](command_commands_handler.md) (6 shared connections)
+- [NPC Combat](NPC_Combat.md) (5 shared connections)
+- [fixtures mock helpers](fixtures_mock_helpers.md) (4 shared connections)
+- [commands whisper command](commands_whisper_command.md) (3 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (3 shared connections)
+- [command validation commands](command_validation_commands.md) (2 shared connections)
+- [command validator validators](command_validator_validators.md) (2 shared connections)
+- [manager subject services](manager_subject_services.md) (2 shared connections)
+- [commands emote rationale](commands_emote_rationale.md) (2 shared connections)
+- [chat game message](chat_game_message.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/test_world_loader.py`
-- `server/world_loader.py`
+- `schemas/validator.py`
+- `server/command_handler/__init__.py`
+- `server/command_handler/command_input.py`
+- `server/game/emote_service.py`
+- `server/tests/unit/commands/test_command_input.py`
+- `server/tests/unit/game/test_emote_service.py`
+- `tools/room_toolkit/room_validator/core/schema_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 168 (94%)
-- INFERRED: 10 (6%)
+- EXTRACTED: 421 (97%)
+- INFERRED: 15 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

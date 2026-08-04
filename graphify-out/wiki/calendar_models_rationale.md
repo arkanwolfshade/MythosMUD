@@ -1,42 +1,54 @@
 # calendar models rationale
 
-> 18 nodes
+> 28 nodes
 
 ## Key Concepts
 
-- **test_level_service.py** (16 connections) — `server/tests/unit/game/test_level_service.py`
-- **level_service()** (3 connections) — `server/tests/unit/game/test_level_service.py`
-- **mock_persistence()** (2 connections) — `server/tests/unit/game/test_level_service.py`
-- **sample_player()** (2 connections) — `server/tests/unit/game/test_level_service.py`
-- **test_grant_xp_zero_no_op()** (2 connections) — `server/tests/unit/game/test_level_service.py`
-- **test_grant_xp_negative_raises()** (2 connections) — `server/tests/unit/game/test_level_service.py`
-- **test_grant_xp_player_not_found_raises()** (2 connections) — `server/tests/unit/game/test_level_service.py`
-- **test_grant_xp_increases_xp_and_persists()** (2 connections) — `server/tests/unit/game/test_level_service.py`
-- **test_check_level_up_player_not_found_raises()** (2 connections) — `server/tests/unit/game/test_level_service.py`
-- **Unit tests for LevelService: grant_xp, check_level_up, level-up hook.  Character** (1 connections) — `server/tests/unit/game/test_level_service.py`
-- **Mock async persistence with get_player_by_id and save_player.** (1 connections) — `server/tests/unit/game/test_level_service.py`
-- **LevelService with mocked persistence.** (1 connections) — `server/tests/unit/game/test_level_service.py`
-- **Player-like object with experience_points and level.** (1 connections) — `server/tests/unit/game/test_level_service.py`
-- **grant_xp(amount=0) does not load or save.** (1 connections) — `server/tests/unit/game/test_level_service.py`
-- **grant_xp(amount < 0) raises ValueError.** (1 connections) — `server/tests/unit/game/test_level_service.py`
-- **grant_xp when player not found raises ValueError.** (1 connections) — `server/tests/unit/game/test_level_service.py`
-- **grant_xp adds amount to experience_points and saves (level unchanged).** (1 connections) — `server/tests/unit/game/test_level_service.py`
-- **check_level_up when player not found raises ValueError.** (1 connections) — `server/tests/unit/game/test_level_service.py`
+- **quest_chat_notify.py** (20 connections) — `server/game/quest/quest_chat_notify.py`
+- **schedule_personal_system()** (12 connections) — `server/game/chat_npc_system.py`
+- **should_notify_quest_progress()** (10 connections) — `server/game/quest/quest_chat_notify.py`
+- **notify_quest_progress()** (9 connections) — `server/game/quest/quest_chat_notify.py`
+- **notify_quest_started()** (8 connections) — `server/game/quest/quest_chat_notify.py`
+- **notify_quest_completed()** (8 connections) — `server/game/quest/quest_chat_notify.py`
+- **notify_quest_abandoned()** (8 connections) — `server/game/quest/quest_chat_notify.py`
+- **title_from_quest_result()** (7 connections) — `server/game/quest/quest_chat_notify.py`
+- **test_notify_quest_lifecycle_schedules_personal_system()** (6 connections) — `server/tests/unit/game/test_chat_npc_system.py`
+- **UUID** (5 connections)
+- **_goal_is_met()** (5 connections) — `server/game/quest/quest_chat_notify.py`
+- **Any** (4 connections)
+- **_progress_has_any_value()** (4 connections) — `server/game/quest/quest_chat_notify.py`
+- **_as_int()** (3 connections) — `server/game/quest/quest_chat_notify.py`
+- **test_title_from_quest_result_prefers_title_field()** (3 connections) — `server/tests/unit/game/test_chat_npc_system.py`
+- **Schedule personal system chat from sync or async callers.** (1 connections) — `server/game/chat_npc_system.py`
+- **Quest lifecycle and NPC quest-line chat helpers (issue #146 MVP).  # group: ques** (1 connections) — `server/game/quest/quest_chat_notify.py`
+- **Personal system chat when a quest becomes active.** (1 connections) — `server/game/quest/quest_chat_notify.py`
+- **Personal system chat for milestone progress (first tick or goal newly met).** (1 connections) — `server/game/quest/quest_chat_notify.py`
+- **Personal system chat when a quest completes.** (1 connections) — `server/game/quest/quest_chat_notify.py`
+- **Personal system chat when a quest is abandoned.** (1 connections) — `server/game/quest/quest_chat_notify.py`
+- **Coerce progress/config scalars to int; non-numeric becomes default.** (1 connections) — `server/game/quest/quest_chat_notify.py`
+- **Return True if one goal is satisfied given current progress.** (1 connections) — `server/game/quest/quest_chat_notify.py`
+- **True if any goal slot has a non-zero / non-empty progress value.** (1 connections) — `server/game/quest/quest_chat_notify.py`
+- **Return True when a progress personal-system line should be sent.      Notifies o** (1 connections) — `server/game/quest/quest_chat_notify.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [message formatters realtime](message_formatters_realtime.md) (3 shared connections)
-- [quests players rationale](quests_players_rationale.md) (2 shared connections)
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [quest chat game](quest_chat_game.md) (12 shared connections)
+- [quest game service](quest_game_service.md) (7 shared connections)
+- [commands quest rationale](commands_quest_rationale.md) (6 shared connections)
+- [collect inventory game](collect_inventory_game.md) (6 shared connections)
+- [chat game message](chat_game_message.md) (4 shared connections)
+- [dialogue service game](dialogue_service_game.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_level_service.py`
+- `server/game/chat_npc_system.py`
+- `server/game/quest/quest_chat_notify.py`
+- `server/tests/unit/game/test_chat_npc_system.py`
 
 ## Audit Trail
 
-- EXTRACTED: 42 (100%)
+- EXTRACTED: 125 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

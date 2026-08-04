@@ -1,6 +1,6 @@
 # quest service game
 
-> 84 nodes
+> 83 nodes
 
 ## Key Concepts
 
@@ -29,16 +29,17 @@
 - **_make_turn_in_definition_row()** (7 connections) — `server/tests/unit/game/test_quest_service.py`
 - **test_turn_in_success()** (7 connections) — `server/tests/unit/game/test_quest_service.py`
 - **test_turn_in_no_active_instance_returns_error()** (7 connections) — `server/tests/unit/game/test_quest_service.py`
-- *... and 59 more nodes in this community*
+- *... and 58 more nodes in this community*
 
 ## Relationships
 
-- [quest game service](quest_game_service.md) (37 shared connections)
-- [inventory commands command](inventory_commands_command.md) (1 shared connections)
+- [quest game service](quest_game_service.md) (35 shared connections)
+- [collect inventory game](collect_inventory_game.md) (1 shared connections)
+- [commands inventory command](commands_inventory_command.md) (1 shared connections)
 - [commands quest rationale](commands_quest_rationale.md) (1 shared connections)
-- [command parser rationale](command_parser_rationale.md) (1 shared connections)
-- [realtime game state](realtime_game_state.md) (1 shared connections)
-- [realtime player connection](realtime_player_connection.md) (1 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
+- [nats services metrics](nats_services_metrics.md) (1 shared connections)
+- [help content websocket](help_content_websocket.md) (1 shared connections)
 
 ## Source Files
 
@@ -46,8 +47,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 398 (97%)
-- INFERRED: 12 (3%)
+- EXTRACTED: 397 (98%)
+- INFERRED: 10 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

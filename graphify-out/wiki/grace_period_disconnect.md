@@ -1,61 +1,51 @@
 # grace period disconnect
 
-> 77 nodes
+> 47 nodes
 
 ## Key Concepts
 
-- **disconnect_grace_period.py** (26 connections) — `server/realtime/disconnect_grace_period.py`
-- **is_player_in_grace_period()** (26 connections) — `server/realtime/disconnect_grace_period.py`
-- **test_rest_and_grace_period.py** (24 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **start_grace_period()** (20 connections) — `server/realtime/disconnect_grace_period.py`
-- **test_disconnect_grace_period.py** (17 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
-- **MockPersistenceFull** (14 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **cancel_grace_period()** (12 connections) — `server/realtime/disconnect_grace_period.py`
-- **UUID** (4 connections)
-- **test_unintentional_disconnect_starts_grace_period()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_intentional_disconnect_no_grace_period()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_rest_command_blocks_during_combat()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_rest_command_starts_countdown_not_in_combat()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_rest_location_instant_disconnect()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_rest_location_blocked_during_combat()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_rest_countdown_completes_disconnect()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_start_grace_period_reconnection_cancels()** (4 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
-- **Any** (3 connections)
-- **mock_persistence_full()** (3 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_rest_interrupts_combat_action()** (3 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_reconnection_cancels_grace_period()** (3 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_grace_period_player_can_auto_attack()** (3 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_grace_period_player_cannot_use_commands()** (3 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_visual_indicator_in_grace_period()** (3 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_start_grace_period_creates_task()** (3 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
-- **test_start_grace_period_already_in_grace_period()** (3 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
-- *... and 52 more nodes in this community*
+- **test_shopkeeper_npc.py** (25 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
+- **ShopkeeperNPC** (20 connections) — `server/npc/shopkeeper_npc.py`
+- **_shopkeeper()** (20 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
+- **_shop_quantity()** (5 connections) — `server/npc/shopkeeper_npc.py`
+- **.__init__()** (3 connections) — `server/npc/shopkeeper_npc.py`
+- **._setup_shopkeeper_behavior_rules()** (3 connections) — `server/npc/shopkeeper_npc.py`
+- **test_add_buyable_item_invalid()** (3 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
+- **.get_behavior_rules()** (2 connections) — `server/npc/shopkeeper_npc.py`
+- **.add_shop_item()** (2 connections) — `server/npc/shopkeeper_npc.py`
+- **.add_buyable_item()** (2 connections) — `server/npc/shopkeeper_npc.py`
+- **.buy_from_player()** (2 connections) — `server/npc/shopkeeper_npc.py`
+- **.sell_to_player()** (2 connections) — `server/npc/shopkeeper_npc.py`
+- **.calculate_price()** (2 connections) — `server/npc/shopkeeper_npc.py`
+- **._handle_greet_customer()** (2 connections) — `server/npc/shopkeeper_npc.py`
+- **._handle_restock_inventory()** (2 connections) — `server/npc/shopkeeper_npc.py`
+- **test_shop_quantity_coercion()** (2 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
+- **test_add_shop_item_and_inventory()** (2 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
+- **test_add_buyable_item()** (2 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
+- **test_buy_from_player_success()** (2 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
+- **test_buy_from_player_not_buyable()** (2 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
+- **test_sell_to_player_reduces_quantity()** (2 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
+- **test_sell_to_player_removes_depleted_item()** (2 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
+- **test_sell_to_player_not_available()** (2 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
+- **test_calculate_price_default_markup()** (2 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
+- **test_calculate_price_explicit_markup()** (2 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
+- *... and 22 more nodes in this community*
 
 ## Relationships
 
-- [player disconnect handlers](player_disconnect_handlers.md) (9 shared connections)
-- [rest grace period](rest_grace_period.md) (9 shared connections)
-- [player occupant processor](player_occupant_processor.md) (6 shared connections)
-- [player presence tracker](player_presence_tracker.md) (6 shared connections)
-- [command commands handler](command_commands_handler.md) (3 shared connections)
-- [combat services turn](combat_services_turn.md) (3 shared connections)
-- [look helpers commands](look_helpers_commands.md) (3 shared connections)
-- [help content websocket](help_content_websocket.md) (3 shared connections)
-- [realtime player connection](realtime_player_connection.md) (3 shared connections)
-- [room websocket updates](room_websocket_updates.md) (3 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (6 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/disconnect_grace_period.py`
-- `server/tests/integration/test_rest_and_grace_period.py`
-- `server/tests/unit/realtime/test_disconnect_grace_period.py`
+- `server/npc/shopkeeper_npc.py`
+- `server/tests/unit/npc/test_shopkeeper_npc.py`
 
 ## Audit Trail
 
-- EXTRACTED: 276 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 142 (97%)
+- INFERRED: 4 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

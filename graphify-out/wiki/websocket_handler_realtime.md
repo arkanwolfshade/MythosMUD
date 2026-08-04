@@ -1,58 +1,54 @@
 # websocket handler realtime
 
-> 68 nodes
+> 64 nodes
 
 ## Key Concepts
 
-- **combat_taunt.py** (32 connections) — `server/commands/combat_taunt.py`
-- **TauntCommandHandler** (29 connections) — `server/commands/combat_taunt.py`
-- **test_combat_taunt.py** (20 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **_validate_taunt_context()** (13 connections) — `server/commands/combat_taunt.py`
-- **run_handle_taunt_command()** (13 connections) — `server/commands/combat_taunt.py`
-- **_validate_taunt_target()** (9 connections) — `server/commands/combat_taunt.py`
-- **_resolve_taunt_combat_and_participant()** (9 connections) — `server/commands/combat_taunt.py`
-- **_apply_taunt_and_maybe_broadcast()** (9 connections) — `server/commands/combat_taunt.py`
-- **test_run_handle_taunt_success()** (7 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **Any** (6 connections)
-- **_resolve_taunt_room_and_player()** (6 connections) — `server/commands/combat_taunt.py`
-- **UUID** (6 connections)
-- **_validate_taunt_target_name()** (6 connections) — `server/commands/combat_taunt.py`
-- **_RoomWithIdOnly** (6 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **.handle_attack_command()** (5 connections) — `server/commands/combat_handler.py`
-- **.handle_taunt_command()** (5 connections) — `server/commands/combat_handler.py`
-- **test_validate_taunt_target_not_npc()** (5 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **test_validate_taunt_target_dead()** (5 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **test_run_handle_taunt_no_combat_service()** (5 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **test_run_handle_taunt_not_in_combat()** (5 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **.extract_combat_command_data()** (4 connections) — `server/commands/combat_handler.py`
-- **.handle_flee_command()** (4 connections) — `server/commands/combat_handler.py`
-- **.get_player_and_room()** (4 connections) — `server/commands/combat_taunt.py`
-- **AppWithState** (4 connections)
-- **.resolve_combat_target()** (4 connections) — `server/commands/combat_taunt.py`
-- *... and 43 more nodes in this community*
+- **CircuitBreaker** (43 connections) — `server/realtime/circuit_breaker.py`
+- **test_circuit_breaker.py** (31 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **circuit_breaker.py** (12 connections) — `server/realtime/circuit_breaker.py`
+- **CircuitState** (6 connections) — `server/realtime/circuit_breaker.py`
+- **.__init__()** (3 connections) — `server/realtime/circuit_breaker.py`
+- **.get_state()** (3 connections) — `server/realtime/circuit_breaker.py`
+- **test_circuit_breaker_init()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_circuit_breaker_init_defaults()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_call_success_closed_state()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_call_failure_closed_state()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_call_opens_circuit_after_threshold()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_call_transitions_to_half_open_after_timeout()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_call_closes_from_half_open_on_success()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_call_reopens_from_half_open_on_failure()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_on_success_resets_failure_count_closed()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_on_success_increments_success_count_half_open()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_on_failure_increments_failure_count()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_on_failure_opens_circuit_at_threshold()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_on_failure_resets_success_count()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_should_attempt_reset_returns_false_before_timeout()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_should_attempt_reset_returns_true_after_timeout()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_should_attempt_reset_returns_false_when_not_open()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_time_until_retry_returns_zero_when_not_open()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_time_until_retry_returns_remaining_time()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_time_until_retry_returns_zero_after_timeout()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- *... and 39 more nodes in this community*
 
 ## Relationships
 
-- [Item Instances](Item_Instances.md) (22 shared connections)
-- [target resolution service](target_resolution_service.md) (16 shared connections)
-- [NPC Combat](NPC_Combat.md) (14 shared connections)
-- [commands admin mute](commands_admin_mute.md) (10 shared connections)
-- [combat flee commands](combat_flee_commands.md) (3 shared connections)
-- [npc database infrastructure](npc_database_infrastructure.md) (3 shared connections)
-- [attack combat commands](attack_combat_commands.md) (1 shared connections)
-- [room realtime rationale](room_realtime_rationale.md) (1 shared connections)
+- [conftest mock rationale](conftest_mock_rationale.md) (8 shared connections)
+- [NPC Combat](NPC_Combat.md) (7 shared connections)
+- [config rationale config()](config_rationale_config%28%29.md) (5 shared connections)
+- [commands communication say](commands_communication_say.md) (2 shared connections)
+- [nats message handler](nats_message_handler.md) (1 shared connections)
+- [container persistence rationale](container_persistence_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/combat_handler.py`
-- `server/commands/combat_taunt.py`
-- `server/models/combat.py`
-- `server/tests/unit/commands/test_combat_taunt.py`
+- `server/realtime/circuit_breaker.py`
+- `server/tests/unit/realtime/test_circuit_breaker.py`
 
 ## Audit Trail
 
-- EXTRACTED: 271 (95%)
-- INFERRED: 15 (5%)
+- EXTRACTED: 204 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

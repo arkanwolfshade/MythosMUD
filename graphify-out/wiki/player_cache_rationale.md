@@ -1,50 +1,53 @@
 # player cache rationale
 
-> 25 nodes
+> 32 nodes
 
 ## Key Concepts
 
-- **get_cached_player()** (15 connections) — `server/utils/player_cache.py`
-- **cache_player()** (13 connections) — `server/utils/player_cache.py`
-- **test_player_cache.py** (11 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **player_cache.py** (7 connections) — `server/utils/player_cache.py`
-- **_get_request_state()** (6 connections) — `server/utils/player_cache.py`
-- **test_cache_and_get_player()** (4 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **test_cache_player_multiple()** (4 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **test_cache_player_overwrite()** (4 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **test_get_cached_player_none()** (3 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **test_get_cached_player_nonexistent()** (3 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **test_get_cached_player_no_state()** (3 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **test_cache_player_no_state()** (3 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **Any** (3 connections)
-- **Unit tests for player_cache utilities.  Tests the player caching functions for r** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **Test get_cached_player() returns None when no cache exists.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **Test cache_player() and get_cached_player() operations.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **Test get_cached_player() returns None for nonexistent key.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **Test cache_player() can cache multiple players.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **Test cache_player() overwrites existing entries.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **Test get_cached_player() handles missing state.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **Test cache_player() handles missing state gracefully.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **Helpers for caching player objects during a single command request.  This avoids** (1 connections) — `server/utils/player_cache.py`
-- **Safely extract the state object from a FastAPI/Starlette request.** (1 connections) — `server/utils/player_cache.py`
-- **Return a cached player object for this request if one exists.** (1 connections) — `server/utils/player_cache.py`
-- **Cache a player object on the request for reuse within the command.** (1 connections) — `server/utils/player_cache.py`
+- **test_inventory_service.py** (20 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **InventoryValidationError** (13 connections) — `server/services/inventory_service.py`
+- **inventory_service()** (3 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **test_add_stack_capacity_error()** (3 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **test_add_stack_validation_error_missing_field()** (3 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **test_add_stack_validation_error_invalid_quantity()** (3 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **test_split_stack_invalid_index()** (3 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **test_split_stack_invalid_quantity_zero()** (3 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **test_split_stack_invalid_quantity_negative()** (3 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **test_split_stack_quantity_too_large()** (3 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **test_split_stack_capacity_error()** (3 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **test_add_stack_new_item()** (2 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **test_add_stack_merges_existing()** (2 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **test_split_stack_success()** (2 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **test_begin_mutation_success()** (2 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **test_begin_mutation_with_string_id()** (2 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **Raised when item payloads are malformed or incomplete.** (1 connections) — `server/services/inventory_service.py`
+- **Unit tests for inventory service.  Tests the InventoryService class for inventor** (1 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **Create an InventoryService instance.** (1 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **Test add_stack adds new item to inventory.** (1 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **Test add_stack merges with existing stack.** (1 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **Test add_stack raises InventoryCapacityError when at capacity.** (1 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **Test add_stack raises InventoryValidationError for missing fields.** (1 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **Test add_stack raises InventoryValidationError for invalid quantity.** (1 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **Test split_stack successfully splits a stack.** (1 connections) — `server/tests/unit/services/test_inventory_service.py`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [command validation commands](command_validation_commands.md) (5 shared connections)
-- [commands logout rationale](commands_logout_rationale.md) (5 shared connections)
-- [realtime game state](realtime_game_state.md) (1 shared connections)
+- [Exception Containers](Exception_Containers.md) (14 shared connections)
+- [payload realtime optimizer](payload_realtime_optimizer.md) (2 shared connections)
+- [container helpers endpoints](container_helpers_endpoints.md) (2 shared connections)
+- [commands inventory command](commands_inventory_command.md) (1 shared connections)
+- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_player_cache.py`
-- `server/utils/player_cache.py`
+- `server/services/inventory_service.py`
+- `server/tests/unit/services/test_inventory_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 90 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 73 (85%)
+- INFERRED: 13 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

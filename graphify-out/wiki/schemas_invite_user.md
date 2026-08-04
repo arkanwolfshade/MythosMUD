@@ -33,12 +33,10 @@
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (21 shared connections)
-- [combat models rationale](combat_models_rationale.md) (10 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (23 shared connections)
+- [combat models rationale](combat_models_rationale.md) (11 shared connections)
 - [combat commands handler](combat_commands_handler.md) (4 shared connections)
 - [persistence container item](persistence_container_item.md) (3 shared connections)
-- [Database Config](Database_Config.md) (2 shared connections)
-- [world models rationale](world_models_rationale.md) (1 shared connections)
 
 ## Source Files
 

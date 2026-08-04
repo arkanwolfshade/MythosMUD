@@ -1,6 +1,6 @@
 # examples migration logging
 
-> 42 nodes
+> 44 nodes
 
 ## Key Concepts
 
@@ -11,6 +11,7 @@
 - **database** (4 connections) — `docs/examples/logging/migration_examples.py`
 - **.execute()** (4 connections) — `docs/examples/logging/migration_examples.py`
 - **migration_example_3()** (3 connections) — `docs/examples/logging/migration_examples.py`
+- **migration_example_5()** (3 connections) — `docs/examples/logging/migration_examples.py`
 - **migration_example_7()** (3 connections) — `docs/examples/logging/migration_examples.py`
 - **migration_example_10()** (3 connections) — `docs/examples/logging/migration_examples.py`
 - **migration_example_11()** (3 connections) — `docs/examples/logging/migration_examples.py`
@@ -28,15 +29,13 @@
 - **async_work()** (1 connections) — `docs/examples/logging/migration_examples.py`
 - **Example 1: Basic logging migration.** (1 connections) — `docs/examples/logging/migration_examples.py`
 - **Example 2: Context parameter migration.** (1 connections) — `docs/examples/logging/migration_examples.py`
-- **Example 3: Error logging migration.** (1 connections) — `docs/examples/logging/migration_examples.py`
-- *... and 17 more nodes in this community*
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [middleware correlation rationale](middleware_correlation_rationale.md) (1 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
-- [player preferences service](player_preferences_service.md) (1 shared connections)
-- [ascii map renderer](ascii_map_renderer.md) (1 shared connections)
+- [player requests schemas](player_requests_schemas.md) (2 shared connections)
+- [models lucidity rationale](models_lucidity_rationale.md) (1 shared connections)
+- [world loader room](world_loader_room.md) (1 shared connections)
 
 ## Source Files
 
@@ -44,8 +43,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 95 (97%)
-- INFERRED: 3 (3%)
+- EXTRACTED: 98 (96%)
+- INFERRED: 4 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,6 +1,6 @@
 # App helpers professionSystemErrorHandlin
 
-> 56 nodes
+> 48 nodes
 
 ## Key Concepts
 
@@ -13,7 +13,6 @@
 - **createMockLoginResponse()** (12 connections) — `client/src/__tests__/professionSystemErrorHandling.test.helpers.ts`
 - **registerAppTestHooks()** (11 connections) — `client/src/__tests__/app.test.helpers.ts`
 - **fetchSpy** (10 connections) — `client/src/__tests__/app.test.mocks.tsx`
-- **AppRouter.tsx** (9 connections) — `client/src/AppRouter.tsx`
 - **App.keyboard.test.tsx** (7 connections) — `client/src/__tests__/App.keyboard.test.tsx`
 - **App.loading.test.tsx** (7 connections) — `client/src/__tests__/App.loading.test.tsx`
 - **App.login.test.tsx** (7 connections) — `client/src/__tests__/App.login.test.tsx`
@@ -29,13 +28,15 @@
 - **createMockProfessions()** (5 connections) — `client/src/__tests__/professionSystemErrorHandling.test.helpers.ts`
 - **LogoutFlow.integration.test.tsx** (5 connections) — `client/src/components/__tests__/LogoutFlow.integration.test.tsx`
 - **createMockProfessionsFetchResponse()** (4 connections) — `client/src/__tests__/app.test.helpers.ts`
-- *... and 31 more nodes in this community*
+- **App.integration.test.tsx** (3 connections) — `client/src/App.integration.test.tsx`
+- *... and 23 more nodes in this community*
 
 ## Relationships
 
 - [mythosApp security submitAuth](mythosApp_security_submitAuth.md) (4 shared connections)
 - [mythosApp appLazyScreens mythosAppViewMo](mythosApp_appLazyScreens_mythosAppViewMo.md) (2 shared connections)
 - [mythosApp useMythosAppState useStatsRoll](mythosApp_useMythosAppState_useStatsRoll.md) (2 shared connections)
+- [security headers middleware](security_headers_middleware.md) (2 shared connections)
 - [SkillAssignmentScreen helpers CharacterN](SkillAssignmentScreen_helpers_CharacterN.md) (2 shared connections)
 - [panels GameClientV2Dock gameLogPanelUtil](panels_GameClientV2Dock_gameLogPanelUtil.md) (1 shared connections)
 
@@ -43,7 +44,6 @@
 
 - `client/src/App.integration.test.tsx`
 - `client/src/App.tsx`
-- `client/src/AppRouter.tsx`
 - `client/src/__tests__/App.demo.test.tsx`
 - `client/src/__tests__/App.formState.test.tsx`
 - `client/src/__tests__/App.keyboard.test.tsx`
@@ -54,17 +54,18 @@
 - `client/src/__tests__/App.registration.test.tsx`
 - `client/src/__tests__/App.statsRolling.test.tsx`
 - `client/src/__tests__/App.tokenValidation.test.tsx`
-- `client/src/__tests__/AppRouter.test.tsx`
 - `client/src/__tests__/CharacterCreationNavigation.test.tsx`
 - `client/src/__tests__/ProfessionPersistence.test.tsx`
 - `client/src/__tests__/ProfessionSelectionVariants.test.tsx`
 - `client/src/__tests__/ProfessionSystemErrorHandling.test.tsx`
 - `client/src/__tests__/StatRollingWithProfessionRequirements.test.tsx`
 - `client/src/__tests__/app.test.helpers.ts`
+- `client/src/__tests__/app.test.mocks.tsx`
+- `client/src/__tests__/professionSystemErrorHandling.test.helpers.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 293 (100%)
+- EXTRACTED: 273 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

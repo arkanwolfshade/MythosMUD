@@ -1,29 +1,31 @@
 # error websocket handler
 
-> 8 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **.get_lifecycle_statistics()** (5 connections) — `server/npc/lifecycle_manager.py`
-- **._compute_state_counts()** (3 connections) — `server/npc/lifecycle_manager.py`
-- **._compute_type_counts()** (3 connections) — `server/npc/lifecycle_manager.py`
-- **._compute_aggregate_counts()** (3 connections) — `server/npc/lifecycle_manager.py`
-- **Get overall lifecycle statistics.          Returns:             Dictionary co** (1 connections) — `server/npc/lifecycle_manager.py`
-- **Return counts of lifecycle records by current_state.** (1 connections) — `server/npc/lifecycle_manager.py`
-- **Return counts of lifecycle records by NPC type string.** (1 connections) — `server/npc/lifecycle_manager.py`
-- **Return (total_spawns, total_despawns, total_errors) across all lifecycle records** (1 connections) — `server/npc/lifecycle_manager.py`
+- **TestProcessAliasExpansion** (6 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.test_process_alias_expansion_no_alias_storage()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.test_process_alias_expansion_no_alias()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.test_process_alias_expansion_unsafe_alias()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.test_process_alias_expansion_invalid_expanded()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _process_alias_expansion function.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _process_alias_expansion returns None when no alias storage.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _process_alias_expansion returns None when alias not found.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _process_alias_expansion returns error for unsafe alias.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _process_alias_expansion returns error for invalid expanded command.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
 
 ## Relationships
 
-- [Realtime Subscribers](Realtime_Subscribers.md) (4 shared connections)
+- [command commands handler](command_commands_handler.md) (5 shared connections)
 
 ## Source Files
 
-- `server/npc/lifecycle_manager.py`
+- `server/tests/unit/commands/test_command_aliases.py`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
+- EXTRACTED: 23 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,39 +1,55 @@
 # combat npc services
 
-> 15 nodes
+> 39 nodes
 
 ## Key Concepts
 
-- **rest_countdown_task.py** (12 connections) — `server/commands/rest_countdown_task.py`
-- **create_rest_countdown_task()** (7 connections) — `server/commands/rest_countdown_task.py`
-- **UUID** (6 connections)
-- **_send_countdown_message()** (6 connections) — `server/commands/rest_countdown_task.py`
-- **_handle_countdown_loop()** (6 connections) — `server/commands/rest_countdown_task.py`
-- **_is_rest_interrupted()** (5 connections) — `server/commands/rest_countdown_task.py`
-- **Any** (5 connections)
-- **_disconnect_player_after_rest()** (5 connections) — `server/commands/rest_countdown_task.py`
-- **Task** (1 connections)
-- **Rest countdown task implementation.  This module contains the async task that ha** (1 connections) — `server/commands/rest_countdown_task.py`
-- **Check if rest countdown was interrupted.      Args:         player_id: Player UU** (1 connections) — `server/commands/rest_countdown_task.py`
-- **Send countdown message to player.      Args:         player_id: Player UUID** (1 connections) — `server/commands/rest_countdown_task.py`
-- **Execute countdown loop, sending messages every second.      Args:         player** (1 connections) — `server/commands/rest_countdown_task.py`
-- **Disconnect player after rest countdown completes.      Args:         player_id:** (1 connections) — `server/commands/rest_countdown_task.py`
-- **Create and return a rest countdown task.      Args:         player_id: The playe** (1 connections) — `server/commands/rest_countdown_task.py`
+- **_check_grace_period_block()** (24 connections) — `server/command_handler_unified.py`
+- **_get_grace_check_context()** (8 connections) — `server/command_handler_unified.py`
+- **test_grace_period_blocking.py** (8 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **TestCheckGracePeriodBlock** (7 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **UUID** (3 connections)
+- **test_check_grace_period_block_blocks_commands()** (3 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **test_check_grace_period_block_allows_commands_when_not_in_grace_period()** (3 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **test_check_grace_period_block_handles_missing_services()** (3 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **test_check_grace_period_block_handles_player_not_found()** (3 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **.test_check_grace_period_block_no_connection_manager()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_check_grace_period_block_not_in_grace_period()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_check_grace_period_block_in_grace_period()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_check_grace_period_block_no_player()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_check_grace_period_block_uuid_conversion()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_check_grace_period_block_no_connection_manager()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_grace_period_block_no_player_service()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_grace_period_block_player_not_found()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_grace_period_block_player_in_grace_period()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_grace_period_block_handles_error()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **mock_request()** (2 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **Resolve player_id and connection_manager for grace period check. Returns None if** (1 connections) — `server/command_handler_unified.py`
+- **Check if player is in grace period and block commands.      Players in grace per** (1 connections) — `server/command_handler_unified.py`
+- **Unit tests for grace period command blocking in unified command handler.  Tests** (1 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **Create a mock request.** (1 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **Test _check_grace_period_block() blocks commands for grace period players.** (1 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
-- [combat services messaging](combat_services_messaging.md) (4 shared connections)
-- [rest grace period](rest_grace_period.md) (3 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [command commands handler](command_commands_handler.md) (15 shared connections)
+- [command validation commands](command_validation_commands.md) (3 shared connections)
+- [models player related](models_player_related.md) (1 shared connections)
+- [commands npc admin](commands_npc_admin.md) (1 shared connections)
+- [combat services turn](combat_services_turn.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/rest_countdown_task.py`
+- `server/command_handler_unified.py`
+- `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- `server/tests/unit/commands/test_command_validation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 59 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 111 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

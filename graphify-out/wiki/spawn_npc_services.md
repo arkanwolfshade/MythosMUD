@@ -1,54 +1,43 @@
 # spawn npc services
 
-> 37 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **NPCDefinitionCRUDMixin** (18 connections) — `server/services/npc_service/definition_crud.py`
-- **_row_to_npc_definition()** (12 connections) — `server/services/npc_service_models.py`
-- **.update_npc_definition()** (9 connections) — `server/services/npc_service/definition_crud.py`
-- **AsyncSession** (8 connections)
-- **.create_npc_definition()** (8 connections) — `server/services/npc_service/definition_crud.py`
-- **._execute_create_npc_definition()** (8 connections) — `server/services/npc_service/definition_crud.py`
-- **._execute_npc_update()** (8 connections) — `server/services/npc_service/definition_crud.py`
-- **.get_npc_definitions()** (7 connections) — `server/services/npc_service/definition_crud.py`
-- **.get_npc_definition()** (7 connections) — `server/services/npc_service/definition_crud.py`
-- **._build_npc_update_data()** (7 connections) — `server/services/npc_service/definition_crud.py`
-- **.get_npc_definition_by_name()** (5 connections) — `server/services/npc_service/definition_crud.py`
-- **.get_npc_definitions_by_sub_zone()** (5 connections) — `server/services/npc_service/queries.py`
-- **._log_npc_definition_created()** (4 connections) — `server/services/npc_service/definition_crud.py`
-- **._add_simple_field()** (4 connections) — `server/services/npc_service/definition_crud.py`
-- **Any** (4 connections)
-- **._add_json_field()** (4 connections) — `server/services/npc_service/definition_crud.py`
-- **.delete_npc_definition()** (4 connections) — `server/services/npc_service/definition_crud.py`
-- **._validate_create_npc_definition_params()** (3 connections) — `server/services/npc_service/definition_crud.py`
-- **._validate_npc_update_params()** (3 connections) — `server/services/npc_service/definition_crud.py`
-- **AsyncSession** (3 connections)
-- **Mixin providing NPC definition CRUD operations.** (1 connections) — `server/services/npc_service/definition_crud.py`
-- **Get all NPC definitions.** (1 connections) — `server/services/npc_service/definition_crud.py`
-- **Get a specific NPC definition by ID.** (1 connections) — `server/services/npc_service/definition_crud.py`
-- **Get an NPC definition by name (case-insensitive).** (1 connections) — `server/services/npc_service/definition_crud.py`
-- **Create a new NPC definition.** (1 connections) — `server/services/npc_service/definition_crud.py`
-- *... and 12 more nodes in this community*
+- **test_invite_schemas.py** (15 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **InviteUpdate** (9 connections) — `server/schemas/auth/invite.py`
+- **test_invite_update_validation()** (4 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **test_invite_read()** (3 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **test_invite_read_with_used_by()** (3 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **test_invite_update()** (3 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **test_invite_update_all_optional()** (3 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **Schema for updating invite data.** (1 connections) — `server/schemas/auth/invite.py`
+- **Unit tests for invite schemas.  Tests the Pydantic models in invite.py module.** (1 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **Test InviteRead can be instantiated.** (1 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **Test InviteRead with used_by_user_id.** (1 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **Test InviteUpdate can be instantiated with optional fields.** (1 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **Test InviteUpdate can be instantiated with all fields optional.** (1 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **Test InviteUpdate validates invite_code length when provided.** (1 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
 
 ## Relationships
 
-- [command inventory factories](command_inventory_factories.md) (13 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (10 shared connections)
-- [Database Config](Database_Config.md) (3 shared connections)
-- [Magic Spell Service](Magic_Spell_Service.md) (1 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
+- [professions endpoints all](professions_endpoints_all.md) (4 shared connections)
+- [combat models rationale](combat_models_rationale.md) (3 shared connections)
+- [player requests schemas](player_requests_schemas.md) (3 shared connections)
+- [message filtering helpers](message_filtering_helpers.md) (2 shared connections)
+- [Player Stats](Player_Stats.md) (1 shared connections)
+- [level curve game](level_curve_game.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/npc_service/definition_crud.py`
-- `server/services/npc_service/queries.py`
-- `server/services/npc_service_models.py`
+- `server/schemas/auth/invite.py`
+- `server/tests/unit/schemas/test_invite_schemas.py`
 
 ## Audit Trail
 
-- EXTRACTED: 147 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 46 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

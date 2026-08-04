@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [command inventory models](command_inventory_models.md) (4 shared connections)
+- [Loot Generation](Loot_Generation.md) (4 shared connections)
 
 ## Source Files
 

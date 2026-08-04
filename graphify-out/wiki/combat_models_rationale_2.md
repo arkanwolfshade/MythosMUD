@@ -1,30 +1,32 @@
 # combat models rationale
 
-> 4 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **ChatMessageHandler** (7 connections) — `server/realtime/message_handler_factory.py`
-- **test_chat_message_handler_handle()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **Handler for chat messages.** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Test ChatMessageHandler.handle() calls handle_chat_message.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **InviteCreate** (8 connections) — `server/schemas/auth/invite.py`
+- **test_invite_create()** (3 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **test_invite_create_no_expiry()** (3 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **Schema for creating a new invite.** (1 connections) — `server/schemas/auth/invite.py`
+- **Test InviteCreate can be instantiated.** (1 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **Test InviteCreate can be instantiated without expiry.** (1 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
 
 ## Relationships
 
-- [message handler factory](message_handler_factory.md) (2 shared connections)
-- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
-- [command commands aliases](command_commands_aliases.md) (1 shared connections)
-- [game chat moderation](game_chat_moderation.md) (1 shared connections)
-- [tsconfig src/**/* spec](tsconfig_src-__-__spec.md) (1 shared connections)
+- [spawn npc services](spawn_npc_services.md) (3 shared connections)
+- [Player Stats](Player_Stats.md) (1 shared connections)
+- [level curve game](level_curve_game.md) (1 shared connections)
+- [message filtering helpers](message_filtering_helpers.md) (1 shared connections)
+- [professions endpoints all](professions_endpoints_all.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/message_handler_factory.py`
-- `server/tests/unit/realtime/test_message_handler_factory.py`
+- `server/schemas/auth/invite.py`
+- `server/tests/unit/schemas/test_invite_schemas.py`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 17 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,47 +1,71 @@
 # commands follow rationale
 
-> 23 nodes
+> 196 nodes
 
 ## Key Concepts
 
-- **test_logging_file_setup.py** (14 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **test_queue_listener_has_aggregator_handlers()** (7 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **test_warning_and_error_reach_aggregator_files()** (7 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **get_queue_listener()** (6 connections) — `server/structured_logging/logging_file_setup.py`
-- **stop_queue_listener()** (6 connections) — `server/structured_logging/logging_file_setup.py`
-- **_root_handlers_snapshot()** (6 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **_restore_root_handlers()** (6 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **test_aggregator_handlers_on_root_when_async()** (6 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **test_log_directory_under_env()** (5 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **QueueListener** (2 connections)
-- **temp_log_base()** (2 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **default_log_config()** (2 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **Return the global QueueListener if running (for tests and shutdown).      Return** (1 connections) — `server/structured_logging/logging_file_setup.py`
-- **Stop the global QueueListener and reset state (for tests and shutdown).      All** (1 connections) — `server/structured_logging/logging_file_setup.py`
-- **Unit tests for logging file setup.  Verifies aggregator handlers attached to roo** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **Temporary directory used as log_base for setup.** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **Default log config with rotation.** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **Return a copy of root logger handlers (for restore).** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **Replace root logger handlers with the given list.** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **H1: With async enabled, root logger has a QueueHandler for the aggregator path (** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **H3: QueueListener is started and includes aggregator handlers.** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **H2/H5: WARNING and ERROR logged from root appear in warnings.log and errors.log.** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **H4 (setup): Log files are created under env_log_dir (e.g. .../test/).** (1 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **RateLimitError** (76 connections) — `server/exceptions.py`
+- **TransferContainerRequest** (57 connections) — `server/api/container_models.py`
+- **container_endpoints_basic.py** (50 connections) — `server/api/container_endpoints_basic.py`
+- **container_helpers.py** (44 connections) — `server/api/container_helpers.py`
+- **test_container_helpers.py** (43 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **container_endpoints_loot.py** (36 connections) — `server/api/container_endpoints_loot.py`
+- **transfer_items()** (25 connections) — `server/api/container_endpoints_basic.py`
+- **open_container()** (23 connections) — `server/api/container_endpoints_basic.py`
+- **close_container()** (19 connections) — `server/api/container_endpoints_basic.py`
+- **get_player_id_from_user()** (19 connections) — `server/api/container_helpers.py`
+- **handle_container_service_error()** (19 connections) — `server/api/container_helpers.py`
+- **get_container_service()** (16 connections) — `server/api/container_helpers.py`
+- **TestHandleContainerServiceError** (13 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **_convert_container_dict_to_container_data()** (12 connections) — `server/api/container_endpoints_basic.py`
+- **execute_transfer()** (12 connections) — `server/api/container_helpers.py`
+- **TestCreateErrorContext** (12 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **_convert_inventory_list_to_inventory_stacks()** (11 connections) — `server/api/container_endpoints_basic.py`
+- **Request** (11 connections)
+- **TestGetPlayerIdFromUser** (11 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **TestValidateUserForOpenContainer** (11 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **TestApplyRateLimitingForOpenContainer** (11 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **TestValidateUserForTransfer** (11 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **TestApplyRateLimitingForTransfer** (11 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **TestExecuteTransfer** (11 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **TestValidateUserForCloseContainer** (11 connections) — `server/tests/unit/api/test_container_helpers.py`
+- *... and 171 more nodes in this community*
 
 ## Relationships
 
-- [logging setup structured](logging_setup_structured.md) (9 shared connections)
-- [time service rationale](time_service_rationale.md) (1 shared connections)
+- [Exception Containers](Exception_Containers.md) (190 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (43 shared connections)
+- [player requests schemas](player_requests_schemas.md) (36 shared connections)
+- [auth rationale access](auth_rationale_access.md) (31 shared connections)
+- [NPC Combat](NPC_Combat.md) (8 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (7 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (7 shared connections)
+- [command handler unified](command_handler_unified.md) (7 shared connections)
+- [profession game service](profession_game_service.md) (7 shared connections)
+- [Loot Generation](Loot_Generation.md) (6 shared connections)
+- [Player Stats](Player_Stats.md) (5 shared connections)
+- [Spell Validation](Spell_Validation.md) (4 shared connections)
 
 ## Source Files
 
-- `server/structured_logging/logging_file_setup.py`
-- `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- `server/api/container_endpoints_basic.py`
+- `server/api/container_endpoints_loot.py`
+- `server/api/container_helpers.py`
+- `server/api/container_models.py`
+- `server/api/containers.py`
+- `server/exceptions.py`
+- `server/schemas/containers/__init__.py`
+- `server/schemas/containers/container.py`
+- `server/schemas/containers/container_data.py`
+- `server/tests/unit/api/test_container_endpoints_loot_register.py`
+- `server/tests/unit/api/test_container_helpers.py`
+- `server/tests/unit/api/test_containers.py`
+- `server/tests/unit/test_exceptions.py`
 
 ## Audit Trail
 
-- EXTRACTED: 80 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 892 (81%)
+- INFERRED: 203 (19%)
 - AMBIGUOUS: 0 (0%)
 
 ---

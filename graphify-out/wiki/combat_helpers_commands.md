@@ -1,29 +1,33 @@
 # combat helpers commands
 
-> 6 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **TestGetExplorationService** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_exploration_service_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_exploration_service_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Tests for get_exploration_service dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_exploration_service returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_exploration_service raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **MockPersistence** (7 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **mock_persistence()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **.get_player_by_name()** (2 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **.get_room_by_id()** (2 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **.__setattr__()** (2 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **.__init__()** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **Mock persistence layer with async methods.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **Mock async method that uses configured mock.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **Mock method that uses configured mock.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **Allow setting get_player_by_name and get_room_by_id to mocks.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
 
 ## Relationships
 
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (3 shared connections)
-- [command inventory models](command_inventory_models.md) (1 shared connections)
+- [rest grace period](rest_grace_period.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_dependencies.py`
+- `server/tests/unit/commands/test_rest_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (93%)
-- INFERRED: 1 (7%)
+- EXTRACTED: 22 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

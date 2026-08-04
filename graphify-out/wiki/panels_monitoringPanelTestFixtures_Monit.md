@@ -1,43 +1,37 @@
 # panels monitoringPanelTestFixtures Monit
 
-> 17 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **MonitoringPanel.test.tsx** (11 connections) — `client/src/components/panels/__tests__/MonitoringPanel.test.tsx`
-- **monitoringPanelTestFixtures.ts** (11 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
-- **MonitoringPanel.tsx** (8 connections) — `client/src/components/panels/MonitoringPanel.tsx`
-- **mockOkJsonResponse()** (5 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
-- **setupSequentialMonitoringFetch()** (3 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
-- **setupRoundRobinMonitoringFetch()** (3 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
-- **setupDualConnectionsUrlFetch()** (3 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
-- **setupTimestampMonitoringFetch()** (3 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
-- **MonitoringPanel()** (2 connections) — `client/src/components/panels/MonitoringPanel.tsx`
-- **SAMPLE_MONITORING_MOCKS** (2 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
-- **EMPTY_MONITORING_MOCKS** (2 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
-- **MonitoringData** (1 connections) — `client/src/components/panels/MonitoringPanel.tsx`
-- **MonitoringPanelProps** (1 connections) — `client/src/components/panels/MonitoringPanel.tsx`
-- **fetchSpy** (1 connections) — `client/src/components/panels/__tests__/MonitoringPanel.test.tsx`
-- **MonitoringMocks** (1 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
-- **TIMESTAMP_DUAL_CONNECTIONS** (1 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
-- **FetchSpy** (1 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
+- **.spawn_npcs_on_startup()** (8 connections) — `server/services/npc_startup_service.py`
+- **._spawn_required_npcs()** (6 connections) — `server/services/npc_startup_service.py`
+- **._determine_spawn_room()** (6 connections) — `server/services/npc_startup_service.py`
+- **._spawn_optional_npcs()** (5 connections) — `server/services/npc_startup_service.py`
+- **._spawn_arena_npcs()** (5 connections) — `server/services/npc_startup_service.py`
+- **Any** (4 connections)
+- **._get_default_room_for_sub_zone()** (3 connections) — `server/services/npc_startup_service.py`
+- **Spawn NPCs during server startup.          This method handles the automatic spa** (1 connections) — `server/services/npc_startup_service.py`
+- **Spawn all required NPCs.          Args:             required_npcs: List of requi** (1 connections) — `server/services/npc_startup_service.py`
+- **Spawn optional NPCs based on spawn probability.          Args:             optio** (1 connections) — `server/services/npc_startup_service.py`
+- **Second pass: spawn one instance per definition (that was spawned in required/opt** (1 connections) — `server/services/npc_startup_service.py`
+- **Determine the appropriate room for spawning an NPC.          Args:             n** (1 connections) — `server/services/npc_startup_service.py`
+- **Get a default room for a given sub-zone.          Args:             sub_zone_id:** (1 connections) — `server/services/npc_startup_service.py`
 
 ## Relationships
 
-- [panels chat ChatPanelRuntimeViewParts](panels_chat_ChatPanelRuntimeViewParts.md) (2 shared connections)
-- [mythosApp appLazyScreens mythosAppViewMo](mythosApp_appLazyScreens_mythosAppViewMo.md) (1 shared connections)
-- [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (1 shared connections)
-- [panels GameClientV2Dock gameLogPanelUtil](panels_GameClientV2Dock_gameLogPanelUtil.md) (1 shared connections)
+- [map layout useMapLayout](map_layout_useMapLayout.md) (6 shared connections)
+- [nats services service](nats_services_service.md) (3 shared connections)
+- [player effects endpoints](player_effects_endpoints.md) (1 shared connections)
+- [logging setup structured](logging_setup_structured.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/panels/MonitoringPanel.tsx`
-- `client/src/components/panels/__tests__/MonitoringPanel.test.tsx`
-- `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
+- `server/services/npc_startup_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 59 (100%)
+- EXTRACTED: 43 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

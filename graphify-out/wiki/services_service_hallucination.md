@@ -1,33 +1,38 @@
 # services service hallucination
 
-> 8 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **_send_combat_participant_updates()** (8 connections) — `server/realtime/event_handlers.py`
-- **_participant_key_strings()** (3 connections) — `server/realtime/event_handlers.py`
-- **.handle_combat_started_event()** (3 connections) — `server/realtime/event_handlers.py`
-- **.handle_combat_ended_event()** (3 connections) — `server/realtime/event_handlers.py`
-- **Keys from a participants mapping (NATS may send dict-like payloads).** (1 connections) — `server/realtime/event_handlers.py`
-- **Push player_update to each combat participant (in_combat flag).** (1 connections) — `server/realtime/event_handlers.py`
-- **Handle combat_started event.** (1 connections) — `server/realtime/event_handlers.py`
-- **Handle combat_ended event.** (1 connections) — `server/realtime/event_handlers.py`
+- **parse_shutdown_parameters()** (11 connections) — `server/commands/admin_shutdown_command.py`
+- **test_parse_shutdown_parameters_no_args()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_parse_shutdown_parameters_cancel()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_parse_shutdown_parameters_seconds()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_parse_shutdown_parameters_invalid_negative()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_parse_shutdown_parameters_invalid_zero()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_parse_shutdown_parameters_invalid_string()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **Parse shutdown command parameters.      Args:         command_data: Command data** (1 connections) — `server/commands/admin_shutdown_command.py`
+- **Test parse_shutdown_parameters() with no args defaults to 10 seconds.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **Test parse_shutdown_parameters() with cancel action.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **Test parse_shutdown_parameters() with seconds.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **Test parse_shutdown_parameters() with negative seconds.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **Test parse_shutdown_parameters() with zero seconds.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **Test parse_shutdown_parameters() with invalid string.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
 
 ## Relationships
 
-- [circuit breaker realtime](circuit_breaker_realtime.md) (4 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (1 shared connections)
-- [combat services messaging](combat_services_messaging.md) (1 shared connections)
-- [nats exceptions services](nats_exceptions_services.md) (1 shared connections)
+- [shutdown admin command](shutdown_admin_command.md) (7 shared connections)
+- [eventLog projectorRoom roomMergeUtils](eventLog_projectorRoom_roomMergeUtils.md) (3 shared connections)
 
 ## Source Files
 
-- `server/realtime/event_handlers.py`
+- `server/commands/admin_shutdown_command.py`
+- `server/tests/unit/commands/test_admin_shutdown_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (95%)
-- INFERRED: 1 (5%)
+- EXTRACTED: 36 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

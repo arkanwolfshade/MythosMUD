@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_handle_spell_command_wrapper_success()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test handle_spell_command wrapper success.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **test_restore_mp_from_meditation_at_max()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Test restore_mp_from_meditation() returns message when MP already at max.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Relationships
 
-- [commands admin mute](commands_admin_mute.md) (1 shared connections)
-- [commands magic rationale](commands_magic_rationale.md) (1 shared connections)
+- [config rationale reset](config_rationale_reset.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

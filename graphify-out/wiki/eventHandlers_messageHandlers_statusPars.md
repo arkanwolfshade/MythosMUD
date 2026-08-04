@@ -27,12 +27,13 @@
 
 ## Relationships
 
-- [Game Terminal UI](Game_Terminal_UI.md) (12 shared connections)
+- [game terminal lucidity](game_terminal_lucidity.md) (6 shared connections)
+- [Game Terminal UI](Game_Terminal_UI.md) (5 shared connections)
 - [panels chatPanelRuntimeUtils chatPanelEx](panels_chatPanelRuntimeUtils_chatPanelEx.md) (4 shared connections)
+- [project paths rationale](project_paths_rationale.md) (2 shared connections)
 - [PanelSystem PanelManager panelLayoutClam](PanelSystem_PanelManager_panelLayoutClam.md) (1 shared connections)
-- [game terminal lucidity](game_terminal_lucidity.md) (1 shared connections)
 - [lucidityEventUtils mythosTime MythosTime](lucidityEventUtils_mythosTime_MythosTime.md) (1 shared connections)
-- [roomHandlers eventHandlers calculateOccu](roomHandlers_eventHandlers_calculateOccu.md) (1 shared connections)
+- [realtime maintenance connection](realtime_maintenance_connection.md) (1 shared connections)
 
 ## Source Files
 

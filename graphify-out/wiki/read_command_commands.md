@@ -33,9 +33,11 @@
 
 ## Relationships
 
-- [commands admin mute](commands_admin_mute.md) (6 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [command factories create](command_factories_create.md) (2 shared connections)
+- [commands whisper command](commands_whisper_command.md) (3 shared connections)
+- [commands npc admin](commands_npc_admin.md) (3 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [connection realtime manager](connection_realtime_manager.md) (1 shared connections)
 
 ## Source Files
 

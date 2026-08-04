@@ -1,25 +1,27 @@
 # headers middleware security
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_handle_alias_command_update_existing()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **Test handle_alias_command updating existing alias.** (1 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **TestResetNPCDatabase** (4 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_reset_npc_database_resets_state()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test reset_npc_database() function.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test reset_npc_database() resets all global state.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
 
 ## Relationships
 
-- [commands alias rationale](commands_alias_rationale.md) (1 shared connections)
-- [scripts worktree ops](scripts_worktree_ops.md) (1 shared connections)
+- [player effects endpoints](player_effects_endpoints.md) (2 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_alias_commands.py`
+- `server/tests/unit/infrastructure/test_npc_database.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 8 (89%)
+- INFERRED: 1 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

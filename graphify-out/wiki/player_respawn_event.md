@@ -1,52 +1,54 @@
 # player respawn event
 
-> 38 nodes
+> 43 nodes
 
 ## Key Concepts
 
-- **format_player_location()** (13 connections) — `server/commands/who_commands.py`
-- **format_player_entry()** (13 connections) — `server/commands/who_commands.py`
-- **test_who_commands_helpers.py** (12 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- **test_format_player_entry_error_handling()** (4 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_format_player_location_valid()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_format_player_location_invalid()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_format_player_location_none()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_format_player_entry_basic()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_format_player_entry_admin()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_format_player_entry_missing_attributes()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_format_player_location_short_format()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_format_player_location_non_string()** (3 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_filter_players_by_name_found()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- **test_filter_players_by_name_not_found()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- **test_filter_players_by_name_empty_filter()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- **test_format_player_location_valid()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- **test_format_player_location_invalid()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- **test_format_player_entry()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- **test_format_player_entry_admin()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- **Format player location as Zone: Sub-zone: Room from room ID.      Args:** (1 connections) — `server/commands/who_commands.py`
-- **Format a single player entry for the who command output.      Args:         play** (1 connections) — `server/commands/who_commands.py`
-- **Test formatting valid player location.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **Test formatting invalid player location.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **Test formatting None location.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **Test formatting basic player entry.** (1 connections) — `server/tests/unit/commands/test_who_commands.py`
-- *... and 13 more nodes in this community*
+- **test_goto_helpers.py** (32 connections) — `server/tests/unit/commands/test_goto_helpers.py`
+- **goto_helpers.py** (21 connections) — `server/commands/goto_helpers.py`
+- **validate_goto_context()** (13 connections) — `server/commands/goto_helpers.py`
+- **execute_goto_teleport()** (13 connections) — `server/commands/goto_helpers.py`
+- **validate_confirm_goto_context()** (11 connections) — `server/commands/goto_helpers.py`
+- **execute_confirm_goto()** (11 connections) — `server/commands/goto_helpers.py`
+- **resolve_goto_target()** (10 connections) — `server/commands/goto_helpers.py`
+- **log_goto_failure()** (10 connections) — `server/commands/goto_helpers.py`
+- **resolve_target_player_for_goto()** (10 connections) — `server/commands/goto_helpers.py`
+- **Any** (7 connections)
+- **test_validate_goto_context_no_app()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
+- **test_validate_goto_context_no_player_service()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
+- **test_validate_goto_context_not_admin()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
+- **test_validate_goto_context_player_not_found()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
+- **test_validate_goto_context_no_connection_manager()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
+- **test_validate_goto_context_success()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
+- **test_resolve_goto_target_offline()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
+- **test_resolve_goto_target_success()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
+- **test_execute_goto_teleport_success()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
+- **test_execute_goto_teleport_db_failure()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
+- **test_log_goto_failure()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
+- **test_validate_confirm_goto_context_success()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
+- **test_resolve_target_player_for_goto()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
+- **test_execute_confirm_goto()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
+- **test_resolve_goto_target_not_in_database()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
+- *... and 18 more nodes in this community*
 
 ## Relationships
 
-- [commands who rationale](commands_who_rationale.md) (19 shared connections)
-- [commands emote rationale](commands_emote_rationale.md) (2 shared connections)
-- [room websocket updates](room_websocket_updates.md) (1 shared connections)
+- [npc service services](npc_service_services.md) (15 shared connections)
+- [monitoring dashboard rationale](monitoring_dashboard_rationale.md) (8 shared connections)
+- [realtime game state](realtime_game_state.md) (7 shared connections)
+- [admin structured logging](admin_structured_logging.md) (5 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [room look commands](room_look_commands.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/who_commands.py`
-- `server/tests/unit/commands/test_who_commands.py`
-- `server/tests/unit/commands/test_who_commands_helpers.py`
+- `server/commands/goto_helpers.py`
+- `server/tests/unit/commands/test_goto_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 105 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 194 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

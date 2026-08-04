@@ -1,69 +1,72 @@
 # lucidity services helpers
 
-> 137 nodes
+> 266 nodes
 
 ## Key Concepts
 
-- **LucidityService** (78 connections) — `server/services/lucidity_service.py`
-- **PlayerLucidity** (73 connections) — `server/models/lucidity.py`
-- **lucidity_service.py** (50 connections) — `server/services/lucidity_service.py`
-- **lucidity_helpers.py** (23 connections) — `server/services/lucidity_helpers.py`
-- **lucidity_trigger_handlers.py** (18 connections) — `server/services/lucidity_trigger_handlers.py`
+- **LucidityService** (88 connections) — `server/services/lucidity_service.py`
+- **PlayerLucidity** (78 connections) — `server/models/lucidity.py`
+- **lucidity_service.py** (52 connections) — `server/services/lucidity_service.py`
+- **test_lucidity_event_dispatcher.py** (34 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **rescue_commands.py** (31 connections) — `server/commands/rescue_commands.py`
+- **handle_ground_command()** (31 connections) — `server/commands/rescue_commands.py`
+- **lucidity_helpers.py** (24 connections) — `server/services/lucidity_helpers.py`
+- **test_lucidity_service.py** (24 connections) — `server/tests/unit/services/test_lucidity_service.py`
+- **lucidity_trigger_handlers.py** (19 connections) — `server/services/lucidity_trigger_handlers.py`
+- **lucidity_event_dispatcher.py** (18 connections) — `server/services/lucidity_event_dispatcher.py`
+- **send_rescue_update_event()** (18 connections) — `server/services/lucidity_event_dispatcher.py`
+- **send_lucidity_change_event()** (17 connections) — `server/services/lucidity_event_dispatcher.py`
 - **CatatoniaObserverProtocol** (17 connections) — `server/services/lucidity_helpers.py`
+- **test_lucidity_trigger_handlers.py** (17 connections) — `server/tests/unit/services/test_lucidity_trigger_handlers.py`
+- **rescue_service.py** (16 connections) — `server/services/rescue_service.py`
 - **UUID** (14 connections)
+- **handle_catatonia_transitions()** (13 connections) — `server/services/lucidity_trigger_handlers.py`
+- **LucidityChangeEventExtras** (12 connections) — `server/services/lucidity_event_dispatcher.py`
+- **send_catatonia_event()** (12 connections) — `server/services/lucidity_event_dispatcher.py`
+- **_dispatch_player_event()** (11 connections) — `server/services/lucidity_event_dispatcher.py`
 - **decode_liabilities()** (11 connections) — `server/services/lucidity_helpers.py`
-- **test_lucidity_service.py** (11 connections) — `server/tests/unit/services/test_lucidity_service.py`
+- **RescueService** (11 connections) — `server/services/rescue_service.py`
+- **_lucidity_change_payload_with_liabilities()** (11 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **LucidityUpdateResult** (10 connections) — `server/services/lucidity_helpers.py`
 - **._send_lucidity_change_event_if_needed()** (10 connections) — `server/services/lucidity_service.py`
-- **._finalize_lucidity_adjustment()** (10 connections) — `server/services/lucidity_service.py`
-- **handle_catatonia_transitions()** (10 connections) — `server/services/lucidity_trigger_handlers.py`
-- **test_lucidity_round_trip.py** (10 connections) — `server/tests/integration/test_lucidity_round_trip.py`
-- **.apply_lucidity_adjustment()** (9 connections) — `server/services/lucidity_service.py`
-- **encode_liabilities()** (8 connections) — `server/services/lucidity_helpers.py`
-- **._calculate_max_lcd()** (8 connections) — `server/services/lucidity_service.py`
-- **._apply_delta_to_record()** (8 connections) — `server/services/lucidity_service.py`
-- **handle_delirium_and_sanitarium_triggers()** (8 connections) — `server/services/lucidity_trigger_handlers.py`
-- **liability_types.py** (8 connections) — `server/utils/liability_types.py`
-- **utc_now()** (7 connections) — `server/services/lucidity_helpers.py`
-- **LucidityUpdateResult** (7 connections) — `server/services/lucidity_helpers.py`
-- **test_lucidity_adjustment_round_trip()** (7 connections) — `server/tests/integration/test_lucidity_round_trip.py`
-- **LucidityChangeEventContext** (6 connections) — `server/services/lucidity_helpers.py`
-- **LucidityAdjustmentFinalizeContext** (6 connections) — `server/services/lucidity_helpers.py`
-- **._add_liabilities_for_adjustment()** (6 connections) — `server/services/lucidity_service.py`
-- *... and 112 more nodes in this community*
+- *... and 241 more nodes in this community*
 
 ## Relationships
 
-- [lucidity models rationale](lucidity_models_rationale.md) (19 shared connections)
-- [world models rationale](world_models_rationale.md) (18 shared connections)
-- [commands admin mute](commands_admin_mute.md) (16 shared connections)
-- [command inventory factories](command_inventory_factories.md) (16 shared connections)
-- [Async Query Helpers](Async_Query_Helpers.md) (15 shared connections)
-- [aggro threat services](aggro_threat_services.md) (15 shared connections)
-- [command helpers functions](command_helpers_functions.md) (11 shared connections)
-- [lucidity flux passive](lucidity_flux_passive.md) (9 shared connections)
-- [rescue service services](rescue_service_services.md) (9 shared connections)
-- [models lucidity rationale](models_lucidity_rationale.md) (7 shared connections)
-- [models player rationale](models_player_rationale.md) (6 shared connections)
-- [combat services persistence](combat_services_persistence.md) (6 shared connections)
+- [Async Query Helpers](Async_Query_Helpers.md) (34 shared connections)
+- [player room realtime](player_room_realtime.md) (31 shared connections)
+- [command helpers functions](command_helpers_functions.md) (17 shared connections)
+- [combat services persistence](combat_services_persistence.md) (14 shared connections)
+- [NPC Combat](NPC_Combat.md) (12 shared connections)
+- [lucidity flux passive](lucidity_flux_passive.md) (11 shared connections)
+- [combat models rationale](combat_models_rationale.md) (9 shared connections)
+- [services service phantom](services_service_phantom.md) (9 shared connections)
+- [commands whisper command](commands_whisper_command.md) (8 shared connections)
+- [websocket handler realtime](websocket_handler_realtime.md) (8 shared connections)
+- [container schemas containers](container_schemas_containers.md) (6 shared connections)
+- [rescue service services](rescue_service_services.md) (6 shared connections)
 
 ## Source Files
 
+- `server/commands/rescue_commands.py`
 - `server/models/lucidity.py`
-- `server/services/active_lucidity_service.py`
+- `server/services/lucidity_event_dispatcher.py`
 - `server/services/lucidity_helpers.py`
 - `server/services/lucidity_service.py`
 - `server/services/lucidity_trigger_handlers.py`
-- `server/tests/integration/test_lucidity_round_trip.py`
-- `server/tests/unit/models/test_lucidity_models.py`
+- `server/services/rescue_service.py`
+- `server/tests/unit/commands/test_position_commands.py`
+- `server/tests/unit/commands/test_rescue_commands.py`
+- `server/tests/unit/services/test_lucidity_event_dispatcher.py`
 - `server/tests/unit/services/test_lucidity_service.py`
-- `server/tests/unit/services/test_player_respawn_service.py`
+- `server/tests/unit/services/test_lucidity_trigger_handlers.py`
 - `server/tests/unit/test_lucidity_service_smoke.py`
 - `server/utils/liability_types.py`
 
 ## Audit Trail
 
-- EXTRACTED: 601 (90%)
-- INFERRED: 65 (10%)
+- EXTRACTED: 1140 (93%)
+- INFERRED: 85 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

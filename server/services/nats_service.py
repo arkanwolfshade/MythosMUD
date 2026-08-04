@@ -898,6 +898,9 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
             logger.debug("Created tracked background task", task_name=task_name, task_type=task_type)
             return task
         except RuntimeError as e:
+            # Close unscheduled coro so GC does not warn "coroutine was never awaited"
+            # (common when NATS callbacks fire during test teardown with no running loop).
+            coro.close()
             logger.error("Failed to create tracked task - no event loop", task_name=task_name, error=str(e))
             raise
 
@@ -911,11 +914,11 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
         AnyIO Pattern: Fire-and-forget tasks are tracked for proper cleanup.
         """
         # Fire-and-forget async task to prevent blocking, but track it
+        coro = self._handle_error_async(error)
         try:
-            self._create_tracked_task(
-                self._handle_error_async(error), task_name="nats_error_handler", task_type="background"
-            )
+            self._create_tracked_task(coro, task_name="nats_error_handler", task_type="background")
         except RuntimeError:
+            coro.close()
             # No event loop available - this should not happen in normal operation
             logger.error("NATS connection error handler called without event loop", error=str(error))
 
@@ -939,11 +942,11 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
         AnyIO Pattern: Fire-and-forget tasks are tracked for proper cleanup.
         """
         # Fire-and-forget async task to prevent blocking, but track it
+        coro = self._handle_disconnect_async()
         try:
-            self._create_tracked_task(
-                self._handle_disconnect_async(), task_name="nats_disconnect_handler", task_type="background"
-            )
+            self._create_tracked_task(coro, task_name="nats_disconnect_handler", task_type="background")
         except RuntimeError:
+            coro.close()
             # No event loop available - this should not happen in normal operation
             logger.error("NATS disconnect handler called without event loop")
             self._running = False
@@ -970,11 +973,11 @@ class NATSService:  # pylint: disable=too-many-instance-attributes  # Reason: NA
         AnyIO Pattern: Fire-and-forget tasks are tracked for proper cleanup.
         """
         # Fire-and-forget async task to prevent blocking, but track it
+        coro = self._handle_reconnect_async()
         try:
-            self._create_tracked_task(
-                self._handle_reconnect_async(), task_name="nats_reconnect_handler", task_type="background"
-            )
+            self._create_tracked_task(coro, task_name="nats_reconnect_handler", task_type="background")
         except RuntimeError:
+            coro.close()
             # No event loop available - this should not happen in normal operation
             logger.error("NATS reconnect handler called without event loop")
             self._running = True

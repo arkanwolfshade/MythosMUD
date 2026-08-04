@@ -1,34 +1,50 @@
 # main rationale failure()
 
-> 11 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **.add_message()** (4 connections) — `server/realtime/message_queue.py`
-- **Any** (4 connections)
-- **.cleanup_old_messages()** (4 connections) — `server/realtime/message_queue.py`
-- **._is_message_recent()** (4 connections) — `server/realtime/message_queue.py`
-- **.get_messages()** (3 connections) — `server/realtime/message_queue.py`
-- **.get_stats()** (3 connections) — `server/realtime/message_queue.py`
-- **Add a message to a player's pending message queue.          Args:             pl** (1 connections) — `server/realtime/message_queue.py`
-- **Get all pending messages for a player and clear the queue.          Args:** (1 connections) — `server/realtime/message_queue.py`
-- **Clean up old messages to prevent memory bloat.          Args:             max_ag** (1 connections) — `server/realtime/message_queue.py`
-- **Check if a message is recent (within the specified age limit).          Args:** (1 connections) — `server/realtime/message_queue.py`
-- **Get message queue statistics.          Returns:             Dict[str, Any]: Stat** (1 connections) — `server/realtime/message_queue.py`
+- **_find_item_in_inventory()** (18 connections) — `server/commands/look_item.py`
+- **test_find_item_in_inventory_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_inventory_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_inventory_by_item_id()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_inventory_with_name_field()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_inventory_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_empty()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_no_match()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Find an item in player inventory by name or prototype_id.      Args:         inv** (1 connections) — `server/commands/look_item.py`
+- **Test finding item in inventory by name.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test finding item in inventory when not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test finding item in inventory by item_id.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test finding item in inventory using 'name' field.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test _find_item_in_inventory() finds item by name.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_inventory() returns None when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_inventory() with empty list.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_inventory() with no matching items.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_inventory() with multiple matches (ambiguous).** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_inventory() with instance number.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_inventory() with instance number out of range.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
 
 ## Relationships
 
-- [Room Broadcast](Room_Broadcast.md) (5 shared connections)
-- [message nats handler](message_nats_handler.md) (2 shared connections)
+- [scripts worktree ops](scripts_worktree_ops.md) (8 shared connections)
+- [Item Lookup](Item_Lookup.md) (5 shared connections)
+- [npc realtime occupant](npc_realtime_occupant.md) (4 shared connections)
 
 ## Source Files
 
-- `server/realtime/message_queue.py`
+- `server/commands/look_item.py`
+- `server/tests/unit/commands/test_look_item.py`
+- `server/tests/unit/commands/test_look_item_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (93%)
-- INFERRED: 2 (7%)
+- EXTRACTED: 63 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,26 +1,24 @@
 # tick services game
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **.start()** (4 connections) — `server/services/game_tick_service.py`
-- **._tick_loop()** (3 connections) — `server/services/game_tick_service.py`
-- **Start the game tick service.          Returns:             bool: True if started** (1 connections) — `server/services/game_tick_service.py`
-- **Main tick loop that runs at the specified interval.** (1 connections) — `server/services/game_tick_service.py`
+- **test_mp_regeneration_service_init_custom_rate()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Test MPRegenerationService initialization with custom regen_rate.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Relationships
 
-- [tick service services](tick_service_services.md) (2 shared connections)
-- [time service rationale](time_service_rationale.md) (1 shared connections)
+- [regeneration service magic](regeneration_service_magic.md) (1 shared connections)
+- [config rationale reset](config_rationale_reset.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/game_tick_service.py`
+- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

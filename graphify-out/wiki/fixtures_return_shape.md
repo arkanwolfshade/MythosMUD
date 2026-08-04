@@ -1,14 +1,12 @@
 # fixtures return shape
 
-> 43 nodes
+> 39 nodes
 
 ## Key Concepts
 
 - **__init__.py** (18 connections) — `server/tests/fixtures/integration/__init__.py`
 - **session_factory()** (17 connections) — `server/tests/fixtures/integration/__init__.py`
-- **test_procedures_return_shape.py** (11 connections) — `server/tests/integration/test_procedures_return_shape.py`
 - **db_cleanup()** (10 connections) — `server/tests/fixtures/integration/__init__.py`
-- **test_add_player_effect_generates_id()** (7 connections) — `server/tests/integration/test_procedures_return_shape.py`
 - **_assert_allowed_integration_test_db()** (6 connections) — `server/tests/fixtures/integration/__init__.py`
 - **integration_engine()** (6 connections) — `server/tests/fixtures/integration/__init__.py`
 - **db.py** (6 connections) — `server/tests/fixtures/integration/db.py`
@@ -29,19 +27,18 @@
 - **_IntegrationState** (2 connections) — `server/tests/fixtures/integration/__init__.py`
 - **async_sessionmaker** (2 connections)
 - **AsyncEngine** (1 connections)
-- *... and 18 more nodes in this community*
+- **Integration-tier fixtures with real database connections.** (1 connections) — `server/tests/fixtures/integration/__init__.py`
+- **Extract database name from a PostgreSQL URL. Returns empty string on parse failu** (1 connections) — `server/tests/fixtures/integration/__init__.py`
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
-- [world models rationale](world_models_rationale.md) (4 shared connections)
-- [ascii map renderer](ascii_map_renderer.md) (4 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (3 shared connections)
-- [command inventory factories](command_inventory_factories.md) (3 shared connections)
+- [combat models rationale](combat_models_rationale.md) (9 shared connections)
+- [game models enums](game_models_enums.md) (3 shared connections)
+- [world models rationale](world_models_rationale.md) (3 shared connections)
+- [NPC Combat](NPC_Combat.md) (3 shared connections)
 - [Database Config](Database_Config.md) (3 shared connections)
-- [combat models rationale](combat_models_rationale.md) (3 shared connections)
-- [lucidity services helpers](lucidity_services_helpers.md) (1 shared connections)
-- [logging file setup](logging_file_setup.md) (1 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
+- [player requests schemas](player_requests_schemas.md) (2 shared connections)
 
 ## Source Files
 
@@ -52,8 +49,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 148 (90%)
-- INFERRED: 17 (10%)
+- EXTRACTED: 129 (89%)
+- INFERRED: 16 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

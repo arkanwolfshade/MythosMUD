@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_add_alias_updates_existing()** (3 connections) — `server/tests/unit/test_alias_storage.py`
-- **Test add_alias updates existing alias.** (1 connections) — `server/tests/unit/test_alias_storage.py`
+- **test_is_player_muted_by_receiver_not_muted()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Test is_player_muted_by_receiver() returns False when not muted.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Relationships
 
-- [alias models rationale](alias_models_rationale.md) (1 shared connections)
-- [alias storage rationale](alias_storage_rationale.md) (1 shared connections)
+- [message filtering realtime](message_filtering_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/test_alias_storage.py`
+- `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

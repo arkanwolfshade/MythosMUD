@@ -1,28 +1,23 @@
 # archive OPTIMIZATION ROADMAP
 
-> 6 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Test Suite Optimization Roadmap** (15 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Risk Mitigation Strategy** (2 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **TEST_OPTIMIZATION_ROADMAP.md** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Safety Measures** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Rollback Plan** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Recommended Execution Order** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **test_process_tick_regeneration_at_max()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Test process_tick_regeneration() returns zero when MP already at max.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Relationships
 
-- [archive OPTIMIZATION ROADMAP](archive_OPTIMIZATION_ROADMAP.md) (8 shared connections)
-- [archive optimization OPTIMIZATION](archive_optimization_OPTIMIZATION.md) (3 shared connections)
+- [config rationale reset](config_rationale_reset.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

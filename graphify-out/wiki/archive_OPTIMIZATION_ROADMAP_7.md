@@ -4,10 +4,10 @@
 
 ## Key Concepts
 
-- **Net Impact Projection** (4 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **After Month 1 (Pruning Phase)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **After Month 2 (Consolidation + Additions)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **After Month 3+ (Continuous Improvement)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Implementation Timeline** (4 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Month 1: Pruning and Quick Wins** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Month 2: Consolidation and Additions** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Month 3+: Continuous Improvement** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
 
 ## Relationships
 

@@ -15,6 +15,7 @@ from .combat_service import CombatService
 from .npc_combat_data_provider import NPCCombatDataProvider
 from .npc_combat_lucidity import NPCCombatLucidity
 from .npc_combat_uuid_mapping import NPCCombatUUIDMapping
+from .player_respawn_service import LIMBO_ROOM_ID
 from .room_data_validator import RoomDataValidator
 
 logger: BoundLogger = get_logger(__name__)
@@ -158,7 +159,9 @@ class NPCCombatIntegrationValidationMixin:
         )
 
         if player_room_id != npc_room_id:
-            logger.warning(
+            # Dead players in limbo still get NPC auto-attack ticks; expected, not operational fault.
+            log_fn = logger.debug if player_room_id == LIMBO_ROOM_ID else logger.warning
+            log_fn(
                 "Cross-room attack attempt blocked",
                 player_id=player_id,
                 npc_id=npc_id,

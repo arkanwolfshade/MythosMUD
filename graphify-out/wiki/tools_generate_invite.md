@@ -1,29 +1,45 @@
 # tools generate invite
 
-> 6 nodes
+> 18 nodes
 
 ## Key Concepts
 
-- **TestGetAsyncPersistence** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_async_persistence_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_async_persistence_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Tests for get_async_persistence dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_async_persistence returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_async_persistence raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **migrate_combat_data.py** (15 connections) — `server/scripts/migrate_combat_data.py`
+- **migrate_npc_combat_data()** (10 connections) — `server/scripts/migrate_combat_data.py`
+- **add_default_combat_data_to_stats()** (9 connections) — `server/schemas/combat/combat_schema.py`
+- **validate_migration_results()** (8 connections) — `server/scripts/migrate_combat_data.py`
+- **rollback_migration()** (7 connections) — `server/scripts/migrate_combat_data.py`
+- **main()** (6 connections) — `server/scripts/migrate_combat_data.py`
+- **AsyncSession** (3 connections)
+- **Any** (3 connections)
+- **test_add_default_combat_data_to_stats()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
+- **test_add_default_combat_data_to_stats_preserves_existing()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
+- **Add default combat data to base_stats if not present.      Args:         stats:** (1 connections) — `server/schemas/combat/combat_schema.py`
+- **Combat data migration script.  This script adds default combat data to existing** (1 connections) — `server/scripts/migrate_combat_data.py`
+- **Migrate combat data for all NPC definitions.      Args:         session: Databas** (1 connections) — `server/scripts/migrate_combat_data.py`
+- **Validate that migration was successful.      Args:         session: Database ses** (1 connections) — `server/scripts/migrate_combat_data.py`
+- **Rollback combat data migration by removing combat fields.      Args:         ses** (1 connections) — `server/scripts/migrate_combat_data.py`
+- **Main migration function.** (1 connections) — `server/scripts/migrate_combat_data.py`
+- **Test add_default_combat_data_to_stats() adds defaults.** (1 connections) — `server/tests/unit/schemas/test_combat_schema.py`
+- **Test add_default_combat_data_to_stats() preserves existing values.** (1 connections) — `server/tests/unit/schemas/test_combat_schema.py`
 
 ## Relationships
 
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (3 shared connections)
-- [command inventory models](command_inventory_models.md) (1 shared connections)
+- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (15 shared connections)
+- [container events rationale](container_events_rationale.md) (5 shared connections)
+- [player effects endpoints](player_effects_endpoints.md) (3 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_dependencies.py`
+- `server/schemas/combat/combat_schema.py`
+- `server/scripts/migrate_combat_data.py`
+- `server/tests/unit/schemas/test_combat_schema.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (93%)
-- INFERRED: 1 (7%)
+- EXTRACTED: 69 (92%)
+- INFERRED: 6 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

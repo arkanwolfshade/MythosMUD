@@ -43,7 +43,7 @@ test.describe('Logout Accessibility', () => {
     const _role = await logoutButton.getAttribute('role').catch(() => null);
 
     // Verify ARIA attributes are present (may be null if not implemented)
-    expect(logoutButton).toBeTruthy();
+    await expect(logoutButton).toBeVisible();
   });
 
   test('logout button should be keyboard navigable', async () => {
@@ -63,6 +63,6 @@ test.describe('Logout Accessibility', () => {
     const _isFocused = await logoutButton.evaluate(el => el === document.activeElement).catch(() => false);
 
     // This test verifies keyboard navigation exists (may or may not focus logout button)
-    expect(logoutButton).toBeTruthy();
+    await expect(logoutButton).toBeVisible();
   });
 });

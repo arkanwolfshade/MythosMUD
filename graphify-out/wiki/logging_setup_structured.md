@@ -1,58 +1,67 @@
 # logging setup structured
 
-> 55 nodes
+> 71 nodes
 
 ## Key Concepts
 
-- **logging_file_setup.py** (35 connections) — `server/structured_logging/logging_file_setup.py`
-- **ensure_log_directory()** (23 connections) — `server/structured_logging/logging_utilities.py`
-- **setup_enhanced_file_logging()** (20 connections) — `server/structured_logging/logging_file_setup.py`
-- **load_player_guid_formatter_class()** (11 connections) — `server/structured_logging/logging_utilities.py`
-- **_setup_aggregator_handlers()** (9 connections) — `server/structured_logging/logging_file_setup.py`
-- **_setup_console_handler()** (9 connections) — `server/structured_logging/logging_file_setup.py`
-- **_prepare_log_environment()** (9 connections) — `server/structured_logging/logging_file_setup.py`
-- **_setup_category_handlers()** (8 connections) — `server/structured_logging/logging_file_setup.py`
-- **LoggerNameFilter** (8 connections) — `server/structured_logging/logging_file_setup.py`
-- **_create_handler_for_category()** (8 connections) — `server/structured_logging/logging_file_setup.py`
-- **Queue** (7 connections)
-- **_CategoryHandlerConfig** (6 connections) — `server/structured_logging/logging_file_setup.py`
-- **Handler** (6 connections)
-- **_ConsoleHandlerConfig** (6 connections) — `server/structured_logging/logging_file_setup.py`
-- **_setup_async_logging_queue()** (6 connections) — `server/structured_logging/logging_file_setup.py`
-- **_create_formatter()** (6 connections) — `server/structured_logging/logging_file_setup.py`
-- **_get_or_create_log_queue()** (5 connections) — `server/structured_logging/logging_file_setup.py`
-- **_get_handler_class()** (5 connections) — `server/structured_logging/logging_file_setup.py`
-- **_add_handler_to_loggers()** (5 connections) — `server/structured_logging/logging_file_setup.py`
-- **_get_handler_classes()** (5 connections) — `server/structured_logging/logging_file_setup.py`
-- **LogRecord** (3 connections)
-- **Path** (3 connections)
-- **RotatingFileHandler** (3 connections)
-- **_convert_max_size_to_bytes()** (3 connections) — `server/structured_logging/logging_file_setup.py`
-- **.filter()** (3 connections) — `server/structured_logging/logging_file_setup.py`
-- *... and 30 more nodes in this community*
+- **get_npc_instance_service()** (79 connections) — `server/services/npc_instance_service.py`
+- **npc_instances_api.py** (27 connections) — `server/api/admin/npc_instances_api.py`
+- **test_npc_instances_api.py** (21 connections) — `server/tests/unit/api/test_npc_instances_api.py`
+- **npc_admin.py** (15 connections) — `server/schemas/admin/npc_admin.py`
+- **AdminSession** (14 connections) — `server/schemas/admin/admin_data.py`
+- **AuditLogEntry** (14 connections) — `server/schemas/admin/admin_data.py`
+- **spawn_npc_instance()** (13 connections) — `server/api/admin/npc_instances_api.py`
+- **__init__.py** (13 connections) — `server/schemas/admin/__init__.py`
+- **despawn_npc_instance()** (12 connections) — `server/api/admin/npc_instances_api.py`
+- **move_npc_instance()** (12 connections) — `server/api/admin/npc_instances_api.py`
+- **get_npc_instances()** (11 connections) — `server/api/admin/npc_instances_api.py`
+- **get_npc_stats()** (11 connections) — `server/api/admin/npc_instances_api.py`
+- **BaseModel** (10 connections)
+- **NPCSpawnResponse** (9 connections) — `server/schemas/admin/npc_admin.py`
+- **NPCDespawnResponse** (9 connections) — `server/schemas/admin/npc_admin.py`
+- **NPCMoveResponse** (9 connections) — `server/schemas/admin/npc_admin.py`
+- **NPCStatsResponse** (9 connections) — `server/schemas/admin/npc_admin.py`
+- **NPCPopulationStatsResponse** (9 connections) — `server/schemas/admin/npc_admin.py`
+- **NPCZoneStatsResponse** (9 connections) — `server/schemas/admin/npc_admin.py`
+- **NPCSystemStatusResponse** (9 connections) — `server/schemas/admin/npc_admin.py`
+- **AdminSessionsResponse** (9 connections) — `server/schemas/admin/npc_admin.py`
+- **AdminAuditLogResponse** (9 connections) — `server/schemas/admin/npc_admin.py`
+- **AdminCleanupSessionsResponse** (9 connections) — `server/schemas/admin/npc_admin.py`
+- **NPCSpawnRequest** (7 connections) — `server/api/admin/npc_schemas.py`
+- **NPCMoveRequest** (7 connections) — `server/api/admin/npc_schemas.py`
+- *... and 46 more nodes in this community*
 
 ## Relationships
 
-- [logging structured utilities](logging_structured_utilities.md) (17 shared connections)
-- [logging handlers structured](logging_handlers_structured.md) (15 shared connections)
-- [commands follow rationale](commands_follow_rationale.md) (9 shared connections)
-- [command inventory factories](command_inventory_factories.md) (5 shared connections)
-- [windows safe rotation](windows_safe_rotation.md) (4 shared connections)
-- [player guid formatter](player_guid_formatter.md) (3 shared connections)
-- [logging processors structured](logging_processors_structured.md) (2 shared connections)
-- [npc shopkeeper rationale](npc_shopkeeper_rationale.md) (1 shared connections)
-- [scripts run guard](scripts_run_guard.md) (1 shared connections)
-- [chat game message](chat_game_message.md) (1 shared connections)
+- [player preferences services](player_preferences_services.md) (26 shared connections)
+- [commands npc admin](commands_npc_admin.md) (13 shared connections)
+- [Exception Containers](Exception_Containers.md) (11 shared connections)
+- [Player Stats](Player_Stats.md) (11 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (10 shared connections)
+- [persistence container rationale](persistence_container_rationale.md) (6 shared connections)
+- [NPC Combat](NPC_Combat.md) (6 shared connections)
+- [countdown rest task](countdown_rest_task.md) (6 shared connections)
+- [npc look commands](npc_look_commands.md) (4 shared connections)
+- [command models moderation](command_models_moderation.md) (4 shared connections)
+- [npc event handlers](npc_event_handlers.md) (3 shared connections)
+- [event bus events](event_bus_events.md) (3 shared connections)
 
 ## Source Files
 
-- `server/structured_logging/logging_file_setup.py`
-- `server/structured_logging/logging_utilities.py`
+- `server/api/admin/npc_instances_api.py`
+- `server/api/admin/npc_schemas.py`
+- `server/commands/combat_handler.py`
+- `server/schemas/admin/__init__.py`
+- `server/schemas/admin/admin_data.py`
+- `server/schemas/admin/npc_admin.py`
+- `server/services/npc_instance_service.py`
+- `server/tests/unit/api/test_npc_instances_api.py`
+- `server/tests/unit/services/test_npc_instance_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 238 (96%)
-- INFERRED: 10 (4%)
+- EXTRACTED: 392 (90%)
+- INFERRED: 43 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

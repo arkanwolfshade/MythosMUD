@@ -1,64 +1,54 @@
 # logging file setup
 
-> 51 nodes
+> 28 nodes
 
 ## Key Concepts
 
-- **user.py** (62 connections) — `server/models/user.py`
-- **professions.py** (19 connections) — `server/api/professions.py`
-- **test_professions_endpoints.py** (13 connections) — `server/tests/unit/api/test_professions_endpoints.py`
-- **test_users_current_user_logging.py** (12 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **get_current_user_with_logging()** (11 connections) — `server/auth/users.py`
-- **get_all_professions()** (10 connections) — `server/api/professions.py`
-- **get_profession_by_id()** (10 connections) — `server/api/professions.py`
-- **profession.py** (7 connections) — `server/schemas/players/profession.py`
-- **ProfessionListResponse** (7 connections) — `server/schemas/players/profession.py`
-- **ProfessionResponse** (7 connections) — `server/schemas/players/profession.py`
-- **BaseModel** (5 connections)
-- **set_display_name_default()** (4 connections) — `server/models/user.py`
-- **StatRequirement** (4 connections) — `server/schemas/players/profession.py`
-- **MechanicalEffect** (4 connections) — `server/schemas/players/profession.py`
-- **ProfessionData** (4 connections) — `server/schemas/players/profession.py`
-- **_user()** (4 connections) — `server/tests/unit/api/test_professions_endpoints.py`
-- **test_get_all_professions_requires_auth()** (4 connections) — `server/tests/unit/api/test_professions_endpoints.py`
-- **test_get_profession_by_id_not_found()** (4 connections) — `server/tests/unit/api/test_professions_endpoints.py`
-- **test_get_current_user_with_logging_success()** (4 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **test_get_current_user_with_logging_no_request()** (4 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **test_get_current_user_with_logging_long_auth_header()** (4 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **test_get_current_user_with_logging_no_auth_header()** (4 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **test_get_all_professions_success()** (3 connections) — `server/tests/unit/api/test_professions_endpoints.py`
-- **test_get_profession_by_id_success()** (3 connections) — `server/tests/unit/api/test_professions_endpoints.py`
-- **test_get_current_user_with_logging_no_user()** (3 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- *... and 26 more nodes in this community*
+- **InventorySchemaValidationError** (20 connections) — `server/schemas/shared/inventory_schema.py`
+- **validate_inventory_payload()** (13 connections) — `server/schemas/shared/inventory_schema.py`
+- **test_inventory_schema.py** (11 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **validate_inventory_items()** (9 connections) — `server/schemas/shared/inventory_schema.py`
+- **inventory_schema.py** (7 connections) — `server/schemas/shared/inventory_schema.py`
+- **_build_validator()** (5 connections) — `server/schemas/shared/inventory_schema.py`
+- **test_persist_player_validation_error()** (4 connections) — `server/tests/unit/commands/test_inventory_helpers_extended.py`
+- **test_validate_inventory_payload_missing_required()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **test_validate_inventory_payload_invalid_inventory()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **test_validate_inventory_items_missing_required()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **test_validate_inventory_items_invalid_quantity()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **Any** (3 connections)
+- **test_validate_inventory_payload_valid()** (3 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **test_validate_inventory_items_valid()** (3 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **Exception** (1 connections)
+- **Inventory JSON schema validation utilities.  As recorded in the restricted stack** (1 connections) — `server/schemas/shared/inventory_schema.py`
+- **Raised when inventory payloads fail schema validation.** (1 connections) — `server/schemas/shared/inventory_schema.py`
+- **Internal helper to construct a Draft7 validator instance.** (1 connections) — `server/schemas/shared/inventory_schema.py`
+- **Validate a complete inventory payload against the canonical schema.      Raises:** (1 connections) — `server/schemas/shared/inventory_schema.py`
+- **Validate only the inventory portion to simplify testing workflows.      Raises:** (1 connections) — `server/schemas/shared/inventory_schema.py`
+- **Test _persist_player handles InventorySchemaValidationError.** (1 connections) — `server/tests/unit/commands/test_inventory_helpers_extended.py`
+- **Unit tests for inventory_schema validation functions.  Tests the validation func** (1 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **Test validate_inventory_payload() accepts valid payload.** (1 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **Test validate_inventory_payload() raises error for missing required fields.** (1 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **Test validate_inventory_payload() raises error for invalid inventory.** (1 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [ascii map renderer](ascii_map_renderer.md) (18 shared connections)
-- [auth users rationale](auth_users_rationale.md) (9 shared connections)
-- [Exception Containers](Exception_Containers.md) (9 shared connections)
-- [Database Config](Database_Config.md) (8 shared connections)
-- [admin auth service](admin_auth_service.md) (8 shared connections)
-- [game models stats](game_models_stats.md) (7 shared connections)
-- [command inventory factories](command_inventory_factories.md) (5 shared connections)
-- [profession game service](profession_game_service.md) (4 shared connections)
-- [world models rationale](world_models_rationale.md) (4 shared connections)
-- [Loot Generation](Loot_Generation.md) (3 shared connections)
-- [Error Handling Core](Error_Handling_Core.md) (2 shared connections)
-- [Memory Task Runtime](Memory_Task_Runtime.md) (2 shared connections)
+- [commands inventory command](commands_inventory_command.md) (6 shared connections)
+- [npc population stats](npc_population_stats.md) (5 shared connections)
+- [target resolution service](target_resolution_service.md) (4 shared connections)
+- [inventory commands command](inventory_commands_command.md) (2 shared connections)
+- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/professions.py`
-- `server/auth/users.py`
-- `server/models/user.py`
-- `server/schemas/players/profession.py`
-- `server/tests/unit/api/test_professions_endpoints.py`
-- `server/tests/unit/auth/test_users_current_user_logging.py`
+- `server/schemas/shared/inventory_schema.py`
+- `server/tests/unit/commands/test_inventory_helpers_extended.py`
+- `server/tests/unit/schemas/test_inventory_schema.py`
 
 ## Audit Trail
 
-- EXTRACTED: 244 (99%)
-- INFERRED: 3 (1%)
+- EXTRACTED: 100 (93%)
+- INFERRED: 8 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

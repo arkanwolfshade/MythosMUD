@@ -1,58 +1,56 @@
 # app factory rationale
 
-> 45 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **main.py** (15 connections) — `server/main.py`
-- **create_app()** (14 connections) — `server/app/factory.py`
-- **correlation_middleware.py** (9 connections) — `server/middleware/correlation_middleware.py`
-- **.__call__()** (8 connections) — `server/middleware/correlation_middleware.py`
-- **CorrelationMiddleware** (6 connections) — `server/middleware/correlation_middleware.py`
-- **WebSocketCorrelationMiddleware** (5 connections) — `server/middleware/correlation_middleware.py`
-- **.__call__()** (5 connections) — `server/middleware/correlation_middleware.py`
-- **main()** (4 connections) — `scripts/generate_openapi_spec.py`
-- **main()** (4 connections) — `server/main.py`
-- **_create_get_app()** (4 connections) — `server/main.py`
-- **_get_header()** (4 connections) — `server/middleware/correlation_middleware.py`
-- **create_correlation_middleware()** (4 connections) — `server/middleware/correlation_middleware.py`
-- **generate_openapi_spec.py** (3 connections) — `scripts/generate_openapi_spec.py`
-- **_sanitize_token_examples()** (3 connections) — `scripts/generate_openapi_spec.py`
-- **FastAPI** (3 connections)
-- **FastAPI** (3 connections)
-- **test_auth()** (3 connections) — `server/main.py`
-- **.__init__()** (3 connections) — `server/middleware/correlation_middleware.py`
-- **create_websocket_correlation_middleware()** (3 connections) — `server/middleware/correlation_middleware.py`
-- **read_root()** (2 connections) — `server/main.py`
-- **Scope** (2 connections)
+- **test_correlation_middleware.py** (17 connections) — `server/tests/unit/middleware/test_correlation_middleware.py`
+- **middleware()** (16 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **CorrelationMiddleware** (13 connections) — `server/middleware/correlation_middleware.py`
+- **correlation_middleware.py** (10 connections) — `server/middleware/correlation_middleware.py`
+- **WebSocketCorrelationMiddleware** (9 connections) — `server/middleware/correlation_middleware.py`
+- **create_correlation_middleware()** (6 connections) — `server/middleware/correlation_middleware.py`
+- **create_websocket_correlation_middleware()** (5 connections) — `server/middleware/correlation_middleware.py`
+- **test_create_correlation_middleware_factory()** (3 connections) — `server/tests/unit/middleware/test_correlation_middleware.py`
+- **test_create_websocket_correlation_middleware()** (3 connections) — `server/tests/unit/middleware/test_correlation_middleware.py`
+- **test_correlation_middleware_passes_non_http()** (3 connections) — `server/tests/unit/middleware/test_correlation_middleware.py`
+- **test_correlation_middleware_generates_correlation_id()** (3 connections) — `server/tests/unit/middleware/test_correlation_middleware.py`
+- **test_correlation_middleware_uses_existing_header()** (3 connections) — `server/tests/unit/middleware/test_correlation_middleware.py`
+- **test_correlation_middleware_adds_response_header()** (3 connections) — `server/tests/unit/middleware/test_correlation_middleware.py`
+- **test_correlation_middleware_reraises_exception()** (3 connections) — `server/tests/unit/middleware/test_correlation_middleware.py`
+- **test_websocket_correlation_middleware()** (3 connections) — `server/tests/unit/middleware/test_correlation_middleware.py`
+- **test_websocket_correlation_middleware_generates_id()** (3 connections) — `server/tests/unit/middleware/test_correlation_middleware.py`
 - **.__init__()** (2 connections) — `server/middleware/correlation_middleware.py`
-- **Any** (2 connections)
-- **Replace auth token examples with clearly fake placeholders.** (1 connections) — `scripts/generate_openapi_spec.py`
-- **Generate and write OpenAPI spec to docs/openapi/openapi.json.** (1 connections) — `scripts/generate_openapi_spec.py`
-- *... and 20 more nodes in this community*
+- **Correlation middleware for request tracing and logging context.  This middleware** (1 connections) — `server/middleware/correlation_middleware.py`
+- **Pure ASGI middleware for adding correlation IDs and request context to all reque** (1 connections) — `server/middleware/correlation_middleware.py`
+- **Middleware for adding correlation IDs to WebSocket connections.      This middle** (1 connections) — `server/middleware/correlation_middleware.py`
+- **Initialize the WebSocket correlation middleware.          Args:             corr** (1 connections) — `server/middleware/correlation_middleware.py`
+- **Create a correlation middleware factory.      Args:         correlation_header:** (1 connections) — `server/middleware/correlation_middleware.py`
+- **Create a WebSocket correlation middleware instance.      Args:         correlati** (1 connections) — `server/middleware/correlation_middleware.py`
+- **Unit tests for correlation ID middleware.** (1 connections) — `server/tests/unit/middleware/test_correlation_middleware.py`
+- **Create SecurityHeadersMiddleware instance.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
 
 ## Relationships
 
-- [command inventory factories](command_inventory_factories.md) (9 shared connections)
-- [middleware correlation rationale](middleware_correlation_rationale.md) (4 shared connections)
-- [auth users rationale](auth_users_rationale.md) (3 shared connections)
-- [time service rationale](time_service_rationale.md) (1 shared connections)
-- [middleware comprehensive logging](middleware_comprehensive_logging.md) (1 shared connections)
-- [middleware error handling](middleware_error_handling.md) (1 shared connections)
-- [security headers middleware](security_headers_middleware.md) (1 shared connections)
-- [Item Instances](Item_Instances.md) (1 shared connections)
+- [tick game service](tick_game_service.md) (4 shared connections)
+- [security headers middleware](security_headers_middleware.md) (4 shared connections)
+- [middleware comprehensive logging](middleware_comprehensive_logging.md) (3 shared connections)
+- [npc combat services](npc_combat_services.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [world loader room](world_loader_room.md) (2 shared connections)
+- [ascii map renderer](ascii_map_renderer.md) (1 shared connections)
+- [persistence rationale player](persistence_rationale_player.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/generate_openapi_spec.py`
-- `server/app/factory.py`
-- `server/main.py`
 - `server/middleware/correlation_middleware.py`
+- `server/tests/unit/middleware/test_correlation_middleware.py`
+- `server/tests/unit/middleware/test_security_headers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 126 (95%)
-- INFERRED: 7 (5%)
+- EXTRACTED: 92 (81%)
+- INFERRED: 21 (19%)
 - AMBIGUOUS: 0 (0%)
 
 ---

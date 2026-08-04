@@ -1,36 +1,50 @@
 # auth dependencies rationale
 
-> 10 nodes
+> 27 nodes
 
 ## Key Concepts
 
-- **validate_filter_name()** (8 connections) — `server/validators/security_validator.py`
-- **.validate_filter_name_field()** (3 connections) — `server/models/command_utility.py`
-- **test_validate_filter_name_empty()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_validate_filter_name_valid()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_validate_filter_name_rejects_invalid_format()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **Validate filter name format using centralized validation.** (1 connections) — `server/models/command_utility.py`
-- **Test validating empty filter name.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **Test validating valid filter name.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **Test that validate_filter_name rejects invalid format.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **Centralized validation for filter name fields.      This function provides consi** (1 connections) — `server/validators/security_validator.py`
+- **CommandRequest** (11 connections) — `server/command_handler_unified.py`
+- **TestProcessCommandUnified** (7 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **TestLegacyFunctions** (6 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **TestHandleCommand** (5 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **.test_handle_command_unauthorized()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **.test_handle_command_success()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **.test_process_command_legacy()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **.test_get_help_content()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **.test_get_help_content_none()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **.test_process_command_unified_rate_limited()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **.test_process_command_unified_blocked()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **.test_process_command_unified_special_routing()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **.test_process_command_unified_normal_processing()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **BaseModel** (1 connections)
+- **Request model for command processing.** (1 connections) — `server/command_handler_unified.py`
+- **Test legacy compatibility functions.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **Test process_command() legacy function.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **Test get_help_content() delegates to help system.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **Test get_help_content() with None command.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **Test process_command_unified function.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **Test process_command_unified returns rate limit result.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **Test process_command_unified returns block result.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **Test process_command_unified handles special command routing.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **Test process_command_unified processes normal commands.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **Test handle_command HTTP endpoint.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [Security Validator Tests](Security_Validator_Tests.md) (4 shared connections)
-- [command factories create](command_factories_create.md) (2 shared connections)
-- [command communication models](command_communication_models.md) (1 shared connections)
+- [command commands handler](command_commands_handler.md) (15 shared connections)
+- [commands npc admin](commands_npc_admin.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/command_utility.py`
-- `server/tests/unit/validators/test_security_validator.py`
-- `server/validators/security_validator.py`
+- `server/command_handler_unified.py`
+- `server/tests/unit/commands/test_command_handler_unified.py`
 
 ## Audit Trail
 
-- EXTRACTED: 24 (96%)
-- INFERRED: 1 (4%)
+- EXTRACTED: 65 (90%)
+- INFERRED: 7 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

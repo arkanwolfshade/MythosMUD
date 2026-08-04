@@ -35,8 +35,8 @@
 
 - [combat configuration service](combat_configuration_service.md) (3 shared connections)
 - [combat monitoring service](combat_monitoring_service.md) (3 shared connections)
-- [Item Instances](Item_Instances.md) (2 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
 
 ## Source Files
 

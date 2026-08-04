@@ -1,46 +1,63 @@
 # game chat moderation
 
-> 16 nodes
+> 28 nodes
 
 ## Key Concepts
 
-- **WebSocket** (8 connections)
-- **Any** (8 connections)
-- **.handle_message()** (7 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (6 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (4 connections) — `server/realtime/message_handler_factory.py`
-- **Handle a specific message type.          Args:             websocket: The WebSoc** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handle command message type.** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handle chat message type.** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handle ping message type.** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handle party_invite_response message type.** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handle client_error_report message type.** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handle a WebSocket message using the appropriate handler.          Args:** (1 connections) — `server/realtime/message_handler_factory.py`
+- **useGameConnectionRefactored.ts** (18 connections) — `client/src/hooks/useGameConnectionRefactored.ts`
+- **useGameConnection()** (12 connections) — `client/src/hooks/useGameConnectionRefactored.ts`
+- **useConnectionStateMachine.ts** (8 connections) — `client/src/hooks/useConnectionStateMachine.ts`
+- **useConnectionState.ts** (7 connections) — `client/src/hooks/useConnectionState.ts`
+- **useSessionManagement.ts** (7 connections) — `client/src/hooks/useSessionManagement.ts`
+- **useGameConnection.ts** (5 connections) — `client/src/hooks/useGameConnection.ts`
+- **useConnectionState()** (4 connections) — `client/src/hooks/useConnectionState.ts`
+- **connectionMachine** (4 connections) — `client/src/hooks/useConnectionStateMachine.ts`
+- **useGameConnection.test.ts** (4 connections) — `client/src/hooks/useGameConnection.test.ts`
+- **useSessionManagement()** (4 connections) — `client/src/hooks/useSessionManagement.ts`
+- **useGameConnection.export.test.ts** (3 connections) — `client/src/hooks/__tests__/useGameConnection.export.test.ts`
+- **ConnectionContext** (3 connections) — `client/src/hooks/useConnectionStateMachine.ts`
+- **UseGameConnectionOptions** (3 connections) — `client/src/hooks/useGameConnectionRefactored.ts`
+- **useConnectionState.test.ts** (2 connections) — `client/src/hooks/__tests__/useConnectionState.test.ts`
+- **useConnectionStateMachine.test.ts** (2 connections) — `client/src/hooks/__tests__/useConnectionStateMachine.test.ts`
+- **useSessionManagement.test.ts** (2 connections) — `client/src/hooks/__tests__/useSessionManagement.test.ts`
+- **UseConnectionStateResult** (2 connections) — `client/src/hooks/useConnectionState.ts`
+- **useConnectionStateMachine.test.ts** (2 connections) — `client/src/hooks/useConnectionStateMachine.test.ts`
+- **generateSecureSessionId()** (2 connections) — `client/src/hooks/useGameConnectionRefactored.ts`
+- **ConnectionState** (1 connections) — `client/src/hooks/useConnectionStateMachine.ts`
+- **ConnectionEvent** (1 connections) — `client/src/hooks/useConnectionStateMachine.ts`
+- **ConnectionMachineInput** (1 connections) — `client/src/hooks/useConnectionStateMachine.ts`
+- **mockWebSocket** (1 connections) — `client/src/hooks/useGameConnection.test.ts`
+- **NOTE: JWT tokens are passed via query string, not subprotocol, because JWT conta** (1 connections) — `client/src/hooks/useGameConnection.test.ts`
+- **GameEvent** (1 connections) — `client/src/hooks/useGameConnectionRefactored.ts`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [combat services messaging](combat_services_messaging.md) (5 shared connections)
-- [tsconfig src/**/* spec](tsconfig_src-__-__spec.md) (3 shared connections)
-- [command commands aliases](command_commands_aliases.md) (2 shared connections)
-- [dead letter queue](dead_letter_queue.md) (1 shared connections)
-- [combat models rationale](combat_models_rationale.md) (1 shared connections)
-- [occupant formatter realtime](occupant_formatter_realtime.md) (1 shared connections)
-- [realtime message nats](realtime_message_nats.md) (1 shared connections)
-- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
-- [message handler factory](message_handler_factory.md) (1 shared connections)
+- [project paths rationale](project_paths_rationale.md) (4 shared connections)
+- [roomHandlers eventHandlers calculateOccu](roomHandlers_eventHandlers_calculateOccu.md) (3 shared connections)
+- [Game Terminal UI](Game_Terminal_UI.md) (2 shared connections)
+- [mythosApp security submitAuth](mythosApp_security_submitAuth.md) (2 shared connections)
+- [GameClientV2Container emptyOccupantsDiag](GameClientV2Container_emptyOccupantsDiag.md) (1 shared connections)
+- [realtime maintenance connection](realtime_maintenance_connection.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/message_handler_factory.py`
+- `client/src/hooks/__tests__/useConnectionState.test.ts`
+- `client/src/hooks/__tests__/useConnectionStateMachine.test.ts`
+- `client/src/hooks/__tests__/useGameConnection.export.test.ts`
+- `client/src/hooks/__tests__/useSessionManagement.test.ts`
+- `client/src/hooks/useConnectionState.ts`
+- `client/src/hooks/useConnectionStateMachine.test.ts`
+- `client/src/hooks/useConnectionStateMachine.ts`
+- `client/src/hooks/useGameConnection.test.ts`
+- `client/src/hooks/useGameConnection.ts`
+- `client/src/hooks/useGameConnectionRefactored.ts`
+- `client/src/hooks/useSessionManagement.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 60 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 102 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

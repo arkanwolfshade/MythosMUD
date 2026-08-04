@@ -1,47 +1,62 @@
 # uuid npc combat
 
-> 22 nodes
+> 70 nodes
 
 ## Key Concepts
 
-- **test_instance_manager.py** (15 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **instance_manager()** (4 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **tutorial_room()** (3 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **room_cache()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **test_create_instance()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **test_create_instance_raises_when_no_templates()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **test_destroy_instance()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **test_get_first_room_id()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **test_get_exit_room_id()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **test_get_room_by_id_returns_none_for_non_instance()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **test_get_room_by_id_returns_room_when_in_instance()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Unit tests for InstanceManager.  Tests instance creation, destruction, room clon** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Create tutorial bedroom template room.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Room cache with tutorial template.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Create InstanceManager with tutorial template in cache.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Test create_instance creates instance with cloned rooms.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Test create_instance raises when no template rooms found.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Test destroy_instance removes instance from store.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Test get_first_room_id returns first room of instance.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Test get_exit_room_id returns fixed exit room.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Test get_room_by_id returns None for non-instance room IDs.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Test get_room_by_id returns room when room is in an instance.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
+- **combat_taunt.py** (32 connections) — `server/commands/combat_taunt.py`
+- **TauntCommandHandler** (29 connections) — `server/commands/combat_taunt.py`
+- **test_combat_taunt.py** (20 connections) — `server/tests/unit/commands/test_combat_taunt.py`
+- **_validate_taunt_context()** (13 connections) — `server/commands/combat_taunt.py`
+- **run_handle_taunt_command()** (13 connections) — `server/commands/combat_taunt.py`
+- **_validate_taunt_target()** (9 connections) — `server/commands/combat_taunt.py`
+- **_resolve_taunt_combat_and_participant()** (9 connections) — `server/commands/combat_taunt.py`
+- **_apply_taunt_and_maybe_broadcast()** (9 connections) — `server/commands/combat_taunt.py`
+- **test_run_handle_taunt_success()** (7 connections) — `server/tests/unit/commands/test_combat_taunt.py`
+- **Any** (6 connections)
+- **_resolve_taunt_room_and_player()** (6 connections) — `server/commands/combat_taunt.py`
+- **UUID** (6 connections)
+- **_validate_taunt_target_name()** (6 connections) — `server/commands/combat_taunt.py`
+- **_RoomWithIdOnly** (6 connections) — `server/tests/unit/commands/test_combat_taunt.py`
+- **.handle_attack_command()** (5 connections) — `server/commands/combat_handler.py`
+- **.handle_taunt_command()** (5 connections) — `server/commands/combat_handler.py`
+- **test_validate_taunt_target_not_npc()** (5 connections) — `server/tests/unit/commands/test_combat_taunt.py`
+- **test_validate_taunt_target_dead()** (5 connections) — `server/tests/unit/commands/test_combat_taunt.py`
+- **test_run_handle_taunt_no_combat_service()** (5 connections) — `server/tests/unit/commands/test_combat_taunt.py`
+- **test_run_handle_taunt_not_in_combat()** (5 connections) — `server/tests/unit/commands/test_combat_taunt.py`
+- **.extract_combat_command_data()** (4 connections) — `server/commands/combat_handler.py`
+- **.handle_flee_command()** (4 connections) — `server/commands/combat_handler.py`
+- **.get_player_and_room()** (4 connections) — `server/commands/combat_taunt.py`
+- **AppWithState** (4 connections)
+- **.resolve_combat_target()** (4 connections) — `server/commands/combat_taunt.py`
+- *... and 45 more nodes in this community*
 
 ## Relationships
 
-- [logging examples fastapi](logging_examples_fastapi.md) (3 shared connections)
-- [room models instance](room_models_instance.md) (2 shared connections)
-- [item models rationale](item_models_rationale.md) (1 shared connections)
-- [player presence tracker](player_presence_tracker.md) (1 shared connections)
+- [NPC Combat](NPC_Combat.md) (14 shared connections)
+- [models npc rationale](models_npc_rationale.md) (14 shared connections)
+- [spell game magic](spell_game_magic.md) (12 shared connections)
+- [commands npc admin](commands_npc_admin.md) (9 shared connections)
+- [Item Instances](Item_Instances.md) (7 shared connections)
+- [room validator toolkit](room_validator_toolkit.md) (5 shared connections)
+- [target resolution service](target_resolution_service.md) (4 shared connections)
+- [npc database infrastructure](npc_database_infrastructure.md) (3 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (1 shared connections)
+- [attack combat commands](attack_combat_commands.md) (1 shared connections)
+- [commands whisper command](commands_whisper_command.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_instance_manager.py`
+- `server/commands/combat_handler.py`
+- `server/commands/combat_taunt.py`
+- `server/models/combat.py`
+- `server/services/npc_combat_integration_service.py`
+- `server/tests/unit/commands/test_combat_taunt.py`
 
 ## Audit Trail
 
-- EXTRACTED: 48 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 275 (95%)
+- INFERRED: 16 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

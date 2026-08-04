@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_handle_equip_wearable_container_with_lock_state()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test handle_equip_wearable_container with lock_state and allowed_roles.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_should_apply_mute_check_sensitive_channel()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Test should_apply_mute_check() returns True for sensitive channels.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Relationships
 
-- [wearable container service](wearable_container_service.md) (1 shared connections)
+- [message filtering realtime](message_filtering_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Audit Trail
 

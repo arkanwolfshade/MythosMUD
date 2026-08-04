@@ -1,51 +1,63 @@
 # npc service services
 
-> 84 nodes
+> 80 nodes
 
 ## Key Concepts
 
-- **test_npc_service.py** (49 connections) — `server/tests/unit/services/test_npc_service.py`
-- **_mock_result_mappings_all()** (29 connections) — `server/tests/unit/services/test_npc_service.py`
-- **_def_row()** (18 connections) — `server/tests/unit/services/test_npc_service.py`
-- **_spawn_rule_row()** (6 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_update_npc_definition_success()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_create_spawn_rule_success()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_npc_definitions_success()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_npc_definition_found()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_npc_definition_by_name_found()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_npc_definition_by_name_case_insensitive()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_npc_definition_by_name_not_found()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_create_npc_definition_success()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_create_npc_definition_with_base_stats()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_update_npc_definition_invalid_type()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_update_npc_definition_invalid_probability()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_delete_npc_definition_success()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_spawn_rules_success()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_spawn_rule_found()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_create_spawn_rule_invalid_min_population()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_create_spawn_rule_invalid_max_population()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_delete_spawn_rule_success()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_npc_definitions_by_type()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_npc_definitions_by_sub_zone()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- **npc_service()** (3 connections) — `server/tests/unit/services/test_npc_service.py`
-- **sample_npc_definition()** (3 connections) — `server/tests/unit/services/test_npc_service.py`
-- *... and 59 more nodes in this community*
+- **admin_teleport_commands.py** (39 connections) — `server/commands/admin_teleport_commands.py`
+- **test_teleport_helpers.py** (31 connections) — `server/tests/unit/commands/test_teleport_helpers.py`
+- **teleport_helpers.py** (24 connections) — `server/commands/teleport_helpers.py`
+- **validate_admin_permission()** (20 connections) — `server/commands/admin_permission_utils.py`
+- **execute_confirm_teleport()** (11 connections) — `server/commands/teleport_helpers.py`
+- **test_admin_permission_utils.py** (11 connections) — `server/tests/unit/commands/test_admin_permission_utils.py`
+- **update_player_room_location()** (10 connections) — `server/commands/teleport_helpers.py`
+- **admin_permission_utils.py** (9 connections) — `server/commands/admin_permission_utils.py`
+- **resolve_teleport_services()** (9 connections) — `server/commands/teleport_helpers.py`
+- **Any** (9 connections)
+- **resolve_teleport_direction()** (9 connections) — `server/commands/teleport_helpers.py`
+- **resolve_target_player()** (9 connections) — `server/commands/teleport_helpers.py`
+- **update_teleport_location()** (9 connections) — `server/commands/teleport_helpers.py`
+- **broadcast_teleport_updates()** (9 connections) — `server/commands/teleport_helpers.py`
+- **validate_confirm_teleport_context()** (8 connections) — `server/commands/teleport_helpers.py`
+- **resolve_target_player_for_teleport()** (8 connections) — `server/commands/teleport_helpers.py`
+- **build_teleport_message()** (7 connections) — `server/commands/teleport_helpers.py`
+- **log_teleport_success()** (7 connections) — `server/commands/teleport_helpers.py`
+- **_BrokenAdminPlayer** (4 connections) — `server/tests/unit/commands/test_admin_permission_utils.py`
+- **test_validate_admin_permission_attribute_error()** (3 connections) — `server/tests/unit/commands/test_admin_permission_utils.py`
+- **test_validate_admin_permission_logs_secondary_failure()** (3 connections) — `server/tests/unit/commands/test_admin_permission_utils.py`
+- **test_resolve_teleport_services_no_app()** (3 connections) — `server/tests/unit/commands/test_teleport_helpers.py`
+- **test_resolve_teleport_services_no_player_service()** (3 connections) — `server/tests/unit/commands/test_teleport_helpers.py`
+- **test_resolve_teleport_services_success()** (3 connections) — `server/tests/unit/commands/test_teleport_helpers.py`
+- **test_resolve_teleport_direction_no_direction()** (3 connections) — `server/tests/unit/commands/test_teleport_helpers.py`
+- *... and 55 more nodes in this community*
 
 ## Relationships
 
-- [Database Config](Database_Config.md) (5 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (4 shared connections)
-- [Magic Spell Service](Magic_Spell_Service.md) (3 shared connections)
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [realtime game state](realtime_game_state.md) (16 shared connections)
+- [player respawn event](player_respawn_event.md) (15 shared connections)
+- [monitoring dashboard rationale](monitoring_dashboard_rationale.md) (10 shared connections)
+- [admin structured logging](admin_structured_logging.md) (9 shared connections)
+- [NPC Combat](NPC_Combat.md) (6 shared connections)
+- [inventory commands command](inventory_commands_command.md) (3 shared connections)
+- [commands whisper command](commands_whisper_command.md) (2 shared connections)
+- [commands admin mute](commands_admin_mute.md) (2 shared connections)
+- [commands npc admin](commands_npc_admin.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (1 shared connections)
+- [room look commands](room_look_commands.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_npc_service.py`
+- `server/commands/admin_permission_utils.py`
+- `server/commands/admin_teleport_commands.py`
+- `server/commands/teleport_helpers.py`
+- `server/tests/unit/commands/test_admin_permission_utils.py`
+- `server/tests/unit/commands/test_teleport_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 269 (98%)
-- INFERRED: 5 (2%)
+- EXTRACTED: 348 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

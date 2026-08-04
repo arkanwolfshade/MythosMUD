@@ -1,49 +1,56 @@
 # logout command commands
 
-> 27 nodes
+> 34 nodes
 
 ## Key Concepts
 
-- **TestLogoutCommand** (13 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **Any** (8 connections)
-- **.test_logout_command_success()** (4 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **.test_logout_command_persists_position()** (4 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **.test_logout_command_no_persistence()** (4 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **.test_logout_command_persistence_error()** (4 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **.test_logout_command_connection_error()** (4 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **.test_logout_command_with_args()** (4 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **.test_logout_command_player_not_found()** (4 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **.test_logout_command_general_error_handling()** (4 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **test_logout_command.py** (3 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **.mock_request()** (2 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **.mock_current_user()** (2 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **.mock_alias_storage()** (2 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **Unit tests for the logout command handler.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **Test cases for the logout command handler.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **Create a mock request object.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **Create a mock current user.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **Create a mock alias storage.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **Test successful logout command execution.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **Ensure logout syncs in-memory position back to persistence.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **Test logout command when persistence is not available.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **Test logout command when persistence operations fail.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **Test logout command when connection cleanup fails.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **Test logout command with arguments (should be ignored).** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
-- *... and 2 more nodes in this community*
+- **container_helpers_inventory_find.py** (32 connections) — `server/commands/container_helpers_inventory_find.py`
+- **UUID** (16 connections)
+- **try_wearable_container_service()** (14 connections) — `server/commands/container_helpers_inventory_find.py`
+- **try_wearable_container_service_by_instance_id()** (13 connections) — `server/commands/container_helpers_inventory_find.py`
+- **create_wearable_container()** (12 connections) — `server/commands/container_helpers_inventory_find.py`
+- **try_wearable_container_service_by_name()** (11 connections) — `server/commands/container_helpers_inventory_find.py`
+- **find_wearable_container_for_put()** (10 connections) — `server/commands/container_helpers_inventory_find.py`
+- **_get_container_pair()** (9 connections) — `server/commands/container_helpers_inventory_find.py`
+- **_try_put_container_for_equipped_item()** (9 connections) — `server/commands/container_helpers_inventory_find.py`
+- **_container_uuid()** (5 connections) — `server/commands/container_helpers_inventory_find.py`
+- **Player** (5 connections)
+- **container_id()** (5 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
+- **_component_metadata()** (4 connections) — `server/commands/container_helpers_inventory_find.py`
+- **_resolve_inner_uuid()** (4 connections) — `server/commands/container_helpers_inventory_find.py`
+- **_container_from_equip_dict()** (4 connections) — `server/commands/container_helpers_inventory_find.py`
+- **_fallback_create_equipment_container()** (4 connections) — `server/commands/container_helpers_inventory_find.py`
+- **test_try_wearable_container_service_finds_component()** (3 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
+- **test_try_wearable_container_service_swallows_service_error()** (3 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
+- **_wearable_put_metadata_matches()** (2 connections) — `server/commands/container_helpers_inventory_find.py`
+- **_wearable_get_name_slot_matches()** (2 connections) — `server/commands/container_helpers_inventory_find.py`
+- **_instance_id_matches_metadata()** (2 connections) — `server/commands/container_helpers_inventory_find.py`
+- **test_try_wearable_by_instance_id_match()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
+- **test_try_wearable_by_instance_id_empty_id()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
+- **test_try_wearable_by_instance_id_no_components()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
+- **test_try_wearable_by_name_slot_metadata()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [commands logout rationale](commands_logout_rationale.md) (8 shared connections)
-- [commands emote rationale](commands_emote_rationale.md) (1 shared connections)
+- [container find inventory](container_find_inventory.md) (38 shared connections)
+- [services admin auth](services_admin_auth.md) (7 shared connections)
+- [container helpers endpoints](container_helpers_endpoints.md) (4 shared connections)
+- [combat models rationale](combat_models_rationale.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (1 shared connections)
+- [commands inventory pickup](commands_inventory_pickup.md) (1 shared connections)
+- [Exception Containers](Exception_Containers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_logout_command.py`
+- `server/commands/container_helpers_inventory_find.py`
+- `server/tests/unit/api/test_container_exception_handlers.py`
+- `server/tests/unit/commands/test_container_helpers_inventory_find.py`
 
 ## Audit Trail
 
-- EXTRACTED: 67 (89%)
-- INFERRED: 8 (11%)
+- EXTRACTED: 179 (96%)
+- INFERRED: 7 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

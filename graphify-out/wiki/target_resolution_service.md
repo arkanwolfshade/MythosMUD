@@ -1,70 +1,65 @@
 # target resolution service
 
-> 290 nodes
+> 167 nodes
 
 ## Key Concepts
 
-- **TargetMatch** (122 connections) — `server/schemas/shared/target_resolution.py`
 - **TargetResolutionService** (53 connections) — `server/services/target_resolution_service.py`
-- **TargetResolutionResult** (39 connections) — `server/schemas/shared/target_resolution.py`
-- **test_combat_handler.py** (37 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **SpellTargetingService** (31 connections) — `server/game/magic/spell_targeting.py`
-- **TargetType** (31 connections) — `server/schemas/shared/target_resolution.py`
+- **TargetResolutionResult** (42 connections) — `server/schemas/shared/target_resolution.py`
+- **test_target_resolution_service.py** (40 connections) — `server/tests/unit/services/test_target_resolution_service.py`
+- **TargetType** (39 connections) — `server/schemas/shared/target_resolution.py`
 - **target_resolution_service.py** (27 connections) — `server/services/target_resolution_service.py`
-- **test_target_resolution_service.py** (27 connections) — `server/tests/unit/services/test_target_resolution_service.py`
-- **spell_targeting.py** (25 connections) — `server/game/magic/spell_targeting.py`
-- **test_follow_commands.py** (23 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **_handler_with_persistence()** (20 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **handle_follow_command()** (18 connections) — `server/commands/follow_commands.py`
+- **TargetMetadata** (16 connections) — `server/schemas/shared/target_metadata.py`
 - **test_target_resolution.py** (16 connections) — `server/tests/unit/schemas/test_target_resolution.py`
-- **follow_commands.py** (15 connections) — `server/commands/follow_commands.py`
-- **TargetMetadata** (12 connections) — `server/schemas/shared/target_metadata.py`
-- **_make_container()** (12 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **_make_request()** (12 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **__init__.py** (12 connections) — `server/schemas/shared/__init__.py`
 - **target_resolution.py** (11 connections) — `server/schemas/shared/target_resolution.py`
-- **handle_unfollow_command()** (10 connections) — `server/commands/follow_commands.py`
-- **handle_following_command()** (10 connections) — `server/commands/follow_commands.py`
-- **_AppStatePersistence** (10 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **_AppWithPersistence** (10 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **_initialize_spell_targeting_service()** (9 connections) — `server/app/lifespan_magic.py`
-- **.resolve_spell_target()** (9 connections) — `server/game/magic/spell_targeting.py`
 - **.resolve_target()** (9 connections) — `server/services/target_resolution_service.py`
-- *... and 265 more nodes in this community*
+- **._search_npcs_in_room()** (8 connections) — `server/services/target_resolution_service.py`
+- **PersistenceProtocol** (7 connections) — `server/services/target_resolution_service.py`
+- **._gather_room_target_matches()** (7 connections) — `server/services/target_resolution_service.py`
+- **._search_players_in_room()** (7 connections) — `server/services/target_resolution_service.py`
+- **._match_npcs_by_name()** (7 connections) — `server/services/target_resolution_service.py`
+- **UUID** (6 connections)
+- **.get_room_by_id()** (6 connections) — `server/services/target_resolution_service.py`
+- **._get_player_from_persistence()** (6 connections) — `server/services/target_resolution_service.py`
+- **._validate_player_and_room()** (6 connections) — `server/services/target_resolution_service.py`
+- **._load_npc_ids_with_room_fallback()** (6 connections) — `server/services/target_resolution_service.py`
+- **target_metadata.py** (5 connections) — `server/schemas/shared/target_metadata.py`
+- **.get_player_by_id()** (5 connections) — `server/services/target_resolution_service.py`
+- **Player** (5 connections)
+- **PlayerServiceProtocol** (5 connections) — `server/services/target_resolution_service.py`
+- **._build_target_result()** (5 connections) — `server/services/target_resolution_service.py`
+- *... and 142 more nodes in this community*
 
 ## Relationships
 
-- [game models player](game_models_player.md) (58 shared connections)
-- [NPC Combat](NPC_Combat.md) (39 shared connections)
-- [spell game magic](spell_game_magic.md) (21 shared connections)
-- [websocket handler realtime](websocket_handler_realtime.md) (16 shared connections)
-- [command factories exploration](command_factories_exploration.md) (15 shared connections)
-- [commands admin mute](commands_admin_mute.md) (13 shared connections)
-- [Item Instances](Item_Instances.md) (11 shared connections)
-- [command inventory factories](command_inventory_factories.md) (10 shared connections)
-- [Error Conversion](Error_Conversion.md) (7 shared connections)
+- [NPC Combat](NPC_Combat.md) (34 shared connections)
+- [spell game magic](spell_game_magic.md) (31 shared connections)
+- [commands position system](commands_position_system.md) (10 shared connections)
 - [models player related](models_player_related.md) (6 shared connections)
-- [combat flee commands](combat_flee_commands.md) (5 shared connections)
-- [command factories create](command_factories_create.md) (4 shared connections)
+- [services ascii map](services_ascii_map.md) (5 shared connections)
+- [game models player](game_models_player.md) (5 shared connections)
+- [logging file setup](logging_file_setup.md) (4 shared connections)
+- [uuid npc combat](uuid_npc_combat.md) (4 shared connections)
+- [message filtering helpers](message_filtering_helpers.md) (3 shared connections)
+- [party service game](party_service_game.md) (3 shared connections)
+- [coercion int inventory](coercion_int_inventory.md) (3 shared connections)
+- [Error Conversion](Error_Conversion.md) (3 shared connections)
 
 ## Source Files
 
-- `server/app/lifespan_magic.py`
-- `server/commands/follow_commands.py`
-- `server/game/magic/spell_targeting.py`
+- `server/schemas/shared/__init__.py`
 - `server/schemas/shared/target_metadata.py`
 - `server/schemas/shared/target_resolution.py`
 - `server/services/target_resolution_service.py`
 - `server/tests/unit/commands/test_combat_handler.py`
-- `server/tests/unit/commands/test_follow_commands.py`
-- `server/tests/unit/game/magic/test_spell_effects.py`
 - `server/tests/unit/schemas/test_target_resolution.py`
-- `server/tests/unit/services/test_damage_grace_period.py`
 - `server/tests/unit/services/test_target_resolution_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1171 (94%)
-- INFERRED: 77 (6%)
+- EXTRACTED: 588 (94%)
+- INFERRED: 35 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

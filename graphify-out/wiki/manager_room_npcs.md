@@ -1,32 +1,42 @@
 # manager room npcs
 
-> 10 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **TestProcessAliasExpansion** (6 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **.test_process_alias_expansion_no_alias_storage()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **.test_process_alias_expansion_no_alias()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **.test_process_alias_expansion_unsafe_alias()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **.test_process_alias_expansion_invalid_expanded()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _process_alias_expansion function.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _process_alias_expansion returns None when no alias storage.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _process_alias_expansion returns None when alias not found.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _process_alias_expansion returns error for unsafe alias.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _process_alias_expansion returns error for invalid expanded command.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **SpellMaterialsService** (17 connections) — `server/game/magic/spell_materials.py`
+- **.consume_materials()** (8 connections) — `server/game/magic/spell_materials.py`
+- **.check_materials()** (4 connections) — `server/game/magic/spell_materials.py`
+- **._process_material_requirement()** (4 connections) — `server/game/magic/spell_materials.py`
+- **Any** (4 connections)
+- **._consume_material_item()** (4 connections) — `server/game/magic/spell_materials.py`
+- **._build_final_inventory()** (4 connections) — `server/game/magic/spell_materials.py`
+- **.__init__()** (3 connections) — `server/game/magic/spell_materials.py`
+- **UUID** (3 connections)
+- **Service for handling spell material requirements.      Handles checking if playe** (1 connections) — `server/game/magic/spell_materials.py`
+- **Initialize the spell materials service.          Args:             player_servic** (1 connections) — `server/game/magic/spell_materials.py`
+- **Check if player has all required materials.          Args:             player_id** (1 connections) — `server/game/magic/spell_materials.py`
+- **Process a single material requirement.          Args:             material: Mate** (1 connections) — `server/game/magic/spell_materials.py`
+- **Consume a material item.          Args:             item: Inventory item** (1 connections) — `server/game/magic/spell_materials.py`
+- **Build final inventory with consumed materials removed.          Args:** (1 connections) — `server/game/magic/spell_materials.py`
+- **Consume spell materials from player inventory.          Args:             player** (1 connections) — `server/game/magic/spell_materials.py`
 
 ## Relationships
 
-- [command commands handler](command_commands_handler.md) (5 shared connections)
+- [NPC Combat](NPC_Combat.md) (7 shared connections)
+- [spell game magic](spell_game_magic.md) (3 shared connections)
+- [game models player](game_models_player.md) (2 shared connections)
+- [subject nats manager](subject_nats_manager.md) (1 shared connections)
+- [player respawn event](player_respawn_event.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_aliases.py`
+- `server/game/magic/spell_materials.py`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 53 (91%)
+- INFERRED: 5 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

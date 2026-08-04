@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **.get_command_help()** (2 connections) — `server/utils/command_parser.py`
-- **Get help information for commands.          Args:             command_name: Spec** (1 connections) — `server/utils/command_parser.py`
+- **test_subscribe_to_event_subjects_partial_failure()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **Test subscribe_to_event_subjects handles partial failure.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
 
 ## Relationships
 
-- [player effects endpoints](player_effects_endpoints.md) (1 shared connections)
+- [commands communication say](commands_communication_say.md) (1 shared connections)
+- [subzone realtime nats](subzone_realtime_nats.md) (1 shared connections)
 
 ## Source Files
 
-- `server/utils/command_parser.py`
+- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

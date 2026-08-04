@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_sanitize_unicode_input_mojibake()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **Test sanitizing mojibake (double-encoded text).** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_track_player_subzone_subscription()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **Test track_player_subzone_subscription tracks subscription.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Relationships
 
-- [Security Validator Tests](Security_Validator_Tests.md) (1 shared connections)
-- [command communication models](command_communication_models.md) (1 shared connections)
+- [nats message handler](nats_message_handler.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_security_validator.py`
+- `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

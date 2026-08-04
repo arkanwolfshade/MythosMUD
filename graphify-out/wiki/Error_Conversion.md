@@ -1,78 +1,75 @@
 # Error Conversion
 
-> 387 nodes
+> 277 nodes
 
 ## Key Concepts
 
-- **ApplicationContainer** (140 connections) — `server/container/main.py`
-- **game.py** (42 connections) — `server/container/bundles/game.py`
-- **GameBundle** (41 connections) — `server/container/bundles/game.py`
-- **.initialize()** (35 connections) — `server/container/bundles/game.py`
-- **.get_instance()** (35 connections) — `server/container/main.py`
-- **PrototypeRegistry** (35 connections) — `server/game/items/prototype_registry.py`
-- **main.py** (33 connections) — `server/container/main.py`
-- **ItemPrototypeModel** (28 connections) — `server/game/items/models.py`
-- **ScheduleEntry** (28 connections) — `server/schemas/calendar/calendar.py`
-- **ScheduleService** (28 connections) — `server/services/schedule_service.py`
-- **test_application_container.py** (26 connections) — `server/tests/unit/test_application_container.py`
-- **schedule_service.py** (25 connections) — `server/services/schedule_service.py`
-- **resolve_weapon_attack_from_equipped()** (22 connections) — `server/game/weapons.py`
-- **__init__.py** (19 connections) — `server/container/bundles/__init__.py`
-- **magic.py** (19 connections) — `server/container/bundles/magic.py`
-- **prototype_registry.py** (19 connections) — `server/game/items/prototype_registry.py`
-- **PrototypeRegistryError** (19 connections) — `server/game/items/prototype_registry.py`
-- **core.py** (18 connections) — `server/container/bundles/core.py`
-- **MagicBundle** (18 connections) — `server/container/bundles/magic.py`
-- **test_weapons.py** (18 connections) — `server/tests/unit/game/test_weapons.py`
-- **RealtimeBundle** (17 connections) — `server/container/bundles/realtime.py`
-- **get_container()** (17 connections) — `server/container/main.py`
-- **normalize_environment()** (15 connections) — `server/utils/project_paths.py`
-- **CoreBundle** (14 connections) — `server/container/bundles/core.py`
-- **npc.py** (14 connections) — `server/container/bundles/npc.py`
-- *... and 362 more nodes in this community*
+- **EventBus** (159 connections) — `server/events/event_bus.py`
+- **NPCBase** (83 connections) — `server/npc/npc_base.py`
+- **NPCSpawningService** (67 connections) — `server/npc/spawning_service.py`
+- **test_spawning_modules.py** (41 connections) — `server/tests/unit/npc/test_spawning_modules.py`
+- **spawning_service.py** (38 connections) — `server/npc/spawning_service.py`
+- **event_bus.py** (31 connections) — `server/events/event_bus.py`
+- **spawning_instance_factory.py** (25 connections) — `server/npc/spawning_instance_factory.py`
+- **spawning_request_execution.py** (20 connections) — `server/npc/spawning_request_execution.py`
+- **behaviors.py** (17 connections) — `server/npc/behaviors.py`
+- **SimpleNPCDefinition** (17 connections) — `server/npc/spawning_models.py`
+- **NPCSpawnRequest** (17 connections) — `server/npc/spawning_models.py`
+- **spawn_npc_from_request()** (17 connections) — `server/npc/spawning_request_execution.py`
+- **party_service.py** (16 connections) — `server/game/party_service.py`
+- **create_npc_instance()** (16 connections) — `server/npc/spawning_instance_factory.py`
+- **NPCSpawnResult** (16 connections) — `server/npc/spawning_models.py`
+- **NPCSpawnStatistics** (16 connections) — `server/npc/spawning_service.py`
+- **spawning_models.py** (13 connections) — `server/npc/spawning_models.py`
+- **test_follow_flow.py** (13 connections) — `server/tests/integration/test_follow_flow.py`
+- **PartyUpdated** (12 connections) — `server/events/event_types.py`
+- **Party** (12 connections) — `server/game/party_service.py`
+- **shopkeeper_npc.py** (12 connections) — `server/npc/shopkeeper_npc.py`
+- **.event_bus()** (12 connections) — `server/realtime/connection_manager.py`
+- **test_party_flow.py** (12 connections) — `server/tests/integration/test_party_flow.py`
+- **Any** (10 connections)
+- **generate_npc_id()** (10 connections) — `server/npc/spawning_instance_factory.py`
+- *... and 252 more nodes in this community*
 
 ## Relationships
 
-- [command inventory factories](command_inventory_factories.md) (45 shared connections)
-- [time service rationale](time_service_rationale.md) (32 shared connections)
-- [game models player](game_models_player.md) (26 shared connections)
-- [holiday service services](holiday_service_services.md) (25 shared connections)
-- [NPC Combat](NPC_Combat.md) (20 shared connections)
-- [Database Config](Database_Config.md) (20 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (19 shared connections)
-- [Magic Spell Service](Magic_Spell_Service.md) (16 shared connections)
-- [command base models](command_base_models.md) (12 shared connections)
-- [Item Instances](Item_Instances.md) (11 shared connections)
-- [command inventory models](command_inventory_models.md) (8 shared connections)
-- [item models rationale](item_models_rationale.md) (8 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (104 shared connections)
+- [NPC Combat](NPC_Combat.md) (35 shared connections)
+- [container events rationale](container_events_rationale.md) (24 shared connections)
+- [item models rationale](item_models_rationale.md) (16 shared connections)
+- [services nats service](services_nats_service.md) (15 shared connections)
+- [party game service](party_game_service.md) (14 shared connections)
+- [models npc rationale](models_npc_rationale.md) (13 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (9 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (8 shared connections)
+- [command input commands](command_input_commands.md) (8 shared connections)
+- [rate limiter realtime](rate_limiter_realtime.md) (8 shared connections)
+- [party service game](party_service_game.md) (7 shared connections)
 
 ## Source Files
 
-- `server/container/__init__.py`
-- `server/container/bundles/__init__.py`
-- `server/container/bundles/chat.py`
-- `server/container/bundles/core.py`
-- `server/container/bundles/game.py`
-- `server/container/bundles/magic.py`
-- `server/container/bundles/monitoring.py`
-- `server/container/bundles/npc.py`
-- `server/container/bundles/realtime.py`
-- `server/container/bundles/time.py`
-- `server/container/main.py`
-- `server/container/utils.py`
-- `server/events/distributed_event_bus.py`
-- `server/game/items/__init__.py`
-- `server/game/items/component_hooks.py`
-- `server/game/items/constants.py`
-- `server/game/items/item_factory.py`
-- `server/game/items/item_instance.py`
-- `server/game/items/models.py`
-- `server/game/items/prototype_registry.py`
+- `server/events/event_bus.py`
+- `server/events/event_types.py`
+- `server/game/party_service.py`
+- `server/npc/behaviors.py`
+- `server/npc/npc_base.py`
+- `server/npc/passive_mob_npc.py`
+- `server/npc/shopkeeper_npc.py`
+- `server/npc/spawning_instance_factory.py`
+- `server/npc/spawning_models.py`
+- `server/npc/spawning_request_execution.py`
+- `server/npc/spawning_service.py`
+- `server/realtime/connection_manager.py`
+- `server/tests/integration/test_follow_flow.py`
+- `server/tests/integration/test_party_flow.py`
+- `server/tests/unit/events/test_event_bus.py`
+- `server/tests/unit/npc/test_spawning_modules.py`
+- `server/tests/unit/services/test_npc_instance_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1624 (91%)
-- INFERRED: 160 (9%)
+- EXTRACTED: 1202 (91%)
+- INFERRED: 116 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

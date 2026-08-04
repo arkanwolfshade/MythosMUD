@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_handle_stop_command_success()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test stop command success.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **.reset_player_limits()** (2 connections) — `server/services/rate_limiter.py`
+- **Reset rate limiting for a player.          Args:             player_id: Player I** (1 connections) — `server/services/rate_limiter.py`
 
 ## Relationships
 
-- [commands magic rationale](commands_magic_rationale.md) (1 shared connections)
+- [event events serialization](event_events_serialization.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `server/services/rate_limiter.py`
 
 ## Audit Trail
 

@@ -4,38 +4,42 @@
 
 ## Key Concepts
 
-- **cleanup_dead_websocket_impl()** (14 connections) — `server/realtime/connection_delegates.py`
-- **_WebsocketCleanupManager** (7 connections) — `server/realtime/connection_delegates.py`
-- **_remove_connection_from_player_list()** (5 connections) — `server/realtime/connection_delegates.py`
-- **test_cleanup_dead_websocket_impl_success()** (3 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
-- **test_cleanup_dead_websocket_impl_none_websocket()** (3 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
-- **test_cleanup_dead_websocket_impl_not_in_active()** (3 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
-- **test_cleanup_dead_websocket_impl_close_timeout()** (3 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
-- **test_cleanup_dead_websocket_impl_error()** (3 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
-- **ConnectionManager surface used by cleanup_dead_websocket_impl.** (1 connections) — `server/realtime/connection_delegates.py`
-- **Drop connection_id from player_websockets; delete empty player entries.** (1 connections) — `server/realtime/connection_delegates.py`
-- **Clean up a dead WebSocket connection.      Args:         player_id: The player's** (1 connections) — `server/realtime/connection_delegates.py`
-- **Test cleanup_dead_websocket_impl() successfully cleans up websocket.** (1 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
-- **Test cleanup_dead_websocket_impl() handles None websocket.** (1 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
-- **Test cleanup_dead_websocket_impl() handles websocket not in active_websockets.** (1 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
-- **Test cleanup_dead_websocket_impl() handles close timeout.** (1 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
-- **Test cleanup_dead_websocket_impl() handles errors.** (1 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
+- **.load_from_path()** (13 connections) — `server/game/items/prototype_registry.py`
+- **validate_prototypes.py** (8 connections) — `server/scripts/validate_prototypes.py`
+- **.get()** (6 connections) — `server/game/items/prototype_registry.py`
+- **Path** (5 connections)
+- **test_load_from_path_missing_directory()** (4 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
+- **parse_arguments()** (3 connections) — `server/scripts/validate_prototypes.py`
+- **main()** (3 connections) — `server/scripts/validate_prototypes.py`
+- **test_load_from_path_valid_json()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
+- **test_load_from_path_invalid_json()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
+- **test_load_from_path_validation_error()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
+- **test_load_from_path_durability_anomaly()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
+- **Path** (1 connections)
+- **Load item prototypes from JSON files in a directory.          Args:** (1 connections) — `server/game/items/prototype_registry.py`
+- **Get a prototype by ID.          Args:             prototype_id: The ID of the pr** (1 connections) — `server/game/items/prototype_registry.py`
+- **Namespace** (1 connections)
+- **CLI entrypoint for validating MythosMUD item prototype definitions.** (1 connections) — `server/scripts/validate_prototypes.py`
 
 ## Relationships
 
-- [connection realtime delegates](connection_realtime_delegates.md) (12 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (4 shared connections)
-- [persistence container rationale](persistence_container_rationale.md) (1 shared connections)
+- [MapView GameClientV2ContainerView Tabbed](MapView_GameClientV2ContainerView_Tabbed.md) (9 shared connections)
+- [npc spawn validator](npc_spawn_validator.md) (4 shared connections)
+- [connection cleaner realtime](connection_cleaner_realtime.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [room cache services](room_cache_services.md) (1 shared connections)
+- [stats game generator](stats_game_generator.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_delegates.py`
-- `server/tests/unit/realtime/test_connection_delegates.py`
+- `server/game/items/prototype_registry.py`
+- `server/scripts/validate_prototypes.py`
+- `server/tests/unit/game/items/test_prototype_registry.py`
 
 ## Audit Trail
 
-- EXTRACTED: 47 (96%)
-- INFERRED: 2 (4%)
+- EXTRACTED: 57 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

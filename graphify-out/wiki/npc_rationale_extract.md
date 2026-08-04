@@ -4,50 +4,47 @@
 
 ## Key Concepts
 
-- **command_input.py** (14 connections) — `server/command_handler/command_input.py`
-- **normalize_command()** (12 connections) — `server/command_handler/command_input.py`
-- **TestCommandNormalization** (12 connections) — `server/tests/unit/commands/test_command_input.py`
-- **clean_command_input()** (10 connections) — `server/command_handler/command_input.py`
-- **should_treat_as_emote()** (10 connections) — `server/command_handler/command_input.py`
-- **_is_predefined_emote()** (8 connections) — `server/command_handler/command_input.py`
-- **test_command_input.py** (8 connections) — `server/tests/unit/commands/test_command_input.py`
-- **TestEmoteDetection** (8 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_clean_command_input_basic()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_clean_command_input_multiple_spaces()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_clean_command_input_leading_trailing_whitespace()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_clean_command_input_tabs()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_normalize_command_no_slash()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_normalize_command_with_slash()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_normalize_command_empty()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_normalize_command_whitespace_only()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_normalize_command_slash_only()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_normalize_command_slash_with_spaces()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_is_predefined_emote_true()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_is_predefined_emote_false()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_is_predefined_emote_handles_error()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_should_treat_as_emote_system_command()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_should_treat_as_emote_unknown_word()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_should_treat_as_emote_predefined_emote()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
-- **Command Input Utilities for MythosMUD.  This module provides utilities for clean** (1 connections) — `server/command_handler/command_input.py`
+- **test_character_creation_service.py** (31 connections) — `server/tests/unit/game/test_character_creation_service.py`
+- **test_roll_character_stats_with_profession()** (3 connections) — `server/tests/unit/game/test_character_creation_service.py`
+- **test_roll_character_stats_with_class()** (3 connections) — `server/tests/unit/game/test_character_creation_service.py`
+- **test_roll_character_stats_without_class_or_profession()** (3 connections) — `server/tests/unit/game/test_character_creation_service.py`
+- **test_roll_character_stats_class_not_available()** (3 connections) — `server/tests/unit/game/test_character_creation_service.py`
+- **test_roll_character_stats_value_error()** (3 connections) — `server/tests/unit/game/test_character_creation_service.py`
+- **test_validate_character_stats_invalid_format()** (3 connections) — `server/tests/unit/game/test_character_creation_service.py`
+- **test_validate_character_stats_value_error()** (3 connections) — `server/tests/unit/game/test_character_creation_service.py`
+- **test_create_character_with_stats_validation_error()** (3 connections) — `server/tests/unit/game/test_character_creation_service.py`
+- **test_create_character_with_stats_pydantic_error()** (3 connections) — `server/tests/unit/game/test_character_creation_service.py`
+- **test_create_character_with_stats_value_error()** (3 connections) — `server/tests/unit/game/test_character_creation_service.py`
+- **test_roll_character_stats_profession_meets_requirements_false()** (3 connections) — `server/tests/unit/game/test_character_creation_service.py`
+- **mock_player_service()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
+- **sample_stats()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
+- **test_validate_character_stats_with_class()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
+- **test_validate_character_stats_without_class()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
+- **test_create_character_with_stats_success()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
+- **test_create_character_with_stats_with_user_id()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
+- **test_create_character_with_stats_custom_starting_room()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
+- **test_get_available_classes_info()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
+- **test_get_class_description_known_class()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
+- **test_get_class_description_unknown_class()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
+- **test_get_class_description_all_classes()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
+- **test_validate_character_stats_failed_prerequisites()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
+- **Unit tests for character creation service.  Tests the CharacterCreationService c** (1 connections) — `server/tests/unit/game/test_character_creation_service.py`
 - *... and 23 more nodes in this community*
 
 ## Relationships
 
-- [command commands handler](command_commands_handler.md) (6 shared connections)
-- [command validation commands](command_validation_commands.md) (4 shared connections)
-- [command inventory factories](command_inventory_factories.md) (4 shared connections)
-- [commands admin mute](commands_admin_mute.md) (3 shared connections)
-- [Item Instances](Item_Instances.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (8 shared connections)
+- [player service game](player_service_game.md) (6 shared connections)
+- [commands inventory put](commands_inventory_put.md) (4 shared connections)
 
 ## Source Files
 
-- `server/command_handler/command_input.py`
-- `server/tests/unit/commands/test_command_input.py`
+- `server/tests/unit/game/test_character_creation_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 154 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 102 (91%)
+- INFERRED: 10 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_handle_unequip_wearable_container_no_allowed_roles()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test handle_unequip_wearable_container when container has no allowed_roles.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_message_filtering_helper_init()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Test MessageFilteringHelper initialization.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Relationships
 
-- [wearable container service](wearable_container_service.md) (1 shared connections)
+- [message filtering realtime](message_filtering_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Audit Trail
 

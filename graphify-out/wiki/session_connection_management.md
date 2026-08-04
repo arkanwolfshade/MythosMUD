@@ -33,9 +33,10 @@
 
 ## Relationships
 
-- [Database Config](Database_Config.md) (6 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (5 shared connections)
 - [Room Broadcast](Room_Broadcast.md) (3 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
 
 ## Source Files
 

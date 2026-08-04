@@ -1,58 +1,49 @@
 # logging processors structured
 
-> 81 nodes
+> 44 nodes
 
 ## Key Concepts
 
-- **test_logging_processors.py** (36 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **set_global_player_service()** (17 connections) — `server/structured_logging/logging_processors.py`
-- **enhance_player_ids()** (17 connections) — `server/structured_logging/logging_processors.py`
-- **sanitize_sensitive_data()** (14 connections) — `server/structured_logging/logging_processors.py`
-- **logging_processors.py** (12 connections) — `server/structured_logging/logging_processors.py`
-- **configure_enhanced_structlog()** (11 connections) — `server/structured_logging/enhanced_logging_config.py`
-- **add_request_context()** (11 connections) — `server/structured_logging/logging_processors.py`
-- **update_logging_with_player_service()** (8 connections) — `server/structured_logging/enhanced_logging_config.py`
-- **add_correlation_id()** (8 connections) — `server/structured_logging/logging_processors.py`
-- **EventDict** (5 connections)
-- **test_enhance_player_ids_persistence_error()** (5 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **_EnhancePlayerIdsTls** (4 connections) — `server/structured_logging/logging_processors.py`
-- **test_enhance_player_ids_no_player_service()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_enhance_player_ids_player_found()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_enhance_player_ids_player_not_found()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_enhance_player_ids_invalid_uuid_format()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_enhance_player_ids_short_string()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_enhance_player_ids_non_string_value()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_enhance_player_ids_no_player_id_field()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_enhance_player_ids_player_no_name_attribute()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_enhance_player_ids_prevents_recursion()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_enhance_player_ids_no_persistence_attribute()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_set_global_player_service()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_sanitize_sensitive_data_password()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_sanitize_sensitive_data_token()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- *... and 56 more nodes in this community*
+- **test_player_occupant_processor.py** (26 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **mock_name_extractor()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_processor_init()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_ensure_player_included_in_list()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_ensure_player_included_in_list_already_present()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_convert_player_ids_to_uuids()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_create_player_occupant_info()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_process_players_for_occupants()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_ensure_player_included_in_list_none()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_convert_player_ids_to_uuids_value_error()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_convert_player_ids_to_uuids_mixed_types()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_convert_player_ids_to_uuids_already_uuid()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_create_player_occupant_info_invalid_name()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_create_player_occupant_info_linkdead()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_create_player_occupant_info_warded()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_create_player_occupant_info_both_indicators()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_create_player_occupant_info_online()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_create_player_occupant_info_default_level()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_process_players_for_occupants_with_player_not_found()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_process_players_for_occupants_with_invalid_name()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_process_players_for_occupants_with_uuid_ensure_player()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **Unit tests for player occupant processor.  Tests the PlayerOccupantProcessor cla** (1 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **Create mock connection manager.** (1 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **Create mock name extractor.** (1 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [command inventory factories](command_inventory_factories.md) (11 shared connections)
-- [Database Config](Database_Config.md) (4 shared connections)
-- [logging setup structured](logging_setup_structured.md) (2 shared connections)
-- [logging structured utilities](logging_structured_utilities.md) (2 shared connections)
-- [time service rationale](time_service_rationale.md) (1 shared connections)
-- [Magic Spell Service](Magic_Spell_Service.md) (1 shared connections)
-- [player guid formatter](player_guid_formatter.md) (1 shared connections)
-- [npc shopkeeper rationale](npc_shopkeeper_rationale.md) (1 shared connections)
-- [room websocket updates](room_websocket_updates.md) (1 shared connections)
+- [combat services turn](combat_services_turn.md) (3 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/structured_logging/enhanced_logging_config.py`
-- `server/structured_logging/logging_processors.py`
-- `server/tests/unit/structured_logging/test_logging_processors.py`
+- `server/tests/unit/realtime/test_player_occupant_processor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 269 (95%)
-- INFERRED: 13 (5%)
+- EXTRACTED: 90 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

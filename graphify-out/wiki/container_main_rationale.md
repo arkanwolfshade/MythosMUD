@@ -1,25 +1,28 @@
 # container main rationale
 
-> 2 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **.save_player()** (3 connections) — `server/game/magic/spell_effect_types.py`
-- **Persist player after spell mutations.** (1 connections) — `server/game/magic/spell_effect_types.py`
+- **game-terminal-integration.spec.tsx** (7 connections) — `client/src/components/__tests__/game-terminal-integration.spec.tsx`
+- **TerminalButtonProps** (1 connections) — `client/src/components/__tests__/game-terminal-integration.spec.tsx`
+- **TerminalInputProps** (1 connections) — `client/src/components/__tests__/game-terminal-integration.spec.tsx`
+- **Channel** (1 connections) — `client/src/components/__tests__/game-terminal-integration.spec.tsx`
+- **ChannelSelectorProps** (1 connections) — `client/src/components/__tests__/game-terminal-integration.spec.tsx`
+- **DraggablePanelProps** (1 connections) — `client/src/components/__tests__/game-terminal-integration.spec.tsx`
 
 ## Relationships
 
-- [spell game magic](spell_game_magic.md) (1 shared connections)
-- [quest game service](quest_game_service.md) (1 shared connections)
+- [game terminal lucidity](game_terminal_lucidity.md) (2 shared connections)
 
 ## Source Files
 
-- `server/game/magic/spell_effect_types.py`
+- `client/src/components/__tests__/game-terminal-integration.spec.tsx`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 12 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

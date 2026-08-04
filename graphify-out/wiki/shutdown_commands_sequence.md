@@ -1,53 +1,54 @@
 # shutdown commands sequence
 
-> 32 nodes
+> 49 nodes
 
 ## Key Concepts
 
-- **shutdown_sequence.py** (16 connections) — `server/commands/shutdown_sequence.py`
-- **execute_shutdown_sequence()** (13 connections) — `server/commands/shutdown_sequence.py`
-- **shutdown_process_termination.py** (11 connections) — `server/commands/shutdown_process_termination.py`
+- **test_shutdown_sequence.py** (26 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
+- **shutdown_sequence.py** (17 connections) — `server/commands/shutdown_sequence.py`
+- **execute_shutdown_sequence()** (15 connections) — `server/commands/shutdown_sequence.py`
+- **_ShutdownAppState** (14 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
+- **_ShutdownApp** (14 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
+- **_persist_all_players()** (8 connections) — `server/commands/shutdown_sequence.py`
 - **Any** (8 connections)
-- **schedule_process_termination()** (4 connections) — `server/commands/shutdown_process_termination.py`
-- **_persist_all_players()** (4 connections) — `server/commands/shutdown_sequence.py`
-- **_despawn_all_npcs()** (4 connections) — `server/commands/shutdown_sequence.py`
-- **_disconnect_all_players()** (4 connections) — `server/commands/shutdown_sequence.py`
-- **_stop_nats_message_handler()** (4 connections) — `server/commands/shutdown_sequence.py`
-- **_disconnect_nats_service()** (4 connections) — `server/commands/shutdown_sequence.py`
-- **_cleanup_connection_manager()** (4 connections) — `server/commands/shutdown_sequence.py`
-- **_cancel_background_tasks()** (4 connections) — `server/commands/shutdown_sequence.py`
-- **_find_uvicorn_processes()** (3 connections) — `server/commands/shutdown_process_termination.py`
-- **_terminate_uvicorn_processes()** (3 connections) — `server/commands/shutdown_process_termination.py`
-- **Any** (2 connections)
-- **_terminate_child_processes()** (2 connections) — `server/commands/shutdown_process_termination.py`
-- **_terminate_with_signals()** (2 connections) — `server/commands/shutdown_process_termination.py`
-- **Process termination utilities for graceful server shutdown.  This module handles** (1 connections) — `server/commands/shutdown_process_termination.py`
-- **Find all uvicorn processes using psutil.** (1 connections) — `server/commands/shutdown_process_termination.py`
-- **Terminate all uvicorn processes.** (1 connections) — `server/commands/shutdown_process_termination.py`
-- **Terminate all child processes of the current process.** (1 connections) — `server/commands/shutdown_process_termination.py`
-- **Fallback signal-based termination when psutil is not available.** (1 connections) — `server/commands/shutdown_process_termination.py`
-- **Schedule a best-effort graceful process termination after a short delay.      Th** (1 connections) — `server/commands/shutdown_process_termination.py`
-- **Shutdown sequence execution for graceful server shutdown.  This module handles t** (1 connections) — `server/commands/shutdown_sequence.py`
-- **Phase 1: Persist all active player data.** (1 connections) — `server/commands/shutdown_sequence.py`
-- *... and 7 more nodes in this community*
+- **_despawn_all_npcs()** (7 connections) — `server/commands/shutdown_sequence.py`
+- **_cancel_background_tasks()** (7 connections) — `server/commands/shutdown_sequence.py`
+- **_disconnect_all_players()** (6 connections) — `server/commands/shutdown_sequence.py`
+- **_stop_nats_message_handler()** (6 connections) — `server/commands/shutdown_sequence.py`
+- **_disconnect_nats_service()** (6 connections) — `server/commands/shutdown_sequence.py`
+- **_cleanup_connection_manager()** (6 connections) — `server/commands/shutdown_sequence.py`
+- **test_persist_all_players_database_error_on_player()** (6 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
+- **test_execute_shutdown_sequence_happy_path()** (5 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
+- **test_persist_all_players_no_connection_manager()** (5 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
+- **test_persist_all_players_player_not_found()** (5 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
+- **test_despawn_all_npcs_via_app_state_fallback()** (5 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
+- **test_despawn_all_npcs_no_services()** (5 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
+- **test_disconnect_all_players_string_uuid()** (5 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
+- **test_stop_nats_message_handler_missing()** (5 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
+- **test_disconnect_nats_service_os_error()** (5 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
+- **test_cleanup_connection_manager_missing()** (5 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
+- **test_cancel_background_tasks_timeout()** (5 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
+- **test_cancel_background_tasks_unregisters_shutdown_task()** (5 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
+- *... and 24 more nodes in this community*
 
 ## Relationships
 
-- [command inventory factories](command_inventory_factories.md) (4 shared connections)
-- [shutdown admin command](shutdown_admin_command.md) (3 shared connections)
-- [Database Config](Database_Config.md) (2 shared connections)
-- [npc shopkeeper rationale](npc_shopkeeper_rationale.md) (1 shared connections)
-- [time service rationale](time_service_rationale.md) (1 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (5 shared connections)
+- [eventLog projectorRoom roomMergeUtils](eventLog_projectorRoom_roomMergeUtils.md) (3 shared connections)
+- [health monitor realtime](health_monitor_realtime.md) (2 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
 
 ## Source Files
 
 - `server/commands/shutdown_process_termination.py`
 - `server/commands/shutdown_sequence.py`
+- `server/tests/unit/commands/test_shutdown_sequence.py`
 
 ## Audit Trail
 
-- EXTRACTED: 107 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 226 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

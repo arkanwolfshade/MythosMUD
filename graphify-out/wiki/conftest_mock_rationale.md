@@ -1,29 +1,38 @@
 # conftest mock rationale
 
-> 6 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **TestGetMagicService** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_magic_service_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_magic_service_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Tests for get_magic_service dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_magic_service returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_magic_service raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.call()** (9 connections) — `server/realtime/circuit_breaker.py`
+- **._transition_to()** (6 connections) — `server/realtime/circuit_breaker.py`
+- **._on_success()** (4 connections) — `server/realtime/circuit_breaker.py`
+- **._on_failure()** (4 connections) — `server/realtime/circuit_breaker.py`
+- **._time_until_retry()** (4 connections) — `server/realtime/circuit_breaker.py`
+- **.get_stats()** (4 connections) — `server/realtime/circuit_breaker.py`
+- **._should_attempt_reset()** (3 connections) — `server/realtime/circuit_breaker.py`
+- **Any** (2 connections)
+- **Execute function through circuit breaker.          Enforces circuit breaker logi** (1 connections) — `server/realtime/circuit_breaker.py`
+- **Handle successful function call.          Updates state based on current circuit** (1 connections) — `server/realtime/circuit_breaker.py`
+- **Handle failed function call.          Updates state based on failure count:** (1 connections) — `server/realtime/circuit_breaker.py`
+- **Check if enough time has passed to attempt circuit reset.          Returns:** (1 connections) — `server/realtime/circuit_breaker.py`
+- **Calculate seconds until circuit can attempt reset.          Returns:** (1 connections) — `server/realtime/circuit_breaker.py`
+- **Transition circuit to new state.          Args:             new_state: State to** (1 connections) — `server/realtime/circuit_breaker.py`
+- **Get circuit breaker statistics.          Returns:             Dictionary with ci** (1 connections) — `server/realtime/circuit_breaker.py`
 
 ## Relationships
 
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (3 shared connections)
-- [command inventory models](command_inventory_models.md) (1 shared connections)
+- [websocket handler realtime](websocket_handler_realtime.md) (8 shared connections)
+- [config rationale config()](config_rationale_config%28%29.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_dependencies.py`
+- `server/realtime/circuit_breaker.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (93%)
-- INFERRED: 1 (7%)
+- EXTRACTED: 43 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

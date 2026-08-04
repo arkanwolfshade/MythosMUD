@@ -1,41 +1,55 @@
 # combat services initialization
 
-> 14 nodes
+> 32 nodes
 
 ## Key Concepts
 
-- **validate_alias_name()** (10 connections) — `server/validators/security_validator.py`
-- **.validate_alias_name_field()** (3 connections) — `server/models/command_alias.py`
-- **.validate_alias_name_field()** (3 connections) — `server/models/command_alias.py`
-- **test_validate_alias_name_empty()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_validate_alias_name_valid()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_validate_alias_name_rejects_invalid_format()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_validate_alias_name_rejects_hyphens()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **Validate alias name format using centralized validation.** (1 connections) — `server/models/command_alias.py`
-- **Validate alias name format using centralized validation.** (1 connections) — `server/models/command_alias.py`
-- **Test validating empty alias name.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **Test validating valid alias name.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **Test that validate_alias_name rejects invalid format.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **Test that validate_alias_name rejects hyphens.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **Centralized validation for alias name fields.      This function provides consis** (1 connections) — `server/validators/security_validator.py`
+- **CommandService** (20 connections) — `server/commands/command_service.py`
+- **._extract_parsed_fields()** (7 connections) — `server/commands/command_service.py`
+- **.process_command()** (6 connections) — `server/commands/command_service.py`
+- **._parse_command_string()** (5 connections) — `server/commands/command_service.py`
+- **Command** (5 connections)
+- **._prepare_command_data()** (5 connections) — `server/commands/command_service.py`
+- **._execute_command_handler()** (5 connections) — `server/commands/command_service.py`
+- **.process_validated_command()** (4 connections) — `server/commands/command_service.py`
+- **._fallback_parsed_fields()** (4 connections) — `server/commands/command_service.py`
+- **._log_parsed_command_inspection()** (4 connections) — `server/commands/command_service.py`
+- **._log_model_dump_result()** (3 connections) — `server/commands/command_service.py`
+- **.register_command_handler()** (3 connections) — `server/commands/command_service.py`
+- **command_service()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **.__init__()** (2 connections) — `server/commands/command_service.py`
+- **CommandHandler** (2 connections)
+- **.get_available_commands()** (2 connections) — `server/commands/command_service.py`
+- **.unregister_command_handler()** (2 connections) — `server/commands/command_service.py`
+- **Main command processing service for MythosMUD.      This service handles command** (1 connections) — `server/commands/command_service.py`
+- **Initialize the command service.** (1 connections) — `server/commands/command_service.py`
+- **Process a validated command with routing.          Args:             command_dat** (1 connections) — `server/commands/command_service.py`
+- **Parse and validate command string.          Returns:             tuple of (parse** (1 connections) — `server/commands/command_service.py`
+- **Prepare command_data dictionary by merging parsed command fields.          Retur** (1 connections) — `server/commands/command_service.py`
+- **Extract non-private, non-callable attributes from parsed_command, excluding keys** (1 connections) — `server/commands/command_service.py`
+- **Extract fields from parsed_command using model_dump or fallback method.** (1 connections) — `server/commands/command_service.py`
+- **Log parsed command object inspection details.** (1 connections) — `server/commands/command_service.py`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [Security Validator Tests](Security_Validator_Tests.md) (5 shared connections)
-- [feature services flag](feature_services_flag.md) (2 shared connections)
-- [command factories create](command_factories_create.md) (1 shared connections)
-- [command communication models](command_communication_models.md) (1 shared connections)
+- [commands npc admin](commands_npc_admin.md) (3 shared connections)
+- [commands whisper command](commands_whisper_command.md) (2 shared connections)
+- [health service services](health_service_services.md) (2 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [command commands handler](command_commands_handler.md) (1 shared connections)
+- [Security Validator Tests](Security_Validator_Tests.md) (1 shared connections)
+- [command parser rationale](command_parser_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/command_alias.py`
-- `server/tests/unit/validators/test_security_validator.py`
-- `server/validators/security_validator.py`
+- `server/commands/command_service.py`
+- `server/tests/unit/commands/test_command_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 34 (97%)
-- INFERRED: 1 (3%)
+- EXTRACTED: 97 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

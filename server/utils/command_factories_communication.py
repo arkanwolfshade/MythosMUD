@@ -50,11 +50,10 @@ class CommunicationCommandFactory:
                 raw_command=raw_command,
                 original_command=original_command,
             )
-            log_and_raise_enhanced(
-                MythosValidationError,
+            # Expected user-input miss; skip warning flood (e2e exercises this path).
+            raise MythosValidationError(
                 "You must provide a message to send locally",
-                args=args,
-                logger_name=__name__,
+                skip_log=True,
             )
         message = " ".join(args)
         if len(message) > 500:

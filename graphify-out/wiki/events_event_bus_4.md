@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_active_lucidity_service_init_with_now_provider()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **Test ActiveLucidityService initialization with custom now_provider.** (1 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_validate_movement_combat_blocks()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
+- **Test _validate_movement returns False when in combat.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
 
 ## Relationships
 
-- [commands admin mute](commands_admin_mute.md) (1 shared connections)
-- [lucidity active service](lucidity_active_service.md) (1 shared connections)
+- [movement service game](movement_service_game.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_active_lucidity_service.py`
+- `server/tests/unit/game/test_movement_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

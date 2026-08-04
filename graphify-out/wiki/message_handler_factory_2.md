@@ -1,52 +1,56 @@
 # message handler factory
 
-> 22 nodes
+> 54 nodes
 
 ## Key Concepts
 
-- **test_message_handler_factory.py** (21 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **MessageHandlerFactory** (18 connections) — `server/realtime/message_handler_factory.py`
-- **test_message_handler_factory_init()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **test_message_handler_factory_register_handler()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **test_message_handler_factory_get_handler_not_found()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **test_message_handler_factory_handle_message_success()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **test_message_handler_factory_handle_message_unknown_type()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **test_message_handler_factory_handle_message_no_type()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **test_message_handler_factory_get_supported_message_types()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **test_global_message_handler_factory()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **.get_supported_message_types()** (2 connections) — `server/realtime/message_handler_factory.py`
-- **Factory for creating and managing message handlers.      This factory pattern el** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Get a list of supported message types.          Returns:             List of sup** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Unit tests for message handler factory.  Tests the message_handler_factory modul** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **Test MessageHandlerFactory.__init__() initializes with default handlers.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **Test MessageHandlerFactory.register_handler() registers new handler.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **Test MessageHandlerFactory.get_handler() returns None when not found.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **Test MessageHandlerFactory.handle_message() successfully handles message.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **Test MessageHandlerFactory.handle_message() sends error for unknown type.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **Test MessageHandlerFactory.handle_message() handles message with no type.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **Test MessageHandlerFactory.get_supported_message_types() returns list of types.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **Test global message_handler_factory instance exists.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **test_player_event_handlers_state.py** (33 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **PlayerStateEventHandler** (14 connections) — `server/realtime/player_event_handlers_state.py`
+- **.__init__()** (5 connections) — `server/realtime/player_event_handlers_state.py`
+- **mock_utils()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **player_state_event_handler()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **test_handle_player_xp_awarded_success()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **test_handle_player_xp_awarded_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **test_handle_player_xp_awarded_player_not_found()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **test_handle_player_xp_awarded_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **test_handle_player_xp_awarded_player_no_current_room_id()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **test_handle_player_dp_updated_success()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **test_handle_player_dp_updated_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **test_handle_player_dp_updated_player_not_found()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **test_handle_player_dp_updated_player_no_get_stats()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **test_handle_player_dp_updated_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **mock_logger()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **test_player_state_event_handler_init()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **test_handle_player_died_success()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **test_handle_player_died_no_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **test_handle_player_died_no_death_location()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **test_handle_player_died_invalid_player_id()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **test_handle_player_died_error_handling()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **test_handle_player_dp_decay_success()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **test_handle_player_dp_decay_no_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- *... and 29 more nodes in this community*
 
 ## Relationships
 
-- [dead letter queue](dead_letter_queue.md) (6 shared connections)
-- [Error Handling Core](Error_Handling_Core.md) (2 shared connections)
-- [command commands aliases](command_commands_aliases.md) (2 shared connections)
-- [combat models rationale](combat_models_rationale.md) (2 shared connections)
-- [occupant formatter realtime](occupant_formatter_realtime.md) (2 shared connections)
-- [realtime message nats](realtime_message_nats.md) (2 shared connections)
-- [game chat moderation](game_chat_moderation.md) (1 shared connections)
-- [tsconfig src/**/* spec](tsconfig_src-__-__spec.md) (1 shared connections)
+- [room look commands](room_look_commands.md) (7 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (7 shared connections)
+- [item models rationale](item_models_rationale.md) (6 shared connections)
+- [player_event_handler_utils](player_event_handler_utils.md) (5 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (2 shared connections)
+- [schedule services service](schedule_services_service.md) (2 shared connections)
+- [event bus events](event_bus_events.md) (1 shared connections)
+- [NPC Combat](NPC_Combat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/message_handler_factory.py`
-- `server/tests/unit/realtime/test_message_handler_factory.py`
+- `server/realtime/player_event_handlers_state.py`
+- `server/tests/unit/realtime/test_player_event_handlers_state.py`
 
 ## Audit Trail
 
-- EXTRACTED: 74 (97%)
-- INFERRED: 2 (3%)
+- EXTRACTED: 136 (98%)
+- INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

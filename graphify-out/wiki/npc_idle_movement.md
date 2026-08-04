@@ -1,34 +1,30 @@
 # npc idle movement
 
-> 6 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **get_engine()** (9 connections) — `server/database_helpers.py`
-- **test_get_engine_raises_validation_error()** (5 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **test_get_engine()** (4 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **Get the database engine, initializing if necessary.      Returns:         AsyncE** (1 connections) — `server/database_helpers.py`
-- **Test get_engine returns engine from DatabaseManager.** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **Test get_engine raises ValidationError when database cannot be initialized.** (1 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **test_create_player_with_stats_name_exists()** (4 connections) — `server/tests/unit/game/test_player_service.py`
+- **.get_attribute_modifier()** (3 connections) — `server/models/game.py`
+- **Get the modifier for a given attribute (standard D&D-style calculation).** (1 connections) — `server/models/game.py`
+- **Test create_player_with_stats() when name already exists.** (1 connections) — `server/tests/unit/game/test_player_service.py`
 
 ## Relationships
 
-- [Database Access Layer](Database_Access_Layer.md) (3 shared connections)
-- [lucidity npc combat](lucidity_npc_combat.md) (3 shared connections)
-- [command inventory models](command_inventory_models.md) (2 shared connections)
-- [command commands talk](command_commands_talk.md) (1 shared connections)
-- [commands inventory put](commands_inventory_put.md) (1 shared connections)
-- [room persistence loader](room_persistence_loader.md) (1 shared connections)
+- [player service game](player_service_game.md) (2 shared connections)
+- [command factories communication](command_factories_communication.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [player event state](player_event_state.md) (1 shared connections)
 
 ## Source Files
 
-- `server/database_helpers.py`
-- `server/tests/unit/infrastructure/test_database_helpers.py`
+- `server/models/game.py`
+- `server/tests/unit/game/test_player_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 8 (89%)
+- INFERRED: 1 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

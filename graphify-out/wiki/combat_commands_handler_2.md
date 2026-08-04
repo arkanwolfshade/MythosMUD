@@ -1,54 +1,56 @@
 # combat commands handler
 
-> 66 nodes
+> 130 nodes
 
 ## Key Concepts
 
-- **test_npc_models.py** (33 connections) — `server/tests/unit/models/test_npc_models.py`
-- **NPCDefinitionType** (10 connections) — `server/models/npc.py`
-- **NPCRelationship** (9 connections) — `server/models/npc.py`
-- **Base** (6 connections) — `server/models/npc.py`
-- **test_npc_definition_creation()** (3 connections) — `server/tests/unit/models/test_npc_models.py`
-- **test_npc_definition_defaults()** (3 connections) — `server/tests/unit/models/test_npc_models.py`
-- **test_npc_definition_get_base_stats()** (3 connections) — `server/tests/unit/models/test_npc_models.py`
-- **test_npc_definition_get_base_stats_empty()** (3 connections) — `server/tests/unit/models/test_npc_models.py`
-- **test_npc_definition_set_base_stats()** (3 connections) — `server/tests/unit/models/test_npc_models.py`
-- **test_npc_definition_get_behavior_config()** (3 connections) — `server/tests/unit/models/test_npc_models.py`
-- **test_npc_definition_set_behavior_config()** (3 connections) — `server/tests/unit/models/test_npc_models.py`
-- **test_npc_definition_get_ai_integration_stub()** (3 connections) — `server/tests/unit/models/test_npc_models.py`
-- **test_npc_definition_set_ai_integration_stub()** (3 connections) — `server/tests/unit/models/test_npc_models.py`
-- **test_npc_definition_is_required()** (3 connections) — `server/tests/unit/models/test_npc_models.py`
-- **test_npc_definition_can_spawn()** (3 connections) — `server/tests/unit/models/test_npc_models.py`
-- **test_npc_definition_repr()** (3 connections) — `server/tests/unit/models/test_npc_models.py`
-- **test_npc_spawn_rule_creation()** (3 connections) — `server/tests/unit/models/test_npc_models.py`
-- **test_npc_spawn_rule_get_spawn_conditions()** (3 connections) — `server/tests/unit/models/test_npc_models.py`
-- **test_npc_spawn_rule_set_spawn_conditions()** (3 connections) — `server/tests/unit/models/test_npc_models.py`
-- **test_npc_spawn_rule_can_spawn_with_population()** (3 connections) — `server/tests/unit/models/test_npc_models.py`
-- **test_npc_spawn_rule_check_spawn_conditions()** (3 connections) — `server/tests/unit/models/test_npc_models.py`
-- **test_npc_spawn_rule_check_spawn_conditions_multiple()** (3 connections) — `server/tests/unit/models/test_npc_models.py`
-- **test_npc_spawn_rule_repr()** (3 connections) — `server/tests/unit/models/test_npc_models.py`
-- **test_npc_relationship_creation()** (3 connections) — `server/tests/unit/models/test_npc_models.py`
-- **test_npc_relationship_repr()** (3 connections) — `server/tests/unit/models/test_npc_models.py`
-- *... and 41 more nodes in this community*
+- **test_nats_service.py** (76 connections) — `server/tests/unit/services/test_nats_service.py`
+- **NATSMetrics** (31 connections) — `server/services/nats_metrics.py`
+- **nats_service()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_service_init_with_config()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
+- **nats_metrics.py** (4 connections) — `server/services/nats_metrics.py`
+- **test_nats_service_init_with_subject_manager()** (4 connections) — `server/tests/unit/services/test_nats_service.py`
+- **.get_metrics()** (3 connections) — `server/services/nats_metrics.py`
+- **nats_config()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_init()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_record_publish_success()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_record_publish_error()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_record_subscribe_success()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_record_subscribe_error()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_record_batch_flush_success()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_record_batch_flush_error()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_update_connection_health()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_update_connection_health_clamped()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_update_pool_utilization()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_update_pool_utilization_clamped()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_get_metrics()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_get_metrics_empty_processing_times()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_message_processing_times_maxlen()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_service_init_connection_pool()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_service_init_message_batch()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_unsubscribe_not_found()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- *... and 105 more nodes in this community*
 
 ## Relationships
 
-- [Realtime Subscribers](Realtime_Subscribers.md) (18 shared connections)
-- [models npc rationale](models_npc_rationale.md) (9 shared connections)
-- [calendar schemas validate](calendar_schemas_validate.md) (3 shared connections)
-- [world models rationale](world_models_rationale.md) (2 shared connections)
-- [admin auth service](admin_auth_service.md) (1 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [combat validator validators](combat_validator_validators.md) (18 shared connections)
+- [nats exceptions services](nats_exceptions_services.md) (10 shared connections)
+- [connection state machine](connection_state_machine.md) (3 shared connections)
+- [taunt combat commands](taunt_combat_commands.md) (2 shared connections)
+- [manager subject services](manager_subject_services.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (1 shared connections)
+- [metrics schemas rationale](metrics_schemas_rationale.md) (1 shared connections)
+- [nats services service](nats_services_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/npc.py`
-- `server/tests/unit/models/test_npc_models.py`
+- `server/services/nats_metrics.py`
+- `server/tests/unit/services/test_nats_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 170 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 319 (97%)
+- INFERRED: 9 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

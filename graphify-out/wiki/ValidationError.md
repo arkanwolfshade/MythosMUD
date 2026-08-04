@@ -1,8 +1,8 @@
 # ValidationError
 
-> God node · 541 connections · `server/exceptions.py`
+> God node · 582 connections · `server/exceptions.py`
 
-**Community:** [command inventory models](command_inventory_models.md)
+**Community:** [Loot Generation](Loot_Generation.md)
 
 ## Connections by Relation
 
@@ -13,6 +13,9 @@
 - ._resolve_player_for_movement() `EXTRACTED`
 - .test_roll_character_stats_profession_not_found() `EXTRACTED`
 - test_apply_lucidity_loss_validation_maps_to_404() `EXTRACTED`
+- test_respawn_player_from_delirium_not_found() `EXTRACTED`
+- test_respawn_player_not_found() `EXTRACTED`
+- test_respawn_player_validation_error() `EXTRACTED`
 - test_handle_delirium_validation_generic_500() `EXTRACTED`
 - test_handle_delirium_validation_lucidity_keyword() `EXTRACTED`
 - test_handle_delirium_validation_must_be_delirious() `EXTRACTED`
@@ -21,12 +24,9 @@
 - test_handle_respawn_validation_must_be_dead() `EXTRACTED`
 - test_handle_respawn_validation_not_found() `EXTRACTED`
 - test_create_player_validation_error_to_400() `EXTRACTED`
+- test_delete_player_validation_error() `EXTRACTED`
 - test_get_database_path_none_url() `EXTRACTED`
 - test_get_engine_raises_validation_error() `EXTRACTED`
-- test_get_session_maker_raises_validation_error() `EXTRACTED`
-- .test_create_error_response_with_details() `EXTRACTED`
-- .test_create_error_response_without_details() `EXTRACTED`
-- .test_mythos_exception_handler() `EXTRACTED`
 
 ### contains
 - exceptions.py `EXTRACTED`
@@ -34,9 +34,11 @@
 ### imports
 - command_service.py `EXTRACTED`
 - database.py `EXTRACTED`
+- test_container_service.py `EXTRACTED`
 - players.py `EXTRACTED`
 - test_container_persistence.py `EXTRACTED`
 - container_persistence.py `EXTRACTED`
+- test_players_api_coverage.py `EXTRACTED`
 - test_container_persistence_extended_row_helpers.py `EXTRACTED`
 - test_command_factories_utility.py `EXTRACTED`
 - inventory_command_helpers.py `EXTRACTED`
@@ -48,10 +50,8 @@
 - command_parser.py `EXTRACTED`
 - player_service.py `EXTRACTED`
 - test_command_parser.py `EXTRACTED`
+- test_movement_service.py `EXTRACTED`
 - test_database_extended.py `EXTRACTED`
-- test_exceptions.py `EXTRACTED`
-- test_database_error_handling.py `EXTRACTED`
-- test_legacy_error_handlers.py `EXTRACTED`
 
 ### indirect_call
 - handle_transfer_items_exceptions() `INFERRED`
@@ -62,18 +62,18 @@
 - validate_room_data() `INFERRED`
 - .open_container() `INFERRED`
 - .handle_exception() `INFERRED`
+- register_error_handlers() `INFERRED`
+- create_item_instance_async() `INFERRED`
 - .transfer_to_container() `INFERRED`
 - _execute_movement() `INFERRED`
 - _weapon_from_prototype_registry() `INFERRED`
 - _initialize_npc_database() `INFERRED`
+- _populate_container_items_async() `INFERRED`
+- create_item_instance() `INFERRED`
 - .lock_container() `INFERRED`
 - .unlock_container() `INFERRED`
 - _convert_inventory_list_to_inventory_stacks() `INFERRED`
-- register_error_handlers() `INFERRED`
 - get_npc_database_path() `INFERRED`
-- init_npc_db() `INFERRED`
-- _seed_new_container_items() `INFERRED`
-- update_container_items() `INFERRED`
 
 ### inherits
 - MythosMUDError `EXTRACTED`

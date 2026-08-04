@@ -1,29 +1,38 @@
 # middleware security headers
 
-> 6 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **TestGetSpellEffects** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_spell_effects_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_spell_effects_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Tests for get_spell_effects dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_spell_effects returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_spell_effects raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **test_shutdown_process_termination.py** (9 connections) — `server/tests/unit/commands/test_shutdown_process_termination.py`
+- **test_schedule_process_termination_disabled_by_env()** (2 connections) — `server/tests/unit/commands/test_shutdown_process_termination.py`
+- **test_schedule_process_termination_starts_thread()** (2 connections) — `server/tests/unit/commands/test_shutdown_process_termination.py`
+- **test_find_uvicorn_processes_collects_uvicorn_names()** (2 connections) — `server/tests/unit/commands/test_shutdown_process_termination.py`
+- **test_terminate_with_signals_sends_to_child_and_parent()** (2 connections) — `server/tests/unit/commands/test_shutdown_process_termination.py`
+- **test_terminate_uvicorn_processes_kills_stubborn()** (2 connections) — `server/tests/unit/commands/test_shutdown_process_termination.py`
+- **test_terminate_child_processes()** (2 connections) — `server/tests/unit/commands/test_shutdown_process_termination.py`
+- **test_terminator_thread_import_error_falls_back_to_signals()** (2 connections) — `server/tests/unit/commands/test_shutdown_process_termination.py`
+- **Unit tests for shutdown process termination helpers.** (1 connections) — `server/tests/unit/commands/test_shutdown_process_termination.py`
+- **schedule_process_termination returns early when exit is disabled.** (1 connections) — `server/tests/unit/commands/test_shutdown_process_termination.py`
+- **schedule_process_termination starts daemon thread when enabled.** (1 connections) — `server/tests/unit/commands/test_shutdown_process_termination.py`
+- **_find_uvicorn_processes returns processes whose name contains uvicorn.** (1 connections) — `server/tests/unit/commands/test_shutdown_process_termination.py`
+- **_terminate_with_signals attempts SIGINT and SIGTERM on child and parent.** (1 connections) — `server/tests/unit/commands/test_shutdown_process_termination.py`
+- **_terminate_uvicorn_processes kills processes still running after terminate.** (1 connections) — `server/tests/unit/commands/test_shutdown_process_termination.py`
+- **_terminate_child_processes terminates and kills surviving children.** (1 connections) — `server/tests/unit/commands/test_shutdown_process_termination.py`
+- **Terminator thread uses signal fallback when psutil import fails.** (1 connections) — `server/tests/unit/commands/test_shutdown_process_termination.py`
 
 ## Relationships
 
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (3 shared connections)
-- [command inventory models](command_inventory_models.md) (1 shared connections)
+- [health monitor realtime](health_monitor_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_dependencies.py`
+- `server/tests/unit/commands/test_shutdown_process_termination.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (93%)
-- INFERRED: 1 (7%)
+- EXTRACTED: 31 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

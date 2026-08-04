@@ -1,25 +1,29 @@
 # level game service
 
-> 2 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **test_handle_cast_command_wrapper_no_magic_service()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test handle_cast_command wrapper when magic service is not available.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **TestInitNpcDb** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_init_npc_db_raises_on_none_engine()** (4 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_init_npc_db_success()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test init_npc_db() function.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test init_npc_db() successfully initializes database.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test init_npc_db() raises ValidationError when engine is None.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
 
 ## Relationships
 
-- [commands admin mute](commands_admin_mute.md) (1 shared connections)
-- [commands magic rationale](commands_magic_rationale.md) (1 shared connections)
+- [player effects endpoints](player_effects_endpoints.md) (3 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `server/tests/unit/infrastructure/test_npc_database.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 13 (87%)
+- INFERRED: 2 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

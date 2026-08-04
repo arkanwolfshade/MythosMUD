@@ -34,8 +34,8 @@
 ## Relationships
 
 - [room validator toolkit](room_validator_toolkit.md) (7 shared connections)
-- [player service mutations](player_service_mutations.md) (4 shared connections)
-- [validator room toolkit](validator_room_toolkit.md) (1 shared connections)
+- [player service mutations](player_service_mutations.md) (3 shared connections)
+- [validator room toolkit](validator_room_toolkit.md) (2 shared connections)
 
 ## Source Files
 

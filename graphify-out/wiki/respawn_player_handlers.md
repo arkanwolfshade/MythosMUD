@@ -1,29 +1,31 @@
 # respawn player handlers
 
-> 6 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **TestGetSpellTargetingService** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_spell_targeting_service_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_spell_targeting_service_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Tests for get_spell_targeting_service dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_spell_targeting_service returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_spell_targeting_service raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **run_make_stages.py** (5 connections) — `scripts/run_make_stages.py`
+- **main()** (5 connections) — `scripts/run_make_stages.py`
+- **keep_going_requested()** (3 connections) — `scripts/run_make_stages.py`
+- **stage_failed_from_output()** (3 connections) — `scripts/run_make_stages.py`
+- **run_stage()** (3 connections) — `scripts/run_make_stages.py`
+- **_print_fail()** (2 connections) — `scripts/run_make_stages.py`
+- **Return True when Make was invoked with -k / --keep-going.** (1 connections) — `scripts/run_make_stages.py`
+- **Return a short failure reason, or None if the stage is OK.** (1 connections) — `scripts/run_make_stages.py`
+- **Run `make <stage>`, stream output, return (exit_code, captured_output).** (1 connections) — `scripts/run_make_stages.py`
 
 ## Relationships
 
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (3 shared connections)
-- [command inventory models](command_inventory_models.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_dependencies.py`
+- `scripts/run_make_stages.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (93%)
-- INFERRED: 1 (7%)
+- EXTRACTED: 24 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

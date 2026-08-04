@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_strip_ansi_codes_empty()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **Test stripping ANSI codes from empty string.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_process_single_message_validation_error_missing_fields()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **Test _process_single_message raises ValueError when required fields are missing.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Relationships
 
-- [Security Validator Tests](Security_Validator_Tests.md) (1 shared connections)
-- [commands admin mute](commands_admin_mute.md) (1 shared connections)
+- [nats message handler](nats_message_handler.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_security_validator.py`
+- `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

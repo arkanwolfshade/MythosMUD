@@ -1,64 +1,59 @@
 # game models stats
 
-> 100 nodes
+> 27 nodes
 
 ## Key Concepts
 
-- **__init__.py** (38 connections) — `server/schemas/players/__init__.py`
-- **player_effects.py** (30 connections) — `server/api/player_effects.py`
-- **test_player_requests.py** (29 connections) — `server/tests/unit/schemas/test_player_requests.py`
-- **test_player_effects_endpoints.py** (28 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
-- **RollStatsRequest** (20 connections) — `server/schemas/players/player_requests.py`
-- **CreateCharacterRequest** (17 connections) — `server/schemas/players/player_requests.py`
-- **player_requests.py** (14 connections) — `server/schemas/players/player_requests.py`
-- **apply_lucidity_loss()** (12 connections) — `server/api/player_effects.py`
-- **EffectResponse** (12 connections) — `server/schemas/players/player_effects.py`
-- **LucidityLossRequest** (12 connections) — `server/schemas/players/player_requests.py`
-- **DamageRequest** (12 connections) — `server/schemas/players/player_requests.py`
-- **apply_fear()** (11 connections) — `server/api/player_effects.py`
-- **apply_corruption()** (11 connections) — `server/api/player_effects.py`
-- **gain_occult_knowledge()** (11 connections) — `server/api/player_effects.py`
-- **heal_player()** (11 connections) — `server/api/player_effects.py`
-- **damage_player()** (11 connections) — `server/api/player_effects.py`
-- **BaseModel** (11 connections)
-- **FearRequest** (11 connections) — `server/schemas/players/player_requests.py`
-- **CorruptionRequest** (11 connections) — `server/schemas/players/player_requests.py`
-- **OccultKnowledgeRequest** (11 connections) — `server/schemas/players/player_requests.py`
-- **HealRequest** (11 connections) — `server/schemas/players/player_requests.py`
-- **SelectCharacterRequest** (8 connections) — `server/schemas/players/player_requests.py`
-- **_user()** (8 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
-- **UUID** (7 connections)
-- **FastAPIRequest** (6 connections)
-- *... and 75 more nodes in this community*
+- **professions.py** (19 connections) — `server/api/professions.py`
+- **test_professions_endpoints.py** (13 connections) — `server/tests/unit/api/test_professions_endpoints.py`
+- **get_all_professions()** (10 connections) — `server/api/professions.py`
+- **get_profession_by_id()** (10 connections) — `server/api/professions.py`
+- **profession.py** (7 connections) — `server/schemas/players/profession.py`
+- **ProfessionListResponse** (7 connections) — `server/schemas/players/profession.py`
+- **ProfessionResponse** (7 connections) — `server/schemas/players/profession.py`
+- **BaseModel** (5 connections)
+- **StatRequirement** (4 connections) — `server/schemas/players/profession.py`
+- **MechanicalEffect** (4 connections) — `server/schemas/players/profession.py`
+- **ProfessionData** (4 connections) — `server/schemas/players/profession.py`
+- **_user()** (4 connections) — `server/tests/unit/api/test_professions_endpoints.py`
+- **test_get_all_professions_requires_auth()** (4 connections) — `server/tests/unit/api/test_professions_endpoints.py`
+- **test_get_profession_by_id_not_found()** (4 connections) — `server/tests/unit/api/test_professions_endpoints.py`
+- **test_get_all_professions_success()** (3 connections) — `server/tests/unit/api/test_professions_endpoints.py`
+- **test_get_profession_by_id_success()** (3 connections) — `server/tests/unit/api/test_professions_endpoints.py`
+- **Request** (2 connections)
+- **Profession management API endpoints for MythosMUD server.  This module handles a** (1 connections) — `server/api/professions.py`
+- **Retrieve all available professions for character creation with caching.      :pa** (1 connections) — `server/api/professions.py`
+- **Retrieve specific profession details by ID with caching.      :param profession_** (1 connections) — `server/api/professions.py`
+- **Profession API response schemas for MythosMUD server.  This module provides Pyda** (1 connections) — `server/schemas/players/profession.py`
+- **Stat requirement for a profession.** (1 connections) — `server/schemas/players/profession.py`
+- **Mechanical effect of a profession.** (1 connections) — `server/schemas/players/profession.py`
+- **Profession data model.** (1 connections) — `server/schemas/players/profession.py`
+- **Response model for listing all professions.** (1 connections) — `server/schemas/players/profession.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [profession game service](profession_game_service.md) (20 shared connections)
-- [command inventory models](command_inventory_models.md) (18 shared connections)
-- [command inventory factories](command_inventory_factories.md) (16 shared connections)
-- [Exception Containers](Exception_Containers.md) (12 shared connections)
-- [logging file setup](logging_file_setup.md) (7 shared connections)
-- [ascii map renderer](ascii_map_renderer.md) (7 shared connections)
-- [Error Handling Core](Error_Handling_Core.md) (4 shared connections)
-- [Database Config](Database_Config.md) (2 shared connections)
-- [admin auth service](admin_auth_service.md) (2 shared connections)
-- [room game service](room_game_service.md) (2 shared connections)
-- [schemas unified room](schemas_unified_room.md) (2 shared connections)
-- [auth users rationale](auth_users_rationale.md) (1 shared connections)
+- [player requests schemas](player_requests_schemas.md) (8 shared connections)
+- [Player Stats](Player_Stats.md) (8 shared connections)
+- [Exception Containers](Exception_Containers.md) (6 shared connections)
+- [profession game service](profession_game_service.md) (3 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (2 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (1 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (1 shared connections)
+- [player service game](player_service_game.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/player_effects.py`
-- `server/schemas/players/__init__.py`
-- `server/schemas/players/player_effects.py`
-- `server/schemas/players/player_requests.py`
-- `server/tests/unit/api/test_player_effects_endpoints.py`
-- `server/tests/unit/schemas/test_player_requests.py`
+- `server/api/professions.py`
+- `server/schemas/players/profession.py`
+- `server/tests/unit/api/test_professions_endpoints.py`
 
 ## Audit Trail
 
-- EXTRACTED: 505 (98%)
-- INFERRED: 8 (2%)
+- EXTRACTED: 117 (98%)
+- INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

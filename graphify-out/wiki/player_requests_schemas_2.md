@@ -1,30 +1,48 @@
 # player requests schemas
 
-> 8 nodes
+> 21 nodes
 
 ## Key Concepts
 
-- **TestEnsureAliasStorage** (5 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **.test_ensure_alias_storage_returns_existing()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **.test_ensure_alias_storage_initializes_new()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **.test_ensure_alias_storage_handles_error()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _ensure_alias_storage function.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _ensure_alias_storage returns existing storage if provided.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _ensure_alias_storage initializes new storage when None.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _ensure_alias_storage returns None on initialization error.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **test_item_instance_persistence.py** (16 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
+- **item_instance_persistence.py** (15 connections) — `server/persistence/item_instance_persistence.py`
+- **create_item_instance()** (12 connections) — `server/persistence/item_instance_persistence.py`
+- **ensure_item_instance()** (11 connections) — `server/persistence/item_instance_persistence.py`
+- **get_item_instance()** (7 connections) — `server/persistence/item_instance_persistence.py`
+- **item_instance_exists()** (7 connections) — `server/persistence/item_instance_persistence.py`
+- **Any** (4 connections)
+- **test_create_item_instance_missing_id()** (3 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
+- **test_create_item_instance_db_error()** (3 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
+- **test_item_instance_exists_true()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
+- **test_item_instance_exists_false()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
+- **test_get_item_instance_found()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
+- **test_get_item_instance_not_found()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
+- **test_ensure_item_instance_calls_create()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
+- **test_create_item_instance_success()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
+- **Item instance persistence operations.  As documented in the restricted archives,** (1 connections) — `server/persistence/item_instance_persistence.py`
+- **Create a new item instance in the database.      Args:         conn: Database co** (1 connections) — `server/persistence/item_instance_persistence.py`
+- **Retrieve an item instance by ID.      Args:         conn: Database connection** (1 connections) — `server/persistence/item_instance_persistence.py`
+- **Check if an item instance exists in the database.      Args:         conn: Datab** (1 connections) — `server/persistence/item_instance_persistence.py`
+- **Ensure an item instance exists in the database, creating it if necessary.      T** (1 connections) — `server/persistence/item_instance_persistence.py`
+- **Unit tests for item_instance_persistence helpers.** (1 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
 
 ## Relationships
 
-- [command commands handler](command_commands_handler.md) (4 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (7 shared connections)
+- [Loot Generation](Loot_Generation.md) (5 shared connections)
+- [persistence container item](persistence_container_item.md) (5 shared connections)
+- [auth users rationale](auth_users_rationale.md) (5 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_aliases.py`
+- `server/persistence/item_instance_persistence.py`
+- `server/tests/unit/persistence/test_item_instance_persistence.py`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 92 (96%)
+- INFERRED: 4 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

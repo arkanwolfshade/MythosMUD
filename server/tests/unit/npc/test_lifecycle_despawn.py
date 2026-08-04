@@ -13,7 +13,12 @@ def _make_manager(*, with_active: bool = True, with_room: bool = True, with_pers
     manager.lifecycle_records = {"npc-1": record}
     manager.active_npcs = {}
     if with_active:
-        npc = MagicMock(room_id="room-a")
+        # Real NPCs use current_room; avoid bare MagicMock (auto-creates current_room).
+        npc = MagicMock(spec=["current_room", "current_room_id", "spawn_room_id", "room_id"])
+        npc.current_room = "room-a"
+        npc.current_room_id = None
+        npc.spawn_room_id = None
+        npc.room_id = None
         manager.active_npcs["npc-1"] = npc
     manager.population_controller = MagicMock()
     manager.persistence = MagicMock() if with_persistence else None
@@ -78,10 +83,32 @@ def test_despawn_without_population_controller() -> None:
     assert "npc-1" not in manager.active_npcs
 
 
-def test_despawn_uses_unknown_room_when_missing_attribute() -> None:
+def test_despawn_skips_left_event_when_room_unknown() -> None:
     manager = _make_manager(with_persistence=False)
     npc = MagicMock(spec=[])
     manager.active_npcs["npc-1"] = npc
     assert despawn_npc_impl(manager, "npc-1") is True
-    published = manager.event_bus.publish.call_args[0][0]
-    assert published.room_id == "unknown"
+    manager.event_bus.publish.assert_not_called()
+
+
+def test_despawn_prefers_current_room_over_room_id() -> None:
+    manager = _make_manager()
+    npc = MagicMock(spec=["current_room", "current_room_id", "spawn_room_id", "room_id"])
+    npc.current_room = "room-foyer"
+    npc.current_room_id = None
+    npc.spawn_room_id = None
+    npc.room_id = "stale-alias"
+    manager.active_npcs["npc-1"] = npc
+    assert despawn_npc_impl(manager, "npc-1") is True
+    manager.persistence.get_room_by_id.assert_called_with("room-foyer")
+
+
+def test_despawn_uses_lifecycle_spawn_room_when_attrs_missing() -> None:
+    manager = _make_manager()
+    npc = MagicMock(spec=[])
+    manager.active_npcs["npc-1"] = npc
+    manager.lifecycle_records["npc-1"].events = [
+        {"details": {"room_id": "earth_arkhamcity_sanitarium_room_foyer_001"}},
+    ]
+    assert despawn_npc_impl(manager, "npc-1") is True
+    manager.persistence.get_room_by_id.assert_called_with("earth_arkhamcity_sanitarium_room_foyer_001")

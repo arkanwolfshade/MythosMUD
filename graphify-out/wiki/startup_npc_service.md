@@ -1,48 +1,57 @@
 # startup npc service
 
-> 22 nodes
+> 26 nodes
 
 ## Key Concepts
 
-- **test_npc_startup_service.py** (39 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_npc_startup_service_init()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_required_npcs_success()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_optional_npcs_with_probability()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_optional_npcs_skips_low_probability()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_get_default_room_for_sub_zone_case_insensitive()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_optional_npcs_no_probability_attribute()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_npcs_on_startup_with_optional_npcs()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_arena_npcs_no_prior_spawns_returns_empty()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_arena_npcs_skips_unknown_definition_id()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_arena_room_ids()** (2 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Unit tests for NPC startup service.  Tests the NPCStartupService class.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test ARENA_ROOM_IDS defines 121 arena rooms (11x11) and includes center.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test NPCStartupService initialization.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test _spawn_required_npcs() successfully spawns required NPCs.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test _spawn_optional_npcs() spawns based on probability.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test _spawn_optional_npcs() skips NPCs with low probability.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test _get_default_room_for_sub_zone() is case insensitive.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test _spawn_optional_npcs() handles NPCs without spawn_probability attribute.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test spawn_npcs_on_startup() spawns optional NPCs.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Arena pass is skipped when required/optional passes spawned nothing.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Stale definition_id in spawned_npcs that is not in definitions list is ignored.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **RoomCacheService** (38 connections) — `server/caching/cache_service.py`
+- **TestRoomCacheService** (17 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **_RoomObj** (9 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.__init__()** (7 connections) — `server/caching/cache_service.py`
+- **.__init__()** (4 connections) — `server/caching/cache_service.py`
+- **.test_init_uses_existing_rooms_cache()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_init_lazy_creates_rooms_cache()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_init_concurrent_create_uses_existing()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_room_sync_miss_with_to_dict()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_preload_rooms()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.invalidate_room()** (2 connections) — `server/caching/cache_service.py`
+- **.preload_rooms()** (2 connections) — `server/caching/cache_service.py`
+- **.to_dict()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.persistence()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_room_cache_hit()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_room_miss_with_to_dict()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_room_miss_returns_none()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_room_sync_cache_hit()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_room_sync_miss_caches_dict()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_invalidate_room()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **Service for caching room data.** (1 connections) — `server/caching/cache_service.py`
+- **Initialize the room cache service.          Args:             persistence: Persi** (1 connections) — `server/caching/cache_service.py`
+- **Invalidate cached room data.          Args:             room_id: The room ID to** (1 connections) — `server/caching/cache_service.py`
+- **Preload multiple rooms into cache.          Args:             room_ids: List of** (1 connections) — `server/caching/cache_service.py`
+- **Initialize the cache service.          Args:             persistence: Persistenc** (1 connections) — `server/caching/cache_service.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [player respawn event](player_respawn_event.md) (18 shared connections)
-- [services npc startup](services_npc_startup.md) (11 shared connections)
-- [startup services npc](startup_services_npc.md) (6 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
-- [Magic Spell Service](Magic_Spell_Service.md) (1 shared connections)
+- [commands skills rationale](commands_skills_rationale.md) (11 shared connections)
+- [uuid services npc](uuid_services_npc.md) (6 shared connections)
+- [services lucidity repository](services_lucidity_repository.md) (5 shared connections)
+- [cache caching service](cache_caching_service.md) (4 shared connections)
+- [config rationale config()](config_rationale_config%28%29.md) (4 shared connections)
+- [room build realtime](room_build_realtime.md) (3 shared connections)
+- [websocket realtime handler](websocket_realtime_handler.md) (3 shared connections)
+- [caching lru cache](caching_lru_cache.md) (1 shared connections)
+- [room game service](room_game_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_npc_startup_service.py`
+- `server/caching/cache_service.py`
+- `server/tests/unit/caching/test_cache_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 79 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 96 (83%)
+- INFERRED: 20 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

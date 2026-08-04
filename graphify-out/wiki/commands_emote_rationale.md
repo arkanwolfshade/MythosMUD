@@ -1,15 +1,22 @@
 # commands emote rationale
 
-> 25 nodes
+> 62 nodes
 
 ## Key Concepts
 
-- **utility_commands.py** (20 connections) — `server/commands/utility_commands.py`
+- **.state()** (36 connections) — `server/realtime/connection_state_machine.py`
 - **emote_commands.py** (14 connections) — `server/commands/emote_commands.py`
 - **handle_emote_command()** (14 connections) — `server/commands/emote_commands.py`
+- **handle_time_command()** (13 connections) — `server/commands/time_commands.py`
+- **handle_system_command()** (10 connections) — `server/commands/system_commands.py`
+- **time_commands.py** (10 connections) — `server/commands/time_commands.py`
+- **handle_explore_command()** (8 connections) — `server/commands/exploration_commands.py`
+- **test_time_commands.py** (8 connections) — `server/tests/unit/commands/test_time_commands.py`
 - **_get_emote_services()** (7 connections) — `server/commands/emote_commands.py`
 - **test_emote_commands.py** (6 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **test_system_commands.py** (6 connections) — `server/tests/unit/commands/test_system_commands.py`
 - **Any** (5 connections)
+- **test_exploration_commands.py** (5 connections) — `server/tests/unit/commands/test_exploration_commands.py`
 - **_extract_emote_action()** (4 connections) — `server/commands/emote_commands.py`
 - **_validate_player_for_emote()** (4 connections) — `server/commands/emote_commands.py`
 - **_format_emote_messages()** (4 connections) — `server/commands/emote_commands.py`
@@ -17,44 +24,44 @@
 - **test_handle_emote_command()** (3 connections) — `server/tests/unit/commands/test_emote_commands.py`
 - **test_handle_emote_command_no_message()** (3 connections) — `server/tests/unit/commands/test_emote_commands.py`
 - **test_handle_emote_command_no_chat_service()** (3 connections) — `server/tests/unit/commands/test_emote_commands.py`
-- **Emote command handlers for MythosMUD.  This module contains handlers for the emo** (1 connections) — `server/commands/emote_commands.py`
-- **Extract action from command_data.      Args:         command_data: Command data** (1 connections) — `server/commands/emote_commands.py`
-- **Get chat service and player service from app state.      Args:         request:** (1 connections) — `server/commands/emote_commands.py`
-- **Validate player and extract required information for emote.      Args:         p** (1 connections) — `server/commands/emote_commands.py`
-- **Format emote messages for predefined or custom emotes.      Args:         action** (1 connections) — `server/commands/emote_commands.py`
-- **Handle the result from chat service after sending emote.      Args:         resu** (1 connections) — `server/commands/emote_commands.py`
-- **Handle the emote command for performing emotes.      Args:         command_data:** (1 connections) — `server/commands/emote_commands.py`
-- **Utility commands for MythosMUD.  This module contains handlers for utility comma** (1 connections) — `server/commands/utility_commands.py`
-- **Unit tests for emote command handlers.  Tests the emote command functionality.** (1 connections) — `server/tests/unit/commands/test_emote_commands.py`
-- **Test handle_emote_command() processes emote.** (1 connections) — `server/tests/unit/commands/test_emote_commands.py`
-- **Test handle_emote_command() handles missing message.** (1 connections) — `server/tests/unit/commands/test_emote_commands.py`
-- **Test handle_emote_command() handles missing chat service.** (1 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **test_handle_explore_command()** (3 connections) — `server/tests/unit/commands/test_exploration_commands.py`
+- **test_handle_explore_command_no_persistence()** (3 connections) — `server/tests/unit/commands/test_exploration_commands.py`
+- **test_handle_system_command()** (3 connections) — `server/tests/unit/commands/test_system_commands.py`
+- **test_handle_system_command_no_message()** (3 connections) — `server/tests/unit/commands/test_system_commands.py`
+- **test_handle_system_command_no_chat_service()** (3 connections) — `server/tests/unit/commands/test_system_commands.py`
+- *... and 37 more nodes in this community*
 
 ## Relationships
 
-- [commands admin mute](commands_admin_mute.md) (8 shared connections)
-- [commands logout rationale](commands_logout_rationale.md) (3 shared connections)
-- [commands status rationale](commands_status_rationale.md) (3 shared connections)
-- [commands who rationale](commands_who_rationale.md) (3 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [player respawn event](player_respawn_event.md) (2 shared connections)
-- [models player related](models_player_related.md) (1 shared connections)
-- [websocket examples logging](websocket_examples_logging.md) (1 shared connections)
-- [realtime game state](realtime_game_state.md) (1 shared connections)
-- [commands time handle](commands_time_handle.md) (1 shared connections)
-- [logout command commands](logout_command_commands.md) (1 shared connections)
-- [commands whoami utility](commands_whoami_utility.md) (1 shared connections)
+- [commands npc admin](commands_npc_admin.md) (6 shared connections)
+- [commands whisper command](commands_whisper_command.md) (5 shared connections)
+- [NPC Combat](NPC_Combat.md) (5 shared connections)
+- [commands who rationale](commands_who_rationale.md) (4 shared connections)
+- [services nats service](services_nats_service.md) (3 shared connections)
+- [nats services metrics](nats_services_metrics.md) (3 shared connections)
+- [commands recovery lucidity](commands_recovery_lucidity.md) (2 shared connections)
+- [models lucidity rationale](models_lucidity_rationale.md) (2 shared connections)
+- [connection realtime statistics](connection_realtime_statistics.md) (2 shared connections)
+- [time service rationale](time_service_rationale.md) (2 shared connections)
+- [combat commands handler](combat_commands_handler.md) (2 shared connections)
+- [commands communication flows](commands_communication_flows.md) (2 shared connections)
 
 ## Source Files
 
 - `server/commands/emote_commands.py`
-- `server/commands/utility_commands.py`
+- `server/commands/exploration_commands.py`
+- `server/commands/system_commands.py`
+- `server/commands/time_commands.py`
+- `server/realtime/connection_state_machine.py`
 - `server/tests/unit/commands/test_emote_commands.py`
+- `server/tests/unit/commands/test_exploration_commands.py`
+- `server/tests/unit/commands/test_system_commands.py`
+- `server/tests/unit/commands/test_time_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 100 (97%)
-- INFERRED: 3 (3%)
+- EXTRACTED: 190 (83%)
+- INFERRED: 40 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

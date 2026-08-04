@@ -1,50 +1,54 @@
 # game weapon player
 
-> 27 nodes
+> 43 nodes
 
 ## Key Concepts
 
-- **CommandRequest** (11 connections) — `server/command_handler_unified.py`
-- **TestProcessCommandUnified** (7 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **TestLegacyFunctions** (6 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **TestHandleCommand** (5 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **.test_handle_command_unauthorized()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **.test_handle_command_success()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **.test_process_command_legacy()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **.test_get_help_content()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **.test_get_help_content_none()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **.test_process_command_unified_rate_limited()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **.test_process_command_unified_blocked()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **.test_process_command_unified_special_routing()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **.test_process_command_unified_normal_processing()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **BaseModel** (1 connections)
-- **Request model for command processing.** (1 connections) — `server/command_handler_unified.py`
-- **Test legacy compatibility functions.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **Test process_command() legacy function.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **Test get_help_content() delegates to help system.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **Test get_help_content() with None command.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **Test process_command_unified function.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **Test process_command_unified returns rate limit result.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **Test process_command_unified returns block result.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **Test process_command_unified handles special command routing.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **Test process_command_unified processes normal commands.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **Test handle_command HTTP endpoint.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- *... and 2 more nodes in this community*
+- **PydanticErrorHandler** (23 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **.handle_validation_error()** (14 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **__init__.py** (9 connections) — `server/error_handlers/__init__.py`
+- **handle_pydantic_error()** (9 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **convert_pydantic_error()** (9 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **_ExtractedErrorInfo** (8 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **._create_fallback_error_response()** (8 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **.convert_to_mythos_error()** (8 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **ErrorContextInitKwargs** (8 connections) — `server/exceptions.py`
+- **ValidationError** (7 connections)
+- **._extract_error_info()** (7 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **._generate_user_friendly_message()** (7 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **._create_error_details()** (7 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **.create_handler()** (7 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **._determine_error_type()** (5 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **._determine_severity()** (5 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **._format_single_field_error_message()** (5 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **_ExtractedFieldErrorInfo** (4 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **._get_display_field_name()** (4 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **StandardizedErrorResponseDict** (3 connections)
+- **._get_field_path()** (3 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **Unpack** (3 connections)
+- **TypedDict** (2 connections)
+- **Keyword arguments accepted by create_error_context and ErrorContext().** (2 connections) — `server/exceptions.py`
+- **Error handlers package for MythosMUD.  This package provides specialized error h** (1 connections) — `server/error_handlers/__init__.py`
+- *... and 18 more nodes in this community*
 
 ## Relationships
 
-- [command commands handler](command_commands_handler.md) (15 shared connections)
-- [commands admin mute](commands_admin_mute.md) (1 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (19 shared connections)
+- [handler realtime nats](handler_realtime_nats.md) (8 shared connections)
+- [Spell Validation](Spell_Validation.md) (4 shared connections)
+- [health service services](health_service_services.md) (2 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/command_handler_unified.py`
-- `server/tests/unit/commands/test_command_handler_unified.py`
+- `server/error_handlers/__init__.py`
+- `server/error_handlers/pydantic_error_handler.py`
+- `server/exceptions.py`
 
 ## Audit Trail
 
-- EXTRACTED: 65 (90%)
-- INFERRED: 7 (10%)
+- EXTRACTED: 183 (98%)
+- INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

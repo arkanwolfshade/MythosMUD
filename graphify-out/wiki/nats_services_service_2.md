@@ -1,34 +1,47 @@
 # nats services service
 
-> 9 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **get_nats_message_handler()** (8 connections) — `server/dependencies.py`
-- **TestGetNatsMessageHandler** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_nats_message_handler_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_nats_message_handler_none_returns_none()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Stats** (11 connections)
+- **.roll_stats_with_profession()** (7 connections) — `server/game/stats_generator.py`
+- **.roll_stats()** (6 connections) — `server/game/stats_generator.py`
+- **._roll_size()** (5 connections) — `server/game/stats_generator.py`
+- **._roll_3d6()** (5 connections) — `server/game/stats_generator.py`
+- **.get_available_classes()** (5 connections) — `server/game/stats_generator.py`
+- **.roll_stats_with_validation()** (5 connections) — `server/game/stats_generator.py`
+- **._roll_4d6_drop_lowest()** (4 connections) — `server/game/stats_generator.py`
+- **._roll_point_buy()** (4 connections) — `server/game/stats_generator.py`
+- **.validate_class_prerequisites()** (4 connections) — `server/game/stats_generator.py`
+- **._check_profession_requirements()** (4 connections) — `server/game/stats_generator.py`
+- **.get_stat_summary()** (4 connections) — `server/game/stats_generator.py`
 - **Any** (2 connections)
-- **Get NATS message handler from container with dependency injection.      Args:** (1 connections) — `server/dependencies.py`
-- **Tests for get_nats_message_handler dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_nats_message_handler returns handler when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_nats_message_handler returns None when handler is None (NATS disabled).** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Roll character stats using the specified method.          Args:             meth** (1 connections) — `server/game/stats_generator.py`
+- **Roll Size using formula: (2D6+6)*5 (range 40-90).** (1 connections) — `server/game/stats_generator.py`
+- **Roll stats using 3d6 method (scaled to 15-90 range).** (1 connections) — `server/game/stats_generator.py`
+- **Roll stats using 4d6 drop lowest method (more generous, scaled to 15-90 range).** (1 connections) — `server/game/stats_generator.py`
+- **Generate stats using a point-buy system (balanced, scaled to 1-100 range).** (1 connections) — `server/game/stats_generator.py`
+- **Check if stats meet the prerequisites for a given class.          Args:** (1 connections) — `server/game/stats_generator.py`
+- **Get a list of classes that the character qualifies for.          Args:** (1 connections) — `server/game/stats_generator.py`
+- **Roll stats and validate against class requirements.          Args:             m** (1 connections) — `server/game/stats_generator.py`
+- **Roll stats and validate against profession requirements.          Args:** (1 connections) — `server/game/stats_generator.py`
+- **Check if stats meet profession requirements.          Args:             stats: T** (1 connections) — `server/game/stats_generator.py`
+- **Get a summary of the character's stats including modifiers and totals.** (1 connections) — `server/game/stats_generator.py`
 
 ## Relationships
 
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (5 shared connections)
-- [NPC Combat](NPC_Combat.md) (1 shared connections)
-- [command inventory models](command_inventory_models.md) (1 shared connections)
+- [event connection helpers](event_connection_helpers.md) (12 shared connections)
+- [nats services service](nats_services_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/dependencies.py`
-- `server/tests/unit/infrastructure/test_dependencies.py`
+- `server/game/stats_generator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (92%)
-- INFERRED: 2 (8%)
+- EXTRACTED: 77 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

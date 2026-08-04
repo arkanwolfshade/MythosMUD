@@ -4,37 +4,38 @@
 
 ## Key Concepts
 
+- **skills_commands.py** (16 connections) — `server/commands/skills_commands.py`
 - **handle_skills_command()** (10 connections) — `server/commands/skills_commands.py`
 - **_get_container_services()** (6 connections) — `server/commands/skills_commands.py`
 - **Any** (5 connections)
 - **_resolve_player_id()** (5 connections) — `server/commands/skills_commands.py`
 - **_resolve_user_id()** (4 connections) — `server/commands/skills_commands.py`
 - **_format_skills_output()** (4 connections) — `server/commands/skills_commands.py`
-- **skill_service()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
 - **UUID** (2 connections)
+- **Skills command handler (plan 10.7 V4).  Returns the active character's skills as** (1 connections) — `server/commands/skills_commands.py`
 - **Get container, persistence, and skill_service from request, or None if unavailab** (1 connections) — `server/commands/skills_commands.py`
 - **Extract and validate player_id from player object, returning UUID or None.** (1 connections) — `server/commands/skills_commands.py`
 - **Resolve user_id from current_user (auth user) or fallback to player.user_id.** (1 connections) — `server/commands/skills_commands.py`
 - **Format skills list as text output lines.** (1 connections) — `server/commands/skills_commands.py`
 - **Handle the /skills command: return the active character's skills as text.      R** (1 connections) — `server/commands/skills_commands.py`
-- **SkillService with mocks.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
 
 ## Relationships
 
-- [commands admin mute](commands_admin_mute.md) (8 shared connections)
-- [endpoints auth rationale](endpoints_auth_rationale.md) (2 shared connections)
-- [command factories create](command_factories_create.md) (1 shared connections)
-- [skill service game](skill_service_game.md) (1 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (5 shared connections)
+- [commands whisper command](commands_whisper_command.md) (3 shared connections)
+- [commands npc admin](commands_npc_admin.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [connection realtime manager](connection_realtime_manager.md) (1 shared connections)
 
 ## Source Files
 
 - `server/commands/skills_commands.py`
-- `server/tests/unit/game/test_skill_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 43 (93%)
-- INFERRED: 3 (7%)
+- EXTRACTED: 56 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

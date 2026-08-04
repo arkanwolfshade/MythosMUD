@@ -19,8 +19,7 @@
 
 ## Relationships
 
-- [map layout useMapLayout](map_layout_useMapLayout.md) (2 shared connections)
-- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (1 shared connections)
+- [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (3 shared connections)
 
 ## Source Files
 

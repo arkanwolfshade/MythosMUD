@@ -1,31 +1,48 @@
 # lucidity active service
 
-> 8 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **TestGetContainer** (6 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_container_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_container_missing_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_container_no_state_attribute()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Tests for get_container dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_container returns container when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_container raises RuntimeError when container not in app.state.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_container raises RuntimeError when app.state doesn't exist.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **playerHandlers.ts** (22 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
+- **playerHandlers.test.ts** (14 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/playerHandlers.test.ts`
+- **healthEventUtils.ts** (12 connections) — `client/src/utils/healthEventUtils.ts`
+- **buildHealthStatusFromEvent()** (7 connections) — `client/src/utils/healthEventUtils.ts`
+- **healthEventUtils.test.ts** (6 connections) — `client/src/utils/__tests__/healthEventUtils.test.ts`
+- **buildHealthChangeMessage()** (4 connections) — `client/src/utils/healthEventUtils.ts`
+- **handlePlayerRespawned()** (3 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
+- **handlePlayerDpUpdated()** (3 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
+- **handlePlayerEnteredGame()** (2 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
+- **handlePlayerEntered()** (2 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
+- **handlePlayerLeftGame()** (2 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
+- **handlePlayerLeft()** (2 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
+- **handlePlayerDied()** (2 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
+- **handlePlayerDeliriumRespawned()** (2 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
+- **handlePlayerUpdate()** (2 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
+- **parseNumber()** (2 connections) — `client/src/utils/healthEventUtils.ts`
+- **toReasonString()** (2 connections) — `client/src/utils/healthEventUtils.ts`
+- **humanizeReason()** (2 connections) — `client/src/utils/healthEventUtils.ts`
+- **formatSource()** (2 connections) — `client/src/utils/healthEventUtils.ts`
+- **HEALTH_LOG_TAGS** (2 connections) — `client/src/utils/healthEventUtils.ts`
 
 ## Relationships
 
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (4 shared connections)
-- [command inventory models](command_inventory_models.md) (1 shared connections)
+- [game terminal lucidity](game_terminal_lucidity.md) (12 shared connections)
+- [Game Terminal UI](Game_Terminal_UI.md) (5 shared connections)
+- [PanelSystem PanelManager panelLayoutClam](PanelSystem_PanelManager_panelLayoutClam.md) (2 shared connections)
+- [project paths rationale](project_paths_rationale.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_dependencies.py`
+- `client/src/components/ui-v2/eventHandlers/__tests__/playerHandlers.test.ts`
+- `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
+- `client/src/utils/__tests__/healthEventUtils.test.ts`
+- `client/src/utils/healthEventUtils.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (95%)
-- INFERRED: 1 (5%)
+- EXTRACTED: 95 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

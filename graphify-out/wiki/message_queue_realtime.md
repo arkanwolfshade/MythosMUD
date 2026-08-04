@@ -1,58 +1,57 @@
 # message queue realtime
 
-> 43 nodes
+> 77 nodes
 
 ## Key Concepts
 
-- **._build_player_attacked_event()** (8 connections) — `server/npc/combat_integration.py`
-- **UUID** (7 connections)
-- **.get_combat_stats()** (7 connections) — `server/npc/combat_integration.py`
-- **CombatEventPublisherProtocol** (7 connections) — `server/npc/combat_integration_protocols.py`
-- **._compute_dp_update_fields()** (6 connections) — `server/npc/combat_integration.py`
-- **._get_combat_event_publisher()** (6 connections) — `server/npc/combat_integration.py`
-- **._calculate_max_dp()** (6 connections) — `server/npc/combat_integration.py`
-- **._get_npc_display_name()** (5 connections) — `server/npc/combat_integration.py`
-- **._get_npc_lifecycle_manager()** (5 connections) — `server/npc/combat_integration.py`
-- **._publish_player_dp_updated_after_npc_damage()** (5 connections) — `server/npc/combat_integration.py`
-- **._publish_player_dp_updated_event()** (5 connections) — `server/npc/combat_integration.py`
-- **._publish_npc_attack_to_nats()** (5 connections) — `server/npc/combat_integration.py`
-- **._get_int_stat()** (5 connections) — `server/npc/combat_integration.py`
-- **._get_npc_name_from_lifecycle()** (4 connections) — `server/npc/combat_integration.py`
-- **._get_player_for_dp_update()** (4 connections) — `server/npc/combat_integration.py`
-- **._get_player_and_stats_for_nats()** (4 connections) — `server/npc/combat_integration.py`
-- **.handle_npc_death()** (4 connections) — `server/npc/combat_integration.py`
-- **._get_player_combat_stats()** (4 connections) — `server/npc/combat_integration.py`
-- **._derive_npc_name_from_id()** (3 connections) — `server/npc/combat_integration.py`
-- **._normalize_npc_stats()** (3 connections) — `server/npc/combat_integration.py`
-- **.publish_player_attacked()** (3 connections) — `server/npc/combat_integration_protocols.py`
-- **.get_stats()** (3 connections) — `server/npc/npc_base.py`
-- **Resolve NPC instance display name from lifecycle manager, or derive from npc_id.** (1 connections) — `server/npc/combat_integration.py`
-- **Best-effort lookup of NPC name from the lifecycle manager.** (1 connections) — `server/npc/combat_integration.py`
-- **Resolve the NPC lifecycle manager from the app state, if available.** (1 connections) — `server/npc/combat_integration.py`
-- *... and 18 more nodes in this community*
+- **Direction** (22 connections) — `server/models/command_base.py`
+- **test_command_base.py** (22 connections) — `server/tests/unit/models/test_command_base.py`
+- **test_command_exploration.py** (20 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **LookCommand** (19 connections) — `server/models/command_exploration.py`
+- **GoCommand** (14 connections) — `server/models/command_exploration.py`
+- **test_base_command_rejects_extra_fields()** (4 connections) — `server/tests/unit/models/test_command_base.py`
+- **test_look_command_validate_direction_invalid()** (4 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_look_command_instance_number_validation_min()** (4 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_go_command_validate_direction_invalid()** (4 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_go_command_missing_direction()** (4 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **.validate_direction()** (3 connections) — `server/models/command_exploration.py`
+- **.validate_direction()** (3 connections) — `server/models/command_exploration.py`
+- **test_base_command_instantiation()** (3 connections) — `server/tests/unit/models/test_command_base.py`
+- **test_base_command_model_config()** (3 connections) — `server/tests/unit/models/test_command_base.py`
+- **test_base_command_slots()** (3 connections) — `server/tests/unit/models/test_command_base.py`
+- **test_direction_enum_inheritance()** (3 connections) — `server/tests/unit/models/test_command_base.py`
+- **test_command_type_enum_inheritance()** (3 connections) — `server/tests/unit/models/test_command_base.py`
+- **test_look_command_default_values()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_look_command_with_direction()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_look_command_validate_direction_valid()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_look_command_validate_direction_none()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_look_command_with_target()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_look_command_with_look_in()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_look_command_with_instance_number()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_go_command_required_direction()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- *... and 52 more nodes in this community*
 
 ## Relationships
 
-- [Realtime Subscribers](Realtime_Subscribers.md) (21 shared connections)
-- [NPC Combat](NPC_Combat.md) (3 shared connections)
-- [Item Instances](Item_Instances.md) (2 shared connections)
-- [realtime game state](realtime_game_state.md) (2 shared connections)
-- [command inventory models](command_inventory_models.md) (2 shared connections)
-- [item models rationale](item_models_rationale.md) (1 shared connections)
-- [Database Config](Database_Config.md) (1 shared connections)
-- [npc combat base](npc_combat_base.md) (1 shared connections)
-- [rate limiter realtime](rate_limiter_realtime.md) (1 shared connections)
+- [command factories create](command_factories_create.md) (16 shared connections)
+- [auth endpoints rationale](auth_endpoints_rationale.md) (7 shared connections)
+- [command inventory factories](command_inventory_factories.md) (7 shared connections)
+- [Loot Generation](Loot_Generation.md) (5 shared connections)
+- [Inventory Equip](Inventory_Equip.md) (3 shared connections)
+- [exceptions rationale error](exceptions_rationale_error.md) (1 shared connections)
+- [memory profiler rationale](memory_profiler_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/combat_integration.py`
-- `server/npc/combat_integration_protocols.py`
-- `server/npc/npc_base.py`
+- `server/models/command_base.py`
+- `server/models/command_exploration.py`
+- `server/tests/unit/models/test_command_base.py`
+- `server/tests/unit/models/test_command_exploration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 122 (94%)
-- INFERRED: 8 (6%)
+- EXTRACTED: 205 (89%)
+- INFERRED: 25 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

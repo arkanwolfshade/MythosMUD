@@ -33,11 +33,11 @@
 
 ## Relationships
 
-- [schemas player rationale](schemas_player_rationale.md) (21 shared connections)
-- [commands party examples](commands_party_examples.md) (9 shared connections)
-- [websocket realtime handler](websocket_realtime_handler.md) (7 shared connections)
-- [npc combat service](npc_combat_service.md) (7 shared connections)
-- [models lucidity rationale](models_lucidity_rationale.md) (4 shared connections)
+- [startup npc services](startup_npc_services.md) (21 shared connections)
+- [services inventory mutation](services_inventory_mutation.md) (9 shared connections)
+- [command processor rationale](command_processor_rationale.md) (7 shared connections)
+- [status game spell](status_game_spell.md) (7 shared connections)
+- [schemas validator rationale](schemas_validator_rationale.md) (4 shared connections)
 
 ## Source Files
 

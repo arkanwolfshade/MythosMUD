@@ -14,14 +14,14 @@
 - **.set_app_state_services()** (4 connections) — `server/realtime/request_context.py`
 - **.get_event_bus()** (4 connections) — `server/realtime/request_context.py`
 - **.get_alias_storage()** (4 connections) — `server/realtime/request_context.py`
-- **test_command_request_app_state_from_http_request_like_object()** (4 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
 - **test_command_request_app_state_from_websocket_request_context()** (4 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
-- **test_command_request_app_state_missing_app_or_state_returns_none()** (4 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
 - **test_create_websocket_request_context()** (4 connections) — `server/tests/unit/realtime/test_request_context.py`
 - **test_create_websocket_request_context_no_user()** (4 connections) — `server/tests/unit/realtime/test_request_context.py`
 - **.__init__()** (3 connections) — `server/realtime/request_context.py`
 - **.set_alias_storage()** (3 connections) — `server/realtime/request_context.py`
 - **.get_persistence()** (3 connections) — `server/realtime/request_context.py`
+- **test_command_request_app_state_from_http_request_like_object()** (3 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
+- **test_command_request_app_state_missing_app_or_state_returns_none()** (3 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
 - **test_websocket_request_context_init()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
 - **test_websocket_request_context_init_no_user()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
 - **test_websocket_request_context_set_alias_storage()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
@@ -33,14 +33,16 @@
 
 ## Relationships
 
-- [command commands handler](command_commands_handler.md) (6 shared connections)
-- [command inventory factories](command_inventory_factories.md) (4 shared connections)
-- [websocket handler realtime](websocket_handler_realtime.md) (4 shared connections)
-- [commands communication flows](commands_communication_flows.md) (2 shared connections)
-- [command validation commands](command_validation_commands.md) (1 shared connections)
+- [command validation commands](command_validation_commands.md) (6 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [command commands aliases](command_commands_aliases.md) (2 shared connections)
+- [websocket handler realtime](websocket_handler_realtime.md) (2 shared connections)
+- [fixtures mock helpers](fixtures_mock_helpers.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [command commands handler](command_commands_handler.md) (1 shared connections)
 - [models player related](models_player_related.md) (1 shared connections)
-- [commands logout helpers](commands_logout_helpers.md) (1 shared connections)
-- [player event realtime](player_event_realtime.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [alias storage rationale](alias_storage_rationale.md) (1 shared connections)
 
 ## Source Files
 
@@ -51,8 +53,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 173 (95%)
-- INFERRED: 9 (5%)
+- EXTRACTED: 173 (96%)
+- INFERRED: 7 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

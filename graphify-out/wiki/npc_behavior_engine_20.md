@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_validate_reason_content_valid()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **Test validating valid reason content.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_cleanup_empty_subzone_subscriptions()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **Test cleanup_empty_subzone_subscriptions cleans up empty subzones.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
 
 ## Relationships
 
-- [Security Validator Tests](Security_Validator_Tests.md) (1 shared connections)
-- [command communication models](command_communication_models.md) (1 shared connections)
+- [subzone realtime nats](subzone_realtime_nats.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_security_validator.py`
+- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

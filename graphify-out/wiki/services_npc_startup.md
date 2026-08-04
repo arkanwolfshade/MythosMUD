@@ -1,38 +1,57 @@
 # services npc startup
 
-> 13 nodes
+> 33 nodes
 
 ## Key Concepts
 
-- **.spawn_npcs_on_startup()** (8 connections) — `server/services/npc_startup_service.py`
-- **._spawn_required_npcs()** (6 connections) — `server/services/npc_startup_service.py`
-- **._determine_spawn_room()** (6 connections) — `server/services/npc_startup_service.py`
-- **._spawn_optional_npcs()** (5 connections) — `server/services/npc_startup_service.py`
-- **._spawn_arena_npcs()** (5 connections) — `server/services/npc_startup_service.py`
-- **Any** (4 connections)
-- **._get_default_room_for_sub_zone()** (3 connections) — `server/services/npc_startup_service.py`
-- **Spawn NPCs during server startup.          This method handles the automatic spa** (1 connections) — `server/services/npc_startup_service.py`
-- **Spawn all required NPCs.          Args:             required_npcs: List of requi** (1 connections) — `server/services/npc_startup_service.py`
-- **Spawn optional NPCs based on spawn probability.          Args:             optio** (1 connections) — `server/services/npc_startup_service.py`
-- **Second pass: spawn one instance per definition (that was spawned in required/opt** (1 connections) — `server/services/npc_startup_service.py`
-- **Determine the appropriate room for spawning an NPC.          Args:             n** (1 connections) — `server/services/npc_startup_service.py`
-- **Get a default room for a given sub-zone.          Args:             sub_zone_id:** (1 connections) — `server/services/npc_startup_service.py`
+- **PersonalMessageSender** (21 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **personal_message_sender.py** (15 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **test_personal_message_sender.py** (14 connections) — `server/tests/unit/realtime/test_personal_message_sender.py`
+- **.send_message()** (8 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **UUID** (7 connections)
+- **._prepare_payload()** (7 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **Any** (6 connections)
+- **._send_to_websocket()** (6 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **._queue_message_if_needed()** (6 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **__init__.py** (5 connections) — `server/realtime/messaging/__init__.py`
+- **.__init__()** (4 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **.get_delivery_stats()** (4 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **test_send_to_websocket_accept_first_is_debug_not_warning()** (4 connections) — `server/tests/unit/realtime/test_personal_message_sender.py`
+- **test_send_to_websocket_empty_runtime_error_is_debug()** (3 connections) — `server/tests/unit/realtime/test_personal_message_sender.py`
+- **test_get_delivery_stats()** (3 connections) — `server/tests/unit/realtime/test_personal_message_sender.py`
+- **test_send_message_outer_exception()** (3 connections) — `server/tests/unit/realtime/test_personal_message_sender.py`
+- **sender()** (2 connections) — `server/tests/unit/realtime/test_personal_message_sender.py`
+- **test_send_message_delivers_via_websocket()** (2 connections) — `server/tests/unit/realtime/test_personal_message_sender.py`
+- **test_send_message_queues_when_offline()** (2 connections) — `server/tests/unit/realtime/test_personal_message_sender.py`
+- **test_prepare_payload_too_large()** (2 connections) — `server/tests/unit/realtime/test_personal_message_sender.py`
+- **test_send_to_websocket_disconnect()** (2 connections) — `server/tests/unit/realtime/test_personal_message_sender.py`
+- **LogCaptureFixture** (2 connections)
+- **Messaging components for connection management.  This package provides modular m** (1 connections) — `server/realtime/messaging/__init__.py`
+- **Personal message delivery for connection management.  This module provides direc** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **Sends personal messages to individual players.      This class provides:     - P** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [player respawn event](player_respawn_event.md) (6 shared connections)
-- [Error Conversion](Error_Conversion.md) (3 shared connections)
-- [command inventory models](command_inventory_models.md) (1 shared connections)
-- [commands npc admin](commands_npc_admin.md) (1 shared connections)
+- [taunt combat commands](taunt_combat_commands.md) (7 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (5 shared connections)
+- [combat configuration service](combat_configuration_service.md) (2 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
+- [npc event handlers](npc_event_handlers.md) (2 shared connections)
+- [room websocket updates](room_websocket_updates.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/npc_startup_service.py`
+- `server/realtime/messaging/__init__.py`
+- `server/realtime/messaging/personal_message_sender.py`
+- `server/tests/unit/realtime/test_personal_message_sender.py`
 
 ## Audit Trail
 
-- EXTRACTED: 43 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 135 (97%)
+- INFERRED: 4 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

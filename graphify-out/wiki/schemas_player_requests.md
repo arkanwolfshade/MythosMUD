@@ -1,24 +1,33 @@
 # schemas player requests
 
-> 2 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **test_handle_alias_command_invalid_name_too_long()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **Test handle_alias_command with alias name too long.** (1 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_spell_effects_support.py** (13 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **_spell()** (8 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **_target()** (7 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **test_process_stat_modify_rejects_non_player()** (3 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **test_process_stat_modify_success()** (3 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **test_process_create_object_missing_prototype()** (3 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **test_process_create_object_for_player()** (3 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **test_create_object_for_room_placeholder()** (3 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **test_build_stat_modifications_shorthand()** (2 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **test_build_stat_modifications_missing()** (2 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **Unit tests for server.game.magic.spell_effects_support.** (1 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
 
 ## Relationships
 
-- [commands alias rationale](commands_alias_rationale.md) (1 shared connections)
-- [scripts worktree ops](scripts_worktree_ops.md) (1 shared connections)
+- [spell game magic](spell_game_magic.md) (3 shared connections)
+- [target resolution service](target_resolution_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_alias_commands.py`
+- `server/tests/unit/game/magic/test_spell_effects_support.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 48 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

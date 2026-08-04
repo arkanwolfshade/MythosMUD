@@ -1,6 +1,6 @@
 # party game service
 
-> 50 nodes
+> 48 nodes
 
 ## Key Concepts
 
@@ -29,27 +29,27 @@
 - **.is_in_same_party()** (5 connections) — `server/game/party_service.py`
 - **.get_party_members()** (4 connections) — `server/game/party_service.py`
 - **.get_party()** (3 connections) — `server/game/party_service.py`
-- *... and 25 more nodes in this community*
+- *... and 23 more nodes in this community*
 
 ## Relationships
 
-- [commands inventory helpers](commands_inventory_helpers.md) (14 shared connections)
-- [Error Conversion](Error_Conversion.md) (3 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (14 shared connections)
+- [websocket realtime handler](websocket_realtime_handler.md) (3 shared connections)
 - [Room Broadcast](Room_Broadcast.md) (2 shared connections)
-- [combat messaging services](combat_messaging_services.md) (1 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
-- [connection manager realtime](connection_manager_realtime.md) (1 shared connections)
-- [combat services messaging](combat_services_messaging.md) (1 shared connections)
+- [commands inventory helpers](commands_inventory_helpers.md) (1 shared connections)
+- [room realtime subscription](room_realtime_subscription.md) (1 shared connections)
+- [skill game service](skill_game_service.md) (1 shared connections)
+- [NPC Combat](NPC_Combat.md) (1 shared connections)
+- [realtime monitoring statistics](realtime_monitoring_statistics.md) (1 shared connections)
+- [room look commands](room_look_commands.md) (1 shared connections)
 
 ## Source Files
 
 - `server/game/party_service.py`
-- `server/tests/unit/game/test_party_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 241 (98%)
+- EXTRACTED: 237 (98%)
 - INFERRED: 4 (2%)
 - AMBIGUOUS: 0 (0%)
 

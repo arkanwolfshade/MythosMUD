@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_get_npc_instance_service_not_initialized()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **Test get_npc_instance_service() raises RuntimeError when not initialized.** (1 connections) — `server/tests/unit/services/test_npc_instance_service.py`
+- **test_is_leader_false_when_member()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **is_leader is False for non-leader member.** (1 connections) — `server/tests/unit/game/test_party_service.py`
 
 ## Relationships
 
-- [commands npc admin](commands_npc_admin.md) (1 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
+- [commands inventory helpers](commands_inventory_helpers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_npc_instance_service.py`
+- `server/tests/unit/game/test_party_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

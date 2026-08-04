@@ -76,7 +76,7 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
 
   if (isCollapsed) {
     return (
-      <div className="fixed top-0 left-0 right-0 h-8 bg-mythos-terminal-surface border-b border-gray-700 flex items-center justify-between px-4 z-50">
+      <div className="fixed top-0 left-0 right-0 h-8 bg-mythos-terminal-surface border-b border-mythos-terminal-border flex items-center justify-between px-4 z-50">
         <button
           onClick={toggleCollapse}
           className="flex items-center gap-2 text-mythos-terminal-text-secondary hover:text-mythos-terminal-primary transition-colors"
@@ -94,7 +94,7 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
   }
 
   return (
-    <div className="fixed top-0 left-0 right-0 h-12 bg-mythos-terminal-surface border-b border-gray-700 flex items-center justify-between px-4 z-50">
+    <div className="fixed top-0 left-0 right-0 h-12 bg-mythos-terminal-surface border-b border-mythos-terminal-border flex items-center justify-between px-4 z-50">
       <div className="flex items-center gap-4">
         <button
           onClick={toggleCollapse}
@@ -126,7 +126,7 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
             {activeEffects.map((eff, idx) => (
               <span
                 key={eff.effect_type + (eff.remaining_seconds ?? 0) + idx}
-                className="px-2 py-0.5 rounded text-xs bg-mythos-terminal-surface border border-gray-600 text-mythos-terminal-text-secondary"
+                className="px-2 py-0.5 rounded text-xs bg-mythos-terminal-surface border border-mythos-terminal-border text-mythos-terminal-text-secondary"
                 title={
                   eff.remaining_seconds != null
                     ? `${eff.label ?? eff.effect_type}: ${formatRemaining(eff.remaining_seconds)} left`

@@ -1,58 +1,59 @@
 # message nats handler
 
-> 22 nodes
+> 52 nodes
 
 ## Key Concepts
 
-- **deque** (25 connections)
-- **test_message_queue_get_messages_error()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
-- **test_message_queue_has_messages_empty_list()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
-- **test_message_queue_cleanup_old_messages()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
-- **test_message_queue_cleanup_old_messages_removes_empty()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
-- **test_message_queue_cleanup_old_messages_string_timestamp()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
-- **test_message_queue_cleanup_old_messages_invalid_timestamp()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
-- **test_message_queue_cleanup_large_structures()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
-- **.__init__()** (3 connections) — `server/monitoring/memory_leak_metrics.py`
-- **.cleanup_large_structures()** (3 connections) — `server/realtime/message_queue.py`
-- **.__init__()** (3 connections) — `server/services/nats_subject_manager/metrics.py`
-- **.__init__()** (2 connections) — `server/services/nats_metrics.py`
-- **Initialize the memory leak metrics collector.** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Clean up large data structures to prevent memory bloat.          Args:** (1 connections) — `server/realtime/message_queue.py`
-- **Initialize metrics collection.** (1 connections) — `server/services/nats_subject_manager/metrics.py`
-- **Test MessageQueue.get_messages() handles errors.** (1 connections) — `server/tests/unit/realtime/test_message_queue.py`
-- **Test MessageQueue.has_messages() returns False for empty list.** (1 connections) — `server/tests/unit/realtime/test_message_queue.py`
-- **Test MessageQueue.cleanup_old_messages() removes old messages.** (1 connections) — `server/tests/unit/realtime/test_message_queue.py`
-- **Test MessageQueue.cleanup_old_messages() removes empty queues.** (1 connections) — `server/tests/unit/realtime/test_message_queue.py`
-- **Test MessageQueue.cleanup_old_messages() handles ISO string timestamps.** (1 connections) — `server/tests/unit/realtime/test_message_queue.py`
-- **Test MessageQueue.cleanup_old_messages() handles invalid timestamps.** (1 connections) — `server/tests/unit/realtime/test_message_queue.py`
-- **Test MessageQueue.cleanup_large_structures() trims large queues.** (1 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **MovementService** (43 connections) — `server/game/movement_service.py`
+- **UUID** (16 connections)
+- **.move_player()** (14 connections) — `server/game/movement_service.py`
+- **._validate_movement()** (9 connections) — `server/game/movement_service.py`
+- **._handle_movement_error()** (8 connections) — `server/game/movement_service.py`
+- **._validate_move_params()** (6 connections) — `server/game/movement_service.py`
+- **._resolve_player_for_movement()** (6 connections) — `server/game/movement_service.py`
+- **._get_rooms_for_movement()** (6 connections) — `server/game/movement_service.py`
+- **._validate_player_room_membership()** (6 connections) — `server/game/movement_service.py`
+- **.add_player_to_room()** (6 connections) — `server/game/movement_service.py`
+- **._validate_remove_player_params()** (6 connections) — `server/game/movement_service.py`
+- **.remove_player_from_room()** (6 connections) — `server/game/movement_service.py`
+- **.get_player_room()** (6 connections) — `server/game/movement_service.py`
+- **.__init__()** (5 connections) — `server/game/movement_service.py`
+- **._execute_room_transfer()** (5 connections) — `server/game/movement_service.py`
+- **._mark_room_explored()** (5 connections) — `server/game/movement_service.py`
+- **._check_combat_state()** (5 connections) — `server/game/movement_service.py`
+- **._check_player_posture()** (5 connections) — `server/game/movement_service.py`
+- **Any** (4 connections)
+- **Room** (4 connections)
+- **._persist_player_location()** (4 connections) — `server/game/movement_service.py`
+- **._handle_tutorial_exit_if_applicable()** (4 connections) — `server/game/movement_service.py`
+- **._extract_player_id()** (4 connections) — `server/game/movement_service.py`
+- **._validate_exit()** (4 connections) — `server/game/movement_service.py`
+- **.get_room_players()** (4 connections) — `server/game/movement_service.py`
+- *... and 27 more nodes in this community*
 
 ## Relationships
 
-- [Room Broadcast](Room_Broadcast.md) (11 shared connections)
-- [connection disconnection realtime](connection_disconnection_realtime.md) (7 shared connections)
-- [mythos mud mapbuilder](mythos_mud_mapbuilder.md) (5 shared connections)
-- [main rationale failure()](main_rationale_failure%28%29.md) (2 shared connections)
-- [error monitoring scripts](error_monitoring_scripts.md) (1 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
-- [combat monitoring service](combat_monitoring_service.md) (1 shared connections)
-- [coordinate services generator](coordinate_services_generator.md) (1 shared connections)
-- [command combat models](command_combat_models.md) (1 shared connections)
-- [nats services service](nats_services_service.md) (1 shared connections)
-- [subject validation services](subject_validation_services.md) (1 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (18 shared connections)
+- [Loot Generation](Loot_Generation.md) (8 shared connections)
+- [NPC Combat](NPC_Combat.md) (4 shared connections)
+- [websocket realtime handler](websocket_realtime_handler.md) (3 shared connections)
+- [party service game](party_service_game.md) (3 shared connections)
+- [commands command rationale](commands_command_rationale.md) (2 shared connections)
+- [movement service game](movement_service_game.md) (2 shared connections)
+- [events event bus](events_event_bus.md) (2 shared connections)
+- [health models rationale](health_models_rationale.md) (2 shared connections)
+- [retry nats handler](retry_nats_handler.md) (1 shared connections)
+- [spell game magic](spell_game_magic.md) (1 shared connections)
+- [coercion int inventory](coercion_int_inventory.md) (1 shared connections)
 
 ## Source Files
 
-- `server/monitoring/memory_leak_metrics.py`
-- `server/realtime/message_queue.py`
-- `server/services/nats_metrics.py`
-- `server/services/nats_subject_manager/metrics.py`
-- `server/tests/unit/realtime/test_message_queue.py`
+- `server/game/movement_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 43 (58%)
-- INFERRED: 31 (42%)
+- EXTRACTED: 203 (91%)
+- INFERRED: 19 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

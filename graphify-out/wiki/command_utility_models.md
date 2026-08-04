@@ -17,12 +17,12 @@
 - **Any** (8 connections)
 - **_remove_from_grace_period_tracking()** (7 connections) — `server/realtime/login_grace_period.py`
 - **_grace_period_task()** (7 connections) — `server/realtime/login_grace_period.py`
+- **test_warded_indicator_removed_after_expiration()** (6 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
 - **_trigger_room_occupants_update()** (5 connections) — `server/realtime/login_grace_period.py`
 - **test_grace_period_expires_after_duration()** (5 connections) — `server/tests/integration/test_login_grace_period_flow.py`
 - **test_multiple_players_independent_grace_periods()** (5 connections) — `server/tests/integration/test_login_grace_period_flow.py`
 - **test_grace_period_can_be_cancelled()** (5 connections) — `server/tests/integration/test_login_grace_period_flow.py`
 - **test_effect_based_grace_start_then_tick_expiration_clears_in_memory()** (5 connections) — `server/tests/integration/test_login_grace_period_flow.py`
-- **test_warded_indicator_in_game_state_provider()** (5 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
 - **test_start_grace_period_removes_from_combat()** (4 connections) — `server/tests/integration/test_login_grace_period_flow.py`
 - **test_grace_period_blocks_combat_initiation()** (4 connections) — `server/tests/integration/test_login_grace_period_flow.py`
 - **test_grace_period_remaining_time_decreases()** (4 connections) — `server/tests/integration/test_login_grace_period_flow.py`
@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [player occupant processor](player_occupant_processor.md) (12 shared connections)
-- [NPC Combat](NPC_Combat.md) (10 shared connections)
-- [tick game processing](tick_game_processing.md) (9 shared connections)
-- [Item Instances](Item_Instances.md) (7 shared connections)
-- [command inventory factories](command_inventory_factories.md) (6 shared connections)
-- [realtime game state](realtime_game_state.md) (5 shared connections)
-- [combat services turn](combat_services_turn.md) (4 shared connections)
-- [look helpers commands](look_helpers_commands.md) (4 shared connections)
-- [room websocket updates](room_websocket_updates.md) (4 shared connections)
-- [room realtime rationale](room_realtime_rationale.md) (4 shared connections)
-- [command factories exploration](command_factories_exploration.md) (3 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (3 shared connections)
+- [combat services turn](combat_services_turn.md) (22 shared connections)
+- [models npc rationale](models_npc_rationale.md) (9 shared connections)
+- [NPC Combat](NPC_Combat.md) (8 shared connections)
+- [Player Stats](Player_Stats.md) (7 shared connections)
+- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (7 shared connections)
+- [spell game magic](spell_game_magic.md) (5 shared connections)
+- [npc combat base](npc_combat_base.md) (4 shared connections)
+- [schemas calendar rationale](schemas_calendar_rationale.md) (4 shared connections)
+- [nats services metrics](nats_services_metrics.md) (4 shared connections)
+- [look command commands](look_command_commands.md) (3 shared connections)
+- [command factories communication](command_factories_communication.md) (3 shared connections)
+- [help content websocket](help_content_websocket.md) (3 shared connections)
 
 ## Source Files
 
@@ -57,7 +57,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 426 (99%)
+- EXTRACTED: 427 (99%)
 - INFERRED: 5 (1%)
 - AMBIGUOUS: 0 (0%)
 

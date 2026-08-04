@@ -4,36 +4,31 @@
 
 ## Key Concepts
 
-- **level_from_total_xp()** (13 connections) — `server/game/level_curve.py`
-- **test_level_from_total_xp_roundtrip()** (4 connections) — `server/tests/unit/game/test_level_curve.py`
-- **test_level_from_total_xp_threshold_level_two()** (4 connections) — `server/tests/unit/game/test_level_curve.py`
-- **test_level_from_total_xp_zero()** (3 connections) — `server/tests/unit/game/test_level_curve.py`
-- **test_level_from_total_xp_negative()** (3 connections) — `server/tests/unit/game/test_level_curve.py`
-- **test_check_level_up_no_change_returns_false()** (3 connections) — `server/tests/unit/game/test_level_service.py`
-- **Compute character level from total experience points.      Uses the same curve a** (1 connections) — `server/game/level_curve.py`
-- **Zero XP gives level 1.** (1 connections) — `server/tests/unit/game/test_level_curve.py`
-- **Negative XP treated as zero gives level 1.** (1 connections) — `server/tests/unit/game/test_level_curve.py`
-- **level_from_total_xp(total_xp_for_level(n)) >= n (at least that level).** (1 connections) — `server/tests/unit/game/test_level_curve.py`
-- **XP just below total_xp_for_level(2) gives level 1; at or above gives level 2.** (1 connections) — `server/tests/unit/game/test_level_curve.py`
-- **check_level_up when level already matches curve returns False.** (1 connections) — `server/tests/unit/game/test_level_service.py`
+- **_errors_len()** (7 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_required_npcs_no_spawn_room()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_required_npcs_exception()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_optional_npcs_exception()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_npcs_on_startup_exception_in_session()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_npcs_on_startup_critical_exception()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Narrow spawn/startup result dict for len(results['errors']) without propagating** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _spawn_required_npcs() handles missing spawn room.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _spawn_required_npcs() handles exceptions during spawning.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _spawn_optional_npcs() handles exceptions during spawning.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test spawn_npcs_on_startup() handles exceptions during session processing.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test spawn_npcs_on_startup() handles critical exceptions.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
 
 ## Relationships
 
-- [realtime dead letter](realtime_dead_letter.md) (6 shared connections)
-- [message formatters realtime](message_formatters_realtime.md) (3 shared connections)
-- [service combat services](service_combat_services.md) (2 shared connections)
-- [calendar models rationale](calendar_models_rationale.md) (2 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [realtime player connection](realtime_player_connection.md) (6 shared connections)
+- [map layout useMapLayout](map_layout_useMapLayout.md) (5 shared connections)
 
 ## Source Files
 
-- `server/game/level_curve.py`
-- `server/tests/unit/game/test_level_curve.py`
-- `server/tests/unit/game/test_level_service.py`
+- `server/tests/unit/services/test_npc_startup_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 36 (100%)
+- EXTRACTED: 33 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

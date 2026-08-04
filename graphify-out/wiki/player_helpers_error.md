@@ -1,35 +1,49 @@
 # player helpers error
 
-> 10 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **create_error_context()** (10 connections) — `server/api/player_helpers.py`
-- **test_player_helpers.py** (5 connections) — `server/tests/unit/api/test_player_helpers.py`
-- **test_create_error_context_without_user_sets_metadata()** (3 connections) — `server/tests/unit/api/test_player_helpers.py`
-- **test_create_error_context_with_user_sets_user_id_and_metadata()** (3 connections) — `server/tests/unit/api/test_player_helpers.py`
-- **Request** (1 connections)
-- **Any** (1 connections)
-- **Create error context from request and user.      Helper function to reduce dupli** (1 connections) — `server/api/player_helpers.py`
-- **Unit tests for server.api.player_helpers (error context helper).** (1 connections) — `server/tests/unit/api/test_player_helpers.py`
-- **When current_user is None, context gets metadata only.** (1 connections) — `server/tests/unit/api/test_player_helpers.py`
-- **When current_user is set, user_id is populated and metadata merged.** (1 connections) — `server/tests/unit/api/test_player_helpers.py`
+- **UserManagerProtocol** (21 connections) — `server/game/chat_moderation.py`
+- **.mute_channel()** (2 connections) — `server/game/chat_moderation.py`
+- **.unmute_channel()** (2 connections) — `server/game/chat_moderation.py`
+- **.is_channel_muted()** (2 connections) — `server/game/chat_moderation.py`
+- **.mute_player()** (2 connections) — `server/game/chat_moderation.py`
+- **.unmute_player()** (2 connections) — `server/game/chat_moderation.py`
+- **.is_player_muted()** (2 connections) — `server/game/chat_moderation.py`
+- **.is_globally_muted()** (2 connections) — `server/game/chat_moderation.py`
+- **.is_admin()** (2 connections) — `server/game/chat_moderation.py`
+- **.can_send_message()** (2 connections) — `server/game/chat_moderation.py`
+- **.mute_global()** (1 connections) — `server/game/chat_moderation.py`
+- **.unmute_global()** (1 connections) — `server/game/chat_moderation.py`
+- **.add_admin()** (1 connections) — `server/game/chat_moderation.py`
+- **.remove_admin()** (1 connections) — `server/game/chat_moderation.py`
+- **Protocol for user manager.** (1 connections) — `server/game/chat_moderation.py`
+- **Mute a channel for a player.** (1 connections) — `server/game/chat_moderation.py`
+- **Unmute a channel for a player.** (1 connections) — `server/game/chat_moderation.py`
+- **Check if channel is muted.** (1 connections) — `server/game/chat_moderation.py`
+- **Mute a player for another player.** (1 connections) — `server/game/chat_moderation.py`
+- **Unmute a player for another player.** (1 connections) — `server/game/chat_moderation.py`
+- **Check if player is muted.** (1 connections) — `server/game/chat_moderation.py`
+- **Check if player is globally muted.** (1 connections) — `server/game/chat_moderation.py`
+- **Check if player is admin.** (1 connections) — `server/game/chat_moderation.py`
+- **Check if player can send message.** (1 connections) — `server/game/chat_moderation.py`
 
 ## Relationships
 
-- [Database Config](Database_Config.md) (3 shared connections)
-- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
-- [ascii map renderer](ascii_map_renderer.md) (1 shared connections)
+- [services ascii map](services_ascii_map.md) (3 shared connections)
+- [command parser build](command_parser_build.md) (2 shared connections)
+- [chat game message](chat_game_message.md) (1 shared connections)
+- [chat service game](chat_service_game.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/player_helpers.py`
-- `server/tests/unit/api/test_player_helpers.py`
+- `server/game/chat_moderation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 27 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 52 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

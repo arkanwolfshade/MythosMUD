@@ -1,10 +1,10 @@
 # game state provider
 
-> 52 nodes
+> 78 nodes
 
 ## Key Concepts
 
-- **test_game_state_provider.py** (28 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_game_state_provider.py** (41 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
 - **game_state_provider()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
 - **mock_room_manager()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
 - **mock_get_async_persistence()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
@@ -29,12 +29,12 @@
 - **test_get_room_occupants_empty_online_players()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
 - **test_get_room_occupants_with_online_players()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
 - **test_send_initial_game_state_no_player()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- *... and 27 more nodes in this community*
+- *... and 53 more nodes in this community*
 
 ## Relationships
 
-- [realtime game state](realtime_game_state.md) (2 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (1 shared connections)
+- [nats services metrics](nats_services_metrics.md) (2 shared connections)
+- [combat services turn](combat_services_turn.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,7 +42,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 105 (100%)
+- EXTRACTED: 157 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

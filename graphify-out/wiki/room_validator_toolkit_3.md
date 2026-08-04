@@ -33,12 +33,12 @@
 
 ## Relationships
 
-- [player service mutations](player_service_mutations.md) (5 shared connections)
-- [commands admin mute](commands_admin_mute.md) (4 shared connections)
+- [commands recovery lucidity](commands_recovery_lucidity.md) (4 shared connections)
+- [player service mutations](player_service_mutations.md) (4 shared connections)
 - [room hierarchical schema](room_hierarchical_schema.md) (3 shared connections)
+- [validator room toolkit](validator_room_toolkit.md) (2 shared connections)
 - [room toolkit validator](room_toolkit_validator.md) (2 shared connections)
 - [room validator toolkit](room_validator_toolkit.md) (1 shared connections)
-- [validator room toolkit](validator_room_toolkit.md) (1 shared connections)
 
 ## Source Files
 

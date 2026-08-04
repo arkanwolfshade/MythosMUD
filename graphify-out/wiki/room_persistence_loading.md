@@ -5,23 +5,20 @@
 ## Key Concepts
 
 - **test_async_persistence_room_loading.py** (28 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **test_process_exit_rows_debug_logging()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_process_exit_rows_with_partial_room_ids()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 - **test_build_room_objects_debug_logging()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **test_build_room_objects_with_exits()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_load_room_cache_with_rooms_logs_sample_ids()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 - **Unit tests for async persistence layer: process_room_rows, process_exit_rows, bu** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _process_exit_rows logs debug info for specific room.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _process_exit_rows with stable_ids that need room ID generation.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 - **Test _build_room_objects logs debug info for specific room.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _build_room_objects includes exits in room data.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _load_room_cache logs sample room IDs when rooms are loaded.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Relationships
 
-- [room infrastructure persistence](room_infrastructure_persistence.md) (12 shared connections)
-- [Database Config](Database_Config.md) (3 shared connections)
-- [npc aggressive mob](npc_aggressive_mob.md) (3 shared connections)
-- [infrastructure persistence room](infrastructure_persistence_room.md) (3 shared connections)
-- [game room service](game_room_service.md) (1 shared connections)
-- [services ascii map](services_ascii_map.md) (1 shared connections)
-- [services chat rate](services_chat_rate.md) (1 shared connections)
+- [room game service](room_game_service.md) (15 shared connections)
+- [game room service](game_room_service.md) (7 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (1 shared connections)
 
 ## Source Files
 

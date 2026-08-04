@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_calculate_distance_to_room_same_subzone()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **Test _calculate_distance_to_room() with rooms in same subzone.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_movement_service_init_no_persistence()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
+- **Test MovementService initialization without persistence raises error.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
 
 ## Relationships
 
-- [config models player](config_models_player.md) (1 shared connections)
-- [idle movement npc](idle_movement_npc.md) (1 shared connections)
+- [message nats handler](message_nats_handler.md) (1 shared connections)
+- [movement service game](movement_service_game.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_idle_movement.py`
+- `server/tests/unit/game/test_movement_service.py`
 
 ## Audit Trail
 

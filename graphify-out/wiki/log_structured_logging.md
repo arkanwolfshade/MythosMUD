@@ -1,16 +1,20 @@
 # log structured logging
 
-> 41 nodes
+> 58 nodes
 
 ## Key Concepts
 
-- **LogAggregator** (23 connections) — `server/structured_logging/log_aggregator.py`
-- **LogEntry** (13 connections) — `server/structured_logging/log_aggregator.py`
+- **LogAggregator** (34 connections) — `server/structured_logging/log_aggregator.py`
+- **log_aggregator.py** (15 connections) — `server/structured_logging/log_aggregator.py`
+- **LogEntry** (15 connections) — `server/structured_logging/log_aggregator.py`
+- **test_log_aggregator.py** (15 connections) — `server/tests/unit/structured_logging/test_log_aggregator.py`
 - **.get_logs()** (9 connections) — `server/structured_logging/log_aggregator.py`
+- **get_log_aggregator()** (8 connections) — `server/structured_logging/log_aggregator.py`
+- **aggregate_log_entry()** (8 connections) — `server/structured_logging/log_aggregator.py`
 - **.export_logs()** (7 connections) — `server/structured_logging/log_aggregator.py`
 - **.__init__()** (6 connections) — `server/structured_logging/log_aggregator.py`
 - **.add_log_entry()** (6 connections) — `server/structured_logging/log_aggregator.py`
-- **aggregate_log_entry()** (6 connections) — `server/structured_logging/log_aggregator.py`
+- **_flush_queue()** (6 connections) — `server/tests/unit/structured_logging/test_log_aggregator.py`
 - **._export_json()** (5 connections) — `server/structured_logging/log_aggregator.py`
 - **._export_csv()** (5 connections) — `server/structured_logging/log_aggregator.py`
 - **.get_error_logs()** (4 connections) — `server/structured_logging/log_aggregator.py`
@@ -19,31 +23,32 @@
 - **.get_correlation_logs()** (4 connections) — `server/structured_logging/log_aggregator.py`
 - **._update_stats()** (4 connections) — `server/structured_logging/log_aggregator.py`
 - **Path** (4 connections)
+- **test_export_logs_json()** (4 connections) — `server/tests/unit/structured_logging/test_log_aggregator.py`
 - **Any** (3 connections)
 - **.get_stats()** (3 connections) — `server/structured_logging/log_aggregator.py`
 - **.add_aggregation_callback()** (3 connections) — `server/structured_logging/log_aggregator.py`
 - **._start_processing_thread()** (3 connections) — `server/structured_logging/log_aggregator.py`
-- **datetime** (2 connections)
-- **.shutdown()** (2 connections) — `server/structured_logging/log_aggregator.py`
-- **._process_logs()** (2 connections) — `server/structured_logging/log_aggregator.py`
-- **Represents a single log entry.** (1 connections) — `server/structured_logging/log_aggregator.py`
-- **Centralized log aggregation and collection system.      This class provides comp** (1 connections) — `server/structured_logging/log_aggregator.py`
-- **Initialize the log aggregator.          Args:             max_entries: Maximum n** (1 connections) — `server/structured_logging/log_aggregator.py`
-- *... and 16 more nodes in this community*
+- **test_get_logs_after_flush()** (3 connections) — `server/tests/unit/structured_logging/test_log_aggregator.py`
+- *... and 33 more nodes in this community*
 
 ## Relationships
 
-- [command inventory factories](command_inventory_factories.md) (8 shared connections)
-- [Error Conversion](Error_Conversion.md) (3 shared connections)
+- [room cache services](room_cache_services.md) (6 shared connections)
+- [Magic Spell Service](Magic_Spell_Service.md) (3 shared connections)
+- [NPC Combat](NPC_Combat.md) (3 shared connections)
+- [nats services service](nats_services_service.md) (3 shared connections)
+- [logging structured utilities](logging_structured_utilities.md) (1 shared connections)
+- [command combat models](command_combat_models.md) (1 shared connections)
 
 ## Source Files
 
 - `server/structured_logging/log_aggregator.py`
+- `server/tests/unit/structured_logging/test_log_aggregator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 138 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 226 (99%)
+- INFERRED: 3 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

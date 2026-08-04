@@ -1,47 +1,65 @@
 # services nats service
 
-> 24 nodes
+> 130 nodes
 
 ## Key Concepts
 
-- **test_statistics_aggregator.py** (14 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **statistics_aggregator()** (3 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **mock_memory_monitor()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **mock_rate_limiter()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **mock_message_queue()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **mock_room_manager()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **mock_performance_tracker()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **test_statistics_aggregator_init()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **test_get_memory_stats()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **test_get_connection_stats()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **test_get_connection_health_stats()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **test_get_memory_alerts()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **Unit tests for statistics aggregator.  Tests the StatisticsAggregator class.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **Create a mock memory monitor.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **Create a mock rate limiter.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **Create a mock message queue.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **Create a mock room manager.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **Create a mock performance tracker.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **Create a StatisticsAggregator instance.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **Test StatisticsAggregator initialization.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **Test get_memory_stats() returns comprehensive statistics.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **Test get_connection_stats() returns connection statistics.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **Test get_connection_health_stats() returns health statistics.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **Test get_memory_alerts() returns memory alerts.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **NPCCombatIntegration** (103 connections) — `server/npc/combat_integration.py`
+- **test_npc_combat_integration_class.py** (46 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **combat_integration.py** (26 connections) — `server/npc/combat_integration.py`
+- **test_combat_integration_base.py** (24 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
+- **NPCAttacked** (16 connections) — `server/events/event_types.py`
+- **._build_player_attacked_event()** (8 connections) — `server/npc/combat_integration.py`
+- **UUID** (7 connections)
+- **.get_combat_stats()** (7 connections) — `server/npc/combat_integration.py`
+- **_resolve_npc_combat_service_raw()** (7 connections) — `server/npc/combat_integration_base.py`
+- **._compute_dp_update_fields()** (6 connections) — `server/npc/combat_integration.py`
+- **._get_combat_event_publisher()** (6 connections) — `server/npc/combat_integration.py`
+- **._calculate_max_dp()** (6 connections) — `server/npc/combat_integration.py`
+- **._get_npc_display_name()** (5 connections) — `server/npc/combat_integration.py`
+- **._get_npc_lifecycle_manager()** (5 connections) — `server/npc/combat_integration.py`
+- **._publish_player_dp_updated_after_npc_damage()** (5 connections) — `server/npc/combat_integration.py`
+- **._publish_player_dp_updated_event()** (5 connections) — `server/npc/combat_integration.py`
+- **._publish_npc_attack_to_nats()** (5 connections) — `server/npc/combat_integration.py`
+- **._get_int_stat()** (5 connections) — `server/npc/combat_integration.py`
+- **._get_npc_name_from_lifecycle()** (4 connections) — `server/npc/combat_integration.py`
+- **._get_player_for_dp_update()** (4 connections) — `server/npc/combat_integration.py`
+- **._get_player_and_stats_for_nats()** (4 connections) — `server/npc/combat_integration.py`
+- **.handle_npc_death()** (4 connections) — `server/npc/combat_integration.py`
+- **._get_player_combat_stats()** (4 connections) — `server/npc/combat_integration.py`
+- **integration()** (4 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **test_publish_attack_event_emits_npc_attacked()** (4 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- *... and 105 more nodes in this community*
 
 ## Relationships
 
-- [target services resolution](target_services_resolution.md) (2 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (1 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (16 shared connections)
+- [Error Conversion](Error_Conversion.md) (15 shared connections)
+- [npc combat base](npc_combat_base.md) (10 shared connections)
+- [lucidity event services](lucidity_event_services.md) (7 shared connections)
+- [Loot Generation](Loot_Generation.md) (5 shared connections)
+- [attack combat commands](attack_combat_commands.md) (3 shared connections)
+- [models npc rationale](models_npc_rationale.md) (3 shared connections)
+- [Memory Task Runtime](Memory_Task_Runtime.md) (3 shared connections)
+- [spell game magic](spell_game_magic.md) (3 shared connections)
+- [commands emote rationale](commands_emote_rationale.md) (3 shared connections)
+- [rate limiter realtime](rate_limiter_realtime.md) (2 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- `server/events/event_types.py`
+- `server/npc/combat_integration.py`
+- `server/npc/combat_integration_base.py`
+- `server/npc/npc_base.py`
+- `server/tests/unit/npc/test_combat_integration_base.py`
+- `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- `server/tests/unit/services/test_damage_grace_period.py`
 
 ## Audit Trail
 
-- EXTRACTED: 49 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 485 (96%)
+- INFERRED: 22 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

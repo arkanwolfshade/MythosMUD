@@ -1,52 +1,60 @@
 # schedule services service
 
-> 27 nodes
+> 29 nodes
 
 ## Key Concepts
 
-- **_get_enum_value()** (9 connections) — `server/services/wearable_container_service.py`
-- **_filter_container_data()** (9 connections) — `server/services/wearable_container_service.py`
-- **Any** (8 connections)
-- **.add_items_to_wearable_container()** (8 connections) — `server/services/wearable_container_service.py`
-- **.update_wearable_container_items()** (8 connections) — `server/services/wearable_container_service.py`
-- **UUID** (7 connections)
-- **.handle_equip_wearable_container()** (6 connections) — `server/services/wearable_container_service.py`
-- **.handle_unequip_wearable_container()** (6 connections) — `server/services/wearable_container_service.py`
-- **.handle_container_overflow()** (6 connections) — `server/services/wearable_container_service.py`
-- **.get_wearable_containers_for_player()** (5 connections) — `server/services/wearable_container_service.py`
-- **.__init__()** (3 connections) — `server/services/wearable_container_service.py`
-- **test_get_enum_value_with_enum()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_get_enum_value_with_string()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_filter_container_data()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **ContainerComponent** (1 connections)
-- **Safely get enum value, handling both enum instances and string values.      When** (1 connections) — `server/services/wearable_container_service.py`
-- **Filter out database-only fields from container data before validation.      The** (1 connections) — `server/services/wearable_container_service.py`
-- **Initialize the wearable container service.          Args:             persistenc** (1 connections) — `server/services/wearable_container_service.py`
-- **Handle equipping a wearable container item.          Creates a container in Post** (1 connections) — `server/services/wearable_container_service.py`
-- **Handle unequipping a wearable container item.          Preserves the container a** (1 connections) — `server/services/wearable_container_service.py`
-- **Get all wearable containers for a player.          Args:             player_id:** (1 connections) — `server/services/wearable_container_service.py`
-- **Add items to a wearable container.          Args:             player_id: UUID of** (1 connections) — `server/services/wearable_container_service.py`
-- **Update items in a wearable container.          Args:             player_id: UUID** (1 connections) — `server/services/wearable_container_service.py`
-- **Handle container overflow by spilling items to inventory or ground.          Arg** (1 connections) — `server/services/wearable_container_service.py`
-- **Test _get_enum_value returns value from enum instance.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- *... and 2 more nodes in this community*
+- **PlayerEventHandler** (26 connections) — `server/realtime/player_event_handlers.py`
+- **Any** (9 connections)
+- **.__init__()** (8 connections) — `server/realtime/player_event_handlers.py`
+- **._initialize_handlers()** (7 connections) — `server/realtime/player_event_handlers.py`
+- **.handle_player_entered()** (4 connections) — `server/realtime/player_event_handlers.py`
+- **.handle_player_left()** (4 connections) — `server/realtime/player_event_handlers.py`
+- **.send_occupants_snapshot_to_player()** (3 connections) — `server/realtime/player_event_handlers.py`
+- **.get_room_state_event()** (3 connections) — `server/realtime/player_event_handlers.py`
+- **.handle_player_xp_awarded()** (3 connections) — `server/realtime/player_event_handlers.py`
+- **.handle_player_dp_updated()** (3 connections) — `server/realtime/player_event_handlers.py`
+- **.handle_player_died()** (3 connections) — `server/realtime/player_event_handlers.py`
+- **.handle_player_dp_decay()** (3 connections) — `server/realtime/player_event_handlers.py`
+- **.handle_player_respawned()** (3 connections) — `server/realtime/player_event_handlers.py`
+- **.handle_player_delirium_respawned()** (3 connections) — `server/realtime/player_event_handlers.py`
+- **player_event_handler()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **Handles all player-related real-time events.** (1 connections) — `server/realtime/player_event_handlers.py`
+- **Initialize the player event handler.          Args:             connection_manag** (1 connections) — `server/realtime/player_event_handlers.py`
+- **Initialize utility functions and specialized handlers.** (1 connections) — `server/realtime/player_event_handlers.py`
+- **Handle player entering a room with enhanced synchronization.          Args:** (1 connections) — `server/realtime/player_event_handlers.py`
+- **Handle player leaving a room with enhanced synchronization.          Args:** (1 connections) — `server/realtime/player_event_handlers.py`
+- **Send occupants snapshot to a player.          CRITICAL: This method MUST include** (1 connections) — `server/realtime/player_event_handlers.py`
+- **Build authoritative room_state event for a room (for request/response enter-room** (1 connections) — `server/realtime/player_event_handlers.py`
+- **Handle player XP award events by sending updates to the client.          Args:** (1 connections) — `server/realtime/player_event_handlers.py`
+- **Handle player DP update events by sending updates to the client.          Args:** (1 connections) — `server/realtime/player_event_handlers.py`
+- **Handle player death events by sending death notification to the client.** (1 connections) — `server/realtime/player_event_handlers.py`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
-- [Database Config](Database_Config.md) (7 shared connections)
-- [commands inventory command](commands_inventory_command.md) (7 shared connections)
-- [wearable container service](wearable_container_service.md) (5 shared connections)
-- [rate limiter rationale](rate_limiter_rationale.md) (4 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (4 shared connections)
+- [event bus events](event_bus_events.md) (3 shared connections)
+- [commands communication channels](commands_communication_channels.md) (2 shared connections)
+- [realtime monitoring performance](realtime_monitoring_performance.md) (2 shared connections)
+- [NATS Messaging](NATS_Messaging.md) (2 shared connections)
+- [inventory mutation guard](inventory_mutation_guard.md) (2 shared connections)
+- [message handler factory](message_handler_factory.md) (2 shared connections)
+- [player_event_handler_utils](player_event_handler_utils.md) (2 shared connections)
+- [Player Name Validation](Player_Name_Validation.md) (2 shared connections)
+- [feature services flag](feature_services_flag.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (1 shared connections)
+- [item models rationale](item_models_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/wearable_container_service.py`
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `server/realtime/player_event_handlers.py`
+- `server/tests/unit/realtime/test_player_event_handlers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 93 (96%)
-- INFERRED: 4 (4%)
+- EXTRACTED: 91 (92%)
+- INFERRED: 8 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

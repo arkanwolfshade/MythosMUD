@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_add_room_occupant_multiple()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **Test add_room_occupant() with multiple occupants.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_broadcast_by_channel_type_exception()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _broadcast_by_channel_type handles exceptions.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [room subscription manager](room_subscription_manager.md) (1 shared connections)
+- [message chat nats](message_chat_nats.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 

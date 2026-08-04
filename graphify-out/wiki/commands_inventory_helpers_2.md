@@ -1,59 +1,51 @@
 # commands inventory helpers
 
-> 82 nodes
+> 48 nodes
 
 ## Key Concepts
 
-- **test_party_service.py** (38 connections) — `server/tests/unit/game/test_party_service.py`
-- **party_service.py** (16 connections) — `server/game/party_service.py`
-- **PartyUpdated** (12 connections) — `server/events/event_types.py`
-- **Party** (12 connections) — `server/game/party_service.py`
-- **test_party_flow.py** (12 connections) — `server/tests/integration/test_party_flow.py`
-- **party_events()** (4 connections) — `server/tests/integration/test_party_flow.py`
-- **party_service()** (4 connections) — `server/tests/integration/test_party_flow.py`
-- **test_party_invite_join_leave_disband_state_and_events()** (4 connections) — `server/tests/integration/test_party_flow.py`
-- **test_party_leader_leaves_disbands()** (4 connections) — `server/tests/integration/test_party_flow.py`
-- **event_bus()** (3 connections) — `server/tests/integration/test_party_flow.py`
-- **test_party_post_init_includes_leader_in_members()** (3 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_party_post_init_preserves_other_members()** (3 connections) — `server/tests/unit/game/test_party_service.py`
-- **.__post_init__()** (2 connections) — `server/game/party_service.py`
-- **test_create_party_success()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_create_party_already_in_party_rejected()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_add_member_success()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_add_member_already_in_party_rejected()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_add_member_no_such_party()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_request_party_invite_creates_pending()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_accept_party_invite_success()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_decline_party_invite_success()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_request_party_invite_target_already_in_party_rejected()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_remove_member_leave_success()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_remove_member_leader_leaves_disbands()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_kick_member_leader_success()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- *... and 57 more nodes in this community*
+- **AdminAuthService** (19 connections) — `server/services/admin_auth_service.py`
+- **.validate_permission()** (11 connections) — `server/services/admin_auth_service.py`
+- **AdminRole** (7 connections) — `server/services/admin_auth_service.py`
+- **AdminSession** (6 connections) — `server/services/admin_auth_service.py`
+- **.get_user_role()** (6 connections) — `server/services/admin_auth_service.py`
+- **._update_session()** (6 connections) — `server/services/admin_auth_service.py`
+- **._has_permission()** (5 connections) — `server/services/admin_auth_service.py`
+- **._log_audit_event()** (5 connections) — `server/services/admin_auth_service.py`
+- **_HasIsSuperuser** (4 connections) — `server/services/admin_auth_service.py`
+- **Protocol** (4 connections)
+- **_HasIsAdmin** (4 connections) — `server/services/admin_auth_service.py`
+- **_HasUsername** (4 connections) — `server/services/admin_auth_service.py`
+- **_HasId** (4 connections) — `server/services/admin_auth_service.py`
+- **.get_username()** (4 connections) — `server/services/admin_auth_service.py`
+- **.get_user_id()** (4 connections) — `server/services/admin_auth_service.py`
+- **Request** (4 connections)
+- **._check_rate_limit()** (4 connections) — `server/services/admin_auth_service.py`
+- **admin_auth_service()** (4 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_get_admin_auth_service()** (4 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **.get_active_sessions()** (3 connections) — `server/services/admin_auth_service.py`
+- **.get_audit_log()** (3 connections) — `server/services/admin_auth_service.py`
+- **test_admin_session_init()** (3 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **.__init__()** (2 connections) — `server/services/admin_auth_service.py`
+- **.__init__()** (2 connections) — `server/services/admin_auth_service.py`
+- **Any** (2 connections)
+- *... and 23 more nodes in this community*
 
 ## Relationships
 
-- [party game service](party_game_service.md) (14 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (8 shared connections)
-- [item models rationale](item_models_rationale.md) (3 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (3 shared connections)
-- [combat messaging services](combat_messaging_services.md) (3 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [command service commands](command_service_commands.md) (1 shared connections)
-- [connection manager realtime](connection_manager_realtime.md) (1 shared connections)
-- [combat services messaging](combat_services_messaging.md) (1 shared connections)
+- [player preferences services](player_preferences_services.md) (13 shared connections)
+- [inventory schemas schema](inventory_schemas_schema.md) (6 shared connections)
+- [Exception Containers](Exception_Containers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/events/event_types.py`
-- `server/game/party_service.py`
-- `server/tests/integration/test_party_flow.py`
-- `server/tests/unit/game/test_party_service.py`
+- `server/services/admin_auth_service.py`
+- `server/tests/unit/services/test_admin_auth_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 209 (98%)
-- INFERRED: 5 (2%)
+- EXTRACTED: 137 (93%)
+- INFERRED: 11 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

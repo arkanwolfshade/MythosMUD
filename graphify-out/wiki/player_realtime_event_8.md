@@ -4,20 +4,20 @@
 
 ## Key Concepts
 
-- **test_combat_audit_logger_get_combat_audit_summary_with_player()** (3 connections) — `server/tests/unit/structured_logging/test_combat_audit.py`
-- **Test CombatAuditLogger.get_combat_audit_summary() filters by player.** (1 connections) — `server/tests/unit/structured_logging/test_combat_audit.py`
+- **test_create_channel_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_channel_command delegates to communication factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- [combat audit structured](combat_audit_structured.md) (2 shared connections)
+- [command factories create](command_factories_create.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/structured_logging/test_combat_audit.py`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

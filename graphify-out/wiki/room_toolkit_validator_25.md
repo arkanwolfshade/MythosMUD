@@ -17,7 +17,7 @@
 
 - [room toolkit validator](room_toolkit_validator.md) (2 shared connections)
 - [room zone schema](room_zone_schema.md) (1 shared connections)
-- [npc idle movement](npc_idle_movement.md) (1 shared connections)
+- [character creation validate](character_creation_validate.md) (1 shared connections)
 - [room zone toolkit](room_zone_toolkit.md) (1 shared connections)
 
 ## Source Files

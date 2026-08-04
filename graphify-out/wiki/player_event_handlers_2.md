@@ -1,11 +1,10 @@
 # player event handlers
 
-> 90 nodes
+> 88 nodes
 
 ## Key Concepts
 
 - **test_player_event_handlers_utils.py** (47 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
-- **player_event_handler_utils()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 - **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 - **mock_name_extractor()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 - **mock_logger()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
@@ -29,12 +28,12 @@
 - **test_extract_occupant_names_valid_names()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 - **test_extract_occupant_names_invalid_names()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 - **test_extract_occupant_names_empty_list()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
-- *... and 65 more nodes in this community*
+- **test_extract_occupant_names_none()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- *... and 63 more nodes in this community*
 
 ## Relationships
 
-- [NATS Messaging](NATS_Messaging.md) (2 shared connections)
-- [Player Name Validation](Player_Name_Validation.md) (1 shared connections)
+- [player_event_handler_utils](player_event_handler_utils.md) (3 shared connections)
 
 ## Source Files
 
@@ -42,7 +41,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 181 (100%)
+- EXTRACTED: 177 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

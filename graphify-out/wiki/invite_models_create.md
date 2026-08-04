@@ -4,25 +4,25 @@
 
 ## Key Concepts
 
-- **conftest.py** (5 connections) — `server/tests/unit/infrastructure/conftest.py`
-- **async_persistence_layer()** (3 connections) — `server/tests/unit/infrastructure/conftest.py`
-- **mock_event_bus()** (2 connections) — `server/tests/unit/infrastructure/conftest.py`
-- **Shared fixtures for unit tests in the infrastructure package.** (1 connections) — `server/tests/unit/infrastructure/conftest.py`
-- **Create a mock event bus.** (1 connections) — `server/tests/unit/infrastructure/conftest.py`
-- **Create an AsyncPersistenceLayer instance with skipped room cache.** (1 connections) — `server/tests/unit/infrastructure/conftest.py`
+- **.schedule_periodic_auditing()** (4 connections) — `server/app/memory_lifespan_coordinator.py`
+- **._background_audit_cycle()** (4 connections) — `server/app/memory_lifespan_coordinator.py`
+- **._do_full_cleanup_audit()** (4 connections) — `server/app/memory_lifespan_coordinator.py`
+- **Start the background auditing scheduler responsible for identifying orphan vecto** (1 connections) — `server/app/memory_lifespan_coordinator.py`
+- **Primary background cycle consuming auditor implementation.          Executes per** (1 connections) — `server/app/memory_lifespan_coordinator.py`
+- **Core capability for granular investigation cycles.          Repeated universal a** (1 connections) — `server/app/memory_lifespan_coordinator.py`
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [Database Config](Database_Config.md) (1 shared connections)
+- [dialogue definitions admin](dialogue_definitions_admin.md) (3 shared connections)
+- [schemas player rationale](schemas_player_rationale.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/conftest.py`
+- `server/app/memory_lifespan_coordinator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
