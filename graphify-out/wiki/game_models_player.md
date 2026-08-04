@@ -1,68 +1,57 @@
 # game models player
 
-> 159 nodes
+> 64 nodes
 
 ## Key Concepts
 
-- **magic_service.py** (40 connections) — `server/game/magic/magic_service.py`
-- **SpellRegistry** (37 connections) — `server/game/magic/spell_registry.py`
 - **test_spell.py** (30 connections) — `server/tests/unit/models/test_spell.py`
-- **spell.py** (28 connections) — `server/models/spell.py`
 - **SpellMaterial** (25 connections) — `server/models/spell.py`
-- **spell_learning_service.py** (22 connections) — `server/game/magic/spell_learning_service.py`
 - **test_spell_materials.py** (22 connections) — `server/tests/unit/game/magic/test_spell_materials.py`
-- **test_magic_healing_events.py** (20 connections) — `server/tests/unit/game/magic/test_magic_healing_events.py`
-- **test_spell_costs.py** (19 connections) — `server/tests/unit/game/magic/test_spell_costs.py`
-- **test_spell_registry.py** (18 connections) — `server/tests/unit/game/magic/test_spell_registry.py`
-- **MagicServiceHealingMixin** (17 connections) — `server/game/magic/magic_healing_events.py`
-- **_HealingService** (17 connections) — `server/tests/unit/game/magic/test_magic_healing_events.py`
-- **spell_registry.py** (16 connections) — `server/game/magic/spell_registry.py`
-- **magic_healing_events.py** (15 connections) — `server/game/magic/magic_healing_events.py`
-- **SpellSchool** (15 connections) — `server/models/spell.py`
-- **SpellEffectType** (15 connections) — `server/models/spell.py`
-- **SpellTargetType** (14 connections) — `server/models/spell.py`
-- **SpellRangeType** (12 connections) — `server/models/spell.py`
 - **_spell()** (11 connections) — `server/tests/unit/game/magic/test_spell_materials.py`
-- **._send_healing_update_event()** (7 connections) — `server/game/magic/magic_healing_events.py`
-- **._publish_dp_event()** (7 connections) — `server/game/magic/magic_healing_events.py`
-- **UUID** (6 connections)
-- **._publish_or_send_dp_update()** (6 connections) — `server/game/magic/magic_healing_events.py`
-- **_spell()** (6 connections) — `server/tests/unit/game/magic/test_spell_costs.py`
-- **_spell()** (6 connections) — `server/tests/unit/game/magic/test_spell_registry.py`
-- *... and 134 more nodes in this community*
+- **.load_spells()** (4 connections) — `server/game/magic/spell_registry.py`
+- **test_spell_mp_cost_validation_negative()** (4 connections) — `server/tests/unit/models/test_spell.py`
+- **test_spell_lucidity_cost_validation_negative()** (4 connections) — `server/tests/unit/models/test_spell.py`
+- **test_spell_with_materials()** (4 connections) — `server/tests/unit/models/test_spell.py`
+- **test_check_materials_missing_player()** (3 connections) — `server/tests/unit/game/magic/test_spell_materials.py`
+- **test_check_materials_all_present()** (3 connections) — `server/tests/unit/game/magic/test_spell_materials.py`
+- **test_check_materials_reports_missing()** (3 connections) — `server/tests/unit/game/magic/test_spell_materials.py`
+- **test_consume_materials_player_not_found()** (3 connections) — `server/tests/unit/game/magic/test_spell_materials.py`
+- **test_consume_materials_decrements_quantity()** (3 connections) — `server/tests/unit/game/magic/test_spell_materials.py`
+- **test_consume_materials_non_consumed_keeps_item()** (3 connections) — `server/tests/unit/game/magic/test_spell_materials.py`
+- **test_spell_material_creation()** (3 connections) — `server/tests/unit/models/test_spell.py`
+- **test_spell_material_consumed_default()** (3 connections) — `server/tests/unit/models/test_spell.py`
+- **test_spell_material_consumed_false()** (3 connections) — `server/tests/unit/models/test_spell.py`
+- **test_spell_material_consumed_true()** (3 connections) — `server/tests/unit/models/test_spell.py`
+- **test_spell_is_mythos_true()** (3 connections) — `server/tests/unit/models/test_spell.py`
+- **test_spell_is_mythos_false()** (3 connections) — `server/tests/unit/models/test_spell.py`
+- **test_spell_requires_lucidity_true()** (3 connections) — `server/tests/unit/models/test_spell.py`
+- **test_spell_requires_lucidity_false_zero()** (3 connections) — `server/tests/unit/models/test_spell.py`
+- **test_spell_requires_lucidity_false_default()** (3 connections) — `server/tests/unit/models/test_spell.py`
+- **test_spell_default_values()** (3 connections) — `server/tests/unit/models/test_spell.py`
+- **test_spell_with_effect_data()** (3 connections) — `server/tests/unit/models/test_spell.py`
+- *... and 39 more nodes in this community*
 
 ## Relationships
 
-- [spell game magic](spell_game_magic.md) (51 shared connections)
-- [coercion int inventory](coercion_int_inventory.md) (22 shared connections)
-- [player respawn event](player_respawn_event.md) (14 shared connections)
-- [player service game](player_service_game.md) (13 shared connections)
-- [magic completion game](magic_completion_game.md) (13 shared connections)
-- [models npc rationale](models_npc_rationale.md) (9 shared connections)
-- [NPC Combat](NPC_Combat.md) (6 shared connections)
-- [commands magic rationale](commands_magic_rationale.md) (6 shared connections)
-- [world models rationale](world_models_rationale.md) (6 shared connections)
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (5 shared connections)
-- [subject nats manager](subject_nats_manager.md) (4 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (3 shared connections)
+- [spell game magic](spell_game_magic.md) (15 shared connections)
+- [coercion int inventory](coercion_int_inventory.md) (13 shared connections)
+- [player respawn event](player_respawn_event.md) (3 shared connections)
+- [manager room npcs](manager_room_npcs.md) (2 shared connections)
+- [room realtime rationale](room_realtime_rationale.md) (2 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (2 shared connections)
+- [task registry app](task_registry_app.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/magic/magic_healing_events.py`
-- `server/game/magic/magic_service.py`
-- `server/game/magic/spell_learning_service.py`
 - `server/game/magic/spell_registry.py`
 - `server/models/spell.py`
-- `server/tests/unit/game/magic/test_magic_healing_events.py`
-- `server/tests/unit/game/magic/test_spell_costs.py`
 - `server/tests/unit/game/magic/test_spell_materials.py`
-- `server/tests/unit/game/magic/test_spell_registry.py`
 - `server/tests/unit/models/test_spell.py`
 
 ## Audit Trail
 
-- EXTRACTED: 646 (95%)
-- INFERRED: 35 (5%)
+- EXTRACTED: 203 (99%)
+- INFERRED: 3 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

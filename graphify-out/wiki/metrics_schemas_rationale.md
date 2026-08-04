@@ -1,6 +1,6 @@
 # metrics schemas rationale
 
-> 80 nodes
+> 121 nodes
 
 ## Key Concepts
 
@@ -11,9 +11,12 @@
 - **StatusMessageResponse** (13 connections) — `server/schemas/metrics/metrics.py`
 - **DLQReplayResponse** (13 connections) — `server/schemas/metrics/metrics.py`
 - **metrics.py** (12 connections) — `server/schemas/metrics/metrics.py`
+- **test_users_current_user_logging.py** (12 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
 - **get_metrics()** (11 connections) — `server/api/metrics.py`
+- **get_current_user_with_logging()** (11 connections) — `server/auth/users.py`
 - **MetricsSummaryResponse** (11 connections) — `server/schemas/metrics/metrics.py`
 - **DLQMessagesResponse** (11 connections) — `server/schemas/metrics/metrics.py`
+- **test_user.py** (11 connections) — `server/tests/unit/models/test_user.py`
 - **Any** (10 connections)
 - **reset_circuit_breaker()** (10 connections) — `server/api/metrics.py`
 - **_load_dlq_message()** (10 connections) — `server/api/metrics.py`
@@ -26,35 +29,37 @@
 - **MetricsData** (9 connections) — `server/schemas/metrics/metrics_data.py`
 - **MetricsSummary** (9 connections) — `server/schemas/metrics/metrics_data.py`
 - **DLQMessage** (9 connections) — `server/schemas/metrics/metrics_data.py`
-- **DLQReplayDetails** (9 connections) — `server/schemas/metrics/metrics_data.py`
-- **reset_metrics()** (8 connections) — `server/api/metrics.py`
-- **_handle_replay_error()** (8 connections) — `server/api/metrics.py`
-- *... and 55 more nodes in this community*
+- *... and 96 more nodes in this community*
 
 ## Relationships
 
-- [Exception Containers](Exception_Containers.md) (30 shared connections)
-- [profession game service](profession_game_service.md) (6 shared connections)
-- [admin auth service](admin_auth_service.md) (3 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [player requests schemas](player_requests_schemas.md) (35 shared connections)
+- [Exception Containers](Exception_Containers.md) (16 shared connections)
+- [inventory schemas schema](inventory_schemas_schema.md) (6 shared connections)
+- [Loot Generation](Loot_Generation.md) (4 shared connections)
+- [auth users rationale](auth_users_rationale.md) (3 shared connections)
 - [NPC Definitions Admin](NPC_Definitions_Admin.md) (1 shared connections)
-- [circuit breaker realtime](circuit_breaker_realtime.md) (1 shared connections)
+- [middleware metrics collector](middleware_metrics_collector.md) (1 shared connections)
 - [player service game](player_service_game.md) (1 shared connections)
-- [nats services service](nats_services_service.md) (1 shared connections)
+- [combat validator validators](combat_validator_validators.md) (1 shared connections)
+- [fixtures return shape](fixtures_return_shape.md) (1 shared connections)
 
 ## Source Files
 
 - `server/api/metrics.py`
+- `server/auth/users.py`
 - `server/schemas/metrics/__init__.py`
 - `server/schemas/metrics/metrics.py`
 - `server/schemas/metrics/metrics_data.py`
+- `server/tests/integration/test_db_connectivity.py`
 - `server/tests/unit/api/test_metrics_endpoints.py`
+- `server/tests/unit/auth/test_users_current_user_logging.py`
+- `server/tests/unit/models/test_user.py`
 
 ## Audit Trail
 
-- EXTRACTED: 390 (87%)
-- INFERRED: 57 (13%)
+- EXTRACTED: 500 (89%)
+- INFERRED: 59 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

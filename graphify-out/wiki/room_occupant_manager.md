@@ -33,9 +33,9 @@
 
 ## Relationships
 
-- [models npc rationale](models_npc_rationale.md) (5 shared connections)
-- [Spell Validation](Spell_Validation.md) (3 shared connections)
-- [persistence services combat](persistence_services_combat.md) (3 shared connections)
+- [models npc rationale](models_npc_rationale.md) (7 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [command player state](command_player_state.md) (2 shared connections)
 
 ## Source Files
 

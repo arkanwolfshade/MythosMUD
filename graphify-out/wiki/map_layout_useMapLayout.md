@@ -1,53 +1,48 @@
 # map layout useMapLayout
 
-> 28 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **test_npc_instances_api.py** (21 connections) — `server/tests/unit/api/test_npc_instances_api.py`
-- **spawn_npc_instance()** (13 connections) — `server/api/admin/npc_instances_api.py`
-- **despawn_npc_instance()** (12 connections) — `server/api/admin/npc_instances_api.py`
-- **move_npc_instance()** (12 connections) — `server/api/admin/npc_instances_api.py`
-- **get_npc_instances()** (11 connections) — `server/api/admin/npc_instances_api.py`
-- **get_npc_stats()** (11 connections) — `server/api/admin/npc_instances_api.py`
-- **NPCSpawnRequest** (7 connections) — `server/api/admin/npc_schemas.py`
-- **NPCMoveRequest** (7 connections) — `server/api/admin/npc_schemas.py`
-- **Request** (5 connections)
-- **Any** (5 connections)
-- **test_spawn_npc_instance_not_found()** (4 connections) — `server/tests/unit/api/test_npc_instances_api.py`
-- **test_spawn_npc_instance_success()** (3 connections) — `server/tests/unit/api/test_npc_instances_api.py`
-- **test_move_npc_instance_success()** (3 connections) — `server/tests/unit/api/test_npc_instances_api.py`
-- **test_get_npc_instances_server_error()** (3 connections) — `server/tests/unit/api/test_npc_instances_api.py`
-- **test_despawn_npc_instance_not_found()** (3 connections) — `server/tests/unit/api/test_npc_instances_api.py`
-- **test_get_npc_instances_success()** (2 connections) — `server/tests/unit/api/test_npc_instances_api.py`
-- **test_despawn_npc_instance_success()** (2 connections) — `server/tests/unit/api/test_npc_instances_api.py`
-- **test_get_npc_stats_success()** (2 connections) — `server/tests/unit/api/test_npc_instances_api.py`
-- **NPCSpawnRequest** (1 connections)
-- **Get all active NPC instances.** (1 connections) — `server/api/admin/npc_instances_api.py`
-- **Spawn a new NPC instance.** (1 connections) — `server/api/admin/npc_instances_api.py`
-- **Despawn an NPC instance.** (1 connections) — `server/api/admin/npc_instances_api.py`
-- **Move an NPC instance to a different room.** (1 connections) — `server/api/admin/npc_instances_api.py`
-- **Get stats for a specific NPC instance.** (1 connections) — `server/api/admin/npc_instances_api.py`
-- **Model for NPC spawn requests.** (1 connections) — `server/api/admin/npc_schemas.py`
-- *... and 3 more nodes in this community*
+- **NPCStartupService** (44 connections) — `server/services/npc_startup_service.py`
+- **npc_startup_service()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_get_npc_startup_service()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_npcs_on_startup()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_npcs_on_startup_with_required_npcs()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_required_npcs_spawn_failure()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_get_default_room_for_sub_zone()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_get_default_room_for_sub_zone_unknown()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_optional_npcs_no_spawn_room()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **.__init__()** (2 connections) — `server/services/npc_startup_service.py`
+- **Service for automatic NPC spawning during server startup.      This service coor** (1 connections) — `server/services/npc_startup_service.py`
+- **Initialize the NPC startup service.** (1 connections) — `server/services/npc_startup_service.py`
+- **Create an NPCStartupService instance.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test spawn_npcs_on_startup() processes startup spawning.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test spawn_npcs_on_startup() spawns required NPCs.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _spawn_required_npcs() handles spawn failures.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _get_default_room_for_sub_zone() returns correct room for known sub-zone.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _get_default_room_for_sub_zone() returns None for unknown sub-zone.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test get_npc_startup_service() returns service instance.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _spawn_optional_npcs() handles missing spawn room.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
 
 ## Relationships
 
-- [admin auth service](admin_auth_service.md) (23 shared connections)
-- [Exception Containers](Exception_Containers.md) (9 shared connections)
-- [AppRouter main AppRouter()](AppRouter_main_AppRouter%28%29.md) (9 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [realtime player connection](realtime_player_connection.md) (18 shared connections)
+- [services npc startup](services_npc_startup.md) (10 shared connections)
+- [panels monitoringPanelTestFixtures Monit](panels_monitoringPanelTestFixtures_Monit.md) (6 shared connections)
+- [quests players rationale](quests_players_rationale.md) (5 shared connections)
+- [player death service](player_death_service.md) (3 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (2 shared connections)
 
 ## Source Files
 
-- `server/api/admin/npc_instances_api.py`
-- `server/api/admin/npc_schemas.py`
-- `server/tests/unit/api/test_npc_instances_api.py`
+- `server/services/npc_startup_service.py`
+- `server/tests/unit/services/test_npc_startup_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 133 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 78 (95%)
+- INFERRED: 4 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

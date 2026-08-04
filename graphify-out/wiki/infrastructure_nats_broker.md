@@ -35,10 +35,10 @@
 
 - [broker infrastructure nats](broker_infrastructure_nats.md) (17 shared connections)
 - [combat validator validators](combat_validator_validators.md) (2 shared connections)
-- [manager subject services](manager_subject_services.md) (1 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
+- [commands communication support](commands_communication_support.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
 - [schemas nats messages](schemas_nats_messages.md) (1 shared connections)
-- [command commands aliases](command_commands_aliases.md) (1 shared connections)
+- [tsconfig src/**/* spec](tsconfig_src-__-__spec.md) (1 shared connections)
 
 ## Source Files
 

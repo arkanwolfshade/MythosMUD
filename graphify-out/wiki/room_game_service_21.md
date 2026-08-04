@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_establish_websocket_connection_cancels_rest_countdown()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Reconnect cancels an in-progress rest countdown so it cannot poison the new sess** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_subscribe_player_to_room_invalid_id()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **Test subscribe_player_to_room() handles invalid player_id.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Relationships
 
-- [player event state](player_event_state.md) (1 shared connections)
-- [connection establishment realtime](connection_establishment_realtime.md) (1 shared connections)
+- [player room event](player_room_event.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_connection_establishment.py`
+- `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

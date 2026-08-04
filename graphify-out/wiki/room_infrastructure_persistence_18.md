@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_room_subscription_manager_init()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **Test RoomSubscriptionManager initialization.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_mute_global_admin_immune()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test mute_global() fails when trying to mute admin.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
 
 ## Relationships
 
-- [room subscription manager](room_subscription_manager.md) (1 shared connections)
+- [user manager services](user_manager_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager.py`
+- `server/tests/unit/services/test_user_manager.py`
 
 ## Audit Trail
 

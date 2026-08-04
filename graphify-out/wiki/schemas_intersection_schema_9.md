@@ -1,25 +1,25 @@
 # schemas intersection schema
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **.validate_target_name()** (3 connections) — `server/commands/combat_handler.py`
-- **Validate that target name is provided. Public API.** (1 connections) — `server/commands/combat_handler.py`
-- **Validate that target name is provided.** (1 connections) — `server/commands/combat_handler.py`
+- **test_apply_corruption_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **Test apply_corruption() when player not found.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (1 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (1 shared connections)
+- [room realtime subscription](room_realtime_subscription.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/combat_handler.py`
+- `server/tests/unit/game/test_player_service_mutations.py`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -28,7 +28,7 @@
 - [message handler factory](message_handler_factory.md) (3 shared connections)
 - [channel broadcasting realtime](channel_broadcasting_realtime.md) (2 shared connections)
 - [world loader rationale](world_loader_rationale.md) (2 shared connections)
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
 - [auth users rationale](auth_users_rationale.md) (2 shared connections)
 
 ## Source Files

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_room_subscribers_error()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **Test get_room_subscribers() handles errors gracefully.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_log_player_movement_no_room()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **Test log_player_movement() handles room not found.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Relationships
 
-- [room subscription manager](room_subscription_manager.md) (1 shared connections)
+- [player room event](player_room_event.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager.py`
+- `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Audit Trail
 

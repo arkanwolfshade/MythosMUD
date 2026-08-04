@@ -36,10 +36,9 @@
 - [infrastructure nats broker](infrastructure_nats_broker.md) (17 shared connections)
 - [combat validator validators](combat_validator_validators.md) (4 shared connections)
 - [infrastructure message broker](infrastructure_message_broker.md) (2 shared connections)
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [commands communication support](commands_communication_support.md) (2 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
 - [schemas nats messages](schemas_nats_messages.md) (1 shared connections)
-- [zone npc config](zone_npc_config.md) (1 shared connections)
-- [manager subject services](manager_subject_services.md) (1 shared connections)
 
 ## Source Files
 

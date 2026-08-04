@@ -33,7 +33,7 @@
 ## Relationships
 
 - [postgres adapter infrastructure](postgres_adapter_infrastructure.md) (12 shared connections)
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
 
 ## Source Files
 

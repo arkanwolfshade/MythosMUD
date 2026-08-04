@@ -25,7 +25,7 @@
 
 - [combat audit structured](combat_audit_structured.md) (14 shared connections)
 - [player realtime event](player_realtime_event.md) (3 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
 - [player event realtime](player_event_realtime.md) (1 shared connections)
 
 ## Source Files

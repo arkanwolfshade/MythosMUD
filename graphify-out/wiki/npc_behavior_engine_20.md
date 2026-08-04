@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_add_room_occupant_error_handling()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **Test add_room_occupant() handles errors gracefully.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_handle_container_overflow_save_player_error()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test handle_container_overflow handles save_player error gracefully.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Relationships
 
-- [room subscription manager](room_subscription_manager.md) (1 shared connections)
+- [wearable container service](wearable_container_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager.py`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 

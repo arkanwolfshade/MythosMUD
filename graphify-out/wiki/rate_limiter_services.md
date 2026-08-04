@@ -1,56 +1,55 @@
 # rate limiter services
 
-> 35 nodes
+> 27 nodes
 
 ## Key Concepts
 
-- **CorpseLifecycleService** (23 connections) — `server/services/corpse_lifecycle_service.py`
-- **.cleanup_decayed_corpse()** (10 connections) — `server/services/corpse_lifecycle_service.py`
-- **_get_enum_value()** (8 connections) — `server/services/corpse_lifecycle_service.py`
-- **.create_corpse_on_death()** (7 connections) — `server/services/corpse_lifecycle_service.py`
-- **_filter_container_data()** (6 connections) — `server/services/corpse_lifecycle_service.py`
-- **.get_decayed_corpses_in_room()** (6 connections) — `server/services/corpse_lifecycle_service.py`
-- **ContainerComponent** (5 connections)
-- **.get_all_decayed_corpses()** (5 connections) — `server/services/corpse_lifecycle_service.py`
-- **UUID** (4 connections)
-- **.can_access_corpse()** (4 connections) — `server/services/corpse_lifecycle_service.py`
-- **.is_corpse_decayed()** (4 connections) — `server/services/corpse_lifecycle_service.py`
-- **.cleanup_decayed_corpses_in_room()** (4 connections) — `server/services/corpse_lifecycle_service.py`
-- **.cleanup_all_decayed_corpses()** (4 connections) — `server/services/corpse_lifecycle_service.py`
-- **Any** (3 connections)
-- **.__init__()** (3 connections) — `server/services/corpse_lifecycle_service.py`
-- **test_get_enum_value_enum()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_get_enum_value_string()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **corpse_service()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_corpse_lifecycle_service_init_no_persistence()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **Safely get enum value, handling both enum instances and string values.      When** (1 connections) — `server/services/corpse_lifecycle_service.py`
-- **Filter out database-specific fields that are not part of the ContainerComponent** (1 connections) — `server/services/corpse_lifecycle_service.py`
-- **Service for managing corpse container lifecycle.      Handles creation on death,** (1 connections) — `server/services/corpse_lifecycle_service.py`
-- **Initialize the corpse lifecycle service.          Args:             persistence:** (1 connections) — `server/services/corpse_lifecycle_service.py`
-- **Create a corpse container when a player dies.          Args:             player_** (1 connections) — `server/services/corpse_lifecycle_service.py`
-- **Check if a player can access a corpse container.          During grace period, o** (1 connections) — `server/services/corpse_lifecycle_service.py`
-- *... and 10 more nodes in this community*
+- **test_communication_commands_support.py** (21 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **get_services_from_container()** (15 connections) — `server/commands/communication_commands_support.py`
+- **primary_id()** (13 connections) — `server/commands/communication_commands_support.py`
+- **app_from_request()** (12 connections) — `server/commands/communication_commands_support.py`
+- **get_pose_persistence()** (11 connections) — `server/commands/communication_commands_support.py`
+- **AsyncPersistenceForPose** (6 connections) — `server/commands/communication_commands_support.py`
+- **.get_player_by_name()** (2 connections) — `server/commands/communication_commands_support.py`
+- **.save_player()** (2 connections) — `server/commands/communication_commands_support.py`
+- **test_app_from_request_none()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_app_from_request_with_app()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_primary_id_prefers_id()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_primary_id_falls_back_to_player_id()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_get_services_from_container_no_app()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_get_services_from_container_via_container()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_get_services_from_container_state_fallback()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_get_pose_persistence_from_container()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_get_pose_persistence_state_fallback()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_chat_result_map_dict()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_chat_result_map_non_dict()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_message_id_from_result_nested()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_message_id_from_result_no_id()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **Minimal persistence for pose read/write in emote/pose flows.** (1 connections) — `server/commands/communication_commands_support.py`
+- **Return ``request.app`` if present, else None.** (1 connections) — `server/commands/communication_commands_support.py`
+- **Resolve id or player_id from a player-like object without propagating Any.** (1 connections) — `server/commands/communication_commands_support.py`
+- **Get services from container with backward compatibility fallback.      Args:** (1 connections) — `server/commands/communication_commands_support.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [task registry app](task_registry_app.md) (9 shared connections)
-- [command inventory factories](command_inventory_factories.md) (4 shared connections)
-- [Memory Task Runtime](Memory_Task_Runtime.md) (4 shared connections)
-- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (2 shared connections)
-- [Database Config](Database_Config.md) (2 shared connections)
-- [realtime message nats](realtime_message_nats.md) (1 shared connections)
-- [NPC Combat](NPC_Combat.md) (1 shared connections)
-- [character creation validate](character_creation_validate.md) (1 shared connections)
+- [commands communication flows](commands_communication_flows.md) (30 shared connections)
+- [player cache rationale](player_cache_rationale.md) (6 shared connections)
+- [inventory commands command](inventory_commands_command.md) (2 shared connections)
+- [message nats handler](message_nats_handler.md) (2 shared connections)
+- [nats services metrics](nats_services_metrics.md) (2 shared connections)
+- [models player related](models_player_related.md) (1 shared connections)
+- [add hashed password](add_hashed_password.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/corpse_lifecycle_service.py`
-- `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- `server/commands/communication_commands_support.py`
+- `server/tests/unit/commands/test_communication_commands_support.py`
 
 ## Audit Trail
 
-- EXTRACTED: 117 (94%)
-- INFERRED: 7 (6%)
+- EXTRACTED: 108 (95%)
+- INFERRED: 6 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

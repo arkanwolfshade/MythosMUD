@@ -2,7 +2,7 @@
 
 > God node · 236 connections · `server/models/player.py`
 
-**Community:** [world models rationale](world_models_rationale.md)
+**Community:** [combat models rationale](combat_models_rationale.md)
 
 ## Connections by Relation
 

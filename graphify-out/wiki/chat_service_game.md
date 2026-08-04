@@ -34,17 +34,16 @@
 ## Relationships
 
 - [chat game message](chat_game_message.md) (21 shared connections)
+- [quest chat game](quest_chat_game.md) (4 shared connections)
 - [game chat whisper](game_chat_whisper.md) (4 shared connections)
 - [commands magic rationale](commands_magic_rationale.md) (3 shared connections)
-- [Error Conversion](Error_Conversion.md) (3 shared connections)
-- [Magic Spell Service](Magic_Spell_Service.md) (2 shared connections)
+- [player death service](player_death_service.md) (2 shared connections)
 - [NPC Definitions Admin](NPC_Definitions_Admin.md) (2 shared connections)
-- [quest chat game](quest_chat_game.md) (2 shared connections)
+- [command exploration models](command_exploration_models.md) (2 shared connections)
 - [coercion int inventory](coercion_int_inventory.md) (1 shared connections)
+- [nats services service](nats_services_service.md) (1 shared connections)
 - [player helpers error](player_helpers_error.md) (1 shared connections)
 - [dialogue schemas tree](dialogue_schemas_tree.md) (1 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
-- [command exploration models](command_exploration_models.md) (1 shared connections)
 
 ## Source Files
 

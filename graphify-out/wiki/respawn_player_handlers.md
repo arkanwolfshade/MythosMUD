@@ -1,45 +1,31 @@
 # respawn player handlers
 
-> 16 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **test_argon2_utils.py** (42 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_hash_password_hashing_error()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_verify_password_invalid_hash()** (3 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_verify_password_non_string_hash()** (3 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_verify_password_empty_hash()** (3 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_verify_password_verification_error()** (3 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_verify_password_invalid_hash_exception()** (3 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_verify_password_type_error()** (3 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **Unit tests for Argon2 password hashing utilities.** (1 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **Test verifying password with invalid hash format.** (1 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **Test verifying password with non-string hash returns False.** (1 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **Test verifying password with empty hash returns False.** (1 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **Test hash_password handles HashingError.** (1 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **Test verify_password handles VerificationError.** (1 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **Test verify_password handles InvalidHash exception.** (1 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **Test verify_password handles TypeError.** (1 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **run_make_stages.py** (5 connections) — `scripts/run_make_stages.py`
+- **main()** (5 connections) — `scripts/run_make_stages.py`
+- **keep_going_requested()** (3 connections) — `scripts/run_make_stages.py`
+- **stage_failed_from_output()** (3 connections) — `scripts/run_make_stages.py`
+- **run_stage()** (3 connections) — `scripts/run_make_stages.py`
+- **_print_fail()** (2 connections) — `scripts/run_make_stages.py`
+- **Return True when Make was invoked with -k / --keep-going.** (1 connections) — `scripts/run_make_stages.py`
+- **Return a short failure reason, or None if the stage is OK.** (1 connections) — `scripts/run_make_stages.py`
+- **Run `make <stage>`, stream output, return (exit_code, captured_output).** (1 connections) — `scripts/run_make_stages.py`
 
 ## Relationships
 
-- [auth users rationale](auth_users_rationale.md) (11 shared connections)
-- [models npc rationale](models_npc_rationale.md) (8 shared connections)
-- [countdown rest task](countdown_rest_task.md) (8 shared connections)
-- [persistence constants rationale](persistence_constants_rationale.md) (5 shared connections)
-- [security headers middleware](security_headers_middleware.md) (4 shared connections)
-- [archive QUALITY AUDIT](archive_QUALITY_AUDIT.md) (3 shared connections)
-- [Error Handling Core](Error_Handling_Core.md) (2 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/auth/test_argon2_utils.py`
+- `scripts/run_make_stages.py`
 
 ## Audit Trail
 
-- EXTRACTED: 71 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 24 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,27 +1,23 @@
 # admin services auth
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **_is_npc_follow_value()** (6 connections) — `server/game/follow_service.py`
-- **_FollowTargetValue** (1 connections)
-- **TypeGuard** (1 connections)
-- **True when v is the 3-tuple (target_id, 'npc', display_name).** (1 connections) — `server/game/follow_service.py`
+- **test_delete_player_success()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **Test delete_player() successfully deletes player.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
 
 ## Relationships
 
-- [combat services messaging](combat_services_messaging.md) (1 shared connections)
-- [follow game service](follow_game_service.md) (1 shared connections)
-- [NPC Combat](NPC_Combat.md) (1 shared connections)
+- [room realtime subscription](room_realtime_subscription.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/follow_service.py`
+- `server/tests/unit/game/test_player_service_mutations.py`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_occupant_formatter_process_dict_occupant_for_update_fallback_name()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter._process_dict_occupant_for_update() processes fallback na** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_handle_equip_wearable_container_no_inner_container()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test handle_equip_wearable_container returns None when no inner_container.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Relationships
 
-- [container sql injection](container_sql_injection.md) (1 shared connections)
-- [occupant formatter realtime](occupant_formatter_realtime.md) (1 shared connections)
+- [wearable container service](wearable_container_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_occupant_formatter.py`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

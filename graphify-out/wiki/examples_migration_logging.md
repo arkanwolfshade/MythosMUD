@@ -33,10 +33,9 @@
 
 ## Relationships
 
+- [player requests schemas](player_requests_schemas.md) (2 shared connections)
 - [models lucidity rationale](models_lucidity_rationale.md) (1 shared connections)
 - [world loader room](world_loader_room.md) (1 shared connections)
-- [npc combat service](npc_combat_service.md) (1 shared connections)
-- [Exception Containers](Exception_Containers.md) (1 shared connections)
 
 ## Source Files
 

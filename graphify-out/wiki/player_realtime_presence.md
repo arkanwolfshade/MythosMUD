@@ -33,8 +33,7 @@
 
 ## Relationships
 
-- [maps handle ascii](maps_handle_ascii.md) (16 shared connections)
-- [room game service](room_game_service.md) (1 shared connections)
+- [room game service](room_game_service.md) (17 shared connections)
 
 ## Source Files
 

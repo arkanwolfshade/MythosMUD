@@ -1,11 +1,10 @@
 # combat messaging service
 
-> 26 nodes
+> 24 nodes
 
 ## Key Concepts
 
 - **test_chat_pose_helpers.py** (17 connections) — `server/tests/unit/game/test_chat_pose_helpers.py`
-- **chat_pose_helpers.py** (15 connections) — `server/game/chat_pose_helpers.py`
 - **set_player_pose()** (15 connections) — `server/game/chat_pose_helpers.py`
 - **get_player_pose()** (7 connections) — `server/game/chat_pose_helpers.py`
 - **clear_player_pose()** (7 connections) — `server/game/chat_pose_helpers.py`
@@ -23,19 +22,16 @@
 - **test_set_player_pose_success()** (2 connections) — `server/tests/unit/game/test_chat_pose_helpers.py`
 - **test_set_player_pose_nats_failure()** (2 connections) — `server/tests/unit/game/test_chat_pose_helpers.py`
 - **_player()** (2 connections) — `server/tests/unit/game/test_chat_pose_helpers.py`
-- **Pose management helpers for chat service.** (1 connections) — `server/game/chat_pose_helpers.py`
 - **Normalize player identifiers to string form.** (1 connections) — `server/game/chat_pose_helpers.py`
 - **Set a player's pose (temporary, in-memory only).      Args:         player_id: I** (1 connections) — `server/game/chat_pose_helpers.py`
 - **Get a player's current pose.      Args:         player_id: ID of the player** (1 connections) — `server/game/chat_pose_helpers.py`
 - **Clear a player's pose.      Args:         player_id: ID of the player         po** (1 connections) — `server/game/chat_pose_helpers.py`
 - **Get all poses for players in a room.      Args:         room_id: ID of the room** (1 connections) — `server/game/chat_pose_helpers.py`
-- *... and 1 more nodes in this community*
+- **Unit tests for chat pose helpers.** (1 connections) — `server/tests/unit/game/test_chat_pose_helpers.py`
 
 ## Relationships
 
-- [chat game message](chat_game_message.md) (8 shared connections)
-- [alias command models](alias_command_models.md) (3 shared connections)
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [chat game message](chat_game_message.md) (13 shared connections)
 
 ## Source Files
 
@@ -44,7 +40,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 111 (100%)
+- EXTRACTED: 95 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

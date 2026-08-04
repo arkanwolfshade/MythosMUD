@@ -33,10 +33,10 @@
 
 ## Relationships
 
-- [models npc rationale](models_npc_rationale.md) (3 shared connections)
-- [room service sync](room_service_sync.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (2 shared connections)
 - [connection models realtime](connection_models_realtime.md) (1 shared connections)
-- [look helpers commands](look_helpers_commands.md) (1 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (1 shared connections)
 
 ## Source Files
 

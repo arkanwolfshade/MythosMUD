@@ -1,6 +1,6 @@
 # map maps useAsciiMap
 
-> 41 nodes
+> 39 nodes
 
 ## Key Concepts
 
@@ -11,7 +11,6 @@
 - **fetchAsciiMap()** (9 connections) — `client/src/api/maps.ts`
 - **fetchAsciiMinimap()** (8 connections) — `client/src/api/maps.ts`
 - **AsciiMinimap.tsx** (7 connections) — `client/src/components/map/AsciiMinimap.tsx`
-- **isAsciiMapApiResponse()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
 - **useAsciiMapViewerBindings()** (5 connections) — `client/src/components/map/AsciiMapViewer.tsx`
 - **AsciiMapViewer()** (5 connections) — `client/src/components/map/AsciiMapViewer.tsx`
 - **runFetchMap()** (5 connections) — `client/src/components/map/useAsciiMap.ts`
@@ -29,16 +28,18 @@
 - **UseAsciiMapResult** (3 connections) — `client/src/components/map/useAsciiMap.ts`
 - **getMapClickHandler()** (2 connections) — `client/src/components/map/AsciiMapViewer.tsx`
 - **AsciiMapViewerLoading()** (2 connections) — `client/src/components/map/AsciiMapViewerViews.tsx`
-- *... and 16 more nodes in this community*
+- **AsciiMapViewerError()** (2 connections) — `client/src/components/map/AsciiMapViewerViews.tsx`
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
-- [apiTypeGuards FIELDS SHARED](apiTypeGuards_FIELDS_SHARED.md) (6 shared connections)
-- [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (4 shared connections)
+- [apiTypeGuards FIELDS SHARED](apiTypeGuards_FIELDS_SHARED.md) (5 shared connections)
 - [command parser rationale](command_parser_rationale.md) (4 shared connections)
-- [MapView GameClientV2ContainerView Tabbed](MapView_GameClientV2ContainerView_Tabbed.md) (2 shared connections)
+- [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (2 shared connections)
+- [GameClientV2Container emptyOccupantsDiag](GameClientV2Container_emptyOccupantsDiag.md) (2 shared connections)
+- [calendar schemas validate](calendar_schemas_validate.md) (2 shared connections)
 - [PanelSystem PanelManager panelLayoutClam](PanelSystem_PanelManager_panelLayoutClam.md) (2 shared connections)
-- [commands rescue rationale](commands_rescue_rationale.md) (1 shared connections)
+- [mythosApp appLazyScreens mythosAppViewMo](mythosApp_appLazyScreens_mythosAppViewMo.md) (1 shared connections)
 
 ## Source Files
 
@@ -56,7 +57,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 169 (100%)
+- EXTRACTED: 160 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

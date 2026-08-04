@@ -33,15 +33,12 @@
 
 ## Relationships
 
-- [player presence tracker](player_presence_tracker.md) (6 shared connections)
+- [player presence tracker](player_presence_tracker.md) (8 shared connections)
+- [player disconnect handlers](player_disconnect_handlers.md) (7 shared connections)
 - [Database Config](Database_Config.md) (5 shared connections)
-- [look helpers commands](look_helpers_commands.md) (4 shared connections)
-- [combat services messaging](combat_services_messaging.md) (3 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [emote game service](emote_game_service.md) (2 shared connections)
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
-- [world models rationale](world_models_rationale.md) (1 shared connections)
-- [player disconnect handlers](player_disconnect_handlers.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (4 shared connections)
+- [combat models rationale](combat_models_rationale.md) (1 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,33 +1,43 @@
 # services inventory mutation
 
-> 10 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **TestHandleSpecialCommandRouting** (7 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **.test_handle_special_command_routing_alias_command()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **.test_handle_special_command_routing_alias_storage_none()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **.test_handle_special_command_routing_emote_conversion()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **.test_handle_special_command_routing_returns_none()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **Tests for _handle_special_command_routing function.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **Test _handle_special_command_routing processes alias commands.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **Test _handle_special_command_routing returns error when alias_storage is None.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **Test _handle_special_command_routing converts single-word emotes.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **Test _handle_special_command_routing returns None for normal commands.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **safe_close_websocket_impl()** (10 connections) — `server/realtime/connection_manager_methods.py`
+- **is_websocket_open_impl()** (7 connections) — `server/realtime/connection_manager_methods.py`
+- **get_connection_id_from_websocket_impl()** (6 connections) — `server/realtime/connection_manager_methods.py`
+- **.connect_websocket()** (5 connections) — `server/realtime/connection_manager.py`
+- **._is_websocket_open()** (4 connections) — `server/realtime/connection_manager.py`
+- **WebSocket** (4 connections)
+- **._safe_close_websocket()** (4 connections) — `server/realtime/connection_manager.py`
+- **.get_connection_id_from_websocket()** (4 connections) — `server/realtime/connection_manager.py`
+- **WebSocket** (3 connections)
+- **Check if a WebSocket is open.** (1 connections) — `server/realtime/connection_manager.py`
+- **Safely close a WebSocket connection.** (1 connections) — `server/realtime/connection_manager.py`
+- **Connect a WebSocket for a player.** (1 connections) — `server/realtime/connection_manager.py`
+- **Get connection ID from a WebSocket instance.** (1 connections) — `server/realtime/connection_manager.py`
+- **Get connection ID from a WebSocket instance.** (1 connections) — `server/realtime/connection_manager_methods.py`
+- **Check if a WebSocket is open.** (1 connections) — `server/realtime/connection_manager_methods.py`
+- **Safely close a WebSocket connection.** (1 connections) — `server/realtime/connection_manager_methods.py`
 
 ## Relationships
 
-- [command commands handler](command_commands_handler.md) (5 shared connections)
-- [commands npc admin](commands_npc_admin.md) (1 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (8 shared connections)
+- [realtime monitoring statistics](realtime_monitoring_statistics.md) (3 shared connections)
+- [connection realtime delegates](connection_realtime_delegates.md) (3 shared connections)
+- [connection disconnection realtime](connection_disconnection_realtime.md) (3 shared connections)
+- [connection establishment realtime](connection_establishment_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- `server/realtime/connection_manager.py`
+- `server/realtime/connection_manager_methods.py`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (96%)
-- INFERRED: 1 (4%)
+- EXTRACTED: 54 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

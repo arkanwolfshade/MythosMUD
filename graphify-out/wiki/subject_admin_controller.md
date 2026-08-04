@@ -33,11 +33,13 @@
 
 ## Relationships
 
-- [connection disconnection realtime](connection_disconnection_realtime.md) (5 shared connections)
 - [Realtime Subscribers](Realtime_Subscribers.md) (4 shared connections)
+- [services npc startup](services_npc_startup.md) (3 shared connections)
 - [combat services messaging](combat_services_messaging.md) (3 shared connections)
-- [command utility models](command_utility_models.md) (2 shared connections)
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [connection disconnection realtime](connection_disconnection_realtime.md) (2 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
+- [command utility models](command_utility_models.md) (1 shared connections)
+- [nats services metrics](nats_services_metrics.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,13 +1,15 @@
 # movement monitor game
 
-> 39 nodes
+> 41 nodes
 
 ## Key Concepts
 
 - **test_admin_setlucidity_command.py** (44 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
+- **test_apply_lucidity_change_success()** (2 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
 - **test_apply_lucidity_change_adjustment_error()** (2 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
 - **_async_session_gen()** (2 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
 - **test_execute_lucidity_change_success()** (2 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
+- **test_apply_lucidity_change_admin_logger_failure()** (2 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
 - **test_extract_command_args_from_fields()** (1 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
 - **test_extract_command_args_from_args_list()** (1 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
 - **test_validate_lcd_value_none()** (1 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
@@ -27,16 +29,14 @@
 - **test_resolve_target_player_not_found()** (1 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
 - **test_resolve_target_player_success()** (1 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
 - **test_get_current_lcd_default_when_missing()** (1 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
-- **test_get_current_lcd_from_record()** (1 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
-- **test_execute_lucidity_change_empty_session()** (1 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
-- *... and 14 more nodes in this community*
+- *... and 16 more nodes in this community*
 
 ## Relationships
 
 - [lucidity services helpers](lucidity_services_helpers.md) (3 shared connections)
 - [Database Config](Database_Config.md) (2 shared connections)
 - [container schemas containers](container_schemas_containers.md) (1 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
 
 ## Source Files
 
@@ -44,8 +44,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 85 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 87 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

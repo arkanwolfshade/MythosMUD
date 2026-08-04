@@ -1,35 +1,28 @@
 # security headers middleware
 
-> 12 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **parse_json_field()** (11 connections) — `server/npc/zone_config_loader.py`
-- **test_parse_json_field_none()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_parse_json_field_string()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_parse_json_field_dict()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_parse_json_field_list()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_parse_json_field_invalid_json()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **Parse a JSON field from database, handling both dict/list and string formats.** (1 connections) — `server/npc/zone_config_loader.py`
-- **Test parse_json_field() returns default when None.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **Test parse_json_field() parses JSON string.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **Test parse_json_field() returns dict as-is.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **Test parse_json_field() returns list as-is.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **Test parse_json_field() raises error on invalid JSON string.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **_row_fetchall()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **test_get_explored_rooms()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **test_get_explored_rooms_empty()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **SQLAlchemy-style result mock with fetchall() -> rows.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **Test get_explored_rooms() returns list of explored room IDs.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **Test get_explored_rooms() returns empty list when no explored rooms.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
 
 ## Relationships
 
-- [npc realtime occupant](npc_realtime_occupant.md) (7 shared connections)
-- [npc idle movement](npc_idle_movement.md) (3 shared connections)
+- [Loot Generation](Loot_Generation.md) (3 shared connections)
+- [maps handle ascii](maps_handle_ascii.md) (2 shared connections)
 
 ## Source Files
 
-- `server/npc/zone_config_loader.py`
-- `server/tests/unit/npc/test_zone_config_loader.py`
+- `server/tests/unit/services/test_exploration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 32 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,6 +1,6 @@
 # command input commands
 
-> 57 nodes
+> 53 nodes
 
 ## Key Concepts
 
@@ -8,8 +8,6 @@
 - **test_npc_base.py** (24 connections) — `server/tests/unit/npc/test_npc_base.py`
 - **test_passive_mob_npc.py** (19 connections) — `server/tests/unit/npc/test_passive_mob_npc.py`
 - **._setup_passive_mob_behavior_rules()** (3 connections) — `server/npc/passive_mob_npc.py`
-- **.respond_to_player()** (3 connections) — `server/npc/passive_mob_npc.py`
-- **._handle_respond_to_greeting()** (3 connections) — `server/npc/passive_mob_npc.py`
 - **test_npc_base_get_combat_stats()** (3 connections) — `server/tests/unit/npc/test_npc_base.py`
 - **test_npc_base_get_combat_stats_legacy_dp()** (3 connections) — `server/tests/unit/npc/test_npc_base.py`
 - **test_npc_base_is_alive_property()** (3 connections) — `server/tests/unit/npc/test_npc_base.py`
@@ -29,13 +27,16 @@
 - **test_npc_base_take_damage_when_dead()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
 - **test_npc_base_execute_behavior()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
 - **test_npc_base_ai_placeholders()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
-- *... and 32 more nodes in this community*
+- **test_npc_base_get_behavior_and_ai_config()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
+- **test_npc_base_move_with_event_reaction_system()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
+- *... and 28 more nodes in this community*
 
 ## Relationships
 
-- [Realtime Subscribers](Realtime_Subscribers.md) (10 shared connections)
-- [npc behavior engine](npc_behavior_engine.md) (7 shared connections)
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [models npc rationale](models_npc_rationale.md) (11 shared connections)
+- [npc behavior engine](npc_behavior_engine.md) (6 shared connections)
+- [invite models create](invite_models_create.md) (2 shared connections)
+- [npc shopkeeper rationale](npc_shopkeeper_rationale.md) (2 shared connections)
 - [idle movement npc](idle_movement_npc.md) (1 shared connections)
 
 ## Source Files
@@ -46,8 +47,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 199 (97%)
-- INFERRED: 7 (3%)
+- EXTRACTED: 191 (96%)
+- INFERRED: 7 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

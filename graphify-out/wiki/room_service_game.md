@@ -33,9 +33,8 @@
 
 ## Relationships
 
-- [maps handle ascii](maps_handle_ascii.md) (3 shared connections)
+- [room game service](room_game_service.md) (4 shared connections)
 - [persistence container extended](persistence_container_extended.md) (2 shared connections)
-- [room game service](room_game_service.md) (1 shared connections)
 
 ## Source Files
 

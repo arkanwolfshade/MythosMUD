@@ -1,56 +1,38 @@
 # npc behavior engine
 
-> 25 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **NPCActionMessage** (16 connections) — `server/npc/threading.py`
 - **.wander()** (6 connections) — `server/npc/passive_mob_npc.py`
 - **.schedule_idle_movement()** (6 connections) — `server/npc/passive_mob_npc.py`
-- **.from_dict()** (6 connections) — `server/npc/threading.py`
 - **._queue_wander_action()** (5 connections) — `server/npc/passive_mob_npc.py`
 - **._create_wander_action()** (4 connections) — `server/npc/passive_mob_npc.py`
-- **.to_dict()** (4 connections) — `server/npc/threading.py`
-- **.from_json()** (4 connections) — `server/npc/threading.py`
 - **._should_schedule_movement()** (3 connections) — `server/npc/passive_mob_npc.py`
 - **._handle_wander()** (3 connections) — `server/npc/passive_mob_npc.py`
-- **.to_json()** (3 connections) — `server/npc/threading.py`
-- **test_npc_action_message_round_trip()** (3 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- **test_npc_action_message_json_round_trip()** (3 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- **test_npc_action_message_to_dict_uses_enum_value()** (2 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
 - **Perform wandering behavior using idle movement system.** (1 connections) — `server/npc/passive_mob_npc.py`
 - **Check if idle movement should be scheduled based on configuration and timing.** (1 connections) — `server/npc/passive_mob_npc.py`
 - **Create a WANDER action message.          Args:             current_time: Curr** (1 connections) — `server/npc/passive_mob_npc.py`
 - **Queue a WANDER action via the thread manager.          Args:             wand** (1 connections) — `server/npc/passive_mob_npc.py`
 - **Schedule a WANDER action for idle movement if interval has elapsed.          T** (1 connections) — `server/npc/passive_mob_npc.py`
 - **Handle wandering action.** (1 connections) — `server/npc/passive_mob_npc.py`
-- **Message structure for NPC actions.      This class represents a single action th** (1 connections) — `server/npc/threading.py`
-- **Convert message to dictionary for serialization.** (1 connections) — `server/npc/threading.py`
-- **Create message from dictionary.** (1 connections) — `server/npc/threading.py`
-- **Convert message to JSON string.** (1 connections) — `server/npc/threading.py`
-- **Create message from JSON string.** (1 connections) — `server/npc/threading.py`
 
 ## Relationships
 
-- [command input commands](command_input_commands.md) (7 shared connections)
-- [npc shopkeeper rationale](npc_shopkeeper_rationale.md) (4 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (3 shared connections)
-- [idle movement npc](idle_movement_npc.md) (2 shared connections)
-- [instance game manager](instance_game_manager.md) (2 shared connections)
+- [command input commands](command_input_commands.md) (6 shared connections)
+- [npc shopkeeper rationale](npc_shopkeeper_rationale.md) (2 shared connections)
 - [Error Conversion](Error_Conversion.md) (1 shared connections)
-- [AppRouter main AppRouter()](AppRouter_main_AppRouter%28%29.md) (1 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
+- [idle movement npc](idle_movement_npc.md) (1 shared connections)
+- [commands npc admin](commands_npc_admin.md) (1 shared connections)
 
 ## Source Files
 
 - `server/npc/passive_mob_npc.py`
-- `server/npc/threading.py`
-- `server/tests/unit/npc/test_npc_threading_messages.py`
 
 ## Audit Trail
 
-- EXTRACTED: 77 (97%)
-- INFERRED: 2 (3%)
+- EXTRACTED: 33 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_npcs_batch_none_ids()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Test get_npcs_batch() handles None in NPC IDs list.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_send_occupants_snapshot_to_player_success()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **Test send_occupants_snapshot_to_player() successfully sends snapshot.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Relationships
 
-- [game state provider](game_state_provider.md) (1 shared connections)
+- [player room event](player_room_event.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Audit Trail
 

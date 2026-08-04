@@ -1,40 +1,34 @@
 # countdown rest task
 
-> 17 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **create_hasher_with_params()** (11 connections) — `server/auth/argon2_utils.py`
-- **test_create_hasher_with_params_valid()** (3 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_create_hasher_with_params_invalid_time_cost()** (3 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_create_hasher_with_params_invalid_memory_cost()** (3 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_create_hasher_with_params_invalid_parallelism()** (3 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_create_hasher_with_params_invalid_hash_len()** (3 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_create_hasher_with_params_low_time_cost_warning()** (3 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_create_hasher_with_params_low_memory_cost_warning()** (3 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **PasswordHasher** (1 connections)
-- **Create a PasswordHasher with custom parameters.** (1 connections) — `server/auth/argon2_utils.py`
-- **Test creating hasher with valid parameters.** (1 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **Test creating hasher with invalid time_cost.** (1 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **Test creating hasher with invalid memory_cost.** (1 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **Test creating hasher with invalid parallelism.** (1 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **Test creating hasher with invalid hash_len.** (1 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **Test that create_hasher_with_params logs warning for low time_cost.** (1 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **Test that create_hasher_with_params logs warning for low memory_cost.** (1 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **create_error_context()** (10 connections) — `server/api/player_helpers.py`
+- **test_player_helpers.py** (5 connections) — `server/tests/unit/api/test_player_helpers.py`
+- **test_create_error_context_without_user_sets_metadata()** (3 connections) — `server/tests/unit/api/test_player_helpers.py`
+- **test_create_error_context_with_user_sets_user_id_and_metadata()** (3 connections) — `server/tests/unit/api/test_player_helpers.py`
+- **Request** (1 connections)
+- **Any** (1 connections)
+- **Create error context from request and user.      Helper function to reduce dupli** (1 connections) — `server/api/player_helpers.py`
+- **Unit tests for server.api.player_helpers (error context helper).** (1 connections) — `server/tests/unit/api/test_player_helpers.py`
+- **When current_user is None, context gets metadata only.** (1 connections) — `server/tests/unit/api/test_player_helpers.py`
+- **When current_user is set, user_id is populated and metadata merged.** (1 connections) — `server/tests/unit/api/test_player_helpers.py`
 
 ## Relationships
 
-- [respawn player handlers](respawn_player_handlers.md) (8 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (3 shared connections)
+- [Spell Validation](Spell_Validation.md) (1 shared connections)
+- [player requests schemas](player_requests_schemas.md) (1 shared connections)
 
 ## Source Files
 
-- `server/auth/argon2_utils.py`
-- `server/tests/unit/auth/test_argon2_utils.py`
+- `server/api/player_helpers.py`
+- `server/tests/unit/api/test_player_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 41 (100%)
+- EXTRACTED: 27 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

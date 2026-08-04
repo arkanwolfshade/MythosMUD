@@ -1,49 +1,63 @@
 # player room realtime
 
-> 46 nodes
+> 134 nodes
 
 ## Key Concepts
 
+- **lucidity.py** (34 connections) — `server/models/lucidity.py`
 - **test_lucidity_models.py** (28 connections) — `server/tests/unit/models/test_lucidity_models.py`
-- **test_player_lucidity_creation()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
-- **test_player_lucidity_defaults()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
-- **test_player_lucidity_with_catatonia()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
-- **test_player_lucidity_repr()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
-- **test_player_lucidity_tiers()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
-- **test_lucidity_adjustment_log_creation()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
-- **test_lucidity_adjustment_log_with_location()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
-- **test_lucidity_adjustment_log_default_metadata()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
-- **test_lucidity_adjustment_log_repr()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
-- **test_lucidity_adjustment_log_positive_delta()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
-- **test_lucidity_adjustment_log_negative_delta()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
-- **test_lucidity_exposure_state_creation()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
-- **test_lucidity_exposure_state_default_encounter_count()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
-- **test_lucidity_exposure_state_repr()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
-- **test_lucidity_exposure_state_multiple_archetypes()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
-- **test_lucidity_cooldown_creation()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
-- **test_lucidity_cooldown_repr()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
-- **test_lucidity_cooldown_different_action_codes()** (3 connections) — `server/tests/unit/models/test_lucidity_models.py`
-- **test_player_lucidity_table_name()** (2 connections) — `server/tests/unit/models/test_lucidity_models.py`
-- **test_lucidity_adjustment_log_table_name()** (2 connections) — `server/tests/unit/models/test_lucidity_models.py`
-- **test_lucidity_exposure_state_table_name()** (2 connections) — `server/tests/unit/models/test_lucidity_models.py`
-- **test_lucidity_cooldown_table_name()** (2 connections) — `server/tests/unit/models/test_lucidity_models.py`
-- **Unit tests for lucidity models.  Tests the PlayerLucidity, LucidityAdjustmentLog** (1 connections) — `server/tests/unit/models/test_lucidity_models.py`
-- **Test PlayerLucidity can be instantiated with required fields.** (1 connections) — `server/tests/unit/models/test_lucidity_models.py`
-- *... and 21 more nodes in this community*
+- **LucidityRepository** (27 connections) — `server/services/lucidity_repository.py`
+- **LucidityExposureState** (26 connections) — `server/models/lucidity.py`
+- **LucidityCooldown** (25 connections) — `server/models/lucidity.py`
+- **LucidityAdjustmentLog** (23 connections) — `server/models/lucidity.py`
+- **test_lucidity_repository.py** (22 connections) — `server/tests/unit/services/test_lucidity_repository.py`
+- **lucidity_repository.py** (12 connections) — `server/services/lucidity_repository.py`
+- **UUID** (9 connections)
+- **_utc_now()** (8 connections) — `server/models/lucidity.py`
+- **LucidityActionCode** (8 connections) — `server/models/lucidity.py`
+- **_utc_now()** (7 connections) — `server/services/lucidity_repository.py`
+- **test_lucidity_utils.py** (7 connections) — `server/tests/unit/models/test_lucidity_utils.py`
+- **.increment_exposure_state()** (6 connections) — `server/services/lucidity_repository.py`
+- **.set_cooldown()** (6 connections) — `server/services/lucidity_repository.py`
+- **.__init__()** (5 connections) — `server/models/lucidity.py`
+- **.get_player_lucidity()** (5 connections) — `server/services/lucidity_repository.py`
+- **.get_or_create_player_lucidity()** (5 connections) — `server/services/lucidity_repository.py`
+- **.add_adjustment_log()** (5 connections) — `server/services/lucidity_repository.py`
+- **.get_exposure_state()** (5 connections) — `server/services/lucidity_repository.py`
+- **.get_cooldown()** (5 connections) — `server/services/lucidity_repository.py`
+- **.delete_cooldowns_by_action_code_pattern()** (5 connections) — `server/services/lucidity_repository.py`
+- **Base** (4 connections)
+- **.__init__()** (4 connections) — `server/models/lucidity.py`
+- **.__init__()** (4 connections) — `server/models/lucidity.py`
+- *... and 109 more nodes in this community*
 
 ## Relationships
 
-- [world models rationale](world_models_rationale.md) (17 shared connections)
-- [combat models rationale](combat_models_rationale.md) (6 shared connections)
+- [lucidity services helpers](lucidity_services_helpers.md) (30 shared connections)
+- [combat models rationale](combat_models_rationale.md) (9 shared connections)
+- [combat services persistence](combat_services_persistence.md) (6 shared connections)
+- [world models rationale](world_models_rationale.md) (6 shared connections)
+- [commands inventory helpers](commands_inventory_helpers.md) (6 shared connections)
+- [task registry app](task_registry_app.md) (4 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (3 shared connections)
+- [commands rescue rationale](commands_rescue_rationale.md) (3 shared connections)
+- [command helpers functions](command_helpers_functions.md) (2 shared connections)
+- [services service phantom](services_service_phantom.md) (2 shared connections)
+- [Async Query Helpers](Async_Query_Helpers.md) (2 shared connections)
+- [rescue service services](rescue_service_services.md) (2 shared connections)
 
 ## Source Files
 
+- `server/models/lucidity.py`
+- `server/services/lucidity_repository.py`
 - `server/tests/unit/models/test_lucidity_models.py`
+- `server/tests/unit/models/test_lucidity_utils.py`
+- `server/tests/unit/services/test_lucidity_repository.py`
 
 ## Audit Trail
 
-- EXTRACTED: 113 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 463 (94%)
+- INFERRED: 28 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,48 +1,58 @@
 # services chat logger
 
-> 19 nodes
+> 42 nodes
 
 ## Key Concepts
 
-- **useDraggablePanelInteractions.ts** (11 connections) — `client/src/components/useDraggablePanelInteractions.ts`
-- **DraggablePanel()** (10 connections) — `client/src/components/DraggablePanelCore.tsx`
-- **DraggablePanel.tsx** (8 connections) — `client/src/components/DraggablePanel.tsx`
-- **draggablePanelUtils.ts** (7 connections) — `client/src/components/draggablePanelUtils.ts`
-- **useDraggablePanelInteractions()** (7 connections) — `client/src/components/useDraggablePanelInteractions.ts`
-- **relativeToAbsolute()** (3 connections) — `client/src/components/draggablePanelUtils.ts`
-- **relativeSizeToAbsolute()** (3 connections) — `client/src/components/draggablePanelUtils.ts`
-- **isPanelDragBlockedTarget()** (3 connections) — `client/src/components/draggablePanelUtils.ts`
-- **isMouseEventOnHeader()** (3 connections) — `client/src/components/draggablePanelUtils.ts`
-- **DraggablePanelProps** (2 connections) — `client/src/components/DraggablePanelCore.tsx`
-- **DraggablePanel.grid-positioning.test.tsx** (2 connections) — `client/src/components/__tests__/DraggablePanel.grid-positioning.test.tsx`
-- **DraggablePanel.test.tsx** (2 connections) — `client/src/components/__tests__/DraggablePanel.test.tsx`
-- **updateDragPosition()** (2 connections) — `client/src/components/useDraggablePanelInteractions.ts`
-- **updateResizePosition()** (2 connections) — `client/src/components/useDraggablePanelInteractions.ts`
-- **PANEL_DRAG_BLOCK_SELECTORS** (1 connections) — `client/src/components/draggablePanelUtils.ts`
-- **Size** (1 connections) — `client/src/components/useDraggablePanelInteractions.ts`
-- **Position** (1 connections) — `client/src/components/useDraggablePanelInteractions.ts`
-- **UseDraggablePanelInteractionsArgs** (1 connections) — `client/src/components/useDraggablePanelInteractions.ts`
-- **UseDraggablePanelInteractionsResult** (1 connections) — `client/src/components/useDraggablePanelInteractions.ts`
+- **PerformanceTracker** (25 connections) — `server/realtime/monitoring/performance_tracker.py`
+- **health_monitor.py** (14 connections) — `server/realtime/monitoring/health_monitor.py`
+- **performance_tracker.py** (11 connections) — `server/realtime/monitoring/performance_tracker.py`
+- **test_performance_tracker.py** (9 connections) — `server/tests/unit/realtime/monitoring/test_performance_tracker.py`
+- **__init__.py** (7 connections) — `server/realtime/monitoring/__init__.py`
+- **._trim_samples()** (7 connections) — `server/realtime/monitoring/performance_tracker.py`
+- **PerformanceStats** (3 connections) — `server/realtime/monitoring/performance_tracker.py`
+- **.record_connection_establishment()** (3 connections) — `server/realtime/monitoring/performance_tracker.py`
+- **.record_message_delivery()** (3 connections) — `server/realtime/monitoring/performance_tracker.py`
+- **.record_disconnection()** (3 connections) — `server/realtime/monitoring/performance_tracker.py`
+- **.record_session_switch()** (3 connections) — `server/realtime/monitoring/performance_tracker.py`
+- **.record_health_check()** (3 connections) — `server/realtime/monitoring/performance_tracker.py`
+- **.get_stats()** (3 connections) — `server/realtime/monitoring/performance_tracker.py`
+- **test_record_events_increase_counters()** (3 connections) — `server/tests/unit/realtime/monitoring/test_performance_tracker.py`
+- **test_trim_samples_keeps_max_samples()** (3 connections) — `server/tests/unit/realtime/monitoring/test_performance_tracker.py`
+- **test_get_stats_empty_returns_zeros()** (3 connections) — `server/tests/unit/realtime/monitoring/test_performance_tracker.py`
+- **test_get_stats_calculates_averages()** (3 connections) — `server/tests/unit/realtime/monitoring/test_performance_tracker.py`
+- **test_get_stats_non_websocket_connections_excluded_from_websocket_stats()** (3 connections) — `server/tests/unit/realtime/monitoring/test_performance_tracker.py`
+- **test_get_stats_error_path_returns_error_dict()** (3 connections) — `server/tests/unit/realtime/monitoring/test_performance_tracker.py`
+- **.__init__()** (2 connections) — `server/realtime/monitoring/performance_tracker.py`
+- **Monitoring components for connection management.  This package provides modular** (1 connections) — `server/realtime/monitoring/__init__.py`
+- **Health monitoring for connection management.  This module provides comprehensive** (1 connections) — `server/realtime/monitoring/health_monitor.py`
+- **TypedDict** (1 connections)
+- **Any** (1 connections)
+- **Performance tracking for connection management.  This module provides comprehens** (1 connections) — `server/realtime/monitoring/performance_tracker.py`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [panels chat ChatPanelRuntimeViewParts](panels_chat_ChatPanelRuntimeViewParts.md) (10 shared connections)
-- [game terminal lucidity](game_terminal_lucidity.md) (2 shared connections)
-- [stores connectionStore commandStore](stores_connectionStore_commandStore.md) (2 shared connections)
+- [health monitor realtime](health_monitor_realtime.md) (5 shared connections)
+- [services npc startup](services_npc_startup.md) (4 shared connections)
+- [Loot Generation](Loot_Generation.md) (4 shared connections)
+- [connection disconnection realtime](connection_disconnection_realtime.md) (3 shared connections)
+- [event realtime publisher](event_realtime_publisher.md) (3 shared connections)
+- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [persistence rationale room](persistence_rationale_room.md) (2 shared connections)
+- [schemas player rationale](schemas_player_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/DraggablePanel.tsx`
-- `client/src/components/DraggablePanelCore.tsx`
-- `client/src/components/__tests__/DraggablePanel.grid-positioning.test.tsx`
-- `client/src/components/__tests__/DraggablePanel.test.tsx`
-- `client/src/components/draggablePanelUtils.ts`
-- `client/src/components/useDraggablePanelInteractions.ts`
+- `server/realtime/monitoring/__init__.py`
+- `server/realtime/monitoring/health_monitor.py`
+- `server/realtime/monitoring/performance_tracker.py`
+- `server/tests/unit/realtime/monitoring/test_performance_tracker.py`
 
 ## Audit Trail
 
-- EXTRACTED: 70 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 133 (98%)
+- INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

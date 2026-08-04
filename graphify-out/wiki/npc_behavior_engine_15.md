@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_set_async_persistence()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **Test set_async_persistence() sets persistence layer.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_handle_container_overflow()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test handle_container_overflow handles overflow.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Relationships
 
-- [room subscription manager](room_subscription_manager.md) (1 shared connections)
+- [wearable container service](wearable_container_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager.py`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 

@@ -33,8 +33,9 @@
 
 ## Relationships
 
-- [models npc rationale](models_npc_rationale.md) (4 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (3 shared connections)
+- [command parser rationale](command_parser_rationale.md) (3 shared connections)
+- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
 
 ## Source Files
 

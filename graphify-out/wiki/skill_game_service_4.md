@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **mock_room_manager()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Create a mock room manager.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_prepare_room_data_without_to_dict()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **Test _prepare_room_data() handles room without to_dict method.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Relationships
 
-- [game state provider](game_state_provider.md) (1 shared connections)
+- [player room event](player_room_event.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Audit Trail
 

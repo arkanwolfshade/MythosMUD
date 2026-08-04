@@ -9,9 +9,9 @@
 
 ## Relationships
 
-- [services nats service](services_nats_service.md) (1 shared connections)
+- [room conftest toolkit](room_conftest_toolkit.md) (1 shared connections)
 - [command utility models](command_utility_models.md) (1 shared connections)
-- [combat commands handler](combat_commands_handler.md) (1 shared connections)
+- [coercion int inventory](coercion_int_inventory.md) (1 shared connections)
 
 ## Source Files
 

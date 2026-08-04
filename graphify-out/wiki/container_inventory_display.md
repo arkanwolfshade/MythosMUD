@@ -33,12 +33,11 @@
 
 ## Relationships
 
-- [container inventory helpers](container_inventory_helpers.md) (4 shared connections)
-- [retry nats handler](retry_nats_handler.md) (3 shared connections)
-- [container helpers endpoints](container_helpers_endpoints.md) (3 shared connections)
-- [world models rationale](world_models_rationale.md) (2 shared connections)
-- [commands position system](commands_position_system.md) (2 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
+- [container helpers endpoints](container_helpers_endpoints.md) (6 shared connections)
+- [container find inventory](container_find_inventory.md) (4 shared connections)
+- [combat models rationale](combat_models_rationale.md) (2 shared connections)
+- [commands inventory pickup](commands_inventory_pickup.md) (2 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
 - [caching lru cache](caching_lru_cache.md) (1 shared connections)
 
 ## Source Files

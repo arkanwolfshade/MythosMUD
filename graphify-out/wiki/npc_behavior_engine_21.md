@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_remove_room_occupant_error_handling()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **Test remove_room_occupant() handles errors gracefully.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_get_wearable_containers_for_player_filters_non_equipment()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test get_wearable_containers_for_player filters out non-equipment containers.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Relationships
 
-- [room subscription manager](room_subscription_manager.md) (1 shared connections)
+- [wearable container service](wearable_container_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager.py`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 

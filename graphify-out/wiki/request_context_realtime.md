@@ -1,12 +1,13 @@
 # request context realtime
 
-> 41 nodes
+> 43 nodes
 
 ## Key Concepts
 
 - **WebSocketRequestContext** (26 connections) — `server/realtime/request_context.py`
 - **test_request_context.py** (16 connections) — `server/tests/unit/realtime/test_request_context.py`
 - **Any** (7 connections)
+- **alias_storage()** (6 connections) — `server/tests/unit/test_alias_storage.py`
 - **.set_app_state_services()** (4 connections) — `server/realtime/request_context.py`
 - **.get_event_bus()** (4 connections) — `server/realtime/request_context.py`
 - **.get_alias_storage()** (4 connections) — `server/realtime/request_context.py`
@@ -28,26 +29,29 @@
 - **Creates FastAPI Request-like objects for WebSocket commands.      This allows We** (1 connections) — `server/realtime/request_context.py`
 - **Initialize the WebSocket request context.          Args:             app_state:** (1 connections) — `server/realtime/request_context.py`
 - **Set the alias storage in the app state.          Args:             alias_storage** (1 connections) — `server/realtime/request_context.py`
-- **Set the app state services in the request context.         Note: This method is** (1 connections) — `server/realtime/request_context.py`
-- *... and 16 more nodes in this community*
+- *... and 18 more nodes in this community*
 
 ## Relationships
 
-- [models npc rationale](models_npc_rationale.md) (8 shared connections)
-- [commands command validation](commands_command_validation.md) (3 shared connections)
+- [websocket handler realtime](websocket_handler_realtime.md) (5 shared connections)
+- [command commands handler](command_commands_handler.md) (3 shared connections)
+- [Loot Generation](Loot_Generation.md) (3 shared connections)
+- [alias storage rationale](alias_storage_rationale.md) (2 shared connections)
 - [models player related](models_player_related.md) (1 shared connections)
-- [command parser rationale](command_parser_rationale.md) (1 shared connections)
-- [alias storage rationale](alias_storage_rationale.md) (1 shared connections)
+- [npc shopkeeper rationale](npc_shopkeeper_rationale.md) (1 shared connections)
+- [commands party examples](commands_party_examples.md) (1 shared connections)
+- [time service rationale](time_service_rationale.md) (1 shared connections)
 
 ## Source Files
 
 - `server/realtime/request_context.py`
 - `server/tests/unit/realtime/test_request_context.py`
+- `server/tests/unit/test_alias_storage.py`
 
 ## Audit Trail
 
-- EXTRACTED: 121 (95%)
-- INFERRED: 7 (5%)
+- EXTRACTED: 126 (93%)
+- INFERRED: 9 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

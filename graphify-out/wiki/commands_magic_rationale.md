@@ -33,14 +33,14 @@
 
 ## Relationships
 
-- [commands npc admin](commands_npc_admin.md) (14 shared connections)
-- [coercion int inventory](coercion_int_inventory.md) (8 shared connections)
-- [commands position system](commands_position_system.md) (7 shared connections)
+- [commands party examples](commands_party_examples.md) (14 shared connections)
+- [coercion int inventory](coercion_int_inventory.md) (11 shared connections)
 - [player respawn event](player_respawn_event.md) (7 shared connections)
-- [game models player](game_models_player.md) (6 shared connections)
+- [commands admin mute](commands_admin_mute.md) (6 shared connections)
 - [rest grace period](rest_grace_period.md) (5 shared connections)
+- [Loot Generation](Loot_Generation.md) (3 shared connections)
 - [chat service game](chat_service_game.md) (3 shared connections)
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [admin auth service](admin_auth_service.md) (3 shared connections)
 - [spell game magic](spell_game_magic.md) (2 shared connections)
 - [chat game message](chat_game_message.md) (1 shared connections)
 - [Database Config](Database_Config.md) (1 shared connections)

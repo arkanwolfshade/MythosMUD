@@ -1,48 +1,52 @@
 # persistence container rationale
 
-> 21 nodes
+> 34 nodes
 
 ## Key Concepts
 
-- **validate_token_impl()** (15 connections) — `server/realtime/connection_delegates.py`
-- **_PlayerIdCarrier** (6 connections) — `server/realtime/connection_delegates.py`
-- **_TokenPersistence** (6 connections) — `server/realtime/connection_delegates.py`
-- **_TokenValidateManager** (6 connections) — `server/realtime/connection_delegates.py`
-- **Protocol** (4 connections)
-- **.get_player_by_user_id()** (4 connections) — `server/realtime/connection_delegates.py`
-- **test_validate_token_impl_database_error()** (4 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
-- **test_validate_token_impl_success()** (3 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
-- **test_validate_token_impl_invalid_payload()** (3 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
-- **test_validate_token_impl_no_persistence()** (3 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
-- **test_validate_token_impl_player_mismatch()** (3 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
-- **Minimal player shape for token validation.** (1 connections) — `server/realtime/connection_delegates.py`
-- **Persistence surface used by validate_token_impl.** (1 connections) — `server/realtime/connection_delegates.py`
-- **Look up a player by auth user id.** (1 connections) — `server/realtime/connection_delegates.py`
-- **ConnectionManager surface used by validate_token_impl.** (1 connections) — `server/realtime/connection_delegates.py`
-- **Validate a JWT token for a connection.      Args:         token: JWT token to va** (1 connections) — `server/realtime/connection_delegates.py`
-- **Test validate_token_impl() successfully validates token.** (1 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
-- **Test validate_token_impl() returns False for invalid payload.** (1 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
-- **Test validate_token_impl() returns False when persistence not available.** (1 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
-- **Test validate_token_impl() returns False for player mismatch.** (1 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
-- **Test validate_token_impl() handles DatabaseError.** (1 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
+- **test_communication_commands_channels.py** (20 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **handle_global_command()** (11 connections) — `server/commands/communication_commands.py`
+- **handle_local_command()** (10 connections) — `server/commands/communication_commands.py`
+- **handle_system_command()** (10 connections) — `server/commands/communication_commands.py`
+- **test_handle_local_command_success()** (4 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_global_command_level_too_low()** (4 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_global_command_success()** (4 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_system_command_not_admin()** (4 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_system_command_success()** (4 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_local_command_no_room()** (4 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_global_command_player_not_found()** (4 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_local_command_no_message()** (3 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_local_command_no_services()** (3 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_global_command_no_message()** (3 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_global_command_no_services()** (3 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_system_command_no_message()** (3 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_system_command_no_services()** (3 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **Local channel message.** (1 connections) — `server/commands/communication_commands.py`
+- **Global channel message (level-gated in flow).** (1 connections) — `server/commands/communication_commands.py`
+- **Admin-only system broadcast.** (1 connections) — `server/commands/communication_commands.py`
+- **Unit tests for local, global, and system chat command handlers.** (1 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **Test handle_local_command with no message.** (1 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **Test handle_local_command when services are not available.** (1 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **Test handle_local_command successful execution.** (1 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **Test handle_global_command with no message.** (1 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [connection realtime delegates](connection_realtime_delegates.md) (12 shared connections)
-- [connection disconnection realtime](connection_disconnection_realtime.md) (6 shared connections)
-- [Database Config](Database_Config.md) (2 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (2 shared connections)
-- [auth rationale access](auth_rationale_access.md) (1 shared connections)
+- [commands whisper command](commands_whisper_command.md) (9 shared connections)
+- [commands communication flows](commands_communication_flows.md) (7 shared connections)
+- [commands party examples](commands_party_examples.md) (3 shared connections)
+- [commands admin mute](commands_admin_mute.md) (3 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_delegates.py`
-- `server/tests/unit/realtime/test_connection_delegates.py`
+- `server/commands/communication_commands.py`
+- `server/tests/unit/commands/test_communication_commands_channels.py`
 
 ## Audit Trail
 
-- EXTRACTED: 60 (90%)
-- INFERRED: 7 (10%)
+- EXTRACTED: 114 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,48 +1,38 @@
 # panels monitoringPanelTestFixtures Monit
 
-> 21 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **test_item_instance_persistence.py** (16 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **item_instance_persistence.py** (15 connections) — `server/persistence/item_instance_persistence.py`
-- **create_item_instance()** (12 connections) — `server/persistence/item_instance_persistence.py`
-- **ensure_item_instance()** (11 connections) — `server/persistence/item_instance_persistence.py`
-- **get_item_instance()** (7 connections) — `server/persistence/item_instance_persistence.py`
-- **item_instance_exists()** (7 connections) — `server/persistence/item_instance_persistence.py`
+- **.spawn_npcs_on_startup()** (8 connections) — `server/services/npc_startup_service.py`
+- **._spawn_required_npcs()** (6 connections) — `server/services/npc_startup_service.py`
+- **._determine_spawn_room()** (6 connections) — `server/services/npc_startup_service.py`
+- **._spawn_optional_npcs()** (5 connections) — `server/services/npc_startup_service.py`
+- **._spawn_arena_npcs()** (5 connections) — `server/services/npc_startup_service.py`
 - **Any** (4 connections)
-- **test_create_item_instance_missing_id()** (3 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **test_create_item_instance_db_error()** (3 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **test_item_instance_exists_true()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **test_item_instance_exists_false()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **test_get_item_instance_found()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **test_get_item_instance_not_found()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **test_ensure_item_instance_calls_create()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **test_create_item_instance_success()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **Item instance persistence operations.  As documented in the restricted archives,** (1 connections) — `server/persistence/item_instance_persistence.py`
-- **Create a new item instance in the database.      Args:         conn: Database co** (1 connections) — `server/persistence/item_instance_persistence.py`
-- **Retrieve an item instance by ID.      Args:         conn: Database connection** (1 connections) — `server/persistence/item_instance_persistence.py`
-- **Check if an item instance exists in the database.      Args:         conn: Datab** (1 connections) — `server/persistence/item_instance_persistence.py`
-- **Ensure an item instance exists in the database, creating it if necessary.      T** (1 connections) — `server/persistence/item_instance_persistence.py`
-- **Unit tests for item_instance_persistence helpers.** (1 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
+- **._get_default_room_for_sub_zone()** (3 connections) — `server/services/npc_startup_service.py`
+- **Spawn NPCs during server startup.          This method handles the automatic spa** (1 connections) — `server/services/npc_startup_service.py`
+- **Spawn all required NPCs.          Args:             required_npcs: List of requi** (1 connections) — `server/services/npc_startup_service.py`
+- **Spawn optional NPCs based on spawn probability.          Args:             optio** (1 connections) — `server/services/npc_startup_service.py`
+- **Second pass: spawn one instance per definition (that was spawned in required/opt** (1 connections) — `server/services/npc_startup_service.py`
+- **Determine the appropriate room for spawning an NPC.          Args:             n** (1 connections) — `server/services/npc_startup_service.py`
+- **Get a default room for a given sub-zone.          Args:             sub_zone_id:** (1 connections) — `server/services/npc_startup_service.py`
 
 ## Relationships
 
-- [persistence container item](persistence_container_item.md) (10 shared connections)
-- [Database Config](Database_Config.md) (6 shared connections)
-- [command inventory models](command_inventory_models.md) (4 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [map layout useMapLayout](map_layout_useMapLayout.md) (6 shared connections)
+- [Error Conversion](Error_Conversion.md) (3 shared connections)
+- [player effects endpoints](player_effects_endpoints.md) (1 shared connections)
+- [commands npc admin](commands_npc_admin.md) (1 shared connections)
 
 ## Source Files
 
-- `server/persistence/item_instance_persistence.py`
-- `server/tests/unit/persistence/test_item_instance_persistence.py`
+- `server/services/npc_startup_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 92 (96%)
-- INFERRED: 4 (4%)
+- EXTRACTED: 43 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,27 +1,25 @@
 # tsconfig app DOM
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **._safe_get()** (4 connections) — `server/npc/npc_base.py`
-- **._apply_definition_attributes()** (4 connections) — `server/npc/npc_base.py`
-- **Get attribute from obj with default to avoid lazy-loading issues.** (1 connections) — `server/npc/npc_base.py`
-- **Set npc_type, name, current_room, spawn_room_id from definition.** (1 connections) — `server/npc/npc_base.py`
+- **test_soft_delete_character_persistence_fails()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **Test soft_delete_character() when persistence.soft_delete_player fails.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
 
 ## Relationships
 
-- [Realtime Subscribers](Realtime_Subscribers.md) (2 shared connections)
-- [rate limiter realtime](rate_limiter_realtime.md) (2 shared connections)
+- [Database Config](Database_Config.md) (1 shared connections)
+- [room realtime subscription](room_realtime_subscription.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/npc_base.py`
+- `server/tests/unit/game/test_player_service_mutations.py`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

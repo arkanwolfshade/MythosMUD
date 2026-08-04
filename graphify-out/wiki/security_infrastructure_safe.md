@@ -24,7 +24,7 @@
 ## Relationships
 
 - [security infrastructure secure](security_infrastructure_secure.md) (8 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
 
 ## Source Files
 

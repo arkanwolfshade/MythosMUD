@@ -1,9 +1,10 @@
 # player preferences services
 
-> 40 nodes
+> 38 nodes
 
 ## Key Concepts
 
+- **dialogue_definitions_api.py** (27 connections) — `server/api/admin/dialogue_definitions_api.py`
 - **test_dialogue_definitions_api.py** (26 connections) — `server/tests/unit/api/test_dialogue_definitions_api.py`
 - **list_dialogue_definitions()** (13 connections) — `server/api/admin/dialogue_definitions_api.py`
 - **upsert_dialogue_definition()** (13 connections) — `server/api/admin/dialogue_definitions_api.py`
@@ -18,10 +19,8 @@
 - **Request** (5 connections)
 - **test_create_dialogue_definition_upserts()** (5 connections) — `server/tests/unit/api/test_dialogue_definitions_api.py`
 - **test_upsert_dialogue_definition()** (5 connections) — `server/tests/unit/api/test_dialogue_definitions_api.py`
-- **test_dialogue_tree_schema_rejects_bad_start()** (4 connections) — `server/tests/unit/api/test_dialogue_definitions_api.py`
 - **_dialogue_row()** (4 connections) — `server/tests/unit/api/test_dialogue_definitions_api.py`
 - **BaseModel** (3 connections)
-- **test_dialogue_tree_schema_accepts_nav_only()** (3 connections) — `server/tests/unit/api/test_dialogue_definitions_api.py`
 - **test_to_response_maps_row()** (3 connections) — `server/tests/unit/api/test_dialogue_definitions_api.py`
 - **test_list_dialogue_definitions_returns_rows()** (3 connections) — `server/tests/unit/api/test_dialogue_definitions_api.py`
 - **test_list_dialogue_definitions_db_error()** (3 connections) — `server/tests/unit/api/test_dialogue_definitions_api.py`
@@ -29,17 +28,19 @@
 - **test_get_dialogue_definition_not_found()** (3 connections) — `server/tests/unit/api/test_dialogue_definitions_api.py`
 - **test_delete_dialogue_definition_not_found()** (3 connections) — `server/tests/unit/api/test_dialogue_definitions_api.py`
 - **test_delete_dialogue_definition_success()** (2 connections) — `server/tests/unit/api/test_dialogue_definitions_api.py`
-- *... and 15 more nodes in this community*
+- **Admin CRUD for dialogue_definitions (#583).** (1 connections) — `server/api/admin/dialogue_definitions_api.py`
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [admin auth service](admin_auth_service.md) (20 shared connections)
-- [Exception Containers](Exception_Containers.md) (14 shared connections)
+- [inventory schemas schema](inventory_schemas_schema.md) (15 shared connections)
+- [Exception Containers](Exception_Containers.md) (10 shared connections)
+- [player requests schemas](player_requests_schemas.md) (7 shared connections)
+- [Database Config](Database_Config.md) (7 shared connections)
 - [dialogue service game](dialogue_service_game.md) (6 shared connections)
-- [Database Config](Database_Config.md) (5 shared connections)
+- [Loot Generation](Loot_Generation.md) (4 shared connections)
+- [auth users rationale](auth_users_rationale.md) (1 shared connections)
 - [commands quest rationale](commands_quest_rationale.md) (1 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
-- [command inventory models](command_inventory_models.md) (1 shared connections)
 
 ## Source Files
 
@@ -49,8 +50,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 187 (97%)
-- INFERRED: 5 (3%)
+- EXTRACTED: 207 (98%)
+- INFERRED: 4 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

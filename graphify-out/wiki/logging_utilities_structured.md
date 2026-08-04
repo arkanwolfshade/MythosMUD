@@ -1,32 +1,24 @@
 # logging utilities structured
 
-> 10 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **test_websocket_handler_validation.py** (7 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
-- **test_validate_message_failure()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
-- **mock_websocket()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
-- **mock_validator()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
-- **test_validate_message_success()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
-- **Unit tests for websocket handler message validation.  Tests the message validati** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
-- **Create a mock WebSocket.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
-- **Create a mock message validator.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
-- **Test _validate_message() returns message when validation succeeds.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
-- **Test _validate_message() returns None when validation fails.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
+- **test_try_lookup_item_implicit_player_no_get_inventory()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test _try_lookup_item_implicit() when player has no get_inventory method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
 
 ## Relationships
 
-- [realtime message validator](realtime_message_validator.md) (2 shared connections)
-- [room look commands](room_look_commands.md) (1 shared connections)
+- [npc realtime occupant](npc_realtime_occupant.md) (1 shared connections)
+- [Item Lookup](Item_Lookup.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_websocket_handler_validation.py`
+- `server/tests/unit/commands/test_look_item.py`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

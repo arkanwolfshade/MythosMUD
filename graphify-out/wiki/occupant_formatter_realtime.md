@@ -1,31 +1,52 @@
 # occupant formatter realtime
 
-> 4 nodes
+> 73 nodes
 
 ## Key Concepts
 
-- **PingMessageHandler** (7 connections) — `server/realtime/message_handler_factory.py`
-- **test_ping_message_handler_handle()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **Handler for ping messages.** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Test PingMessageHandler.handle() calls handle_ping_message.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **OccupantFormatter** (37 connections) — `server/realtime/occupant_formatter.py`
+- **test_occupant_formatter.py** (29 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **._is_uuid_string()** (8 connections) — `server/realtime/occupant_formatter.py`
+- **._is_valid_name_for_occupant()** (7 connections) — `server/realtime/occupant_formatter.py`
+- **._process_dict_occupant_for_update()** (7 connections) — `server/realtime/occupant_formatter.py`
+- **._process_player_name_for_update()** (6 connections) — `server/realtime/occupant_formatter.py`
+- **._process_npc_name_for_update()** (6 connections) — `server/realtime/occupant_formatter.py`
+- **Any** (5 connections)
+- **.separate_occupants_by_type()** (5 connections) — `server/realtime/occupant_formatter.py`
+- **._add_valid_name_to_lists()** (4 connections) — `server/realtime/occupant_formatter.py`
+- **._process_string_occupant_for_update()** (4 connections) — `server/realtime/occupant_formatter.py`
+- **test_occupant_formatter_init()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_occupant_formatter_is_uuid_string_valid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_occupant_formatter_is_uuid_string_invalid_length()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_occupant_formatter_is_uuid_string_invalid_dashes()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_occupant_formatter_is_uuid_string_invalid_chars()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_occupant_formatter_is_valid_name_for_occupant_valid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_occupant_formatter_is_valid_name_for_occupant_uuid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_occupant_formatter_is_valid_name_for_occupant_empty()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_occupant_formatter_is_valid_name_for_occupant_none()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_occupant_formatter_is_valid_name_for_occupant_non_string()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_occupant_formatter_add_valid_name_to_lists()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_occupant_formatter_process_player_name_for_update_valid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_occupant_formatter_process_player_name_for_update_uuid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_occupant_formatter_process_npc_name_for_update_valid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- *... and 48 more nodes in this community*
 
 ## Relationships
 
-- [message handler factory](message_handler_factory.md) (2 shared connections)
-- [combat services messaging](combat_services_messaging.md) (1 shared connections)
-- [command commands aliases](command_commands_aliases.md) (1 shared connections)
-- [tsconfig src/**/* spec](tsconfig_src-__-__spec.md) (1 shared connections)
-- [game chat moderation](game_chat_moderation.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
+- [player occupant processor](player_occupant_processor.md) (2 shared connections)
+- [container sql injection](container_sql_injection.md) (1 shared connections)
+- [event bus events](event_bus_events.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/message_handler_factory.py`
-- `server/tests/unit/realtime/test_message_handler_factory.py`
+- `server/realtime/occupant_formatter.py`
+- `server/tests/unit/realtime/test_occupant_formatter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 231 (100%)
+- INFERRED: 1 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

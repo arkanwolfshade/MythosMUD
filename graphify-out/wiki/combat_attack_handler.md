@@ -1,52 +1,52 @@
 # combat attack handler
 
-> 62 nodes
+> 51 nodes
 
 ## Key Concepts
 
-- **test_command_magic.py** (27 connections) — `server/tests/unit/models/test_command_magic.py`
-- **CastCommand** (20 connections) — `server/models/command_magic.py`
-- **SpellCommand** (13 connections) — `server/models/command_magic.py`
-- **LearnCommand** (13 connections) — `server/models/command_magic.py`
-- **command_magic.py** (10 connections) — `server/models/command_magic.py`
-- **SpellsCommand** (8 connections) — `server/models/command_magic.py`
-- **test_cast_command_validate_spell_name_empty()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
-- **test_cast_command_validate_spell_name_whitespace_only()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
-- **test_cast_command_spell_name_max_length()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
-- **test_cast_command_target_max_length()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
-- **test_spell_command_validate_spell_name_empty()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
-- **test_spell_command_validate_spell_name_whitespace_only()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
-- **test_spell_command_spell_name_max_length()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
-- **test_learn_command_validate_spell_name_empty()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
-- **test_learn_command_validate_spell_name_whitespace_only()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
-- **test_learn_command_spell_name_max_length()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
-- **test_cast_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
-- **test_cast_command_with_target()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
-- **test_cast_command_validate_spell_name_valid()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
-- **test_cast_command_validate_target_empty_string()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
-- **test_cast_command_validate_target_whitespace()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
-- **test_cast_command_validate_target_strips()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
-- **test_spell_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
-- **test_spell_command_validate_spell_name_valid()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
-- **test_spells_command_no_fields()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
-- *... and 37 more nodes in this community*
+- **MemoryThresholdMonitor** (25 connections) — `server/app/memory_cleanup_service.py`
+- **test_memory_cleanup_service.py** (20 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **create_memory_cleanup_monitor()** (8 connections) — `server/app/memory_cleanup_service.py`
+- **.get_memory_status_report()** (6 connections) — `server/app/memory_cleanup_service.py`
+- **get_managed_task_cleanup_implementation_for_task_four_spec_compliance()** (6 connections) — `server/app/memory_cleanup_service.py`
+- **.managed_task_cleanup()** (4 connections) — `server/app/memory_cleanup_service.py`
+- **test_create_memory_cleanup_monitor()** (4 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **test_task_four_spec_factory()** (4 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **.__init__()** (3 connections) — `server/app/memory_cleanup_service.py`
+- **._get_current_memory_usage()** (3 connections) — `server/app/memory_cleanup_service.py`
+- **._get_active_task_count()** (3 connections) — `server/app/memory_cleanup_service.py`
+- **._flush_memory_indexes_cache()** (3 connections) — `server/app/memory_cleanup_service.py`
+- **.__init__()** (3 connections) — `server/app/memory_lifespan_coordinator.py`
+- **monitor()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **test_get_current_memory_usage_success()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **test_get_current_memory_usage_failure()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **test_get_active_task_count_no_loop()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **test_get_active_task_count_with_loop()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **test_flush_memory_indexes_cache_error()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **test_get_memory_status_report()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **test_managed_task_cleanup_skips_on_cooldown()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **test_managed_task_cleanup_skips_when_below_threshold()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **test_managed_task_cleanup_success()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **test_managed_task_cleanup_timeout()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **test_managed_task_cleanup_execution_failure()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- *... and 26 more nodes in this community*
 
 ## Relationships
 
-- [container persistence rationale](container_persistence_rationale.md) (11 shared connections)
-- [command inventory models](command_inventory_models.md) (10 shared connections)
-- [command factories create](command_factories_create.md) (5 shared connections)
-- [exceptions rationale error](exceptions_rationale_error.md) (5 shared connections)
+- [schemas player rationale](schemas_player_rationale.md) (5 shared connections)
+- [dialogue definitions admin](dialogue_definitions_admin.md) (2 shared connections)
+- [models npc rationale](models_npc_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/command_magic.py`
-- `server/tests/unit/models/test_command_magic.py`
+- `server/app/memory_cleanup_service.py`
+- `server/app/memory_lifespan_coordinator.py`
+- `server/tests/unit/app/test_memory_cleanup_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 185 (91%)
-- INFERRED: 18 (9%)
+- EXTRACTED: 152 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

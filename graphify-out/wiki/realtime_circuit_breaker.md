@@ -1,47 +1,44 @@
 # realtime circuit breaker
 
-> 24 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **test_quest_definition_repository.py** (20 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **_make_session_context()** (11 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **_row_for_quest_definition()** (4 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **test_get_by_id_success()** (4 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **test_get_by_id_database_error()** (4 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **test_get_by_name_success()** (4 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **test_get_by_name_database_error()** (4 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **test_list_quest_ids_offered_by_database_error()** (4 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **test_get_by_id_not_found()** (3 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **test_get_by_name_not_found()** (3 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **test_list_quest_ids_offered_by_success()** (3 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **test_list_quest_ids_offered_by_empty()** (3 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **Unit tests for QuestDefinitionRepository.  Tests get_by_id, get_by_name, and lis** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **Return context manager that yields mock_session for async with.** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **Build a procedure result row (mappings().first() return value) for QuestDefiniti** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **Test get_by_id returns definition when found (procedure returns row, repo maps t** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **Test get_by_id returns None when not found.** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **Test get_by_id raises DatabaseError on DB failure.** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **Test get_by_name returns definition when found by common name.** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **Test get_by_name returns None when not found.** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **Test get_by_name raises DatabaseError on DB failure.** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **Test list_quest_ids_offered_by returns quest IDs for entity (procedure returns r** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **Test list_quest_ids_offered_by returns empty list when no offers.** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **Test list_quest_ids_offered_by raises DatabaseError on DB failure.** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **RoomRepositoryProtocol** (13 connections) — `server/persistence/protocols.py`
+- **protocols.py** (12 connections) — `server/persistence/protocols.py`
+- **test_protocols.py** (10 connections) — `server/tests/unit/persistence/test_protocols.py`
+- **_StubRoomRepo** (6 connections) — `server/tests/unit/persistence/test_protocols.py`
+- **test_room_repository_protocol_stub()** (5 connections) — `server/tests/unit/persistence/test_protocols.py`
+- **.get_room_by_id()** (4 connections) — `server/persistence/protocols.py`
+- **.list_rooms()** (4 connections) — `server/persistence/protocols.py`
+- **Room** (2 connections)
+- **.get_room_by_id()** (2 connections) — `server/tests/unit/persistence/test_protocols.py`
+- **.list_rooms()** (2 connections) — `server/tests/unit/persistence/test_protocols.py`
+- **Repository protocols for MythosMUD persistence layer.  Explicit typing.Protocol** (1 connections) — `server/persistence/protocols.py`
+- **Protocol for room persistence operations.      Defines the contract used by Asyn** (1 connections) — `server/persistence/protocols.py`
+- **Get a room by ID from cache.** (1 connections) — `server/persistence/protocols.py`
+- **List all cached rooms.** (1 connections) — `server/persistence/protocols.py`
+- **Runtime checks for persistence repository protocols.** (1 connections) — `server/tests/unit/persistence/test_protocols.py`
 
 ## Relationships
 
-- [Database Config](Database_Config.md) (10 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [persistence protocols rationale](persistence_protocols_rationale.md) (9 shared connections)
+- [config models game](config_models_game.md) (4 shared connections)
+- [combat models rationale](combat_models_rationale.md) (3 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
+- [room models instance](room_models_instance.md) (2 shared connections)
+- [persistence container item](persistence_container_item.md) (2 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_quest_definition_repository.py`
+- `server/persistence/protocols.py`
+- `server/tests/unit/persistence/test_protocols.py`
 
 ## Audit Trail
 
-- EXTRACTED: 76 (96%)
-- INFERRED: 3 (4%)
+- EXTRACTED: 57 (88%)
+- INFERRED: 8 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

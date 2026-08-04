@@ -1,48 +1,53 @@
 # combat configuration service
 
-> 40 nodes
+> 115 nodes
 
 ## Key Concepts
 
-- **test_message_broadcaster.py** (22 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **message_broadcaster()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **mock_room_manager()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **mock_send_personal_message()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **test_message_broadcaster_init()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **test_broadcast_to_room()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **test_broadcast_to_room_exclude_player()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **test_broadcast_to_room_empty()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **test_broadcast_global()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **test_broadcast_to_room_with_uuid_exclude()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **test_broadcast_to_room_delivery_failure()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **test_broadcast_global_exclude_player()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **test_broadcast_global_empty()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **test_broadcast_room_event()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **test_broadcast_to_room_invalid_player_id()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **test_broadcast_to_room_batch_exception_falls_back()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **test_broadcast_global_batch_exception_falls_back()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **test_broadcast_room_event_error()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **test_broadcast_global_event()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **test_broadcast_global_event_error()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **Unit tests for message broadcaster.  Tests the MessageBroadcaster class.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **Create a mock room manager.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **Create a mock send_personal_message callback.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **Create a MessageBroadcaster instance.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **Test MessageBroadcaster initialization.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- *... and 15 more nodes in this community*
+- **CombatConfiguration** (31 connections) — `server/services/combat_configuration_service.py`
+- **TestCombatConfigurationService** (26 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **CombatConfigurationService** (19 connections) — `server/services/combat_configuration_service.py`
+- **TestCombatConfiguration** (19 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **combat_configuration_service.py** (17 connections) — `server/services/combat_configuration_service.py`
+- **CombatConfigurationError** (11 connections) — `server/services/combat_configuration_service.py`
+- **.update_combat_configuration()** (10 connections) — `server/services/combat_configuration_service.py`
+- **CombatConfigurationScope** (9 connections) — `server/services/combat_configuration_service.py`
+- **test_combat_configuration_service.py** (8 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.to_dict()** (7 connections) — `server/services/combat_configuration_service.py`
+- **.get_combat_configuration_for_scope()** (7 connections) — `server/services/combat_configuration_service.py`
+- **.validate_configuration()** (7 connections) — `server/services/combat_configuration_service.py`
+- **.get_combat_settings_summary()** (7 connections) — `server/services/combat_configuration_service.py`
+- **get_combat_configuration()** (7 connections) — `server/services/combat_configuration_service.py`
+- **Any** (5 connections)
+- **.from_dict()** (5 connections) — `server/services/combat_configuration_service.py`
+- **.get_active_overrides()** (5 connections) — `server/services/combat_configuration_service.py`
+- **.is_combat_available()** (5 connections) — `server/services/combat_configuration_service.py`
+- **.validate()** (4 connections) — `server/services/combat_configuration_service.py`
+- **.__init__()** (4 connections) — `server/services/combat_configuration_service.py`
+- **.get_combat_configuration()** (4 connections) — `server/services/combat_configuration_service.py`
+- **.clear_scope_override()** (4 connections) — `server/services/combat_configuration_service.py`
+- **.test_init_defaults()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_init_custom_values()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_to_dict()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- *... and 90 more nodes in this community*
 
 ## Relationships
 
-- [realtime messaging message](realtime_messaging_message.md) (3 shared connections)
+- [combat monitoring service](combat_monitoring_service.md) (3 shared connections)
+- [connection helpers realtime](connection_helpers_realtime.md) (3 shared connections)
+- [service feature services](service_feature_services.md) (3 shared connections)
+- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- `server/services/combat_configuration_service.py`
+- `server/tests/unit/services/test_combat_configuration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 81 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 341 (91%)
+- INFERRED: 32 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

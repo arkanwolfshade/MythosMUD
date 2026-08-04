@@ -1,6 +1,6 @@
 # inventory mutation guard
 
-> 40 nodes
+> 42 nodes
 
 ## Key Concepts
 
@@ -8,6 +8,7 @@
 - **UUID** (12 connections)
 - **Any** (10 connections)
 - **.handle_player_entered()** (9 connections) — `server/realtime/player_event_handlers_room.py`
+- **.__init__()** (7 connections) — `server/realtime/player_event_handlers_room.py`
 - **.send_occupants_snapshot_to_player()** (7 connections) — `server/realtime/player_event_handlers_room.py`
 - **.send_room_updates_to_entering_player()** (7 connections) — `server/realtime/player_event_handlers_room.py`
 - **.handle_player_left()** (7 connections) — `server/realtime/player_event_handlers_room.py`
@@ -26,16 +27,19 @@
 - **.unsubscribe_player_from_room()** (4 connections) — `server/realtime/player_event_handlers_room.py`
 - **.broadcast_player_left_message()** (4 connections) — `server/realtime/player_event_handlers_room.py`
 - **Handles room-related player events (entered, left, occupants).** (1 connections) — `server/realtime/player_event_handlers_room.py`
+- **Initialize room event handler.          Args:             connection_manager: Co** (1 connections) — `server/realtime/player_event_handlers_room.py`
 - **Log player movement for AI processing.          Args:             player_id: The** (1 connections) — `server/realtime/player_event_handlers_room.py`
-- **Broadcast player entered message to room occupants.          Args:             m** (1 connections) — `server/realtime/player_event_handlers_room.py`
-- **Subscribe player to room for receiving broadcasts.          Args:             pl** (1 connections) — `server/realtime/player_event_handlers_room.py`
-- *... and 15 more nodes in this community*
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [NATS Messaging](NATS_Messaging.md) (12 shared connections)
+- [realtime monitoring performance](realtime_monitoring_performance.md) (5 shared connections)
 - [Realtime Subscribers](Realtime_Subscribers.md) (3 shared connections)
-- [Player Name Validation](Player_Name_Validation.md) (1 shared connections)
+- [schedule services service](schedule_services_service.md) (2 shared connections)
+- [player_event_handler_utils](player_event_handler_utils.md) (2 shared connections)
+- [Player Name Validation](Player_Name_Validation.md) (2 shared connections)
+- [player occupant processor](player_occupant_processor.md) (2 shared connections)
+- [realtime messaging message](realtime_messaging_message.md) (2 shared connections)
 - [combat services messaging](combat_services_messaging.md) (1 shared connections)
 
 ## Source Files
@@ -44,7 +48,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 162 (97%)
+- EXTRACTED: 170 (97%)
 - INFERRED: 5 (3%)
 - AMBIGUOUS: 0 (0%)
 

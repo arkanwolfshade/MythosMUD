@@ -1,47 +1,53 @@
 # uuid npc combat
 
-> 22 nodes
+> 45 nodes
 
 ## Key Concepts
 
-- **test_instance_manager.py** (15 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **instance_manager()** (4 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **tutorial_room()** (3 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **room_cache()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **test_create_instance()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **test_create_instance_raises_when_no_templates()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **test_destroy_instance()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **test_get_first_room_id()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **test_get_exit_room_id()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **test_get_room_by_id_returns_none_for_non_instance()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **test_get_room_by_id_returns_room_when_in_instance()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Unit tests for InstanceManager.  Tests instance creation, destruction, room clon** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Create tutorial bedroom template room.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Room cache with tutorial template.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Create InstanceManager with tutorial template in cache.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Test create_instance creates instance with cloned rooms.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Test create_instance raises when no template rooms found.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Test destroy_instance removes instance from store.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Test get_first_room_id returns first room of instance.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Test get_exit_room_id returns fixed exit room.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Test get_room_by_id returns None for non-instance room IDs.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Test get_room_by_id returns room when room is in an instance.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
+- **test_item.py** (19 connections) — `server/tests/unit/models/test_item.py`
+- **ItemPrototype** (14 connections) — `server/models/item.py`
+- **ItemInstance** (11 connections) — `server/models/item.py`
+- **item.py** (8 connections) — `server/models/item.py`
+- **.unique_key()** (8 connections) — `server/models/item.py`
+- **ItemComponentState** (7 connections) — `server/models/item.py`
+- **Base** (3 connections)
+- **test_item_prototype_primary_slot_with_slots()** (3 connections) — `server/tests/unit/models/test_item.py`
+- **test_item_prototype_primary_slot_single_slot()** (3 connections) — `server/tests/unit/models/test_item.py`
+- **test_item_prototype_primary_slot_empty()** (3 connections) — `server/tests/unit/models/test_item.py`
+- **test_item_prototype_primary_slot_none()** (3 connections) — `server/tests/unit/models/test_item.py`
+- **test_item_instance_apply_flag_new_flag()** (3 connections) — `server/tests/unit/models/test_item.py`
+- **test_item_instance_apply_flag_existing_flag()** (3 connections) — `server/tests/unit/models/test_item.py`
+- **test_item_instance_apply_flag_multiple_flags()** (3 connections) — `server/tests/unit/models/test_item.py`
+- **test_item_instance_apply_flag_preserves_order()** (3 connections) — `server/tests/unit/models/test_item.py`
+- **test_item_component_state_unique_key()** (3 connections) — `server/tests/unit/models/test_item.py`
+- **test_item_component_state_unique_key_different_values()** (3 connections) — `server/tests/unit/models/test_item.py`
+- **test_item_component_state_unique_key_same_instance_different_component()** (3 connections) — `server/tests/unit/models/test_item.py`
+- **test_item_component_state_unique_key_different_instance_same_component()** (3 connections) — `server/tests/unit/models/test_item.py`
+- **test_item_component_state_unique_key_empty_strings()** (3 connections) — `server/tests/unit/models/test_item.py`
+- **test_item_component_state_unique_key_static_method()** (3 connections) — `server/tests/unit/models/test_item.py`
+- **.primary_slot()** (2 connections) — `server/models/item.py`
+- **.apply_flag()** (2 connections) — `server/models/item.py`
+- **SQLAlchemy models for MythosMUD item prototypes, instances, and component state.** (1 connections) — `server/models/item.py`
+- **Immutable catalog entry describing a canonical item.** (1 connections) — `server/models/item.py`
+- *... and 20 more nodes in this community*
 
 ## Relationships
 
-- [logging examples fastapi](logging_examples_fastapi.md) (3 shared connections)
-- [room models instance](room_models_instance.md) (2 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
-- [player presence tracker](player_presence_tracker.md) (1 shared connections)
+- [world models rationale](world_models_rationale.md) (5 shared connections)
+- [task registry app](task_registry_app.md) (4 shared connections)
+- [websocket realtime handler](websocket_realtime_handler.md) (1 shared connections)
+- [nats services service](nats_services_service.md) (1 shared connections)
+- [command commands validation](command_commands_validation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_instance_manager.py`
+- `server/models/item.py`
+- `server/tests/unit/models/test_item.py`
 
 ## Audit Trail
 
-- EXTRACTED: 48 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 133 (96%)
+- INFERRED: 5 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

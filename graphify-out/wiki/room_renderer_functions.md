@@ -33,7 +33,8 @@
 
 ## Relationships
 
-- [look helpers commands](look_helpers_commands.md) (9 shared connections)
+- [command models moderation](command_models_moderation.md) (5 shared connections)
+- [look helpers commands](look_helpers_commands.md) (4 shared connections)
 - [connection realtime statistics](connection_realtime_statistics.md) (3 shared connections)
 
 ## Source Files

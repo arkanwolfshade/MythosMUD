@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_player_data_for_client_with_service()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Test _get_player_data_for_client() uses PlayerService when available.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_mute_channel_already_muted()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test mute_channel() when channel is already muted.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
 
 ## Relationships
 
-- [game state provider](game_state_provider.md) (1 shared connections)
+- [user manager services](user_manager_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- `server/tests/unit/services/test_user_manager.py`
 
 ## Audit Trail
 

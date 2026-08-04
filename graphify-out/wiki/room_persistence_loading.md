@@ -34,7 +34,7 @@
 ## Relationships
 
 - [Database Config](Database_Config.md) (2 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
 
 ## Source Files
 

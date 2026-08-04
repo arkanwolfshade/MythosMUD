@@ -1,36 +1,25 @@
 # realtime player presence
 
-> 10 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **TestGetMythosTime** (12 connections) — `server/tests/unit/api/test_game.py`
-- **.test_get_mythos_time_with_holidays()** (4 connections) — `server/tests/unit/api/test_game.py`
-- **.test_broadcast_message_missing_stats_key()** (3 connections) — `server/tests/unit/api/test_game.py`
-- **.test_broadcast_message_empty_stats()** (3 connections) — `server/tests/unit/api/test_game.py`
-- **.test_broadcast_message_logs_info()** (3 connections) — `server/tests/unit/api/test_game.py`
-- **Test get_mythos_time endpoint.** (1 connections) — `server/tests/unit/api/test_game.py`
-- **Test get_mythos_time includes holiday data when available.** (1 connections) — `server/tests/unit/api/test_game.py`
-- **Test broadcast_message handles missing successful_deliveries in stats.** (1 connections) — `server/tests/unit/api/test_game.py`
-- **Test broadcast_message handles empty stats dictionary.** (1 connections) — `server/tests/unit/api/test_game.py`
-- **Test broadcast_message logs info messages correctly.** (1 connections) — `server/tests/unit/api/test_game.py`
+- **test_try_lookup_item_implicit_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test trying implicit lookup when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
 
 ## Relationships
 
-- [game rationale schemas](game_rationale_schemas.md) (6 shared connections)
-- [error logging rationale](error_logging_rationale.md) (3 shared connections)
-- [Exception Containers](Exception_Containers.md) (1 shared connections)
-- [room realtime occupant](room_realtime_occupant.md) (1 shared connections)
-- [holiday service services](holiday_service_services.md) (1 shared connections)
+- [npc realtime occupant](npc_realtime_occupant.md) (1 shared connections)
+- [Item Lookup](Item_Lookup.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/api/test_game.py`
+- `server/tests/unit/commands/test_look_item.py`
 
 ## Audit Trail
 
-- EXTRACTED: 29 (97%)
-- INFERRED: 1 (3%)
+- EXTRACTED: 4 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

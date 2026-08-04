@@ -1,51 +1,52 @@
 # room sync service
 
-> 34 nodes
+> 26 nodes
 
 ## Key Concepts
 
-- **test_command_base.py** (22 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_base_command_rejects_extra_fields()** (4 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_base_command_instantiation()** (3 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_base_command_model_config()** (3 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_base_command_slots()** (3 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_command_type_enum_inheritance()** (3 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_direction_enum_values()** (2 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_direction_enum_all_directions()** (2 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_direction_enum_string_comparison()** (2 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_command_type_enum_contains_look()** (2 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_command_type_enum_contains_communication_commands()** (2 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_command_type_enum_contains_exploration_commands()** (2 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_command_type_enum_contains_admin_commands()** (2 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_command_type_enum_contains_inventory_commands()** (2 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_command_type_enum_contains_combat_commands()** (2 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_command_type_enum_contains_magic_commands()** (2 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_command_type_enum_string_comparison()** (2 connections) — `server/tests/unit/models/test_command_base.py`
-- **Unit tests for base command models and enums.  Tests the Direction and CommandTy** (1 connections) — `server/tests/unit/models/test_command_base.py`
-- **Test Direction enum contains all expected values.** (1 connections) — `server/tests/unit/models/test_command_base.py`
-- **Test Direction enum contains all 10 expected directions.** (1 connections) — `server/tests/unit/models/test_command_base.py`
-- **Test Direction enum values can be compared to strings.** (1 connections) — `server/tests/unit/models/test_command_base.py`
-- **Test CommandType enum contains LOOK.** (1 connections) — `server/tests/unit/models/test_command_base.py`
-- **Test CommandType enum contains communication commands.** (1 connections) — `server/tests/unit/models/test_command_base.py`
-- **Test CommandType enum contains exploration commands.** (1 connections) — `server/tests/unit/models/test_command_base.py`
-- **Test CommandType enum contains admin commands.** (1 connections) — `server/tests/unit/models/test_command_base.py`
-- *... and 9 more nodes in this community*
+- **_find_item_in_room_drops()** (23 connections) — `server/commands/look_item.py`
+- **test_find_item_in_room_drops_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_room_drops_by_prototype_id()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_room_drops_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_room_drops_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_room_drops_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_room_drops_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_room_drops_by_item_id()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_room_drops_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_room_drops_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_room_drops_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_room_drops_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_room_drops_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Find an item in room drops by name or prototype_id.      Args:         room_drop** (1 connections) — `server/commands/look_item.py`
+- **Test finding item in room drops by name.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test finding item in room drops by prototype_id.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test finding item in room drops when not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test finding item in room drops with multiple matches.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test finding item in room drops with instance number.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test finding item in room drops with invalid instance number.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test finding item in room drops by item_id.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test _find_item_in_room_drops() finds item by name.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_room_drops() returns None when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_room_drops() with instance number.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_room_drops() with multiple matches (ambiguous).** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [command factories create](command_factories_create.md) (5 shared connections)
-- [container persistence rationale](container_persistence_rationale.md) (3 shared connections)
-- [taunt combat commands](taunt_combat_commands.md) (2 shared connections)
-- [command inventory models](command_inventory_models.md) (1 shared connections)
+- [scripts worktree ops](scripts_worktree_ops.md) (10 shared connections)
+- [Item Lookup](Item_Lookup.md) (8 shared connections)
+- [npc realtime occupant](npc_realtime_occupant.md) (4 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/models/test_command_base.py`
+- `server/commands/look_item.py`
+- `server/tests/unit/commands/test_look_item.py`
+- `server/tests/unit/commands/test_look_item_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 74 (96%)
-- INFERRED: 3 (4%)
+- EXTRACTED: 72 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

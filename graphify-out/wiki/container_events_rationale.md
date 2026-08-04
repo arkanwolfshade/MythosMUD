@@ -1,52 +1,51 @@
 # container events rationale
 
-> 91 nodes
+> 86 nodes
 
 ## Key Concepts
 
-- **test_container_events.py** (22 connections) — `server/tests/unit/api/test_container_events.py`
-- **container_events.py** (21 connections) — `server/api/container_events.py`
-- **emit_transfer_event()** (17 connections) — `server/api/container_events.py`
-- **emit_loot_all_event()** (17 connections) — `server/api/container_events.py`
-- **emit_container_opened_events()** (16 connections) — `server/api/container_events.py`
-- **_emit_close_container_event()** (14 connections) — `server/api/container_events.py`
-- **TestEmitLootAllEvent** (13 connections) — `server/tests/unit/api/test_container_events.py`
-- **TestEmitTransferEvent** (12 connections) — `server/tests/unit/api/test_container_events.py`
-- **TestEmitCloseContainerEvent** (12 connections) — `server/tests/unit/api/test_container_events.py`
-- **TestEmitContainerOpenedEvents** (11 connections) — `server/tests/unit/api/test_container_events.py`
-- **TestEmitTransferEventDirections** (8 connections) — `server/tests/unit/api/test_container_events.py`
-- **TestEmitContainerOpenedEventsEdgeCases** (8 connections) — `server/tests/unit/api/test_container_events.py`
-- **UUID** (5 connections)
-- **Any** (4 connections)
-- **.test_emit_transfer_event_success()** (4 connections) — `server/tests/unit/api/test_container_events.py`
-- **.test_emit_transfer_event_no_connection_manager()** (4 connections) — `server/tests/unit/api/test_container_events.py`
-- **.test_emit_transfer_event_no_container_in_result()** (4 connections) — `server/tests/unit/api/test_container_events.py`
-- **.test_emit_transfer_event_no_room_id()** (4 connections) — `server/tests/unit/api/test_container_events.py`
-- **.test_emit_transfer_event_validation_error()** (4 connections) — `server/tests/unit/api/test_container_events.py`
-- **.test_emit_transfer_event_emission_error()** (4 connections) — `server/tests/unit/api/test_container_events.py`
-- **.test_emit_loot_all_event_success()** (4 connections) — `server/tests/unit/api/test_container_events.py`
-- **.test_emit_loot_all_event_no_connection_manager()** (4 connections) — `server/tests/unit/api/test_container_events.py`
-- **.test_emit_loot_all_event_no_room_id()** (4 connections) — `server/tests/unit/api/test_container_events.py`
-- **.test_emit_loot_all_event_emission_error()** (4 connections) — `server/tests/unit/api/test_container_events.py`
-- **.test_emit_loot_all_event_calculates_items_removed()** (4 connections) — `server/tests/unit/api/test_container_events.py`
-- *... and 66 more nodes in this community*
+- **test_npc_service.py** (49 connections) — `server/tests/unit/services/test_npc_service.py`
+- **_mock_result_mappings_all()** (29 connections) — `server/tests/unit/services/test_npc_service.py`
+- **_def_row()** (18 connections) — `server/tests/unit/services/test_npc_service.py`
+- **_spawn_rule_row()** (6 connections) — `server/tests/unit/services/test_npc_service.py`
+- **test_update_npc_definition_success()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
+- **test_create_spawn_rule_success()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
+- **test_get_npc_definitions_success()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
+- **test_get_npc_definition_found()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
+- **test_get_npc_definition_by_name_found()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
+- **test_get_npc_definition_by_name_case_insensitive()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
+- **test_get_npc_definition_by_name_not_found()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
+- **test_create_npc_definition_success()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
+- **test_create_npc_definition_with_base_stats()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
+- **test_update_npc_definition_invalid_type()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
+- **test_update_npc_definition_invalid_probability()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
+- **test_delete_npc_definition_success()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
+- **test_get_spawn_rules_success()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
+- **test_get_spawn_rule_found()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
+- **test_create_spawn_rule_invalid_min_population()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
+- **test_create_spawn_rule_invalid_max_population()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
+- **test_delete_spawn_rule_success()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
+- **test_get_npc_definitions_by_type()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
+- **test_get_npc_definitions_by_sub_zone()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
+- **npc_service()** (3 connections) — `server/tests/unit/services/test_npc_service.py`
+- **sample_npc_definition()** (3 connections) — `server/tests/unit/services/test_npc_service.py`
+- *... and 61 more nodes in this community*
 
 ## Relationships
 
-- [Exception Containers](Exception_Containers.md) (54 shared connections)
-- [commands follow rationale](commands_follow_rationale.md) (10 shared connections)
-- [task registry app](task_registry_app.md) (8 shared connections)
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [models npc rationale](models_npc_rationale.md) (6 shared connections)
+- [Database Config](Database_Config.md) (4 shared connections)
+- [player death service](player_death_service.md) (3 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/container_events.py`
-- `server/tests/unit/api/test_container_events.py`
+- `server/tests/unit/services/test_npc_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 308 (93%)
-- INFERRED: 24 (7%)
+- EXTRACTED: 272 (98%)
+- INFERRED: 6 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

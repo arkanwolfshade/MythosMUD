@@ -1,46 +1,48 @@
 # spell models rationale
 
-> 25 nodes
+> 41 nodes
 
 ## Key Concepts
 
-- **._get_random_error_message()** (8 connections) — `server/validators/combat_validator.py`
-- **.validate_combat_command()** (7 connections) — `server/validators/combat_validator.py`
-- **Any** (4 connections)
-- **._is_rate_limited()** (4 connections) — `server/validators/combat_validator.py`
-- **.__init__()** (3 connections) — `server/validators/combat_validator.py`
-- **.validate_can_attack_target()** (3 connections) — `server/validators/combat_validator.py`
-- **.validate_target_exists()** (3 connections) — `server/validators/combat_validator.py`
-- **.validate_target_alive()** (3 connections) — `server/validators/combat_validator.py`
-- **.validate_combat_state()** (3 connections) — `server/validators/combat_validator.py`
-- **.validate_attack_strength()** (3 connections) — `server/validators/combat_validator.py`
-- **._is_valid_target_name()** (3 connections) — `server/validators/combat_validator.py`
-- **._contains_suspicious_patterns()** (3 connections) — `server/validators/combat_validator.py`
-- **.get_combat_status_message()** (3 connections) — `server/validators/combat_validator.py`
-- **Initialize the combat validator.          Args:             party_service: Optio** (1 connections) — `server/validators/combat_validator.py`
-- **Validate that attacker is allowed to attack target (e.g. not same party).** (1 connections) — `server/validators/combat_validator.py`
-- **Validate a combat command with thematic error messages.          Args:** (1 connections) — `server/validators/combat_validator.py`
-- **Validate that a target exists with thematic error messages.          Args:** (1 connections) — `server/validators/combat_validator.py`
-- **Validate that a target is alive with thematic error messages.          Args:** (1 connections) — `server/validators/combat_validator.py`
-- **Validate combat state with thematic error messages.          Args:             i** (1 connections) — `server/validators/combat_validator.py`
-- **Validate attack strength with thematic error messages.          Args:** (1 connections) — `server/validators/combat_validator.py`
-- **Check if target name is valid.** (1 connections) — `server/validators/combat_validator.py`
-- **Check for suspicious patterns in target name.** (1 connections) — `server/validators/combat_validator.py`
-- **Check if player is rate limited.** (1 connections) — `server/validators/combat_validator.py`
-- **Get a random error message for the given error type.** (1 connections) — `server/validators/combat_validator.py`
-- **Get a thematic combat status message.** (1 connections) — `server/validators/combat_validator.py`
+- **Any** (13 connections)
+- **._canonical_room_id()** (13 connections) — `server/realtime/room_subscription_manager.py`
+- **.get_room_occupants()** (8 connections) — `server/realtime/room_subscription_manager.py`
+- **._get_fallback_npcs_from_room()** (7 connections) — `server/realtime/room_subscription_manager.py`
+- **._query_npcs_from_lifecycle_manager()** (6 connections) — `server/realtime/room_subscription_manager.py`
+- **._add_npc_to_occupants()** (5 connections) — `server/realtime/room_subscription_manager.py`
+- **.list_room_drops()** (4 connections) — `server/realtime/room_subscription_manager.py`
+- **.add_room_drop()** (4 connections) — `server/realtime/room_subscription_manager.py`
+- **.take_room_drop()** (4 connections) — `server/realtime/room_subscription_manager.py`
+- **._get_online_player_occupants()** (4 connections) — `server/realtime/room_subscription_manager.py`
+- **._get_npc_name_from_lifecycle_manager()** (4 connections) — `server/realtime/room_subscription_manager.py`
+- **._filter_fallback_npcs()** (4 connections) — `server/realtime/room_subscription_manager.py`
+- **.reconcile_room_presence()** (4 connections) — `server/realtime/room_subscription_manager.py`
+- **.set_async_persistence()** (3 connections) — `server/realtime/room_subscription_manager.py`
+- **.subscribe_to_room()** (3 connections) — `server/realtime/room_subscription_manager.py`
+- **.unsubscribe_from_room()** (3 connections) — `server/realtime/room_subscription_manager.py`
+- **.get_room_subscribers()** (3 connections) — `server/realtime/room_subscription_manager.py`
+- **.adjust_room_drop()** (3 connections) — `server/realtime/room_subscription_manager.py`
+- **.add_room_occupant()** (3 connections) — `server/realtime/room_subscription_manager.py`
+- **.remove_room_occupant()** (3 connections) — `server/realtime/room_subscription_manager.py`
+- **.get_stats()** (3 connections) — `server/realtime/room_subscription_manager.py`
+- **Set the async persistence layer reference.** (1 connections) — `server/realtime/room_subscription_manager.py`
+- **Subscribe a player to a room.          Args:             player_id: The player's** (1 connections) — `server/realtime/room_subscription_manager.py`
+- **Unsubscribe a player from a room.          Args:             player_id: The play** (1 connections) — `server/realtime/room_subscription_manager.py`
+- **Get all players subscribed to a room.          Args:             room_id: The ro** (1 connections) — `server/realtime/room_subscription_manager.py`
+- *... and 16 more nodes in this community*
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (12 shared connections)
+- [connection disconnection realtime](connection_disconnection_realtime.md) (20 shared connections)
+- [commands npc admin](commands_npc_admin.md) (2 shared connections)
 
 ## Source Files
 
-- `server/validators/combat_validator.py`
+- `server/realtime/room_subscription_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 62 (100%)
+- EXTRACTED: 124 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

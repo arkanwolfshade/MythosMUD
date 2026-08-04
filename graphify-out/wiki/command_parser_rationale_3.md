@@ -1,12 +1,19 @@
 # command parser rationale
 
-> 86 nodes
+> 143 nodes
 
 ## Key Concepts
 
 - **test_command_parser.py** (45 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_command_parser_helpers.py** (24 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
 - **parse_command()** (24 connections) — `server/utils/command_parser.py`
+- **CommandParser** (19 connections) — `server/utils/command_parser.py`
 - **test_command_parser_smoke.py** (8 connections) — `server/tests/unit/test_command_parser_smoke.py`
+- **.parse_command()** (7 connections) — `server/utils/command_parser.py`
+- **._create_command_object()** (7 connections) — `server/utils/command_parser.py`
+- **Command** (4 connections)
+- **._parse_command_parts()** (4 connections) — `server/utils/command_parser.py`
+- **._invoke_create_method()** (4 connections) — `server/utils/command_parser.py`
 - **test_parse_command_basic()** (3 connections) — `server/tests/unit/test_command_parser_smoke.py`
 - **test_parse_command_with_args()** (3 connections) — `server/tests/unit/test_command_parser_smoke.py`
 - **test_parse_command_with_pipes()** (3 connections) — `server/tests/unit/test_command_parser_smoke.py`
@@ -22,36 +29,28 @@
 - **test_parse_command_alias_l()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
 - **test_parse_command_alias_g()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
 - **test_create_command_object_pydantic_validation_error()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_global_function()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_global_function_with_args()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_command_parser_initialization()** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_normalize_command_removes_slash()** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_normalize_command_cleans_whitespace()** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_normalize_command_no_slash()** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_parts_basic()** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
-- *... and 61 more nodes in this community*
+- *... and 118 more nodes in this community*
 
 ## Relationships
 
-- [command inventory factories](command_inventory_factories.md) (5 shared connections)
-- [container persistence rationale](container_persistence_rationale.md) (3 shared connections)
-- [command factories create](command_factories_create.md) (3 shared connections)
-- [command processor rationale](command_processor_rationale.md) (2 shared connections)
-- [command inventory models](command_inventory_models.md) (1 shared connections)
-- [health service services](health_service_services.md) (1 shared connections)
-- [commands position system](commands_position_system.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (12 shared connections)
+- [command factories create](command_factories_create.md) (5 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (3 shared connections)
+- [command processor rationale](command_processor_rationale.md) (3 shared connections)
+- [commands admin mute](commands_admin_mute.md) (1 shared connections)
 - [combat services initialization](combat_services_initialization.md) (1 shared connections)
 
 ## Source Files
 
 - `server/tests/unit/test_command_parser_smoke.py`
 - `server/tests/unit/utils/test_command_parser.py`
+- `server/tests/unit/utils/test_command_parser_helpers.py`
 - `server/utils/command_parser.py`
 
 ## Audit Trail
 
-- EXTRACTED: 217 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 359 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

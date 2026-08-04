@@ -1,55 +1,39 @@
 # instance game manager
 
-> 24 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **NPCCommunicationBridge** (14 connections) — `server/npc/threading.py`
-- **Any** (11 connections)
-- **._process_wander_action()** (8 connections) — `server/npc/threading.py`
-- **._process_npc_message()** (5 connections) — `server/npc/threading.py`
-- **.add_message()** (3 connections) — `server/npc/threading.py`
-- **.__init__()** (3 connections) — `server/npc/threading.py`
-- **.send_message_to_npc()** (3 connections) — `server/npc/threading.py`
-- **.receive_message_from_npc()** (3 connections) — `server/npc/threading.py`
-- **.broadcast_to_all_npcs()** (3 connections) — `server/npc/threading.py`
-- **.get_pending_messages()** (3 connections) — `server/npc/threading.py`
-- **.get_messages_for_npc()** (3 connections) — `server/npc/threading.py`
-- **test_npc_communication_bridge_messages()** (2 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- **test_bridge_receive_message_failure()** (2 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- **test_bridge_broadcast_failure()** (2 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- **Add a message to an NPC's pending message queue.          Args:             npc_** (1 connections) — `server/npc/threading.py`
-- **Process a message for an NPC.** (1 connections) — `server/npc/threading.py`
-- **Process a WANDER action for idle movement.          Args:             npc_id: ID** (1 connections) — `server/npc/threading.py`
-- **Bridge for communication between NPC threads and main game thread.      This cla** (1 connections) — `server/npc/threading.py`
-- **Initialize the communication bridge.** (1 connections) — `server/npc/threading.py`
-- **Send a message to a specific NPC.          Args:             npc_id: The NPC's I** (1 connections) — `server/npc/threading.py`
-- **Receive a message from a specific NPC.          Args:             npc_id: The NP** (1 connections) — `server/npc/threading.py`
-- **Broadcast a message to all NPCs.          Args:             message: The message** (1 connections) — `server/npc/threading.py`
-- **Get all pending outgoing messages from NPCs.** (1 connections) — `server/npc/threading.py`
-- **Get pending messages for a specific NPC.** (1 connections) — `server/npc/threading.py`
+- **rest_countdown_task.py** (12 connections) — `server/commands/rest_countdown_task.py`
+- **create_rest_countdown_task()** (7 connections) — `server/commands/rest_countdown_task.py`
+- **UUID** (6 connections)
+- **_send_countdown_message()** (6 connections) — `server/commands/rest_countdown_task.py`
+- **_handle_countdown_loop()** (6 connections) — `server/commands/rest_countdown_task.py`
+- **_is_rest_interrupted()** (5 connections) — `server/commands/rest_countdown_task.py`
+- **Any** (5 connections)
+- **_disconnect_player_after_rest()** (5 connections) — `server/commands/rest_countdown_task.py`
+- **Task** (1 connections)
+- **Rest countdown task implementation.  This module contains the async task that ha** (1 connections) — `server/commands/rest_countdown_task.py`
+- **Check if rest countdown was interrupted.      Args:         player_id: Player UU** (1 connections) — `server/commands/rest_countdown_task.py`
+- **Send countdown message to player.      Args:         player_id: Player UUID** (1 connections) — `server/commands/rest_countdown_task.py`
+- **Execute countdown loop, sending messages every second.      Args:         player** (1 connections) — `server/commands/rest_countdown_task.py`
+- **Disconnect player after rest countdown completes.      Args:         player_id:** (1 connections) — `server/commands/rest_countdown_task.py`
+- **Create and return a rest countdown task.      Args:         player_id: The playe** (1 connections) — `server/commands/rest_countdown_task.py`
 
 ## Relationships
 
-- [npc shopkeeper rationale](npc_shopkeeper_rationale.md) (9 shared connections)
-- [npc behavior engine](npc_behavior_engine.md) (2 shared connections)
-- [idle movement npc](idle_movement_npc.md) (2 shared connections)
-- [Error Conversion](Error_Conversion.md) (1 shared connections)
-- [command parser rationale](command_parser_rationale.md) (1 shared connections)
-- [AppRouter main AppRouter()](AppRouter_main_AppRouter%28%29.md) (1 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
-- [container helpers endpoints](container_helpers_endpoints.md) (1 shared connections)
+- [combat services messaging](combat_services_messaging.md) (4 shared connections)
+- [rest grace period](rest_grace_period.md) (3 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
 
 ## Source Files
 
-- `server/npc/threading.py`
-- `server/tests/unit/npc/test_npc_threading_messages.py`
+- `server/commands/rest_countdown_task.py`
 
 ## Audit Trail
 
-- EXTRACTED: 72 (96%)
-- INFERRED: 3 (4%)
+- EXTRACTED: 59 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

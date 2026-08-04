@@ -1,54 +1,49 @@
 # persistence core infrastructure
 
-> 60 nodes
+> 55 nodes
 
 ## Key Concepts
 
-- **test_async_persistence_core.py** (40 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_async_persistence_layer_init_skip_room_cache()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_async_persistence_layer_init_with_room_cache()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_async_persistence_layer_init_deprecated_params()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_player_by_name_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_player_by_id_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_players_by_user_id_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_active_players_by_user_id_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_user_by_username_case_insensitive_success()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_user_by_username_case_insensitive_database_error()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_save_player_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_list_players_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_players_in_room_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_save_players_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_professions_success()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_professions_database_error()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_professions_os_error()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_profession_by_id_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_close()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_player_by_name_not_found()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_user_by_username_case_insensitive_not_found()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_room_by_id_delegates()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_room_by_id_not_found()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_list_rooms_delegates()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_async_list_rooms_delegates()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- *... and 35 more nodes in this community*
+- **NATSMessageSubscriptionMixin** (31 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **Any** (12 connections)
+- **.handle_player_movement()** (6 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **.unsubscribe_from_subzone()** (4 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **.cleanup_empty_subzone_subscriptions()** (4 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **.subscribe_to_subzone()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **.track_player_subzone_subscription()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **.get_players_in_subzone()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **._get_event_handler_map()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **._validate_event_message()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **._handle_event_message()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **._handle_player_entered_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **._handle_player_left_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **._handle_game_tick_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **._handle_combat_started_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **._handle_combat_ended_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **._handle_player_attacked_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **._handle_npc_attacked_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **._handle_npc_took_damage_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **._handle_npc_died_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **.subscribe_to_room()** (2 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **.unsubscribe_from_room()** (2 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **.get_subscription_count()** (2 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **.get_active_subjects()** (2 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **.subscribe_to_event_subjects()** (2 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- *... and 30 more nodes in this community*
 
 ## Relationships
 
-- [world models rationale](world_models_rationale.md) (11 shared connections)
-- [NPC Combat](NPC_Combat.md) (5 shared connections)
-- [Database Config](Database_Config.md) (4 shared connections)
-- [profession models rationale](profession_models_rationale.md) (3 shared connections)
-- [Exception Containers](Exception_Containers.md) (2 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
-- [admin auth service](admin_auth_service.md) (1 shared connections)
+- [websocket handler realtime](websocket_handler_realtime.md) (4 shared connections)
+- [room rationale subzone](room_rationale_subzone.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- `server/realtime/nats_message_handler_subscriptions.py`
 
 ## Audit Trail
 
-- EXTRACTED: 132 (91%)
-- INFERRED: 13 (9%)
+- EXTRACTED: 143 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

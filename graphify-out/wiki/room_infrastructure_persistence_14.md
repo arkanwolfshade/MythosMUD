@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_login_grace_period_status()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Test _get_login_grace_period_status() returns active grace period info.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_mute_channel_invalid_channel()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **Test muting channel with invalid channel name.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
 
 ## Relationships
 
-- [game state provider](game_state_provider.md) (1 shared connections)
+- [player preferences service](player_preferences_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- `server/tests/unit/services/test_player_preferences_service.py`
 
 ## Audit Trail
 

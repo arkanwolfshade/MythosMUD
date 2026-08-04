@@ -1,6 +1,6 @@
 # room validator toolkit
 
-> 81 nodes
+> 83 nodes
 
 ## Key Concepts
 
@@ -18,6 +18,7 @@
 - **.validate_room_database()** (3 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
 - **.is_one_way_exit()** (3 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
 - **.is_self_reference_exit()** (3 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
+- **test_schema_validator.py** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
 - **.test_init_with_default_schema()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
 - **.test_init_with_custom_schema()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
 - **.test_init_schema_file_not_found()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
@@ -28,12 +29,11 @@
 - **.test_validate_room_empty_name()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
 - **.test_validate_room_with_file_path()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
 - **.test_normalize_exits_legacy_format()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
-- **.test_normalize_exits_new_format()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
-- *... and 56 more nodes in this community*
+- *... and 58 more nodes in this community*
 
 ## Relationships
 
-- [schemas validator rationale](schemas_validator_rationale.md) (4 shared connections)
+- [commands recovery lucidity](commands_recovery_lucidity.md) (4 shared connections)
 - [player service mutations](player_service_mutations.md) (4 shared connections)
 - [room hierarchical schema](room_hierarchical_schema.md) (3 shared connections)
 - [validator room toolkit](validator_room_toolkit.md) (2 shared connections)
@@ -48,7 +48,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 177 (72%)
+- EXTRACTED: 181 (72%)
 - INFERRED: 69 (28%)
 - AMBIGUOUS: 0 (0%)
 

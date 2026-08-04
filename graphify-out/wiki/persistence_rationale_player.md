@@ -1,50 +1,48 @@
 # persistence rationale player
 
-> 30 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **test_npc_combat_integration_service_player_attacks.py** (22 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
-- **test_handle_player_attack_on_npc_grace_period_check_fails()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
-- **test_handle_player_attack_on_npc_with_existing_combat()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
-- **test_handle_player_attack_on_npc_login_grace_period_blocked()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
-- **test_handle_player_attack_on_npc_npc_not_found()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
-- **test_handle_player_attack_on_npc_error_handling()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
-- **test_setup_combat_uuids_and_mappings_value_error()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
-- **test_setup_combat_uuids_and_mappings_valid_uuid()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
-- **test_store_npc_xp_mapping_no_definition()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
-- **test_store_npc_xp_mapping_non_dict_base_stats()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
-- **test_store_npc_xp_mapping_first_engagement()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
-- **test_store_npc_xp_mapping_no_xp_value()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
-- **test_process_combat_attack_queue_failure()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
-- **test_process_combat_attack_start_new_combat()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
-- **test_validate_and_get_npc_instance_not_found()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
-- **Unit tests for NPC combat integration service - player-initiated combat paths.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
-- **Test handle_player_attack_on_npc queues action when combat exists.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
-- **Test handle_player_attack_on_npc blocks attack when player is in login grace per** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
-- **Test handle_player_attack_on_npc continues when grace period check fails.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
-- **Test handle_player_attack_on_npc returns False when NPC not found.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
-- **Test handle_player_attack_on_npc handles exceptions gracefully.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
-- **Test _setup_combat_uuids_and_mappings handles ValueError.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
-- **Test _setup_combat_uuids_and_mappings with valid UUID.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
-- **Test store_npc_xp_mapping_for_mixin when NPC definition is not found.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
-- **Test store_npc_xp_mapping_for_mixin when base_stats is not a dict.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
-- *... and 5 more nodes in this community*
+- **SecurityHeadersMiddleware** (13 connections) — `server/middleware/security_headers.py`
+- **security_headers.py** (6 connections) — `server/middleware/security_headers.py`
+- **.__call__()** (5 connections) — `server/middleware/security_headers.py`
+- **.dispatch()** (5 connections) — `server/middleware/security_headers.py`
+- **._add_security_headers_to_response()** (4 connections) — `server/middleware/security_headers.py`
+- **.__init__()** (3 connections) — `server/middleware/security_headers.py`
+- **test_security_headers_middleware_init()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **test_security_headers_middleware_init_with_env_vars()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **Any** (2 connections)
+- **ASGIApp** (1 connections)
+- **Scope** (1 connections)
+- **Receive** (1 connections)
+- **Send** (1 connections)
+- **Request** (1 connections)
+- **Security headers middleware for MythosMUD server.  This module provides comprehe** (1 connections) — `server/middleware/security_headers.py`
+- **Pure ASGI middleware to add comprehensive security headers to all HTTP responses** (1 connections) — `server/middleware/security_headers.py`
+- **Initialize security headers middleware.          Args:             app: ASGI app** (1 connections) — `server/middleware/security_headers.py`
+- **ASGI application interface.          Args:             scope: ASGI connection sc** (1 connections) — `server/middleware/security_headers.py`
+- **Backward-compatible dispatch method for BaseHTTPMiddleware interface.          T** (1 connections) — `server/middleware/security_headers.py`
+- **Add security headers to Response object (compatibility method).** (1 connections) — `server/middleware/security_headers.py`
+- **Test SecurityHeadersMiddleware initialization.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **Test SecurityHeadersMiddleware initialization with environment variables.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
 
 ## Relationships
 
-- [Spell Validation](Spell_Validation.md) (3 shared connections)
-- [player event realtime](player_event_realtime.md) (3 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
-- [look helpers commands](look_helpers_commands.md) (1 shared connections)
+- [security headers middleware](security_headers_middleware.md) (5 shared connections)
+- [player service game](player_service_game.md) (2 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
+- [npc combat services](npc_combat_services.md) (1 shared connections)
+- [app factory rationale](app_factory_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- `server/middleware/security_headers.py`
+- `server/tests/unit/middleware/test_security_headers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 65 (98%)
+- EXTRACTED: 56 (98%)
 - INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 

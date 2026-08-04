@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_room_occupants()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Test get_room_occupants() returns room occupants.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_log_player_movement_joined()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **Test log_player_movement() logs player joined.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Relationships
 
-- [game state provider](game_state_provider.md) (1 shared connections)
+- [player room event](player_room_event.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Audit Trail
 

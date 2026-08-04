@@ -32,10 +32,9 @@
 
 ## Relationships
 
-- [chat game message](chat_game_message.md) (5 shared connections)
-- [alias command models](alias_command_models.md) (5 shared connections)
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
-- [look helpers commands](look_helpers_commands.md) (1 shared connections)
+- [chat game message](chat_game_message.md) (10 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (1 shared connections)
 
 ## Source Files
 

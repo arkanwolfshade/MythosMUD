@@ -1,55 +1,65 @@
 # npc shopkeeper rationale
 
-> 48 nodes
+> 104 nodes
 
 ## Key Concepts
 
+- **threading.py** (48 connections) — `server/npc/threading.py`
 - **NPCThreadManager** (29 connections) — `server/npc/threading.py`
 - **test_npc_threading_messages.py** (23 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
+- **__init__.py** (22 connections) — `server/npc/__init__.py`
+- **NPCActionMessage** (16 connections) — `server/npc/threading.py`
 - **NPCMessageQueue** (16 connections) — `server/npc/threading.py`
+- **NPCCommunicationBridge** (14 connections) — `server/npc/threading.py`
+- **.event_bus()** (12 connections) — `server/realtime/connection_manager.py`
+- **Any** (11 connections)
+- **NPCActionType** (9 connections) — `server/npc/threading.py`
 - **._npc_thread_worker()** (8 connections) — `server/npc/threading.py`
+- **._process_wander_action()** (8 connections) — `server/npc/threading.py`
+- **run_test_ci.py** (6 connections) — `scripts/run_test_ci.py`
+- **._move_with_integration()** (6 connections) — `server/npc/npc_base.py`
+- **.from_dict()** (6 connections) — `server/npc/threading.py`
+- **._get_integration_dependencies()** (5 connections) — `server/npc/npc_base.py`
 - **.start_npc_thread()** (5 connections) — `server/npc/threading.py`
 - **._stop_npc_thread_internal()** (5 connections) — `server/npc/threading.py`
 - **.restart_npc_thread()** (5 connections) — `server/npc/threading.py`
+- **._process_npc_message()** (5 connections) — `server/npc/threading.py`
 - **._execute_npc_behavior()** (5 connections) — `server/npc/threading.py`
+- **exception_metrics.py** (4 connections) — `server/monitoring/exception_metrics.py`
+- **.to_dict()** (4 connections) — `server/npc/threading.py`
+- **.from_json()** (4 connections) — `server/npc/threading.py`
 - **.get_messages()** (4 connections) — `server/npc/threading.py`
-- **.clear_messages()** (4 connections) — `server/npc/threading.py`
-- **.__init__()** (4 connections) — `server/npc/threading.py`
-- **.stop_npc_thread()** (4 connections) — `server/npc/threading.py`
-- **.stop()** (3 connections) — `server/npc/threading.py`
-- **.get_npc_definition()** (3 connections) — `server/npc/threading.py`
-- **.__init__()** (2 connections) — `server/npc/threading.py`
-- **.get_queue_size()** (2 connections) — `server/npc/threading.py`
-- **.get_total_queue_size()** (2 connections) — `server/npc/threading.py`
-- **.start()** (2 connections) — `server/npc/threading.py`
-- **.get_active_npc_threads()** (2 connections) — `server/npc/threading.py`
-- **test_npc_message_queue_add_get_clear()** (2 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- **test_npc_message_queue_trims_oldest()** (2 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- **test_npc_thread_manager_start_stop()** (2 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- **test_npc_thread_manager_start_stop_npc_thread()** (2 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- **test_npc_thread_manager_restart_npc_thread()** (2 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- **test_npc_thread_manager_stop_cancels_running_task()** (2 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- *... and 23 more nodes in this community*
+- *... and 79 more nodes in this community*
 
 ## Relationships
 
-- [instance game manager](instance_game_manager.md) (9 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (8 shared connections)
-- [models npc rationale](models_npc_rationale.md) (8 shared connections)
-- [npc behavior engine](npc_behavior_engine.md) (4 shared connections)
-- [idle movement npc](idle_movement_npc.md) (2 shared connections)
-- [container helpers endpoints](container_helpers_endpoints.md) (1 shared connections)
-- [AppRouter main AppRouter()](AppRouter_main_AppRouter%28%29.md) (1 shared connections)
+- [models npc rationale](models_npc_rationale.md) (19 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (9 shared connections)
+- [command parser rationale](command_parser_rationale.md) (9 shared connections)
+- [idle movement npc](idle_movement_npc.md) (7 shared connections)
+- [Loot Generation](Loot_Generation.md) (5 shared connections)
+- [Error Conversion](Error_Conversion.md) (4 shared connections)
+- [commands npc admin](commands_npc_admin.md) (3 shared connections)
+- [container helpers endpoints](container_helpers_endpoints.md) (3 shared connections)
+- [logging handlers structured](logging_handlers_structured.md) (2 shared connections)
+- [command exploration models](command_exploration_models.md) (2 shared connections)
+- [commands logout helpers](commands_logout_helpers.md) (2 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (2 shared connections)
 
 ## Source Files
 
+- `scripts/run_test_ci.py`
+- `server/monitoring/exception_metrics.py`
+- `server/npc/__init__.py`
+- `server/npc/npc_base.py`
 - `server/npc/threading.py`
+- `server/realtime/connection_manager.py`
 - `server/tests/unit/npc/test_npc_threading_messages.py`
 
 ## Audit Trail
 
-- EXTRACTED: 161 (96%)
-- INFERRED: 6 (4%)
+- EXTRACTED: 389 (94%)
+- INFERRED: 23 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

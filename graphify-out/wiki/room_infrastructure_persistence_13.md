@@ -4,21 +4,22 @@
 
 ## Key Concepts
 
-- **test_process_occupants_with_grace_periods()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Test _process_occupants_with_grace_periods() splits players and NPCs.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_mute_channel_not_found()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **Test muting channel when preferences not found.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
 
 ## Relationships
 
-- [game state provider](game_state_provider.md) (1 shared connections)
+- [player requests schemas](player_requests_schemas.md) (1 shared connections)
+- [player preferences service](player_preferences_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- `server/tests/unit/services/test_player_preferences_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

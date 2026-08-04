@@ -1,53 +1,49 @@
 # persistence services combat
 
-> 32 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **_NPCCombatIntegrationValidationDeps** (19 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **NPCCombatIntegrationValidationMixin** (15 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **.store_npc_xp_mapping_for_mixin()** (10 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **.get_data_provider()** (6 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **.get_uuid_mapping()** (6 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **UUID** (6 connections)
-- **._setup_combat_uuids_and_mappings()** (6 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **._validate_and_get_npc_instance()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **._validate_combat_location()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **._end_combat_if_participant_in_combat()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **._setup_combat_uuids_npc_attacker()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **.get_combat_service()** (4 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **.get_lucidity_service()** (4 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **_coerce_xp_mapping_value()** (3 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **_warn_attacked_dead_npc()** (3 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **.store_npc_xp_mapping_for_mixin()** (3 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **Protocol** (1 connections)
-- **Parse xp_value from NPC base_stats JSON; bool maps to 0 (avoid True -> 1).** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **Log when a player targets an NPC that exists but is not alive.** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **Attributes supplied by NPCCombatIntegrationService (mixin cannot initialize them** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **Return combat service dependency.** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **Return data provider dependency.** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **Return UUID mapping dependency.** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **Return lucidity dependency.** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **Store XP mapping for NPC combat setup from validation mixin.** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- *... and 7 more nodes in this community*
+- **Path** (12 connections)
+- **._queue_log_entry()** (8 connections) — `server/services/chat_logger.py`
+- **.log_local_channel_message()** (6 connections) — `server/services/chat_logger.py`
+- **.log_global_channel_message()** (5 connections) — `server/services/chat_logger.py`
+- **.log_system_channel_message()** (5 connections) — `server/services/chat_logger.py`
+- **.log_whisper_channel_message()** (5 connections) — `server/services/chat_logger.py`
+- **.get_global_channel_log_stats()** (5 connections) — `server/services/chat_logger.py`
+- **._get_local_channel_log_file()** (4 connections) — `server/services/chat_logger.py`
+- **._get_global_channel_log_file()** (4 connections) — `server/services/chat_logger.py`
+- **._get_whisper_channel_log_file()** (4 connections) — `server/services/chat_logger.py`
+- **._get_system_channel_log_file()** (4 connections) — `server/services/chat_logger.py`
+- **.get_global_channel_log_files()** (4 connections) — `server/services/chat_logger.py`
+- **.cleanup_old_global_channel_logs()** (4 connections) — `server/services/chat_logger.py`
+- **Queue a log entry for writing by the background thread.          Args:** (1 connections) — `server/services/chat_logger.py`
+- **Get the local channel log file path for a specific sub-zone.          Args:** (1 connections) — `server/services/chat_logger.py`
+- **Log a local channel message to sub-zone specific file.          Args:** (1 connections) — `server/services/chat_logger.py`
+- **Log a global channel message to global.log file.          Args:             mess** (1 connections) — `server/services/chat_logger.py`
+- **Get the global channel log file path.          Returns:             Path to the** (1 connections) — `server/services/chat_logger.py`
+- **Log a system channel message to system.log file.          Args:             mess** (1 connections) — `server/services/chat_logger.py`
+- **Log a whisper channel message to whisper.log file.          Args:             me** (1 connections) — `server/services/chat_logger.py`
+- **Get the whisper channel log file path.          Returns:             Path to the** (1 connections) — `server/services/chat_logger.py`
+- **Get the system channel log file path.          Returns:             Path to the** (1 connections) — `server/services/chat_logger.py`
+- **Get all global channel log files.          Returns:             List of string p** (1 connections) — `server/services/chat_logger.py`
+- **Get statistics for global channel log files.          Returns:             Dicti** (1 connections) — `server/services/chat_logger.py`
+- **Clean up old global channel log files.          Args:             days_to_keep:** (1 connections) — `server/services/chat_logger.py`
 
 ## Relationships
 
-- [models npc rationale](models_npc_rationale.md) (10 shared connections)
-- [NPC Combat](NPC_Combat.md) (3 shared connections)
-- [command player state](command_player_state.md) (3 shared connections)
-- [room occupant manager](room_occupant_manager.md) (3 shared connections)
-- [room validator services](room_validator_services.md) (3 shared connections)
-- [Spell Validation](Spell_Validation.md) (1 shared connections)
+- [chat services logger](chat_services_logger.md) (22 shared connections)
+- [player realtime event](player_realtime_event.md) (1 shared connections)
+- [room rationale subzone](room_rationale_subzone.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/npc_combat_integration_validation_mixin.py`
+- `server/services/chat_logger.py`
 
 ## Audit Trail
 
-- EXTRACTED: 109 (90%)
-- INFERRED: 12 (10%)
+- EXTRACTED: 82 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

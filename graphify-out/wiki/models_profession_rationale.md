@@ -1,36 +1,37 @@
 # models profession rationale
 
-> 8 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **get_shutdown_blocking_message()** (13 connections) — `server/commands/admin_shutdown_command.py`
-- **test_get_shutdown_blocking_message_login()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_get_shutdown_blocking_message_character_creation()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_get_shutdown_blocking_message_default()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Get appropriate shutdown blocking message for different contexts.      Args:** (1 connections) — `server/commands/admin_shutdown_command.py`
-- **Test get_shutdown_blocking_message() returns login message.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Test get_shutdown_blocking_message() returns character creation message.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Test get_shutdown_blocking_message() returns default message for unknown context** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **handle_follow_response_message()** (14 connections) — `server/realtime/message_handlers.py`
+- **test_handle_follow_response_invalid_request_id()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
+- **test_handle_follow_response_no_container()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
+- **test_handle_follow_response_accept_success()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
+- **test_handle_follow_response_decline()** (3 connections) — `server/tests/unit/realtime/test_message_handlers.py`
+- **Handle follow_response message (accept/decline follow request).** (1 connections) — `server/realtime/message_handlers.py`
+- **Test follow_response without request_id returns error.** (1 connections) — `server/tests/unit/realtime/test_message_handlers.py`
+- **Test follow_response when follow service unavailable.** (1 connections) — `server/tests/unit/realtime/test_message_handlers.py`
+- **Test follow_response accept notifies requestor.** (1 connections) — `server/tests/unit/realtime/test_message_handlers.py`
+- **Test follow_response decline notifies requestor.** (1 connections) — `server/tests/unit/realtime/test_message_handlers.py`
 
 ## Relationships
 
-- [shutdown admin command](shutdown_admin_command.md) (5 shared connections)
-- [profession game service](profession_game_service.md) (2 shared connections)
-- [game models stats](game_models_stats.md) (1 shared connections)
-- [player requests schemas](player_requests_schemas.md) (1 shared connections)
-- [ascii map renderer](ascii_map_renderer.md) (1 shared connections)
-- [websocket helpers realtime](websocket_helpers_realtime.md) (1 shared connections)
-- [room websocket updates](room_websocket_updates.md) (1 shared connections)
+- [manager subject services](manager_subject_services.md) (8 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [realtime monitoring statistics](realtime_monitoring_statistics.md) (1 shared connections)
+- [combat services messaging](combat_services_messaging.md) (1 shared connections)
+- [tsconfig src/**/* spec](tsconfig_src-__-__spec.md) (1 shared connections)
+- [game chat moderation](game_chat_moderation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/admin_shutdown_command.py`
-- `server/tests/unit/commands/test_admin_shutdown_command.py`
+- `server/realtime/message_handlers.py`
+- `server/tests/unit/realtime/test_message_handlers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 26 (100%)
+- EXTRACTED: 31 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,35 +1,37 @@
 # dead letter queue
 
-> 8 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **CommandMessageHandler** (9 connections) — `server/realtime/message_handler_factory.py`
-- **test_message_handler_factory_get_handler_found()** (4 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **test_message_handler_factory_game_command_alias()** (4 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **test_command_message_handler_handle()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **Handler for command messages.** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Test CommandMessageHandler.handle() calls handle_command_message.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **Test MessageHandlerFactory.get_handler() returns handler when found.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **Test MessageHandlerFactory handles game_command as alias for command.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **test_inventory_mutation_guard_sync.py** (10 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
+- **guard()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
+- **test_acquire_serializes_per_player()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
+- **test_acquire_token_expiry()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
+- **test_acquire_token_ttl_zero()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
+- **test_acquire_enforces_max_tokens()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
+- **test_acquire_cleanup_empty_state()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
+- **Unit tests for inventory mutation guard - synchronous acquire operations.  Tests** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
+- **Create an InventoryMutationGuard instance.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
+- **Test acquire serializes mutations per player.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
+- **Test acquire allows token reuse after expiry.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
+- **Test acquire with token_ttl=0 (no expiry).** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
+- **Test acquire enforces max_tokens limit.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
+- **Test acquire cleans up state when tokens are empty.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
 
 ## Relationships
 
-- [message handler factory](message_handler_factory.md) (6 shared connections)
-- [combat services messaging](combat_services_messaging.md) (1 shared connections)
-- [command commands aliases](command_commands_aliases.md) (1 shared connections)
-- [game chat moderation](game_chat_moderation.md) (1 shared connections)
-- [tsconfig src/**/* spec](tsconfig_src-__-__spec.md) (1 shared connections)
+- [container helpers endpoints](container_helpers_endpoints.md) (3 shared connections)
+- [models npc rationale](models_npc_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/message_handler_factory.py`
-- `server/tests/unit/realtime/test_message_handler_factory.py`
+- `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (83%)
-- INFERRED: 4 (17%)
+- EXTRACTED: 30 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

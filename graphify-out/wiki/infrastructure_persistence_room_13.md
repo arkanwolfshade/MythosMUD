@@ -4,22 +4,22 @@
 
 ## Key Concepts
 
-- **subscription_manager()** (3 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **Create a RoomSubscriptionManager instance.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **test_update_default_channel_database_error()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **Test updating default channel with database error.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
 
 ## Relationships
 
-- [connection disconnection realtime](connection_disconnection_realtime.md) (1 shared connections)
-- [room subscription manager](room_subscription_manager.md) (1 shared connections)
+- [player requests schemas](player_requests_schemas.md) (1 shared connections)
+- [player preferences service](player_preferences_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- `server/tests/unit/services/test_player_preferences_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

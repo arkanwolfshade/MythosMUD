@@ -1,70 +1,58 @@
 # holiday service services
 
-> 236 nodes
+> 83 nodes
 
 ## Key Concepts
 
-- **HolidayService** (45 connections) — `server/services/holiday_service.py`
-- **game.py** (43 connections) — `server/container/bundles/game.py`
 - **HolidayCollection** (41 connections) — `server/schemas/calendar/calendar.py`
-- **.initialize()** (35 connections) — `server/container/bundles/game.py`
 - **HolidayEntry** (31 connections) — `server/schemas/calendar/calendar.py`
-- **ScheduleEntry** (29 connections) — `server/schemas/calendar/calendar.py`
-- **TestHolidayService** (27 connections) — `server/tests/unit/services/test_holiday_service.py`
-- **schedule_service.py** (25 connections) — `server/services/schedule_service.py`
-- **holiday_service.py** (24 connections) — `server/services/holiday_service.py`
 - **test_calendar_schemas.py** (21 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
 - **validate_calendar.py** (17 connections) — `scripts/validate_calendar.py`
-- **normalize_environment()** (15 connections) — `server/utils/project_paths.py`
-- **get_calendar_paths_for_environment()** (14 connections) — `server/utils/project_paths.py`
 - **ScheduleCollection** (12 connections) — `server/schemas/calendar/calendar.py`
-- **test_schedule_service.py** (12 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **project_paths.py** (12 connections) — `server/utils/project_paths.py`
 - **__init__.py** (10 connections) — `server/schemas/calendar/__init__.py`
-- **_schedule_entry_from_row()** (10 connections) — `server/services/schedule_service.py`
-- **test_project_paths.py** (10 connections) — `server/tests/unit/utils/test_project_paths.py`
-- **get_project_root()** (10 connections) — `server/utils/project_paths.py`
-- **get_environment_data_dir()** (10 connections) — `server/utils/project_paths.py`
 - **run_validation()** (9 connections) — `scripts/validate_calendar.py`
 - **calendar.py** (9 connections) — `server/schemas/calendar/calendar.py`
-- **test_holiday_service.py** (9 connections) — `server/tests/unit/services/test_holiday_service.py`
 - **load_schedule_directory()** (8 connections) — `server/schemas/calendar/calendar.py`
-- *... and 211 more nodes in this community*
+- **extract_observance_ids()** (8 connections) — `server/schemas/calendar/calendar.py`
+- **_get_calendar_paths()** (7 connections) — `scripts/validate_calendar.py`
+- **Path** (6 connections)
+- **_load_and_validate_holidays()** (6 connections) — `scripts/validate_calendar.py`
+- **_check_holiday_coverage()** (6 connections) — `scripts/validate_calendar.py`
+- **_validate_schedule_files()** (6 connections) — `scripts/validate_calendar.py`
+- **slugify_observance()** (6 connections) — `server/schemas/calendar/calendar.py`
+- **_print_success_message()** (5 connections) — `scripts/validate_calendar.py`
+- **.load_file()** (5 connections) — `server/schemas/calendar/calendar.py`
+- **.load_file()** (5 connections) — `server/schemas/calendar/calendar.py`
+- **.test_init_loads_from_database()** (5 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **parse_args()** (4 connections) — `scripts/validate_calendar.py`
+- **load_document_ids()** (4 connections) — `scripts/validate_calendar.py`
+- **BaseModel** (4 connections)
+- **test_holiday_entry_validation_tradition()** (4 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
+- **test_holiday_entry_validation_season()** (4 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
+- *... and 58 more nodes in this community*
 
 ## Relationships
 
-- [websocket realtime handler](websocket_realtime_handler.md) (35 shared connections)
-- [Error Conversion](Error_Conversion.md) (19 shared connections)
-- [NPC Combat](NPC_Combat.md) (15 shared connections)
-- [Database Config](Database_Config.md) (10 shared connections)
-- [models npc rationale](models_npc_rationale.md) (10 shared connections)
-- [commands lucidity recovery](commands_lucidity_recovery.md) (6 shared connections)
-- [profession game service](profession_game_service.md) (5 shared connections)
-- [maps handle ascii](maps_handle_ascii.md) (4 shared connections)
-- [time service rationale](time_service_rationale.md) (4 shared connections)
-- [command inventory models](command_inventory_models.md) (4 shared connections)
-- [container helpers endpoints](container_helpers_endpoints.md) (3 shared connections)
-- [services lucidity repository](services_lucidity_repository.md) (2 shared connections)
+- [auth users rationale](auth_users_rationale.md) (30 shared connections)
+- [websocket realtime handler](websocket_realtime_handler.md) (12 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (9 shared connections)
+- [inventory schemas schema](inventory_schemas_schema.md) (4 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (4 shared connections)
+- [player requests schemas](player_requests_schemas.md) (2 shared connections)
+- [game rationale schemas](game_rationale_schemas.md) (2 shared connections)
 
 ## Source Files
 
 - `scripts/validate_calendar.py`
-- `server/container/bundles/game.py`
-- `server/npc/lifecycle_manager.py`
 - `server/schemas/calendar/__init__.py`
 - `server/schemas/calendar/calendar.py`
-- `server/services/holiday_service.py`
-- `server/services/schedule_service.py`
 - `server/tests/unit/schemas/test_calendar_schemas.py`
 - `server/tests/unit/services/test_holiday_service.py`
-- `server/tests/unit/services/test_schedule_service.py`
-- `server/tests/unit/utils/test_project_paths.py`
-- `server/utils/project_paths.py`
 
 ## Audit Trail
 
-- EXTRACTED: 994 (97%)
-- INFERRED: 28 (3%)
+- EXTRACTED: 339 (98%)
+- INFERRED: 6 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -35,7 +35,7 @@
 
 - [room toolkit validator](room_toolkit_validator.md) (21 shared connections)
 - [player service mutations](player_service_mutations.md) (5 shared connections)
-- [schemas validator rationale](schemas_validator_rationale.md) (2 shared connections)
+- [commands recovery lucidity](commands_recovery_lucidity.md) (2 shared connections)
 - [room validator toolkit](room_validator_toolkit.md) (1 shared connections)
 
 ## Source Files

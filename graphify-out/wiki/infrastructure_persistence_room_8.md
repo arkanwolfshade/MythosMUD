@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_send_initial_game_state_no_player()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Test send_initial_game_state() handles None player.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_send_room_updates_to_entering_player_invalid_id()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **Test send_room_updates_to_entering_player() handles invalid player_id.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Relationships
 
-- [game state provider](game_state_provider.md) (1 shared connections)
+- [player room event](player_room_event.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Audit Trail
 

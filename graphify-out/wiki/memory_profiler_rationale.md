@@ -35,11 +35,10 @@
 
 - [grace period login](grace_period_login.md) (5 shared connections)
 - [alias models rationale](alias_models_rationale.md) (3 shared connections)
-- [models invite Any](models_invite_Any.md) (2 shared connections)
+- [command factories communication](command_factories_communication.md) (3 shared connections)
 - [player service game](player_service_game.md) (2 shared connections)
-- [character creation service](character_creation_service.md) (1 shared connections)
 - [command communication models](command_communication_models.md) (1 shared connections)
-- [taunt combat commands](taunt_combat_commands.md) (1 shared connections)
+- [auth endpoints rationale](auth_endpoints_rationale.md) (1 shared connections)
 
 ## Source Files
 

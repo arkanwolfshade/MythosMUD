@@ -1,35 +1,45 @@
 # dialogue definition persistence
 
-> 12 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **test_combat_service_npc_in_combat.py** (8 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
-- **combat_service()** (3 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
-- **test_is_npc_in_combat_sync_returns_false_when_npc_not_in_combat()** (2 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
-- **test_is_npc_in_combat_sync_returns_true_when_npc_uuid_in_combat()** (2 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
-- **test_is_npc_in_combat_sync_returns_false_for_invalid_uuid_string()** (2 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
-- **test_is_npc_in_combat_sync_returns_true_when_string_id_mapped_to_combat()** (2 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
-- **Unit tests for CombatService.is_npc_in_combat_sync.  Tests the NPC-in-combat che** (1 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
-- **Create CombatService with mocked dependencies so is_npc_in_combat_sync can be te** (1 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
-- **Test is_npc_in_combat_sync returns False when NPC is not in any combat.** (1 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
-- **Test is_npc_in_combat_sync returns True when NPC UUID is in _npc_combats.** (1 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
-- **Test is_npc_in_combat_sync returns False for non-UUID string when no mapping.** (1 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
-- **Test is_npc_in_combat_sync returns True when integration service maps string id** (1 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
+- **test_profession_repository.py** (18 connections) — `server/tests/unit/persistence/repositories/test_profession_repository.py`
+- **_row_to_profession()** (11 connections) — `server/persistence/repositories/profession_repository.py`
+- **_text_or_default()** (6 connections) — `server/persistence/repositories/profession_repository.py`
+- **_bool_or_default()** (6 connections) — `server/persistence/repositories/profession_repository.py`
+- **_str_or_default()** (5 connections) — `server/persistence/repositories/profession_repository.py`
+- **Any** (5 connections)
+- **test_helpers_defaults()** (4 connections) — `server/tests/unit/persistence/repositories/test_profession_repository.py`
+- **_mock_session()** (4 connections) — `server/tests/unit/persistence/repositories/test_profession_repository.py`
+- **_profession_row()** (3 connections) — `server/tests/unit/persistence/repositories/test_profession_repository.py`
+- **test_get_all_professions()** (3 connections) — `server/tests/unit/persistence/repositories/test_profession_repository.py`
+- **test_get_profession_by_id()** (3 connections) — `server/tests/unit/persistence/repositories/test_profession_repository.py`
+- **test_row_to_profession()** (2 connections) — `server/tests/unit/persistence/repositories/test_profession_repository.py`
+- **repo()** (2 connections) — `server/tests/unit/persistence/repositories/test_profession_repository.py`
+- **test_get_profession_by_id_not_found()** (2 connections) — `server/tests/unit/persistence/repositories/test_profession_repository.py`
+- **test_get_all_professions_db_error()** (2 connections) — `server/tests/unit/persistence/repositories/test_profession_repository.py`
+- **Return value as str or a default if falsy.** (1 connections) — `server/persistence/repositories/profession_repository.py`
+- **Return text value or default if falsy.** (1 connections) — `server/persistence/repositories/profession_repository.py`
+- **Return bool(value) when not None, otherwise default.** (1 connections) — `server/persistence/repositories/profession_repository.py`
+- **Map procedure result row to Profession model.** (1 connections) — `server/persistence/repositories/profession_repository.py`
+- **Unit tests for ProfessionRepository.** (1 connections) — `server/tests/unit/persistence/repositories/test_profession_repository.py`
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
+- [Database Config](Database_Config.md) (8 shared connections)
+- [Loot Generation](Loot_Generation.md) (6 shared connections)
+- [profession models rationale](profession_models_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_service_npc_in_combat.py`
+- `server/persistence/repositories/profession_repository.py`
+- `server/tests/unit/persistence/repositories/test_profession_repository.py`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 79 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

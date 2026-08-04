@@ -33,9 +33,10 @@
 
 ## Relationships
 
-- [models npc rationale](models_npc_rationale.md) (4 shared connections)
 - [combat configuration service](combat_configuration_service.md) (3 shared connections)
 - [combat monitoring service](combat_monitoring_service.md) (3 shared connections)
+- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
 
 ## Source Files
 

@@ -1,11 +1,12 @@
 # websocket helpers realtime
 
-> 59 nodes
+> 61 nodes
 
 ## Key Concepts
 
 - **websocket_helpers.py** (38 connections) — `server/realtime/websocket_helpers.py`
 - **test_websocket_helpers_player.py** (23 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
+- **get_async_persistence()** (19 connections) — `server/async_persistence.py`
 - **get_player_and_room()** (14 connections) — `server/realtime/websocket_helpers.py`
 - **prepare_player_data()** (12 connections) — `server/realtime/websocket_helpers.py`
 - **get_player_service_from_connection_manager()** (9 connections) — `server/realtime/websocket_helpers.py`
@@ -28,33 +29,33 @@
 - **test_build_basic_player_data_defaults()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
 - **test_prepare_player_data_with_service()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
 - **test_prepare_player_data_no_service()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_prepare_player_data_service_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- *... and 34 more nodes in this community*
+- *... and 36 more nodes in this community*
 
 ## Relationships
 
-- [room websocket updates](room_websocket_updates.md) (11 shared connections)
-- [realtime websocket initial](realtime_websocket_initial.md) (8 shared connections)
-- [room look commands](room_look_commands.md) (3 shared connections)
-- [models npc rationale](models_npc_rationale.md) (3 shared connections)
-- [world models rationale](world_models_rationale.md) (2 shared connections)
+- [realtime websocket initial](realtime_websocket_initial.md) (11 shared connections)
+- [room websocket updates](room_websocket_updates.md) (9 shared connections)
+- [combat commands handler](combat_commands_handler.md) (4 shared connections)
+- [schemas invite user](schemas_invite_user.md) (4 shared connections)
+- [Loot Generation](Loot_Generation.md) (3 shared connections)
+- [command models moderation](command_models_moderation.md) (3 shared connections)
+- [NATS Messaging](NATS_Messaging.md) (2 shared connections)
+- [combat models rationale](combat_models_rationale.md) (2 shared connections)
 - [websocket realtime handler](websocket_realtime_handler.md) (2 shared connections)
-- [look helpers commands](look_helpers_commands.md) (2 shared connections)
-- [command utility models](command_utility_models.md) (2 shared connections)
-- [status game spell](status_game_spell.md) (2 shared connections)
-- [alias models rationale](alias_models_rationale.md) (1 shared connections)
-- [shutdown admin command](shutdown_admin_command.md) (1 shared connections)
-- [models profession rationale](models_profession_rationale.md) (1 shared connections)
+- [nats services metrics](nats_services_metrics.md) (2 shared connections)
+- [room models instance](room_models_instance.md) (2 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (1 shared connections)
 
 ## Source Files
 
+- `server/async_persistence.py`
 - `server/models/alias.py`
 - `server/realtime/websocket_helpers.py`
 - `server/tests/unit/realtime/test_websocket_helpers_player.py`
 
 ## Audit Trail
 
-- EXTRACTED: 214 (96%)
+- EXTRACTED: 234 (96%)
 - INFERRED: 9 (4%)
 - AMBIGUOUS: 0 (0%)
 

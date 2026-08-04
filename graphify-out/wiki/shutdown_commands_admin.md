@@ -4,29 +4,30 @@
 
 ## Key Concepts
 
-- **populate_test_npc_databases.py** (6 connections) — `scripts/populate_test_npc_databases.py`
-- **main()** (5 connections) — `scripts/populate_test_npc_databases.py`
-- **get_npc_data_from_source()** (4 connections) — `scripts/populate_test_npc_databases.py`
-- **populate_database()** (4 connections) — `scripts/populate_test_npc_databases.py`
-- **get_npc_database_url()** (3 connections) — `scripts/populate_test_npc_databases.py`
-- **Get NPC database URL for the specified environment.      Args:         environme** (1 connections) — `scripts/populate_test_npc_databases.py`
-- **Extract NPC data from the source PostgreSQL database.      Args:         source_** (1 connections) — `scripts/populate_test_npc_databases.py`
-- **Populate a PostgreSQL database with NPC data.      Args:         target_url: Pos** (1 connections) — `scripts/populate_test_npc_databases.py`
-- **Main function to populate test NPC databases.** (1 connections) — `scripts/populate_test_npc_databases.py`
+- **test_skills_commands.py** (11 connections) — `server/tests/unit/commands/test_skills_commands.py`
+- **test_get_container_services_ok()** (2 connections) — `server/tests/unit/commands/test_skills_commands.py`
+- **test_format_skills_output()** (1 connections) — `server/tests/unit/commands/test_skills_commands.py`
+- **test_resolve_player_id_from_string()** (1 connections) — `server/tests/unit/commands/test_skills_commands.py`
+- **test_resolve_user_id_from_dict()** (1 connections) — `server/tests/unit/commands/test_skills_commands.py`
+- **test_get_container_services_missing()** (1 connections) — `server/tests/unit/commands/test_skills_commands.py`
+- **test_handle_skills_command_no_services()** (1 connections) — `server/tests/unit/commands/test_skills_commands.py`
+- **test_handle_skills_command_success()** (1 connections) — `server/tests/unit/commands/test_skills_commands.py`
+- **Unit tests for skills command helpers.** (1 connections) — `server/tests/unit/commands/test_skills_commands.py`
 
 ## Relationships
 
-- [Database Config](Database_Config.md) (3 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [status game spell](status_game_spell.md) (2 shared connections)
+- [npc threading rationale](npc_threading_rationale.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/populate_test_npc_databases.py`
+- `server/tests/unit/commands/test_skills_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 24 (92%)
-- INFERRED: 2 (8%)
+- EXTRACTED: 19 (95%)
+- INFERRED: 1 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

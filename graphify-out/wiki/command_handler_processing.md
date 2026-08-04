@@ -25,7 +25,7 @@
 ## Relationships
 
 - [maps handle ascii](maps_handle_ascii.md) (9 shared connections)
-- [profession game service](profession_game_service.md) (4 shared connections)
+- [inventory schemas schema](inventory_schemas_schema.md) (4 shared connections)
 
 ## Source Files
 

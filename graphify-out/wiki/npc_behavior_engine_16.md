@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_subscribe_to_room_multiple_players()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **Test subscribe_to_room() with multiple players.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_handle_container_overflow_ground_container_error()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test handle_container_overflow handles ground container creation error.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Relationships
 
-- [room subscription manager](room_subscription_manager.md) (1 shared connections)
+- [wearable container service](wearable_container_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager.py`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 

@@ -34,7 +34,7 @@
 ## Relationships
 
 - [models npc rationale](models_npc_rationale.md) (1 shared connections)
-- [connection disconnection realtime](connection_disconnection_realtime.md) (1 shared connections)
+- [mythos mud mapbuilder](mythos_mud_mapbuilder.md) (1 shared connections)
 
 ## Source Files
 

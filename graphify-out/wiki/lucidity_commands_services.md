@@ -20,11 +20,11 @@
 
 ## Relationships
 
-- [command inventory factories](command_inventory_factories.md) (4 shared connections)
-- [player service game](player_service_game.md) (3 shared connections)
-- [command inventory models](command_inventory_models.md) (2 shared connections)
-- [world models rationale](world_models_rationale.md) (2 shared connections)
-- [profession game service](profession_game_service.md) (2 shared connections)
+- [Loot Generation](Loot_Generation.md) (5 shared connections)
+- [coercion int inventory](coercion_int_inventory.md) (2 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (2 shared connections)
+- [combat models rationale](combat_models_rationale.md) (2 shared connections)
+- [Player Stats](Player_Stats.md) (2 shared connections)
 
 ## Source Files
 

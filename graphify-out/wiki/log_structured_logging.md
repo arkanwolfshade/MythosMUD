@@ -34,12 +34,13 @@
 ## Relationships
 
 - [room cache services](room_cache_services.md) (6 shared connections)
-- [models npc rationale](models_npc_rationale.md) (3 shared connections)
-- [Error Conversion](Error_Conversion.md) (3 shared connections)
-- [Magic Spell Service](Magic_Spell_Service.md) (2 shared connections)
-- [logging setup structured](logging_setup_structured.md) (1 shared connections)
-- [message broadcaster realtime](message_broadcaster_realtime.md) (1 shared connections)
-- [message nats handler](message_nats_handler.md) (1 shared connections)
+- [Magic Spell Service](Magic_Spell_Service.md) (3 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
+- [nats services service](nats_services_service.md) (2 shared connections)
+- [npc shopkeeper rationale](npc_shopkeeper_rationale.md) (1 shared connections)
+- [logging handlers structured](logging_handlers_structured.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [websocket examples logging](websocket_examples_logging.md) (1 shared connections)
 
 ## Source Files
 

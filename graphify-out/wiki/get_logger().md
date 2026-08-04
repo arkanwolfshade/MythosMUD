@@ -2,7 +2,7 @@
 
 > God node · 516 connections · `server/structured_logging/enhanced_logging_config.py`
 
-**Community:** [models npc rationale](models_npc_rationale.md)
+**Community:** [Loot Generation](Loot_Generation.md)
 
 ## Connections by Relation
 

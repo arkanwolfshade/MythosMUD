@@ -1,6 +1,6 @@
 # containers stores containerStore
 
-> 58 nodes
+> 57 nodes
 
 ## Key Concepts
 
@@ -8,12 +8,12 @@
 - **containerStore.ts** (21 connections) — `client/src/stores/containerStore.ts`
 - **ContainerSplitPane.tsx** (16 connections) — `client/src/components/containers/ContainerSplitPane.tsx`
 - **ContainerKeyboardAccessibility.test.tsx** (15 connections) — `client/src/components/containers/__tests__/ContainerKeyboardAccessibility.test.tsx`
-- **BackpackTab.tsx** (12 connections) — `client/src/components/containers/BackpackTab.tsx`
 - **CorpseOverlay()** (10 connections) — `client/src/components/containers/CorpseOverlay.tsx`
 - **BackpackTab.test.tsx** (10 connections) — `client/src/components/containers/__tests__/BackpackTab.test.tsx`
 - **useContainerStore** (10 connections) — `client/src/stores/containerStore.ts`
 - **ContainerDragAndDrop.test.tsx** (9 connections) — `client/src/components/containers/__tests__/ContainerDragAndDrop.test.tsx`
 - **ContainerComponent** (9 connections) — `client/src/stores/containerStore.ts`
+- **useMemoryMonitor()** (8 connections) — `client/src/utils/memoryMonitor.ts`
 - **ContainerSplitPane()** (7 connections) — `client/src/components/containers/ContainerSplitPane.tsx`
 - **ContainerSplitPane.test.tsx** (7 connections) — `client/src/components/containers/__tests__/ContainerSplitPane.test.tsx`
 - **CorpseOverlay.test.tsx** (7 connections) — `client/src/components/containers/__tests__/CorpseOverlay.test.tsx`
@@ -29,16 +29,16 @@
 - **calculateTimeRemaining()** (2 connections) — `client/src/components/containers/CorpseOverlay.tsx`
 - **isCorpseOwner()** (2 connections) — `client/src/components/containers/CorpseOverlay.tsx`
 - **isGracePeriodActive()** (2 connections) — `client/src/components/containers/CorpseOverlay.tsx`
-- *... and 33 more nodes in this community*
+- *... and 32 more nodes in this community*
 
 ## Relationships
 
-- [panels chat ChatPanelRuntimeViewParts](panels_chat_ChatPanelRuntimeViewParts.md) (12 shared connections)
-- [stores connectionStore commandStore](stores_connectionStore_commandStore.md) (9 shared connections)
+- [panels chat ChatPanelRuntimeViewParts](panels_chat_ChatPanelRuntimeViewParts.md) (15 shared connections)
+- [stores connectionStore commandStore](stores_connectionStore_commandStore.md) (7 shared connections)
+- [memoryMonitor memoryLeakDetector constru](memoryMonitor_memoryLeakDetector_constru.md) (7 shared connections)
 - [GameClientV2Container emptyOccupantsDiag](GameClientV2Container_emptyOccupantsDiag.md) (3 shared connections)
-- [memoryMonitor memoryLeakDetector constru](memoryMonitor_memoryLeakDetector_constru.md) (3 shared connections)
 - [apiTypeGuards FIELDS SHARED](apiTypeGuards_FIELDS_SHARED.md) (2 shared connections)
-- [commands rescue rationale](commands_rescue_rationale.md) (2 shared connections)
+- [mythosApp appLazyScreens mythosAppViewMo](mythosApp_appLazyScreens_mythosAppViewMo.md) (2 shared connections)
 
 ## Source Files
 
@@ -54,10 +54,11 @@
 - `client/src/stores/__tests__/containerStore.test.ts`
 - `client/src/stores/containerStore.ts`
 - `client/src/utils/apiTypeGuards.ts`
+- `client/src/utils/memoryMonitor.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 233 (100%)
+- EXTRACTED: 228 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

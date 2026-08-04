@@ -1,45 +1,35 @@
 # conftest mock rationale
 
-> 16 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **reset_database()** (16 connections) — `server/database.py`
-- **test_reset_database()** (5 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_reset_database_resets_singleton()** (4 connections) — `server/tests/unit/infrastructure/test_database_init.py`
-- **reset_db_state()** (3 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_reset_database_resets_module_url()** (3 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **reset_db_state()** (3 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **reset_db()** (3 connections) — `server/tests/unit/infrastructure/test_database_init.py`
-- **test_reset_database_resets_module_url()** (3 connections) — `server/tests/unit/infrastructure/test_database_init.py`
-- **Reset the database connection state (for testing).      This resets the Database** (1 connections) — `server/database.py`
-- **Reset database state before each test.** (1 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **Test reset_database resets module-level _database_url.** (1 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **Reset database state before each test.** (1 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **Test reset_database resets both singleton and module-level URL.** (1 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **Reset database state before each test.** (1 connections) — `server/tests/unit/infrastructure/test_database_init.py`
-- **Test reset_database resets module-level _database_url.** (1 connections) — `server/tests/unit/infrastructure/test_database_init.py`
-- **Test reset_database resets DatabaseManager singleton.** (1 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **_StubBoundLogger** (8 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- **_as_bound_logger()** (6 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- **test_log_exception_once_logged_exception_uses_mark_logged()** (6 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- **test_log_exception_once_plain_exception_sets_flag_and_skips_repeat()** (5 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- **BoundLogger** (2 connections)
+- **.__init__()** (1 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- **Minimal stand-in for BoundLogger: only what log_exception_once touches for these** (1 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- **Adapt test double to the function param type (structural use only).** (1 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- **Plain exceptions get _already_logged via __setattr__ fallback; second log is sup** (1 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- **LoggedException uses mark_logged(); repeat call does not log again.** (1 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
 
 ## Relationships
 
-- [Database Access Layer](Database_Access_Layer.md) (12 shared connections)
-- [memory lifespan app](memory_lifespan_app.md) (3 shared connections)
-- [combat npc services](combat_npc_services.md) (1 shared connections)
-- [manager subject services](manager_subject_services.md) (1 shared connections)
-- [game models enums](game_models_enums.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (4 shared connections)
+- [Spell Validation](Spell_Validation.md) (3 shared connections)
+- [player death service](player_death_service.md) (2 shared connections)
+- [time service rationale](time_service_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/database.py`
-- `server/tests/unit/infrastructure/test_database_error_handling.py`
-- `server/tests/unit/infrastructure/test_database_extended.py`
-- `server/tests/unit/infrastructure/test_database_init.py`
+- `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
 
 ## Audit Trail
 
-- EXTRACTED: 48 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 30 (94%)
+- INFERRED: 2 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

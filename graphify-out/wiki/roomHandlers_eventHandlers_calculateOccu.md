@@ -1,14 +1,11 @@
 # roomHandlers eventHandlers calculateOccu
 
-> 70 nodes
+> 57 nodes
 
 ## Key Concepts
 
-- **logger.ts** (36 connections) — `client/src/utils/logger.ts`
-- **logger** (33 connections) — `client/src/utils/logger.ts`
 - **useGameConnectionRefactored.ts** (18 connections) — `client/src/hooks/useGameConnectionRefactored.ts`
 - **useWebSocketConnection.ts** (18 connections) — `client/src/hooks/useWebSocketConnection.ts`
-- **useGameConnectionManagement.ts** (15 connections) — `client/src/components/ui-v2/hooks/useGameConnectionManagement.ts`
 - **useWebSocketConnectionTestFixtures.ts** (12 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
 - **MockWebSocket** (12 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
 - **useGameConnection()** (12 connections) — `client/src/hooks/useGameConnectionRefactored.ts`
@@ -17,7 +14,6 @@
 - **useWebSocketConnection.connection.test.ts** (8 connections) — `client/src/hooks/__tests__/useWebSocketConnection.connection.test.ts`
 - **useWebSocketConnection.errorHandling.test.ts** (8 connections) — `client/src/hooks/__tests__/useWebSocketConnection.errorHandling.test.ts`
 - **useConnectionStateMachine.ts** (8 connections) — `client/src/hooks/useConnectionStateMachine.ts`
-- **logger.test.ts** (8 connections) — `client/src/utils/logger.test.ts`
 - **useWebSocketConnection.callbacks.test.ts** (7 connections) — `client/src/hooks/__tests__/useWebSocketConnection.callbacks.test.ts`
 - **useWebSocketConnection.cleanup.test.ts** (7 connections) — `client/src/hooks/__tests__/useWebSocketConnection.cleanup.test.ts`
 - **useWebSocketConnection.messageHandling.test.ts** (7 connections) — `client/src/hooks/__tests__/useWebSocketConnection.messageHandling.test.ts`
@@ -27,28 +23,26 @@
 - **wsConnectionAfterEach()** (7 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
 - **useConnectionState.ts** (7 connections) — `client/src/hooks/useConnectionState.ts`
 - **useSessionManagement.ts** (7 connections) — `client/src/hooks/useSessionManagement.ts`
-- **useGameConnectionManagement()** (5 connections) — `client/src/components/ui-v2/hooks/useGameConnectionManagement.ts`
 - **useGameConnection.ts** (5 connections) — `client/src/hooks/useGameConnection.ts`
-- *... and 45 more nodes in this community*
+- **useConnectionState()** (4 connections) — `client/src/hooks/useConnectionState.ts`
+- **connectionMachine** (4 connections) — `client/src/hooks/useConnectionStateMachine.ts`
+- **useGameConnection.test.ts** (4 connections) — `client/src/hooks/useGameConnection.test.ts`
+- **useSessionManagement()** (4 connections) — `client/src/hooks/useSessionManagement.ts`
+- **useGameConnection.export.test.ts** (3 connections) — `client/src/hooks/__tests__/useGameConnection.export.test.ts`
+- *... and 32 more nodes in this community*
 
 ## Relationships
 
-- [Game Terminal UI](Game_Terminal_UI.md) (15 shared connections)
-- [mythosApp security submitAuth](mythosApp_security_submitAuth.md) (8 shared connections)
-- [GameClientV2Container emptyOccupantsDiag](GameClientV2Container_emptyOccupantsDiag.md) (7 shared connections)
-- [commands rescue rationale](commands_rescue_rationale.md) (4 shared connections)
-- [SkillAssignmentScreen helpers CharacterN](SkillAssignmentScreen_helpers_CharacterN.md) (4 shared connections)
-- [mythosApp CharacterSelectionScreen chara](mythosApp_CharacterSelectionScreen_chara.md) (4 shared connections)
-- [mythosApp useMythosAppState useStatsRoll](mythosApp_useMythosAppState_useStatsRoll.md) (4 shared connections)
-- [project paths rationale](project_paths_rationale.md) (4 shared connections)
-- [lucidityEventUtils mythosTime MythosTime](lucidityEventUtils_mythosTime_MythosTime.md) (4 shared connections)
-- [realtime maintenance connection](realtime_maintenance_connection.md) (3 shared connections)
+- [lucidityEventUtils mythosTime MythosTime](lucidityEventUtils_mythosTime_MythosTime.md) (8 shared connections)
+- [mythosApp security submitAuth](mythosApp_security_submitAuth.md) (4 shared connections)
 - [resourceCleanup clientMetricsCollector u](resourceCleanup_clientMetricsCollector_u.md) (3 shared connections)
-- [headers middleware security](headers_middleware_security.md) (2 shared connections)
+- [Game Terminal UI](Game_Terminal_UI.md) (2 shared connections)
+- [realtime maintenance connection](realtime_maintenance_connection.md) (2 shared connections)
+- [mythosApp appLazyScreens mythosAppViewMo](mythosApp_appLazyScreens_mythosAppViewMo.md) (2 shared connections)
+- [GameClientV2Container emptyOccupantsDiag](GameClientV2Container_emptyOccupantsDiag.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/ui-v2/hooks/useGameConnectionManagement.ts`
 - `client/src/hooks/__tests__/useConnectionState.test.ts`
 - `client/src/hooks/__tests__/useConnectionStateMachine.test.ts`
 - `client/src/hooks/__tests__/useGameConnection.export.test.ts`
@@ -71,7 +65,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 353 (99%)
+- EXTRACTED: 248 (99%)
 - INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 

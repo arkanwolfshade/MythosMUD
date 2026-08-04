@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_should_attempt_reset_returns_true_after_timeout()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **Test _should_attempt_reset() returns True after timeout.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_handle_unequip_wearable_container_no_item_instance()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test handle_unequip_wearable_container returns None when no item_instance_id.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Relationships
 
-- [config rationale reset](config_rationale_reset.md) (1 shared connections)
-- [websocket handler realtime](websocket_handler_realtime.md) (1 shared connections)
+- [wearable container service](wearable_container_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_circuit_breaker.py`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -32,15 +32,15 @@
 
 - [inventory commands command](inventory_commands_command.md) (7 shared connections)
 - [npc service services](npc_service_services.md) (6 shared connections)
-- [commands position system](commands_position_system.md) (5 shared connections)
+- [Loot Generation](Loot_Generation.md) (4 shared connections)
 - [combat services messaging](combat_services_messaging.md) (3 shared connections)
-- [commands npc admin](commands_npc_admin.md) (2 shared connections)
+- [commands party examples](commands_party_examples.md) (2 shared connections)
+- [commands alias rationale](commands_alias_rationale.md) (2 shared connections)
 - [Database Config](Database_Config.md) (2 shared connections)
-- [command inventory models](command_inventory_models.md) (2 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (2 shared connections)
 - [npc spawn validator](npc_spawn_validator.md) (2 shared connections)
-- [System Metrics](System_Metrics.md) (2 shared connections)
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [Magic Spell Service](Magic_Spell_Service.md) (2 shared connections)
+- [commands admin mute](commands_admin_mute.md) (2 shared connections)
 - [room cache services](room_cache_services.md) (1 shared connections)
 
 ## Source Files

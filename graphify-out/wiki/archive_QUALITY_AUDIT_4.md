@@ -1,16 +1,14 @@
 # archive QUALITY AUDIT
 
-> 7 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Phase 3: Test Value Scoring** (4 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **3.3 Value Distribution Calculation** (4 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **3.1 Scoring Criteria Matrix** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **3.2 Category Scores** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **🔴 CRITICAL VALUE TESTS (Score ≥75): **1,272 tests (25.6%)**** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **🟡 IMPORTANT VALUE TESTS (Score 50-74): **2,943 tests (59.3%)**** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **🟢 LOW VALUE TESTS (Score <50): **750 tests (15.1%)**** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Conclusion** (5 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Answer to Your Question** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **~25-30% (1,250-1,500 tests) provide CRITICAL protection** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **The remaining 70-75% provide** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Recommended Action** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
 
 ## Relationships
 
@@ -22,7 +20,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

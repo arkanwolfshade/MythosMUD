@@ -19,10 +19,10 @@
 
 ## Relationships
 
-- [auth users rationale](auth_users_rationale.md) (2 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
-- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
-- [combat models rationale](combat_models_rationale.md) (1 shared connections)
+- [npc lifecycle combat](npc_lifecycle_combat.md) (2 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
+- [Async Query Helpers](Async_Query_Helpers.md) (1 shared connections)
 
 ## Source Files
 

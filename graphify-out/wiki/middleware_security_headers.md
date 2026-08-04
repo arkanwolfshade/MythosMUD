@@ -23,7 +23,7 @@
 
 ## Relationships
 
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
+- [health monitor realtime](health_monitor_realtime.md) (1 shared connections)
 
 ## Source Files
 

@@ -36,10 +36,10 @@
 - [world loader room](world_loader_room.md) (6 shared connections)
 - [models player related](models_player_related.md) (6 shared connections)
 - [models lucidity rationale](models_lucidity_rationale.md) (6 shared connections)
-- [Error Handling Core](Error_Handling_Core.md) (3 shared connections)
+- [handler realtime nats](handler_realtime_nats.md) (3 shared connections)
 - [websocket examples logging](websocket_examples_logging.md) (3 shared connections)
 - [models npc rationale](models_npc_rationale.md) (1 shared connections)
-- [Exception Containers](Exception_Containers.md) (1 shared connections)
+- [player requests schemas](player_requests_schemas.md) (1 shared connections)
 
 ## Source Files
 

@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_list_room_drops()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **Test list_room_drops() returns defensive copy.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **test_compute_dp_update_fields()** (3 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **After damage, old_dp reflects pre-hit value.** (1 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
 
 ## Relationships
 
-- [room subscription manager](room_subscription_manager.md) (1 shared connections)
+- [room conftest toolkit](room_conftest_toolkit.md) (1 shared connections)
+- [services nats service](services_nats_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- `server/tests/unit/npc/test_npc_combat_integration_class.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,25 +1,24 @@
 # realtime monitoring health
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **start_hour** (4 connections) — `schemas/calendar/schedule.schema.json`
-- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **minimum** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **maximum** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **test_handle_item_look_in_room_drops()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test handling item look when item is in room drops.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
 
 ## Relationships
 
-- [schemas calendar schedule](schemas_calendar_schedule.md) (1 shared connections)
+- [npc realtime occupant](npc_realtime_occupant.md) (1 shared connections)
+- [Item Lookup](Item_Lookup.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/calendar/schedule.schema.json`
+- `server/tests/unit/commands/test_look_item.py`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

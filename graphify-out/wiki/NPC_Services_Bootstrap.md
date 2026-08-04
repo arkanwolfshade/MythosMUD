@@ -1,6 +1,6 @@
 # NPC Services Bootstrap
 
-> 43 nodes
+> 45 nodes
 
 ## Key Concepts
 
@@ -12,7 +12,7 @@
 - **validate_combat_messages()** (11 connections) — `server/schemas/combat/combat_schema.py`
 - **__init__.py** (10 connections) — `server/schemas/combat/__init__.py`
 - **validate_behavior_config_combat_data()** (9 connections) — `server/schemas/combat/combat_schema.py`
-- **add_default_combat_data_to_config()** (8 connections) — `server/schemas/combat/combat_schema.py`
+- **add_default_combat_data_to_stats()** (9 connections) — `server/schemas/combat/combat_schema.py`
 - **get_combat_stats_summary()** (6 connections) — `server/schemas/combat/combat_schema.py`
 - **Any** (5 connections)
 - **validate_message_template_variables()** (4 connections) — `server/schemas/combat/combat_schema.py`
@@ -23,20 +23,21 @@
 - **test_validate_base_stats_combat_data_valid()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
 - **test_validate_behavior_config_combat_data_valid()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
 - **test_validate_combat_messages_valid()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
-- **test_add_default_combat_data_to_config()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
+- **test_add_default_combat_data_to_stats()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
+- **test_add_default_combat_data_to_stats_preserves_existing()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
 - **test_validate_npc_combat_data()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
 - **test_get_combat_stats_summary()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
 - **Combat domain schemas: combat JSON schema validation and defaults.** (1 connections) — `server/schemas/combat/__init__.py`
 - **Exception** (1 connections)
-- **Combat system JSON schema validation.  This module provides JSON schema validati** (1 connections) — `server/schemas/combat/combat_schema.py`
-- *... and 18 more nodes in this community*
+- *... and 20 more nodes in this community*
 
 ## Relationships
 
-- [tools generate invite](tools_generate_invite.md) (15 shared connections)
-- [models npc rationale](models_npc_rationale.md) (3 shared connections)
-- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
-- [command commands talk](command_commands_talk.md) (1 shared connections)
+- [tools generate invite](tools_generate_invite.md) (14 shared connections)
+- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [combat services messaging](combat_services_messaging.md) (1 shared connections)
+- [npc population stats](npc_population_stats.md) (1 shared connections)
 
 ## Source Files
 
@@ -46,7 +47,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 167 (92%)
+- EXTRACTED: 172 (92%)
 - INFERRED: 15 (8%)
 - AMBIGUOUS: 0 (0%)
 

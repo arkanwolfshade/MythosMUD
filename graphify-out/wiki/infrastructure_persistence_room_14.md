@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_take_room_drop_all()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **Test take_room_drop() removes entire stack when quantity >= available.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **test_mute_global_success()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test mute_global() successfully globally mutes a player.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
 
 ## Relationships
 
-- [room subscription manager](room_subscription_manager.md) (1 shared connections)
+- [user manager services](user_manager_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- `server/tests/unit/services/test_user_manager.py`
 
 ## Audit Trail
 

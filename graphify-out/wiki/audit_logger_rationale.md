@@ -33,7 +33,8 @@
 
 ## Relationships
 
-- [models npc rationale](models_npc_rationale.md) (3 shared connections)
+- [task registry app](task_registry_app.md) (2 shared connections)
+- [models npc rationale](models_npc_rationale.md) (1 shared connections)
 
 ## Source Files
 

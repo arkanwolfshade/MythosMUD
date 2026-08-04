@@ -1,6 +1,6 @@
 # monitoring dashboard rationale
 
-> 47 nodes
+> 49 nodes
 
 ## Key Concepts
 
@@ -10,6 +10,7 @@
 - **broadcast_teleport_effects()** (17 connections) — `server/commands/admin_teleport_utils.py`
 - **get_online_player_by_display_name()** (16 connections) — `server/commands/admin_teleport_utils.py`
 - **create_teleport_effect_message()** (16 connections) — `server/commands/admin_teleport_utils.py`
+- **admin_teleport_utils.py** (14 connections) — `server/commands/admin_teleport_utils.py`
 - **Any** (3 connections)
 - **test_create_teleport_effect_message_teleport_departure()** (3 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
 - **test_create_teleport_effect_message_teleport_departure_with_direction()** (3 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
@@ -28,16 +29,15 @@
 - **test_get_online_player_found()** (2 connections) — `server/tests/unit/commands/test_admin_teleport_utils.py`
 - **test_create_teleport_effect_message()** (2 connections) — `server/tests/unit/commands/test_admin_teleport_utils.py`
 - **test_create_teleport_effect_message_fallback()** (2 connections) — `server/tests/unit/commands/test_admin_teleport_utils.py`
-- **test_broadcast_teleport_effects_success()** (2 connections) — `server/tests/unit/commands/test_admin_teleport_utils.py`
-- *... and 22 more nodes in this community*
+- *... and 24 more nodes in this community*
 
 ## Relationships
 
-- [npc service services](npc_service_services.md) (13 shared connections)
-- [models npc rationale](models_npc_rationale.md) (6 shared connections)
+- [npc service services](npc_service_services.md) (15 shared connections)
 - [player respawn event](player_respawn_event.md) (5 shared connections)
-- [combat services messaging](combat_services_messaging.md) (2 shared connections)
-- [commands admin mute](commands_admin_mute.md) (1 shared connections)
+- [combat services messaging](combat_services_messaging.md) (4 shared connections)
+- [commands admin mute](commands_admin_mute.md) (2 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
 
 ## Source Files
 
@@ -47,7 +47,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 181 (100%)
+- EXTRACTED: 196 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

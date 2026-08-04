@@ -1,40 +1,28 @@
 # startup services npc
 
-> 14 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **.send_message()** (8 connections) — `server/realtime/messaging/personal_message_sender.py`
-- **UUID** (7 connections)
-- **._prepare_payload()** (7 connections) — `server/realtime/messaging/personal_message_sender.py`
-- **Any** (6 connections)
-- **._send_to_websocket()** (6 connections) — `server/realtime/messaging/personal_message_sender.py`
-- **._queue_message_if_needed()** (6 connections) — `server/realtime/messaging/personal_message_sender.py`
-- **.__init__()** (4 connections) — `server/realtime/messaging/personal_message_sender.py`
-- **.get_delivery_stats()** (4 connections) — `server/realtime/messaging/personal_message_sender.py`
-- **Initialize the personal message sender.          Args:             message_queue** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
-- **Prepare and optimize the payload for sending.** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
-- **Send message to a single WebSocket connection. Returns True if successful.** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
-- **Queue message if no active connections.** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
-- **Send a personal message to a player via WebSocket.          Args:             pl** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
-- **Get message delivery statistics for a player.** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **.create_tracked_task()** (5 connections) — `server/app/tracked_task_manager.py`
+- **.create_supervised_task()** (5 connections) — `server/app/tracked_task_manager.py`
+- **Any** (2 connections)
+- **Task** (2 connections)
+- **Create a managed asyncio.Task with mandatory lifecycle tracking.          Args:** (1 connections) — `server/app/tracked_task_manager.py`
+- **Create a task with enhanced supervision for legacy cleanup scenarios.          A** (1 connections) — `server/app/tracked_task_manager.py`
 
 ## Relationships
 
-- [services npc startup](services_npc_startup.md) (6 shared connections)
-- [connection disconnection realtime](connection_disconnection_realtime.md) (2 shared connections)
-- [Database Config](Database_Config.md) (2 shared connections)
-- [npc event handlers](npc_event_handlers.md) (1 shared connections)
-- [room look commands](room_look_commands.md) (1 shared connections)
+- [schemas player rationale](schemas_player_rationale.md) (2 shared connections)
 
 ## Source Files
 
-- `server/realtime/messaging/personal_message_sender.py`
+- `server/app/tracked_task_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 51 (94%)
-- INFERRED: 3 (6%)
+- EXTRACTED: 16 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

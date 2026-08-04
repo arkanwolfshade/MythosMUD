@@ -1,26 +1,25 @@
 # schemas unified room
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **set_display_name_default()** (4 connections) — `server/models/user.py`
-- **Any** (1 connections)
-- **Ensure display_name is set to username if not provided or empty.      This event** (1 connections) — `server/models/user.py`
+- **test_delete_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **Test delete_player() when player not found.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
 
 ## Relationships
 
-- [admin auth service](admin_auth_service.md) (1 shared connections)
-- [Exception Containers](Exception_Containers.md) (1 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (1 shared connections)
+- [room realtime subscription](room_realtime_subscription.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/user.py`
+- `server/tests/unit/game/test_player_service_mutations.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

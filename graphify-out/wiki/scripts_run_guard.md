@@ -39,7 +39,7 @@
 - [compare linting results](compare_linting_results.md) (1 shared connections)
 - [dependency scripts analyzer](dependency_scripts_analyzer.md) (1 shared connections)
 - [grype scripts rationale](grype_scripts_rationale.md) (1 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
+- [npc shopkeeper rationale](npc_shopkeeper_rationale.md) (1 shared connections)
 - [fragmentation quality scripts](fragmentation_quality_scripts.md) (1 shared connections)
 
 ## Source Files

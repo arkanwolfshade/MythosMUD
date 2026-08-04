@@ -4,21 +4,22 @@
 
 ## Key Concepts
 
-- **test_get_fallback_player_data_with_get_stats()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Test _get_fallback_player_data() uses get_stats when available.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **sample_preferences()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **Create sample player preferences.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
 
 ## Relationships
 
-- [game state provider](game_state_provider.md) (1 shared connections)
+- [commands rescue rationale](commands_rescue_rationale.md) (1 shared connections)
+- [player preferences service](player_preferences_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- `server/tests/unit/services/test_player_preferences_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

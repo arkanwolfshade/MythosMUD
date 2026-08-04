@@ -35,8 +35,9 @@
 
 - [monitoring combat service](monitoring_combat_service.md) (9 shared connections)
 - [combat monitoring service](combat_monitoring_service.md) (8 shared connections)
-- [models npc rationale](models_npc_rationale.md) (5 shared connections)
+- [models npc rationale](models_npc_rationale.md) (3 shared connections)
 - [service feature services](service_feature_services.md) (2 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
 - [combat configuration service](combat_configuration_service.md) (1 shared connections)
 
 ## Source Files

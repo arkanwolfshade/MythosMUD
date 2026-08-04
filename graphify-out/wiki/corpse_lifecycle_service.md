@@ -1,42 +1,38 @@
 # corpse lifecycle service
 
-> 82 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **test_exploration_service.py** (45 connections) — `server/tests/unit/services/test_exploration_service.py`
 - **_row_scalar_one_or_none()** (10 connections) — `server/tests/unit/services/test_exploration_service.py`
 - **_async_session_maker_mock()** (5 connections) — `server/tests/unit/services/test_exploration_service.py`
 - **test_get_room_uuid_by_stable_id_no_session()** (5 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **_row_scalar_one()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **_row_fetchall()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
 - **test_mark_room_as_explored_no_session()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_mark_room_as_explored_database_error()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
 - **test_get_room_uuid_by_stable_id_with_session()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
 - **test_get_room_uuid_by_stable_id_not_found()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
 - **test_get_room_uuid_by_stable_id_string_uuid()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
 - **test_get_room_uuid_by_stable_id_asyncpg_like_uuid_object()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
 - **test_mark_explored_in_session_new_record()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
 - **test_mark_explored_in_session_existing_record()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_get_explored_rooms()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_get_explored_rooms_empty()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_get_explored_rooms_database_error()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_is_room_explored_true()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_is_room_explored_false()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_is_room_explored_database_error()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_mark_room_as_explored_sync_with_error_handler()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
 - **test_get_room_uuid_by_stable_id_asyncpg_uuid()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_get_room_uuid_by_stable_id_database_error()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_is_room_explored_database_error_in_query()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
 - **test_mark_room_as_explored_commits_session()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- *... and 57 more nodes in this community*
+- **SQLAlchemy-style result mock with scalar_one_or_none() -> value.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **Async context manager returned by get_session_maker() -> maker() in tests.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **Test mark_room_as_explored() creates new session when none provided.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **Test _get_room_uuid_by_stable_id() with provided session.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **Test _get_room_uuid_by_stable_id() creates session when none provided.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **Test _get_room_uuid_by_stable_id() returns None when room not found.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **Test _get_room_uuid_by_stable_id() handles string UUID from database.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **DB drivers may return non-stdlib UUID; conversion via str() must yield stdlib UU** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **Test _mark_explored_in_session() inserts new exploration record.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **Test _mark_explored_in_session() returns True for existing record.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **Test _get_room_uuid_by_stable_id() handles asyncpg UUID objects.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **Test mark_room_as_explored() commits session when creating new session.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
 
 ## Relationships
 
-- [maps handle ascii](maps_handle_ascii.md) (36 shared connections)
-- [Database Config](Database_Config.md) (7 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
-- [room game service](room_game_service.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (12 shared connections)
+- [maps handle ascii](maps_handle_ascii.md) (10 shared connections)
 
 ## Source Files
 
@@ -44,8 +40,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 232 (98%)
-- INFERRED: 5 (2%)
+- EXTRACTED: 68 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

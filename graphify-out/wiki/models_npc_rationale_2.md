@@ -1,74 +1,78 @@
 # models npc rationale
 
-> 343 nodes
+> 501 nodes
 
 ## Key Concepts
 
 - **NPCDefinition** (121 connections) — `server/models/npc.py`
+- **time.py** (96 connections) — `server/container/bundles/time.py`
+- **NPCBase** (83 connections) — `server/npc/npc_base.py`
+- **test_population_control.py** (65 connections) — `server/tests/unit/npc/test_population_control.py`
 - **NPCSpawnRule** (55 connections) — `server/models/npc.py`
-- **test_npc_service.py** (49 connections) — `server/tests/unit/services/test_npc_service.py`
+- **npc_base.py** (44 connections) — `server/npc/npc_base.py`
+- **population_control.py** (42 connections) — `server/npc/population_control.py`
+- **PopulationStats** (42 connections) — `server/npc/population_stats.py`
 - **npc.py** (38 connections) — `server/models/npc.py`
+- **spawning_service.py** (38 connections) — `server/npc/spawning_service.py`
 - **test_npc_models.py** (33 connections) — `server/tests/unit/models/test_npc_models.py`
-- **_mock_result_mappings_all()** (29 connections) — `server/tests/unit/services/test_npc_service.py`
+- **NPCEventReactionSystem** (27 connections) — `server/npc/event_reaction_system.py`
+- **combat_integration.py** (26 connections) — `server/npc/combat_integration.py`
+- **spawning_instance_factory.py** (25 connections) — `server/npc/spawning_instance_factory.py`
 - **test_spawn_validator.py** (24 connections) — `server/tests/unit/npc/test_spawn_validator.py`
+- **test_population_stats.py** (23 connections) — `server/tests/unit/npc/test_population_stats.py`
 - **should_spawn_npc()** (22 connections) — `server/npc/spawn_validator.py`
-- **NPCDefinitionCRUDMixin** (18 connections) — `server/services/npc_service/definition_crud.py`
-- **_def_row()** (18 connections) — `server/tests/unit/services/test_npc_service.py`
-- **npc_startup_service.py** (16 connections) — `server/services/npc_startup_service.py`
-- **__init__.py** (15 connections) — `server/services/npc_service/__init__.py`
-- **definition_crud.py** (15 connections) — `server/services/npc_service/definition_crud.py`
-- **NPCService** (14 connections) — `server/services/npc_service/__init__.py`
-- **npc_service_models.py** (13 connections) — `server/services/npc_service_models.py`
-- **_row_to_npc_definition()** (12 connections) — `server/services/npc_service_models.py`
-- **spawn_validator.py** (11 connections) — `server/npc/spawn_validator.py`
-- **queries.py** (11 connections) — `server/services/npc_service/queries.py`
-- **spawn_rule_crud.py** (11 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **NPCDefinitionUpdateParams** (11 connections) — `server/services/npc_service_models.py`
-- **_JSONDict** (10 connections)
-- **NPCSpawnRuleCRUDMixin** (10 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **NPCRelationship** (9 connections) — `server/models/npc.py`
-- **._evaluate_spawn_requirements()** (9 connections) — `server/npc/spawning_service.py`
-- **.update_npc_definition()** (9 connections) — `server/services/npc_service/definition_crud.py`
-- *... and 318 more nodes in this community*
+- **ShopkeeperNPC** (20 connections) — `server/npc/shopkeeper_npc.py`
+- **spawning_request_execution.py** (20 connections) — `server/npc/spawning_request_execution.py`
+- **lifecycle_periodic.py** (19 connections) — `server/npc/lifecycle_periodic.py`
+- **passive_mob_npc.py** (19 connections) — `server/npc/passive_mob_npc.py`
+- **aggressive_mob_npc.py** (18 connections) — `server/npc/aggressive_mob_npc.py`
+- **behaviors.py** (17 connections) — `server/npc/behaviors.py`
+- **SimpleNPCDefinition** (17 connections) — `server/npc/spawning_models.py`
+- **NPCSpawnRequest** (17 connections) — `server/npc/spawning_models.py`
+- *... and 476 more nodes in this community*
 
 ## Relationships
 
-- [Realtime Subscribers](Realtime_Subscribers.md) (47 shared connections)
-- [models npc rationale](models_npc_rationale.md) (18 shared connections)
-- [realtime monitoring statistics](realtime_monitoring_statistics.md) (16 shared connections)
-- [Database Config](Database_Config.md) (13 shared connections)
-- [player realtime event](player_realtime_event.md) (10 shared connections)
-- [spell game magic](spell_game_magic.md) (8 shared connections)
-- [admin auth service](admin_auth_service.md) (7 shared connections)
-- [commands npc admin](commands_npc_admin.md) (6 shared connections)
-- [combat services rationale](combat_services_rationale.md) (6 shared connections)
-- [world models rationale](world_models_rationale.md) (5 shared connections)
-- [tools generate invite](tools_generate_invite.md) (5 shared connections)
-- [npc shopkeeper rationale](npc_shopkeeper_rationale.md) (5 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (141 shared connections)
+- [Loot Generation](Loot_Generation.md) (50 shared connections)
+- [command parser rationale](command_parser_rationale.md) (37 shared connections)
+- [spell game magic](spell_game_magic.md) (23 shared connections)
+- [npc shopkeeper rationale](npc_shopkeeper_rationale.md) (19 shared connections)
+- [npc lifecycle config](npc_lifecycle_config.md) (14 shared connections)
+- [channel broadcasting strategies](channel_broadcasting_strategies.md) (13 shared connections)
+- [rate limiter realtime](rate_limiter_realtime.md) (12 shared connections)
+- [combat services rationale](combat_services_rationale.md) (11 shared connections)
+- [command input commands](command_input_commands.md) (11 shared connections)
+- [lucidity event services](lucidity_event_services.md) (9 shared connections)
+- [room conftest toolkit](room_conftest_toolkit.md) (9 shared connections)
 
 ## Source Files
 
+- `server/container/bundles/time.py`
 - `server/models/npc.py`
-- `server/npc/lifecycle_manager.py`
+- `server/npc/aggressive_mob_npc.py`
+- `server/npc/behaviors.py`
+- `server/npc/combat_integration.py`
+- `server/npc/event_reaction_system.py`
+- `server/npc/lifecycle_periodic.py`
 - `server/npc/npc_base.py`
+- `server/npc/npc_config_parsing.py`
+- `server/npc/passive_mob_npc.py`
 - `server/npc/population_control.py`
+- `server/npc/population_stats.py`
+- `server/npc/shopkeeper_npc.py`
 - `server/npc/spawn_validator.py`
+- `server/npc/spawning_instance_factory.py`
 - `server/npc/spawning_models.py`
+- `server/npc/spawning_request_execution.py`
 - `server/npc/spawning_service.py`
-- `server/services/npc_service/__init__.py`
-- `server/services/npc_service/definition_crud.py`
-- `server/services/npc_service/queries.py`
-- `server/services/npc_service/spawn_rule_crud.py`
-- `server/services/npc_service_models.py`
-- `server/services/npc_startup_service.py`
 - `server/tests/unit/models/test_npc_models.py`
-- `server/tests/unit/npc/test_spawn_validator.py`
-- `server/tests/unit/services/test_npc_service.py`
+- `server/tests/unit/npc/test_event_reaction_speech.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1285 (96%)
-- INFERRED: 49 (4%)
+- EXTRACTED: 1942 (94%)
+- INFERRED: 124 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

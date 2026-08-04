@@ -1,12 +1,13 @@
 # Player Name Validation
 
-> 158 nodes
+> 164 nodes
 
 ## Key Concepts
 
 - **PlayerNameExtractor** (104 connections) — `server/realtime/player_name_utils.py`
 - **TestPlayerNameExtractor** (62 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
 - **Any** (14 connections)
+- **player_name_utils.py** (13 connections) — `server/realtime/player_name_utils.py`
 - **UUID** (8 connections)
 - **._validate_name_not_uuid()** (8 connections) — `server/realtime/player_name_utils.py`
 - **.extract_and_validate_player_name()** (8 connections) — `server/realtime/player_name_utils.py`
@@ -24,21 +25,26 @@
 - **._get_name_from_user_object()** (4 connections) — `server/realtime/player_name_utils.py`
 - **._check_uuid_string_matches()** (4 connections) — `server/realtime/player_name_utils.py`
 - **.is_valid_name_for_occupant()** (4 connections) — `server/realtime/player_name_utils.py`
+- **test_player_name_utils.py** (4 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
 - **.test_extract_player_name_user_exception()** (4 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **.__init__()** (3 connections) — `server/realtime/player_name_utils.py`
 - **._check_uuid_pattern_match()** (3 connections) — `server/realtime/player_name_utils.py`
-- **.test_init()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **.test_is_uuid_string_valid_uuid()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **.test_is_uuid_string_invalid_length()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- *... and 133 more nodes in this community*
+- *... and 139 more nodes in this community*
 
 ## Relationships
 
-- [look helpers commands](look_helpers_commands.md) (14 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (11 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
-- [inventory mutation guard](inventory_mutation_guard.md) (1 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
-- [command utility models](command_utility_models.md) (1 shared connections)
+- [realtime monitoring performance](realtime_monitoring_performance.md) (5 shared connections)
+- [logging processors structured](logging_processors_structured.md) (5 shared connections)
+- [command utility models](command_utility_models.md) (5 shared connections)
+- [player_event_handler_utils](player_event_handler_utils.md) (4 shared connections)
+- [Loot Generation](Loot_Generation.md) (3 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (2 shared connections)
+- [event bus events](event_bus_events.md) (2 shared connections)
+- [schedule services service](schedule_services_service.md) (2 shared connections)
+- [inventory mutation guard](inventory_mutation_guard.md) (2 shared connections)
+- [player occupant processor](player_occupant_processor.md) (2 shared connections)
+- [realtime websocket initial](realtime_websocket_initial.md) (1 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,7 +53,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 524 (98%)
+- EXTRACTED: 547 (98%)
 - INFERRED: 9 (2%)
 - AMBIGUOUS: 0 (0%)
 

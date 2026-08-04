@@ -1,11 +1,10 @@
 # realtime maintenance connection
 
-> 86 nodes
+> 46 nodes
 
 ## Key Concepts
 
 - **ConnectionCleaner** (27 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **test_connection_cleaner.py** (26 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
 - **Any** (15 connections)
 - **UUID** (12 connections)
 - **.cleanup_ghost_players()** (9 connections) — `server/realtime/maintenance/connection_cleaner.py`
@@ -29,25 +28,26 @@
 - **__init__.py** (3 connections) — `server/realtime/maintenance/__init__.py`
 - **._identify_stale_connections()** (3 connections) — `server/realtime/maintenance/connection_cleaner.py`
 - **._is_websocket_dead()** (3 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- *... and 61 more nodes in this community*
+- **Maintenance components for connection management.  This package provides modular** (1 connections) — `server/realtime/maintenance/__init__.py`
+- *... and 21 more nodes in this community*
 
 ## Relationships
 
 - [Database Config](Database_Config.md) (9 shared connections)
-- [connection disconnection realtime](connection_disconnection_realtime.md) (7 shared connections)
-- [container service services](container_service_services.md) (4 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
+- [connection disconnection realtime](connection_disconnection_realtime.md) (4 shared connections)
+- [services npc startup](services_npc_startup.md) (2 shared connections)
+- [lucidity active service](lucidity_active_service.md) (2 shared connections)
+- [container service services](container_service_services.md) (1 shared connections)
 
 ## Source Files
 
 - `server/realtime/maintenance/__init__.py`
 - `server/realtime/maintenance/connection_cleaner.py`
-- `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
 
 ## Audit Trail
 
-- EXTRACTED: 258 (97%)
-- INFERRED: 9 (3%)
+- EXTRACTED: 173 (95%)
+- INFERRED: 9 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

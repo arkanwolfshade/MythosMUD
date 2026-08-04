@@ -36,10 +36,12 @@
 - [uuid services npc](uuid_services_npc.md) (5 shared connections)
 - [config rationale config()](config_rationale_config%28%29.md) (4 shared connections)
 - [cache caching service](cache_caching_service.md) (3 shared connections)
-- [Error Conversion](Error_Conversion.md) (3 shared connections)
-- [holiday service services](holiday_service_services.md) (2 shared connections)
+- [nats services service](nats_services_service.md) (2 shared connections)
 - [models npc rationale](models_npc_rationale.md) (1 shared connections)
 - [caching lru cache](caching_lru_cache.md) (1 shared connections)
+- [websocket realtime handler](websocket_realtime_handler.md) (1 shared connections)
+- [dead letter realtime](dead_letter_realtime.md) (1 shared connections)
+- [time service rationale](time_service_rationale.md) (1 shared connections)
 
 ## Source Files
 

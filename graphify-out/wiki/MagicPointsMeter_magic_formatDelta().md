@@ -1,31 +1,23 @@
 # MagicPointsMeter magic formatDelta()
 
-> 9 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **check_invites.py** (6 connections) — `tools/invite_tools/check_invites.py`
-- **main()** (5 connections) — `tools/invite_tools/check_invites.py`
-- **list_all_invites()** (4 connections) — `tools/invite_tools/check_invites.py`
-- **check_invite_status()** (4 connections) — `tools/invite_tools/check_invites.py`
-- **count_invites()** (4 connections) — `tools/invite_tools/check_invites.py`
-- **List all invite codes in the database with their status.** (1 connections) — `tools/invite_tools/check_invites.py`
-- **Check the status of a specific invite code.** (1 connections) — `tools/invite_tools/check_invites.py`
-- **Count invite codes by status.** (1 connections) — `tools/invite_tools/check_invites.py`
-- **Main function to handle command line arguments.** (1 connections) — `tools/invite_tools/check_invites.py`
+- **mock_persistence()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
 
 ## Relationships
 
-- [Database Config](Database_Config.md) (4 shared connections)
-- [combat npc services](combat_npc_services.md) (1 shared connections)
+- [room realtime subscription](room_realtime_subscription.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/invite_tools/check_invites.py`
+- `server/tests/unit/game/test_player_service_mutations.py`
 
 ## Audit Trail
 
-- EXTRACTED: 27 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

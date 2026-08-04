@@ -33,9 +33,10 @@
 
 ## Relationships
 
-- [command inventory models](command_inventory_models.md) (30 shared connections)
-- [container persistence rationale](container_persistence_rationale.md) (21 shared connections)
-- [command factories create](command_factories_create.md) (6 shared connections)
+- [command factories create](command_factories_create.md) (27 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (24 shared connections)
+- [command inventory models](command_inventory_models.md) (4 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
 
 ## Source Files
 

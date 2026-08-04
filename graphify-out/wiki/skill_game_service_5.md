@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **mock_send_personal_message()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Create a mock send_personal_message callback.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_send_room_update_to_player_success()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **Test send_room_update_to_player() successfully sends room update.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Relationships
 
-- [game state provider](game_state_provider.md) (1 shared connections)
+- [player room event](player_room_event.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Audit Trail
 

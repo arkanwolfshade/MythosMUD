@@ -1,37 +1,27 @@
 # conftest eslint config
 
-> 12 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **register_default_reactions_for_npc()** (15 connections) — `server/npc/npc_default_reactions.py`
-- **test_npc_default_reactions.py** (9 connections) — `server/tests/unit/npc/test_npc_default_reactions.py`
-- **._register_reactions_and_chat_name()** (5 connections) — `server/npc/npc_base.py`
-- **test_register_passive_mob_reactions()** (2 connections) — `server/tests/unit/npc/test_npc_default_reactions.py`
-- **test_register_shopkeeper_reactions()** (2 connections) — `server/tests/unit/npc/test_npc_default_reactions.py`
-- **test_register_aggressive_mob_retaliation_only()** (2 connections) — `server/tests/unit/npc/test_npc_default_reactions.py`
-- **test_register_unknown_type_no_reactions()** (2 connections) — `server/tests/unit/npc/test_npc_default_reactions.py`
-- **test_register_shopkeeper_logs_debug()** (2 connections) — `server/tests/unit/npc/test_npc_default_reactions.py`
-- **test_register_handles_import_error()** (2 connections) — `server/tests/unit/npc/test_npc_default_reactions.py`
-- **Register default reactions, room context, and chat display name.** (1 connections) — `server/npc/npc_base.py`
-- **Build and register default event reactions for this NPC (greeting, farewell, etc** (1 connections) — `server/npc/npc_default_reactions.py`
-- **Unit tests for default NPC event reaction registration.** (1 connections) — `server/tests/unit/npc/test_npc_default_reactions.py`
+- **test_websocket_handler_json_error.py** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
+- **mock_websocket()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
+- **test_handle_json_decode_error()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
+- **Unit tests for websocket handler JSON error handling.  Tests the JSON decode err** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
+- **Create a mock WebSocket.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
+- **Test _handle_json_decode_error() sends error response.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
 
 ## Relationships
 
-- [Realtime Subscribers](Realtime_Subscribers.md) (8 shared connections)
-- [rate limiter realtime](rate_limiter_realtime.md) (1 shared connections)
-- [quest chat game](quest_chat_game.md) (1 shared connections)
+- [combat schemas schema](combat_schemas_schema.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/npc_base.py`
-- `server/npc/npc_default_reactions.py`
-- `server/tests/unit/npc/test_npc_default_reactions.py`
+- `server/tests/unit/realtime/test_websocket_handler_json_error.py`
 
 ## Audit Trail
 
-- EXTRACTED: 44 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

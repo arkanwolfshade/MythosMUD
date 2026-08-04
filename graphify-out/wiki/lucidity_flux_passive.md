@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [world models rationale](world_models_rationale.md) (6 shared connections)
-- [lucidity services helpers](lucidity_services_helpers.md) (5 shared connections)
+- [lucidity services helpers](lucidity_services_helpers.md) (11 shared connections)
+- [combat models rationale](combat_models_rationale.md) (5 shared connections)
 - [rate lucidity services](rate_lucidity_services.md) (4 shared connections)
-- [combat models rationale](combat_models_rationale.md) (4 shared connections)
 - [models lucidity rationale](models_lucidity_rationale.md) (4 shared connections)
-- [NPC Combat](NPC_Combat.md) (3 shared connections)
-- [models npc rationale](models_npc_rationale.md) (3 shared connections)
+- [Loot Generation](Loot_Generation.md) (3 shared connections)
 - [services service phantom](services_service_phantom.md) (3 shared connections)
-- [combat services persistence](combat_services_persistence.md) (2 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (2 shared connections)
 - [Database Config](Database_Config.md) (2 shared connections)
-- [Magic Spell Service](Magic_Spell_Service.md) (1 shared connections)
-- [catatonia registry services](catatonia_registry_services.md) (1 shared connections)
+- [models npc rationale](models_npc_rationale.md) (1 shared connections)
+- [player room realtime](player_room_realtime.md) (1 shared connections)
+- [player death service](player_death_service.md) (1 shared connections)
+- [NPC Combat](NPC_Combat.md) (1 shared connections)
 
 ## Source Files
 

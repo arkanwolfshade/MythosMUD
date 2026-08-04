@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
 - [command commands handler](command_commands_handler.md) (1 shared connections)
 
 ## Source Files

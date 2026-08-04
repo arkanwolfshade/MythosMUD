@@ -33,12 +33,11 @@
 
 ## Relationships
 
-- [commands position system](commands_position_system.md) (3 shared connections)
-- [combat npc services](combat_npc_services.md) (3 shared connections)
-- [player preferences service](player_preferences_service.md) (3 shared connections)
-- [commands npc admin](commands_npc_admin.md) (2 shared connections)
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
-- [command factories create](command_factories_create.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (4 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (3 shared connections)
+- [commands rescue rationale](commands_rescue_rationale.md) (3 shared connections)
+- [commands party examples](commands_party_examples.md) (2 shared connections)
+- [commands admin mute](commands_admin_mute.md) (2 shared connections)
 - [connection realtime manager](connection_realtime_manager.md) (1 shared connections)
 
 ## Source Files

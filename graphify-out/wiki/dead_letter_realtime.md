@@ -1,47 +1,42 @@
 # dead letter realtime
 
-> 22 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **_parse_stat_datetime()** (16 connections) — `server/commands/look_npc.py`
-- **test_parse_stat_datetime_from_timestamp()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_parse_stat_datetime_from_datetime()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_parse_stat_datetime_from_iso_string()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_parse_stat_datetime_invalid()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_parse_stat_datetime_none()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_parse_stat_datetime_from_datetime()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_parse_stat_datetime_from_timestamp()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_parse_stat_datetime_from_iso_string()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_parse_stat_datetime_none()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_parse_stat_datetime_invalid()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **Parse datetime value from various formats and return formatted string.** (1 connections) — `server/commands/look_npc.py`
-- **Test parsing datetime from timestamp.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test parsing datetime from datetime object.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test parsing datetime from ISO string.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test parsing datetime with invalid value.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test parsing datetime with None.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test _parse_stat_datetime() handles datetime object.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **Test _parse_stat_datetime() handles timestamp.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **Test _parse_stat_datetime() handles ISO string.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **Test _parse_stat_datetime() returns 'Unknown' for None.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **Test _parse_stat_datetime() returns string representation for invalid input.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **decode_json_column()** (7 connections) — `server/container/utils.py`
+- **._build_prototype_payload()** (5 connections) — `server/container/bundles/game.py`
+- **._wire_user_manager_after_init()** (4 connections) — `server/container/bundles/game.py`
+- **._decode_json_column()** (4 connections) — `server/container/main.py`
+- **Any** (3 connections)
+- **Any** (3 connections)
+- **.get_service()** (3 connections) — `server/container/main.py`
+- **Wire user_manager into follow_service and nats_message_handler when present.** (1 connections) — `server/container/bundles/game.py`
+- **Build a single item prototype payload from a DB row for validation.** (1 connections) — `server/container/bundles/game.py`
+- **Delegate to shared util. Kept for backward compatibility.** (1 connections) — `server/container/main.py`
+- **Get a service by name.** (1 connections) — `server/container/main.py`
+- **Any** (1 connections)
+- **Decode a JSON column value, returning the type's default on failure.      Used b** (1 connections) — `server/container/utils.py`
 
 ## Relationships
 
-- [npc look commands](npc_look_commands.md) (6 shared connections)
-- [schemas calendar rationale](schemas_calendar_rationale.md) (6 shared connections)
-- [services service hallucination](services_service_hallucination.md) (3 shared connections)
+- [Error Conversion](Error_Conversion.md) (4 shared connections)
+- [nats services service](nats_services_service.md) (2 shared connections)
+- [time service rationale](time_service_rationale.md) (1 shared connections)
+- [services lucidity repository](services_lucidity_repository.md) (1 shared connections)
+- [command commands validation](command_commands_validation.md) (1 shared connections)
+- [websocket realtime handler](websocket_realtime_handler.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/look_npc.py`
-- `server/tests/unit/commands/test_look_npc.py`
-- `server/tests/unit/commands/test_look_npc_helpers.py`
+- `server/container/bundles/game.py`
+- `server/container/main.py`
+- `server/container/utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 57 (100%)
+- EXTRACTED: 35 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

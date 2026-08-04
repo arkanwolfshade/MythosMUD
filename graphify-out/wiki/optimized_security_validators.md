@@ -18,7 +18,7 @@
 ## Relationships
 
 - [optimized security validator](optimized_security_validator.md) (5 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
 - [realtime message handler](realtime_message_handler.md) (1 shared connections)
 
 ## Source Files

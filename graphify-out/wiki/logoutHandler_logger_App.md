@@ -33,15 +33,14 @@
 
 ## Relationships
 
-- [models npc rationale](models_npc_rationale.md) (9 shared connections)
-- [alias graph rationale](alias_graph_rationale.md) (5 shared connections)
+- [Loot Generation](Loot_Generation.md) (10 shared connections)
 - [command validator validators](command_validator_validators.md) (5 shared connections)
-- [command inventory models](command_inventory_models.md) (3 shared connections)
+- [command validation commands](command_validation_commands.md) (3 shared connections)
+- [alias graph rationale](alias_graph_rationale.md) (3 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (3 shared connections)
 - [command commands handler](command_commands_handler.md) (2 shared connections)
-- [command validation commands](command_validation_commands.md) (1 shared connections)
-- [command utility models](command_utility_models.md) (1 shared connections)
+- [nats services metrics](nats_services_metrics.md) (1 shared connections)
 - [Security Validator Tests](Security_Validator_Tests.md) (1 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
 
 ## Source Files
 

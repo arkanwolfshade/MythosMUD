@@ -1,10 +1,11 @@
 # schemas invite user
 
-> 50 nodes
+> 58 nodes
 
 ## Key Concepts
 
 - **test_async_persistence_delegates.py** (35 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **reset_async_persistence()** (6 connections) — `server/async_persistence.py`
 - **test_validate_and_fix_player_room_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
 - **test_apply_lucidity_loss_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
 - **test_apply_fear_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
@@ -15,6 +16,9 @@
 - **test_async_damage_player_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
 - **test_create_container_with_params()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
 - **test_create_container_with_kwargs()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_get_async_persistence_creates_instance()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_get_async_persistence_returns_same_instance()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_reset_async_persistence()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
 - **test_get_player_by_user_id_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
 - **test_get_container_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
 - **test_get_containers_by_room_id_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
@@ -25,28 +29,25 @@
 - **test_delete_container_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
 - **test_create_item_instance_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
 - **test_ensure_item_instance_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_item_instance_exists_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_soft_delete_player_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_player_columns_constant()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_profession_columns_constant()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- *... and 25 more nodes in this community*
+- *... and 33 more nodes in this community*
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (24 shared connections)
-- [world models rationale](world_models_rationale.md) (11 shared connections)
-- [commands combat handler](commands_combat_handler.md) (4 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (23 shared connections)
+- [combat models rationale](combat_models_rationale.md) (11 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (4 shared connections)
 - [persistence container item](persistence_container_item.md) (3 shared connections)
-- [realtime websocket initial](realtime_websocket_initial.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
 
 ## Source Files
 
+- `server/async_persistence.py`
 - `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
 
 ## Audit Trail
 
-- EXTRACTED: 131 (93%)
-- INFERRED: 10 (7%)
+- EXTRACTED: 153 (94%)
+- INFERRED: 10 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -33,9 +33,9 @@
 
 ## Relationships
 
-- [connection realtime statistics](connection_realtime_statistics.md) (6 shared connections)
-- [look command commands](look_command_commands.md) (2 shared connections)
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [connection realtime statistics](connection_realtime_statistics.md) (5 shared connections)
+- [look command commands](look_command_commands.md) (3 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
 
 ## Source Files
 

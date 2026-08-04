@@ -34,7 +34,7 @@
 ## Relationships
 
 - [message filtering realtime](message_filtering_realtime.md) (7 shared connections)
-- [nats exceptions services](nats_exceptions_services.md) (1 shared connections)
+- [combat validator validators](combat_validator_validators.md) (1 shared connections)
 
 ## Source Files
 

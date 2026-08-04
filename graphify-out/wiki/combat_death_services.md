@@ -1,35 +1,28 @@
 # combat death services
 
-> 13 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **_utc_now()** (8 connections) — `server/models/lucidity.py`
-- **test_lucidity_utils.py** (7 connections) — `server/tests/unit/models/test_lucidity_utils.py`
-- **test_utc_now_returns_datetime()** (3 connections) — `server/tests/unit/models/test_lucidity_utils.py`
-- **test_utc_now_returns_naive_datetime()** (3 connections) — `server/tests/unit/models/test_lucidity_utils.py`
-- **test_utc_now_returns_utc_time()** (3 connections) — `server/tests/unit/models/test_lucidity_utils.py`
-- **test_utc_now_returns_different_times()** (3 connections) — `server/tests/unit/models/test_lucidity_utils.py`
-- **datetime** (2 connections)
-- **Return naive UTC timestamps for PostgreSQL TIMESTAMP WITHOUT TIME ZONE compatibi** (1 connections) — `server/models/lucidity.py`
-- **Unit tests for lucidity model utility functions.  Tests the _utc_now utility fun** (1 connections) — `server/tests/unit/models/test_lucidity_utils.py`
-- **Test _utc_now returns a datetime object.** (1 connections) — `server/tests/unit/models/test_lucidity_utils.py`
-- **Test _utc_now returns naive datetime (tzinfo=None).** (1 connections) — `server/tests/unit/models/test_lucidity_utils.py`
-- **Test _utc_now returns time close to current UTC time.** (1 connections) — `server/tests/unit/models/test_lucidity_utils.py`
-- **Test _utc_now returns different times on subsequent calls.** (1 connections) — `server/tests/unit/models/test_lucidity_utils.py`
+- **._check_prerequisites()** (7 connections) — `server/game/quest/quest_service.py`
+- **._all_required_completed()** (4 connections) — `server/game/quest/quest_service.py`
+- **._any_required_completed()** (4 connections) — `server/game/quest/quest_service.py`
+- **Return True if the player has completed every quest in quest_ids.** (1 connections) — `server/game/quest/quest_service.py`
+- **Return True if the player has completed at least one quest in quest_ids.** (1 connections) — `server/game/quest/quest_service.py`
+- **Check DAG: requires_all (all must be completed) and requires_any (at least one).** (1 connections) — `server/game/quest/quest_service.py`
 
 ## Relationships
 
-- [world models rationale](world_models_rationale.md) (3 shared connections)
+- [quest game service](quest_game_service.md) (5 shared connections)
+- [quest service game](quest_service_game.md) (3 shared connections)
 
 ## Source Files
 
-- `server/models/lucidity.py`
-- `server/tests/unit/models/test_lucidity_utils.py`
+- `server/game/quest/quest_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 35 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

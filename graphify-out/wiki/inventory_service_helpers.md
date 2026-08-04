@@ -13,7 +13,7 @@
 
 ## Relationships
 
-- [retry nats handler](retry_nats_handler.md) (1 shared connections)
+- [container helpers endpoints](container_helpers_endpoints.md) (1 shared connections)
 
 ## Source Files
 

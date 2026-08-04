@@ -34,11 +34,10 @@
 ## Relationships
 
 - [npc service services](npc_service_services.md) (19 shared connections)
-- [commands admin mute](commands_admin_mute.md) (8 shared connections)
+- [commands admin mute](commands_admin_mute.md) (10 shared connections)
 - [player respawn event](player_respawn_event.md) (7 shared connections)
-- [commands npc admin](commands_npc_admin.md) (4 shared connections)
+- [commands party examples](commands_party_examples.md) (4 shared connections)
 - [Database Config](Database_Config.md) (4 shared connections)
-- [commands position system](commands_position_system.md) (2 shared connections)
 
 ## Source Files
 

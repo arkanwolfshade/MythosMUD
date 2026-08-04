@@ -1,11 +1,12 @@
 # container find inventory
 
-> 87 nodes
+> 89 nodes
 
 ## Key Concepts
 
 - **test_container_helpers_inventory_find.py** (55 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
 - **container_helpers_inventory_find.py** (32 connections) — `server/commands/container_helpers_inventory_find.py`
+- **container_helpers_inventory.py** (31 connections) — `server/commands/container_helpers_inventory.py`
 - **find_wearable_container()** (17 connections) — `server/commands/container_helpers_inventory_find.py`
 - **UUID** (16 connections)
 - **try_wearable_container_service()** (14 connections) — `server/commands/container_helpers_inventory_find.py`
@@ -28,30 +29,32 @@
 - **_component_metadata()** (4 connections) — `server/commands/container_helpers_inventory_find.py`
 - **_resolve_inner_uuid()** (4 connections) — `server/commands/container_helpers_inventory_find.py`
 - **_container_from_equip_dict()** (4 connections) — `server/commands/container_helpers_inventory_find.py`
-- **_fallback_create_equipment_container()** (4 connections) — `server/commands/container_helpers_inventory_find.py`
-- *... and 62 more nodes in this community*
+- *... and 64 more nodes in this community*
 
 ## Relationships
 
-- [container inventory helpers](container_inventory_helpers.md) (15 shared connections)
-- [retry nats handler](retry_nats_handler.md) (5 shared connections)
-- [world models rationale](world_models_rationale.md) (2 shared connections)
-- [commands inventory pickup](commands_inventory_pickup.md) (2 shared connections)
-- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (2 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
-- [event events serialization](event_events_serialization.md) (1 shared connections)
+- [container inventory helpers](container_inventory_helpers.md) (14 shared connections)
+- [container helpers endpoints](container_helpers_endpoints.md) (5 shared connections)
+- [container inventory display](container_inventory_display.md) (4 shared connections)
+- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (3 shared connections)
+- [commands inventory pickup](commands_inventory_pickup.md) (3 shared connections)
+- [combat models rationale](combat_models_rationale.md) (2 shared connections)
+- [commands inventory helpers](commands_inventory_helpers.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [room models instance](room_models_instance.md) (1 shared connections)
 - [Exception Containers](Exception_Containers.md) (1 shared connections)
 
 ## Source Files
 
+- `server/commands/container_helpers_inventory.py`
 - `server/commands/container_helpers_inventory_find.py`
 - `server/tests/unit/api/test_container_exception_handlers.py`
 - `server/tests/unit/commands/test_container_helpers_inventory_find.py`
 
 ## Audit Trail
 
-- EXTRACTED: 412 (97%)
-- INFERRED: 11 (3%)
+- EXTRACTED: 444 (98%)
+- INFERRED: 11 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

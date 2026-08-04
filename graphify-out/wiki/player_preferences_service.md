@@ -1,53 +1,53 @@
 # player preferences service
 
-> 91 nodes
+> 82 nodes
 
 ## Key Concepts
 
 - **test_player_preferences_service.py** (59 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **PlayerPreferencesService** (19 connections) — `server/services/player_preferences_service.py`
-- **._is_valid_player_id()** (11 connections) — `server/services/player_preferences_service.py`
-- **UUID** (10 connections)
-- **player_preferences_service.py** (9 connections) — `server/services/player_preferences_service.py`
-- **AsyncSession** (8 connections)
-- **Any** (8 connections)
-- **.update_default_channel()** (8 connections) — `server/services/player_preferences_service.py`
-- **.mute_channel()** (8 connections) — `server/services/player_preferences_service.py`
-- **.unmute_channel()** (8 connections) — `server/services/player_preferences_service.py`
-- **.is_channel_muted()** (8 connections) — `server/services/player_preferences_service.py`
-- **.create_player_preferences()** (7 connections) — `server/services/player_preferences_service.py`
-- **.get_player_preferences()** (7 connections) — `server/services/player_preferences_service.py`
-- **.get_muted_channels()** (7 connections) — `server/services/player_preferences_service.py`
-- **.delete_player_preferences()** (7 connections) — `server/services/player_preferences_service.py`
-- **._is_valid_channel()** (6 connections) — `server/services/player_preferences_service.py`
-- **preferences_service()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **sample_preferences()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **.__init__()** (2 connections) — `server/services/player_preferences_service.py`
-- **._is_valid_json_array()** (2 connections) — `server/services/player_preferences_service.py`
+- **test_create_player_preferences_success()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_create_player_preferences_already_exists()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_get_player_preferences_not_found()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_update_default_channel_success()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_update_default_channel_not_found()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_mute_channel_success()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_mute_channel_already_muted()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_unmute_channel_success()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_get_muted_channels_not_found()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_is_channel_muted_true()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_is_channel_muted_false()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_delete_player_preferences_success()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_delete_player_preferences_not_found()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_delete_player_preferences_database_error()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_mute_channel_database_error()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_is_channel_muted_not_found()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
 - **mock_session()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
 - **sample_player_id()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_preferences_service_initialization()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
 - **test_is_valid_player_id_uuid()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
 - **test_is_valid_player_id_string()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- *... and 66 more nodes in this community*
+- **test_is_valid_player_id_invalid_string()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_is_valid_player_id_empty()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_is_valid_channel_valid()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_is_valid_channel_invalid()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- *... and 57 more nodes in this community*
 
 ## Relationships
 
-- [npc combat service](npc_combat_service.md) (24 shared connections)
-- [world models rationale](world_models_rationale.md) (14 shared connections)
-- [argon2 auth rationale](argon2_auth_rationale.md) (3 shared connections)
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
-- [player service game](player_service_game.md) (1 shared connections)
+- [player requests schemas](player_requests_schemas.md) (17 shared connections)
+- [room infrastructure persistence](room_infrastructure_persistence.md) (8 shared connections)
+- [infrastructure persistence room](infrastructure_persistence_room.md) (4 shared connections)
+- [commands rescue rationale](commands_rescue_rationale.md) (3 shared connections)
+- [combat models rationale](combat_models_rationale.md) (1 shared connections)
+- [npc combat service](npc_combat_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/player_preferences_service.py`
 - `server/tests/unit/services/test_player_preferences_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 288 (97%)
-- INFERRED: 10 (3%)
+- EXTRACTED: 180 (92%)
+- INFERRED: 16 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

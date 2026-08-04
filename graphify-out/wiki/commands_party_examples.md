@@ -1,51 +1,59 @@
 # commands party examples
 
-> 48 nodes
+> 39 nodes
 
 ## Key Concepts
 
-- **AdminAuthService** (19 connections) — `server/services/admin_auth_service.py`
-- **.validate_permission()** (11 connections) — `server/services/admin_auth_service.py`
-- **AdminRole** (7 connections) — `server/services/admin_auth_service.py`
-- **AdminSession** (6 connections) — `server/services/admin_auth_service.py`
-- **.get_user_role()** (6 connections) — `server/services/admin_auth_service.py`
-- **._update_session()** (6 connections) — `server/services/admin_auth_service.py`
-- **._has_permission()** (5 connections) — `server/services/admin_auth_service.py`
-- **._log_audit_event()** (5 connections) — `server/services/admin_auth_service.py`
-- **_HasIsSuperuser** (4 connections) — `server/services/admin_auth_service.py`
-- **Protocol** (4 connections)
-- **_HasIsAdmin** (4 connections) — `server/services/admin_auth_service.py`
-- **_HasUsername** (4 connections) — `server/services/admin_auth_service.py`
-- **_HasId** (4 connections) — `server/services/admin_auth_service.py`
-- **.get_username()** (4 connections) — `server/services/admin_auth_service.py`
-- **.get_user_id()** (4 connections) — `server/services/admin_auth_service.py`
-- **Request** (4 connections)
-- **._check_rate_limit()** (4 connections) — `server/services/admin_auth_service.py`
-- **admin_auth_service()** (4 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **test_get_admin_auth_service()** (4 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **.get_active_sessions()** (3 connections) — `server/services/admin_auth_service.py`
-- **.get_audit_log()** (3 connections) — `server/services/admin_auth_service.py`
-- **test_admin_session_init()** (3 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **.__init__()** (2 connections) — `server/services/admin_auth_service.py`
-- **.__init__()** (2 connections) — `server/services/admin_auth_service.py`
-- **Any** (2 connections)
-- *... and 23 more nodes in this community*
+- **AliasStorage** (231 connections) — `server/alias_storage.py`
+- **._get_alias_file_path()** (8 connections) — `server/alias_storage.py`
+- **.get_player_aliases()** (8 connections) — `server/alias_storage.py`
+- **.save_player_aliases()** (7 connections) — `server/alias_storage.py`
+- **.create_alias()** (7 connections) — `server/alias_storage.py`
+- **._validate_alias_payload()** (7 connections) — `server/alias_storage.py`
+- **._load_alias_data()** (6 connections) — `server/alias_storage.py`
+- **._save_alias_data()** (6 connections) — `server/alias_storage.py`
+- **.add_alias()** (6 connections) — `server/alias_storage.py`
+- **Path** (4 connections)
+- **.remove_alias()** (4 connections) — `server/alias_storage.py`
+- **.get_alias()** (4 connections) — `server/alias_storage.py`
+- **.get_alias_count()** (4 connections) — `server/alias_storage.py`
+- **.backup_aliases()** (4 connections) — `server/alias_storage.py`
+- **Any** (3 connections)
+- **.clear_aliases()** (3 connections) — `server/alias_storage.py`
+- **.validate_alias_name()** (3 connections) — `server/alias_storage.py`
+- **.validate_alias_command()** (3 connections) — `server/alias_storage.py`
+- **.delete_player_aliases()** (3 connections) — `server/alias_storage.py`
+- **.__init__()** (2 connections) — `server/alias_storage.py`
+- **.list_alias_files()** (2 connections) — `server/alias_storage.py`
+- **Manages player alias storage in JSON files.      Each player's aliases are store** (1 connections) — `server/alias_storage.py`
+- **Get the file path for a player's aliases.          Human: reject path separators** (1 connections) — `server/alias_storage.py`
+- **Load alias data from JSON file.** (1 connections) — `server/alias_storage.py`
+- **Save alias data to JSON file.** (1 connections) — `server/alias_storage.py`
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
-- [admin auth service](admin_auth_service.md) (13 shared connections)
-- [inventory schemas schema](inventory_schemas_schema.md) (6 shared connections)
-- [container helpers endpoints](container_helpers_endpoints.md) (1 shared connections)
+- [commands npc admin](commands_npc_admin.md) (21 shared connections)
+- [command commands handler](command_commands_handler.md) (16 shared connections)
+- [commands magic rationale](commands_magic_rationale.md) (14 shared connections)
+- [commands admin mute](commands_admin_mute.md) (12 shared connections)
+- [NPC Combat](NPC_Combat.md) (9 shared connections)
+- [commands alias rationale](commands_alias_rationale.md) (7 shared connections)
+- [commands lucidity recovery](commands_lucidity_recovery.md) (7 shared connections)
+- [realtime real time](realtime_real_time.md) (7 shared connections)
+- [Loot Generation](Loot_Generation.md) (6 shared connections)
+- [position player service](position_player_service.md) (6 shared connections)
+- [room validator toolkit](room_validator_toolkit.md) (5 shared connections)
+- [commands inventory pickup](commands_inventory_pickup.md) (5 shared connections)
 
 ## Source Files
 
-- `server/services/admin_auth_service.py`
-- `server/tests/unit/services/test_admin_auth_service.py`
+- `server/alias_storage.py`
 
 ## Audit Trail
 
-- EXTRACTED: 137 (93%)
-- INFERRED: 11 (7%)
+- EXTRACTED: 321 (94%)
+- INFERRED: 22 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

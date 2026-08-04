@@ -36,15 +36,15 @@
 - [startup npc service](startup_npc_service.md) (11 shared connections)
 - [caching lru cache](caching_lru_cache.md) (9 shared connections)
 - [uuid services npc](uuid_services_npc.md) (7 shared connections)
-- [models npc rationale](models_npc_rationale.md) (7 shared connections)
 - [services lucidity repository](services_lucidity_repository.md) (6 shared connections)
 - [config rationale config()](config_rationale_config%28%29.md) (5 shared connections)
+- [command combat models](command_combat_models.md) (5 shared connections)
+- [Loot Generation](Loot_Generation.md) (4 shared connections)
 - [cache caching service](cache_caching_service.md) (3 shared connections)
-- [System Metrics](System_Metrics.md) (2 shared connections)
 - [room game service](room_game_service.md) (1 shared connections)
+- [npc shopkeeper rationale](npc_shopkeeper_rationale.md) (1 shared connections)
+- [models npc rationale](models_npc_rationale.md) (1 shared connections)
 - [cache lru caching](cache_lru_caching.md) (1 shared connections)
-- [command combat models](command_combat_models.md) (1 shared connections)
-- [health models rationale](health_models_rationale.md) (1 shared connections)
 
 ## Source Files
 

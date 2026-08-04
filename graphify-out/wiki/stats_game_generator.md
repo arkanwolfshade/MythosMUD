@@ -33,9 +33,10 @@
 
 ## Relationships
 
-- [commands inventory command](commands_inventory_command.md) (6 shared connections)
 - [npc spawn validator](npc_spawn_validator.md) (5 shared connections)
-- [command utility models](command_utility_models.md) (1 shared connections)
+- [commands inventory command](commands_inventory_command.md) (3 shared connections)
+- [container helpers endpoints](container_helpers_endpoints.md) (3 shared connections)
+- [nats services metrics](nats_services_metrics.md) (1 shared connections)
 - [combat npc mixin](combat_npc_mixin.md) (1 shared connections)
 
 ## Source Files

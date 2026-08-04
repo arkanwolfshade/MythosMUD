@@ -1,64 +1,60 @@
 # player service game
 
-> 90 nodes
+> 28 nodes
 
 ## Key Concepts
 
 - **factory.py** (45 connections) — `server/app/factory.py`
-- **UserCreate** (27 connections) — `server/auth/endpoints.py`
-- **test_endpoints_register.py** (22 connections) — `server/tests/unit/auth/test_endpoints_register.py`
-- **main.py** (15 connections) — `server/main.py`
-- **create_app()** (14 connections) — `server/app/factory.py`
 - **CORSConfigDict** (7 connections) — `server/app/factory.py`
 - **_register_v1_routers()** (7 connections) — `server/app/factory.py`
-- **test_register_user_duplicate_username()** (7 connections) — `server/tests/unit/auth/test_endpoints_register.py`
-- **test_register_user_integrity_error()** (7 connections) — `server/tests/unit/auth/test_endpoints_register.py`
-- **test_register_user_email_constraint_violation()** (7 connections) — `server/tests/unit/auth/test_endpoints_register.py`
-- **test_register_user_username_constraint_violation()** (7 connections) — `server/tests/unit/auth/test_endpoints_register.py`
-- **test_register_user_generic_constraint_violation()** (7 connections) — `server/tests/unit/auth/test_endpoints_register.py`
 - **_get_cors_config_from_app_config()** (6 connections) — `server/app/factory.py`
 - **_parse_cors_env_vars()** (6 connections) — `server/app/factory.py`
 - **_configure_cors()** (6 connections) — `server/app/factory.py`
 - **UserRead** (6 connections) — `server/auth/endpoints.py`
-- **UserUpdate** (6 connections) — `server/auth/endpoints.py`
-- **_create_user_object()** (6 connections) — `server/auth/endpoints.py`
-- **IntegrityError** (6 connections)
-- **test_register_user_success()** (6 connections) — `server/tests/unit/auth/test_endpoints_register.py`
 - **_apply_cors_env_overrides()** (5 connections) — `server/app/factory.py`
-- **test_register_user_shutdown_pending()** (5 connections) — `server/tests/unit/auth/test_endpoints_register.py`
-- **test_register_user_no_email()** (5 connections) — `server/tests/unit/auth/test_endpoints_register.py`
-- **test_register_user_invite_validation_failure()** (5 connections) — `server/tests/unit/auth/test_endpoints_register.py`
-- **test_register_user_invite_marking_success()** (5 connections) — `server/tests/unit/auth/test_endpoints_register.py`
-- *... and 65 more nodes in this community*
+- **CORSConfigOverrides** (4 connections) — `server/app/factory.py`
+- **_get_default_cors_config()** (4 connections) — `server/app/factory.py`
+- **_parse_cors_origin_list()** (4 connections) — `server/app/factory.py`
+- **_first_set_env()** (3 connections) — `server/app/factory.py`
+- **_try_json_str_list()** (3 connections) — `server/app/factory.py`
+- **FastAPI** (3 connections)
+- **TypedDict** (2 connections)
+- **FastAPI application factory for MythosMUD server.  This module handles FastAPI a** (1 connections) — `server/app/factory.py`
+- **Type definition for CORS configuration dictionary.** (1 connections) — `server/app/factory.py`
+- **Partial CORS overrides from environment variables.** (1 connections) — `server/app/factory.py`
+- **Get default CORS configuration values.      Returns:         CORSConfigDict: Dic** (1 connections) — `server/app/factory.py`
+- **Get CORS configuration from AppConfig, with fallback to defaults.      Returns:** (1 connections) — `server/app/factory.py`
+- **Return the first non-empty environment value among keys.** (1 connections) — `server/app/factory.py`
+- **Parse candidate as a JSON string list, or None on failure.** (1 connections) — `server/app/factory.py`
+- **Parse CORS origins env value as JSON array or comma-separated list.** (1 connections) — `server/app/factory.py`
+- **Parse CORS-related environment variables and return overrides.      Environment** (1 connections) — `server/app/factory.py`
+- **Merge environment CORS overrides into the full config in place.** (1 connections) — `server/app/factory.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [ascii map renderer](ascii_map_renderer.md) (18 shared connections)
-- [Exception Containers](Exception_Containers.md) (12 shared connections)
-- [models npc rationale](models_npc_rationale.md) (11 shared connections)
-- [player requests schemas](player_requests_schemas.md) (11 shared connections)
-- [npc combat service](npc_combat_service.md) (11 shared connections)
-- [auth users rationale](auth_users_rationale.md) (4 shared connections)
-- [admin auth service](admin_auth_service.md) (3 shared connections)
-- [middleware comprehensive logging](middleware_comprehensive_logging.md) (3 shared connections)
-- [middleware error handling](middleware_error_handling.md) (3 shared connections)
+- [player requests schemas](player_requests_schemas.md) (8 shared connections)
+- [npc combat services](npc_combat_services.md) (5 shared connections)
+- [Loot Generation](Loot_Generation.md) (3 shared connections)
+- [command combat models](command_combat_models.md) (2 shared connections)
 - [Player Stats](Player_Stats.md) (2 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [message broadcaster realtime](message_broadcaster_realtime.md) (2 shared connections)
+- [Magic Spell Service](Magic_Spell_Service.md) (2 shared connections)
+- [auth users rationale](auth_users_rationale.md) (2 shared connections)
+- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [config models cors](config_models_cors.md) (2 shared connections)
+- [middleware comprehensive logging](middleware_comprehensive_logging.md) (2 shared connections)
+- [middleware error handling](middleware_error_handling.md) (2 shared connections)
+- [persistence rationale player](persistence_rationale_player.md) (2 shared connections)
 
 ## Source Files
 
-- `scripts/generate_openapi_spec.py`
 - `server/app/factory.py`
 - `server/auth/endpoints.py`
-- `server/main.py`
-- `server/tests/unit/auth/test_endpoints_register.py`
-- `server/tests/unit/services/test_player_preferences_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 320 (88%)
-- INFERRED: 45 (12%)
+- EXTRACTED: 118 (95%)
+- INFERRED: 6 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

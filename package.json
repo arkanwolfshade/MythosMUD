@@ -1,9 +1,9 @@
 {
   "dependencies": {
-    "eslint": "^10.0.2"
+    "eslint": "^10.8.0"
   },
   "devDependencies": {
-    "markdownlint-cli": "^0.49.0"
+    "markdownlint-cli": "^0.49.1"
   },
   "overrides": {
     "flatted": "^3.4.2",

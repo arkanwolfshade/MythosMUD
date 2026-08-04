@@ -33,10 +33,9 @@
 
 ## Relationships
 
-- [combat validator validators](combat_validator_validators.md) (3 shared connections)
-- [nats services service](nats_services_service.md) (3 shared connections)
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
-- [command utility models](command_utility_models.md) (2 shared connections)
+- [combat validator validators](combat_validator_validators.md) (6 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
+- [nats services metrics](nats_services_metrics.md) (2 shared connections)
 
 ## Source Files
 

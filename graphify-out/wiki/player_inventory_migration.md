@@ -16,7 +16,7 @@
 
 ## Relationships
 
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
 
 ## Source Files
 

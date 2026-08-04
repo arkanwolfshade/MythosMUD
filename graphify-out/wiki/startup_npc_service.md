@@ -40,8 +40,8 @@
 - [room build realtime](room_build_realtime.md) (3 shared connections)
 - [cache caching service](cache_caching_service.md) (3 shared connections)
 - [caching lru cache](caching_lru_cache.md) (1 shared connections)
-- [holiday service services](holiday_service_services.md) (1 shared connections)
-- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [websocket realtime handler](websocket_realtime_handler.md) (1 shared connections)
+- [nats services service](nats_services_service.md) (1 shared connections)
 - [room game service](room_game_service.md) (1 shared connections)
 
 ## Source Files

@@ -1,6 +1,6 @@
 # combat services initialization
 
-> 32 nodes
+> 30 nodes
 
 ## Key Concepts
 
@@ -16,7 +16,6 @@
 - **._log_parsed_command_inspection()** (4 connections) — `server/commands/command_service.py`
 - **._log_model_dump_result()** (3 connections) — `server/commands/command_service.py`
 - **.register_command_handler()** (3 connections) — `server/commands/command_service.py`
-- **command_service()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
 - **.__init__()** (2 connections) — `server/commands/command_service.py`
 - **CommandHandler** (2 connections)
 - **.get_available_commands()** (2 connections) — `server/commands/command_service.py`
@@ -29,26 +28,27 @@
 - **Extract non-private, non-callable attributes from parsed_command, excluding keys** (1 connections) — `server/commands/command_service.py`
 - **Extract fields from parsed_command using model_dump or fallback method.** (1 connections) — `server/commands/command_service.py`
 - **Log parsed command object inspection details.** (1 connections) — `server/commands/command_service.py`
-- *... and 7 more nodes in this community*
+- **Log model_dump result details.** (1 connections) — `server/commands/command_service.py`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
-- [commands npc admin](commands_npc_admin.md) (3 shared connections)
-- [commands position system](commands_position_system.md) (2 shared connections)
+- [commands party examples](commands_party_examples.md) (3 shared connections)
 - [health service services](health_service_services.md) (2 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
 - [command commands handler](command_commands_handler.md) (1 shared connections)
+- [commands alias rationale](commands_alias_rationale.md) (1 shared connections)
+- [commands admin mute](commands_admin_mute.md) (1 shared connections)
 - [Security Validator Tests](Security_Validator_Tests.md) (1 shared connections)
 - [command parser rationale](command_parser_rationale.md) (1 shared connections)
 
 ## Source Files
 
 - `server/commands/command_service.py`
-- `server/tests/unit/commands/test_command_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 97 (100%)
+- EXTRACTED: 93 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

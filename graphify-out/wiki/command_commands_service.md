@@ -33,15 +33,10 @@
 
 ## Relationships
 
-- [Database Config](Database_Config.md) (12 shared connections)
-- [models npc rationale](models_npc_rationale.md) (5 shared connections)
-- [command inventory models](command_inventory_models.md) (4 shared connections)
-- [command inventory factories](command_inventory_factories.md) (3 shared connections)
-- [nats services metrics](nats_services_metrics.md) (2 shared connections)
-- [combat npc services](combat_npc_services.md) (1 shared connections)
-- [NPC Combat](NPC_Combat.md) (1 shared connections)
-- [command admin setlucidity](command_admin_setlucidity.md) (1 shared connections)
-- [persistence container item](persistence_container_item.md) (1 shared connections)
+- [Database Config](Database_Config.md) (13 shared connections)
+- [Loot Generation](Loot_Generation.md) (9 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (5 shared connections)
+- [persistence container item](persistence_container_item.md) (3 shared connections)
 
 ## Source Files
 

@@ -1,30 +1,31 @@
 # payload realtime optimizer
 
-> 9 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **.optimize_payload()** (5 connections) — `server/realtime/payload_optimizer.py`
-- **.get_payload_size()** (4 connections) — `server/realtime/payload_optimizer.py`
-- **Any** (4 connections)
-- **.compress_payload()** (4 connections) — `server/realtime/payload_optimizer.py`
-- **.create_incremental_update()** (3 connections) — `server/realtime/payload_optimizer.py`
-- **Calculate the size of a payload in bytes.          Args:             payload: Th** (1 connections) — `server/realtime/payload_optimizer.py`
-- **Compress a large payload using gzip compression.          Args:             payl** (1 connections) — `server/realtime/payload_optimizer.py`
-- **Optimize a payload by applying size limits and compression if needed.          A** (1 connections) — `server/realtime/payload_optimizer.py`
-- **Create an incremental update payload containing only changed fields.          Ar** (1 connections) — `server/realtime/payload_optimizer.py`
+- **.initialize_nats_combat()** (7 connections) — `server/container/bundles/combat.py`
+- **._validate_nats_combat_prerequisites()** (4 connections) — `server/container/bundles/combat.py`
+- **._start_nats_message_handler()** (4 connections) — `server/container/bundles/combat.py`
+- **._handle_nats_unavailable()** (3 connections) — `server/container/bundles/combat.py`
+- **Raise if prerequisites for NATS combat are missing.** (1 connections) — `server/container/bundles/combat.py`
+- **Start NATS message handler if available. Logs and swallows errors.** (1 connections) — `server/container/bundles/combat.py`
+- **Handle case when NATS is not connected. Raises in prod, sets combat_service to N** (1 connections) — `server/container/bundles/combat.py`
+- **Initialize NATS-dependent combat service and start NATS message handler.** (1 connections) — `server/container/bundles/combat.py`
 
 ## Relationships
 
-- [npc event handlers](npc_event_handlers.md) (4 shared connections)
+- [nats services service](nats_services_service.md) (4 shared connections)
+- [Error Conversion](Error_Conversion.md) (3 shared connections)
+- [npc database infrastructure](npc_database_infrastructure.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/payload_optimizer.py`
+- `server/container/bundles/combat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 24 (100%)
+- EXTRACTED: 22 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

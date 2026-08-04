@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **mock_persistence()** (2 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
-- **Persistence mock with async get_player_by_id for integration tests.** (1 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **test_subscribe_player_to_room_error()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **Test subscribe_player_to_room() handles subscription errors.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Relationships
 
-- [services nats service](services_nats_service.md) (1 shared connections)
+- [player room event](player_room_event.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Audit Trail
 

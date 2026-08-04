@@ -1,43 +1,45 @@
 # calendar models rationale
 
-> 18 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **test_level_service.py** (16 connections) — `server/tests/unit/game/test_level_service.py`
-- **level_service()** (3 connections) — `server/tests/unit/game/test_level_service.py`
-- **mock_persistence()** (2 connections) — `server/tests/unit/game/test_level_service.py`
-- **sample_player()** (2 connections) — `server/tests/unit/game/test_level_service.py`
-- **test_grant_xp_zero_no_op()** (2 connections) — `server/tests/unit/game/test_level_service.py`
-- **test_grant_xp_negative_raises()** (2 connections) — `server/tests/unit/game/test_level_service.py`
-- **test_grant_xp_player_not_found_raises()** (2 connections) — `server/tests/unit/game/test_level_service.py`
-- **test_grant_xp_increases_xp_and_persists()** (2 connections) — `server/tests/unit/game/test_level_service.py`
-- **test_check_level_up_player_not_found_raises()** (2 connections) — `server/tests/unit/game/test_level_service.py`
-- **Unit tests for LevelService: grant_xp, check_level_up, level-up hook.  Character** (1 connections) — `server/tests/unit/game/test_level_service.py`
-- **Mock async persistence with get_player_by_id and save_player.** (1 connections) — `server/tests/unit/game/test_level_service.py`
-- **LevelService with mocked persistence.** (1 connections) — `server/tests/unit/game/test_level_service.py`
-- **Player-like object with experience_points and level.** (1 connections) — `server/tests/unit/game/test_level_service.py`
-- **grant_xp(amount=0) does not load or save.** (1 connections) — `server/tests/unit/game/test_level_service.py`
-- **grant_xp(amount < 0) raises ValueError.** (1 connections) — `server/tests/unit/game/test_level_service.py`
-- **grant_xp when player not found raises ValueError.** (1 connections) — `server/tests/unit/game/test_level_service.py`
-- **grant_xp adds amount to experience_points and saves (level unchanged).** (1 connections) — `server/tests/unit/game/test_level_service.py`
-- **check_level_up when player not found raises ValueError.** (1 connections) — `server/tests/unit/game/test_level_service.py`
+- **NPCSpawnRuleCRUDMixin** (10 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **._execute_create_spawn_rule()** (8 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **_row_to_npc_spawn_rule()** (8 connections) — `server/services/npc_service_models.py`
+- **.create_spawn_rule()** (7 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **.get_spawn_rules()** (6 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **AsyncSession** (6 connections)
+- **.get_spawn_rule()** (6 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **._validate_spawn_rule_inputs()** (4 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **.delete_spawn_rule()** (4 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **Any** (2 connections)
+- **Any** (2 connections)
+- **Mixin providing NPC spawn rule CRUD operations.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **Get all NPC spawn rules.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **Get a specific NPC spawn rule by ID.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **Create a new NPC spawn rule.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **Validate NPC definition existence and population counts for spawn rule creation.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **Execute create_spawn_rule stored procedure and return the created spawn rule.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **Delete an NPC spawn rule.** (1 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **Map procedure result row to NPCSpawnRule model.** (1 connections) — `server/services/npc_service_models.py`
 
 ## Relationships
 
-- [message formatters realtime](message_formatters_realtime.md) (3 shared connections)
-- [quests players rationale](quests_players_rationale.md) (2 shared connections)
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (2 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (5 shared connections)
+- [models npc rationale](models_npc_rationale.md) (5 shared connections)
+- [Database Config](Database_Config.md) (2 shared connections)
+- [player death service](player_death_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_level_service.py`
+- `server/services/npc_service/spawn_rule_crud.py`
+- `server/services/npc_service_models.py`
 
 ## Audit Trail
 
-- EXTRACTED: 42 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 70 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

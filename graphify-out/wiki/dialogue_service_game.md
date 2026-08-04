@@ -1,6 +1,6 @@
 # dialogue service game
 
-> 71 nodes
+> 69 nodes
 
 ## Key Concepts
 
@@ -12,10 +12,8 @@
 - **test_dialogue_service.py** (12 connections) — `server/tests/unit/game/test_dialogue_service.py`
 - **._present_node()** (10 connections) — `server/game/dialogue/dialogue_service.py`
 - **.choose_option()** (9 connections) — `server/game/dialogue/dialogue_service.py`
-- **get_dialogue_service()** (9 connections) — `server/game/dialogue/dialogue_service.py`
 - **UUID** (8 connections)
 - **__init__.py** (7 connections) — `server/game/dialogue/__init__.py`
-- **format_dialogue_prompt()** (7 connections) — `server/game/dialogue/dialogue_service.py`
 - **.clear_cursor()** (7 connections) — `server/game/dialogue/dialogue_service.py`
 - **.get_cursor()** (6 connections) — `server/game/dialogue/dialogue_service.py`
 - **.start_with_npc()** (6 connections) — `server/game/dialogue/dialogue_service.py`
@@ -28,17 +26,18 @@
 - **dialogue_tree.py** (5 connections) — `server/schemas/dialogue/dialogue_tree.py`
 - **._invalid_option_message()** (4 connections) — `server/game/dialogue/dialogue_service.py`
 - **DialogueOption** (4 connections) — `server/schemas/dialogue/dialogue_tree.py`
+- **test_dialogue_tree_schema_rejects_bad_start()** (4 connections) — `server/tests/unit/api/test_dialogue_definitions_api.py`
 - **test_dialogue_tree_rejects_unknown_next()** (4 connections) — `server/tests/unit/game/test_dialogue_service.py`
-- *... and 46 more nodes in this community*
+- **test_dialogue_tree_rejects_empty_string_next()** (4 connections) — `server/tests/unit/game/test_dialogue_service.py`
+- *... and 44 more nodes in this community*
 
 ## Relationships
 
-- [commands communication flows](commands_communication_flows.md) (8 shared connections)
+- [player cache rationale](player_cache_rationale.md) (10 shared connections)
 - [Database Config](Database_Config.md) (6 shared connections)
 - [player preferences services](player_preferences_services.md) (6 shared connections)
-- [command inventory models](command_inventory_models.md) (3 shared connections)
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
-- [commands command rationale](commands_command_rationale.md) (2 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (4 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
 
 ## Source Files
 
@@ -46,13 +45,14 @@
 - `server/game/dialogue/dialogue_service.py`
 - `server/schemas/dialogue/__init__.py`
 - `server/schemas/dialogue/dialogue_tree.py`
+- `server/tests/unit/api/test_dialogue_definitions_api.py`
 - `server/tests/unit/commands/test_talk_command.py`
 - `server/tests/unit/game/test_dialogue_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 271 (98%)
-- INFERRED: 6 (2%)
+- EXTRACTED: 257 (97%)
+- INFERRED: 7 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

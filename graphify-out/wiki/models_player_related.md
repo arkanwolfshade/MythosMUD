@@ -1,6 +1,6 @@
 # models player related
 
-> 53 nodes
+> 55 nodes
 
 ## Key Concepts
 
@@ -18,6 +18,7 @@
 - **_handle_party_leave()** (5 connections) — `server/commands/party_commands.py`
 - **_handle_party_list()** (5 connections) — `server/commands/party_commands.py`
 - **_get_container()** (4 connections) — `server/commands/party_commands.py`
+- **_services_from_container()** (4 connections) — `server/realtime/websocket_handler_app_state.py`
 - **test_handle_party_command_player_not_in_game()** (4 connections) — `server/tests/unit/commands/test_party_commands.py`
 - **test_handle_party_command_list_not_in_party()** (4 connections) — `server/tests/unit/commands/test_party_commands.py`
 - **test_handle_party_command_list_with_members()** (4 connections) — `server/tests/unit/commands/test_party_commands.py`
@@ -28,34 +29,34 @@
 - **test_handle_party_command_unknown_subcommand()** (4 connections) — `server/tests/unit/commands/test_party_commands.py`
 - **test_handle_party_command_no_party_service()** (3 connections) — `server/tests/unit/commands/test_party_commands.py`
 - **test_handle_party_leave_not_in_party()** (3 connections) — `server/tests/unit/commands/test_party_commands.py`
-- **test_handle_party_chat_no_party()** (3 connections) — `server/tests/unit/commands/test_party_commands.py`
-- *... and 28 more nodes in this community*
+- *... and 30 more nodes in this community*
 
 ## Relationships
 
 - [middleware correlation rationale](middleware_correlation_rationale.md) (6 shared connections)
-- [NPC Combat](NPC_Combat.md) (6 shared connections)
-- [commands position system](commands_position_system.md) (4 shared connections)
-- [models npc rationale](models_npc_rationale.md) (4 shared connections)
-- [commands admin mute](commands_admin_mute.md) (2 shared connections)
-- [commands npc admin](commands_npc_admin.md) (2 shared connections)
-- [command commands handler](command_commands_handler.md) (1 shared connections)
-- [commands command validation](commands_command_validation.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (5 shared connections)
+- [target resolution service](target_resolution_service.md) (4 shared connections)
+- [commands admin mute](commands_admin_mute.md) (3 shared connections)
+- [command commands handler](command_commands_handler.md) (2 shared connections)
+- [combat schemas schema](combat_schemas_schema.md) (2 shared connections)
+- [commands party examples](commands_party_examples.md) (2 shared connections)
+- [coercion int inventory](coercion_int_inventory.md) (2 shared connections)
 - [container schemas containers](container_schemas_containers.md) (1 shared connections)
-- [commands communication flows](commands_communication_flows.md) (1 shared connections)
+- [command models admin](command_models_admin.md) (1 shared connections)
+- [rate limiter services](rate_limiter_services.md) (1 shared connections)
 - [commands emote rationale](commands_emote_rationale.md) (1 shared connections)
-- [services ascii map](services_ascii_map.md) (1 shared connections)
 
 ## Source Files
 
 - `docs/examples/logging/fastapi_integration.py`
 - `server/commands/party_commands.py`
+- `server/realtime/websocket_handler_app_state.py`
 - `server/tests/unit/commands/test_party_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 206 (91%)
-- INFERRED: 20 (9%)
+- EXTRACTED: 210 (91%)
+- INFERRED: 21 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

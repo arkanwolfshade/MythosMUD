@@ -1,39 +1,37 @@
 # security sessionManager SessionManager
 
-> 15 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **format_combat_status()** (6 connections) — `server/commands/combat_helpers.py`
-- **get_combat_target()** (6 connections) — `server/commands/combat_helpers.py`
-- **test_combat_helpers.py** (6 connections) — `server/tests/unit/commands/test_combat_helpers.py`
-- **test_format_combat_status_in_combat()** (3 connections) — `server/tests/unit/commands/test_combat_helpers.py`
-- **test_format_combat_status_not_in_combat()** (3 connections) — `server/tests/unit/commands/test_combat_helpers.py`
-- **test_get_combat_target()** (3 connections) — `server/tests/unit/commands/test_combat_helpers.py`
-- **test_get_combat_target_not_found()** (3 connections) — `server/tests/unit/commands/test_combat_helpers.py`
-- **Any** (2 connections)
-- **Produce a human-readable combat status string.      This helper is retained for** (1 connections) — `server/commands/combat_helpers.py`
-- **Resolve a combat target by name.      The current implementation is intentionall** (1 connections) — `server/commands/combat_helpers.py`
-- **Unit tests for combat command helper functions.  Tests helper functions in comba** (1 connections) — `server/tests/unit/commands/test_combat_helpers.py`
-- **Test format_combat_status() formats combat status.** (1 connections) — `server/tests/unit/commands/test_combat_helpers.py`
-- **Test format_combat_status() handles player not in combat.** (1 connections) — `server/tests/unit/commands/test_combat_helpers.py`
-- **Test get_combat_target() finds target.** (1 connections) — `server/tests/unit/commands/test_combat_helpers.py`
-- **Test get_combat_target() returns None when target not found.** (1 connections) — `server/tests/unit/commands/test_combat_helpers.py`
+- **UUID** (14 connections)
+- **.delete_player()** (9 connections) — `server/game/player_service.py`
+- **.get_player_by_id()** (8 connections) — `server/game/player_service.py`
+- **.soft_delete_character()** (7 connections) — `server/game/player_service.py`
+- **.validate_character_access()** (5 connections) — `server/game/player_service.py`
+- **Get a player by their ID.          Args:             player_id: The player's ID** (1 connections) — `server/game/player_service.py`
+- **Delete a player character.          Args:             player_id: The player's ID** (1 connections) — `server/game/player_service.py`
+- **Validate that a character exists, belongs to the user, and is not deleted.** (1 connections) — `server/game/player_service.py`
+- **Soft delete a character (sets is_deleted=True, deleted_at=timestamp).          M** (1 connections) — `server/game/player_service.py`
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (3 shared connections)
-- [combat flee commands](combat_flee_commands.md) (2 shared connections)
+- [coercion int inventory](coercion_int_inventory.md) (14 shared connections)
+- [Loot Generation](Loot_Generation.md) (3 shared connections)
+- [Player Stats](Player_Stats.md) (2 shared connections)
+- [Database Config](Database_Config.md) (2 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (2 shared connections)
+- [commands party examples](commands_party_examples.md) (1 shared connections)
+- [models npc rationale](models_npc_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/combat_helpers.py`
-- `server/tests/unit/commands/test_combat_helpers.py`
+- `server/game/player_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 31 (79%)
-- INFERRED: 8 (21%)
+- EXTRACTED: 43 (91%)
+- INFERRED: 4 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

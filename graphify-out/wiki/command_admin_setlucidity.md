@@ -1,62 +1,53 @@
 # command admin setlucidity
 
-> 34 nodes
+> 27 nodes
 
 ## Key Concepts
 
-- **ExperienceRepository** (28 connections) — `server/persistence/repositories/experience_repository.py`
-- **experience_repository.py** (16 connections) — `server/persistence/repositories/experience_repository.py`
-- **test_experience_repository.py** (16 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
-- **.__init__()** (13 connections) — `server/async_persistence.py`
-- **.update_player_xp()** (7 connections) — `server/persistence/repositories/experience_repository.py`
-- **.gain_occult_knowledge()** (6 connections) — `server/game/mechanics.py`
-- **.gain_experience()** (6 connections) — `server/persistence/repositories/experience_repository.py`
-- **.update_player_stat_field()** (6 connections) — `server/persistence/repositories/experience_repository.py`
-- **.apply_lucidity_loss()** (5 connections) — `server/game/mechanics.py`
-- **UUID** (5 connections)
-- **.__init__()** (4 connections) — `server/persistence/repositories/experience_repository.py`
-- **test_update_player_xp_player_not_found()** (3 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
-- **test_update_player_stat_field_db_error()** (3 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
-- **Any** (2 connections)
-- **Player** (2 connections)
-- **repo()** (2 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
-- **test_gain_experience_negative_amount()** (2 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
-- **test_gain_experience_success()** (2 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
-- **test_gain_experience_publishes_event()** (2 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
-- **test_update_player_xp_negative_delta()** (2 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
-- **test_update_player_xp_success()** (2 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
-- **test_update_player_stat_field_invalid_name()** (2 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
-- **test_update_player_stat_field_invalid_delta_type()** (2 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
-- **test_update_player_stat_field_success()** (2 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
-- **Initialize the async persistence layer.          This facade delegates to focuse** (1 connections) — `server/async_persistence.py`
-- *... and 9 more nodes in this community*
+- **_get_enum_value()** (9 connections) — `server/services/wearable_container_service.py`
+- **_filter_container_data()** (9 connections) — `server/services/wearable_container_service.py`
+- **Any** (8 connections)
+- **.add_items_to_wearable_container()** (8 connections) — `server/services/wearable_container_service.py`
+- **.update_wearable_container_items()** (8 connections) — `server/services/wearable_container_service.py`
+- **UUID** (7 connections)
+- **.handle_equip_wearable_container()** (6 connections) — `server/services/wearable_container_service.py`
+- **.handle_unequip_wearable_container()** (6 connections) — `server/services/wearable_container_service.py`
+- **.handle_container_overflow()** (6 connections) — `server/services/wearable_container_service.py`
+- **.get_wearable_containers_for_player()** (5 connections) — `server/services/wearable_container_service.py`
+- **.__init__()** (3 connections) — `server/services/wearable_container_service.py`
+- **test_get_enum_value_with_enum()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_get_enum_value_with_string()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_filter_container_data()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **ContainerComponent** (1 connections)
+- **Safely get enum value, handling both enum instances and string values.      When** (1 connections) — `server/services/wearable_container_service.py`
+- **Filter out database-only fields from container data before validation.      The** (1 connections) — `server/services/wearable_container_service.py`
+- **Initialize the wearable container service.          Args:             persistenc** (1 connections) — `server/services/wearable_container_service.py`
+- **Handle equipping a wearable container item.          Creates a container in Post** (1 connections) — `server/services/wearable_container_service.py`
+- **Handle unequipping a wearable container item.          Preserves the container a** (1 connections) — `server/services/wearable_container_service.py`
+- **Get all wearable containers for a player.          Args:             player_id:** (1 connections) — `server/services/wearable_container_service.py`
+- **Add items to a wearable container.          Args:             player_id: UUID of** (1 connections) — `server/services/wearable_container_service.py`
+- **Update items in a wearable container.          Args:             player_id: UUID** (1 connections) — `server/services/wearable_container_service.py`
+- **Handle container overflow by spilling items to inventory or ground.          Arg** (1 connections) — `server/services/wearable_container_service.py`
+- **Test _get_enum_value returns value from enum instance.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [Database Config](Database_Config.md) (22 shared connections)
-- [models npc rationale](models_npc_rationale.md) (5 shared connections)
-- [world models rationale](world_models_rationale.md) (4 shared connections)
-- [room persistence loader](room_persistence_loader.md) (3 shared connections)
-- [command inventory factories](command_inventory_factories.md) (3 shared connections)
-- [item models rationale](item_models_rationale.md) (3 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [persistence container item](persistence_container_item.md) (2 shared connections)
-- [command inventory models](command_inventory_models.md) (2 shared connections)
-- [persistence container helpers](persistence_container_helpers.md) (1 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
-- [command commands service](command_commands_service.md) (1 shared connections)
+- [container helpers endpoints](container_helpers_endpoints.md) (7 shared connections)
+- [wearable container service](wearable_container_service.md) (5 shared connections)
+- [message broadcaster realtime](message_broadcaster_realtime.md) (4 shared connections)
+- [Database Config](Database_Config.md) (4 shared connections)
+- [Loot Generation](Loot_Generation.md) (3 shared connections)
 
 ## Source Files
 
-- `server/async_persistence.py`
-- `server/game/mechanics.py`
-- `server/persistence/repositories/experience_repository.py`
-- `server/tests/unit/persistence/repositories/test_experience_repository.py`
+- `server/services/wearable_container_service.py`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 137 (91%)
-- INFERRED: 13 (9%)
+- EXTRACTED: 93 (96%)
+- INFERRED: 4 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

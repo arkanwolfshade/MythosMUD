@@ -1,38 +1,24 @@
 # cache caching lru
 
-> 10 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **_get_lifecycle_manager()** (11 connections) — `server/commands/look_npc.py`
-- **_get_npcs_in_room()** (7 connections) — `server/commands/look_npc.py`
-- **test_get_lifecycle_manager_success()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_get_lifecycle_manager_no_service()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_get_lifecycle_manager_no_lifecycle_manager()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Get the lifecycle manager from the NPC instance service.** (1 connections) — `server/commands/look_npc.py`
-- **Get list of NPC names in a room from lifecycle manager.** (1 connections) — `server/commands/look_npc.py`
-- **Test getting lifecycle manager successfully.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test getting lifecycle manager when service not available.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test getting lifecycle manager when lifecycle_manager not available.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_find_item_in_equipped_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test finding item in equipped items when not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
 
 ## Relationships
 
-- [npc look commands](npc_look_commands.md) (4 shared connections)
-- [services service hallucination](services_service_hallucination.md) (3 shared connections)
-- [commands quest rationale](commands_quest_rationale.md) (2 shared connections)
-- [look helpers commands](look_helpers_commands.md) (2 shared connections)
-- [AppRouter main AppRouter()](AppRouter_main_AppRouter%28%29.md) (1 shared connections)
-- [config rationale config()](config_rationale_config%28%29.md) (1 shared connections)
-- [schemas calendar rationale](schemas_calendar_rationale.md) (1 shared connections)
+- [npc realtime occupant](npc_realtime_occupant.md) (1 shared connections)
+- [Item Lookup](Item_Lookup.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/look_npc.py`
-- `server/tests/unit/commands/test_look_npc.py`
+- `server/tests/unit/commands/test_look_item.py`
 
 ## Audit Trail
 
-- EXTRACTED: 32 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

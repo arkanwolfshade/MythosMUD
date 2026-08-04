@@ -1,6 +1,6 @@
 # persistence container helpers
 
-> 23 nodes
+> 28 nodes
 
 ## Key Concepts
 
@@ -9,11 +9,14 @@
 - **.load()** (10 connections) — `server/async_persistence_room_loader.py`
 - **._generate_room_id_from_zone_data()** (7 connections) — `server/async_persistence_room_loader.py`
 - **._process_combined_rows()** (6 connections) — `server/async_persistence_room_loader.py`
+- **Profession** (5 connections)
 - **._build_room_data_from_row()** (5 connections) — `server/async_persistence_room_loader.py`
 - **._process_exit_rows()** (5 connections) — `server/async_persistence_room_loader.py`
+- **.get_professions()** (4 connections) — `server/async_persistence.py`
 - **._parse_zone_parts()** (4 connections) — `server/async_persistence_room_loader.py`
 - **._process_exits_for_room()** (4 connections) — `server/async_persistence_room_loader.py`
 - **._build_room_objects()** (4 connections) — `server/async_persistence_room_loader.py`
+- **.get_profession_by_id()** (3 connections) — `server/async_persistence.py`
 - **._apply_rooms_to_cache()** (3 connections) — `server/async_persistence_room_loader.py`
 - **._handle_room_load_error()** (3 connections) — `server/async_persistence_room_loader.py`
 - **._query_rooms_with_exits_async()** (3 connections) — `server/async_persistence_room_loader.py`
@@ -25,27 +28,26 @@
 - **.__init__()** (2 connections) — `server/async_persistence_room_loader.py`
 - **._log_room_cache_after_load()** (2 connections) — `server/async_persistence_room_loader.py`
 - **BaseException** (2 connections)
-- **Loads room data from the database and populates a room cache dict.      Used by** (1 connections) — `server/async_persistence_room_loader.py`
-- **Load rooms from PostgreSQL and update the room cache.** (1 connections) — `server/async_persistence_room_loader.py`
+- **Get all available professions using SQLAlchemy ORM.** (1 connections) — `server/async_persistence.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (4 shared connections)
-- [Database Config](Database_Config.md) (4 shared connections)
-- [persistence rationale players](persistence_rationale_players.md) (3 shared connections)
-- [combat npc services](combat_npc_services.md) (2 shared connections)
-- [command admin setlucidity](command_admin_setlucidity.md) (1 shared connections)
-- [commands recovery lucidity](commands_recovery_lucidity.md) (1 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (7 shared connections)
+- [Database Config](Database_Config.md) (6 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (3 shared connections)
+- [Loot Generation](Loot_Generation.md) (3 shared connections)
 - [room models instance](room_models_instance.md) (1 shared connections)
 
 ## Source Files
 
+- `server/async_persistence.py`
 - `server/async_persistence_room_loader.py`
 
 ## Audit Trail
 
-- EXTRACTED: 108 (92%)
-- INFERRED: 10 (8%)
+- EXTRACTED: 119 (90%)
+- INFERRED: 13 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_register_new_connection_existing_player()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _register_new_connection() adds to existing player connections.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_get_npc_stats_defaults()** (3 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **Empty npc_stats yields default strength/constitution.** (1 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
 
 ## Relationships
 
-- [player event state](player_event_state.md) (1 shared connections)
-- [connection establishment realtime](connection_establishment_realtime.md) (1 shared connections)
+- [room conftest toolkit](room_conftest_toolkit.md) (1 shared connections)
+- [services nats service](services_nats_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_connection_establishment.py`
+- `server/tests/unit/npc/test_npc_combat_integration_class.py`
 
 ## Audit Trail
 

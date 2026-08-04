@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [combat services messaging](combat_services_messaging.md) (3 shared connections)
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [party service game](party_service_game.md) (3 shared connections)
+- [combat services messaging](combat_services_messaging.md) (2 shared connections)
 
 ## Source Files
 

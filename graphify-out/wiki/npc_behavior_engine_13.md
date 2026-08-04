@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_get_stats_with_failure_time()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **Test get_stats() includes failure time when set.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_add_items_to_wearable_container()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test add_items_to_wearable_container adds items.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Relationships
 
-- [config rationale reset](config_rationale_reset.md) (1 shared connections)
-- [websocket handler realtime](websocket_handler_realtime.md) (1 shared connections)
+- [wearable container service](wearable_container_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_circuit_breaker.py`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

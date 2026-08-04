@@ -1,15 +1,14 @@
 # event publisher realtime
 
-> 83 nodes
+> 81 nodes
 
 ## Key Concepts
 
 - **EventPublisher** (29 connections) — `server/realtime/event_publisher.py`
 - **test_event_publisher.py** (25 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **event_publisher.py** (10 connections) — `server/realtime/event_publisher.py`
 - **test_event_publisher_helpers.py** (9 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
-- **.initialize()** (8 connections) — `server/container/bundles/realtime.py`
 - **._create_event_message()** (7 connections) — `server/realtime/event_publisher.py`
-- **._setup_nats_dependent_services()** (6 connections) — `server/container/bundles/realtime.py`
 - **Any** (6 connections)
 - **._get_async_persistence()** (6 connections) — `server/realtime/event_publisher.py`
 - **.publish_player_entered_event()** (5 connections) — `server/realtime/event_publisher.py`
@@ -29,29 +28,30 @@
 - **event_publisher()** (3 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
 - **.reset_sequence_number()** (2 connections) — `server/realtime/event_publisher.py`
 - **mock_nats_service()** (2 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- *... and 58 more nodes in this community*
+- **mock_subject_manager()** (2 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- *... and 56 more nodes in this community*
 
 ## Relationships
 
-- [Error Conversion](Error_Conversion.md) (7 shared connections)
-- [models npc rationale](models_npc_rationale.md) (5 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (3 shared connections)
-- [manager subject services](manager_subject_services.md) (2 shared connections)
-- [circuit breaker realtime](circuit_breaker_realtime.md) (1 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (1 shared connections)
-- [connection disconnection realtime](connection_disconnection_realtime.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (3 shared connections)
+- [realtime monitoring statistics](realtime_monitoring_statistics.md) (2 shared connections)
+- [commands communication support](commands_communication_support.md) (2 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
+- [schemas player rationale](schemas_player_rationale.md) (2 shared connections)
+- [nats services service](nats_services_service.md) (2 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (1 shared connections)
+- [services npc startup](services_npc_startup.md) (1 shared connections)
 
 ## Source Files
 
-- `server/container/bundles/realtime.py`
 - `server/realtime/event_publisher.py`
 - `server/tests/unit/realtime/test_event_publisher.py`
 - `server/tests/unit/realtime/test_event_publisher_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 223 (99%)
-- INFERRED: 3 (1%)
+- EXTRACTED: 219 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

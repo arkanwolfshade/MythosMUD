@@ -1,52 +1,49 @@
 # useWebSocketConnectionTestFixtures useWe
 
-> 34 nodes
+> 58 nodes
 
 ## Key Concepts
 
-- **test_auth_dependencies.py** (24 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
-- **get_current_verified_user()** (8 connections) — `server/auth/dependencies.py`
-- **get_optional_current_user()** (6 connections) — `server/auth/dependencies.py`
-- **test_get_current_superuser_failure()** (5 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
-- **test_get_current_verified_user_failure()** (5 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
-- **test_get_current_superuser_with_none_user()** (5 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
-- **test_get_current_verified_user_with_none_user()** (5 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
-- **test_get_current_superuser_success()** (4 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
-- **test_get_current_verified_user_success()** (4 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
-- **test_require_invite_code_invalid()** (4 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
-- **test_require_invite_code_logged_http_exception()** (4 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
-- **test_require_invite_code_generic_exception()** (4 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
-- **test_get_optional_current_user_with_user()** (4 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
-- **test_require_invite_code_none()** (4 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
-- **test_require_invite_code_success()** (3 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
-- **test_get_optional_current_user_none()** (3 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
-- **test_require_invite_code_with_request()** (3 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
-- **Get current verified user or raise 403.** (1 connections) — `server/auth/dependencies.py`
-- **Get current user if authenticated, otherwise None.** (1 connections) — `server/auth/dependencies.py`
-- **Unit tests for authentication dependencies.** (1 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
-- **Test getting current superuser when user is superuser.** (1 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
-- **Test getting current superuser when user is not superuser.** (1 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
-- **Test getting current verified user when user is verified.** (1 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
-- **Test getting current verified user when user is not verified.** (1 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
-- **Test requiring invite code with valid code.** (1 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
-- *... and 9 more nodes in this community*
+- **test_player_event_handlers_respawn.py** (34 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **player_respawn_event_handler()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_send_respawn_event_with_retry_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **mock_logger()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_player_respawn_event_handler_init()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_update_connection_manager_position_success()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_update_connection_manager_position_player_not_online()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_update_connection_manager_position_no_online_players_attr()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_get_player_data_for_respawn_success()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_get_player_data_for_respawn_no_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_get_player_data_for_respawn_no_persistence()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_get_player_data_for_respawn_player_not_found()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_get_player_data_for_respawn_error_handling()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_send_respawn_event_with_retry_success()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_send_respawn_event_with_retry_waits_for_connection()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_send_respawn_event_with_retry_timeout()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_handle_player_respawned_success()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_handle_player_respawned_error_handling()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_get_current_lucidity_found()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_get_current_lucidity_not_found()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_get_player_data_for_delirium_respawn_success()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_get_player_data_for_delirium_respawn_no_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_get_player_data_for_delirium_respawn_player_not_found()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_get_player_data_for_delirium_respawn_error_handling()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- *... and 33 more nodes in this community*
 
 ## Relationships
 
-- [Exception Containers](Exception_Containers.md) (20 shared connections)
-- [player requests schemas](player_requests_schemas.md) (14 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
-- [admin auth service](admin_auth_service.md) (1 shared connections)
+- [NATS Messaging](NATS_Messaging.md) (4 shared connections)
+- [player_event_handler_utils](player_event_handler_utils.md) (3 shared connections)
 
 ## Source Files
 
-- `server/auth/dependencies.py`
-- `server/tests/unit/auth/test_auth_dependencies.py`
+- `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
 
 ## Audit Trail
 
-- EXTRACTED: 104 (93%)
-- INFERRED: 8 (7%)
+- EXTRACTED: 121 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

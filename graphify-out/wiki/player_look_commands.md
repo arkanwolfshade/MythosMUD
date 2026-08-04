@@ -33,9 +33,9 @@
 
 ## Relationships
 
-- [grace period login](grace_period_login.md) (14 shared connections)
+- [grace period login](grace_period_login.md) (15 shared connections)
 - [persistence container extended](persistence_container_extended.md) (4 shared connections)
-- [command combat models](command_combat_models.md) (2 shared connections)
+- [command combat models](command_combat_models.md) (1 shared connections)
 - [models npc rationale](models_npc_rationale.md) (1 shared connections)
 
 ## Source Files

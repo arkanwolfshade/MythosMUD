@@ -1,34 +1,50 @@
 # security headers middleware
 
-> 8 nodes
+> 33 nodes
 
 ## Key Concepts
 
-- **needs_rehash()** (7 connections) — `server/auth/argon2_utils.py`
-- **test_needs_rehash_valid_hash()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_needs_rehash_error_handling()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_needs_rehash_invalid_hash()** (3 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **Check if a hash needs to be rehashed due to parameter changes.** (1 connections) — `server/auth/argon2_utils.py`
-- **Test needs_rehash with valid hash that doesn't need rehashing.** (1 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **Test needs_rehash with invalid hash returns True.** (1 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **Test needs_rehash handles errors and returns True.** (1 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **test_security_headers.py** (20 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **MutableHeaders** (6 connections)
+- **._add_security_headers()** (3 connections) — `server/middleware/security_headers.py`
+- **test_security_headers_middleware_non_http_scope()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **test_security_headers_middleware_adds_headers()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **test_security_headers_middleware_error_handling()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **test_add_security_headers()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **test_add_security_headers_hsts_value()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **test_add_security_headers_permissions_policy()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **test_add_security_headers_csp_policy()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **test_add_security_headers_referrer_policy()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **mock_app()** (2 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **test_add_security_headers_to_response()** (2 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **test_add_security_headers_to_response_hsts_with_subdomains()** (2 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **test_add_security_headers_to_response_hsts_without_subdomains()** (2 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **test_dispatch_method()** (2 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **test_dispatch_method_error_handling()** (2 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **Add all security headers to the response.** (1 connections) — `server/middleware/security_headers.py`
+- **Unit tests for security headers middleware.  Tests the SecurityHeadersMiddleware** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **Create a mock ASGI app.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **Test middleware passes through non-HTTP connections.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **Test middleware adds security headers to HTTP responses.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **Test middleware error handling.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **Test _add_security_headers_to_response adds headers to Response.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **Test _add_security_headers_to_response includes subdomains in HSTS.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [respawn player handlers](respawn_player_handlers.md) (4 shared connections)
-- [auth users rationale](auth_users_rationale.md) (2 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
-- [persistence constants rationale](persistence_constants_rationale.md) (1 shared connections)
+- [persistence rationale player](persistence_rationale_player.md) (5 shared connections)
+- [app factory rationale](app_factory_rationale.md) (4 shared connections)
 
 ## Source Files
 
-- `server/auth/argon2_utils.py`
-- `server/tests/unit/auth/test_argon2_utils.py`
+- `server/middleware/security_headers.py`
+- `server/tests/unit/middleware/test_security_headers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 22 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 71 (88%)
+- INFERRED: 10 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

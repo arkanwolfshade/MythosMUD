@@ -1,69 +1,61 @@
 # Room Broadcast
 
-> 450 nodes
+> 176 nodes
 
 ## Key Concepts
 
 - **ConnectionManager** (233 connections) — `server/realtime/connection_manager.py`
-- **connection_manager.py** (161 connections) — `server/realtime/connection_manager.py`
-- **connection_manager_methods.py** (80 connections) — `server/realtime/connection_manager_methods.py`
 - **UUID** (41 connections)
-- **test_connection_helpers_impl.py** (35 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **test_connection_statistics.py** (24 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
-- **connection_helpers.py** (21 connections) — `server/realtime/connection_helpers.py`
 - **UUID** (21 connections)
-- **convert_uuids_to_strings()** (18 connections) — `server/realtime/connection_helpers.py`
-- **canonical_room_id_impl()** (17 connections) — `server/realtime/connection_room_utils.py`
-- **test_connection_room_utils.py** (16 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
 - **test_connection_manager_class.py** (15 connections) — `server/tests/unit/realtime/test_connection_manager_class.py`
-- **send_personal_message_old_impl()** (13 connections) — `server/realtime/connection_helpers.py`
-- **resolve_connection_manager()** (13 connections) — `server/realtime/connection_manager.py`
-- **delegate_game_state_provider()** (12 connections) — `server/realtime/connection_delegates.py`
 - **force_disconnect_player_impl()** (12 connections) — `server/realtime/connection_manager_methods.py`
-- **_optimize_payload()** (11 connections) — `server/realtime/connection_helpers.py`
-- **_send_to_websockets()** (11 connections) — `server/realtime/connection_helpers.py`
-- **connection_statistics.py** (11 connections) — `server/realtime/connection_statistics.py`
-- **validate_player_presence_impl()** (11 connections) — `server/realtime/connection_statistics.py`
-- **Any** (10 connections)
-- **safe_close_websocket_impl()** (10 connections) — `server/realtime/connection_manager_methods.py`
-- **connection_room_utils.py** (10 connections) — `server/realtime/connection_room_utils.py`
-- **get_online_player_by_display_name_impl()** (10 connections) — `server/realtime/connection_statistics.py`
-- **handle_new_login_impl()** (9 connections) — `server/realtime/connection_helpers.py`
-- *... and 425 more nodes in this community*
+- **broadcast_to_room_impl()** (8 connections) — `server/realtime/connection_manager_methods.py`
+- **broadcast_room_event_impl()** (8 connections) — `server/realtime/connection_manager_methods.py`
+- **get_player_impl()** (8 connections) — `server/realtime/connection_manager_methods.py`
+- **get_players_batch_impl()** (8 connections) — `server/realtime/connection_manager_methods.py`
+- **send_initial_game_state_impl()** (8 connections) — `server/realtime/connection_manager_methods.py`
+- **get_player_presence_info_method()** (7 connections) — `server/realtime/connection_manager_methods.py`
+- **validate_player_presence_method()** (7 connections) — `server/realtime/connection_manager_methods.py`
+- **disconnect_websocket_connection_impl()** (7 connections) — `server/realtime/connection_manager_methods.py`
+- **send_personal_message_impl()** (7 connections) — `server/realtime/connection_manager_methods.py`
+- **.check_connection_health()** (6 connections) — `server/realtime/connection_manager.py`
+- **._get_player()** (6 connections) — `server/realtime/connection_manager.py`
+- **._track_player_disconnected()** (6 connections) — `server/realtime/connection_manager.py`
+- **get_rate_limit_info_impl()** (6 connections) — `server/realtime/connection_manager_methods.py`
+- **get_player_session_impl()** (6 connections) — `server/realtime/connection_manager_methods.py`
+- **validate_session_impl()** (6 connections) — `server/realtime/connection_manager_methods.py`
+- **get_connection_count_impl()** (6 connections) — `server/realtime/connection_manager_methods.py`
+- **has_websocket_connection_impl()** (6 connections) — `server/realtime/connection_manager_methods.py`
+- **get_player_websocket_connection_id_impl()** (6 connections) — `server/realtime/connection_manager_methods.py`
+- **check_connection_health_impl()** (6 connections) — `server/realtime/connection_manager_methods.py`
+- **subscribe_to_room_impl()** (6 connections) — `server/realtime/connection_manager_methods.py`
+- *... and 151 more nodes in this community*
 
 ## Relationships
 
-- [connection disconnection realtime](connection_disconnection_realtime.md) (39 shared connections)
-- [connection realtime delegates](connection_realtime_delegates.md) (25 shared connections)
-- [models npc rationale](models_npc_rationale.md) (24 shared connections)
-- [combat services messaging](combat_services_messaging.md) (22 shared connections)
-- [Database Config](Database_Config.md) (15 shared connections)
-- [container service services](container_service_services.md) (13 shared connections)
-- [circuit breaker realtime](circuit_breaker_realtime.md) (13 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (12 shared connections)
-- [NPC Combat](NPC_Combat.md) (11 shared connections)
-- [connection realtime error](connection_realtime_error.md) (11 shared connections)
-- [Exception Containers](Exception_Containers.md) (8 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (7 shared connections)
+- [connection realtime delegates](connection_realtime_delegates.md) (52 shared connections)
+- [realtime monitoring statistics](realtime_monitoring_statistics.md) (48 shared connections)
+- [realtime websocket initial](realtime_websocket_initial.md) (11 shared connections)
+- [connection disconnection realtime](connection_disconnection_realtime.md) (10 shared connections)
+- [NPC Combat](NPC_Combat.md) (8 shared connections)
+- [services inventory mutation](services_inventory_mutation.md) (8 shared connections)
+- [follow game service](follow_game_service.md) (8 shared connections)
+- [combat services messaging](combat_services_messaging.md) (7 shared connections)
+- [container service services](container_service_services.md) (6 shared connections)
+- [game chat service](game_chat_service.md) (6 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (5 shared connections)
+- [shutdown admin command](shutdown_admin_command.md) (5 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_delegates.py`
-- `server/realtime/connection_helpers.py`
 - `server/realtime/connection_manager.py`
 - `server/realtime/connection_manager_methods.py`
-- `server/realtime/connection_room_utils.py`
-- `server/realtime/connection_statistics.py`
-- `server/tests/unit/realtime/test_connection_helpers.py`
-- `server/tests/unit/realtime/test_connection_helpers_impl.py`
 - `server/tests/unit/realtime/test_connection_manager_class.py`
-- `server/tests/unit/realtime/test_connection_room_utils.py`
-- `server/tests/unit/realtime/test_connection_statistics.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1872 (98%)
-- INFERRED: 44 (2%)
+- EXTRACTED: 744 (96%)
+- INFERRED: 35 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

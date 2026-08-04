@@ -2,7 +2,7 @@
 
 > God node · 582 connections · `server/exceptions.py`
 
-**Community:** [command inventory models](command_inventory_models.md)
+**Community:** [Database Access Layer](Database_Access_Layer.md)
 
 ## Connections by Relation
 

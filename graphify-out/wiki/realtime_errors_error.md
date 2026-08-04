@@ -33,8 +33,9 @@
 
 ## Relationships
 
-- [models npc rationale](models_npc_rationale.md) (5 shared connections)
-- [connection disconnection realtime](connection_disconnection_realtime.md) (3 shared connections)
+- [models npc rationale](models_npc_rationale.md) (3 shared connections)
+- [services npc startup](services_npc_startup.md) (3 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
 
 ## Source Files
 

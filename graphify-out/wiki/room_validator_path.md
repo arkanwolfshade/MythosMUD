@@ -1,50 +1,41 @@
 # room validator path
 
-> 23 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **test_npc_spawn_rules_api.py** (16 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
-- **get_npc_spawn_rules()** (14 connections) — `server/api/admin/npc_spawn_rules_api.py`
-- **create_npc_spawn_rule()** (14 connections) — `server/api/admin/npc_spawn_rules_api.py`
-- **delete_npc_spawn_rule()** (11 connections) — `server/api/admin/npc_spawn_rules_api.py`
-- **NPCSpawnRuleResponse** (7 connections) — `server/api/admin/npc_schemas.py`
-- **.from_orm()** (6 connections) — `server/api/admin/npc_schemas.py`
-- **Request** (3 connections)
-- **AsyncSession** (3 connections)
-- **test_get_npc_spawn_rules_generic_error()** (3 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
-- **test_create_npc_spawn_rule_rolls_back()** (3 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
-- **test_delete_npc_spawn_rule_not_found()** (3 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
-- **test_get_npc_spawn_rules_success()** (2 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
-- **test_get_npc_spawn_rules_http_exception_propagates()** (2 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
-- **test_create_npc_spawn_rule_success()** (2 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
-- **test_delete_npc_spawn_rule_success()** (2 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
-- **Model for NPC spawn rule responses.** (1 connections) — `server/api/admin/npc_schemas.py`
-- **Create response from ORM object.** (1 connections) — `server/api/admin/npc_schemas.py`
-- **Get all NPC spawn rules.** (1 connections) — `server/api/admin/npc_spawn_rules_api.py`
-- **Create a new NPC spawn rule.** (1 connections) — `server/api/admin/npc_spawn_rules_api.py`
-- **Delete an NPC spawn rule.** (1 connections) — `server/api/admin/npc_spawn_rules_api.py`
-- **mock_user()** (1 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
-- **mock_session()** (1 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
-- **Unit tests for NPC spawn rules admin API.** (1 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
+- **handle_new_game_session()** (11 connections) — `server/api/real_time.py`
+- **_ensure_connection_manager()** (10 connections) — `server/api/real_time.py`
+- **get_player_connections()** (9 connections) — `server/api/real_time.py`
+- **get_connection_statistics()** (7 connections) — `server/api/real_time.py`
+- **Request** (4 connections)
+- **test_ensure_connection_manager_missing()** (3 connections) — `server/tests/unit/api/test_real_time_helpers.py`
+- **test_handle_new_game_session_missing_session_id()** (3 connections) — `server/tests/unit/api/test_real_time_helpers.py`
+- **test_handle_new_game_session_invalid_json()** (3 connections) — `server/tests/unit/api/test_real_time_helpers.py`
+- **test_get_player_connections()** (2 connections) — `server/tests/unit/api/test_real_time_helpers.py`
+- **test_handle_new_game_session()** (2 connections) — `server/tests/unit/api/test_real_time_helpers.py`
+- **Ensure connection manager is available.     Raises LoggedHTTPException with prop** (1 connections) — `server/api/real_time.py`
+- **Get connection information for a player.     Returns detailed connection metadat** (1 connections) — `server/api/real_time.py`
+- **Handle a new game session for a player.     This will disconnect existing connec** (1 connections) — `server/api/real_time.py`
+- **Get comprehensive connection statistics.     Returns detailed statistics about a** (1 connections) — `server/api/real_time.py`
 
 ## Relationships
 
-- [admin auth service](admin_auth_service.md) (15 shared connections)
-- [Exception Containers](Exception_Containers.md) (10 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [combat commands handler](combat_commands_handler.md) (8 shared connections)
+- [Exception Containers](Exception_Containers.md) (5 shared connections)
+- [auth users rationale](auth_users_rationale.md) (5 shared connections)
+- [command processor rationale](command_processor_rationale.md) (5 shared connections)
+- [Loot Generation](Loot_Generation.md) (3 shared connections)
 
 ## Source Files
 
-- `server/api/admin/npc_schemas.py`
-- `server/api/admin/npc_spawn_rules_api.py`
-- `server/tests/unit/api/test_npc_spawn_rules_api.py`
+- `server/api/real_time.py`
+- `server/tests/unit/api/test_real_time_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 96 (97%)
-- INFERRED: 3 (3%)
+- EXTRACTED: 55 (95%)
+- INFERRED: 3 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

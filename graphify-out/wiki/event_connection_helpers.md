@@ -16,9 +16,9 @@
 
 ## Relationships
 
-- [commands position system](commands_position_system.md) (2 shared connections)
-- [commands npc admin](commands_npc_admin.md) (1 shared connections)
-- [command utility models](command_utility_models.md) (1 shared connections)
+- [commands command rationale](commands_command_rationale.md) (2 shared connections)
+- [commands party examples](commands_party_examples.md) (1 shared connections)
+- [nats services metrics](nats_services_metrics.md) (1 shared connections)
 
 ## Source Files
 

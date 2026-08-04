@@ -1,60 +1,64 @@
 # Spell Validation
 
-> 99 nodes
+> 144 nodes
 
 ## Key Concepts
 
-- **NPCCombatIntegrationService** (90 connections) — `server/services/npc_combat_integration_service.py`
-- **test_npc_combat_integration_service.py** (46 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **.__init__()** (12 connections) — `server/services/npc_combat_integration_service.py`
-- **._init_npc_submodules()** (9 connections) — `server/services/npc_combat_integration_service.py`
-- **_StubConfigRoot** (6 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **integration_service()** (6 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **._init_persistence_and_event_bus()** (5 connections) — `server/services/npc_combat_integration_service.py`
-- **._init_combat_service()** (4 connections) — `server/services/npc_combat_integration_service.py`
-- **test_integration_service_init_with_shared_player_combat_service()** (4 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **test_integration_service_init_creates_combat_service_when_none()** (4 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **test_validate_combat_location_limbo_cross_room_uses_debug()** (4 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **._init_player_combat_service()** (3 connections) — `server/services/npc_combat_integration_service.py`
-- **.get_messaging_integration()** (3 connections) — `server/services/npc_combat_integration_service.py`
-- **.get_combat_service()** (3 connections) — `server/services/npc_combat_integration_service.py`
-- **.get_data_provider()** (3 connections) — `server/services/npc_combat_integration_service.py`
-- **.get_rewards_service()** (3 connections) — `server/services/npc_combat_integration_service.py`
-- **_StubGameConfig** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **test_integration_service_init()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **test_get_integration_config()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **test_is_auto_progression_enabled()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **test_handle_player_attack_on_npc()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **test_validate_and_get_npc_instance_provided()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **test_validate_and_get_npc_instance_lookup()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **test_validate_and_get_npc_instance_dead()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **test_validate_combat_location()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- *... and 74 more nodes in this community*
+- **ErrorContext** (54 connections) — `server/exceptions.py`
+- **test_exceptions.py** (43 connections) — `server/tests/unit/test_exceptions.py`
+- **create_error_context()** (36 connections) — `server/exceptions.py`
+- **test_exceptions_comprehensive.py** (35 connections) — `server/tests/unit/test_exceptions_comprehensive.py`
+- **LoggedException** (23 connections) — `server/exceptions.py`
+- **.__init__()** (16 connections) — `server/exceptions.py`
+- **Any** (14 connections)
+- **handle_exception()** (13 connections) — `server/exceptions.py`
+- **.__init__()** (8 connections) — `server/exceptions.py`
+- **.mark_logged()** (5 connections) — `server/exceptions.py`
+- **test_logged_http_exception_initialization()** (5 connections) — `server/tests/unit/test_exceptions.py`
+- **test_handle_exception_standard_exception()** (5 connections) — `server/tests/unit/test_exceptions_comprehensive.py`
+- **.test_mythos_exception_handler_sets_request_id()** (5 connections) — `server/tests/unit/test_legacy_error_handlers.py`
+- **.__init__()** (4 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **.to_dict()** (4 connections) — `server/exceptions.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **test_mythos_mud_error_initialization()** (4 connections) — `server/tests/unit/test_exceptions.py`
+- *... and 119 more nodes in this community*
 
 ## Relationships
 
-- [models npc rationale](models_npc_rationale.md) (19 shared connections)
-- [NPC Combat](NPC_Combat.md) (15 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (10 shared connections)
-- [player event realtime](player_event_realtime.md) (6 shared connections)
-- [room realtime rationale](room_realtime_rationale.md) (4 shared connections)
-- [command player state](command_player_state.md) (3 shared connections)
-- [room occupant manager](room_occupant_manager.md) (3 shared connections)
-- [persistence rationale player](persistence_rationale_player.md) (3 shared connections)
-- [websocket handler realtime](websocket_handler_realtime.md) (2 shared connections)
-- [archive 2025 AUDIT](archive_2025_AUDIT.md) (2 shared connections)
-- [Memory Task Runtime](Memory_Task_Runtime.md) (1 shared connections)
-- [persistence services combat](persistence_services_combat.md) (1 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (66 shared connections)
+- [Loot Generation](Loot_Generation.md) (22 shared connections)
+- [Exception Containers](Exception_Containers.md) (14 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (10 shared connections)
+- [Database Config](Database_Config.md) (6 shared connections)
+- [manager subject services](manager_subject_services.md) (6 shared connections)
+- [websocket validation realtime](websocket_validation_realtime.md) (5 shared connections)
+- [game weapon player](game_weapon_player.md) (4 shared connections)
+- [conftest mock rationale](conftest_mock_rationale.md) (3 shared connections)
+- [handler realtime nats](handler_realtime_nats.md) (2 shared connections)
+- [countdown rest task](countdown_rest_task.md) (1 shared connections)
+- [player death service](player_death_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/npc_combat_integration_service.py`
-- `server/tests/unit/services/test_npc_combat_integration_service.py`
+- `server/error_handlers/pydantic_error_handler.py`
+- `server/exceptions.py`
+- `server/tests/unit/test_exceptions.py`
+- `server/tests/unit/test_exceptions_comprehensive.py`
+- `server/tests/unit/test_legacy_error_handlers.py`
+- `server/tests/unit/utils/test_error_logging.py`
 
 ## Audit Trail
 
-- EXTRACTED: 332 (94%)
-- INFERRED: 22 (6%)
+- EXTRACTED: 516 (96%)
+- INFERRED: 22 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

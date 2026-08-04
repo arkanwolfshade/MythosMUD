@@ -1,50 +1,50 @@
 # map RoomMapViewer mapUtils
 
-> 57 nodes
+> 31 nodes
 
 ## Key Concepts
 
 - **test_game_tick_processing.py** (69 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **game_tick_processing.py** (68 connections) — `server/app/game_tick_processing.py`
-- **FastAPI** (16 connections)
 - **game_tick_loop()** (16 connections) — `server/app/game_tick_processing.py`
-- **process_status_effects()** (12 connections) — `server/app/game_tick_processing.py`
 - **broadcast_tick_event()** (11 connections) — `server/app/game_tick_processing.py`
 - **cleanup_decayed_corpses()** (10 connections) — `server/app/game_tick_processing.py`
-- **process_player_effects_expiration()** (9 connections) — `server/app/game_tick_processing.py`
-- **process_combat_tick()** (9 connections) — `server/app/game_tick_processing.py`
 - **process_dp_decay_and_death()** (9 connections) — `server/app/game_tick_processing.py`
-- **get_tick_interval()** (8 connections) — `server/app/game_tick_processing.py`
-- **_process_all_status_effects()** (8 connections) — `server/app/game_tick_processing.py`
 - **_create_corpse_lifecycle_service()** (8 connections) — `server/app/game_tick_processing.py`
-- **_validate_and_get_player()** (7 connections) — `server/app/game_tick_processing.py`
-- **_process_player_status_effects()** (7 connections) — `server/app/game_tick_processing.py`
-- **process_npc_maintenance()** (7 connections) — `server/app/game_tick_processing.py`
-- **UUID** (6 connections)
 - **process_casting_progress()** (6 connections) — `server/app/game_tick_processing.py`
+- **_process_passive_lucidity_flux()** (6 connections) — `server/app/game_tick_processing.py`
 - **_log_cleanup_results()** (6 connections) — `server/app/game_tick_processing.py`
 - **test_get_tick_interval()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
 - **test_log_cleanup_results()** (2 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **test_validate_and_get_player_invalid_id()** (2 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **test_validate_and_get_player_success()** (2 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **test_process_all_status_effects_empty()** (2 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **test_process_status_effects_no_online_players()** (2 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- *... and 32 more nodes in this community*
+- **test_process_casting_progress_calls_magic_service()** (2 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_cleanup_decayed_corpses_no_persistence()** (2 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_process_dp_decay_and_death_no_service()** (2 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_process_dp_decay_and_death_with_session()** (2 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_cleanup_decayed_corpses_on_interval()** (2 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_create_corpse_lifecycle_service()** (2 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_broadcast_tick_event()** (2 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_game_tick_loop_cancelled_on_sleep()** (2 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_process_passive_lucidity_flux()** (2 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_log_cleanup_results_warning_path()** (2 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **Process casting progress for all active spell castings.** (1 connections) — `server/app/game_tick_processing.py`
+- **Process passive lucidity flux service if available.** (1 connections) — `server/app/game_tick_processing.py`
+- **Process DP decay for mortally wounded players and handle deaths.** (1 connections) — `server/app/game_tick_processing.py`
+- **Create and initialize CorpseLifecycleService.      Args:         app: FastAPI ap** (1 connections) — `server/app/game_tick_processing.py`
+- *... and 6 more nodes in this community*
 
 ## Relationships
 
-- [tick game processing](tick_game_processing.md) (24 shared connections)
-- [realtime message nats](realtime_message_nats.md) (14 shared connections)
-- [player persistence repository](player_persistence_repository.md) (14 shared connections)
-- [game magic regeneration](game_magic_regeneration.md) (11 shared connections)
-- [command utility models](command_utility_models.md) (7 shared connections)
-- [tracked app task](tracked_app_task.md) (6 shared connections)
-- [models npc rationale](models_npc_rationale.md) (5 shared connections)
-- [combat services messaging](combat_services_messaging.md) (5 shared connections)
-- [Player Stats](Player_Stats.md) (3 shared connections)
-- [combat npc services](combat_npc_services.md) (3 shared connections)
-- [combat commands handler](combat_commands_handler.md) (3 shared connections)
-- [time service rationale](time_service_rationale.md) (3 shared connections)
+- [player persistence repository](player_persistence_repository.md) (25 shared connections)
+- [persistence combat handler](persistence_combat_handler.md) (15 shared connections)
+- [game magic regeneration](game_magic_regeneration.md) (7 shared connections)
+- [tick game processing](tick_game_processing.md) (6 shared connections)
+- [realtime message nats](realtime_message_nats.md) (5 shared connections)
+- [Player Stats](Player_Stats.md) (4 shared connections)
+- [config rationale config()](config_rationale_config%28%29.md) (3 shared connections)
+- [npc aggressive mob](npc_aggressive_mob.md) (3 shared connections)
+- [tracked app task](tracked_app_task.md) (3 shared connections)
+- [time service rationale](time_service_rationale.md) (2 shared connections)
+- [command utility models](command_utility_models.md) (2 shared connections)
+- [Magic Spell Service](Magic_Spell_Service.md) (2 shared connections)
 
 ## Source Files
 
@@ -53,8 +53,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 349 (100%)
-- INFERRED: 1 (0%)
+- EXTRACTED: 176 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

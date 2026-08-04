@@ -22,8 +22,8 @@
 ## Relationships
 
 - [Database Config](Database_Config.md) (4 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
-- [combat services messaging](combat_services_messaging.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [player presence tracker](player_presence_tracker.md) (1 shared connections)
 
 ## Source Files
 

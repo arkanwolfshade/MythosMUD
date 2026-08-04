@@ -1,62 +1,55 @@
 # message nats handler
 
-> 36 nodes
+> 37 nodes
 
 ## Key Concepts
 
-- **MemoryLeakMetricsCollector** (33 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Any** (10 connections)
-- **.collect_all_metrics()** (9 connections) — `server/monitoring/memory_leak_metrics.py`
-- **.check_alerts()** (9 connections) — `server/monitoring/memory_leak_metrics.py`
-- **.__init__()** (6 connections) — `server/monitoring/monitoring_dashboard.py`
-- **.collect_connection_metrics()** (5 connections) — `server/monitoring/memory_leak_metrics.py`
-- **.collect_event_metrics()** (5 connections) — `server/monitoring/memory_leak_metrics.py`
-- **.collect_cache_metrics()** (5 connections) — `server/monitoring/memory_leak_metrics.py`
-- **.collect_task_metrics()** (5 connections) — `server/monitoring/memory_leak_metrics.py`
-- **.collect_nats_metrics()** (5 connections) — `server/monitoring/memory_leak_metrics.py`
-- **._calculate_single_growth_rate()** (4 connections) — `server/monitoring/memory_leak_metrics.py`
-- **.calculate_growth_rates()** (4 connections) — `server/monitoring/memory_leak_metrics.py`
-- **._check_connection_alerts()** (4 connections) — `server/monitoring/memory_leak_metrics.py`
-- **._check_cache_alerts()** (4 connections) — `server/monitoring/memory_leak_metrics.py`
-- **.__init__()** (3 connections) — `server/monitoring/memory_leak_metrics.py`
-- **._check_subscriber_alerts()** (3 connections) — `server/monitoring/memory_leak_metrics.py`
-- **._check_task_alerts()** (3 connections) — `server/monitoring/memory_leak_metrics.py`
-- **test_resolve_memory_leak_collector_singleton_resets_with_patch()** (3 connections) — `server/tests/unit/api/test_monitoring_endpoints.py`
-- **collector()** (3 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
-- **Unified metrics collector for memory leak detection.      Aggregates metrics fro** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Initialize the memory leak metrics collector.** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Collect all metrics from all sources.          Returns:             Dictionary c** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Collect connection metrics from ConnectionManager.          Returns:** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Collect event metrics from EventBus.          Returns:             Dictionary wi** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Collect cache metrics from CacheManager.          Returns:             Dictionar** (1 connections) — `server/monitoring/memory_leak_metrics.py`
-- *... and 11 more nodes in this community*
+- **test_communication_commands_say_me_pose.py** (22 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **handle_say_command()** (16 connections) — `server/commands/communication_commands.py`
+- **handle_pose_command()** (13 connections) — `server/commands/communication_commands.py`
+- **handle_me_command()** (7 connections) — `server/commands/communication_commands.py`
+- **test_handle_say_command_player_not_found()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_say_command_success()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_say_command_delegates_broadcast_to_chat_service_with_ids()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_pose_command_player_not_found()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_pose_command_clear_pose()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_pose_command_set_pose()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_say_command_no_room()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_say_command_no_player_id()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_say_command_chat_service_failure()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_say_command_exception()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_say_command_no_message()** (3 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_say_command_no_services()** (3 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_me_command_no_action()** (3 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_me_command_success()** (3 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_pose_command_no_persistence()** (3 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **Room-wide say; returns user-facing result dict.** (1 connections) — `server/commands/communication_commands.py`
+- **Set or clear persistent pose text.** (1 connections) — `server/commands/communication_commands.py`
+- **Unit tests for say, me, and pose communication command handlers.** (1 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **Test handle_say_command with no message.** (1 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **Test handle_say_command when services are not available.** (1 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **Test handle_say_command when player is not found.** (1 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- *... and 12 more nodes in this community*
 
 ## Relationships
 
-- [room cache services](room_cache_services.md) (6 shared connections)
-- [command combat models](command_combat_models.md) (3 shared connections)
-- [Magic Spell Service](Magic_Spell_Service.md) (3 shared connections)
-- [System Metrics](System_Metrics.md) (2 shared connections)
-- [health models rationale](health_models_rationale.md) (2 shared connections)
-- [metrics memory leak](metrics_memory_leak.md) (2 shared connections)
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
-- [connection disconnection realtime](connection_disconnection_realtime.md) (1 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (1 shared connections)
-- [commands skills rationale](commands_skills_rationale.md) (1 shared connections)
-- [follow service game](follow_service_game.md) (1 shared connections)
+- [commands whisper command](commands_whisper_command.md) (12 shared connections)
+- [commands communication flows](commands_communication_flows.md) (5 shared connections)
+- [commands party examples](commands_party_examples.md) (3 shared connections)
+- [commands alias rationale](commands_alias_rationale.md) (3 shared connections)
+- [commands admin mute](commands_admin_mute.md) (3 shared connections)
+- [rate limiter services](rate_limiter_services.md) (2 shared connections)
+- [connection realtime manager](connection_realtime_manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/monitoring/memory_leak_metrics.py`
-- `server/monitoring/monitoring_dashboard.py`
-- `server/tests/unit/api/test_monitoring_endpoints.py`
-- `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- `server/commands/communication_commands.py`
+- `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
 
 ## Audit Trail
 
-- EXTRACTED: 133 (95%)
-- INFERRED: 7 (5%)
+- EXTRACTED: 130 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

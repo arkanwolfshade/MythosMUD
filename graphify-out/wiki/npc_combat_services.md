@@ -1,35 +1,51 @@
 # npc combat services
 
-> 9 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **NPCMaintenanceConfig** (9 connections) — `server/config/npc_config.py`
-- **npc_config.py** (5 connections) — `server/config/npc_config.py`
-- **.get_config_summary()** (3 connections) — `server/config/npc_config.py`
-- **.get_respawn_delay()** (2 connections) — `server/config/npc_config.py`
+- **main.py** (15 connections) — `server/main.py`
+- **create_app()** (14 connections) — `server/app/factory.py`
+- **main()** (4 connections) — `scripts/generate_openapi_spec.py`
+- **main()** (4 connections) — `server/main.py`
+- **_create_get_app()** (4 connections) — `server/main.py`
+- **generate_openapi_spec.py** (3 connections) — `scripts/generate_openapi_spec.py`
+- **_sanitize_token_examples()** (3 connections) — `scripts/generate_openapi_spec.py`
+- **FastAPI** (3 connections)
+- **test_auth()** (3 connections) — `server/main.py`
+- **read_root()** (2 connections) — `server/main.py`
+- **Replace auth token examples with clearly fake placeholders.** (1 connections) — `scripts/generate_openapi_spec.py`
+- **Generate and write OpenAPI spec to docs/openapi/openapi.json.** (1 connections) — `scripts/generate_openapi_spec.py`
+- **Create and configure the FastAPI application.      This function sets up the Fas** (1 connections) — `server/app/factory.py`
 - **Any** (1 connections)
-- **NPC Configuration for MythosMUD.  This module defines configuration settings for** (1 connections) — `server/config/npc_config.py`
-- **Configuration for NPC lifecycle maintenance.      This class centralizes all tim** (1 connections) — `server/config/npc_config.py`
-- **Get the respawn delay for a specific NPC type.          Args:             npc_ty** (1 connections) — `server/config/npc_config.py`
-- **Get a summary of all NPC configuration values.          Returns:             Dic** (1 connections) — `server/config/npc_config.py`
+- **MythosMUD Server - Main Application Entry Point  This module serves as the prima** (1 connections) — `server/main.py`
+- **Main entry point for the MythosMUD server.** (1 connections) — `server/main.py`
+- **Factory function that creates the get_app function with encapsulated cache.** (1 connections) — `server/main.py`
+- **Root endpoint providing basic server information.** (1 connections) — `server/main.py`
+- **Test endpoint to verify JWT authentication is working.** (1 connections) — `server/main.py`
 
 ## Relationships
 
-- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (2 shared connections)
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
-- [npc lifecycle config](npc_lifecycle_config.md) (2 shared connections)
-- [npc aggressive mob](npc_aggressive_mob.md) (1 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
+- [player service game](player_service_game.md) (5 shared connections)
+- [Loot Generation](Loot_Generation.md) (3 shared connections)
+- [app factory rationale](app_factory_rationale.md) (2 shared connections)
+- [Magic Spell Service](Magic_Spell_Service.md) (1 shared connections)
+- [middleware comprehensive logging](middleware_comprehensive_logging.md) (1 shared connections)
+- [middleware error handling](middleware_error_handling.md) (1 shared connections)
+- [persistence rationale player](persistence_rationale_player.md) (1 shared connections)
+- [auth users rationale](auth_users_rationale.md) (1 shared connections)
+- [models npc rationale](models_npc_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/config/npc_config.py`
+- `scripts/generate_openapi_spec.py`
+- `server/app/factory.py`
+- `server/main.py`
 
 ## Audit Trail
 
-- EXTRACTED: 24 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 61 (95%)
+- INFERRED: 3 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

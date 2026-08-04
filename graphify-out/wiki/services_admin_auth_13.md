@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **test_create_rest_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_rest_command delegates to player_state factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_create_quit_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_quit_command delegates to player_state factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 

@@ -1,6 +1,6 @@
 # combat services turn
 
-> 88 nodes
+> 92 nodes
 
 ## Key Concepts
 
@@ -9,9 +9,9 @@
 - **_format_player_look_display()** (23 connections) — `server/commands/look_player.py`
 - **_select_target_player()** (17 connections) — `server/commands/look_player.py`
 - **_handle_player_look()** (13 connections) — `server/commands/look_player.py`
+- **test_visual_indicator.py** (13 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
 - **_try_lookup_player_implicit()** (12 connections) — `server/commands/look_player.py`
 - **test_look_player_helpers.py** (12 connections) — `server/tests/unit/commands/test_look_player_helpers.py`
-- **_get_visible_equipment()** (11 connections) — `server/commands/look_helpers.py`
 - **_get_players_in_room()** (11 connections) — `server/commands/look_player.py`
 - **_find_matching_players()** (9 connections) — `server/commands/look_player.py`
 - **Any** (6 connections)
@@ -29,19 +29,20 @@
 - **test_format_player_look_display_basic()** (3 connections) — `server/tests/unit/commands/test_look_player.py`
 - **test_format_player_look_display_with_equipment()** (3 connections) — `server/tests/unit/commands/test_look_player.py`
 - **test_format_player_look_display_no_equipment()** (3 connections) — `server/tests/unit/commands/test_look_player.py`
-- *... and 63 more nodes in this community*
+- *... and 67 more nodes in this community*
 
 ## Relationships
 
-- [look helpers commands](look_helpers_commands.md) (12 shared connections)
-- [look command commands](look_command_commands.md) (11 shared connections)
-- [connection realtime statistics](connection_realtime_statistics.md) (7 shared connections)
-- [command utility models](command_utility_models.md) (4 shared connections)
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [look command commands](look_command_commands.md) (7 shared connections)
+- [look helpers commands](look_helpers_commands.md) (7 shared connections)
+- [command utility models](command_utility_models.md) (6 shared connections)
+- [connection realtime statistics](connection_realtime_statistics.md) (5 shared connections)
+- [logging processors structured](logging_processors_structured.md) (4 shared connections)
+- [player disconnect handlers](player_disconnect_handlers.md) (3 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/look_helpers.py`
 - `server/commands/look_player.py`
 - `server/tests/unit/commands/test_look_player.py`
 - `server/tests/unit/commands/test_look_player_helpers.py`
@@ -49,7 +50,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 310 (100%)
+- EXTRACTED: 320 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

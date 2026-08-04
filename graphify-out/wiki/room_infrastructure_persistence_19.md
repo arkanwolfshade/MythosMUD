@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_room_subscribers_empty()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **Test get_room_subscribers() returns empty set when no subscribers.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_unmute_global_success()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test unmute_global() successfully unmutes a player.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
 
 ## Relationships
 
-- [room subscription manager](room_subscription_manager.md) (1 shared connections)
+- [user manager services](user_manager_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager.py`
+- `server/tests/unit/services/test_user_manager.py`
 
 ## Audit Trail
 

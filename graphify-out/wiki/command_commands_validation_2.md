@@ -1,32 +1,27 @@
 # command commands validation
 
-> 10 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **TestCheckAllCommandBlocks** (6 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_all_command_blocks_catatonia()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_all_command_blocks_grace_period()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_all_command_blocks_casting()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_all_command_blocks_no_blocks()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _check_all_command_blocks function.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _check_all_command_blocks returns block result for catatonia.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _check_all_command_blocks returns block result for grace period.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _check_all_command_blocks returns block result for casting.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _check_all_command_blocks returns None when no blocks.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **test_websocket_handler_helpers.py** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers.py`
+- **test_is_websocket_disconnected_true()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers.py`
+- **test_is_websocket_disconnected_false()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers.py`
+- **Unit tests for websocket handler helper functions.  Tests the helper functions i** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers.py`
+- **Test _is_websocket_disconnected() returns True for disconnection messages.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers.py`
+- **Test _is_websocket_disconnected() returns False for other messages.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers.py`
 
 ## Relationships
 
-- [command commands handler](command_commands_handler.md) (4 shared connections)
-- [command validation commands](command_validation_commands.md) (1 shared connections)
+- [combat schemas schema](combat_schemas_schema.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_validation.py`
+- `server/tests/unit/realtime/test_websocket_handler_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

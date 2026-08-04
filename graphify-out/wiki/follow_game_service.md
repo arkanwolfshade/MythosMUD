@@ -1,59 +1,58 @@
 # follow game service
 
-> 48 nodes
+> 67 nodes
 
 ## Key Concepts
 
-- **FollowService** (39 connections) — `server/game/follow_service.py`
-- **_str_id()** (15 connections) — `server/game/follow_service.py`
-- **UUID** (14 connections)
-- **.request_follow()** (10 connections) — `server/game/follow_service.py`
-- **._send_result_to_player()** (9 connections) — `server/game/follow_service.py`
-- **._send_follow_state_to_player()** (9 connections) — `server/game/follow_service.py`
-- **._handle_player_follower_move()** (9 connections) — `server/game/follow_service.py`
-- **._handle_npc_follower_move()** (9 connections) — `server/game/follow_service.py`
-- **Any** (8 connections)
-- **.unfollow()** (8 connections) — `server/game/follow_service.py`
-- **._expire_pending_requests()** (7 connections) — `server/game/follow_service.py`
-- **._schedule_coro()** (7 connections) — `server/game/follow_service.py`
-- **.accept_follow()** (7 connections) — `server/game/follow_service.py`
-- **.decline_follow()** (7 connections) — `server/game/follow_service.py`
-- **.get_followers()** (6 connections) — `server/game/follow_service.py`
-- **.get_following_display()** (6 connections) — `server/game/follow_service.py`
-- **._ensure_follower_standing()** (6 connections) — `server/game/follow_service.py`
-- **._on_player_entered_room()** (6 connections) — `server/game/follow_service.py`
-- **._send_result_and_player_update()** (5 connections) — `server/game/follow_service.py`
-- **._send_follow_request_to_target()** (5 connections) — `server/game/follow_service.py`
-- **.get_following()** (5 connections) — `server/game/follow_service.py`
-- **.get_following_display_name()** (5 connections) — `server/game/follow_service.py`
-- **._on_npc_entered_room()** (5 connections) — `server/game/follow_service.py`
-- **.on_player_disconnect()** (4 connections) — `server/game/follow_service.py`
-- **follow_service()** (3 connections) — `server/tests/integration/test_follow_flow.py`
-- *... and 23 more nodes in this community*
+- **EventHandler** (34 connections) — `server/realtime/event_handlers.py`
+- **event_handlers.py** (24 connections) — `server/realtime/event_handlers.py`
+- **test_event_handlers_combat.py** (22 connections) — `server/tests/unit/realtime/test_event_handlers_combat.py`
+- **_send_combat_participant_updates()** (10 connections) — `server/realtime/event_handlers.py`
+- **_as_event_data_dict()** (8 connections) — `server/realtime/event_handlers.py`
+- **_EventBusPublishPort** (7 connections) — `server/realtime/event_handlers.py`
+- **_publish_npc_died_to_event_bus()** (7 connections) — `server/realtime/event_handlers.py`
+- **_npc_died_broadcast_and_bridge()** (7 connections) — `server/realtime/event_handlers.py`
+- **_participant_key_strings()** (5 connections) — `server/realtime/event_handlers.py`
+- **_npc_died_ids_or_warn()** (5 connections) — `server/realtime/event_handlers.py`
+- **_refresh_room_after_npc_death()** (5 connections) — `server/realtime/event_handlers.py`
+- **.handle_event_message()** (5 connections) — `server/realtime/event_handlers.py`
+- **.publish()** (3 connections) — `server/realtime/event_handlers.py`
+- **.__init__()** (3 connections) — `server/realtime/event_handlers.py`
+- **.get_event_handler_map()** (3 connections) — `server/realtime/event_handlers.py`
+- **.validate_event_message()** (3 connections) — `server/realtime/event_handlers.py`
+- **.handle_combat_started_event()** (3 connections) — `server/realtime/event_handlers.py`
+- **.handle_combat_ended_event()** (3 connections) — `server/realtime/event_handlers.py`
+- **.handle_player_attacked_event()** (3 connections) — `server/realtime/event_handlers.py`
+- **.handle_npc_attacked_event()** (3 connections) — `server/realtime/event_handlers.py`
+- **.handle_npc_took_damage_event()** (3 connections) — `server/realtime/event_handlers.py`
+- **.handle_npc_died_event()** (3 connections) — `server/realtime/event_handlers.py`
+- **test_handle_npc_took_damage_flattens_event_data_for_websocket()** (3 connections) — `server/tests/unit/realtime/test_event_handlers_combat.py`
+- **.handle_player_entered_event()** (2 connections) — `server/realtime/event_handlers.py`
+- **.handle_player_left_event()** (2 connections) — `server/realtime/event_handlers.py`
+- *... and 42 more nodes in this community*
 
 ## Relationships
 
-- [Realtime Subscribers](Realtime_Subscribers.md) (11 shared connections)
-- [combat services messaging](combat_services_messaging.md) (8 shared connections)
-- [party service game](party_service_game.md) (5 shared connections)
-- [holiday service services](holiday_service_services.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [Error Conversion](Error_Conversion.md) (1 shared connections)
-- [schedule services service](schedule_services_service.md) (1 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (1 shared connections)
-- [position player service](position_player_service.md) (1 shared connections)
-- [services user manager](services_user_manager.md) (1 shared connections)
-- [admin services auth](admin_services_auth.md) (1 shared connections)
-- [command parser rationale](command_parser_rationale.md) (1 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (8 shared connections)
+- [websocket handler realtime](websocket_handler_realtime.md) (5 shared connections)
+- [command parser rationale](command_parser_rationale.md) (4 shared connections)
+- [combat services messaging](combat_services_messaging.md) (3 shared connections)
+- [command models moderation](command_models_moderation.md) (2 shared connections)
+- [message filtering realtime](message_filtering_realtime.md) (2 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
+- [middleware metrics collector](middleware_metrics_collector.md) (2 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
+- [realtime monitoring statistics](realtime_monitoring_statistics.md) (1 shared connections)
+- [combat validator validators](combat_validator_validators.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/follow_service.py`
-- `server/tests/integration/test_follow_flow.py`
+- `server/realtime/event_handlers.py`
+- `server/tests/unit/realtime/test_event_handlers_combat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 228 (96%)
+- EXTRACTED: 224 (96%)
 - INFERRED: 9 (4%)
 - AMBIGUOUS: 0 (0%)
 

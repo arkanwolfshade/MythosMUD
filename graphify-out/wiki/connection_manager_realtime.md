@@ -1,35 +1,29 @@
 # connection manager realtime
 
-> 12 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **SkillUseLog** (8 connections) — `server/models/skill_use_log.py`
-- **test_skill_use_log.py** (6 connections) — `server/tests/unit/models/test_skill_use_log.py`
-- **test_skill_use_log_creation()** (3 connections) — `server/tests/unit/models/test_skill_use_log.py`
-- **test_skill_use_log_repr()** (3 connections) — `server/tests/unit/models/test_skill_use_log.py`
-- **test_skill_use_log_table_name()** (2 connections) — `server/tests/unit/models/test_skill_use_log.py`
-- **Base** (1 connections)
-- **.__repr__()** (1 connections) — `server/models/skill_use_log.py`
-- **One recorded successful use of a skill by a character at a given level.      cha** (1 connections) — `server/models/skill_use_log.py`
-- **Unit tests for SkillUseLog ORM model.** (1 connections) — `server/tests/unit/models/test_skill_use_log.py`
-- **SkillUseLog can be instantiated with required fields.** (1 connections) — `server/tests/unit/models/test_skill_use_log.py`
-- **SkillUseLog maps to the expected table.** (1 connections) — `server/tests/unit/models/test_skill_use_log.py`
-- **SkillUseLog __repr__ includes key identifiers.** (1 connections) — `server/tests/unit/models/test_skill_use_log.py`
+- **test_initiate_shutdown_countdown_success()** (5 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_initiate_shutdown_countdown_supersedes()** (5 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **_InitiateStateStub** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **_InitiateAppStub** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **Test initiate_shutdown_countdown() successfully initiates shutdown.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **Test initiate_shutdown_countdown() cancels existing shutdown.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
 
 ## Relationships
 
-- [world models rationale](world_models_rationale.md) (3 shared connections)
+- [shutdown admin command](shutdown_admin_command.md) (4 shared connections)
+- [eventLog projectorRoom roomMergeUtils](eventLog_projectorRoom_roomMergeUtils.md) (2 shared connections)
 
 ## Source Files
 
-- `server/models/skill_use_log.py`
-- `server/tests/unit/models/test_skill_use_log.py`
+- `server/tests/unit/commands/test_admin_shutdown_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 28 (97%)
-- INFERRED: 1 (3%)
+- EXTRACTED: 18 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

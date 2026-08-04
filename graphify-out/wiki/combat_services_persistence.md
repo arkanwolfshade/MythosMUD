@@ -1,13 +1,12 @@
 # combat services persistence
 
-> 123 nodes
+> 135 nodes
 
 ## Key Concepts
 
-- **LucidityService** (88 connections) — `server/services/lucidity_service.py`
+- **test_active_lucidity_service.py** (34 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
 - **debrief_command.py** (26 connections) — `server/commands/debrief_command.py`
 - **test_debrief_command.py** (25 connections) — `server/tests/unit/commands/test_debrief_command.py`
-- **test_lucidity_service.py** (24 connections) — `server/tests/unit/services/test_lucidity_service.py`
 - **active_lucidity_service.py** (23 connections) — `server/services/active_lucidity_service.py`
 - **ActiveLucidityService** (20 connections) — `server/services/active_lucidity_service.py`
 - **handle_debrief_command()** (19 connections) — `server/commands/debrief_command.py`
@@ -26,38 +25,36 @@
 - **_complete_debrief()** (5 connections) — `server/commands/debrief_command.py`
 - **.__init__()** (5 connections) — `server/services/active_lucidity_service.py`
 - **.apply_encounter_lucidity_loss()** (5 connections) — `server/services/active_lucidity_service.py`
-- **._max_lcd_from_stats()** (5 connections) — `server/services/lucidity_service.py`
 - **UUID** (4 connections)
 - **.get_action_cooldown()** (4 connections) — `server/services/active_lucidity_service.py`
-- *... and 98 more nodes in this community*
+- **test_perform_therapy_on_cooldown()** (4 connections) — `server/tests/unit/commands/test_debrief_command.py`
+- **EncounterProfile** (3 connections) — `server/services/active_lucidity_service.py`
+- *... and 110 more nodes in this community*
 
 ## Relationships
 
-- [lucidity services helpers](lucidity_services_helpers.md) (27 shared connections)
+- [lucidity services helpers](lucidity_services_helpers.md) (17 shared connections)
 - [realtime real time](realtime_real_time.md) (15 shared connections)
-- [world models rationale](world_models_rationale.md) (12 shared connections)
-- [lucidity active service](lucidity_active_service.md) (12 shared connections)
-- [combat models rationale](combat_models_rationale.md) (9 shared connections)
-- [models npc rationale](models_npc_rationale.md) (8 shared connections)
+- [Loot Generation](Loot_Generation.md) (6 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (6 shared connections)
+- [player room realtime](player_room_realtime.md) (6 shared connections)
 - [container helpers endpoints](container_helpers_endpoints.md) (6 shared connections)
-- [Async Query Helpers](Async_Query_Helpers.md) (6 shared connections)
-- [command helpers functions](command_helpers_functions.md) (5 shared connections)
-- [commands position system](commands_position_system.md) (3 shared connections)
-- [combat npc services](combat_npc_services.md) (3 shared connections)
 - [command player state](command_player_state.md) (3 shared connections)
+- [commands party examples](commands_party_examples.md) (2 shared connections)
+- [commands admin mute](commands_admin_mute.md) (2 shared connections)
+- [connection realtime manager](connection_realtime_manager.md) (1 shared connections)
 
 ## Source Files
 
 - `server/commands/debrief_command.py`
 - `server/services/active_lucidity_service.py`
-- `server/services/lucidity_service.py`
 - `server/tests/unit/commands/test_debrief_command.py`
-- `server/tests/unit/services/test_lucidity_service.py`
+- `server/tests/unit/services/test_active_lucidity_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 505 (94%)
-- INFERRED: 34 (6%)
+- EXTRACTED: 443 (96%)
+- INFERRED: 17 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

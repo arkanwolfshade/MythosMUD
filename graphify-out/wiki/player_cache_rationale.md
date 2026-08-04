@@ -1,49 +1,53 @@
 # player cache rationale
 
-> 25 nodes
+> 21 nodes
 
 ## Key Concepts
 
-- **get_cached_player()** (15 connections) — `server/utils/player_cache.py`
-- **cache_player()** (13 connections) — `server/utils/player_cache.py`
-- **test_player_cache.py** (11 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **player_cache.py** (7 connections) — `server/utils/player_cache.py`
-- **_get_request_state()** (6 connections) — `server/utils/player_cache.py`
-- **test_cache_and_get_player()** (4 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **test_cache_player_multiple()** (4 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **test_cache_player_overwrite()** (4 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **test_get_cached_player_none()** (3 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **test_get_cached_player_nonexistent()** (3 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **test_get_cached_player_no_state()** (3 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **test_cache_player_no_state()** (3 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **Any** (3 connections)
-- **Unit tests for player_cache utilities.  Tests the player caching functions for r** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **Test get_cached_player() returns None when no cache exists.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **Test cache_player() and get_cached_player() operations.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **Test get_cached_player() returns None for nonexistent key.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **Test cache_player() can cache multiple players.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **Test cache_player() overwrites existing entries.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **Test get_cached_player() handles missing state.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **Test cache_player() handles missing state gracefully.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
-- **Helpers for caching player objects during a single command request.  This avoids** (1 connections) — `server/utils/player_cache.py`
-- **Safely extract the state object from a FastAPI/Starlette request.** (1 connections) — `server/utils/player_cache.py`
-- **Return a cached player object for this request if one exists.** (1 connections) — `server/utils/player_cache.py`
-- **Cache a player object on the request for reuse within the command.** (1 connections) — `server/utils/player_cache.py`
+- **talk_command.py** (27 connections) — `server/commands/talk_command.py`
+- **handle_talk_command()** (11 connections) — `server/commands/talk_command.py`
+- **get_dialogue_service()** (9 connections) — `server/game/dialogue/dialogue_service.py`
+- **_emit_prompt()** (8 connections) — `server/commands/talk_command.py`
+- **_talk_with_npc()** (8 connections) — `server/commands/talk_command.py`
+- **format_dialogue_prompt()** (7 connections) — `server/game/dialogue/dialogue_service.py`
+- **_talk_by_option_index()** (6 connections) — `server/commands/talk_command.py`
+- **_resolve_player_id()** (5 connections) — `server/commands/talk_command.py`
+- **UUID** (5 connections)
+- **_remainder_from_command_data()** (3 connections) — `server/commands/talk_command.py`
+- **test_format_dialogue_prompt_numbers_options()** (3 connections) — `server/tests/unit/game/test_dialogue_service.py`
+- **talk / talk <n> command for NPC dialogue trees (#583).** (1 connections) — `server/commands/talk_command.py`
+- **Extract player UUID from player model.** (1 connections) — `server/commands/talk_command.py`
+- **Join talk args into a single remainder string.** (1 connections) — `server/commands/talk_command.py`
+- **Send personal system message for a node; return short command result.** (1 connections) — `server/commands/talk_command.py`
+- **Advance an active dialogue by numbered option.** (1 connections) — `server/commands/talk_command.py`
+- **Start dialogue with a same-room NPC.** (1 connections) — `server/commands/talk_command.py`
+- **Handle talk <npc> or talk <n> against same-room NPCs.** (1 connections) — `server/commands/talk_command.py`
+- **Build personal-system message body for a dialogue node.** (1 connections) — `server/game/dialogue/dialogue_service.py`
+- **Return process-wide DialogueService singleton.** (1 connections) — `server/game/dialogue/dialogue_service.py`
+- **Prompt includes NPC line and numbered options.** (1 connections) — `server/tests/unit/game/test_dialogue_service.py`
 
 ## Relationships
 
-- [command validation commands](command_validation_commands.md) (5 shared connections)
-- [commands logout rationale](commands_logout_rationale.md) (5 shared connections)
-- [command utility models](command_utility_models.md) (1 shared connections)
+- [dialogue service game](dialogue_service_game.md) (10 shared connections)
+- [rate limiter services](rate_limiter_services.md) (6 shared connections)
+- [commands quest rationale](commands_quest_rationale.md) (5 shared connections)
+- [Loot Generation](Loot_Generation.md) (4 shared connections)
+- [quest chat game](quest_chat_game.md) (3 shared connections)
+- [commands party examples](commands_party_examples.md) (2 shared connections)
+- [commands admin mute](commands_admin_mute.md) (2 shared connections)
+- [commands command rationale](commands_command_rationale.md) (2 shared connections)
+- [commands communication flows](commands_communication_flows.md) (1 shared connections)
+- [connection realtime manager](connection_realtime_manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_player_cache.py`
-- `server/utils/player_cache.py`
+- `server/commands/talk_command.py`
+- `server/game/dialogue/dialogue_service.py`
+- `server/tests/unit/game/test_dialogue_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 90 (99%)
+- EXTRACTED: 101 (99%)
 - INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 

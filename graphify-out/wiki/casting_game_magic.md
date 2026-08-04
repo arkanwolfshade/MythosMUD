@@ -20,7 +20,7 @@
 
 ## Relationships
 
-- [AppRouter main AppRouter()](AppRouter_main_AppRouter%28%29.md) (2 shared connections)
+- [commands npc admin](commands_npc_admin.md) (2 shared connections)
 - [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
 
 ## Source Files

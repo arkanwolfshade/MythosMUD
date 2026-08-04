@@ -24,7 +24,7 @@
 
 - [Database Config](Database_Config.md) (6 shared connections)
 - [coercion int inventory](coercion_int_inventory.md) (2 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
 
 ## Source Files
 

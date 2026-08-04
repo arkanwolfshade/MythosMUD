@@ -1,54 +1,63 @@
 # commands recovery lucidity
 
-> 60 nodes
+> 85 nodes
 
 ## Key Concepts
 
+- **SchemaValidator** (27 connections) — `schemas/validator.py`
+- **emote_service.py** (20 connections) — `server/game/emote_service.py`
 - **validate_room_data()** (16 connections) — `server/world_loader.py`
-- **world_loader.py** (14 connections) — `server/world_loader.py`
 - **get_room_environment()** (13 connections) — `server/world_loader.py`
 - **TestGetRoomEnvironment** (12 connections) — `server/tests/unit/test_world_loader.py`
 - **TestValidateRoomData** (11 connections) — `server/tests/unit/test_world_loader.py`
-- **test_world_loader.py** (10 connections) — `server/tests/unit/test_world_loader.py`
-- **generate_room_id()** (9 connections) — `server/world_loader.py`
-- **TestGenerateRoomId** (7 connections) — `server/tests/unit/test_world_loader.py`
+- **create_validator()** (10 connections) — `schemas/validator.py`
+- **_get_alias_validator()** (8 connections) — `server/alias_storage.py`
+- **schema_validator.py** (8 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
+- **validator.py** (7 connections) — `schemas/validator.py`
+- **Any** (7 connections)
+- **.validate_data()** (6 connections) — `schemas/validator.py`
+- **.validate_room()** (6 connections) — `schemas/validator.py`
+- **.__init__()** (4 connections) — `schemas/validator.py`
+- **.validate_room_file()** (4 connections) — `schemas/validator.py`
+- **.validate_room_database()** (4 connections) — `schemas/validator.py`
+- **.validate_alias_bundle()** (4 connections) — `schemas/validator.py`
+- **.validate_emote_file()** (4 connections) — `schemas/validator.py`
+- **_get_emote_validator()** (4 connections) — `server/game/emote_service.py`
+- **_EmoteLoadResult** (4 connections) — `server/game/emote_service.py`
 - **.test_validate_room_data_strict_validation_raises()** (4 connections) — `server/tests/unit/test_world_loader.py`
 - **.test_validate_room_data_validation_exception_strict()** (4 connections) — `server/tests/unit/test_world_loader.py`
 - **Any** (4 connections)
-- **.test_generate_room_id_basic()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_generate_room_id_with_underscores()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_generate_room_id_empty_components()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_generate_room_id_special_characters()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_get_room_environment_from_room_data()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_get_room_environment_from_subzone()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_get_room_environment_from_zone()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_get_room_environment_default()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_get_room_environment_room_takes_priority()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_get_room_environment_subzone_takes_priority_over_zone()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_get_room_environment_subzone_none()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_get_room_environment_zone_none()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_get_room_environment_empty_string_in_room_data()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_validate_room_data_validation_not_available()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- *... and 35 more nodes in this community*
+- **._load_schema()** (3 connections) — `schemas/validator.py`
+- **Path** (3 connections)
+- *... and 60 more nodes in this community*
 
 ## Relationships
 
-- [command inventory models](command_inventory_models.md) (10 shared connections)
-- [schemas validator rationale](schemas_validator_rationale.md) (6 shared connections)
-- [command inventory factories](command_inventory_factories.md) (5 shared connections)
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
-- [combat npc services](combat_npc_services.md) (1 shared connections)
-- [persistence container helpers](persistence_container_helpers.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (18 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (9 shared connections)
+- [schemas validator rationale](schemas_validator_rationale.md) (8 shared connections)
+- [room validator toolkit](room_validator_toolkit.md) (6 shared connections)
+- [alias storage rationale](alias_storage_rationale.md) (4 shared connections)
+- [commands party examples](commands_party_examples.md) (2 shared connections)
+- [command commands handler](command_commands_handler.md) (1 shared connections)
+- [rate lucidity services](rate_lucidity_services.md) (1 shared connections)
+- [Database Config](Database_Config.md) (1 shared connections)
+- [npc shopkeeper rationale](npc_shopkeeper_rationale.md) (1 shared connections)
+- [room hierarchical schema](room_hierarchical_schema.md) (1 shared connections)
 
 ## Source Files
 
+- `schemas/validator.py`
+- `server/alias_storage.py`
+- `server/game/emote_service.py`
 - `server/tests/unit/test_world_loader.py`
 - `server/world_loader.py`
+- `tools/room_toolkit/room_validator/core/schema_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 183 (95%)
-- INFERRED: 10 (5%)
+- EXTRACTED: 278 (93%)
+- INFERRED: 20 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

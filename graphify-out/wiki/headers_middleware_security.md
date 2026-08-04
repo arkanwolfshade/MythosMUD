@@ -1,36 +1,27 @@
 # headers middleware security
 
-> 10 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **RoomInfoPanel.tsx** (10 connections) — `client/src/components/RoomInfoPanel.tsx`
-- **RoomInfoPanel()** (6 connections) — `client/src/components/RoomInfoPanel.tsx`
-- **RoomInfoPanel.test.tsx** (4 connections) — `client/src/components/__tests__/RoomInfoPanel.test.tsx`
-- **RoomInfoPanel.test.tsx** (3 connections) — `client/src/components/RoomInfoPanel.test.tsx`
-- **validateAndFixRoomData()** (2 connections) — `client/src/components/RoomInfoPanel.tsx`
-- **mockConsoleLog** (1 connections) — `client/src/components/RoomInfoPanel.test.tsx`
-- **Room** (1 connections) — `client/src/components/RoomInfoPanel.tsx`
-- **RoomInfoPanelProps** (1 connections) — `client/src/components/RoomInfoPanel.tsx`
-- **{ mockDebug }** (1 connections) — `client/src/components/__tests__/RoomInfoPanel.test.tsx`
-- **Room** (1 connections) — `client/src/components/__tests__/RoomInfoPanel.test.tsx`
+- **TestResetNPCDatabase** (4 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_reset_npc_database_resets_state()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test reset_npc_database() function.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **Test reset_npc_database() resets all global state.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
 
 ## Relationships
 
-- [game terminal lucidity](game_terminal_lucidity.md) (2 shared connections)
-- [stores connectionStore commandStore](stores_connectionStore_commandStore.md) (2 shared connections)
-- [roomHandlers eventHandlers calculateOccu](roomHandlers_eventHandlers_calculateOccu.md) (2 shared connections)
+- [player effects endpoints](player_effects_endpoints.md) (2 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/RoomInfoPanel.test.tsx`
-- `client/src/components/RoomInfoPanel.tsx`
-- `client/src/components/__tests__/RoomInfoPanel.test.tsx`
+- `server/tests/unit/infrastructure/test_npc_database.py`
 
 ## Audit Trail
 
-- EXTRACTED: 30 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 8 (89%)
+- INFERRED: 1 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

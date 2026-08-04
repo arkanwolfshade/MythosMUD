@@ -31,9 +31,9 @@
 
 - [postgres adapter infrastructure](postgres_adapter_infrastructure.md) (15 shared connections)
 - [postgres adapter rationale](postgres_adapter_rationale.md) (2 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
 - [room game service](room_game_service.md) (1 shared connections)
-- [world models rationale](world_models_rationale.md) (1 shared connections)
+- [player room realtime](player_room_realtime.md) (1 shared connections)
 
 ## Source Files
 

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_adjust_room_drop_error_handling()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **Test adjust_room_drop() handles errors gracefully.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **test_get_player_mutes()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test get_player_mutes() returns player mutes.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
 
 ## Relationships
 
-- [room subscription manager](room_subscription_manager.md) (1 shared connections)
+- [user manager services](user_manager_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- `server/tests/unit/services/test_user_manager.py`
 
 ## Audit Trail
 

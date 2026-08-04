@@ -1,36 +1,48 @@
 # useDraggablePanelInteractions draggableP
 
-> 12 nodes
+> 23 nodes
 
 ## Key Concepts
 
-- **_find_dead_connections()** (11 connections) — `server/realtime/connection_establishment.py`
-- **test_find_dead_connections_no_player()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_find_dead_connections_all_active()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_find_dead_connections_not_in_active()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_find_dead_connections_none_websocket()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_find_dead_connections_not_connected()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Find dead WebSocket connections for a player before acquiring lock.      Args:** (1 connections) — `server/realtime/connection_establishment.py`
-- **Test _find_dead_connections() returns empty list when player not found.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _find_dead_connections() returns empty list when all connections are active** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _find_dead_connections() skips connections not in active_websockets.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _find_dead_connections() raises ConnectionError when websocket is None.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _find_dead_connections() finds dead connections.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_retry.py** (13 connections) — `server/tests/unit/utils/test_retry.py`
+- **retry_with_backoff()** (11 connections) — `server/utils/retry.py`
+- **test_is_transient_error_wrapped_connection_closed()** (4 connections) — `server/tests/unit/utils/test_retry.py`
+- **test_is_transient_error_cause_chain_connection_closed()** (4 connections) — `server/tests/unit/utils/test_retry.py`
+- **test_retry_retries_wrapped_connection_closed_then_succeeds()** (4 connections) — `server/tests/unit/utils/test_retry.py`
+- **test_is_transient_error_transient()** (3 connections) — `server/tests/unit/utils/test_retry.py`
+- **test_is_transient_error_non_transient()** (3 connections) — `server/tests/unit/utils/test_retry.py`
+- **test_retry_with_backoff_success()** (3 connections) — `server/tests/unit/utils/test_retry.py`
+- **test_retry_with_backoff_failure_then_success()** (3 connections) — `server/tests/unit/utils/test_retry.py`
+- **test_retry_with_backoff_async_success()** (3 connections) — `server/tests/unit/utils/test_retry.py`
+- **test_retry_with_backoff_async_failure_then_success()** (3 connections) — `server/tests/unit/utils/test_retry.py`
+- **Unit tests for retry utilities.  Tests the retry decorator and retry logic.** (1 connections) — `server/tests/unit/utils/test_retry.py`
+- **Test is_transient_error() identifies transient errors.** (1 connections) — `server/tests/unit/utils/test_retry.py`
+- **Test is_transient_error() returns False for non-transient errors.** (1 connections) — `server/tests/unit/utils/test_retry.py`
+- **DatabaseError wrapping asyncpg closed-connection must still retry (e2e regressio** (1 connections) — `server/tests/unit/utils/test_retry.py`
+- **__cause__ ConnectionDoesNotExistError makes the outer wrapper transient.** (1 connections) — `server/tests/unit/utils/test_retry.py`
+- **Retry decorator must not treat wrapped closed-connection as final on attempt 1.** (1 connections) — `server/tests/unit/utils/test_retry.py`
+- **Test retry_with_backoff() succeeds on first attempt.** (1 connections) — `server/tests/unit/utils/test_retry.py`
+- **Test retry_with_backoff() retries on failure then succeeds.** (1 connections) — `server/tests/unit/utils/test_retry.py`
+- **Test retry_with_backoff() with async function succeeds on first attempt.** (1 connections) — `server/tests/unit/utils/test_retry.py`
+- **Test retry_with_backoff() with async function retries on failure then succeeds.** (1 connections) — `server/tests/unit/utils/test_retry.py`
+- **F** (1 connections)
+- **Decorator to retry a function with exponential backoff on transient errors.** (1 connections) — `server/utils/retry.py`
 
 ## Relationships
 
-- [connection establishment realtime](connection_establishment_realtime.md) (6 shared connections)
-- [player event state](player_event_state.md) (4 shared connections)
+- [retry rationale transient()](retry_rationale_transient%28%29.md) (8 shared connections)
+- [Database Config](Database_Config.md) (3 shared connections)
+- [config models game](config_models_game.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_establishment.py`
-- `server/tests/unit/realtime/test_connection_establishment.py`
+- `server/tests/unit/utils/test_retry.py`
+- `server/utils/retry.py`
 
 ## Audit Trail
 
-- EXTRACTED: 32 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 63 (95%)
+- INFERRED: 3 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

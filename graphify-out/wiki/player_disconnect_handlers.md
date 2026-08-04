@@ -1,53 +1,65 @@
 # player disconnect handlers
 
-> 46 nodes
+> 160 nodes
 
 ## Key Concepts
 
 - **test_player_disconnect_handlers.py** (34 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
+- **track_player_disconnected_impl()** (29 connections) — `server/realtime/player_presence_tracker.py`
+- **player_disconnect_handlers.py** (27 connections) — `server/realtime/player_disconnect_handlers.py`
+- **disconnect_grace_period.py** (26 connections) — `server/realtime/disconnect_grace_period.py`
+- **is_player_in_grace_period()** (26 connections) — `server/realtime/disconnect_grace_period.py`
+- **test_rest_and_grace_period.py** (24 connections) — `server/tests/integration/test_rest_and_grace_period.py`
+- **start_grace_period()** (20 connections) — `server/realtime/disconnect_grace_period.py`
 - **_collect_disconnect_keys()** (19 connections) — `server/realtime/player_disconnect_handlers.py`
 - **handle_player_disconnect_broadcast()** (17 connections) — `server/realtime/player_disconnect_handlers.py`
-- **test_handle_player_disconnect_broadcast_with_room()** (3 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- **test_handle_player_disconnect_broadcast_no_room()** (3 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- **test_handle_player_disconnect_broadcast_empty_player_name()** (3 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- **test_collect_disconnect_keys_with_player()** (3 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- **test_collect_disconnect_keys_no_player()** (3 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- **test_handle_player_disconnect_broadcast_room_no_player()** (3 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- **test_handle_player_disconnect_broadcast_no_persistence()** (3 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- **test_handle_player_disconnect_broadcast_no_room_found()** (3 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- **test_collect_disconnect_keys_with_user_id()** (3 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- **test_collect_disconnect_keys_with_string_user_id()** (3 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- **test_collect_disconnect_keys_with_player_name()** (3 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- **test_collect_disconnect_keys_no_name()** (3 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- **test_age_off_disconnected_sessions_missing_attrs_returns_zero()** (3 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- **test_handle_player_disconnect_broadcast_room_player_left_called()** (3 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- **test_handle_player_disconnect_broadcast_no_player_name()** (3 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- **test_collect_disconnect_keys_with_string_canonical_id()** (3 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- **test_collect_disconnect_keys_with_uuid_canonical_id()** (3 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- **test_collect_disconnect_keys_no_canonical_id()** (3 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- **Player** (1 connections)
-- **Handle broadcasting disconnect events when a player disconnects.      Args:** (1 connections) — `server/realtime/player_disconnect_handlers.py`
-- **Collect all keys (UUID and string) that need to be removed for player disconnect** (1 connections) — `server/realtime/player_disconnect_handlers.py`
-- *... and 21 more nodes in this community*
+- **test_disconnect_grace_period.py** (17 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
+- **MockPersistenceFull** (14 connections) — `server/tests/integration/test_rest_and_grace_period.py`
+- **cancel_grace_period()** (12 connections) — `server/realtime/disconnect_grace_period.py`
+- **_cleanup_player_references()** (11 connections) — `server/realtime/player_disconnect_handlers.py`
+- **age_off_disconnected_sessions()** (11 connections) — `server/realtime/player_disconnect_handlers.py`
+- **_remove_player_from_online_tracking()** (10 connections) — `server/realtime/player_disconnect_handlers.py`
+- **UUID** (7 connections)
+- **test_player_presence_tracker_grace_period.py** (6 connections) — `server/tests/unit/realtime/test_player_presence_tracker_grace_period.py`
+- **UUID** (4 connections)
+- **_get_session_maps_for_age_off()** (4 connections) — `server/realtime/player_disconnect_handlers.py`
+- **_purge_expired_sessions_from_maps()** (4 connections) — `server/realtime/player_disconnect_handlers.py`
+- **test_unintentional_disconnect_starts_grace_period()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
+- **test_intentional_disconnect_no_grace_period()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
+- **test_rest_command_blocks_during_combat()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
+- **test_rest_command_starts_countdown_not_in_combat()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
+- **test_rest_location_instant_disconnect()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
+- *... and 135 more nodes in this community*
 
 ## Relationships
 
-- [emote game service](emote_game_service.md) (16 shared connections)
-- [look helpers commands](look_helpers_commands.md) (4 shared connections)
-- [player presence tracker](player_presence_tracker.md) (4 shared connections)
-- [combat services messaging](combat_services_messaging.md) (1 shared connections)
-- [help content websocket](help_content_websocket.md) (1 shared connections)
+- [player presence tracker](player_presence_tracker.md) (23 shared connections)
+- [rest grace period](rest_grace_period.md) (9 shared connections)
+- [help content websocket](help_content_websocket.md) (7 shared connections)
+- [Loot Generation](Loot_Generation.md) (5 shared connections)
+- [command utility models](command_utility_models.md) (5 shared connections)
+- [command commands handler](command_commands_handler.md) (3 shared connections)
+- [combat services turn](combat_services_turn.md) (3 shared connections)
+- [look helpers commands](look_helpers_commands.md) (3 shared connections)
+- [logging processors structured](logging_processors_structured.md) (3 shared connections)
+- [command models moderation](command_models_moderation.md) (3 shared connections)
+- [container service services](container_service_services.md) (3 shared connections)
+- [player_event_handler_utils](player_event_handler_utils.md) (2 shared connections)
 
 ## Source Files
 
+- `server/realtime/disconnect_grace_period.py`
 - `server/realtime/player_disconnect_handlers.py`
+- `server/realtime/player_presence_tracker.py`
+- `server/tests/integration/test_rest_and_grace_period.py`
+- `server/tests/unit/realtime/test_disconnect_grace_period.py`
 - `server/tests/unit/realtime/test_player_disconnect_handlers.py`
+- `server/tests/unit/realtime/test_player_presence_tracker_grace_period.py`
 
 ## Audit Trail
 
-- EXTRACTED: 149 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 576 (99%)
+- INFERRED: 7 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

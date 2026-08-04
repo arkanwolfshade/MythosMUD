@@ -35,9 +35,8 @@
 
 - [Database Config](Database_Config.md) (22 shared connections)
 - [persistence container item](persistence_container_item.md) (19 shared connections)
-- [command inventory models](command_inventory_models.md) (9 shared connections)
-- [command inventory factories](command_inventory_factories.md) (3 shared connections)
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (9 shared connections)
+- [Loot Generation](Loot_Generation.md) (5 shared connections)
 
 ## Source Files
 

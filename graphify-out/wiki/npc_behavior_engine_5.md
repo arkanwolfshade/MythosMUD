@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_call_success_closed_state()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **Test call() executes successfully in CLOSED state.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_load_player_mutes_invalid_uuid_in_data()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test load_player_mutes() handles invalid UUID in data.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
 
 ## Relationships
 
-- [config rationale reset](config_rationale_reset.md) (1 shared connections)
-- [websocket handler realtime](websocket_handler_realtime.md) (1 shared connections)
+- [user manager services](user_manager_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_circuit_breaker.py`
+- `server/tests/unit/services/test_user_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

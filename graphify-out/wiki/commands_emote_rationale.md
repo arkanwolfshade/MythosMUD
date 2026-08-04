@@ -30,14 +30,13 @@
 
 ## Relationships
 
-- [commands npc admin](commands_npc_admin.md) (2 shared connections)
+- [Loot Generation](Loot_Generation.md) (3 shared connections)
+- [commands party examples](commands_party_examples.md) (2 shared connections)
 - [schemas validator rationale](schemas_validator_rationale.md) (2 shared connections)
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
 - [commands who rationale](commands_who_rationale.md) (2 shared connections)
-- [commands position system](commands_position_system.md) (1 shared connections)
 - [models player related](models_player_related.md) (1 shared connections)
-- [websocket examples logging](websocket_examples_logging.md) (1 shared connections)
-- [command utility models](command_utility_models.md) (1 shared connections)
+- [add hashed password](add_hashed_password.md) (1 shared connections)
+- [nats services metrics](nats_services_metrics.md) (1 shared connections)
 
 ## Source Files
 

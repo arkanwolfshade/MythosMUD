@@ -11,6 +11,8 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from server.structured_logging.logging_handlers import (
+    ASYNCIO_CONN_LOST_SEND_MSG,
+    AsyncioConnLostWriteFilter,
     SafeRotatingFileHandler,
     WarningOnlyFilter,
     create_aggregator_handler,
@@ -154,13 +156,23 @@ def test_warning_only_filter_debug_level():
     assert result is False
 
 
+def test_asyncio_conn_lost_write_filter_drops_known_noise():
+    filt = AsyncioConnLostWriteFilter()
+    noise = logging.LogRecord("asyncio", logging.WARNING, "", 0, ASYNCIO_CONN_LOST_SEND_MSG, (), None)
+    assert filt.filter(noise) is False
+    other = logging.LogRecord("asyncio", logging.WARNING, "", 0, "Unclosed client session", (), None)
+    assert filt.filter(other) is True
+    app = logging.LogRecord("server.realtime", logging.WARNING, "", 0, ASYNCIO_CONN_LOST_SEND_MSG, (), None)
+    assert filt.filter(app) is True
+
+
 def test_create_aggregator_handler_warning_level(temp_log_dir):
     """Test create_aggregator_handler() creates handler for WARNING level."""
     log_path = Path(temp_log_dir) / "warnings.log"
     handler = create_aggregator_handler(log_path, logging.WARNING, max_bytes=1024, backup_count=3)
     assert handler.level == logging.WARNING
-    assert len(handler.filters) > 0
-    assert isinstance(handler.filters[0], WarningOnlyFilter)
+    assert any(isinstance(f, WarningOnlyFilter) for f in handler.filters)
+    assert any(isinstance(f, AsyncioConnLostWriteFilter) for f in handler.filters)
     handler.close()
 
 

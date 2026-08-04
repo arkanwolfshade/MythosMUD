@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_unsubscribe_from_room_removes_empty_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **Test unsubscribe_from_room() removes room when last subscriber leaves.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_add_items_to_wearable_container_non_dict_items()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test add_items_to_wearable_container handles non-dict items.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Relationships
 
-- [room subscription manager](room_subscription_manager.md) (1 shared connections)
+- [wearable container service](wearable_container_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager.py`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 

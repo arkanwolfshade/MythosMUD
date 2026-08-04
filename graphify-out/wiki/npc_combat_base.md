@@ -1,18 +1,18 @@
 # npc combat base
 
-> 47 nodes
+> 42 nodes
 
 ## Key Concepts
 
 - **NPCCombatIntegrationBase** (25 connections) — `server/npc/combat_integration_base.py`
-- **combat_integration_base.py** (21 connections) — `server/npc/combat_integration_base.py`
 - **._perform_direct_npc_attack()** (10 connections) — `server/npc/combat_integration_base.py`
-- **combat_integration_protocols.py** (7 connections) — `server/npc/combat_integration_protocols.py`
-- **CombatEventPublisherProtocol** (7 connections) — `server/npc/combat_integration_protocols.py`
+- **.apply_combat_effects()** (8 connections) — `server/npc/combat_integration_base.py`
+- **._apply_player_combat_effects()** (8 connections) — `server/npc/combat_integration_base.py`
+- **._is_target_in_login_grace_period()** (7 connections) — `server/npc/combat_integration_base.py`
+- **._convert_target_id_to_uuid()** (6 connections) — `server/npc/combat_integration_base.py`
 - **._handle_npc_attack_core()** (6 connections) — `server/npc/combat_integration_base.py`
-- **NpcCombatServiceProtocol** (6 connections) — `server/npc/combat_integration_protocols.py`
-- **.__init__()** (5 connections) — `server/npc/combat_integration_base.py`
 - **._try_delegate_npc_attack_to_combat_service()** (5 connections) — `server/npc/combat_integration_base.py`
+- **._handle_attribute_error()** (4 connections) — `server/npc/combat_integration_base.py`
 - **._handle_validation_error()** (4 connections) — `server/npc/combat_integration_base.py`
 - **._handle_unexpected_error()** (4 connections) — `server/npc/combat_integration_base.py`
 - **.handle_npc_attack()** (4 connections) — `server/npc/combat_integration_base.py`
@@ -24,36 +24,33 @@
 - **._publish_player_dp_updated_after_npc_damage()** (3 connections) — `server/npc/combat_integration_base.py`
 - **._publish_attack_event()** (3 connections) — `server/npc/combat_integration_base.py`
 - **._publish_npc_attack_to_nats()** (3 connections) — `server/npc/combat_integration_base.py`
-- **.publish_player_attacked()** (3 connections) — `server/npc/combat_integration_protocols.py`
 - **ABC** (2 connections)
-- **Protocol** (2 connections)
-- **.handle_npc_attack_on_player()** (2 connections) — `server/npc/combat_integration_protocols.py`
 - **ValidationError** (1 connections)
-- *... and 22 more nodes in this community*
+- **Exception** (1 connections)
+- **Base implementation: damage, combat effects, and NPC attack orchestration.** (1 connections) — `server/npc/combat_integration_base.py`
+- **Calculate damage based on attacker and target stats.          Args:** (1 connections) — `server/npc/combat_integration_base.py`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [command utility models](command_utility_models.md) (13 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (6 shared connections)
-- [models npc rationale](models_npc_rationale.md) (5 shared connections)
-- [NPC Combat](NPC_Combat.md) (3 shared connections)
-- [room conftest toolkit](room_conftest_toolkit.md) (3 shared connections)
-- [Memory Task Runtime](Memory_Task_Runtime.md) (3 shared connections)
-- [command inventory models](command_inventory_models.md) (2 shared connections)
-- [room persistence loader](room_persistence_loader.md) (2 shared connections)
-- [services nats service](services_nats_service.md) (2 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
-- [message queue realtime](message_queue_realtime.md) (1 shared connections)
+- [models npc rationale](models_npc_rationale.md) (4 shared connections)
+- [Loot Generation](Loot_Generation.md) (3 shared connections)
+- [room conftest toolkit](room_conftest_toolkit.md) (2 shared connections)
+- [nats services metrics](nats_services_metrics.md) (2 shared connections)
+- [command utility models](command_utility_models.md) (2 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (1 shared connections)
+- [Memory Task Runtime](Memory_Task_Runtime.md) (1 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (1 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (1 shared connections)
 
 ## Source Files
 
 - `server/npc/combat_integration_base.py`
-- `server/npc/combat_integration_protocols.py`
 
 ## Audit Trail
 
-- EXTRACTED: 156 (97%)
-- INFERRED: 5 (3%)
+- EXTRACTED: 134 (96%)
+- INFERRED: 5 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

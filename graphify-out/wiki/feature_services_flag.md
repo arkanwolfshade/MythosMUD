@@ -1,55 +1,52 @@
 # feature services flag
 
-> 50 nodes
+> 48 nodes
 
 ## Key Concepts
 
-- **test_command_alias.py** (18 connections) — `server/tests/unit/models/test_command_alias.py`
-- **AliasCommand** (17 connections) — `server/models/command_alias.py`
-- **command_alias.py** (12 connections) — `server/models/command_alias.py`
-- **UnaliasCommand** (12 connections) — `server/models/command_alias.py`
-- **validate_alias_name()** (10 connections) — `server/validators/security_validator.py`
-- **AliasesCommand** (8 connections) — `server/models/command_alias.py`
-- **test_alias_command_alias_name_min_length()** (4 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_alias_command_alias_name_max_length()** (4 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_alias_command_command_max_length()** (4 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_unalias_command_alias_name_min_length()** (4 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_unalias_command_alias_name_max_length()** (4 connections) — `server/tests/unit/models/test_command_alias.py`
-- **.validate_alias_name_field()** (3 connections) — `server/models/command_alias.py`
-- **.validate_alias_name_field()** (3 connections) — `server/models/command_alias.py`
-- **test_alias_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_alias_command_with_command()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_alias_command_validate_alias_name_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_alias_command_validate_command_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_alias_command_validate_command_none()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_aliases_command_no_fields()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_unalias_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_unalias_command_validate_alias_name_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
-- **test_validate_alias_name_empty()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_validate_alias_name_valid()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_validate_alias_name_rejects_invalid_format()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_validate_alias_name_rejects_hyphens()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- *... and 25 more nodes in this community*
+- **test_player_event_handlers.py** (33 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_handle_player_entered_delegates_to_room_handler()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_handle_player_entered_no_send_occupants_update()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_handle_player_left_delegates_to_room_handler()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_handle_player_xp_awarded_delegates_to_state_handler()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_handle_player_dp_updated_delegates_to_state_handler()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_handle_player_entered_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_handle_player_left_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_handle_player_xp_awarded_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_handle_player_dp_updated_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **mock_room_sync_service()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **mock_chat_logger()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **mock_task_registry()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **mock_message_builder()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **mock_name_extractor()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **mock_occupant_manager()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_player_event_handler_init()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_send_occupants_snapshot_to_player_delegates_to_room_handler()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_send_occupants_snapshot_to_player_string_id()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_handle_player_died_delegates_to_state_handler()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_handle_player_dp_decay_delegates_to_state_handler()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_handle_player_respawned_delegates_to_respawn_handler()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_handle_player_delirium_respawned_delegates_to_respawn_handler()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **Unit tests for player event handlers.  Tests the PlayerEventHandler class and it** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- *... and 23 more nodes in this community*
 
 ## Relationships
 
-- [container persistence rationale](container_persistence_rationale.md) (9 shared connections)
-- [Security Validator Tests](Security_Validator_Tests.md) (9 shared connections)
-- [command inventory models](command_inventory_models.md) (5 shared connections)
-- [command factories create](command_factories_create.md) (4 shared connections)
-- [exceptions rationale error](exceptions_rationale_error.md) (3 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (11 shared connections)
+- [item models rationale](item_models_rationale.md) (3 shared connections)
+- [schedule services service](schedule_services_service.md) (2 shared connections)
+- [realtime monitoring performance](realtime_monitoring_performance.md) (1 shared connections)
+- [NPC Combat](NPC_Combat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/command_alias.py`
-- `server/tests/unit/models/test_command_alias.py`
-- `server/tests/unit/validators/test_security_validator.py`
-- `server/validators/security_validator.py`
+- `server/tests/unit/realtime/test_player_event_handlers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 152 (93%)
-- INFERRED: 12 (7%)
+- EXTRACTED: 112 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

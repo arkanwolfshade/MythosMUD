@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [Room Broadcast](Room_Broadcast.md) (1 shared connections)
+- [connection realtime delegates](connection_realtime_delegates.md) (1 shared connections)
 
 ## Source Files
 

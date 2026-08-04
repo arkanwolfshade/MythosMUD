@@ -1,11 +1,12 @@
 # commands communication channels
 
-> 37 nodes
+> 39 nodes
 
 ## Key Concepts
 
 - **MemoryMonitor** (27 connections) — `server/realtime/memory_monitor.py`
 - **test_memory_monitor.py** (21 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
+- **memory_monitor.py** (10 connections) — `server/realtime/memory_monitor.py`
 - **_max_connection_age_seconds()** (7 connections) — `server/realtime/memory_monitor.py`
 - **.get_memory_usage()** (4 connections) — `server/realtime/memory_monitor.py`
 - **.get_memory_alerts()** (4 connections) — `server/realtime/memory_monitor.py`
@@ -28,13 +29,14 @@
 - **test_max_connection_age_e2e()** (2 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
 - **test_get_memory_stats_error_returns_empty()** (2 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
 - **test_get_memory_alerts_warning_and_info_levels()** (2 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
-- **test_get_memory_alerts_error_path()** (2 connections) — `server/tests/unit/realtime/test_memory_monitor.py`
-- *... and 12 more nodes in this community*
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
-- [connection disconnection realtime](connection_disconnection_realtime.md) (7 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
+- [connection disconnection realtime](connection_disconnection_realtime.md) (4 shared connections)
+- [services npc startup](services_npc_startup.md) (3 shared connections)
+- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
 
 ## Source Files
 
@@ -43,7 +45,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 120 (100%)
+- EXTRACTED: 131 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

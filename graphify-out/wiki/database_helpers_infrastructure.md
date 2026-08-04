@@ -1,6 +1,6 @@
 # database helpers infrastructure
 
-> 47 nodes
+> 49 nodes
 
 ## Key Concepts
 
@@ -13,6 +13,7 @@
 - **_append_room_with_fallback_coords_if_needed()** (8 connections) — `server/api/map_minimap.py`
 - **TestApplyMinimapFallbackCoordinates** (8 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
 - **TestAppendRoomWithFallbackCoordsIfNeeded** (7 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
+- **test_generate_minimap_html_admin_path()** (5 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
 - **test_generate_minimap_html_non_admin_filters_exploration()** (5 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
 - **Any** (4 connections)
 - **AsyncSession** (3 connections)
@@ -28,16 +29,15 @@
 - **test_ensure_current_room_in_minimap_noop_without_id()** (3 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
 - **test_ensure_current_room_in_minimap_noop_when_already_present()** (3 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
 - **test_ensure_current_room_in_minimap_appends_missing()** (3 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- **UUID** (2 connections)
-- *... and 22 more nodes in this community*
+- *... and 24 more nodes in this community*
 
 ## Relationships
 
-- [maps handle ascii](maps_handle_ascii.md) (19 shared connections)
+- [maps handle ascii](maps_handle_ascii.md) (12 shared connections)
+- [room game service](room_game_service.md) (9 shared connections)
 - [map helpers rationale](map_helpers_rationale.md) (6 shared connections)
-- [room game service](room_game_service.md) (3 shared connections)
-- [models npc rationale](models_npc_rationale.md) (3 shared connections)
-- [map services ascii](map_services_ascii.md) (2 shared connections)
+- [map services ascii](map_services_ascii.md) (3 shared connections)
+- [Loot Generation](Loot_Generation.md) (3 shared connections)
 
 ## Source Files
 
@@ -46,8 +46,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 176 (97%)
-- INFERRED: 5 (3%)
+- EXTRACTED: 181 (97%)
+- INFERRED: 6 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

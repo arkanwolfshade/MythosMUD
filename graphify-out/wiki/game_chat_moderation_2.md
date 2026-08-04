@@ -25,14 +25,11 @@
 
 ## Relationships
 
-- [combat services messaging](combat_services_messaging.md) (6 shared connections)
-- [tsconfig src/**/* spec](tsconfig_src-__-__spec.md) (3 shared connections)
-- [command commands aliases](command_commands_aliases.md) (2 shared connections)
-- [dead letter queue](dead_letter_queue.md) (1 shared connections)
-- [combat models rationale](combat_models_rationale.md) (1 shared connections)
-- [occupant formatter realtime](occupant_formatter_realtime.md) (1 shared connections)
+- [tsconfig src/**/* spec](tsconfig_src-__-__spec.md) (7 shared connections)
+- [manager subject services](manager_subject_services.md) (5 shared connections)
+- [message handler factory](message_handler_factory.md) (2 shared connections)
+- [models profession rationale](models_profession_rationale.md) (1 shared connections)
 - [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
-- [message handler factory](message_handler_factory.md) (1 shared connections)
 
 ## Source Files
 

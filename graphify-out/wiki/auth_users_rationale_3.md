@@ -1,58 +1,55 @@
 # auth users rationale
 
-> 122 nodes
+> 82 nodes
 
 ## Key Concepts
 
-- **test_users.py** (53 connections) — `server/tests/unit/auth/test_users.py`
-- **UserManager** (46 connections) — `server/auth/users.py`
-- **get_user_manager()** (13 connections) — `server/auth/users.py`
-- **get_auth_backend()** (12 connections) — `server/auth/users.py`
-- **get_user_db()** (11 connections) — `server/auth/users.py`
-- **UsernameAuthenticationBackend** (9 connections) — `server/auth/users.py`
-- **get_username_auth_backend()** (9 connections) — `server/auth/users.py`
-- **UUID** (7 connections)
-- **validate_jwt_secret()** (6 connections) — `server/auth/users.py`
-- **.login()** (6 connections) — `server/auth/users.py`
-- **.__init__()** (5 connections) — `server/auth/users.py`
-- **.on_after_register()** (5 connections) — `server/auth/users.py`
-- **.on_after_forgot_password()** (4 connections) — `server/auth/users.py`
-- **.on_after_request_verify()** (4 connections) — `server/auth/users.py`
-- **test_user_manager_on_after_register_bogus_email()** (4 connections) — `server/tests/unit/auth/test_users.py`
-- **test_user_manager_on_after_register_non_bogus_email()** (4 connections) — `server/tests/unit/auth/test_users.py`
-- **test_user_manager_on_after_register_no_email()** (4 connections) — `server/tests/unit/auth/test_users.py`
-- **test_user_manager_on_after_register_with_request()** (4 connections) — `server/tests/unit/auth/test_users.py`
-- **test_user_manager_on_after_forgot_password()** (4 connections) — `server/tests/unit/auth/test_users.py`
-- **test_user_manager_on_after_request_verify()** (4 connections) — `server/tests/unit/auth/test_users.py`
-- **test_get_user_manager()** (4 connections) — `server/tests/unit/auth/test_users.py`
-- **test_username_authentication_backend_login()** (4 connections) — `server/tests/unit/auth/test_users.py`
-- **test_user_manager_on_after_forgot_password_with_request()** (4 connections) — `server/tests/unit/auth/test_users.py`
-- **test_user_manager_on_after_request_verify_with_request()** (4 connections) — `server/tests/unit/auth/test_users.py`
-- **test_get_username_auth_backend_returns_username_authentication_backend()** (4 connections) — `server/tests/unit/auth/test_users.py`
-- *... and 97 more nodes in this community*
+- **HolidayService** (45 connections) — `server/services/holiday_service.py`
+- **TestHolidayService** (27 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **test_holiday_service.py** (9 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **_holiday_entry_from_row()** (8 connections) — `server/services/holiday_service.py`
+- **.get_upcoming_holidays()** (8 connections) — `server/services/holiday_service.py`
+- **datetime** (7 connections)
+- **._async_load_from_database()** (7 connections) — `server/services/holiday_service.py`
+- **.refresh_active()** (7 connections) — `server/services/holiday_service.py`
+- **_ensure_utc()** (6 connections) — `server/services/holiday_service.py`
+- **.test_async_load_from_database()** (6 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **_string_list_from_row()** (5 connections) — `server/services/holiday_service.py`
+- **.get_active_holidays()** (5 connections) — `server/services/holiday_service.py`
+- **.get_serialized_active_holidays()** (5 connections) — `server/services/holiday_service.py`
+- **.get_serialized_upcoming_holidays()** (4 connections) — `server/services/holiday_service.py`
+- **.test_init_with_collection()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_refresh_active_activates_matching_holiday()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_refresh_active_no_matches()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_refresh_active_expires_old_holidays()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_refresh_active_caps_duration()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_get_active_holidays()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_get_active_holiday_names()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_get_upcoming_holidays()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_get_upcoming_holidays_wraps_around()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_get_upcoming_summary()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_day_ordinal()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- *... and 57 more nodes in this community*
 
 ## Relationships
 
-- [Exception Containers](Exception_Containers.md) (17 shared connections)
-- [admin auth service](admin_auth_service.md) (10 shared connections)
-- [Magic Spell Service](Magic_Spell_Service.md) (7 shared connections)
-- [player requests schemas](player_requests_schemas.md) (6 shared connections)
-- [ascii map renderer](ascii_map_renderer.md) (4 shared connections)
-- [player service game](player_service_game.md) (3 shared connections)
-- [channel broadcasting strategies](channel_broadcasting_strategies.md) (2 shared connections)
-- [auth users rationale](auth_users_rationale.md) (1 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
-- [skill service game](skill_service_game.md) (1 shared connections)
+- [holiday service services](holiday_service_services.md) (30 shared connections)
+- [websocket realtime handler](websocket_realtime_handler.md) (11 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (6 shared connections)
+- [nats services service](nats_services_service.md) (1 shared connections)
+- [time service rationale](time_service_rationale.md) (1 shared connections)
+- [container helpers endpoints](container_helpers_endpoints.md) (1 shared connections)
+- [rate lucidity services](rate_lucidity_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/auth/users.py`
-- `server/tests/unit/auth/test_users.py`
+- `server/services/holiday_service.py`
+- `server/tests/unit/services/test_holiday_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 384 (96%)
-- INFERRED: 16 (4%)
+- EXTRACTED: 275 (96%)
+- INFERRED: 12 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -22,9 +22,7 @@ test.describe('Quest log visible after login', () => {
     // Default panelLayout starts Journal minimized (title only; body unmounted).
     const journalPanel = page.getByTestId('game-panel-questLog');
     await expect(journalPanel).toBeVisible({ timeout: TEST_TIMEOUTS.GAME_LOAD });
-    if ((await journalPanel.getAttribute('data-panel-minimized')) === 'true') {
-      await page.getByTestId('game-panel-questLog-restore').click();
-    }
+    await page.getByTestId('game-panel-questLog-restore').click();
 
     const questLogHeader = journalPanel.getByText('Quest log', { exact: true });
     const emptyState = journalPanel.getByText('You have no active or completed quests.');

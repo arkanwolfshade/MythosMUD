@@ -1,49 +1,27 @@
 # occupant formatter realtime
 
-> 18 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **test_occupant_formatter.py** (29 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_is_valid_name_for_occupant_valid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_process_npc_name_for_update_valid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_process_dict_occupant_for_update_player()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_process_string_occupant_for_update_valid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_separate_occupants_by_type_dict_npcs()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_separate_occupants_by_type_strings()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_separate_occupants_by_type_mixed()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_separate_occupants_by_type_empty()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Unit tests for occupant formatter.  Tests the occupant_formatter module classes** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter._is_valid_name_for_occupant() returns True for valid name** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter._process_npc_name_for_update() adds valid NPC name.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter._process_dict_occupant_for_update() processes player dict** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter._process_string_occupant_for_update() adds valid string.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter.separate_occupants_by_type() separates dict NPCs.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter.separate_occupants_by_type() processes string occupants.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter.separate_occupants_by_type() handles mixed types.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter.separate_occupants_by_type() handles empty list.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_websocket_handler_disconnect.py** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
+- **test_handle_websocket_disconnect()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
+- **test_handle_websocket_disconnect_no_connection_id()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
+- **Unit tests for websocket handler disconnect handling.  Tests the disconnect hand** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
+- **Test _handle_websocket_disconnect() returns True.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
+- **Test _handle_websocket_disconnect() with no connection_id.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
 
 ## Relationships
 
-- [container sql injection](container_sql_injection.md) (15 shared connections)
-- [npc populate databases](npc_populate_databases.md) (4 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
-- [test_occupant_formatter_init](test_occupant_formatter_init.md) (1 shared connections)
-- [test_occupant_formatter_is_valid_name_for_occupant_non_string](test_occupant_formatter_is_valid_name_for_occupant_non_string.md) (1 shared connections)
-- [test_occupant_formatter_is_valid_name_for_occupant_none](test_occupant_formatter_is_valid_name_for_occupant_none.md) (1 shared connections)
-- [test_occupant_formatter_is_valid_name_for_occupant_uuid](test_occupant_formatter_is_valid_name_for_occupant_uuid.md) (1 shared connections)
-- [test_occupant_formatter_process_dict_occupant_for_update_fallback_name](test_occupant_formatter_process_dict_occupant_for_update_fallback_name.md) (1 shared connections)
-- [npc behavior engine](npc_behavior_engine.md) (1 shared connections)
-- [test_occupant_formatter_process_string_occupant_for_update_uuid](test_occupant_formatter_process_string_occupant_for_update_uuid.md) (1 shared connections)
-- [test_occupant_formatter_separate_occupants_by_type_none](test_occupant_formatter_separate_occupants_by_type_none.md) (1 shared connections)
+- [combat schemas schema](combat_schemas_schema.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_occupant_formatter.py`
+- `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
 
 ## Audit Trail
 
-- EXTRACTED: 62 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

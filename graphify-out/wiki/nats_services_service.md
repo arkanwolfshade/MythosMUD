@@ -1,57 +1,71 @@
 # nats services service
 
-> 130 nodes
+> 99 nodes
 
 ## Key Concepts
 
-- **test_nats_service.py** (76 connections) — `server/tests/unit/services/test_nats_service.py`
-- **NATSMetrics** (31 connections) — `server/services/nats_metrics.py`
-- **nats_service()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_nats_service_init_with_config()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
-- **nats_metrics.py** (4 connections) — `server/services/nats_metrics.py`
-- **test_nats_service_init_with_subject_manager()** (4 connections) — `server/tests/unit/services/test_nats_service.py`
-- **.get_metrics()** (3 connections) — `server/services/nats_metrics.py`
-- **nats_config()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_nats_metrics_init()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_nats_metrics_record_publish_success()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_nats_metrics_record_publish_error()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_nats_metrics_record_subscribe_success()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_nats_metrics_record_subscribe_error()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_nats_metrics_record_batch_flush_success()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_nats_metrics_record_batch_flush_error()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_nats_metrics_update_connection_health()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_nats_metrics_update_connection_health_clamped()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_nats_metrics_update_pool_utilization()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_nats_metrics_update_pool_utilization_clamped()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_nats_metrics_get_metrics()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_nats_metrics_get_metrics_empty_processing_times()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_nats_metrics_message_processing_times_maxlen()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_nats_service_init_connection_pool()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_nats_service_init_message_batch()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_unsubscribe_not_found()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- *... and 105 more nodes in this community*
+- **test_container_bundles.py** (64 connections) — `server/tests/unit/container/test_container_bundles.py`
+- **GameBundle** (50 connections) — `server/container/bundles/game.py`
+- **CombatBundle** (28 connections) — `server/container/bundles/combat.py`
+- **RealtimeBundle** (25 connections) — `server/container/bundles/realtime.py`
+- **MagicBundle** (22 connections) — `server/container/bundles/magic.py`
+- **__init__.py** (19 connections) — `server/container/bundles/__init__.py`
+- **CoreBundle** (18 connections) — `server/container/bundles/core.py`
+- **NPCBundle** (16 connections) — `server/container/bundles/npc.py`
+- **MonitoringBundle** (15 connections) — `server/container/bundles/monitoring.py`
+- **TimeBundle** (14 connections) — `server/container/bundles/time.py`
+- **.initialize()** (12 connections) — `server/container/main.py`
+- **_create_learning_mp_regen_and_magic()** (11 connections) — `server/container/bundles/magic.py`
+- **ChatBundle** (10 connections) — `server/container/bundles/chat.py`
+- **.initialize()** (8 connections) — `server/container/bundles/realtime.py`
+- **.initialize()** (7 connections) — `server/container/bundles/monitoring.py`
+- **_validate_magic_prerequisites()** (6 connections) — `server/container/bundles/magic.py`
+- **.initialize()** (6 connections) — `server/container/bundles/magic.py`
+- **._setup_nats_dependent_services()** (6 connections) — `server/container/bundles/realtime.py`
+- **._require_core_services()** (5 connections) — `server/container/bundles/game.py`
+- **._require_core_services()** (5 connections) — `server/container/bundles/realtime.py`
+- **._connect_nats()** (5 connections) — `server/container/bundles/realtime.py`
+- **.shutdown()** (5 connections) — `server/container/main.py`
+- **._sanitarium_failover_callback()** (4 connections) — `server/container/bundles/combat.py`
+- **.shutdown()** (4 connections) — `server/container/bundles/core.py`
+- **._wire_item_registry_to_player_service()** (3 connections) — `server/container/bundles/game.py`
+- *... and 74 more nodes in this community*
 
 ## Relationships
 
-- [combat validator validators](combat_validator_validators.md) (18 shared connections)
-- [nats exceptions services](nats_exceptions_services.md) (7 shared connections)
-- [motd loader rationale](motd_loader_rationale.md) (4 shared connections)
-- [connection state machine](connection_state_machine.md) (3 shared connections)
-- [manager subject services](manager_subject_services.md) (2 shared connections)
-- [connection disconnection realtime](connection_disconnection_realtime.md) (1 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
-- [metrics schemas rationale](metrics_schemas_rationale.md) (1 shared connections)
-- [Magic Spell Service](Magic_Spell_Service.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (38 shared connections)
+- [coercion int inventory](coercion_int_inventory.md) (14 shared connections)
+- [time service rationale](time_service_rationale.md) (8 shared connections)
+- [Database Config](Database_Config.md) (7 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (6 shared connections)
+- [NPC Combat](NPC_Combat.md) (5 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (5 shared connections)
+- [quest chat game](quest_chat_game.md) (4 shared connections)
+- [websocket realtime handler](websocket_realtime_handler.md) (4 shared connections)
+- [payload realtime optimizer](payload_realtime_optimizer.md) (4 shared connections)
+- [models npc rationale](models_npc_rationale.md) (3 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (3 shared connections)
 
 ## Source Files
 
-- `server/services/nats_metrics.py`
-- `server/tests/unit/services/test_nats_service.py`
+- `server/container/bundles/__init__.py`
+- `server/container/bundles/chat.py`
+- `server/container/bundles/combat.py`
+- `server/container/bundles/core.py`
+- `server/container/bundles/game.py`
+- `server/container/bundles/magic.py`
+- `server/container/bundles/monitoring.py`
+- `server/container/bundles/npc.py`
+- `server/container/bundles/realtime.py`
+- `server/container/bundles/time.py`
+- `server/container/main.py`
+- `server/tests/unit/container/test_container_bundles.py`
+- `server/tests/unit/container/test_time_bundle.py`
 
 ## Audit Trail
 
-- EXTRACTED: 319 (97%)
-- INFERRED: 9 (3%)
+- EXTRACTED: 421 (86%)
+- INFERRED: 71 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

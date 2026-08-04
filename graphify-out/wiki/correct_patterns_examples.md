@@ -37,7 +37,7 @@
 - [websocket examples logging](websocket_examples_logging.md) (3 shared connections)
 - [models lucidity rationale](models_lucidity_rationale.md) (3 shared connections)
 - [models npc rationale](models_npc_rationale.md) (1 shared connections)
-- [npc combat service](npc_combat_service.md) (1 shared connections)
+- [player requests schemas](player_requests_schemas.md) (1 shared connections)
 
 ## Source Files
 

@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_get_player()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Test get_player() retrieves player from persistence.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_get_npc_name_from_lifecycle_returns_none_when_missing()** (3 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **When lifecycle manager is unavailable, display name lookup returns None.** (1 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
 
 ## Relationships
 
-- [game state provider](game_state_provider.md) (1 shared connections)
+- [room conftest toolkit](room_conftest_toolkit.md) (1 shared connections)
+- [services nats service](services_nats_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- `server/tests/unit/npc/test_npc_combat_integration_class.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

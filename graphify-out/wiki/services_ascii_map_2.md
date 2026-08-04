@@ -18,7 +18,7 @@
 - [chat moderation game](chat_moderation_game.md) (4 shared connections)
 - [dialogue schemas tree](dialogue_schemas_tree.md) (2 shared connections)
 - [player helpers error](player_helpers_error.md) (2 shared connections)
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
 - [chat game message](chat_game_message.md) (1 shared connections)
 - [eventLog eventStore projector](eventLog_eventStore_projector.md) (1 shared connections)
 - [command parser build](command_parser_build.md) (1 shared connections)

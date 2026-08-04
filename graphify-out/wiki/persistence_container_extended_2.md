@@ -37,7 +37,7 @@
 - [player look commands](player_look_commands.md) (4 shared connections)
 - [Error Conversion](Error_Conversion.md) (2 shared connections)
 - [room service game](room_service_game.md) (2 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (1 shared connections)
+- [command combat models](command_combat_models.md) (1 shared connections)
 
 ## Source Files
 

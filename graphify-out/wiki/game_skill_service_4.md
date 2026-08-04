@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **game_state_provider()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Create a GameStateProvider instance.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_prepare_room_data_with_to_dict()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **Test _prepare_room_data() prepares room data with to_dict.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Relationships
 
-- [command utility models](command_utility_models.md) (1 shared connections)
-- [game state provider](game_state_provider.md) (1 shared connections)
+- [player room event](player_room_event.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

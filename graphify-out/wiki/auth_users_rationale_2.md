@@ -1,57 +1,56 @@
 # auth users rationale
 
-> 22 nodes
+> 27 nodes
 
 ## Key Concepts
 
-- **hash_password()** (27 connections) — `server/auth/argon2_utils.py`
-- **test_verify_password_success()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_verify_password_failure()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_hash_password_empty_string()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_verify_password_empty_string()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_hash_password_invalid_type()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_hash_password_non_string_type()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_verify_password_non_string_password()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_hash_password_type_error()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **._hash_password()** (3 connections) — `server/auth/users.py`
-- **test_hash_password_success()** (3 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **Hash a plaintext password using Argon2id.      This function provides superior s** (1 connections) — `server/auth/argon2_utils.py`
-- **Hash password using Argon2 instead of bcrypt.** (1 connections) — `server/auth/users.py`
-- **Test successful password hashing.** (1 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **Test successful password verification.** (1 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **Test password verification with wrong password.** (1 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **Test hashing empty password raises AuthenticationError.** (1 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **Test verifying empty password - cannot hash empty password.** (1 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **Test hashing password with invalid type.** (1 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **Test hashing password with non-string type raises AuthenticationError.** (1 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **Test verifying password with non-string password returns False.** (1 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **Test hash_password handles TypeError.** (1 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **realtime.py** (13 connections) — `server/schemas/realtime/realtime.py`
+- **PresenceStatistics** (12 connections) — `server/schemas/realtime/presence_data.py`
+- **SessionStatistics** (12 connections) — `server/schemas/realtime/presence_data.py`
+- **ErrorStatistics** (12 connections) — `server/schemas/realtime/presence_data.py`
+- **PlayerConnectionsResponse** (10 connections) — `server/schemas/realtime/realtime.py`
+- **NewGameSessionResponse** (10 connections) — `server/schemas/realtime/realtime.py`
+- **ConnectionStatisticsResponse** (10 connections) — `server/schemas/realtime/realtime.py`
+- **__init__.py** (9 connections) — `server/schemas/realtime/__init__.py`
+- **SessionInfo** (9 connections) — `server/schemas/realtime/realtime.py`
+- **PresenceInfo** (6 connections) — `server/schemas/realtime/realtime.py`
+- **BaseModel** (6 connections)
+- **HealthInfo** (6 connections) — `server/schemas/realtime/realtime.py`
+- **presence_data.py** (5 connections) — `server/schemas/realtime/presence_data.py`
+- **test_get_connection_statistics()** (5 connections) — `server/tests/unit/api/test_real_time_helpers.py`
+- **BaseModel** (3 connections)
+- **Realtime domain schemas: realtime API, NATS messages, WebSocket messages.** (1 connections) — `server/schemas/realtime/__init__.py`
+- **Presence and health statistics schema for MythosMUD.  This module defines Pydant** (1 connections) — `server/schemas/realtime/presence_data.py`
+- **Presence statistics for connection monitoring.      This model represents aggreg** (1 connections) — `server/schemas/realtime/presence_data.py`
+- **Session statistics for connection monitoring.      This model represents aggrega** (1 connections) — `server/schemas/realtime/presence_data.py`
+- **Error statistics for connection monitoring.      This model represents aggregate** (1 connections) — `server/schemas/realtime/presence_data.py`
+- **Real-time API response schemas for MythosMUD server.  This module provides Pydan** (1 connections) — `server/schemas/realtime/realtime.py`
+- **Presence information for a player connection.** (1 connections) — `server/schemas/realtime/realtime.py`
+- **Session information for a player connection.** (1 connections) — `server/schemas/realtime/realtime.py`
+- **Health information for a player connection.** (1 connections) — `server/schemas/realtime/realtime.py`
+- **Response model for player connection information endpoint.** (1 connections) — `server/schemas/realtime/realtime.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [respawn player handlers](respawn_player_handlers.md) (11 shared connections)
-- [Error Handling Core](Error_Handling_Core.md) (6 shared connections)
-- [models npc rationale](models_npc_rationale.md) (5 shared connections)
-- [argon2 auth rationale](argon2_auth_rationale.md) (2 shared connections)
-- [security headers middleware](security_headers_middleware.md) (2 shared connections)
-- [Database Config](Database_Config.md) (1 shared connections)
-- [player requests schemas](player_requests_schemas.md) (1 shared connections)
-- [player service game](player_service_game.md) (1 shared connections)
-- [admin auth service](admin_auth_service.md) (1 shared connections)
-- [npc lifecycle combat](npc_lifecycle_combat.md) (1 shared connections)
-- [archive QUALITY AUDIT](archive_QUALITY_AUDIT.md) (1 shared connections)
-- [persistence constants rationale](persistence_constants_rationale.md) (1 shared connections)
+- [room validator path](room_validator_path.md) (5 shared connections)
+- [inventory schemas schema](inventory_schemas_schema.md) (4 shared connections)
+- [command processor rationale](command_processor_rationale.md) (4 shared connections)
+- [combat commands handler](combat_commands_handler.md) (4 shared connections)
+- [schemas nats messages](schemas_nats_messages.md) (2 shared connections)
+- [models npc rationale](models_npc_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/auth/argon2_utils.py`
-- `server/auth/users.py`
-- `server/tests/unit/auth/test_argon2_utils.py`
+- `server/schemas/realtime/__init__.py`
+- `server/schemas/realtime/presence_data.py`
+- `server/schemas/realtime/realtime.py`
+- `server/tests/unit/api/test_real_time_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 71 (93%)
-- INFERRED: 5 (7%)
+- EXTRACTED: 104 (74%)
+- INFERRED: 36 (26%)
 - AMBIGUOUS: 0 (0%)
 
 ---

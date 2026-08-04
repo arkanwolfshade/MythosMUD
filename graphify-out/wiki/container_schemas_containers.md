@@ -33,18 +33,15 @@
 
 ## Relationships
 
+- [lucidity services helpers](lucidity_services_helpers.md) (6 shared connections)
+- [Loot Generation](Loot_Generation.md) (4 shared connections)
 - [npc service services](npc_service_services.md) (4 shared connections)
 - [commands admin mute](commands_admin_mute.md) (3 shared connections)
-- [combat npc services](combat_npc_services.md) (3 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (3 shared connections)
 - [Database Config](Database_Config.md) (3 shared connections)
-- [combat services persistence](combat_services_persistence.md) (3 shared connections)
-- [commands npc admin](commands_npc_admin.md) (2 shared connections)
-- [combat models rationale](combat_models_rationale.md) (2 shared connections)
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
-- [commands position system](commands_position_system.md) (1 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
-- [lucidity services helpers](lucidity_services_helpers.md) (1 shared connections)
+- [commands party examples](commands_party_examples.md) (2 shared connections)
 - [movement monitor game](movement_monitor_game.md) (1 shared connections)
+- [models player related](models_player_related.md) (1 shared connections)
 
 ## Source Files
 

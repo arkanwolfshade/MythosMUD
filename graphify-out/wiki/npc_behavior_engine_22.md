@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_room_occupants_empty()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **Test get_room_occupants() returns empty list when no occupants.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_handle_container_overflow_room_id_empty_string()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test handle_container_overflow handles empty string room_id.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Relationships
 
-- [room subscription manager](room_subscription_manager.md) (1 shared connections)
+- [wearable container service](wearable_container_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager.py`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 

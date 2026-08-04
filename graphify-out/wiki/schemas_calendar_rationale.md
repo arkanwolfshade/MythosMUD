@@ -1,57 +1,49 @@
 # schemas calendar rationale
 
-> 28 nodes
+> 18 nodes
 
 ## Key Concepts
 
-- **test_look_npc_helpers.py** (34 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **_should_include_npc()** (14 connections) — `server/commands/look_npc.py`
-- **test_should_include_npc_alive_with_name()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_should_include_npc_dead()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_should_include_npc_no_name()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_format_core_attributes()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_format_core_attributes_empty()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_format_other_stats()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_format_other_stats_empty()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_format_lifecycle_info()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_format_lifecycle_info_no_lifecycle_state()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_should_include_npc()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_should_include_npc_no_name()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_should_include_npc_not_alive()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **Check if an NPC should be included in the results (has name and is alive).** (1 connections) — `server/commands/look_npc.py`
-- **Test should_include_npc for alive NPC with name.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test should_include_npc for dead NPC.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test should_include_npc for NPC without name.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Unit tests for look_npc helper functions.  Tests the helper functions in look_np** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **Test _format_core_attributes() formats core attributes.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **Test _format_core_attributes() returns empty list when no core attributes.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **Test _format_other_stats() formats non-core stats.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **Test _format_other_stats() returns empty list when no other stats.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **Test _format_lifecycle_info() formats lifecycle information.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **Test _format_lifecycle_info() returns empty list when no lifecycle_state.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- *... and 3 more nodes in this community*
+- **npc_combat_grace.py** (14 connections) — `server/services/npc_combat_grace.py`
+- **is_player_attack_blocked_by_login_grace_period()** (11 connections) — `server/services/npc_combat_grace.py`
+- **is_npc_attack_on_player_blocked_by_login_grace_period()** (10 connections) — `server/services/npc_combat_grace.py`
+- **test_npc_combat_grace.py** (9 connections) — `server/tests/unit/services/test_npc_combat_grace.py`
+- **_connection_manager_from_config_app()** (8 connections) — `server/services/npc_combat_grace.py`
+- **get_app_instance()** (5 connections) — `server/config/__init__.py`
+- **UUID** (3 connections)
+- **test_player_attack_blocked_when_in_grace_period()** (2 connections) — `server/tests/unit/services/test_npc_combat_grace.py`
+- **test_player_attack_fail_open_without_connection_manager()** (2 connections) — `server/tests/unit/services/test_npc_combat_grace.py`
+- **test_player_attack_fail_open_on_invalid_uuid()** (2 connections) — `server/tests/unit/services/test_npc_combat_grace.py`
+- **test_npc_attack_blocked_when_target_in_grace_period()** (2 connections) — `server/tests/unit/services/test_npc_combat_grace.py`
+- **test_npc_attack_fail_open_without_app()** (2 connections) — `server/tests/unit/services/test_npc_combat_grace.py`
+- **Return the runtime app instance attached during lifespan startup.      This prov** (1 connections) — `server/config/__init__.py`
+- **Login grace-period checks for NPC combat integration (extracted to keep service** (1 connections) — `server/services/npc_combat_grace.py`
+- **Resolve connection_manager from the public config app accessor.      Uses geta** (1 connections) — `server/services/npc_combat_grace.py`
+- **True if the player should not attack (in login grace period). Fail-open on confi** (1 connections) — `server/services/npc_combat_grace.py`
+- **True if NPC attack on this player should be blocked (player in login grace perio** (1 connections) — `server/services/npc_combat_grace.py`
+- **Unit tests for npc_combat_grace login grace checks.** (1 connections) — `server/tests/unit/services/test_npc_combat_grace.py`
 
 ## Relationships
 
-- [services service hallucination](services_service_hallucination.md) (12 shared connections)
-- [dead letter realtime](dead_letter_realtime.md) (6 shared connections)
-- [message filtering helpers](message_filtering_helpers.md) (5 shared connections)
-- [npc look commands](npc_look_commands.md) (4 shared connections)
-- [commands admin helpers](commands_admin_helpers.md) (4 shared connections)
-- [config rationale config()](config_rationale_config%28%29.md) (4 shared connections)
-- [commands quest rationale](commands_quest_rationale.md) (2 shared connections)
-- [cache caching lru](cache_caching_lru.md) (1 shared connections)
+- [models npc rationale](models_npc_rationale.md) (5 shared connections)
+- [command utility models](command_utility_models.md) (4 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (2 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [player event handlers](player_event_handlers.md) (1 shared connections)
+- [realtime monitoring statistics](realtime_monitoring_statistics.md) (1 shared connections)
+- [nats services metrics](nats_services_metrics.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/look_npc.py`
-- `server/tests/unit/commands/test_look_npc.py`
-- `server/tests/unit/commands/test_look_npc_helpers.py`
+- `server/config/__init__.py`
+- `server/services/npc_combat_grace.py`
+- `server/tests/unit/services/test_npc_combat_grace.py`
 
 ## Audit Trail
 
-- EXTRACTED: 98 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 74 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

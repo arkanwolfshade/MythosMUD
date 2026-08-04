@@ -1,10 +1,9 @@
 # maps handle ascii
 
-> 83 nodes
+> 103 nodes
 
 ## Key Concepts
 
-- **RoomService** (80 connections) — `server/game/room_service.py`
 - **ExplorationService** (79 connections) — `server/services/exploration_service.py`
 - **maps.py** (53 connections) — `server/api/maps.py`
 - **test_maps.py** (52 connections) — `server/tests/unit/api/test_maps.py`
@@ -29,37 +28,37 @@
 - **Any** (7 connections)
 - **_needs_coordinate_generation()** (7 connections) — `server/api/maps.py`
 - **AsciiMapResponse** (7 connections) — `server/schemas/maps/map.py`
-- *... and 58 more nodes in this community*
+- **UUID** (6 connections)
+- *... and 78 more nodes in this community*
 
 ## Relationships
 
-- [Exception Containers](Exception_Containers.md) (36 shared connections)
-- [corpse lifecycle service](corpse_lifecycle_service.md) (36 shared connections)
-- [room game service](room_game_service.md) (32 shared connections)
-- [database helpers infrastructure](database_helpers_infrastructure.md) (19 shared connections)
-- [player realtime presence](player_realtime_presence.md) (16 shared connections)
+- [room game service](room_game_service.md) (28 shared connections)
+- [player requests schemas](player_requests_schemas.md) (26 shared connections)
+- [Loot Generation](Loot_Generation.md) (24 shared connections)
+- [Database Config](Database_Config.md) (13 shared connections)
+- [database helpers infrastructure](database_helpers_infrastructure.md) (12 shared connections)
+- [Exception Containers](Exception_Containers.md) (12 shared connections)
+- [corpse lifecycle service](corpse_lifecycle_service.md) (10 shared connections)
 - [command handler processing](command_handler_processing.md) (9 shared connections)
-- [admin auth service](admin_auth_service.md) (8 shared connections)
-- [Database Config](Database_Config.md) (7 shared connections)
-- [player service game](player_service_game.md) (7 shared connections)
 - [combat services service](combat_services_service.md) (7 shared connections)
 - [map helpers rationale](map_helpers_rationale.md) (6 shared connections)
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (5 shared connections)
+- [inventory schemas schema](inventory_schemas_schema.md) (6 shared connections)
+- [coordinate services generator](coordinate_services_generator.md) (5 shared connections)
 
 ## Source Files
 
 - `server/api/map_helpers.py`
 - `server/api/maps.py`
-- `server/game/room_service.py`
 - `server/schemas/maps/map.py`
 - `server/services/exploration_service.py`
-- `server/tests/unit/api/test_map_minimap_helpers.py`
 - `server/tests/unit/api/test_maps.py`
+- `server/tests/unit/services/test_exploration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 552 (86%)
-- INFERRED: 87 (14%)
+- EXTRACTED: 546 (91%)
+- INFERRED: 57 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

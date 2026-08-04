@@ -33,7 +33,8 @@
 
 ## Relationships
 
-- [quest game service](quest_game_service.md) (5 shared connections)
+- [quest service game](quest_service_game.md) (4 shared connections)
+- [quest game service](quest_game_service.md) (1 shared connections)
 
 ## Source Files
 

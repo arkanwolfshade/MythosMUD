@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **test_create_unalias_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_unalias_command delegates to utility factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_create_aliases_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_aliases_command delegates to utility factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 

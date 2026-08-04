@@ -34,8 +34,8 @@
 ## Relationships
 
 - [quest game service](quest_game_service.md) (7 shared connections)
-- [world models rationale](world_models_rationale.md) (3 shared connections)
-- [NPC Combat](NPC_Combat.md) (1 shared connections)
+- [combat models rationale](combat_models_rationale.md) (3 shared connections)
+- [command factories exploration](command_factories_exploration.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,42 +1,43 @@
 # logging file setup
 
-> 19 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **test_users_current_user_logging.py** (12 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **get_current_user_with_logging()** (11 connections) — `server/auth/users.py`
-- **test_get_current_user_with_logging_success()** (4 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **test_get_current_user_with_logging_no_request()** (4 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **test_get_current_user_with_logging_long_auth_header()** (4 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **test_get_current_user_with_logging_no_auth_header()** (4 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **test_get_current_user_with_logging_no_user()** (3 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **test_get_current_user_with_logging_http_exception()** (3 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **test_get_current_user_with_logging_generic_exception()** (3 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **DependsParam** (1 connections)
-- **Enhanced get_current_user with detailed logging.** (1 connections) — `server/auth/users.py`
-- **Unit tests for get_current_user_with_logging wrapper.** (1 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **Test _get_current_user_with_logging with successful authentication.** (1 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **Test _get_current_user_with_logging when request is None.** (1 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **Test _get_current_user_with_logging when no user is returned.** (1 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **Test _get_current_user_with_logging when HTTPException is raised.** (1 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **Test _get_current_user_with_logging when generic Exception is raised.** (1 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **Test _get_current_user_with_logging with long Authorization header.** (1 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **Test _get_current_user_with_logging when Authorization header is missing.** (1 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
+- **MonitoringPanel.test.tsx** (11 connections) — `client/src/components/panels/__tests__/MonitoringPanel.test.tsx`
+- **monitoringPanelTestFixtures.ts** (11 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
+- **MonitoringPanel.tsx** (8 connections) — `client/src/components/panels/MonitoringPanel.tsx`
+- **mockOkJsonResponse()** (5 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
+- **setupSequentialMonitoringFetch()** (3 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
+- **setupRoundRobinMonitoringFetch()** (3 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
+- **setupDualConnectionsUrlFetch()** (3 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
+- **setupTimestampMonitoringFetch()** (3 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
+- **MonitoringPanel()** (2 connections) — `client/src/components/panels/MonitoringPanel.tsx`
+- **SAMPLE_MONITORING_MOCKS** (2 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
+- **EMPTY_MONITORING_MOCKS** (2 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
+- **MonitoringData** (1 connections) — `client/src/components/panels/MonitoringPanel.tsx`
+- **MonitoringPanelProps** (1 connections) — `client/src/components/panels/MonitoringPanel.tsx`
+- **fetchSpy** (1 connections) — `client/src/components/panels/__tests__/MonitoringPanel.test.tsx`
+- **MonitoringMocks** (1 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
+- **TIMESTAMP_DUAL_CONNECTIONS** (1 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
+- **FetchSpy** (1 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
 
 ## Relationships
 
-- [Exception Containers](Exception_Containers.md) (5 shared connections)
-- [admin auth service](admin_auth_service.md) (3 shared connections)
+- [panels chat ChatPanelRuntimeViewParts](panels_chat_ChatPanelRuntimeViewParts.md) (2 shared connections)
+- [mythosApp appLazyScreens mythosAppViewMo](mythosApp_appLazyScreens_mythosAppViewMo.md) (1 shared connections)
+- [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (1 shared connections)
+- [panels GameClientV2Dock gameLogPanelUtil](panels_GameClientV2Dock_gameLogPanelUtil.md) (1 shared connections)
 
 ## Source Files
 
-- `server/auth/users.py`
-- `server/tests/unit/auth/test_users_current_user_logging.py`
+- `client/src/components/panels/MonitoringPanel.tsx`
+- `client/src/components/panels/__tests__/MonitoringPanel.test.tsx`
+- `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 58 (100%)
+- EXTRACTED: 59 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

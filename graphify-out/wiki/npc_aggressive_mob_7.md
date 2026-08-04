@@ -4,20 +4,22 @@
 
 ## Key Concepts
 
-- **test_resolve_player_by_name()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
-- **Test _resolve_player_for_movement resolves player by name.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- **integration()** (4 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **NPCCombatIntegration wired to the mock persistence layer.** (1 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
 
 ## Relationships
 
-- [movement service game](movement_service_game.md) (1 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
+- [room conftest toolkit](room_conftest_toolkit.md) (1 shared connections)
+- [services nats service](services_nats_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_movement_service.py`
+- `server/tests/unit/npc/test_npc_combat_integration_class.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

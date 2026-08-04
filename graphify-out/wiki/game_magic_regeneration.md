@@ -21,7 +21,9 @@
 
 ## Relationships
 
-- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (11 shared connections)
+- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (7 shared connections)
+- [player persistence repository](player_persistence_repository.md) (2 shared connections)
+- [persistence combat handler](persistence_combat_handler.md) (2 shared connections)
 
 ## Source Files
 

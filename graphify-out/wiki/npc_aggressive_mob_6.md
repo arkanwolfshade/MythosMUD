@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **.get_effective_spawn_probability()** (2 connections) — `server/npc/zone_configuration.py`
-- **Calculate effective spawn probability based on zone modifiers.          Args:** (1 connections) — `server/npc/zone_configuration.py`
+- **test_resolve_player_by_name()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
+- **Test _resolve_player_for_movement resolves player by name.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
 
 ## Relationships
 
-- [spell game magic](spell_game_magic.md) (1 shared connections)
+- [movement service game](movement_service_game.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/zone_configuration.py`
+- `server/tests/unit/game/test_movement_service.py`
 
 ## Audit Trail
 

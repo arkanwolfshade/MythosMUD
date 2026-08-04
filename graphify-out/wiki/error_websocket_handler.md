@@ -1,30 +1,33 @@
 # error websocket handler
 
-> 8 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **.get_lifecycle_statistics()** (5 connections) — `server/npc/lifecycle_manager.py`
-- **._compute_state_counts()** (3 connections) — `server/npc/lifecycle_manager.py`
-- **._compute_type_counts()** (3 connections) — `server/npc/lifecycle_manager.py`
-- **._compute_aggregate_counts()** (3 connections) — `server/npc/lifecycle_manager.py`
-- **Get overall lifecycle statistics.          Returns:             Dictionary co** (1 connections) — `server/npc/lifecycle_manager.py`
-- **Return counts of lifecycle records by current_state.** (1 connections) — `server/npc/lifecycle_manager.py`
-- **Return counts of lifecycle records by NPC type string.** (1 connections) — `server/npc/lifecycle_manager.py`
-- **Return (total_spawns, total_despawns, total_errors) across all lifecycle records** (1 connections) — `server/npc/lifecycle_manager.py`
+- **._get_player_mute_file()** (7 connections) — `server/services/user_manager.py`
+- **.__init__()** (4 connections) — `server/services/user_manager.py`
+- **_get_proper_data_dir()** (4 connections) — `server/services/user_manager.py`
+- **Path** (3 connections)
+- **Initialize the user manager.          Args:             data_dir: Directory f** (1 connections) — `server/services/user_manager.py`
+- **Get the mute data file path for a specific player.** (1 connections) — `server/services/user_manager.py`
+- **Get the proper environment-aware data directory for user management.      Uses** (1 connections) — `server/services/user_manager.py`
 
 ## Relationships
 
-- [Realtime Subscribers](Realtime_Subscribers.md) (4 shared connections)
+- [services user manager](services_user_manager.md) (5 shared connections)
+- [room realtime occupant](room_realtime_occupant.md) (1 shared connections)
+- [auth invites rationale](auth_invites_rationale.md) (1 shared connections)
+- [models npc rationale](models_npc_rationale.md) (1 shared connections)
+- [middleware metrics collector](middleware_metrics_collector.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/lifecycle_manager.py`
+- `server/services/user_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 20 (95%)
+- INFERRED: 1 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

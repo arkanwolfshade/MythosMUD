@@ -19,7 +19,7 @@
 
 ## Relationships
 
-- [room look commands](room_look_commands.md) (1 shared connections)
+- [combat schemas schema](combat_schemas_schema.md) (1 shared connections)
 
 ## Source Files
 

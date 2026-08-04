@@ -1,11 +1,13 @@
 # room persistence loader
 
-> 28 nodes
+> 32 nodes
 
 ## Key Concepts
 
 - **GameMechanicsService** (27 connections) — `server/game/mechanics.py`
 - **test_mechanics.py** (16 connections) — `server/tests/unit/game/test_mechanics.py`
+- **mechanics.py** (13 connections) — `server/game/mechanics.py`
+- **npc_combat_rewards.py** (10 connections) — `server/services/npc_combat_rewards.py`
 - **_player()** (8 connections) — `server/tests/unit/game/test_mechanics.py`
 - **.apply_fear()** (4 connections) — `server/game/mechanics.py`
 - **.apply_corruption()** (4 connections) — `server/game/mechanics.py`
@@ -23,33 +25,33 @@
 - **test_gain_experience_success()** (3 connections) — `server/tests/unit/game/test_mechanics.py`
 - **service()** (2 connections) — `server/tests/unit/game/test_mechanics.py`
 - **Any** (1 connections)
+- **Game mechanics service for MythosMUD server.  This module handles all game mecha** (1 connections) — `server/game/mechanics.py`
 - **Service class for game mechanics operations.** (1 connections) — `server/game/mechanics.py`
 - **Initialize the game mechanics service with a persistence layer.** (1 connections) — `server/game/mechanics.py`
 - **Apply fear to a player.** (1 connections) — `server/game/mechanics.py`
-- **Apply corruption to a player.** (1 connections) — `server/game/mechanics.py`
-- **Heal a player's health.** (1 connections) — `server/game/mechanics.py`
-- **Damage a player's health.** (1 connections) — `server/game/mechanics.py`
-- *... and 3 more nodes in this community*
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [command inventory models](command_inventory_models.md) (7 shared connections)
-- [models npc rationale](models_npc_rationale.md) (5 shared connections)
-- [Database Config](Database_Config.md) (5 shared connections)
-- [command admin setlucidity](command_admin_setlucidity.md) (3 shared connections)
-- [npc combat base](npc_combat_base.md) (2 shared connections)
-- [Spell Validation](Spell_Validation.md) (1 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [Database Config](Database_Config.md) (10 shared connections)
+- [Loot Generation](Loot_Generation.md) (9 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (8 shared connections)
+- [models npc rationale](models_npc_rationale.md) (6 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (1 shared connections)
+- [NPC Combat](NPC_Combat.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [npc rewards combat](npc_rewards_combat.md) (1 shared connections)
 
 ## Source Files
 
 - `server/game/mechanics.py`
+- `server/services/npc_combat_rewards.py`
 - `server/tests/unit/game/test_mechanics.py`
 
 ## Audit Trail
 
-- EXTRACTED: 103 (94%)
-- INFERRED: 7 (6%)
+- EXTRACTED: 128 (95%)
+- INFERRED: 7 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

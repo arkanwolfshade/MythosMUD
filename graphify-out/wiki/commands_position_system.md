@@ -1,78 +1,56 @@
 # commands position system
 
-> 136 nodes
+> 42 nodes
 
 ## Key Concepts
 
-- **command_service.py** (95 connections) — `server/commands/command_service.py`
-- **alias_storage.py** (67 connections) — `server/alias_storage.py`
-- **__init__.py** (29 connections) — `server/commands/__init__.py`
 - **test_follow_commands.py** (23 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **position_commands.py** (19 connections) — `server/commands/position_commands.py`
 - **handle_follow_command()** (18 connections) — `server/commands/follow_commands.py`
 - **follow_commands.py** (15 connections) — `server/commands/follow_commands.py`
-- **get_help_content()** (15 connections) — `server/help/help_content.py`
-- **handle_pose_command()** (13 connections) — `server/commands/communication_commands.py`
-- **handle_inventory_command()** (13 connections) — `server/commands/inventory_commands.py`
-- **system_commands.py** (13 connections) — `server/commands/system_commands.py`
 - **_make_container()** (12 connections) — `server/tests/unit/commands/test_follow_commands.py`
 - **_make_request()** (12 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **exploration_commands.py** (11 connections) — `server/commands/exploration_commands.py`
-- **_handle_position_change()** (11 connections) — `server/commands/position_commands.py`
-- **handle_help_command()** (11 connections) — `server/commands/system_commands.py`
-- **test_position_commands.py** (11 connections) — `server/tests/unit/commands/test_position_commands.py`
 - **handle_unfollow_command()** (10 connections) — `server/commands/follow_commands.py`
 - **handle_following_command()** (10 connections) — `server/commands/follow_commands.py`
-- **_format_room_posture_message()** (10 connections) — `server/commands/position_commands.py`
-- **handle_system_command()** (10 connections) — `server/commands/system_commands.py`
-- **handle_stand_command()** (9 connections) — `server/commands/position_commands.py`
-- **handle_lie_command()** (9 connections) — `server/commands/position_commands.py`
-- **test_position_commands_helpers.py** (9 connections) — `server/tests/unit/commands/test_position_commands_helpers.py`
-- **handle_sit_command()** (8 connections) — `server/commands/position_commands.py`
-- *... and 111 more nodes in this community*
+- **test_handle_follow_self_rejected()** (7 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_follow_same_room_player_sends_request()** (7 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_follow_same_room_npc_immediate()** (7 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **_get_container()** (6 connections) — `server/commands/follow_commands.py`
+- **test_handle_follow_no_such_player_or_npc()** (6 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_follow_no_persistence()** (5 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_follow_no_target()** (5 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_follow_player_not_in_game()** (5 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_unfollow_success()** (5 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_unfollow_was_not_following()** (5 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_following_display()** (5 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **Any** (4 connections)
+- **test_handle_follow_no_container()** (3 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_unfollow_no_container()** (3 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_following_no_container()** (3 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **Follow commands for MythosMUD.  Handlers for /follow, /unfollow, and /following.** (1 connections) — `server/commands/follow_commands.py`
+- **Get application container from request.** (1 connections) — `server/commands/follow_commands.py`
+- **Handle /follow <target>. Target must be a player or NPC in the same room.** (1 connections) — `server/commands/follow_commands.py`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [commands npc admin](commands_npc_admin.md) (25 shared connections)
-- [models npc rationale](models_npc_rationale.md) (22 shared connections)
-- [commands whisper command](commands_whisper_command.md) (18 shared connections)
-- [commands admin mute](commands_admin_mute.md) (13 shared connections)
-- [NPC Combat](NPC_Combat.md) (13 shared connections)
-- [commands alias rationale](commands_alias_rationale.md) (9 shared connections)
-- [inventory commands command](inventory_commands_command.md) (8 shared connections)
-- [command helpers functions](command_helpers_functions.md) (8 shared connections)
-- [realtime real time](realtime_real_time.md) (7 shared connections)
-- [commands magic rationale](commands_magic_rationale.md) (7 shared connections)
-- [shutdown admin command](shutdown_admin_command.md) (6 shared connections)
-- [commands inventory put](commands_inventory_put.md) (5 shared connections)
+- [target resolution service](target_resolution_service.md) (8 shared connections)
+- [Loot Generation](Loot_Generation.md) (4 shared connections)
+- [commands party examples](commands_party_examples.md) (4 shared connections)
+- [commands admin mute](commands_admin_mute.md) (4 shared connections)
+- [spell game magic](spell_game_magic.md) (4 shared connections)
+- [connection realtime manager](connection_realtime_manager.md) (3 shared connections)
+- [coercion int inventory](coercion_int_inventory.md) (2 shared connections)
+- [models player related](models_player_related.md) (1 shared connections)
 
 ## Source Files
 
-- `server/alias_storage.py`
-- `server/commands/__init__.py`
-- `server/commands/command_service.py`
-- `server/commands/communication_commands.py`
-- `server/commands/exploration_commands.py`
 - `server/commands/follow_commands.py`
-- `server/commands/help_commands.py`
-- `server/commands/inventory_commands.py`
-- `server/commands/position_commands.py`
-- `server/commands/system_commands.py`
-- `server/help/__init__.py`
-- `server/help/help_content.py`
 - `server/tests/unit/commands/test_follow_commands.py`
-- `server/tests/unit/commands/test_help_commands.py`
-- `server/tests/unit/commands/test_position_commands.py`
-- `server/tests/unit/commands/test_position_commands_helpers.py`
-- `server/tests/unit/commands/test_system_commands.py`
-- `server/tests/unit/realtime/test_websocket_handler_core.py`
-- `server/tests/unit/realtime/test_websocket_handler_help.py`
-- `server/utils/alias_graph.py`
 
 ## Audit Trail
 
-- EXTRACTED: 693 (98%)
-- INFERRED: 16 (2%)
+- EXTRACTED: 192 (98%)
+- INFERRED: 4 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

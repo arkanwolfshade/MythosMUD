@@ -1,15 +1,13 @@
 # alias storage rationale
 
-> 119 nodes
+> 115 nodes
 
 ## Key Concepts
 
 - **test_alias_storage.py** (66 connections) — `server/tests/unit/test_alias_storage.py`
-- **_get_alias_validator()** (8 connections) — `server/alias_storage.py`
-- **alias.py** (6 connections) — `server/models/alias.py`
 - **Path** (6 connections)
-- **alias_storage()** (6 connections) — `server/tests/unit/test_alias_storage.py`
 - **temp_storage_dir()** (3 connections) — `server/tests/unit/test_alias_storage.py`
+- **sample_alias2()** (3 connections) — `server/tests/unit/test_alias_storage.py`
 - **test_alias_storage_init_with_storage_dir()** (3 connections) — `server/tests/unit/test_alias_storage.py`
 - **test_alias_storage_init_with_env_var()** (3 connections) — `server/tests/unit/test_alias_storage.py`
 - **test_alias_storage_init_without_env_var()** (3 connections) — `server/tests/unit/test_alias_storage.py`
@@ -29,28 +27,26 @@
 - **test_save_alias_data_success()** (2 connections) — `server/tests/unit/test_alias_storage.py`
 - **test_save_alias_data_io_error()** (2 connections) — `server/tests/unit/test_alias_storage.py`
 - **test_get_player_aliases_empty()** (2 connections) — `server/tests/unit/test_alias_storage.py`
-- *... and 94 more nodes in this community*
+- **test_get_player_aliases_with_aliases()** (2 connections) — `server/tests/unit/test_alias_storage.py`
+- **test_get_player_aliases_with_timestamps()** (2 connections) — `server/tests/unit/test_alias_storage.py`
+- *... and 90 more nodes in this community*
 
 ## Relationships
 
-- [commands npc admin](commands_npc_admin.md) (7 shared connections)
-- [alias models rationale](alias_models_rationale.md) (7 shared connections)
-- [commands position system](commands_position_system.md) (3 shared connections)
-- [schemas validator rationale](schemas_validator_rationale.md) (1 shared connections)
-- [world models rationale](world_models_rationale.md) (1 shared connections)
-- [holiday service services](holiday_service_services.md) (1 shared connections)
-- [request context realtime](request_context_realtime.md) (1 shared connections)
+- [alias models rationale](alias_models_rationale.md) (6 shared connections)
+- [commands party examples](commands_party_examples.md) (5 shared connections)
+- [commands recovery lucidity](commands_recovery_lucidity.md) (4 shared connections)
+- [request context realtime](request_context_realtime.md) (2 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/alias_storage.py`
-- `server/models/alias.py`
 - `server/tests/unit/test_alias_storage.py`
 
 ## Audit Trail
 
-- EXTRACTED: 271 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 254 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -33,10 +33,10 @@
 
 ## Relationships
 
-- [spell game magic](spell_game_magic.md) (13 shared connections)
+- [spell game magic](spell_game_magic.md) (10 shared connections)
+- [coercion int inventory](coercion_int_inventory.md) (5 shared connections)
 - [command factories exploration](command_factories_exploration.md) (3 shared connections)
-- [character creation service](character_creation_service.md) (3 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [command factories communication](command_factories_communication.md) (3 shared connections)
 
 ## Source Files
 

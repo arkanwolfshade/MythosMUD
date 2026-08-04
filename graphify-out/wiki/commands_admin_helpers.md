@@ -1,46 +1,36 @@
 # commands admin helpers
 
-> 20 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **_format_npc_description()** (15 connections) — `server/commands/look_npc.py`
-- **test_format_npc_description_success()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_format_npc_description_fallback_long_description()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_format_npc_description_fallback_short_description()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_format_npc_description_fallback_desc()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_format_npc_description_no_description()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_format_npc_description_empty_string()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_format_npc_description()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_format_npc_description_fallback()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_format_npc_description_no_description()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **Format NPC description with fallback.** (1 connections) — `server/commands/look_npc.py`
-- **Test formatting NPC description successfully.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test formatting NPC description with long_description fallback.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test formatting NPC description with short_description fallback.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test formatting NPC description with desc fallback.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test formatting NPC description when no description available.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test formatting NPC description when description is empty string.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test _format_npc_description() returns description from definition.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **Test _format_npc_description() uses fallback when description is empty.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **Test _format_npc_description() uses alternative attributes.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **test_profession_service.py** (15 connections) — `server/tests/unit/game/test_profession_service.py`
+- **_profession()** (5 connections) — `server/tests/unit/game/test_profession_service.py`
+- **service()** (2 connections) — `server/tests/unit/game/test_profession_service.py`
+- **test_profession_to_dict_list_formats()** (2 connections) — `server/tests/unit/game/test_profession_service.py`
+- **test_get_all_professions_dict()** (2 connections) — `server/tests/unit/game/test_profession_service.py`
+- **test_get_profession_by_id_dict_found()** (2 connections) — `server/tests/unit/game/test_profession_service.py`
+- **test_validate_and_get_profession_none_raises()** (2 connections) — `server/tests/unit/game/test_profession_service.py`
+- **test_validate_and_get_profession_not_found_raises()** (2 connections) — `server/tests/unit/game/test_profession_service.py`
+- **test_validate_and_get_profession_success()** (2 connections) — `server/tests/unit/game/test_profession_service.py`
+- **persistence()** (1 connections) — `server/tests/unit/game/test_profession_service.py`
+- **test_get_profession_by_id_dict_missing()** (1 connections) — `server/tests/unit/game/test_profession_service.py`
+- **Unit tests for ProfessionService.** (1 connections) — `server/tests/unit/game/test_profession_service.py`
 
 ## Relationships
 
-- [npc look commands](npc_look_commands.md) (7 shared connections)
-- [schemas calendar rationale](schemas_calendar_rationale.md) (4 shared connections)
-- [services service hallucination](services_service_hallucination.md) (3 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (3 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
+- [profession game service](profession_game_service.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/look_npc.py`
-- `server/tests/unit/commands/test_look_npc.py`
-- `server/tests/unit/commands/test_look_npc_helpers.py`
+- `server/tests/unit/game/test_profession_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 52 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 35 (95%)
+- INFERRED: 2 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

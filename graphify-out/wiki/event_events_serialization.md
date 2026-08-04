@@ -1,54 +1,51 @@
 # event events serialization
 
-> 25 nodes
+> 29 nodes
 
 ## Key Concepts
 
-- **.to_dict()** (8 connections) — `server/models/room.py`
-- **._compute_player_context()** (7 connections) — `server/npc/aggressive_mob_npc.py`
-- **.__init__()** (5 connections) — `server/models/room.py`
-- **.get_containers()** (5 connections) — `server/models/room.py`
-- **.get_players()** (4 connections) — `server/models/room.py`
-- **.get_npcs()** (4 connections) — `server/models/room.py`
-- **.get_occupant_count()** (4 connections) — `server/models/room.py`
-- **._enrich_behavior_context()** (4 connections) — `server/npc/aggressive_mob_npc.py`
-- **Any** (3 connections)
-- **.get_objects()** (3 connections) — `server/models/room.py`
-- **.is_empty()** (3 connections) — `server/models/room.py`
-- **.get_room_by_id()** (3 connections) — `server/npc/aggressive_mob_npc.py`
-- **._log_context_enriched()** (3 connections) — `server/npc/aggressive_mob_npc.py`
-- **Initialize a Room from JSON data.          Args:             room_data: Dictiona** (1 connections) — `server/models/room.py`
-- **Get list of player IDs currently in the room.          Returns:             List** (1 connections) — `server/models/room.py`
-- **Get list of object IDs currently in the room.          Returns:             List** (1 connections) — `server/models/room.py`
-- **Get list of NPC IDs currently in the room.          Returns:             List of** (1 connections) — `server/models/room.py`
-- **Get the total number of occupants in the room.          Returns:             Tot** (1 connections) — `server/models/room.py`
-- **Check if the room has no occupants.          Returns:             True if the ro** (1 connections) — `server/models/room.py`
-- **Get list of containers in this room.          Returns:             List of conta** (1 connections) — `server/models/room.py`
-- **Convert the room to a dictionary representation.          Returns:             D** (1 connections) — `server/models/room.py`
-- **Return the room object for the given room_id, or None if not found.** (1 connections) — `server/npc/aggressive_mob_npc.py`
-- **Get player_in_range, enemy_nearby, and target_id from persistence.         Retu** (1 connections) — `server/npc/aggressive_mob_npc.py`
-- **Debug log for context enrichment (best-effort, must not fail).** (1 connections) — `server/npc/aggressive_mob_npc.py`
-- **Populate player_in_range, enemy_nearby, and target_id for attack rules.** (1 connections) — `server/npc/aggressive_mob_npc.py`
+- **RateLimiter** (17 connections) — `server/services/rate_limiter.py`
+- **.get_limit()** (6 connections) — `server/services/rate_limiter.py`
+- **._cleanup_old_entries()** (6 connections) — `server/services/rate_limiter.py`
+- **.check_rate_limit()** (5 connections) — `server/services/rate_limiter.py`
+- **.get_player_stats()** (5 connections) — `server/services/rate_limiter.py`
+- **.record_message()** (4 connections) — `server/services/rate_limiter.py`
+- **.get_remaining_messages()** (4 connections) — `server/services/rate_limiter.py`
+- **.get_system_stats()** (3 connections) — `server/services/rate_limiter.py`
+- **.is_player_rate_limited()** (3 connections) — `server/services/rate_limiter.py`
+- **rate_limiter()** (3 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_rate_limiter_initialization()** (3 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_rate_limiter_legacy_config()** (3 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **.set_limit()** (2 connections) — `server/services/rate_limiter.py`
+- **Any** (2 connections)
+- **.reset_player_limits()** (2 connections) — `server/services/rate_limiter.py`
+- **Sliding window rate limiter for chat channels.      Implements per-user, per-cha** (1 connections) — `server/services/rate_limiter.py`
+- **Set a custom rate limit for a channel.          Args:             channel: Chann** (1 connections) — `server/services/rate_limiter.py`
+- **Get the current rate limit for a channel.          Args:             channel: Ch** (1 connections) — `server/services/rate_limiter.py`
+- **Remove timestamps older than the window size.          Args:             player_** (1 connections) — `server/services/rate_limiter.py`
+- **Check if a player is within rate limits for a channel.          Args:** (1 connections) — `server/services/rate_limiter.py`
+- **Record a message for rate limiting.          Args:             player_id: Player** (1 connections) — `server/services/rate_limiter.py`
+- **Get rate limiting statistics for a player.          Args:             player_id:** (1 connections) — `server/services/rate_limiter.py`
+- **Reset rate limiting for a player.          Args:             player_id: Player I** (1 connections) — `server/services/rate_limiter.py`
+- **Get system-wide rate limiting statistics.          Returns:             Dictiona** (1 connections) — `server/services/rate_limiter.py`
+- **Check if a player is currently rate limited on a channel.          Args:** (1 connections) — `server/services/rate_limiter.py`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
-- [room models instance](room_models_instance.md) (8 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (3 shared connections)
-- [lucidity event services](lucidity_event_services.md) (3 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
-- [target resolution service](target_resolution_service.md) (1 shared connections)
-- [container find inventory](container_find_inventory.md) (1 shared connections)
-- [AppRouter main AppRouter()](AppRouter_main_AppRouter%28%29.md) (1 shared connections)
+- [rate limiter services](rate_limiter_services.md) (4 shared connections)
+- [chat game message](chat_game_message.md) (1 shared connections)
+- [room realtime occupant](room_realtime_occupant.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/room.py`
-- `server/npc/aggressive_mob_npc.py`
+- `server/services/rate_limiter.py`
+- `server/tests/unit/services/test_rate_limiter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 63 (93%)
-- INFERRED: 5 (7%)
+- EXTRACTED: 82 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

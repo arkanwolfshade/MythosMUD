@@ -14,7 +14,7 @@
 ## Relationships
 
 - [player effects endpoints](player_effects_endpoints.md) (3 shared connections)
-- [command inventory models](command_inventory_models.md) (2 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (2 shared connections)
 
 ## Source Files
 

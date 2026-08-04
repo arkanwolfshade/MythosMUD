@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_convert_room_uuids_to_names_empty_room_data()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Test convert_room_uuids_to_names() with empty room_data.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_send_occupants_snapshot_to_player_no_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **Test send_occupants_snapshot_to_player() skips when connection manager not avail** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Relationships
 
-- [game state provider](game_state_provider.md) (1 shared connections)
+- [player room event](player_room_event.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Audit Trail
 

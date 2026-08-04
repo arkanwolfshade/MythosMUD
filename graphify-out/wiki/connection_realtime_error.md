@@ -33,8 +33,9 @@
 
 ## Relationships
 
-- [Room Broadcast](Room_Broadcast.md) (11 shared connections)
 - [connection realtime delegates](connection_realtime_delegates.md) (6 shared connections)
+- [realtime monitoring statistics](realtime_monitoring_statistics.md) (6 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (5 shared connections)
 
 ## Source Files
 

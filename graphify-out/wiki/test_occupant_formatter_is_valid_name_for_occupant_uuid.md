@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_occupant_formatter_is_valid_name_for_occupant_uuid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter._is_valid_name_for_occupant() returns False for UUID.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_get_wearable_containers_for_player_exception_in_validation()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test get_wearable_containers_for_player handles validation errors gracefully.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Relationships
 
-- [container sql injection](container_sql_injection.md) (1 shared connections)
-- [occupant formatter realtime](occupant_formatter_realtime.md) (1 shared connections)
+- [wearable container service](wearable_container_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_occupant_formatter.py`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

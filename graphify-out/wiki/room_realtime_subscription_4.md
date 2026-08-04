@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_take_room_drop()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **Test take_room_drop() removes drop from room.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **test_create_sit_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_sit_command delegates to exploration factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- [room subscription manager](room_subscription_manager.md) (1 shared connections)
+- [command factories create](command_factories_create.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 

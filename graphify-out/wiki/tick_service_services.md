@@ -1,43 +1,49 @@
 # tick service services
 
-> 16 nodes
+> 58 nodes
 
 ## Key Concepts
 
 - **GameTickService** (30 connections) — `server/services/game_tick_service.py`
+- **TestGameTickService** (20 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.start()** (4 connections) — `server/services/game_tick_service.py`
+- **test_game_tick_service.py** (4 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **._tick_loop()** (3 connections) — `server/services/game_tick_service.py`
+- **.test_init_default_interval()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_init_custom_interval()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_start_success()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_start_already_running()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_start_failure()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_stop_success()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_stop_not_running()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_stop_task_already_done()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_stop_failure()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_get_tick_count()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_reset_tick_count()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_get_tick_interval()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_tick_loop_increments_count()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_tick_loop_publishes_events()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_tick_loop_handles_cancellation()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_tick_loop_handles_publish_failure()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_tick_loop_handles_exceptions()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
 - **.__init__()** (2 connections) — `server/services/game_tick_service.py`
 - **.stop()** (2 connections) — `server/services/game_tick_service.py`
 - **.get_tick_count()** (2 connections) — `server/services/game_tick_service.py`
-- **.reset_tick_count()** (2 connections) — `server/services/game_tick_service.py`
-- **.get_tick_interval()** (2 connections) — `server/services/game_tick_service.py`
-- **.set_tick_interval()** (2 connections) — `server/services/game_tick_service.py`
-- **.is_service_running()** (2 connections) — `server/services/game_tick_service.py`
-- **Service that manages the game tick system.      The game tick system runs at reg** (1 connections) — `server/services/game_tick_service.py`
-- **Initialize the GameTickService.          Args:             event_publisher: Even** (1 connections) — `server/services/game_tick_service.py`
-- **Stop the game tick service.          Returns:             bool: True if stopped** (1 connections) — `server/services/game_tick_service.py`
-- **Get the current tick count.          Returns:             int: Current number of** (1 connections) — `server/services/game_tick_service.py`
-- **Reset the tick count to zero.** (1 connections) — `server/services/game_tick_service.py`
-- **Get the current tick interval.          Returns:             float: Current tick** (1 connections) — `server/services/game_tick_service.py`
-- **Set a new tick interval.          Args:             interval: New tick interval** (1 connections) — `server/services/game_tick_service.py`
-- **Check if the service is currently running.          Returns:             bool: T** (1 connections) — `server/services/game_tick_service.py`
+- *... and 33 more nodes in this community*
 
 ## Relationships
 
-- [tick game service](tick_game_service.md) (8 shared connections)
-- [tick services game](tick_services_game.md) (6 shared connections)
-- [services game tick](services_game_tick.md) (4 shared connections)
-- [npc realtime event](npc_realtime_event.md) (2 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
-- [player realtime event](player_realtime_event.md) (1 shared connections)
+- [schemas player rationale](schemas_player_rationale.md) (3 shared connections)
 
 ## Source Files
 
 - `server/services/game_tick_service.py`
+- `server/tests/unit/services/test_game_tick_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 51 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 153 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

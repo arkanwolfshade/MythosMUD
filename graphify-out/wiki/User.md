@@ -2,7 +2,7 @@
 
 > God node · 325 connections · `server/models/user.py`
 
-**Community:** [Exception Containers](Exception_Containers.md)
+**Community:** [player requests schemas](player_requests_schemas.md)
 
 ## Connections by Relation
 

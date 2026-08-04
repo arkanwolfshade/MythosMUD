@@ -34,7 +34,7 @@
 ## Relationships
 
 - [npc service services](npc_service_services.md) (5 shared connections)
-- [shutdown admin command](shutdown_admin_command.md) (1 shared connections)
+- [eventLog projectorRoom roomMergeUtils](eventLog_projectorRoom_roomMergeUtils.md) (1 shared connections)
 - [models npc rationale](models_npc_rationale.md) (1 shared connections)
 
 ## Source Files

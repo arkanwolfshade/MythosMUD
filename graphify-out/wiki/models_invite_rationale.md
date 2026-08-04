@@ -1,24 +1,23 @@
 # models invite rationale
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **.turn_interval_seconds()** (3 connections) — `server/services/combat_service.py`
-- **Return the turn interval in seconds.** (1 connections) — `server/services/combat_service.py`
-- **Set the turn interval in seconds.** (1 connections) — `server/services/combat_service.py`
+- **test_apply_fear()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **Test apply_fear() applies fear.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (1 shared connections)
+- [room realtime subscription](room_realtime_subscription.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/combat_service.py`
+- `server/tests/unit/game/test_player_service_mutations.py`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

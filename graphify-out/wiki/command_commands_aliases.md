@@ -1,41 +1,48 @@
 # command commands aliases
 
-> 9 nodes
+> 28 nodes
 
 ## Key Concepts
 
-- **MessageHandler** (14 connections) — `server/realtime/message_handler_factory.py`
-- **.get_handler()** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.subscribe()** (3 connections) — `server/infrastructure/message_broker.py`
-- **.register_handler()** (3 connections) — `server/realtime/message_handler_factory.py`
-- **ABC** (2 connections)
-- **Subscribe to a subject/topic with a message handler.          Args:** (1 connections) — `server/infrastructure/message_broker.py`
-- **Abstract base class for message handlers.** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Register a new message handler.          Args:             message_type: The mes** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Get a handler for the specified message type.          Args:             message** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Any** (10 connections)
+- **._setup_task_tracking()** (9 connections) — `server/app/task_registry.py`
+- **Task** (8 connections)
+- **TaskMetadata** (7 connections) — `server/app/task_registry.py`
+- **.register_task()** (7 connections) — `server/app/task_registry.py`
+- **._create_task_completion_callback()** (5 connections) — `server/app/task_registry.py`
+- **.__init__()** (4 connections) — `server/app/task_registry.py`
+- **.unregister_task()** (4 connections) — `server/app/task_registry.py`
+- **.cancel_task()** (4 connections) — `server/app/task_registry.py`
+- **._ensure_unique_task_name()** (3 connections) — `server/app/task_registry.py`
+- **._track_task_creation_metrics()** (3 connections) — `server/app/task_registry.py`
+- **._extract_service_name()** (3 connections) — `server/app/task_registry.py`
+- **.list_active_tasks()** (3 connections) — `server/app/task_registry.py`
+- **.get_registry_info()** (3 connections) — `server/app/task_registry.py`
+- **.__repr__()** (2 connections) — `server/app/task_registry.py`
+- **Metadata for tracked asyncio.Tasks.** (1 connections) — `server/app/task_registry.py`
+- **Initialize task metadata.          Args:             task: The asyncio.Task inst** (1 connections) — `server/app/task_registry.py`
+- **String representation of task metadata for logging.** (1 connections) — `server/app/task_registry.py`
+- **Ensure task name is unique by appending timestamp if needed.** (1 connections) — `server/app/task_registry.py`
+- **Track task creation for metrics.** (1 connections) — `server/app/task_registry.py`
+- **Extract service name from task name or use task type.** (1 connections) — `server/app/task_registry.py`
+- **Create callback function for task completion cleanup.** (1 connections) — `server/app/task_registry.py`
+- **Set up tracking for a newly created task.** (1 connections) — `server/app/task_registry.py`
+- **Register and create a tracked asyncio.Task.          Args:             coro: The** (1 connections) — `server/app/task_registry.py`
+- **Unregister task from tracking, optionally force-cancelling.          Args:** (1 connections) — `server/app/task_registry.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [tsconfig src/**/* spec](tsconfig_src-__-__spec.md) (3 shared connections)
-- [combat services messaging](combat_services_messaging.md) (2 shared connections)
-- [game chat moderation](game_chat_moderation.md) (2 shared connections)
-- [message handler factory](message_handler_factory.md) (2 shared connections)
-- [infrastructure message broker](infrastructure_message_broker.md) (1 shared connections)
-- [infrastructure nats broker](infrastructure_nats_broker.md) (1 shared connections)
-- [combat models rationale](combat_models_rationale.md) (1 shared connections)
-- [dead letter queue](dead_letter_queue.md) (1 shared connections)
-- [occupant formatter realtime](occupant_formatter_realtime.md) (1 shared connections)
-- [room conftest toolkit](room_conftest_toolkit.md) (1 shared connections)
+- [follow service game](follow_service_game.md) (16 shared connections)
 
 ## Source Files
 
-- `server/infrastructure/message_broker.py`
-- `server/realtime/message_handler_factory.py`
+- `server/app/task_registry.py`
 
 ## Audit Trail
 
-- EXTRACTED: 30 (97%)
-- INFERRED: 1 (3%)
+- EXTRACTED: 88 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

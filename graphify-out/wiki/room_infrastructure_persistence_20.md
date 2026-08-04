@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_remove_room_occupant()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **Test remove_room_occupant() removes occupant.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_is_channel_muted_false()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test is_channel_muted() returns False when channel is not muted.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
 
 ## Relationships
 
-- [room subscription manager](room_subscription_manager.md) (1 shared connections)
+- [user manager services](user_manager_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager.py`
+- `server/tests/unit/services/test_user_manager.py`
 
 ## Audit Trail
 

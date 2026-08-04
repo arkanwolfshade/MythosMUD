@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_players_batch_player_not_found()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Test get_players_batch() handles player not found.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_send_room_update_to_player_no_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **Test send_room_update_to_player() skips when connection manager not available.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Relationships
 
-- [game state provider](game_state_provider.md) (1 shared connections)
+- [player room event](player_room_event.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Audit Trail
 

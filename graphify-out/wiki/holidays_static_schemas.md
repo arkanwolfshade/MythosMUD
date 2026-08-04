@@ -1,31 +1,24 @@
 # holidays static schemas
 
-> 8 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **AppRouter.tsx** (9 connections) — `client/src/AppRouter.tsx`
-- **AppRouter()** (3 connections) — `client/src/AppRouter.tsx`
-- **AppRouter.test.tsx** (2 connections) — `client/src/__tests__/AppRouter.test.tsx`
-- **main.tsx** (2 connections) — `client/src/main.tsx`
-- **MapPage** (1 connections) — `client/src/AppRouter.tsx`
-- **SkillsPage** (1 connections) — `client/src/AppRouter.tsx`
-- **DialogueEditorPage** (1 connections) — `client/src/AppRouter.tsx`
-- **LoadingFallback()** (1 connections) — `client/src/AppRouter.tsx`
+- **player_service()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **Create a PlayerService instance.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
 
 ## Relationships
 
-- [App helpers professionSystemErrorHandlin](App_helpers_professionSystemErrorHandlin.md) (2 shared connections)
+- [coercion int inventory](coercion_int_inventory.md) (1 shared connections)
+- [room realtime subscription](room_realtime_subscription.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/AppRouter.tsx`
-- `client/src/__tests__/AppRouter.test.tsx`
-- `client/src/main.tsx`
+- `server/tests/unit/game/test_player_service_mutations.py`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

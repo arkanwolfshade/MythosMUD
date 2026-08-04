@@ -135,6 +135,24 @@ class WarningOnlyFilter(logging.Filter):  # pylint: disable=too-few-public-metho
         return record.levelno == logging.WARNING
 
 
+# asyncio.proactor_events / selector_events emit this after LOG_THRESHOLD writes on a dead socket.
+# Expected during WebSocket teardown (Playwright closes the browser while the server still flushes).
+ASYNCIO_CONN_LOST_SEND_MSG = "socket.send() raised exception."
+
+
+class AsyncioConnLostWriteFilter(logging.Filter):  # pylint: disable=too-few-public-methods  # Reason: Filter class; filter() is the only public API
+    """Drop asyncio's uninformative post-disconnect write warnings."""
+
+    @override
+    def filter(self, record: logging.LogRecord) -> bool:
+        if record.name != "asyncio" and not record.name.startswith("asyncio."):
+            return True
+        try:
+            return record.getMessage() != ASYNCIO_CONN_LOST_SEND_MSG
+        except Exception:  # pylint: disable=broad-exception-caught  # noqa: BLE001  # Reason: never break logging on bad record formatting
+            return True
+
+
 def _make_exec_for_aggregator(win_base: type[RotatingFileHandler]) -> Callable[[dict[str, object]], None]:
     """Build types.new_class exec callback bound to the concrete Windows base class."""
 
@@ -235,6 +253,7 @@ def create_aggregator_handler(
     # Warnings.log should ONLY contain WARNING level logs
     if log_level == logging.WARNING:
         handler.addFilter(WarningOnlyFilter())
+        handler.addFilter(AsyncioConnLostWriteFilter())
 
     # Create formatter - use PlayerGuidFormatter if player_service is available
     # Note: Using %(message)s only since structlog already includes all metadata (timestamp, logger name, level)

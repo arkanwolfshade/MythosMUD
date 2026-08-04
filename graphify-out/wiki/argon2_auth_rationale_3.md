@@ -27,12 +27,10 @@
 
 ## Relationships
 
-- [models npc rationale](models_npc_rationale.md) (3 shared connections)
+- [Loot Generation](Loot_Generation.md) (4 shared connections)
+- [Database Config](Database_Config.md) (3 shared connections)
 - [room models instance](room_models_instance.md) (2 shared connections)
-- [Database Config](Database_Config.md) (2 shared connections)
 - [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
-- [NPC Combat](NPC_Combat.md) (1 shared connections)
-- [command admin setlucidity](command_admin_setlucidity.md) (1 shared connections)
 - [persistence container item](persistence_container_item.md) (1 shared connections)
 
 ## Source Files

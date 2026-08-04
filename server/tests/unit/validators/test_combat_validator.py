@@ -109,6 +109,7 @@ def test_validate_combat_command_target_too_long(combat_validator):
     assert is_valid is False
     assert error_msg is not None
 
+
 def test_validate_combat_command_rate_limited(combat_validator):
     """Test validate_combat_command when rate limited."""
     command_data = {"command_type": "attack", "args": ["target"]}
@@ -341,7 +342,7 @@ def test_is_valid_target_name_invalid(combat_validator):
     assert combat_validator._is_valid_target_name("") is False
     assert combat_validator._is_valid_target_name(None) is False
     assert combat_validator._is_valid_target_name("Target<script>") is False
-    assert combat_validator._is_valid_target_name("a" * 51) is False  # Too long
+    assert combat_validator._is_valid_target_name("a" * (MAX_COMBAT_TARGET_LENGTH + 1)) is False  # Too long
     assert combat_validator._is_valid_target_name("   ") is False  # Empty after strip
 
 
@@ -567,7 +568,7 @@ def test_validate_combat_command_target_too_long_with_mock(combat_validator):
     # This tests the warning path that would trigger if format check somehow passed
     from unittest.mock import patch
 
-    long_target = "a" * 51
+    long_target = "a" * (MAX_COMBAT_TARGET_LENGTH + 1)
     command_data = {"command_type": "attack", "args": [long_target]}
     player_context: dict[str, Any] = {}
 

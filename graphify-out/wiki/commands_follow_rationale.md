@@ -1,56 +1,55 @@
 # commands follow rationale
 
-> 44 nodes
+> 38 nodes
 
 ## Key Concepts
 
-- **test_container_websocket_events.py** (23 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **container_websocket_events.py** (17 connections) — `server/services/container_websocket_events.py`
-- **emit_container_opened()** (14 connections) — `server/services/container_websocket_events.py`
-- **emit_container_opened_to_room()** (12 connections) — `server/services/container_websocket_events.py`
-- **emit_container_updated()** (10 connections) — `server/services/container_websocket_events.py`
-- **emit_container_closed()** (9 connections) — `server/services/container_websocket_events.py`
-- **emit_container_decayed()** (8 connections) — `server/services/container_websocket_events.py`
-- **UUID** (6 connections)
+- **_convert_container_dict_to_container_data()** (12 connections) — `server/api/container_endpoints_basic.py`
+- **_convert_inventory_list_to_inventory_stacks()** (11 connections) — `server/api/container_endpoints_basic.py`
+- **register_basic_endpoints()** (10 connections) — `server/api/container_endpoints_basic.py`
+- **ContainerOpenResponse** (10 connections) — `server/schemas/containers/container.py`
+- **ContainerTransferResponse** (10 connections) — `server/schemas/containers/container.py`
+- **ContainerCloseResponse** (10 connections) — `server/schemas/containers/container.py`
+- **ContainerLootAllResponse** (10 connections) — `server/schemas/containers/container.py`
+- **InventoryStack** (10 connections) — `server/schemas/containers/container_data.py`
+- **ContainerData** (10 connections) — `server/schemas/containers/container_data.py`
+- **container.py** (9 connections) — `server/schemas/containers/container.py`
+- **_build_container_data_from_dict()** (7 connections) — `server/api/container_endpoints_basic.py`
+- **__init__.py** (7 connections) — `server/schemas/containers/__init__.py`
+- **container_data.py** (7 connections) — `server/schemas/containers/container_data.py`
 - **Any** (5 connections)
-- **datetime** (3 connections)
-- **test_emit_container_opened()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_opened_with_owner()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_opened_to_room()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_closed()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_opened_with_owner_id()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_opened_to_room_with_owner()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_updated()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_updated_empty_diff()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_decayed()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_opened_returns_delivery_status()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_opened_to_room_returns_stats()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_closed_returns_stats()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **ContainerComponent** (2 connections)
-- **mock_connection_manager()** (2 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **Container WebSocket event emission for unified container system.  As documented** (1 connections) — `server/services/container_websocket_events.py`
-- *... and 19 more nodes in this community*
+- **_convert_uuid_to_string()** (4 connections) — `server/api/container_endpoints_basic.py`
+- **_convert_datetime_to_iso()** (4 connections) — `server/api/container_endpoints_basic.py`
+- **BaseModel** (4 connections)
+- **BaseModel** (3 connections)
+- **InnerContainer** (3 connections) — `server/schemas/containers/container_data.py`
+- **InventoryStack** (2 connections)
+- **ContainerData** (2 connections)
+- **APIRouter** (1 connections)
+- **Convert UUID-like object to string if it has __str__ method.** (1 connections) — `server/api/container_endpoints_basic.py`
+- **Convert datetime object to ISO format string.** (1 connections) — `server/api/container_endpoints_basic.py`
+- **Build ContainerData model from dictionary and converted values.** (1 connections) — `server/api/container_endpoints_basic.py`
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [container events rationale](container_events_rationale.md) (10 shared connections)
-- [combat services messaging](combat_services_messaging.md) (3 shared connections)
-- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (2 shared connections)
-- [Exception Containers](Exception_Containers.md) (2 shared connections)
-- [task registry app](task_registry_app.md) (2 shared connections)
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
-- [realtime message nats](realtime_message_nats.md) (1 shared connections)
-- [services npc startup](services_npc_startup.md) (1 shared connections)
+- [Exception Containers](Exception_Containers.md) (21 shared connections)
+- [task registry app](task_registry_app.md) (8 shared connections)
+- [inventory schemas schema](inventory_schemas_schema.md) (5 shared connections)
+- [command factories communication](command_factories_communication.md) (2 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/container_websocket_events.py`
-- `server/tests/unit/services/test_container_websocket_events.py`
+- `server/api/container_endpoints_basic.py`
+- `server/schemas/containers/__init__.py`
+- `server/schemas/containers/container.py`
+- `server/schemas/containers/container_data.py`
 
 ## Audit Trail
 
-- EXTRACTED: 167 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 139 (83%)
+- INFERRED: 28 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

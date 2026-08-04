@@ -1,25 +1,23 @@
 # schemas room schema
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **rest_location** (4 connections) — `schemas/room_schema.json`
-- **type** (1 connections) — `schemas/room_schema.json`
-- **default** (1 connections) — `schemas/room_schema.json`
-- **description** (1 connections) — `schemas/room_schema.json`
+- **test_validate_player_name_invalid_characters()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **Test validate_player_name() with invalid characters.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
 
 ## Relationships
 
-- [schemas room schema](schemas_room_schema.md) (1 shared connections)
+- [room realtime subscription](room_realtime_subscription.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/room_schema.json`
+- `server/tests/unit/game/test_player_service_mutations.py`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

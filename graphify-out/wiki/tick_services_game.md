@@ -1,26 +1,24 @@
 # tick services game
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **.start()** (4 connections) — `server/services/game_tick_service.py`
-- **._tick_loop()** (3 connections) — `server/services/game_tick_service.py`
-- **Start the game tick service.          Returns:             bool: True if started** (1 connections) — `server/services/game_tick_service.py`
-- **Main tick loop that runs at the specified interval.** (1 connections) — `server/services/game_tick_service.py`
+- **test_get_combat_stats_npc_only_normalized()** (3 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **Invalid UUID with npc_stats returns normalized NPC stats.** (1 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
 
 ## Relationships
 
-- [tick service services](tick_service_services.md) (2 shared connections)
-- [schemas player rationale](schemas_player_rationale.md) (1 shared connections)
+- [room conftest toolkit](room_conftest_toolkit.md) (1 shared connections)
+- [services nats service](services_nats_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/game_tick_service.py`
+- `server/tests/unit/npc/test_npc_combat_integration_class.py`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

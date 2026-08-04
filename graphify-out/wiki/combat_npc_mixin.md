@@ -1,6 +1,6 @@
 # combat npc mixin
 
-> 36 nodes
+> 32 nodes
 
 ## Key Concepts
 
@@ -14,11 +14,9 @@
 - **test_load_from_path_missing_directory()** (4 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
 - **.__init__()** (3 connections) — `server/game/items/item_factory.py`
 - **.__init__()** (3 connections) — `server/game/items/prototype_registry.py`
-- **.find_by_tag()** (3 connections) — `server/game/items/prototype_registry.py`
 - **.invalid_entries()** (3 connections) — `server/game/items/prototype_registry.py`
 - **parse_arguments()** (3 connections) — `server/scripts/validate_prototypes.py`
 - **main()** (3 connections) — `server/scripts/validate_prototypes.py`
-- **registry_with_switchblade()** (3 connections) — `server/tests/integration/test_combat_weapon_resolution.py`
 - **test_get_returns_prototype()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
 - **test_get_missing_raises()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
 - **test_find_by_tag()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
@@ -29,17 +27,21 @@
 - **test_load_from_path_durability_anomaly()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
 - **Any** (2 connections)
 - **test_invalid_entries_returns_copy()** (2 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
-- *... and 11 more nodes in this community*
+- **Initialize the item factory with a prototype registry.          Args:** (1 connections) — `server/game/items/item_factory.py`
+- **Path** (1 connections)
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [npc spawn validator](npc_spawn_validator.md) (26 shared connections)
-- [connection cleaner realtime](connection_cleaner_realtime.md) (12 shared connections)
-- [NPC Combat](NPC_Combat.md) (3 shared connections)
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
-- [holiday service services](holiday_service_services.md) (1 shared connections)
-- [Error Conversion](Error_Conversion.md) (1 shared connections)
-- [System Metrics](System_Metrics.md) (1 shared connections)
+- [npc spawn validator](npc_spawn_validator.md) (14 shared connections)
+- [MapView GameClientV2ContainerView Tabbed](MapView_GameClientV2ContainerView_Tabbed.md) (14 shared connections)
+- [connection cleaner realtime](connection_cleaner_realtime.md) (9 shared connections)
+- [command factories exploration](command_factories_exploration.md) (3 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
+- [websocket realtime handler](websocket_realtime_handler.md) (1 shared connections)
+- [nats services service](nats_services_service.md) (1 shared connections)
+- [command commands validation](command_commands_validation.md) (1 shared connections)
+- [Magic Spell Service](Magic_Spell_Service.md) (1 shared connections)
 - [stats game generator](stats_game_generator.md) (1 shared connections)
 
 ## Source Files
@@ -47,13 +49,12 @@
 - `server/game/items/item_factory.py`
 - `server/game/items/prototype_registry.py`
 - `server/scripts/validate_prototypes.py`
-- `server/tests/integration/test_combat_weapon_resolution.py`
 - `server/tests/unit/game/items/test_prototype_registry.py`
 
 ## Audit Trail
 
-- EXTRACTED: 143 (90%)
-- INFERRED: 16 (10%)
+- EXTRACTED: 135 (89%)
+- INFERRED: 16 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

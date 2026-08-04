@@ -1,11 +1,10 @@
 # game models enums
 
-> 20 nodes
+> 18 nodes
 
 ## Key Concepts
 
 - **generate_invites_db.py** (14 connections) — `tools/invite_tools/generate_invites_db.py`
-- **set_test_database_url()** (9 connections) — `server/database_config_helpers.py`
 - **main()** (7 connections) — `tools/invite_tools/generate_invites_db.py`
 - **normalize_database_url()** (6 connections) — `server/database_config_helpers.py`
 - **create_invite_in_db()** (6 connections) — `tools/invite_tools/generate_invites_db.py`
@@ -15,7 +14,6 @@
 - **get_existing_codes()** (4 connections) — `tools/invite_tools/generate_invites_db.py`
 - **datetime** (3 connections)
 - **generate_invite_code()** (3 connections) — `tools/invite_tools/generate_invites_db.py`
-- **Set test override database URL.** (1 connections) — `server/database_config_helpers.py`
 - **Normalize database URL for asyncpg.      Args:         database_url: Original da** (1 connections) — `server/database_config_helpers.py`
 - **Parse YYYY-MM-DD to end-of-day UTC (naive). Invite valid through that date.** (1 connections) — `tools/invite_tools/generate_invites_db.py`
 - **Generate a unique Mythos-themed invite code.** (1 connections) — `tools/invite_tools/generate_invites_db.py`
@@ -27,12 +25,9 @@
 
 ## Relationships
 
-- [commands lucidity recovery](commands_lucidity_recovery.md) (4 shared connections)
-- [combat npc services](combat_npc_services.md) (3 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (6 shared connections)
 - [Database Config](Database_Config.md) (3 shared connections)
 - [player requests schemas](player_requests_schemas.md) (3 shared connections)
-- [manager subject services](manager_subject_services.md) (2 shared connections)
-- [conftest mock rationale](conftest_mock_rationale.md) (1 shared connections)
 
 ## Source Files
 
@@ -41,7 +36,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 74 (100%)
+- EXTRACTED: 64 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

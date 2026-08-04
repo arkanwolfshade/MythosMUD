@@ -1,58 +1,59 @@
 # spell game magic
 
-> 54 nodes
+> 141 nodes
 
 ## Key Concepts
 
 - **ZoneConfiguration** (53 connections) — `server/npc/zone_configuration.py`
+- **test_zone_config_loader.py** (35 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
 - **test_zone_configuration.py** (23 connections) — `server/tests/unit/npc/test_zone_configuration.py`
-- **test_get_zone_configuration_exact_match()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_get_zone_configuration_zone_fallback()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_get_zone_configuration_no_slash()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **mock_zone_config()** (3 connections) — `server/tests/unit/npc/test_spawn_validator.py`
-- **test_zone_configuration_init_minimal()** (3 connections) — `server/tests/unit/npc/test_zone_configuration.py`
-- **test_zone_configuration_init_full()** (3 connections) — `server/tests/unit/npc/test_zone_configuration.py`
-- **test_zone_configuration_init_partial_special_rules()** (3 connections) — `server/tests/unit/npc/test_zone_configuration.py`
-- **test_get_effective_spawn_probability_no_modifier()** (3 connections) — `server/tests/unit/npc/test_zone_configuration.py`
-- **test_get_effective_spawn_probability_with_modifier()** (3 connections) — `server/tests/unit/npc/test_zone_configuration.py`
-- **test_get_effective_spawn_probability_reduced_modifier()** (3 connections) — `server/tests/unit/npc/test_zone_configuration.py`
-- **test_get_effective_spawn_probability_caps_at_one()** (3 connections) — `server/tests/unit/npc/test_zone_configuration.py`
-- **test_get_effective_spawn_probability_already_one()** (3 connections) — `server/tests/unit/npc/test_zone_configuration.py`
-- **test_can_access_no_requirements()** (3 connections) — `server/tests/unit/npc/test_zone_configuration.py`
-- **test_can_access_with_requirements_met()** (3 connections) — `server/tests/unit/npc/test_zone_configuration.py`
-- **test_can_access_with_requirements_partial()** (3 connections) — `server/tests/unit/npc/test_zone_configuration.py`
-- **test_can_access_with_requirements_not_met()** (3 connections) — `server/tests/unit/npc/test_zone_configuration.py`
-- **test_can_access_empty_player_requirements()** (3 connections) — `server/tests/unit/npc/test_zone_configuration.py`
-- **test_can_access_multiple_requirements_any()** (3 connections) — `server/tests/unit/npc/test_zone_configuration.py`
-- **test_zone_configuration_weather_patterns()** (3 connections) — `server/tests/unit/npc/test_zone_configuration.py`
-- **test_zone_configuration_description()** (3 connections) — `server/tests/unit/npc/test_zone_configuration.py`
-- **test_zone_configuration_zone_type()** (3 connections) — `server/tests/unit/npc/test_zone_configuration.py`
-- **test_zone_configuration_environment()** (3 connections) — `server/tests/unit/npc/test_zone_configuration.py`
-- **test_get_effective_spawn_probability_zero_base()** (3 connections) — `server/tests/unit/npc/test_zone_configuration.py`
-- *... and 29 more nodes in this community*
+- **zone_config_loader.py** (22 connections) — `server/npc/zone_config_loader.py`
+- **process_zone_rows()** (13 connections) — `server/npc/zone_config_loader.py`
+- **async_load_zone_configurations()** (13 connections) — `server/npc/zone_config_loader.py`
+- **_empty_zone_load_result()** (13 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **ZoneLoadResult** (12 connections) — `server/npc/zone_config_loader.py`
+- **parse_json_field()** (11 connections) — `server/npc/zone_config_loader.py`
+- **zone_configuration.py** (11 connections) — `server/npc/zone_configuration.py`
+- **extract_zone_name()** (9 connections) — `server/npc/zone_config_loader.py`
+- **_store_subzone_row()** (9 connections) — `server/npc/zone_config_loader.py`
+- **process_subzone_rows()** (9 connections) — `server/npc/zone_config_loader.py`
+- **load_zone_configurations()** (9 connections) — `server/npc/zone_config_loader.py`
+- **ZoneSpecialRules** (7 connections) — `server/npc/zone_configuration.py`
+- **ZoneConfigurationData** (7 connections) — `server/npc/zone_configuration.py`
+- **parse_zone_special_rules()** (6 connections) — `server/npc/zone_config_loader.py`
+- **_ZoneConfigBucket** (5 connections) — `server/npc/zone_config_loader.py`
+- **test_process_zone_rows()** (5 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_process_subzone_rows()** (5 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_async_load_zone_configurations_converts_url()** (5 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_async_load_zone_configurations_passes_search_path_for_mythos_e2e()** (5 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **.get_zone_configuration()** (4 connections) — `server/npc/population_control.py`
+- **test_process_zone_rows_empty()** (4 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_process_zone_rows_json_strings()** (4 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- *... and 116 more nodes in this community*
 
 ## Relationships
 
-- [models npc rationale](models_npc_rationale.md) (8 shared connections)
-- [npc idle movement](npc_idle_movement.md) (7 shared connections)
-- [realtime monitoring statistics](realtime_monitoring_statistics.md) (6 shared connections)
-- [npc realtime occupant](npc_realtime_occupant.md) (4 shared connections)
+- [models npc rationale](models_npc_rationale.md) (23 shared connections)
 - [Realtime Subscribers](Realtime_Subscribers.md) (3 shared connections)
-- [combat services rationale](combat_services_rationale.md) (1 shared connections)
-- [services npc combat](services_npc_combat.md) (1 shared connections)
-- [npc aggressive mob](npc_aggressive_mob.md) (1 shared connections)
+- [rate lucidity services](rate_lucidity_services.md) (2 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (1 shared connections)
+- [npc shopkeeper rationale](npc_shopkeeper_rationale.md) (1 shared connections)
 
 ## Source Files
 
+- `server/npc/population_control.py`
+- `server/npc/zone_config_loader.py`
 - `server/npc/zone_configuration.py`
 - `server/tests/unit/npc/test_population_control.py`
 - `server/tests/unit/npc/test_spawn_validator.py`
+- `server/tests/unit/npc/test_zone_config_loader.py`
 - `server/tests/unit/npc/test_zone_configuration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 169 (95%)
-- INFERRED: 8 (5%)
+- EXTRACTED: 490 (96%)
+- INFERRED: 20 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

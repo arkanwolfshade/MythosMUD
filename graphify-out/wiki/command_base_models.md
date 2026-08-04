@@ -34,10 +34,9 @@
 ## Relationships
 
 - [Error Conversion](Error_Conversion.md) (4 shared connections)
-- [models npc rationale](models_npc_rationale.md) (3 shared connections)
-- [Magic Spell Service](Magic_Spell_Service.md) (2 shared connections)
-- [time service rationale](time_service_rationale.md) (2 shared connections)
-- [message broadcaster realtime](message_broadcaster_realtime.md) (1 shared connections)
+- [Magic Spell Service](Magic_Spell_Service.md) (3 shared connections)
+- [time service rationale](time_service_rationale.md) (3 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
 
 ## Source Files
 

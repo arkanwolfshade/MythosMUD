@@ -1,11 +1,12 @@
 # message handler factory
 
-> 22 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **test_message_handler_factory.py** (21 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
 - **MessageHandlerFactory** (18 connections) — `server/realtime/message_handler_factory.py`
+- **.get_handler()** (5 connections) — `server/realtime/message_handler_factory.py`
+- **.register_handler()** (3 connections) — `server/realtime/message_handler_factory.py`
 - **test_message_handler_factory_init()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
 - **test_message_handler_factory_register_handler()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
 - **test_message_handler_factory_get_handler_not_found()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
@@ -16,8 +17,9 @@
 - **test_global_message_handler_factory()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
 - **.get_supported_message_types()** (2 connections) — `server/realtime/message_handler_factory.py`
 - **Factory for creating and managing message handlers.      This factory pattern el** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Register a new message handler.          Args:             message_type: The mes** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Get a handler for the specified message type.          Args:             message** (1 connections) — `server/realtime/message_handler_factory.py`
 - **Get a list of supported message types.          Returns:             List of sup** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Unit tests for message handler factory.  Tests the message_handler_factory modul** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
 - **Test MessageHandlerFactory.__init__() initializes with default handlers.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
 - **Test MessageHandlerFactory.register_handler() registers new handler.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
 - **Test MessageHandlerFactory.get_handler() returns None when not found.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
@@ -29,13 +31,9 @@
 
 ## Relationships
 
-- [dead letter queue](dead_letter_queue.md) (6 shared connections)
-- [tsconfig src/**/* spec](tsconfig_src-__-__spec.md) (3 shared connections)
-- [combat services messaging](combat_services_messaging.md) (2 shared connections)
-- [command commands aliases](command_commands_aliases.md) (2 shared connections)
-- [combat models rationale](combat_models_rationale.md) (2 shared connections)
-- [occupant formatter realtime](occupant_formatter_realtime.md) (2 shared connections)
-- [game chat moderation](game_chat_moderation.md) (1 shared connections)
+- [tsconfig src/**/* spec](tsconfig_src-__-__spec.md) (15 shared connections)
+- [game chat moderation](game_chat_moderation.md) (2 shared connections)
+- [room conftest toolkit](room_conftest_toolkit.md) (1 shared connections)
 
 ## Source Files
 
@@ -44,8 +42,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 74 (97%)
-- INFERRED: 2 (3%)
+- EXTRACTED: 61 (95%)
+- INFERRED: 3 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

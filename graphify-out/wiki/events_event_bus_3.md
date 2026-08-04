@@ -9,7 +9,7 @@
 
 ## Relationships
 
-- [schedule services service](schedule_services_service.md) (1 shared connections)
+- [Database Config](Database_Config.md) (1 shared connections)
 - [movement service game](movement_service_game.md) (1 shared connections)
 
 ## Source Files

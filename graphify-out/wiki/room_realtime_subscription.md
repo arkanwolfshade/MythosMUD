@@ -1,41 +1,32 @@
 # room realtime subscription
 
-> 56 nodes
+> 8 nodes
 
 ## Key Concepts
 
 - **test_player_service_mutations.py** (34 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **player_service()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_delete_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_update_player_location_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_soft_delete_character_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_soft_delete_character_wrong_user()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_apply_lucidity_loss_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_apply_fear_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_apply_corruption_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
 - **test_gain_occult_knowledge_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
 - **test_heal_player_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_damage_player_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **mock_persistence()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_delete_player_success()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_update_player_location_success()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_apply_lucidity_loss()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_apply_fear()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_apply_corruption()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_gain_occult_knowledge()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_heal_player()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_damage_player()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_get_user_characters()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_soft_delete_character_success()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_validate_player_name_empty()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_validate_player_name_whitespace()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- *... and 31 more nodes in this community*
+- **test_validate_player_name_too_short_one_char()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **Unit tests for player service mutations.  Covers delete, location update, mythos** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **Test gain_occult_knowledge() when player not found.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **Test heal_player() when player not found.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **Test validate_player_name() with name only 1 character.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
 
 ## Relationships
 
-- [command inventory models](command_inventory_models.md) (11 shared connections)
-- [Database Config](Database_Config.md) (3 shared connections)
-- [player service game](player_service_game.md) (3 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (3 shared connections)
+- [schemas room schema](schemas_room_schema.md) (2 shared connections)
+- [schemas unified room](schemas_unified_room.md) (2 shared connections)
+- [Database Config](Database_Config.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [coercion int inventory](coercion_int_inventory.md) (1 shared connections)
+- [MagicPointsMeter magic formatDelta()](MagicPointsMeter_magic_formatDelta%28%29.md) (1 shared connections)
+- [holidays static schemas](holidays_static_schemas.md) (1 shared connections)
+- [commands combat handler](commands_combat_handler.md) (1 shared connections)
+- [schemas intersection schema](schemas_intersection_schema.md) (1 shared connections)
+- [models invite rationale](models_invite_rationale.md) (1 shared connections)
+- [archive 2025 AUDIT](archive_2025_AUDIT.md) (1 shared connections)
 
 ## Source Files
 
@@ -43,8 +34,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 117 (92%)
-- INFERRED: 10 (8%)
+- EXTRACTED: 44 (96%)
+- INFERRED: 2 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

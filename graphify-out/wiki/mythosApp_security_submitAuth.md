@@ -1,6 +1,6 @@
 # mythosApp security submitAuth
 
-> 52 nodes
+> 42 nodes
 
 ## Key Concepts
 
@@ -8,15 +8,11 @@
 - **logoutHandler.ts** (26 connections) — `client/src/utils/logoutHandler.ts`
 - **secureTokenStorage** (14 connections) — `client/src/utils/security.ts`
 - **logoutHandler()** (12 connections) — `client/src/utils/logoutHandler.ts`
-- **useMythosSessionChrome.ts** (11 connections) — `client/src/mythosApp/useMythosSessionChrome.ts`
-- **SkillsPage.tsx** (9 connections) — `client/src/pages/SkillsPage.tsx`
 - **App.logout.test.tsx** (8 connections) — `client/src/__tests__/App.logout.test.tsx`
 - **LogoutFlow.integration.test.tsx** (8 connections) — `client/src/__tests__/LogoutFlow.integration.test.tsx`
 - **inputSanitizer** (8 connections) — `client/src/utils/security.ts`
 - **CSRFProtection** (7 connections) — `client/src/utils/security.ts`
-- **useMythosSessionChrome()** (6 connections) — `client/src/mythosApp/useMythosSessionChrome.ts`
 - **sendLogoutCommandToServer()** (6 connections) — `client/src/utils/logoutHandler.ts`
-- **isGracePeriodServerUnavailableError()** (5 connections) — `client/src/mythosApp/motdContinueFlow.ts`
 - **secureTokenStorage.test.ts** (5 connections) — `client/src/utils/__tests__/secureTokenStorage.test.ts`
 - **readLogoutErrorMessage()** (5 connections) — `client/src/utils/logoutHandler.ts`
 - **csrfProtection.test.ts** (4 connections) — `client/src/utils/__tests__/csrfProtection.test.ts`
@@ -25,36 +21,35 @@
 - **processLogoutHttpResponse()** (4 connections) — `client/src/utils/logoutHandler.ts`
 - **runLogoutServerPipeline()** (4 connections) — `client/src/utils/logoutHandler.ts`
 - **.generateToken()** (4 connections) — `client/src/utils/security.ts`
-- **useMythosSessionChrome.test.ts** (3 connections) — `client/src/mythosApp/__tests__/useMythosSessionChrome.test.ts`
-- **SkillsPage.test.tsx** (3 connections) — `client/src/pages/__tests__/SkillsPage.test.tsx`
 - **setupSecurityMocks()** (3 connections) — `client/src/utils/__tests__/security.test-utils.ts`
 - **asRecordUnknown()** (3 connections) — `client/src/utils/logoutHandler.ts`
-- *... and 27 more nodes in this community*
+- **logSuccessfulLogoutResponse()** (3 connections) — `client/src/utils/logoutHandler.ts`
+- **performClientSideCleanup()** (3 connections) — `client/src/utils/logoutHandler.ts`
+- **createLogoutHandler()** (3 connections) — `client/src/utils/logoutHandler.ts`
+- **inputSanitizer.test.ts** (2 connections) — `client/src/utils/__tests__/inputSanitizer.test.ts`
+- **localStorageMock** (2 connections) — `client/src/utils/__tests__/security.test-utils.ts`
+- **nestedErrorMessage()** (2 connections) — `client/src/utils/logoutHandler.ts`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [mythosApp useMythosAppState useStatsRoll](mythosApp_useMythosAppState_useStatsRoll.md) (10 shared connections)
-- [commands rescue rationale](commands_rescue_rationale.md) (8 shared connections)
-- [roomHandlers eventHandlers calculateOccu](roomHandlers_eventHandlers_calculateOccu.md) (8 shared connections)
+- [mythosApp useMythosAppState useStatsRoll](mythosApp_useMythosAppState_useStatsRoll.md) (9 shared connections)
+- [mythosApp appLazyScreens mythosAppViewMo](mythosApp_appLazyScreens_mythosAppViewMo.md) (8 shared connections)
 - [command parser rationale](command_parser_rationale.md) (7 shared connections)
-- [mythosApp CharacterSelectionScreen chara](mythosApp_CharacterSelectionScreen_chara.md) (6 shared connections)
+- [mythosApp CharacterSelectionScreen chara](mythosApp_CharacterSelectionScreen_chara.md) (5 shared connections)
 - [App helpers professionSystemErrorHandlin](App_helpers_professionSystemErrorHandlin.md) (4 shared connections)
+- [lucidityEventUtils mythosTime MythosTime](lucidityEventUtils_mythosTime_MythosTime.md) (4 shared connections)
+- [roomHandlers eventHandlers calculateOccu](roomHandlers_eventHandlers_calculateOccu.md) (4 shared connections)
 - [zone configuration npc](zone_configuration_npc.md) (4 shared connections)
 - [realtime maintenance connection](realtime_maintenance_connection.md) (3 shared connections)
-- [GameClientV2Container emptyOccupantsDiag](GameClientV2Container_emptyOccupantsDiag.md) (2 shared connections)
 - [Game Terminal UI](Game_Terminal_UI.md) (2 shared connections)
-- [mythosApp appLazyScreens mythosAppViewMo](mythosApp_appLazyScreens_mythosAppViewMo.md) (2 shared connections)
 - [dialogue DialogueEditorPage baseUrl()](dialogue_DialogueEditorPage_baseUrl%28%29.md) (2 shared connections)
+- [mapPageRenderer mapPageState MapPage](mapPageRenderer_mapPageState_MapPage.md) (2 shared connections)
 
 ## Source Files
 
 - `client/src/__tests__/App.logout.test.tsx`
 - `client/src/__tests__/LogoutFlow.integration.test.tsx`
-- `client/src/mythosApp/__tests__/useMythosSessionChrome.test.ts`
-- `client/src/mythosApp/motdContinueFlow.ts`
-- `client/src/mythosApp/useMythosSessionChrome.ts`
-- `client/src/pages/SkillsPage.tsx`
-- `client/src/pages/__tests__/SkillsPage.test.tsx`
 - `client/src/utils/__tests__/csrfProtection.test.ts`
 - `client/src/utils/__tests__/inputSanitizer.test.ts`
 - `client/src/utils/__tests__/logoutHandler.test.ts`
@@ -65,7 +60,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 243 (99%)
+- EXTRACTED: 201 (99%)
 - INFERRED: 3 (1%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,48 +1,51 @@
 # lucidity active service
 
-> 58 nodes
+> 44 nodes
 
 ## Key Concepts
 
-- **test_active_lucidity_service.py** (34 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **active_lucidity_service()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_active_lucidity_service_init()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_active_lucidity_service_init_with_now_provider()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_apply_encounter_lucidity_loss_unknown_category()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_perform_recovery_action_on_cooldown()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_perform_recovery_action_naive_datetime_cooldown()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_perform_recovery_action_unknown_action()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **mock_session()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **sample_player_id()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_apply_encounter_lucidity_loss_first_encounter()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_apply_encounter_lucidity_loss_repeat_encounter()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_apply_encounter_lucidity_loss_acclimated()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_apply_encounter_lucidity_loss_string_player_id()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_apply_encounter_lucidity_loss_invalid_string_player_id()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_apply_encounter_lucidity_loss_horrific_category()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_apply_encounter_lucidity_loss_cosmic_category()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_apply_encounter_lucidity_loss_with_location()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_perform_recovery_action_success()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_perform_recovery_action_cooldown_expired()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_perform_recovery_action_string_player_id()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_perform_recovery_action_invalid_string_player_id()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_perform_recovery_action_all_actions()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_perform_recovery_action_sets_cooldown()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_perform_recovery_action_with_location()** (2 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- *... and 33 more nodes in this community*
+- **test_connection_cleaner.py** (26 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **connection_cleaner()** (3 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **test_check_and_cleanup_skips_when_not_due()** (3 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **test_check_and_cleanup()** (3 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **mock_memory_monitor()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **mock_rate_limiter()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **mock_message_queue()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **mock_room_manager()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **mock_cleanup_dead_websocket()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **mock_has_websocket_connection()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **mock_get_async_persistence()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **test_connection_cleaner_init()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **test_prune_stale_players()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **test_prune_stale_players_not_stale()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **test_prune_stale_players_with_websockets()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **test_cleanup_orphaned_data()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **test_cleanup_dead_connections()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **test_cleanup_orphaned_data_closes_stale_websocket()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **test_cleanup_ghost_players_removes_offline_room_members()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **test_stale_prune_max_age_local()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **test_cleanup_ghost_players()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **test_force_cleanup()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **Unit tests for connection cleaner.  Tests the ConnectionCleaner class.** (1 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **Create a mock memory monitor.** (1 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **Create a mock rate limiter.** (1 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [combat services persistence](combat_services_persistence.md) (12 shared connections)
+- [container service services](container_service_services.md) (3 shared connections)
+- [realtime maintenance connection](realtime_maintenance_connection.md) (2 shared connections)
+- [models npc rationale](models_npc_rationale.md) (1 shared connections)
+- [connection disconnection realtime](connection_disconnection_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_active_lucidity_service.py`
+- `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
 
 ## Audit Trail
 
-- EXTRACTED: 123 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 93 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,42 +1,31 @@
 # services user manager
 
-> 20 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **._cleanup_player_mutes()** (8 connections) — `server/services/user_manager.py`
-- **datetime** (7 connections)
-- **.get_player_mutes()** (7 connections) — `server/services/user_manager.py`
-- **._cleanup_expired_mutes()** (6 connections) — `server/services/user_manager.py`
-- **._get_active_player_mutes()** (5 connections) — `server/services/user_manager.py`
-- **._get_active_channel_mutes()** (5 connections) — `server/services/user_manager.py`
-- **._get_active_global_mutes()** (5 connections) — `server/services/user_manager.py`
-- **._cleanup_channel_mutes()** (4 connections) — `server/services/user_manager.py`
-- **._cleanup_global_mutes()** (4 connections) — `server/services/user_manager.py`
-- **.get_system_stats()** (3 connections) — `server/services/user_manager.py`
-- **Get active player mutes for a player.** (1 connections) — `server/services/user_manager.py`
-- **Get active channel mutes for a player.** (1 connections) — `server/services/user_manager.py`
-- **Get active global mutes applied by a player.** (1 connections) — `server/services/user_manager.py`
-- **Get all mutes applied by a player.          Args:             player_id: Play** (1 connections) — `server/services/user_manager.py`
-- **Get system-wide user management statistics.          Returns:             Dic** (1 connections) — `server/services/user_manager.py`
-- **Clean up expired player mutes.** (1 connections) — `server/services/user_manager.py`
-- **Clean up expired channel mutes.** (1 connections) — `server/services/user_manager.py`
-- **Clean up expired global mutes.** (1 connections) — `server/services/user_manager.py`
-- **Clean up expired mutes from all storage.** (1 connections) — `server/services/user_manager.py`
-- **Remove mute data for a player from memory and optionally delete their file.** (1 connections) — `server/services/user_manager.py`
+- **test_connection_manager_api.py** (10 connections) — `server/tests/unit/realtime/test_connection_manager_api.py`
+- **mock_manager()** (1 connections) — `server/tests/unit/realtime/test_connection_manager_api.py`
+- **test_require_manager_raises_when_missing()** (1 connections) — `server/tests/unit/realtime/test_connection_manager_api.py`
+- **test_send_game_event_with_uuid()** (1 connections) — `server/tests/unit/realtime/test_connection_manager_api.py`
+- **test_broadcast_game_event()** (1 connections) — `server/tests/unit/realtime/test_connection_manager_api.py`
+- **test_send_room_event()** (1 connections) — `server/tests/unit/realtime/test_connection_manager_api.py`
+- **test_send_system_notification()** (1 connections) — `server/tests/unit/realtime/test_connection_manager_api.py`
+- **test_send_player_status_update()** (1 connections) — `server/tests/unit/realtime/test_connection_manager_api.py`
+- **test_send_room_description()** (1 connections) — `server/tests/unit/realtime/test_connection_manager_api.py`
+- **Unit tests for server.realtime.connection_manager_api.** (1 connections) — `server/tests/unit/realtime/test_connection_manager_api.py`
 
 ## Relationships
 
-- [services user manager](services_user_manager.md) (17 shared connections)
-- [circuit breaker realtime](circuit_breaker_realtime.md) (1 shared connections)
+- [realtime monitoring statistics](realtime_monitoring_statistics.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/user_manager.py`
+- `server/tests/unit/realtime/test_connection_manager_api.py`
 
 ## Audit Trail
 
-- EXTRACTED: 64 (100%)
+- EXTRACTED: 19 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

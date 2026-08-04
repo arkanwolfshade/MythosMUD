@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_room_occupants_empty_online_players()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Test get_room_occupants() with empty online_players.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_send_room_updates_to_entering_player_success()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **Test send_room_updates_to_entering_player() sends updates.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Relationships
 
-- [game state provider](game_state_provider.md) (1 shared connections)
+- [player room event](player_room_event.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Audit Trail
 

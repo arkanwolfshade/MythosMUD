@@ -1,51 +1,50 @@
 # main rationale failure()
 
-> 31 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **DistributedEventBus** (22 connections) — `server/events/distributed_event_bus.py`
-- **test_distributed_event_bus.py** (14 connections) — `server/tests/unit/events/test_distributed_event_bus.py`
-- **SampleEvent** (6 connections) — `server/tests/unit/events/test_distributed_event_bus.py`
-- **.set_nats_service()** (4 connections) — `server/events/distributed_event_bus.py`
-- **test_publish_without_nats_delegates_to_parent()** (4 connections) — `server/tests/unit/events/test_distributed_event_bus.py`
-- **test_publish_with_nats_bridge_publishes_to_nats()** (4 connections) — `server/tests/unit/events/test_distributed_event_bus.py`
-- **.__init__()** (3 connections) — `server/events/distributed_event_bus.py`
-- **.publish()** (3 connections) — `server/events/distributed_event_bus.py`
-- **distributed_bus()** (3 connections) — `server/tests/unit/events/test_distributed_event_bus.py`
-- **test_distributed_event_bus_init_without_nats()** (3 connections) — `server/tests/unit/events/test_distributed_event_bus.py`
-- **test_set_nats_service_same_reference_noop()** (3 connections) — `server/tests/unit/events/test_distributed_event_bus.py`
-- **test_shutdown_stops_bridge()** (3 connections) — `server/tests/unit/events/test_distributed_event_bus.py`
-- **test_shutdown_bridge_stop_error_is_swallowed()** (3 connections) — `server/tests/unit/events/test_distributed_event_bus.py`
-- **test_set_nats_service_starts_bridge_when_loop_running()** (3 connections) — `server/tests/unit/events/test_distributed_event_bus.py`
-- **Any** (2 connections)
-- **.shutdown()** (2 connections) — `server/events/distributed_event_bus.py`
-- **EventBus that distributes domain events via NATS for horizontal scaling.      Wh** (1 connections) — `server/events/distributed_event_bus.py`
-- **Initialize distributed EventBus.          Args:             nats_service: NATS s** (1 connections) — `server/events/distributed_event_bus.py`
-- **Set NATS service and start the bridge (call after NATS connects).** (1 connections) — `server/events/distributed_event_bus.py`
-- **Publish event locally and to NATS when bridge is active.** (1 connections) — `server/events/distributed_event_bus.py`
-- **Shutdown EventBus and stop NATS bridge.** (1 connections) — `server/events/distributed_event_bus.py`
-- **Unit tests for DistributedEventBus.** (1 connections) — `server/tests/unit/events/test_distributed_event_bus.py`
-- **Minimal event for distributed bus tests.** (1 connections) — `server/tests/unit/events/test_distributed_event_bus.py`
-- **Create a DistributedEventBus without NATS.** (1 connections) — `server/tests/unit/events/test_distributed_event_bus.py`
-- **Single-instance mode has no bridge until NATS is set.** (1 connections) — `server/tests/unit/events/test_distributed_event_bus.py`
-- *... and 6 more nodes in this community*
+- **_find_item_in_inventory()** (18 connections) — `server/commands/look_item.py`
+- **test_find_item_in_inventory_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_inventory_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_inventory_by_item_id()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_inventory_with_name_field()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_inventory_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_empty()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_no_match()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Find an item in player inventory by name or prototype_id.      Args:         inv** (1 connections) — `server/commands/look_item.py`
+- **Test finding item in inventory by name.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test finding item in inventory when not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test finding item in inventory by item_id.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test finding item in inventory using 'name' field.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test _find_item_in_inventory() finds item by name.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_inventory() returns None when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_inventory() with empty list.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_inventory() with no matching items.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_inventory() with multiple matches (ambiguous).** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_inventory() with instance number.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_inventory() with instance number out of range.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
 
 ## Relationships
 
-- [Realtime Subscribers](Realtime_Subscribers.md) (10 shared connections)
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
-- [memory lifespan app](memory_lifespan_app.md) (1 shared connections)
+- [scripts worktree ops](scripts_worktree_ops.md) (8 shared connections)
+- [Item Lookup](Item_Lookup.md) (5 shared connections)
+- [npc realtime occupant](npc_realtime_occupant.md) (4 shared connections)
 
 ## Source Files
 
-- `server/events/distributed_event_bus.py`
-- `server/tests/unit/events/test_distributed_event_bus.py`
+- `server/commands/look_item.py`
+- `server/tests/unit/commands/test_look_item.py`
+- `server/tests/unit/commands/test_look_item_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 88 (91%)
-- INFERRED: 9 (9%)
+- EXTRACTED: 63 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

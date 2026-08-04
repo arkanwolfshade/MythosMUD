@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_player_name_with_grace_periods()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Test _get_player_name_with_grace_periods() returns name with grace indicators.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_preferences_service_initialization()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **Test PlayerPreferencesService initializes correctly.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
 
 ## Relationships
 
-- [game state provider](game_state_provider.md) (1 shared connections)
+- [player preferences service](player_preferences_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- `server/tests/unit/services/test_player_preferences_service.py`
 
 ## Audit Trail
 

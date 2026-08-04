@@ -1,22 +1,13 @@
 # schemas room schema
 
-> 13 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **properties** (7 connections) — `schemas/room_schema.json`
-- **north** (2 connections) — `schemas/room_schema.json`
-- **south** (2 connections) — `schemas/room_schema.json`
-- **east** (2 connections) — `schemas/room_schema.json`
-- **west** (2 connections) — `schemas/room_schema.json`
-- **up** (2 connections) — `schemas/room_schema.json`
-- **down** (2 connections) — `schemas/room_schema.json`
-- **oneOf** (1 connections) — `schemas/room_schema.json`
-- **oneOf** (1 connections) — `schemas/room_schema.json`
-- **oneOf** (1 connections) — `schemas/room_schema.json`
-- **oneOf** (1 connections) — `schemas/room_schema.json`
-- **oneOf** (1 connections) — `schemas/room_schema.json`
-- **oneOf** (1 connections) — `schemas/room_schema.json`
+- **rest_location** (4 connections) — `schemas/room_schema.json`
+- **type** (1 connections) — `schemas/room_schema.json`
+- **default** (1 connections) — `schemas/room_schema.json`
+- **description** (1 connections) — `schemas/room_schema.json`
 
 ## Relationships
 
@@ -28,7 +19,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 25 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

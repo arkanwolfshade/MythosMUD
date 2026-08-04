@@ -1,16 +1,19 @@
 # Player Stats
 
-> 136 nodes
+> 160 nodes
 
 ## Key Concepts
 
 - **players.py** (66 connections) — `server/api/players.py`
 - **test_players_api_coverage.py** (54 connections) — `server/tests/unit/api/test_players_api_coverage.py`
+- **PlayerRead** (48 connections) — `server/schemas/players/player.py`
 - **_user()** (27 connections) — `server/tests/unit/api/test_players_api_coverage.py`
 - **skills.py** (18 connections) — `server/api/skills.py`
 - **get_player_quests()** (17 connections) — `server/api/players.py`
 - **FastAPIRequest** (16 connections)
 - **start_login_grace_period_endpoint()** (16 connections) — `server/api/players.py`
+- **get_current_tick()** (16 connections) — `server/app/game_tick_processing.py`
+- **ClassDefinition** (15 connections) — `server/schemas/players/class_definition.py`
 - **select_character()** (14 connections) — `server/api/players.py`
 - **test_skills.py** (14 connections) — `server/tests/unit/api/test_skills.py`
 - **UUID** (13 connections)
@@ -26,30 +29,31 @@
 - **create_player()** (10 connections) — `server/api/players.py`
 - **list_players()** (10 connections) — `server/api/players.py`
 - **get_user_characters()** (10 connections) — `server/api/players.py`
-- **_validate_character_id()** (10 connections) — `server/api/players.py`
-- **get_available_classes()** (9 connections) — `server/api/players.py`
-- **get_player_by_name()** (9 connections) — `server/api/players.py`
-- *... and 111 more nodes in this community*
+- *... and 135 more nodes in this community*
 
 ## Relationships
 
-- [Exception Containers](Exception_Containers.md) (57 shared connections)
-- [profession game service](profession_game_service.md) (20 shared connections)
-- [player service game](player_service_game.md) (20 shared connections)
-- [command utility models](command_utility_models.md) (7 shared connections)
-- [game models stats](game_models_stats.md) (6 shared connections)
-- [models npc rationale](models_npc_rationale.md) (5 shared connections)
-- [Database Config](Database_Config.md) (5 shared connections)
-- [quest game service](quest_game_service.md) (5 shared connections)
-- [admin auth service](admin_auth_service.md) (4 shared connections)
+- [Exception Containers](Exception_Containers.md) (34 shared connections)
+- [player requests schemas](player_requests_schemas.md) (25 shared connections)
+- [coercion int inventory](coercion_int_inventory.md) (24 shared connections)
+- [Loot Generation](Loot_Generation.md) (20 shared connections)
+- [game models stats](game_models_stats.md) (11 shared connections)
+- [command factories communication](command_factories_communication.md) (11 shared connections)
+- [command commands handler](command_commands_handler.md) (11 shared connections)
+- [profession game service](profession_game_service.md) (8 shared connections)
+- [command utility models](command_utility_models.md) (8 shared connections)
+- [inventory schemas schema](inventory_schemas_schema.md) (8 shared connections)
+- [player service game](player_service_game.md) (5 shared connections)
 - [Error Handling Core](Error_Handling_Core.md) (4 shared connections)
-- [command inventory models](command_inventory_models.md) (4 shared connections)
-- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (3 shared connections)
 
 ## Source Files
 
 - `server/api/players.py`
 - `server/api/skills.py`
+- `server/app/game_tick_processing.py`
+- `server/game/player_search_service.py`
+- `server/schemas/players/class_definition.py`
+- `server/schemas/players/player.py`
 - `server/schemas/players/skill.py`
 - `server/schemas/quest/__init__.py`
 - `server/schemas/quest/quest.py`
@@ -59,8 +63,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 690 (97%)
-- INFERRED: 25 (3%)
+- EXTRACTED: 815 (95%)
+- INFERRED: 46 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

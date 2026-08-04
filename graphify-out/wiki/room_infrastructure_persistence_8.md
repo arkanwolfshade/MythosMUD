@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_send_initial_game_state_send_fails()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Test send_initial_game_state() handles send_personal_message failure.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_handle_player_entered_no_player_info()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **Test handle_player_entered() handles player not found.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Relationships
 
-- [game state provider](game_state_provider.md) (1 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
+- [player room event](player_room_event.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

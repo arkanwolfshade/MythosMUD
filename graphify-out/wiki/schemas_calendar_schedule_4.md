@@ -5,7 +5,7 @@
 ## Key Concepts
 
 - **properties** (10 connections) — `schemas/calendar/schedule.schema.json`
-- **end_hour** (4 connections) — `schemas/calendar/schedule.schema.json`
+- **start_hour** (4 connections) — `schemas/calendar/schedule.schema.json`
 - **name** (3 connections) — `schemas/calendar/schedule.schema.json`
 - **category** (3 connections) — `schemas/calendar/schedule.schema.json`
 - **notes** (2 connections) — `schemas/calendar/schedule.schema.json`
@@ -20,10 +20,9 @@
 
 ## Relationships
 
-- [schemas calendar schedule](schemas_calendar_schedule.md) (3 shared connections)
-- [services user manager](services_user_manager.md) (1 shared connections)
+- [schemas calendar schedule](schemas_calendar_schedule.md) (4 shared connections)
+- [config rationale reset](config_rationale_reset.md) (1 shared connections)
 - [lucidity services npc](lucidity_services_npc.md) (1 shared connections)
-- [realtime monitoring health](realtime_monitoring_health.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,35 +1,52 @@
 # status game spell
 
-> 11 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **UUID** (6 connections)
-- **.player_entered()** (5 connections) — `server/models/room.py`
-- **.player_left()** (4 connections) — `server/models/room.py`
-- **.has_player()** (4 connections) — `server/models/room.py`
-- **.add_player_silently()** (3 connections) — `server/models/room.py`
-- **.remove_player_silently()** (3 connections) — `server/models/room.py`
-- **Add a player to the room and trigger event.          Args:             player_id** (1 connections) — `server/models/room.py`
-- **Add a player to the room without triggering an event.          This method is us** (1 connections) — `server/models/room.py`
-- **Remove a player from the room without triggering an event.          This method** (1 connections) — `server/models/room.py`
-- **Remove a player from the room and trigger event.          Args:             play** (1 connections) — `server/models/room.py`
-- **Check if a player is in the room.          Args:             player_id: The ID o** (1 connections) — `server/models/room.py`
+- **SkillService** (37 connections) — `server/game/skill_service.py`
+- **Any** (10 connections)
+- **.set_player_skills()** (9 connections) — `server/game/skill_service.py`
+- **._validate_occupation_slots()** (6 connections) — `server/game/skill_service.py`
+- **._validate_personal_interest()** (6 connections) — `server/game/skill_service.py`
+- **.validate_skills_payload()** (6 connections) — `server/game/skill_service.py`
+- **._validate_no_overlap()** (5 connections) — `server/game/skill_service.py`
+- **._build_profession_mod_by_key()** (5 connections) — `server/game/skill_service.py`
+- **._compute_final_skill_values()** (5 connections) — `server/game/skill_service.py`
+- **.get_skills_catalog()** (3 connections) — `server/game/skill_service.py`
+- **Service for skills catalog, per-character skills, use logging, and improvement r** (1 connections) — `server/game/skill_service.py`
+- **Return list of skill dicts (id, key, name, base_value, allow_at_creation, catego** (1 connections) — `server/game/skill_service.py`
+- **Raise ValueError if occupation_slots are not exactly one 70, two 60, three 50, t** (1 connections) — `server/game/skill_service.py`
+- **Require exactly 4 skill_ids; Cthulhu Mythos not allowed; all skill_ids unique.** (1 connections) — `server/game/skill_service.py`
+- **Raise ValueError if any skill_id appears in both occupation and personal interes** (1 connections) — `server/game/skill_service.py`
+- **Build skill_key -> total modifier from profession skill_modifiers (supports skil** (1 connections) — `server/game/skill_service.py`
+- **Compute final skill_id -> value: base + profession mod, then occupation overlay,** (1 connections) — `server/game/skill_service.py`
+- **Validate skills allocation without persisting. Raises ValueError if invalid.** (1 connections) — `server/game/skill_service.py`
+- **Set all skills for a character at creation.          Validates occupation_slots** (1 connections) — `server/game/skill_service.py`
 
 ## Relationships
 
-- [room models instance](room_models_instance.md) (5 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (3 shared connections)
-- [websocket helpers realtime](websocket_helpers_realtime.md) (2 shared connections)
+- [skill service game](skill_service_game.md) (7 shared connections)
+- [Loot Generation](Loot_Generation.md) (6 shared connections)
+- [Database Config](Database_Config.md) (4 shared connections)
+- [profession game service](profession_game_service.md) (3 shared connections)
+- [npc threading rationale](npc_threading_rationale.md) (3 shared connections)
+- [Player Stats](Player_Stats.md) (2 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (2 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (2 shared connections)
+- [shutdown commands admin](shutdown_commands_admin.md) (2 shared connections)
+- [websocket realtime handler](websocket_realtime_handler.md) (1 shared connections)
+- [nats services service](nats_services_service.md) (1 shared connections)
+- [time service rationale](time_service_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/room.py`
+- `server/game/skill_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 28 (93%)
-- INFERRED: 2 (7%)
+- EXTRACTED: 93 (92%)
+- INFERRED: 8 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

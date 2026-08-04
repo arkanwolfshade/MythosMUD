@@ -1,24 +1,29 @@
 # health realtime monitoring
 
-> 3 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **.set_main_loop()** (3 connections) — `server/events/event_bus.py`
-- **AbstractEventLoop** (1 connections)
-- **Set the main event loop - now properly managed for async compatibility.** (1 connections) — `server/events/event_bus.py`
+- **__init__.py** (3 connections) — `server/game/quest/__init__.py`
+- **.set_spell_learning_service()** (3 connections) — `server/game/quest/quest_service.py`
+- **.resolve_name_to_quest_id()** (3 connections) — `server/game/quest/quest_service.py`
+- **Quest subsystem: service, goal progression, rewards.** (1 connections) — `server/game/quest/__init__.py`
+- **Set the spell learning service (e.g. when wired after construction by the contai** (1 connections) — `server/game/quest/quest_service.py`
+- **Resolve quest common name to quest_id. Returns None if not found.** (1 connections) — `server/game/quest/quest_service.py`
 
 ## Relationships
 
-- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
+- [quest game service](quest_game_service.md) (3 shared connections)
+- [quest service game](quest_service_game.md) (3 shared connections)
 
 ## Source Files
 
-- `server/events/event_bus.py`
+- `server/game/quest/__init__.py`
+- `server/game/quest/quest_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

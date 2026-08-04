@@ -1,32 +1,24 @@
 # admin shutdown commands
 
-> 10 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **.is_dead()** (5 connections) — `server/models/combat.py`
-- **.get_alive_participants()** (5 connections) — `server/models/combat.py`
-- **.get_participants_by_initiative()** (4 connections) — `server/models/combat.py`
-- **.apply_damage()** (3 connections) — `server/models/combat.py`
-- **.is_combat_over()** (3 connections) — `server/models/combat.py`
-- **Check if participant is dead.          For players: dead if DP <= -10         Fo** (1 connections) — `server/models/combat.py`
-- **Apply damage to this participant and determine resulting death states.** (1 connections) — `server/models/combat.py`
-- **Check if combat should end.          CRITICAL: Combat should NOT end when a play** (1 connections) — `server/models/combat.py`
-- **Get all participants that are not dead (includes mortally wounded players at 0 D** (1 connections) — `server/models/combat.py`
-- **Get all alive participants sorted by dexterity (highest first) for initiative or** (1 connections) — `server/models/combat.py`
+- **test_get_item_description_from_prototype_no_prototype_id()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test getting item description when prototype_id is missing.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
 
 ## Relationships
 
-- [Item Instances](Item_Instances.md) (4 shared connections)
-- [command factories exploration](command_factories_exploration.md) (3 shared connections)
+- [npc realtime occupant](npc_realtime_occupant.md) (1 shared connections)
+- [Item Lookup](Item_Lookup.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/combat.py`
+- `server/tests/unit/commands/test_look_item.py`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

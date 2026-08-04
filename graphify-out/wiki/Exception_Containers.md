@@ -1,14 +1,14 @@
 # Exception Containers
 
-> 517 nodes
+> 511 nodes
 
 ## Key Concepts
 
 - **LoggedHTTPException** (474 connections) — `server/exceptions.py`
-- **User** (325 connections) — `server/models/user.py`
 - **ContainerServiceError** (100 connections) — `server/services/container_service.py`
 - **ContainerService** (80 connections) — `server/services/container_service.py`
-- **LootAllRequest** (62 connections) — `server/api/container_models.py`
+- **RateLimitError** (76 connections) — `server/exceptions.py`
+- **test_container_service.py** (73 connections) — `server/tests/unit/services/test_container_service.py`
 - **TransferContainerRequest** (57 connections) — `server/api/container_models.py`
 - **ContainerNotFoundError** (52 connections) — `server/services/container_service.py`
 - **container_endpoints_basic.py** (50 connections) — `server/api/container_endpoints_basic.py`
@@ -17,61 +17,55 @@
 - **container_helpers.py** (44 connections) — `server/api/container_helpers.py`
 - **test_container_helpers.py** (43 connections) — `server/tests/unit/api/test_container_helpers.py`
 - **ContainerLockedError** (40 connections) — `server/services/container_service.py`
-- **loot_all_items()** (38 connections) — `server/api/container_endpoints_loot.py`
 - **container_service.py** (38 connections) — `server/services/container_service.py`
-- **container_endpoints_loot.py** (36 connections) — `server/api/container_endpoints_loot.py`
 - **handle_transfer_items_exceptions()** (32 connections) — `server/api/container_exception_handlers.py`
 - **test_container_exception_handlers.py** (31 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
 - **test_containers.py** (31 connections) — `server/tests/unit/api/test_containers.py`
-- **ContainerSourceType** (28 connections) — `server/models/container.py`
 - **handle_open_container_exceptions()** (26 connections) — `server/api/container_exception_handlers.py`
-- **container.py** (26 connections) — `server/models/container.py`
 - **transfer_items()** (25 connections) — `server/api/container_endpoints_basic.py`
 - **handle_loot_all_exceptions()** (25 connections) — `server/api/container_exception_handlers.py`
 - **container_exception_handlers.py** (24 connections) — `server/api/container_exception_handlers.py`
-- *... and 492 more nodes in this community*
+- **test_container_helpers_loot.py** (24 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
+- **open_container()** (23 connections) — `server/api/container_endpoints_basic.py`
+- **handle_close_container_exceptions()** (22 connections) — `server/api/container_exception_handlers.py`
+- **transfer_all_items_from_container()** (21 connections) — `server/api/container_helpers.py`
+- *... and 486 more nodes in this community*
 
 ## Relationships
 
-- [Error Handling Core](Error_Handling_Core.md) (88 shared connections)
-- [alias storage commands](alias_storage_commands.md) (77 shared connections)
-- [Player Stats](Player_Stats.md) (57 shared connections)
-- [container events rationale](container_events_rationale.md) (54 shared connections)
-- [admin auth service](admin_auth_service.md) (43 shared connections)
-- [command inventory models](command_inventory_models.md) (40 shared connections)
-- [game models stats](game_models_stats.md) (38 shared connections)
-- [task registry app](task_registry_app.md) (37 shared connections)
-- [maps handle ascii](maps_handle_ascii.md) (36 shared connections)
-- [container helpers endpoints](container_helpers_endpoints.md) (35 shared connections)
-- [ascii map renderer](ascii_map_renderer.md) (35 shared connections)
-- [command inventory factories](command_inventory_factories.md) (31 shared connections)
+- [task registry app](task_registry_app.md) (119 shared connections)
+- [player requests schemas](player_requests_schemas.md) (110 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (68 shared connections)
+- [container helpers endpoints](container_helpers_endpoints.md) (41 shared connections)
+- [inventory schemas schema](inventory_schemas_schema.md) (41 shared connections)
+- [Player Stats](Player_Stats.md) (34 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (30 shared connections)
+- [profession game service](profession_game_service.md) (29 shared connections)
+- [Loot Generation](Loot_Generation.md) (24 shared connections)
+- [commands follow rationale](commands_follow_rationale.md) (21 shared connections)
+- [command parser helpers](command_parser_helpers.md) (19 shared connections)
+- [health models rationale](health_models_rationale.md) (17 shared connections)
 
 ## Source Files
 
-- `server/api/character_creation.py`
 - `server/api/container_endpoints_basic.py`
-- `server/api/container_endpoints_loot.py`
 - `server/api/container_exception_handlers.py`
 - `server/api/container_helpers.py`
 - `server/api/container_models.py`
 - `server/exceptions.py`
-- `server/models/container.py`
-- `server/models/user.py`
-- `server/schemas/containers/__init__.py`
-- `server/schemas/containers/container.py`
-- `server/schemas/containers/container_data.py`
 - `server/services/container_service.py`
-- `server/tests/unit/api/test_container_endpoints_loot.py`
-- `server/tests/unit/api/test_container_endpoints_loot_register.py`
+- `server/services/environmental_container_loader.py`
+- `server/services/user_manager.py`
 - `server/tests/unit/api/test_container_exception_handlers.py`
 - `server/tests/unit/api/test_container_helpers.py`
 - `server/tests/unit/api/test_container_helpers_loot.py`
 - `server/tests/unit/api/test_containers.py`
+- `server/tests/unit/services/test_container_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2706 (73%)
-- INFERRED: 1023 (27%)
+- EXTRACTED: 2391 (71%)
+- INFERRED: 962 (29%)
 - AMBIGUOUS: 0 (0%)
 
 ---

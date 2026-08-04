@@ -1,60 +1,58 @@
 # eventLog projectorRoom roomMergeUtils
 
-> 37 nodes
+> 34 nodes
 
 ## Key Concepts
 
-- **projectorHandlersMessages.ts** (26 connections) — `client/src/components/ui-v2/eventLog/projectorHandlersMessages.ts`
-- **projectorHandlersState.ts** (23 connections) — `client/src/components/ui-v2/eventLog/projectorHandlersState.ts`
-- **projectorRoom.ts** (18 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
-- **projectorMessageUtils.ts** (11 connections) — `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
-- **roomMergeUtils.ts** (10 connections) — `client/src/components/ui-v2/utils/roomMergeUtils.ts`
-- **messageMapper.ts** (8 connections) — `client/src/components/ui-v2/eventLog/messageMapper.ts`
-- **messageMapper.test.ts** (7 connections) — `client/src/components/ui-v2/eventLog/__tests__/messageMapper.test.ts`
-- **mergeRoomState()** (7 connections) — `client/src/components/ui-v2/utils/roomMergeUtils.ts`
-- **deriveRoomFromRoomUpdate()** (6 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
-- **deriveRoomFromRoomOccupants()** (5 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
-- **buildChatMessage()** (4 connections) — `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
-- **appendMessage()** (4 connections) — `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
-- **appendMovementMessage()** (4 connections) — `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
-- **roomMergeUtils.test.ts** (4 connections) — `client/src/components/ui-v2/utils/__tests__/roomMergeUtils.test.ts`
-- **formatNpcTookDamageLine()** (3 connections) — `client/src/components/ui-v2/eventLog/messageMapper.ts`
-- **formatNpcAttackedLine()** (3 connections) — `client/src/components/ui-v2/eventLog/messageMapper.ts`
-- **formatPlayerAttackedLine()** (3 connections) — `client/src/components/ui-v2/eventLog/messageMapper.ts`
-- **mergePlayerDpFromPlayerAttackedPayload()** (3 connections) — `client/src/components/ui-v2/eventLog/messageMapper.ts`
-- **createRoomUpdateWithPreservedOccupants()** (3 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
-- **deriveRoomFromRoomState()** (3 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
-- **selectPlayersArray()** (3 connections) — `client/src/components/ui-v2/utils/roomMergeUtils.ts`
-- **selectNpcsArray()** (3 connections) — `client/src/components/ui-v2/utils/roomMergeUtils.ts`
-- **messageHandlers** (2 connections) — `client/src/components/ui-v2/eventLog/projectorHandlersMessages.ts`
-- **ProjectorHandler** (2 connections) — `client/src/components/ui-v2/eventLog/projectorHandlersState.ts`
-- **stateHandlers** (2 connections) — `client/src/components/ui-v2/eventLog/projectorHandlersState.ts`
-- *... and 12 more nodes in this community*
+- **admin_shutdown_command.py** (35 connections) — `server/commands/admin_shutdown_command.py`
+- **Any** (20 connections)
+- **initiate_shutdown_countdown()** (13 connections) — `server/commands/admin_shutdown_command.py`
+- **handle_shutdown_command()** (13 connections) — `server/commands/admin_shutdown_command.py`
+- **countdown_loop()** (7 connections) — `server/commands/admin_shutdown_command.py`
+- **_create_countdown_task()** (5 connections) — `server/commands/admin_shutdown_command.py`
+- **_store_shutdown_data()** (5 connections) — `server/commands/admin_shutdown_command.py`
+- **_clear_shutdown_state()** (5 connections) — `server/commands/admin_shutdown_command.py`
+- **_validate_shutdown_context()** (5 connections) — `server/commands/admin_shutdown_command.py`
+- **_handle_shutdown_cancel()** (5 connections) — `server/commands/admin_shutdown_command.py`
+- **_handle_shutdown_initiate()** (5 connections) — `server/commands/admin_shutdown_command.py`
+- **_cancel_existing_shutdown_task()** (4 connections) — `server/commands/admin_shutdown_command.py`
+- **_set_shutdown_pending_flag()** (4 connections) — `server/commands/admin_shutdown_command.py`
+- **_get_shutdown_state()** (4 connections) — `server/commands/admin_shutdown_command.py`
+- **_cancel_countdown_task()** (4 connections) — `server/commands/admin_shutdown_command.py`
+- **_broadcast_shutdown_cancellation()** (4 connections) — `server/commands/admin_shutdown_command.py`
+- **_get_shutdown_services()** (4 connections) — `server/commands/admin_shutdown_command.py`
+- **Task** (2 connections)
+- **Admin shutdown command for MythosMUD.  This module provides the /shutdown comman** (1 connections) — `server/commands/admin_shutdown_command.py`
+- **Cancel existing shutdown task if present.      Args:         app: FastAPI applic** (1 connections) — `server/commands/admin_shutdown_command.py`
+- **Set shutdown pending flag in container and app.state.      Args:         app: Fa** (1 connections) — `server/commands/admin_shutdown_command.py`
+- **Create countdown task from coroutine, handling task registry if available.** (1 connections) — `server/commands/admin_shutdown_command.py`
+- **Store shutdown data in container and app.state.      Args:         app: FastAPI** (1 connections) — `server/commands/admin_shutdown_command.py`
+- **Clear shutdown state in container and app.state.      Args:         app: FastAPI** (1 connections) — `server/commands/admin_shutdown_command.py`
+- **Main countdown loop that sends notifications and executes shutdown.      Args:** (1 connections) — `server/commands/admin_shutdown_command.py`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [Game Terminal UI](Game_Terminal_UI.md) (20 shared connections)
-- [PanelSystem PanelManager panelLayoutClam](PanelSystem_PanelManager_panelLayoutClam.md) (7 shared connections)
-- [game terminal lucidity](game_terminal_lucidity.md) (7 shared connections)
-- [lucidityEventUtils mythosTime MythosTime](lucidityEventUtils_mythosTime_MythosTime.md) (5 shared connections)
-- [roomHandlers eventHandlers calculateOccu](roomHandlers_eventHandlers_calculateOccu.md) (2 shared connections)
-- [panels chatPanelRuntimeUtils chatPanelEx](panels_chatPanelRuntimeUtils_chatPanelEx.md) (2 shared connections)
-- [character creation service](character_creation_service.md) (1 shared connections)
+- [shutdown admin command](shutdown_admin_command.md) (13 shared connections)
+- [Loot Generation](Loot_Generation.md) (3 shared connections)
+- [motd loader rationale](motd_loader_rationale.md) (3 shared connections)
+- [services service hallucination](services_service_hallucination.md) (3 shared connections)
+- [occupant realtime formatter](occupant_realtime_formatter.md) (3 shared connections)
+- [shutdown commands sequence](shutdown_commands_sequence.md) (3 shared connections)
+- [commands party examples](commands_party_examples.md) (2 shared connections)
+- [commands alias rationale](commands_alias_rationale.md) (2 shared connections)
+- [lucidity models rationale](lucidity_models_rationale.md) (2 shared connections)
+- [commands admin mute](commands_admin_mute.md) (2 shared connections)
+- [connection manager realtime](connection_manager_realtime.md) (2 shared connections)
+- [profession game service](profession_game_service.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/ui-v2/eventLog/__tests__/messageMapper.test.ts`
-- `client/src/components/ui-v2/eventLog/messageMapper.ts`
-- `client/src/components/ui-v2/eventLog/projectorHandlersMessages.ts`
-- `client/src/components/ui-v2/eventLog/projectorHandlersState.ts`
-- `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
-- `client/src/components/ui-v2/eventLog/projectorRoom.ts`
-- `client/src/components/ui-v2/utils/__tests__/roomMergeUtils.test.ts`
-- `client/src/components/ui-v2/utils/roomMergeUtils.ts`
+- `server/commands/admin_shutdown_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 190 (100%)
+- EXTRACTED: 160 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

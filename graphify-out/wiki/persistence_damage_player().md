@@ -1,25 +1,25 @@
 # persistence damage player()
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **.__init__()** (3 connections) — `server/realtime/message_validator.py`
-- **.__init__()** (2 connections) — `server/realtime/message_validator.py`
-- **Initialize the message validator.          Args:             max_message_size** (1 connections) — `server/realtime/message_validator.py`
+- **test_update_player_location_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **Test update_player_location() when player not found.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
 
 ## Relationships
 
-- [realtime message validator](realtime_message_validator.md) (2 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (1 shared connections)
+- [room realtime subscription](room_realtime_subscription.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/message_validator.py`
+- `server/tests/unit/game/test_player_service_mutations.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

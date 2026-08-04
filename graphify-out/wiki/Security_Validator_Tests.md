@@ -1,19 +1,18 @@
 # Security Validator Tests
 
-> 193 nodes
+> 218 nodes
 
 ## Key Concepts
 
 - **test_security_validator.py** (97 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **security_validator.py** (36 connections) — `server/validators/security_validator.py`
 - **validate_player_name()** (23 connections) — `server/validators/security_validator.py`
 - **validate_message_content()** (21 connections) — `server/validators/security_validator.py`
 - **comprehensive_sanitize_input()** (20 connections) — `server/validators/security_validator.py`
+- **validate_combat_target()** (15 connections) — `server/validators/security_validator.py`
 - **strip_ansi_codes()** (13 connections) — `server/validators/security_validator.py`
 - **validate_action_content()** (11 connections) — `server/validators/security_validator.py`
+- **validate_alias_name()** (10 connections) — `server/validators/security_validator.py`
 - **validate_reason_content()** (10 connections) — `server/validators/security_validator.py`
-- **__init__.py** (9 connections) — `server/validators/__init__.py`
-- **clean_command_input()** (9 connections) — `server/validators/command_validator.py`
 - **sanitize_unicode_input()** (9 connections) — `server/validators/security_validator.py`
 - **validate_command_content()** (9 connections) — `server/validators/security_validator.py`
 - **validate_pose_content()** (9 connections) — `server/validators/security_validator.py`
@@ -25,42 +24,41 @@
 - **check_injection_patterns()** (6 connections) — `server/validators/security_validator.py`
 - **get_dangerous_characters()** (5 connections) — `server/validators/security_validator.py`
 - **get_injection_patterns()** (5 connections) — `server/validators/security_validator.py`
+- **.validate_player_name_field()** (3 connections) — `server/models/command_admin.py`
+- **.validate_alias_name_field()** (3 connections) — `server/models/command_alias.py`
 - **.validate_command()** (3 connections) — `server/models/command_alias.py`
-- **.validate_action()** (3 connections) — `server/models/command_communication.py`
-- **.validate_pose()** (3 connections) — `server/models/command_communication.py`
-- **.validate_target()** (3 connections) — `server/models/command_communication.py`
-- *... and 168 more nodes in this community*
+- **.validate_target()** (3 connections) — `server/models/command_combat.py`
+- **.validate_target()** (3 connections) — `server/models/command_combat.py`
+- *... and 193 more nodes in this community*
 
 ## Relationships
 
-- [command communication models](command_communication_models.md) (14 shared connections)
-- [container persistence rationale](container_persistence_rationale.md) (11 shared connections)
-- [feature services flag](feature_services_flag.md) (9 shared connections)
-- [commands who helpers](commands_who_helpers.md) (8 shared connections)
-- [command models moderation](command_models_moderation.md) (7 shared connections)
-- [command validator validators](command_validator_validators.md) (7 shared connections)
-- [models npc rationale](models_npc_rationale.md) (6 shared connections)
-- [commands position system](commands_position_system.md) (4 shared connections)
-- [calendar schemas validate](calendar_schemas_validate.md) (3 shared connections)
-- [auth endpoints rationale](auth_endpoints_rationale.md) (2 shared connections)
-- [emote models rationale](emote_models_rationale.md) (1 shared connections)
-- [NPC Combat](NPC_Combat.md) (1 shared connections)
+- [command factories create](command_factories_create.md) (46 shared connections)
+- [command communication models](command_communication_models.md) (9 shared connections)
+- [commands who helpers](commands_who_helpers.md) (4 shared connections)
+- [command validator validators](command_validator_validators.md) (4 shared connections)
+- [auth endpoints rationale](auth_endpoints_rationale.md) (3 shared connections)
+- [Loot Generation](Loot_Generation.md) (3 shared connections)
+- [logoutHandler logger App](logoutHandler_logger_App.md) (1 shared connections)
+- [commands admin mute](commands_admin_mute.md) (1 shared connections)
+- [combat services initialization](combat_services_initialization.md) (1 shared connections)
+- [commands party examples](commands_party_examples.md) (1 shared connections)
 
 ## Source Files
 
+- `server/models/command_admin.py`
 - `server/models/command_alias.py`
+- `server/models/command_combat.py`
 - `server/models/command_communication.py`
 - `server/models/command_moderation.py`
 - `server/models/command_utility.py`
 - `server/tests/unit/validators/test_security_validator.py`
-- `server/validators/__init__.py`
-- `server/validators/command_validator.py`
 - `server/validators/security_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 634 (98%)
-- INFERRED: 16 (2%)
+- EXTRACTED: 665 (99%)
+- INFERRED: 10 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

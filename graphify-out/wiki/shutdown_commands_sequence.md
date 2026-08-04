@@ -34,9 +34,9 @@
 ## Relationships
 
 - [Database Config](Database_Config.md) (5 shared connections)
-- [models npc rationale](models_npc_rationale.md) (4 shared connections)
-- [shutdown admin command](shutdown_admin_command.md) (3 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [Loot Generation](Loot_Generation.md) (4 shared connections)
+- [eventLog projectorRoom roomMergeUtils](eventLog_projectorRoom_roomMergeUtils.md) (3 shared connections)
+- [health monitor realtime](health_monitor_realtime.md) (2 shared connections)
 
 ## Source Files
 

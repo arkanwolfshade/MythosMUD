@@ -1,36 +1,46 @@
 # cleanup combat handler
 
-> 12 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **_cleanup_dead_connections()** (10 connections) — `server/realtime/connection_establishment.py`
-- **_remove_dead_connection()** (7 connections) — `server/realtime/connection_establishment.py`
-- **test_remove_dead_connection()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_remove_dead_connection_not_present()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_cleanup_dead_connections_empty_list()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_cleanup_dead_connections_with_dead()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Remove a single dead connection from tracking structures.      Args:         con** (1 connections) — `server/realtime/connection_establishment.py`
-- **Clean up dead connections under lock.      Args:         dead_connection_ids: Li** (1 connections) — `server/realtime/connection_establishment.py`
-- **Test _remove_dead_connection() removes connection from tracking.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _remove_dead_connection() handles connection not present.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _cleanup_dead_connections() handles empty list.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _cleanup_dead_connections() cleans up dead connections.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_statistics_aggregator.py** (14 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **statistics_aggregator()** (3 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **mock_memory_monitor()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **mock_rate_limiter()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **mock_message_queue()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **mock_room_manager()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **mock_performance_tracker()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **test_statistics_aggregator_init()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **test_get_memory_stats()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **test_get_connection_stats()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **test_get_connection_health_stats()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **test_get_memory_alerts()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **Unit tests for statistics aggregator.  Tests the StatisticsAggregator class.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **Create a mock memory monitor.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **Create a mock rate limiter.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **Create a mock message queue.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **Create a mock room manager.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **Create a mock performance tracker.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **Create a StatisticsAggregator instance.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **Test StatisticsAggregator initialization.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **Test get_memory_stats() returns comprehensive statistics.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **Test get_connection_stats() returns connection statistics.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **Test get_connection_health_stats() returns health statistics.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **Test get_memory_alerts() returns memory alerts.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
 
 ## Relationships
 
-- [player event state](player_event_state.md) (6 shared connections)
-- [connection establishment realtime](connection_establishment_realtime.md) (6 shared connections)
-- [persistence rationale room](persistence_rationale_room.md) (1 shared connections)
+- [event realtime publisher](event_realtime_publisher.md) (2 shared connections)
+- [connection disconnection realtime](connection_disconnection_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_establishment.py`
-- `server/tests/unit/realtime/test_connection_establishment.py`
+- `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 35 (100%)
+- EXTRACTED: 49 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

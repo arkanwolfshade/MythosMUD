@@ -1,11 +1,13 @@
 # command validator validators
 
-> 102 nodes
+> 106 nodes
 
 ## Key Concepts
 
 - **test_command_validator.py** (52 connections) — `server/tests/unit/validators/test_command_validator.py`
 - **.validate_command_content()** (11 connections) — `server/validators/command_validator.py`
+- **__init__.py** (9 connections) — `server/validators/__init__.py`
+- **clean_command_input()** (9 connections) — `server/validators/command_validator.py`
 - **validate_command_format()** (9 connections) — `server/validators/command_validator.py`
 - **normalize_command()** (8 connections) — `server/validators/command_validator.py`
 - **is_suspicious_input()** (8 connections) — `server/validators/command_validator.py`
@@ -27,26 +29,26 @@
 - **test_clean_command_input_empty()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
 - **test_clean_command_input_unicode()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
 - **test_validate_command_length_valid()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **test_validate_command_length_too_long()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **test_validate_command_length_custom_max()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
-- *... and 77 more nodes in this community*
+- *... and 81 more nodes in this community*
 
 ## Relationships
 
-- [models npc rationale](models_npc_rationale.md) (12 shared connections)
-- [Security Validator Tests](Security_Validator_Tests.md) (7 shared connections)
+- [Loot Generation](Loot_Generation.md) (14 shared connections)
 - [logoutHandler logger App](logoutHandler_logger_App.md) (5 shared connections)
+- [Security Validator Tests](Security_Validator_Tests.md) (4 shared connections)
 - [command commands handler](command_commands_handler.md) (2 shared connections)
+- [command factories create](command_factories_create.md) (1 shared connections)
 - [alias graph rationale](alias_graph_rationale.md) (1 shared connections)
 
 ## Source Files
 
 - `server/tests/unit/validators/test_command_validator.py`
+- `server/validators/__init__.py`
 - `server/validators/command_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 297 (100%)
+- EXTRACTED: 317 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

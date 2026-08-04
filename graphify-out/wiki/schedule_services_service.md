@@ -1,59 +1,62 @@
 # schedule services service
 
-> 52 nodes
+> 43 nodes
 
 ## Key Concepts
 
-- **MovementService** (43 connections) — `server/game/movement_service.py`
-- **UUID** (16 connections)
-- **.move_player()** (14 connections) — `server/game/movement_service.py`
-- **._validate_movement()** (9 connections) — `server/game/movement_service.py`
-- **._handle_movement_error()** (8 connections) — `server/game/movement_service.py`
-- **._validate_move_params()** (6 connections) — `server/game/movement_service.py`
-- **._resolve_player_for_movement()** (6 connections) — `server/game/movement_service.py`
-- **._get_rooms_for_movement()** (6 connections) — `server/game/movement_service.py`
-- **._validate_player_room_membership()** (6 connections) — `server/game/movement_service.py`
-- **.add_player_to_room()** (6 connections) — `server/game/movement_service.py`
-- **._validate_remove_player_params()** (6 connections) — `server/game/movement_service.py`
-- **.remove_player_from_room()** (6 connections) — `server/game/movement_service.py`
-- **.get_player_room()** (6 connections) — `server/game/movement_service.py`
-- **.__init__()** (5 connections) — `server/game/movement_service.py`
-- **._execute_room_transfer()** (5 connections) — `server/game/movement_service.py`
-- **._mark_room_explored()** (5 connections) — `server/game/movement_service.py`
-- **._check_combat_state()** (5 connections) — `server/game/movement_service.py`
-- **._check_player_posture()** (5 connections) — `server/game/movement_service.py`
-- **Any** (4 connections)
-- **Room** (4 connections)
-- **._persist_player_location()** (4 connections) — `server/game/movement_service.py`
-- **._handle_tutorial_exit_if_applicable()** (4 connections) — `server/game/movement_service.py`
-- **._extract_player_id()** (4 connections) — `server/game/movement_service.py`
-- **._validate_exit()** (4 connections) — `server/game/movement_service.py`
-- **.get_room_players()** (4 connections) — `server/game/movement_service.py`
-- *... and 27 more nodes in this community*
+- **PlayerEventHandler** (26 connections) — `server/realtime/player_event_handlers.py`
+- **PlayerStateEventHandler** (14 connections) — `server/realtime/player_event_handlers_state.py`
+- **Any** (9 connections)
+- **.__init__()** (8 connections) — `server/realtime/player_event_handlers.py`
+- **._initialize_handlers()** (7 connections) — `server/realtime/player_event_handlers.py`
+- **.__init__()** (5 connections) — `server/realtime/player_event_handlers_state.py`
+- **.handle_player_entered()** (4 connections) — `server/realtime/player_event_handlers.py`
+- **.handle_player_left()** (4 connections) — `server/realtime/player_event_handlers.py`
+- **.handle_player_xp_awarded()** (4 connections) — `server/realtime/player_event_handlers_state.py`
+- **.handle_player_dp_updated()** (4 connections) — `server/realtime/player_event_handlers_state.py`
+- **.handle_player_died()** (4 connections) — `server/realtime/player_event_handlers_state.py`
+- **.handle_player_dp_decay()** (4 connections) — `server/realtime/player_event_handlers_state.py`
+- **.send_occupants_snapshot_to_player()** (3 connections) — `server/realtime/player_event_handlers.py`
+- **.get_room_state_event()** (3 connections) — `server/realtime/player_event_handlers.py`
+- **.handle_player_xp_awarded()** (3 connections) — `server/realtime/player_event_handlers.py`
+- **.handle_player_dp_updated()** (3 connections) — `server/realtime/player_event_handlers.py`
+- **.handle_player_died()** (3 connections) — `server/realtime/player_event_handlers.py`
+- **.handle_player_dp_decay()** (3 connections) — `server/realtime/player_event_handlers.py`
+- **.handle_player_respawned()** (3 connections) — `server/realtime/player_event_handlers.py`
+- **.handle_player_delirium_respawned()** (3 connections) — `server/realtime/player_event_handlers.py`
+- **player_event_handler()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **player_state_event_handler()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- **Handles all player-related real-time events.** (1 connections) — `server/realtime/player_event_handlers.py`
+- **Initialize the player event handler.          Args:             connection_manag** (1 connections) — `server/realtime/player_event_handlers.py`
+- **Initialize utility functions and specialized handlers.** (1 connections) — `server/realtime/player_event_handlers.py`
+- *... and 18 more nodes in this community*
 
 ## Relationships
 
-- [Database Config](Database_Config.md) (18 shared connections)
-- [command inventory models](command_inventory_models.md) (8 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (3 shared connections)
-- [commands command rationale](commands_command_rationale.md) (2 shared connections)
-- [holiday service services](holiday_service_services.md) (2 shared connections)
-- [spell game magic](spell_game_magic.md) (2 shared connections)
-- [coercion int inventory](coercion_int_inventory.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [movement service game](movement_service_game.md) (2 shared connections)
-- [events event bus](events_event_bus.md) (2 shared connections)
-- [npc population control](npc_population_control.md) (2 shared connections)
-- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [combat services messaging](combat_services_messaging.md) (6 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (5 shared connections)
+- [realtime monitoring performance](realtime_monitoring_performance.md) (5 shared connections)
+- [item models rationale](item_models_rationale.md) (5 shared connections)
+- [player_event_handler_utils](player_event_handler_utils.md) (4 shared connections)
+- [NATS Messaging](NATS_Messaging.md) (2 shared connections)
+- [inventory mutation guard](inventory_mutation_guard.md) (2 shared connections)
+- [Player Name Validation](Player_Name_Validation.md) (2 shared connections)
+- [player occupant processor](player_occupant_processor.md) (2 shared connections)
+- [feature services flag](feature_services_flag.md) (2 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (2 shared connections)
+- [realtime websocket initial](realtime_websocket_initial.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/movement_service.py`
+- `server/realtime/player_event_handlers.py`
+- `server/realtime/player_event_handlers_state.py`
+- `server/tests/unit/realtime/test_player_event_handlers.py`
+- `server/tests/unit/realtime/test_player_event_handlers_state.py`
 
 ## Audit Trail
 
-- EXTRACTED: 203 (91%)
-- INFERRED: 19 (9%)
+- EXTRACTED: 133 (92%)
+- INFERRED: 11 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_unsubscribe_from_room_not_subscribed()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **Test unsubscribe_from_room() when player is not subscribed.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_handle_unequip_wearable_container_with_allowed_roles()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test handle_unequip_wearable_container preserves allowed_roles.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Relationships
 
-- [room subscription manager](room_subscription_manager.md) (1 shared connections)
+- [wearable container service](wearable_container_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager.py`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 

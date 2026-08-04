@@ -1,25 +1,23 @@
 # realtime maintenance connection
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **.__init__()** (4 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **SendPersonalMessage** (1 connections)
-- **Initialize the message broadcaster.          Args:             room_manager: Roo** (1 connections) — `server/realtime/messaging/message_broadcaster.py`
+- **test_get_user_characters()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **Test get_user_characters() returns user's characters.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
 
 ## Relationships
 
-- [realtime messaging message](realtime_messaging_message.md) (1 shared connections)
-- [connection disconnection realtime](connection_disconnection_realtime.md) (1 shared connections)
+- [room realtime subscription](room_realtime_subscription.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/messaging/message_broadcaster.py`
+- `server/tests/unit/game/test_player_service_mutations.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

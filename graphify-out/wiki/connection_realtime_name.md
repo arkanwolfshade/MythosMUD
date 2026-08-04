@@ -23,10 +23,10 @@
 
 ## Relationships
 
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (1 shared connections)
-- [AppRouter main AppRouter()](AppRouter_main_AppRouter%28%29.md) (1 shared connections)
-- [look helpers commands](look_helpers_commands.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
+- [realtime monitoring statistics](realtime_monitoring_statistics.md) (1 shared connections)
+- [commands npc admin](commands_npc_admin.md) (1 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (1 shared connections)
 
 ## Source Files
 

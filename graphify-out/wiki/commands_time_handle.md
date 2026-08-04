@@ -22,9 +22,9 @@
 
 ## Relationships
 
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
-- [commands npc admin](commands_npc_admin.md) (1 shared connections)
-- [command utility models](command_utility_models.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
+- [commands party examples](commands_party_examples.md) (1 shared connections)
+- [nats services metrics](nats_services_metrics.md) (1 shared connections)
 - [time service rationale](time_service_rationale.md) (1 shared connections)
 - [commands who rationale](commands_who_rationale.md) (1 shared connections)
 

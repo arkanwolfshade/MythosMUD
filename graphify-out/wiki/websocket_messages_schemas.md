@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [command inventory models](command_inventory_models.md) (4 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (4 shared connections)
 
 ## Source Files
 

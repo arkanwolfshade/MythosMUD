@@ -34,7 +34,7 @@
 ## Relationships
 
 - [NPC Combat](NPC_Combat.md) (6 shared connections)
-- [Security Validator Tests](Security_Validator_Tests.md) (1 shared connections)
+- [command factories create](command_factories_create.md) (1 shared connections)
 
 ## Source Files
 

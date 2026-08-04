@@ -1,42 +1,49 @@
 # command processor rationale
 
-> 19 nodes
+> 21 nodes
 
 ## Key Concepts
 
-- **Any** (8 connections)
-- **.spawn_npc_instance()** (4 connections) — `server/services/npc_instance_service.py`
-- **.get_population_stats()** (4 connections) — `server/services/npc_instance_service.py`
-- **.get_zone_stats()** (4 connections) — `server/services/npc_instance_service.py`
-- **._extract_zone_from_room_id()** (4 connections) — `server/services/npc_instance_service.py`
-- **.despawn_npc_instance()** (3 connections) — `server/services/npc_instance_service.py`
-- **.move_npc_instance()** (3 connections) — `server/services/npc_instance_service.py`
-- **.get_npc_instances()** (3 connections) — `server/services/npc_instance_service.py`
-- **.get_npc_stats()** (3 connections) — `server/services/npc_instance_service.py`
-- **.get_system_stats()** (3 connections) — `server/services/npc_instance_service.py`
-- **Spawn a new NPC instance.          Args:             definition_id: ID of the NP** (1 connections) — `server/services/npc_instance_service.py`
-- **Despawn an NPC instance.          Args:             npc_id: ID of the NPC to des** (1 connections) — `server/services/npc_instance_service.py`
-- **Move an NPC instance to a different room.          Args:             npc_id: ID** (1 connections) — `server/services/npc_instance_service.py`
-- **Get all active NPC instances.          Returns:             List of NPC instance** (1 connections) — `server/services/npc_instance_service.py`
-- **Get detailed stats for a specific NPC instance.          Args:             npc_i** (1 connections) — `server/services/npc_instance_service.py`
-- **Get NPC population statistics.          Returns:             Dictionary with pop** (1 connections) — `server/services/npc_instance_service.py`
-- **Get NPC zone statistics.          Returns:             Dictionary with zone stat** (1 connections) — `server/services/npc_instance_service.py`
-- **Get system-wide NPC statistics.          Returns:             Dictionary with sy** (1 connections) — `server/services/npc_instance_service.py`
-- **Extract zone key from room ID.          Args:             room_id: Room ID like** (1 connections) — `server/services/npc_instance_service.py`
+- **test_real_time_helpers.py** (31 connections) — `server/tests/unit/api/test_real_time_helpers.py`
+- **_parse_websocket_token()** (9 connections) — `server/api/real_time.py`
+- **_extract_bearer_token()** (6 connections) — `server/api/real_time.py`
+- **_parse_subprotocol_token()** (5 connections) — `server/api/real_time.py`
+- **test_resolve_player_id_from_token_no_player()** (3 connections) — `server/tests/unit/api/test_real_time_helpers.py`
+- **test_resolve_player_id_missing_token_and_player_id()** (3 connections) — `server/tests/unit/api/test_real_time_helpers.py`
+- **test_parse_websocket_token_header_parse_error()** (3 connections) — `server/tests/unit/api/test_real_time_helpers.py`
+- **test_extract_bearer_token_with_marker()** (2 connections) — `server/tests/unit/api/test_real_time_helpers.py`
+- **test_extract_bearer_token_last_part()** (2 connections) — `server/tests/unit/api/test_real_time_helpers.py`
+- **test_extract_bearer_token_empty()** (2 connections) — `server/tests/unit/api/test_real_time_helpers.py`
+- **test_parse_subprotocol_token()** (2 connections) — `server/tests/unit/api/test_real_time_helpers.py`
+- **test_resolve_connection_manager_from_state()** (2 connections) — `server/tests/unit/api/test_real_time_helpers.py`
+- **test_resolve_player_id_from_test()** (2 connections) — `server/tests/unit/api/test_real_time_helpers.py`
+- **test_parse_websocket_token_from_query()** (2 connections) — `server/tests/unit/api/test_real_time_helpers.py`
+- **test_parse_websocket_token_from_subprotocol()** (2 connections) — `server/tests/unit/api/test_real_time_helpers.py`
+- **test_validate_websocket_connection_manager()** (2 connections) — `server/tests/unit/api/test_real_time_helpers.py`
+- **test_resolve_player_id_from_token_with_character_id()** (2 connections) — `server/tests/unit/api/test_real_time_helpers.py`
+- **Extract bearer token from parsed subprotocol parts.      If 'bearer' marker is p** (1 connections) — `server/api/real_time.py`
+- **Parse token from WebSocket subprotocol header.      Example formats: "bearer, <t** (1 connections) — `server/api/real_time.py`
+- **Parse token from WebSocket subprotocol (preferred) or query params (fallback).** (1 connections) — `server/api/real_time.py`
+- **Unit tests for real_time API helper functions.** (1 connections) — `server/tests/unit/api/test_real_time_helpers.py`
 
 ## Relationships
 
-- [Realtime Subscribers](Realtime_Subscribers.md) (9 shared connections)
-- [player effects endpoints](player_effects_endpoints.md) (1 shared connections)
+- [combat commands handler](combat_commands_handler.md) (18 shared connections)
+- [room validator path](room_validator_path.md) (5 shared connections)
+- [auth users rationale](auth_users_rationale.md) (4 shared connections)
+- [Exception Containers](Exception_Containers.md) (3 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/npc_instance_service.py`
+- `server/api/real_time.py`
+- `server/tests/unit/api/test_real_time_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 48 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 81 (96%)
+- INFERRED: 3 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

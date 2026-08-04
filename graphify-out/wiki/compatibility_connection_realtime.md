@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [Room Broadcast](Room_Broadcast.md) (2 shared connections)
+- [realtime monitoring statistics](realtime_monitoring_statistics.md) (2 shared connections)
 
 ## Source Files
 

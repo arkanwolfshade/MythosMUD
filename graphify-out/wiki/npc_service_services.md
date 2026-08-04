@@ -1,6 +1,6 @@
 # npc service services
 
-> 87 nodes
+> 86 nodes
 
 ## Key Concepts
 
@@ -29,22 +29,22 @@
 - **test_validate_admin_permission_attribute_error()** (3 connections) — `server/tests/unit/commands/test_admin_permission_utils.py`
 - **test_validate_admin_permission_logs_secondary_failure()** (3 connections) — `server/tests/unit/commands/test_admin_permission_utils.py`
 - **test_resolve_teleport_services_no_app()** (3 connections) — `server/tests/unit/commands/test_teleport_helpers.py`
-- *... and 62 more nodes in this community*
+- *... and 61 more nodes in this community*
 
 ## Relationships
 
 - [player respawn event](player_respawn_event.md) (22 shared connections)
 - [realtime game state](realtime_game_state.md) (19 shared connections)
-- [models npc rationale](models_npc_rationale.md) (13 shared connections)
-- [monitoring dashboard rationale](monitoring_dashboard_rationale.md) (13 shared connections)
-- [commands admin mute](commands_admin_mute.md) (8 shared connections)
+- [monitoring dashboard rationale](monitoring_dashboard_rationale.md) (15 shared connections)
+- [Loot Generation](Loot_Generation.md) (12 shared connections)
 - [commands inventory put](commands_inventory_put.md) (6 shared connections)
+- [commands admin mute](commands_admin_mute.md) (6 shared connections)
 - [admin structured logging](admin_structured_logging.md) (5 shared connections)
 - [container schemas containers](container_schemas_containers.md) (4 shared connections)
-- [commands position system](commands_position_system.md) (2 shared connections)
-- [commands npc admin](commands_npc_admin.md) (1 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [command models admin](command_models_admin.md) (3 shared connections)
+- [commands party examples](commands_party_examples.md) (1 shared connections)
 - [Database Config](Database_Config.md) (1 shared connections)
+- [eventLog projectorRoom roomMergeUtils](eventLog_projectorRoom_roomMergeUtils.md) (1 shared connections)
 
 ## Source Files
 
@@ -58,8 +58,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 416 (100%)
-- INFERRED: 1 (0%)
+- EXTRACTED: 415 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

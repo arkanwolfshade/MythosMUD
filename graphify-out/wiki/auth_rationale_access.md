@@ -1,14 +1,11 @@
 # auth rationale access
 
-> 70 nodes
+> 57 nodes
 
 ## Key Concepts
 
-- **test_auth_utils.py** (52 connections) — `server/tests/unit/auth/test_auth_utils.py`
 - **create_access_token()** (32 connections) — `server/auth_utils.py`
 - **decode_access_token()** (25 connections) — `server/auth_utils.py`
-- **test_create_access_token_attribute_error()** (5 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_decode_access_token_attribute_error()** (5 connections) — `server/tests/unit/auth/test_auth_utils.py`
 - **test_decode_access_token_success()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
 - **test_decode_access_token_expired()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
 - **test_create_access_token_with_custom_secret()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
@@ -25,25 +22,25 @@
 - **test_create_access_token_runtime_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
 - **test_create_access_token_with_audience()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
 - **test_decode_access_token_with_expired_token_immediately()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **setup_jwt_secret()** (3 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_verify_password_returns_false_on_error()** (3 connections) — `server/tests/unit/auth/test_auth_utils.py`
 - **test_create_access_token_success()** (3 connections) — `server/tests/unit/auth/test_auth_utils.py`
 - **test_create_access_token_with_expires_delta()** (3 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- *... and 45 more nodes in this community*
+- **test_decode_access_token_invalid()** (3 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_decode_access_token_none_token()** (3 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_create_access_token_with_empty_data()** (3 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_create_access_token_with_custom_algorithm()** (3 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_create_access_token_with_none_expires_delta()** (3 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- *... and 32 more nodes in this community*
 
 ## Relationships
 
-- [npc lifecycle combat](npc_lifecycle_combat.md) (13 shared connections)
-- [Error Handling Core](Error_Handling_Core.md) (9 shared connections)
-- [models npc rationale](models_npc_rationale.md) (6 shared connections)
+- [npc lifecycle combat](npc_lifecycle_combat.md) (28 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (6 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (3 shared connections)
 - [combat commands handler](combat_commands_handler.md) (3 shared connections)
-- [look helpers commands](look_helpers_commands.md) (3 shared connections)
-- [player requests schemas](player_requests_schemas.md) (1 shared connections)
-- [ascii map renderer](ascii_map_renderer.md) (1 shared connections)
+- [player requests schemas](player_requests_schemas.md) (2 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
+- [connection realtime delegates](connection_realtime_delegates.md) (2 shared connections)
 - [Database Config](Database_Config.md) (1 shared connections)
-- [connection realtime delegates](connection_realtime_delegates.md) (1 shared connections)
-- [persistence container rationale](persistence_container_rationale.md) (1 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
 
 ## Source Files
 
@@ -52,8 +49,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 251 (97%)
-- INFERRED: 9 (3%)
+- EXTRACTED: 176 (97%)
+- INFERRED: 5 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

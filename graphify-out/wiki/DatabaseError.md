@@ -1,6 +1,6 @@
 # DatabaseError
 
-> God node · 495 connections · `server/exceptions.py`
+> God node · 497 connections · `server/exceptions.py`
 
 **Community:** [Database Config](Database_Config.md)
 

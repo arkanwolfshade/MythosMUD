@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_players_batch_empty()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Test get_players_batch() returns empty dict for empty input.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_is_cache_valid_false_expired()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test _is_cache_valid() returns False for expired cache.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
 
 ## Relationships
 
-- [game state provider](game_state_provider.md) (1 shared connections)
+- [user manager services](user_manager_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- `server/tests/unit/services/test_user_manager.py`
 
 ## Audit Trail
 

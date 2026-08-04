@@ -1,54 +1,51 @@
 # player event state
 
-> 21 nodes
+> 44 nodes
 
 ## Key Concepts
 
-- **connection_establishment.py** (24 connections) — `server/realtime/connection_establishment.py`
-- **establish_websocket_connection()** (23 connections) — `server/realtime/connection_establishment.py`
-- **UUID** (12 connections)
-- **Any** (12 connections)
-- **_setup_player_and_room()** (10 connections) — `server/realtime/connection_establishment.py`
-- **_cleanup_failed_connection()** (10 connections) — `server/realtime/connection_establishment.py`
-- **_register_new_connection()** (9 connections) — `server/realtime/connection_establishment.py`
-- **_setup_connection_metadata()** (9 connections) — `server/realtime/connection_establishment.py`
-- **_setup_session_tracking()** (9 connections) — `server/realtime/connection_establishment.py`
-- **_track_player_presence()** (8 connections) — `server/realtime/connection_establishment.py`
-- **_cancel_rest_countdown_if_active()** (6 connections) — `server/realtime/connection_establishment.py`
-- **WebSocket** (2 connections)
-- **Connection establishment management for connection manager.  This module handles** (1 connections) — `server/realtime/connection_establishment.py`
-- **Register a new WebSocket connection.      Args:         websocket: The WebSocket** (1 connections) — `server/realtime/connection_establishment.py`
-- **Create and store connection metadata.      Args:         connection_id: The conn** (1 connections) — `server/realtime/connection_establishment.py`
-- **Track connection in session.      Args:         connection_id: The connection ID** (1 connections) — `server/realtime/connection_establishment.py`
-- **Get player and setup room subscription.      Args:         player_id: The player** (1 connections) — `server/realtime/connection_establishment.py`
-- **Track player presence and broadcast connection message.      Args:         playe** (1 connections) — `server/realtime/connection_establishment.py`
-- **Cleanup connection on failure.      Args:         connection_id: The connection** (1 connections) — `server/realtime/connection_establishment.py`
-- **Cancel leftover /rest countdown from a prior session (crashed client / mid-rest** (1 connections) — `server/realtime/connection_establishment.py`
-- **Establish a new WebSocket connection.      Args:         websocket: The WebSocke** (1 connections) — `server/realtime/connection_establishment.py`
+- **test_player_service.py** (26 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_create_player_with_stats_character_limit()** (4 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_create_player_with_stats_name_exists()** (4 connections) — `server/tests/unit/game/test_player_service.py`
+- **player_service()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_player_service_init()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_create_player_name_exists()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_create_player_with_stats_success()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **mock_persistence()** (2 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_create_player_success()** (2 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_get_player_by_id_found()** (2 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_get_player_by_id_not_found()** (2 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_get_player_by_name_found()** (2 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_get_player_by_name_not_found()** (2 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_list_players()** (2 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_resolve_player_name_found()** (2 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_resolve_player_name_not_found()** (2 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_validate_player_name_valid()** (2 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_validate_player_name_too_short()** (2 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_validate_player_name_too_long()** (2 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_validate_player_name_exists()** (2 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_search_players_by_name()** (2 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_get_online_players()** (2 connections) — `server/tests/unit/game/test_player_service.py`
+- **Unit tests for player service CRUD and lookup.  Delete, location, mythos status,** (1 connections) — `server/tests/unit/game/test_player_service.py`
+- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/game/test_player_service.py`
+- **Create a PlayerService instance.** (1 connections) — `server/tests/unit/game/test_player_service.py`
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [connection establishment realtime](connection_establishment_realtime.md) (18 shared connections)
-- [cleanup combat handler](cleanup_combat_handler.md) (6 shared connections)
-- [useDraggablePanelInteractions draggableP](useDraggablePanelInteractions_draggableP.md) (4 shared connections)
-- [event bus events](event_bus_events.md) (4 shared connections)
-- [models npc rationale](models_npc_rationale.md) (3 shared connections)
-- [Database Config](Database_Config.md) (3 shared connections)
-- [persistence rationale room](persistence_rationale_room.md) (3 shared connections)
-- [connection disconnection realtime](connection_disconnection_realtime.md) (3 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (3 shared connections)
-- [room game service](room_game_service.md) (3 shared connections)
-- [rest grace period](rest_grace_period.md) (2 shared connections)
-- [chat game service](chat_game_service.md) (2 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (4 shared connections)
+- [player service game](player_service_game.md) (4 shared connections)
+- [coercion int inventory](coercion_int_inventory.md) (3 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_establishment.py`
+- `server/tests/unit/game/test_player_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 141 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 95 (97%)
+- INFERRED: 3 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

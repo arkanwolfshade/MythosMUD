@@ -33,10 +33,10 @@
 - [room game service](room_game_service.md) (16 shared connections)
 - [player game schema](player_game_schema.md) (12 shared connections)
 - [game room service](game_room_service.md) (10 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (4 shared connections)
+- [models npc rationale](models_npc_rationale.md) (4 shared connections)
 - [skill game service](skill_game_service.md) (2 shared connections)
 - [room service game](room_service_game.md) (2 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (1 shared connections)
 - [rate limiter realtime](rate_limiter_realtime.md) (1 shared connections)
 - [game skill service](game_skill_service.md) (1 shared connections)
 

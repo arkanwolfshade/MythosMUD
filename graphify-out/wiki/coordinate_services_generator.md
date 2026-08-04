@@ -1,12 +1,13 @@
 # coordinate services generator
 
-> 42 nodes
+> 44 nodes
 
 ## Key Concepts
 
 - **CoordinateGenerator** (21 connections) — `server/services/coordinate_generator.py`
 - **test_coordinate_generator.py** (17 connections) — `server/tests/unit/services/test_coordinate_generator.py`
 - **._generate_for_subzone()** (8 connections) — `server/services/coordinate_generator.py`
+- **coordinate_generator.py** (6 connections) — `server/services/coordinate_generator.py`
 - **.generate_coordinates_for_zone()** (6 connections) — `server/services/coordinate_generator.py`
 - **Any** (5 connections)
 - **._build_adjacency_list()** (5 connections) — `server/services/coordinate_generator.py`
@@ -22,20 +23,19 @@
 - **test_store_coordinates_persists_values()** (2 connections) — `server/tests/unit/services/test_coordinate_generator.py`
 - **test_store_coordinates_noop_on_empty()** (2 connections) — `server/tests/unit/services/test_coordinate_generator.py`
 - **AsyncSession** (1 connections)
+- **Coordinate generation service for ASCII maps.  This module provides hierarchical** (1 connections) — `server/services/coordinate_generator.py`
 - **Generates map coordinates for rooms using hierarchical grouping and directional** (1 connections) — `server/services/coordinate_generator.py`
 - **Initialize coordinate generator.          Args:             session: Database se** (1 connections) — `server/services/coordinate_generator.py`
 - **Generate coordinates for all rooms in a zone/subzone.          Args:** (1 connections) — `server/services/coordinate_generator.py`
 - **Load rooms and their exits from database.          Args:             plane: Plan** (1 connections) — `server/services/coordinate_generator.py`
 - **Find the origin room (map_origin_zone=true, or first room).** (1 connections) — `server/services/coordinate_generator.py`
-- **Build adjacency list from room exits.** (1 connections) — `server/services/coordinate_generator.py`
-- **Assign coordinates using BFS starting from origin.** (1 connections) — `server/services/coordinate_generator.py`
-- *... and 17 more nodes in this community*
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [maps handle ascii](maps_handle_ascii.md) (4 shared connections)
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
-- [connection disconnection realtime](connection_disconnection_realtime.md) (1 shared connections)
+- [maps handle ascii](maps_handle_ascii.md) (5 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
+- [mythos mud mapbuilder](mythos_mud_mapbuilder.md) (1 shared connections)
 
 ## Source Files
 
@@ -44,7 +44,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 120 (99%)
+- EXTRACTED: 127 (99%)
 - INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 

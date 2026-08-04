@@ -1,28 +1,25 @@
 # schemas room schema
 
-> 6 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **.execute_behavior()** (4 connections) — `server/npc/npc_base.py`
-- **.schedule_idle_movement()** (3 connections) — `server/npc/npc_base.py`
-- **._enrich_behavior_context()** (3 connections) — `server/npc/npc_base.py`
-- **Schedule idle movement; default False. Override in subclasses (e.g. PassiveMobNP** (1 connections) — `server/npc/npc_base.py`
-- **Hook for subclasses to add context before behavior rules run.         Override i** (1 connections) — `server/npc/npc_base.py`
-- **Execute NPC behavior based on context.** (1 connections) — `server/npc/npc_base.py`
+- **test_damage_player_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **Test damage_player() when player not found.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
 
 ## Relationships
 
-- [Realtime Subscribers](Realtime_Subscribers.md) (3 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (1 shared connections)
+- [room realtime subscription](room_realtime_subscription.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/npc_base.py`
+- `server/tests/unit/game/test_player_service_mutations.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

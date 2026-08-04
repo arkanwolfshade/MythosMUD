@@ -1,31 +1,23 @@
 # archive QUALITY AUDIT
 
-> 6 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **get_hash_info()** (6 connections) — `server/auth/argon2_utils.py`
-- **test_get_hash_info_valid()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_get_hash_info_invalid()** (3 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **Extract parameters from an Argon2 hash string.** (1 connections) — `server/auth/argon2_utils.py`
-- **Test get_hash_info with valid Argon2 hash.** (1 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **Test get_hash_info with invalid hash returns None.** (1 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **test_validate_player_name_whitespace()** (2 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **Test validate_player_name() with whitespace only.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
 
 ## Relationships
 
-- [respawn player handlers](respawn_player_handlers.md) (3 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
-- [persistence constants rationale](persistence_constants_rationale.md) (1 shared connections)
-- [auth users rationale](auth_users_rationale.md) (1 shared connections)
+- [room realtime subscription](room_realtime_subscription.md) (1 shared connections)
 
 ## Source Files
 
-- `server/auth/argon2_utils.py`
-- `server/tests/unit/auth/test_argon2_utils.py`
+- `server/tests/unit/game/test_player_service_mutations.py`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

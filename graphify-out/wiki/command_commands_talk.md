@@ -1,57 +1,46 @@
 # command commands talk
 
-> 30 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **InventorySchemaValidationError** (20 connections) — `server/schemas/shared/inventory_schema.py`
-- **validate_inventory_payload()** (13 connections) — `server/schemas/shared/inventory_schema.py`
-- **__init__.py** (12 connections) — `server/schemas/shared/__init__.py`
-- **test_inventory_schema.py** (11 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **validate_inventory_items()** (9 connections) — `server/schemas/shared/inventory_schema.py`
-- **inventory_schema.py** (7 connections) — `server/schemas/shared/inventory_schema.py`
-- **_build_validator()** (5 connections) — `server/schemas/shared/inventory_schema.py`
-- **test_persist_player_error()** (4 connections) — `server/tests/unit/commands/test_inventory_commands_persistence_helpers.py`
-- **test_validate_inventory_payload_missing_required()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **test_validate_inventory_payload_invalid_inventory()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **test_validate_inventory_items_missing_required()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **test_validate_inventory_items_invalid_quantity()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **Any** (3 connections)
-- **test_validate_inventory_payload_valid()** (3 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **test_validate_inventory_items_valid()** (3 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **Shared schemas: base models, target resolution, inventory validation.** (1 connections) — `server/schemas/shared/__init__.py`
-- **Exception** (1 connections)
-- **Inventory JSON schema validation utilities.  As recorded in the restricted stack** (1 connections) — `server/schemas/shared/inventory_schema.py`
-- **Raised when inventory payloads fail schema validation.** (1 connections) — `server/schemas/shared/inventory_schema.py`
-- **Internal helper to construct a Draft7 validator instance.** (1 connections) — `server/schemas/shared/inventory_schema.py`
-- **Validate a complete inventory payload against the canonical schema.      Raises:** (1 connections) — `server/schemas/shared/inventory_schema.py`
-- **Validate only the inventory portion to simplify testing workflows.      Raises:** (1 connections) — `server/schemas/shared/inventory_schema.py`
-- **Test _persist_player() handles save errors.** (1 connections) — `server/tests/unit/commands/test_inventory_commands_persistence_helpers.py`
-- **Unit tests for inventory_schema validation functions.  Tests the validation func** (1 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **Test validate_inventory_payload() accepts valid payload.** (1 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- *... and 5 more nodes in this community*
+- **_occupation_slots_9()** (11 connections) — `server/tests/unit/game/test_skill_service.py`
+- **_personal_interest_4()** (8 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_valid_creates_rows()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_own_language_not_allocated_equals_edu()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_cthulhu_mythos_in_occupation_rejected()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_wrong_occupation_values_raises()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_duplicate_occupation_skill_ids_raises()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_cthulhu_mythos_in_personal_rejected()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_wrong_occupation_count_raises()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_personal_interest_not_four_raises()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_duplicate_personal_skill_ids_raises()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_overlap_occupation_and_personal_raises()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **Valid 9 slots: one 70, two 60, three 50, three 40; 9 distinct skill_ids (no over** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **Four personal interest (skill_ids only); distinct and no overlap with occupation** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **set_player_skills with valid occupation and personal calls delete then insert_ma** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **When Own Language is not in occupation or personal, its value is stats_for_edu.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **Occupation slot with Cthulhu Mythos (allow_at_creation=False) raises ValueError.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **Personal interest with Cthulhu Mythos raises ValueError.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **occupation_slots not length 9 raises ValueError.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **occupation_slots with wrong value set (e.g. two 70s) raises ValueError.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **personal_interest must have exactly 4 entries.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **occupation_slots with duplicate skill_id raises ValueError.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **personal_interest with duplicate skill_id raises ValueError.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **Occupation and personal interest sharing a skill_id raises ValueError.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
 
 ## Relationships
 
-- [inventory commands command](inventory_commands_command.md) (6 shared connections)
-- [npc population stats](npc_population_stats.md) (5 shared connections)
-- [command factories moderation](command_factories_moderation.md) (3 shared connections)
-- [NPC Combat](NPC_Combat.md) (3 shared connections)
-- [world models rationale](world_models_rationale.md) (2 shared connections)
-- [spell game magic](spell_game_magic.md) (1 shared connections)
-- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (1 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (12 shared connections)
 
 ## Source Files
 
-- `server/schemas/shared/__init__.py`
-- `server/schemas/shared/inventory_schema.py`
-- `server/tests/unit/commands/test_inventory_commands_persistence_helpers.py`
-- `server/tests/unit/schemas/test_inventory_schema.py`
+- `server/tests/unit/game/test_skill_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 113 (93%)
-- INFERRED: 8 (7%)
+- EXTRACTED: 66 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

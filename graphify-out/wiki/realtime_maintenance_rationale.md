@@ -9,7 +9,7 @@
 
 ## Relationships
 
-- [command inventory models](command_inventory_models.md) (1 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (1 shared connections)
 - [movement service game](movement_service_game.md) (1 shared connections)
 
 ## Source Files

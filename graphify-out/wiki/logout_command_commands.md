@@ -1,49 +1,53 @@
 # logout command commands
 
-> 27 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **TestLogoutCommand** (13 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **Any** (8 connections)
-- **.test_logout_command_success()** (4 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **.test_logout_command_persists_position()** (4 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **.test_logout_command_no_persistence()** (4 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **.test_logout_command_persistence_error()** (4 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **.test_logout_command_connection_error()** (4 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **.test_logout_command_with_args()** (4 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **.test_logout_command_player_not_found()** (4 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **.test_logout_command_general_error_handling()** (4 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **test_logout_command.py** (3 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **.mock_request()** (2 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **.mock_current_user()** (2 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **.mock_alias_storage()** (2 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **Unit tests for the logout command handler.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **Test cases for the logout command handler.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **Create a mock request object.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **Create a mock current user.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **Create a mock alias storage.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **Test successful logout command execution.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **Ensure logout syncs in-memory position back to persistence.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **Test logout command when persistence is not available.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **Test logout command when persistence operations fail.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **Test logout command when connection cleanup fails.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **Test logout command with arguments (should be ignored).** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
-- *... and 2 more nodes in this community*
+- **layout.ts** (26 connections) — `client/src/components/map/utils/layout.ts`
+- **useMapLayout.ts** (22 connections) — `client/src/components/map/hooks/useMapLayout.ts`
+- **applyForceLayout()** (10 connections) — `client/src/components/map/utils/layout.ts`
+- **applyGridLayout()** (7 connections) — `client/src/components/map/utils/layout.ts`
+- **applyForceLayout.test.ts** (6 connections) — `client/src/components/map/utils/__tests__/applyForceLayout.test.ts`
+- **applyGridLayout.test.ts** (6 connections) — `client/src/components/map/utils/__tests__/applyGridLayout.test.ts`
+- **calculateGridPosition.test.ts** (6 connections) — `client/src/components/map/utils/__tests__/calculateGridPosition.test.ts`
+- **GridLayoutConfig** (6 connections) — `client/src/components/map/utils/layout.ts`
+- **defaultGridLayoutConfig** (5 connections) — `client/src/components/map/utils/layout.ts`
+- **UseMapLayoutOptions** (4 connections) — `client/src/components/map/hooks/useMapLayout.ts`
+- **ForceLayoutConfig** (4 connections) — `client/src/components/map/utils/layout.ts`
+- **defaultForceLayoutConfig** (4 connections) — `client/src/components/map/utils/layout.ts`
+- **applyCrossingMinimizationForces()** (4 connections) — `client/src/components/map/utils/layout.ts`
+- **layout-config.test.ts** (3 connections) — `client/src/components/map/utils/__tests__/layout-config.test.ts`
+- **calculateGridPosition()** (3 connections) — `client/src/components/map/utils/layout.ts`
+- **applyChargeForces()** (3 connections) — `client/src/components/map/utils/layout.ts`
+- **doLineSegmentsIntersect()** (3 connections) — `client/src/components/map/utils/layout.ts`
+- **doesEdgeCrossNode()** (3 connections) — `client/src/components/map/utils/layout.ts`
+- **initializeNodePositions()** (2 connections) — `client/src/components/map/utils/layout.ts`
+- **applyLinkForces()** (2 connections) — `client/src/components/map/utils/layout.ts`
+- **applyCollisionForces()** (2 connections) — `client/src/components/map/utils/layout.ts`
+- **applyCenterForce()** (2 connections) — `client/src/components/map/utils/layout.ts`
+- **updateNodePositions()** (2 connections) — `client/src/components/map/utils/layout.ts`
+- **NodeState** (1 connections) — `client/src/components/map/utils/layout.ts`
 
 ## Relationships
 
-- [commands logout rationale](commands_logout_rationale.md) (8 shared connections)
-- [commands who rationale](commands_who_rationale.md) (1 shared connections)
+- [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (15 shared connections)
+- [calendar schemas validate](calendar_schemas_validate.md) (13 shared connections)
+- [performance map debounce()](performance_map_debounce%28%29.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_logout_command.py`
+- `client/src/components/map/hooks/useMapLayout.ts`
+- `client/src/components/map/utils/__tests__/applyForceLayout.test.ts`
+- `client/src/components/map/utils/__tests__/applyGridLayout.test.ts`
+- `client/src/components/map/utils/__tests__/calculateGridPosition.test.ts`
+- `client/src/components/map/utils/__tests__/layout-config.test.ts`
+- `client/src/components/map/utils/layout.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 67 (89%)
-- INFERRED: 8 (11%)
+- EXTRACTED: 136 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
