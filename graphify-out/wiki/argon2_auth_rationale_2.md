@@ -1,58 +1,55 @@
 # argon2 auth rationale
 
-> 70 nodes
+> 41 nodes
 
 ## Key Concepts
 
 - **test_channel_commands.py** (20 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **PlayerPreferencesService** (19 connections) — `server/services/player_preferences_service.py`
 - **channel_commands.py** (17 connections) — `server/commands/channel_commands.py`
 - **handle_channel_command()** (14 connections) — `server/commands/channel_commands.py`
-- **._is_valid_player_id()** (11 connections) — `server/services/player_preferences_service.py`
 - **_handle_default_channel_setting()** (10 connections) — `server/commands/channel_commands.py`
-- **UUID** (10 connections)
 - **_get_persistence_and_player()** (8 connections) — `server/commands/channel_commands.py`
 - **_extract_channel_from_command()** (8 connections) — `server/commands/channel_commands.py`
-- **AsyncSession** (8 connections)
-- **Any** (8 connections)
-- **.update_default_channel()** (8 connections) — `server/services/player_preferences_service.py`
-- **.mute_channel()** (8 connections) — `server/services/player_preferences_service.py`
-- **.unmute_channel()** (8 connections) — `server/services/player_preferences_service.py`
-- **.is_channel_muted()** (8 connections) — `server/services/player_preferences_service.py`
-- **.create_player_preferences()** (7 connections) — `server/services/player_preferences_service.py`
-- **.get_player_preferences()** (7 connections) — `server/services/player_preferences_service.py`
-- **.get_muted_channels()** (7 connections) — `server/services/player_preferences_service.py`
-- **.delete_player_preferences()** (7 connections) — `server/services/player_preferences_service.py`
-- **._is_valid_channel()** (6 connections) — `server/services/player_preferences_service.py`
 - **_validate_channel_name()** (5 connections) — `server/commands/channel_commands.py`
 - **Any** (4 connections)
 - **test_get_persistence_and_player_no_persistence()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
 - **test_get_persistence_and_player_not_found()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
 - **test_extract_channel_from_command_direct()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- *... and 45 more nodes in this community*
+- **test_extract_channel_from_command_parsed_fallback()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
+- **test_extract_channel_from_command_missing()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
+- **test_validate_channel_name_invalid()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
+- **test_handle_channel_command_no_persistence()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
+- **test_handle_channel_command_usage_when_channel_missing()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
+- **test_handle_channel_command_switch_valid_channel()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
+- **test_handle_default_channel_setting_success()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
+- **test_handle_default_channel_setting_invalid_channel()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
+- **test_handle_default_channel_setting_sqlalchemy_error()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
+- **test_handle_channel_command_default_subcommand()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
+- **Channel management commands for Advanced Chat Channels.  This module provides ha** (1 connections) — `server/commands/channel_commands.py`
+- **Get persistence and player. Returns (persistence, player) or (None, None) if not** (1 connections) — `server/commands/channel_commands.py`
+- **Extract channel name from command_data. Returns channel name or None.** (1 connections) — `server/commands/channel_commands.py`
+- **Handle setting default channel. Returns result dict or None if not a default com** (1 connections) — `server/commands/channel_commands.py`
+- *... and 16 more nodes in this community*
 
 ## Relationships
 
-- [player room realtime](player_room_realtime.md) (12 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (3 shared connections)
-- [alias storage rationale](alias_storage_rationale.md) (2 shared connections)
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
-- [realtime real time](realtime_real_time.md) (2 shared connections)
-- [player preferences service](player_preferences_service.md) (2 shared connections)
-- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (1 shared connections)
+- [commands npc admin](commands_npc_admin.md) (3 shared connections)
+- [useWebSocketConnectionTestFixtures useWe](useWebSocketConnectionTestFixtures_useWe.md) (3 shared connections)
+- [event events serialization](event_events_serialization.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [character creation service](character_creation_service.md) (2 shared connections)
 - [command inventory factories](command_inventory_factories.md) (1 shared connections)
 - [connection realtime manager](connection_realtime_manager.md) (1 shared connections)
 
 ## Source Files
 
 - `server/commands/channel_commands.py`
-- `server/services/player_preferences_service.py`
 - `server/tests/unit/commands/test_channel_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 274 (96%)
-- INFERRED: 10 (4%)
+- EXTRACTED: 144 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

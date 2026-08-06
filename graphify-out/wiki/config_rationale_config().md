@@ -1,37 +1,36 @@
 # config rationale config()
 
-> 9 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **stateManagementIntegration.test.ts** (13 connections) — `client/src/stores/__tests__/stateManagementIntegration.test.ts`
-- **sessionStore.ts** (9 connections) — `client/src/stores/sessionStore.ts`
-- **useSessionStore** (5 connections) — `client/src/stores/sessionStore.ts`
-- **sessionStore.test.ts** (2 connections) — `client/src/stores/__tests__/sessionStore.test.ts`
-- **SessionState** (1 connections) — `client/src/stores/sessionStore.ts`
-- **SessionActions** (1 connections) — `client/src/stores/sessionStore.ts`
-- **SessionSelectors** (1 connections) — `client/src/stores/sessionStore.ts`
-- **SessionStore** (1 connections) — `client/src/stores/sessionStore.ts`
-- **createInitialState()** (1 connections) — `client/src/stores/sessionStore.ts`
+- **test_connection_room_utils.py** (16 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
+- **connection_room_utils.py** (10 connections) — `server/realtime/connection_room_utils.py`
+- **reconcile_room_presence_impl()** (7 connections) — `server/realtime/connection_room_utils.py`
+- **test_canonical_room_id_impl_database_error()** (4 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
+- **test_reconcile_room_presence_impl()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
+- **Room and subscription utility helpers for connection manager.  This module provi** (1 connections) — `server/realtime/connection_room_utils.py`
+- **Ensure room_occupants only contains currently online players.** (1 connections) — `server/realtime/connection_room_utils.py`
+- **Unit tests for connection room utils.  Tests the connection_room_utils module fu** (1 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
+- **Test canonical_room_id_impl() handles DatabaseError.** (1 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
+- **Test reconcile_room_presence_impl() calls room_manager.reconcile_room_presence()** (1 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
 
 ## Relationships
 
-- [stores connectionStore commandStore](stores_connectionStore_commandStore.md) (4 shared connections)
-- [containers stores containerStore](containers_stores_containerStore.md) (3 shared connections)
-- [stateNormalization stores basic](stateNormalization_stores_basic.md) (3 shared connections)
-- [realtime dead letter](realtime_dead_letter.md) (2 shared connections)
-- [health monitor realtime](health_monitor_realtime.md) (1 shared connections)
-- [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (1 shared connections)
+- [nats services service](nats_services_service.md) (14 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (3 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/stores/__tests__/sessionStore.test.ts`
-- `client/src/stores/__tests__/stateManagementIntegration.test.ts`
-- `client/src/stores/sessionStore.ts`
+- `server/realtime/connection_room_utils.py`
+- `server/tests/unit/realtime/test_connection_room_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 34 (100%)
+- EXTRACTED: 45 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

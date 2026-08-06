@@ -33,12 +33,13 @@
 
 ## Relationships
 
-- [connection disconnection realtime](connection_disconnection_realtime.md) (7 shared connections)
+- [connection disconnection realtime](connection_disconnection_realtime.md) (8 shared connections)
 - [connection realtime delegates](connection_realtime_delegates.md) (5 shared connections)
-- [Error Conversion](Error_Conversion.md) (5 shared connections)
-- [spell models rationale](spell_models_rationale.md) (2 shared connections)
-- [lucidity npc combat](lucidity_npc_combat.md) (1 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (1 shared connections)
+- [command player state](command_player_state.md) (3 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (2 shared connections)
+- [persistence rationale room](persistence_rationale_room.md) (1 shared connections)
+- [spell models rationale](spell_models_rationale.md) (1 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
 
 ## Source Files
 

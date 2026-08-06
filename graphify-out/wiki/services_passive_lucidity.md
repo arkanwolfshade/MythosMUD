@@ -1,33 +1,35 @@
 # services passive lucidity
 
-> 10 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **PlayerStatsConfig** (9 connections) — `server/config/models/player_stats.py`
-- **.to_dict()** (3 connections) — `server/config/models/player_stats.py`
-- **.validate_stat_range()** (2 connections) — `server/config/models/player_stats.py`
-- **.validate_derived_stats()** (2 connections) — `server/config/models/player_stats.py`
-- **BaseSettings** (1 connections)
-- **Any** (1 connections)
-- **Default player statistics configuration.** (1 connections) — `server/config/models/player_stats.py`
-- **Validate stats are in valid range.** (1 connections) — `server/config/models/player_stats.py`
-- **Validate derived stats values.** (1 connections) — `server/config/models/player_stats.py`
-- **Convert to dictionary format expected by game code.** (1 connections) — `server/config/models/player_stats.py`
+- **UUID** (6 connections)
+- **.player_entered()** (5 connections) — `server/models/room.py`
+- **.player_left()** (4 connections) — `server/models/room.py`
+- **.has_player()** (4 connections) — `server/models/room.py`
+- **.add_player_silently()** (3 connections) — `server/models/room.py`
+- **.remove_player_silently()** (3 connections) — `server/models/room.py`
+- **Add a player to the room and trigger event.          Args:             player_id** (1 connections) — `server/models/room.py`
+- **Add a player to the room without triggering an event.          This method is us** (1 connections) — `server/models/room.py`
+- **Remove a player from the room without triggering an event.          This method** (1 connections) — `server/models/room.py`
+- **Remove a player from the room and trigger event.          Args:             play** (1 connections) — `server/models/room.py`
+- **Check if a player is in the room.          Args:             player_id: The ID o** (1 connections) — `server/models/room.py`
 
 ## Relationships
 
-- [websocket validation realtime](websocket_validation_realtime.md) (3 shared connections)
-- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
+- [room models instance](room_models_instance.md) (5 shared connections)
+- [Error Conversion](Error_Conversion.md) (3 shared connections)
+- [realtime maintenance connection](realtime_maintenance_connection.md) (2 shared connections)
 
 ## Source Files
 
-- `server/config/models/player_stats.py`
+- `server/models/room.py`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (95%)
-- INFERRED: 1 (5%)
+- EXTRACTED: 28 (93%)
+- INFERRED: 2 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

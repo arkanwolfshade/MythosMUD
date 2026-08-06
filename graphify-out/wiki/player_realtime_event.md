@@ -1,28 +1,26 @@
 # player realtime event
 
-> 6 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **TestCheckRateLimit** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_rate_limit_allowed()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_rate_limit_blocked()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _check_rate_limit function.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _check_rate_limit returns None when allowed.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _check_rate_limit returns result when blocked.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.__init__()** (3 connections) — `server/game/items/prototype_registry.py`
+- **.invalid_entries()** (3 connections) — `server/game/items/prototype_registry.py`
+- **Any** (2 connections)
+- **Get all invalid entries that failed validation.          Returns:             li** (1 connections) — `server/game/items/prototype_registry.py`
 
 ## Relationships
 
-- [player model models](player_model_models.md) (2 shared connections)
-- [command validation commands](command_validation_commands.md) (1 shared connections)
+- [MapView GameClientV2ContainerView Tabbed](MapView_GameClientV2ContainerView_Tabbed.md) (2 shared connections)
+- [connection cleaner realtime](connection_cleaner_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_validation.py`
+- `server/game/items/prototype_registry.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -33,10 +33,11 @@
 
 ## Relationships
 
-- [commands shutdown process](commands_shutdown_process.md) (6 shared connections)
-- [lucidity npc combat](lucidity_npc_combat.md) (2 shared connections)
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (1 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (5 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
+- [target resolution service](target_resolution_service.md) (1 shared connections)
 
 ## Source Files
 

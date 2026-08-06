@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_evaluate_condition_greater_than()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test evaluate_condition() handles > operator.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **.test_is_catatonic_with_string()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
+- **Test is_catatonic with string player_id.** (1 connections) — `server/tests/unit/services/test_catatonia_registry.py`
 
 ## Relationships
 
-- [room occupant manager](room_occupant_manager.md) (1 shared connections)
-- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
+- [catatonia registry services](catatonia_registry_services.md) (1 shared connections)
+- [commands time handle](commands_time_handle.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_behavior_engine.py`
+- `server/tests/unit/services/test_catatonia_registry.py`
 
 ## Audit Trail
 

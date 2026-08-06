@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_process_exit_rows_zone_single_part()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _process_exit_rows with zone_stable_id that has only one part.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_player_event_handler_utils_init()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test PlayerEventHandlerUtils initialization.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [room persistence loading](room_persistence_loading.md) (1 shared connections)
+- [player event handlers](player_event_handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 

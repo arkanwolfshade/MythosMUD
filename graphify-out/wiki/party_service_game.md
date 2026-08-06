@@ -1,18 +1,15 @@
 # party service game
 
-> 242 nodes
+> 142 nodes
 
 ## Key Concepts
 
-- **PlayerEnteredRoom** (85 connections) — `server/events/event_types.py`
 - **test_follow_service.py** (47 connections) — `server/tests/unit/game/test_follow_service.py`
 - **FollowService** (39 connections) — `server/game/follow_service.py`
-- **test_player_event_handlers_room.py** (37 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
 - **follow_service.py** (25 connections) — `server/game/follow_service.py`
 - **_str_id()** (15 connections) — `server/game/follow_service.py`
 - **UUID** (14 connections)
 - **test_follow_flow.py** (13 connections) — `server/tests/integration/test_follow_flow.py`
-- **.__init__()** (10 connections) — `server/game/follow_service.py`
 - **.request_follow()** (10 connections) — `server/game/follow_service.py`
 - **._send_result_to_player()** (9 connections) — `server/game/follow_service.py`
 - **._send_follow_state_to_player()** (9 connections) — `server/game/follow_service.py`
@@ -29,41 +26,36 @@
 - **.get_following_display()** (6 connections) — `server/game/follow_service.py`
 - **._ensure_follower_standing()** (6 connections) — `server/game/follow_service.py`
 - **._on_player_entered_room()** (6 connections) — `server/game/follow_service.py`
-- *... and 217 more nodes in this community*
+- **._send_result_and_player_update()** (5 connections) — `server/game/follow_service.py`
+- **._send_follow_request_to_target()** (5 connections) — `server/game/follow_service.py`
+- **.get_following()** (5 connections) — `server/game/follow_service.py`
+- *... and 117 more nodes in this community*
 
 ## Relationships
 
-- [Error Conversion](Error_Conversion.md) (49 shared connections)
-- [profession models rationale](profession_models_rationale.md) (21 shared connections)
-- [player room event](player_room_event.md) (9 shared connections)
-- [lucidity npc combat](lucidity_npc_combat.md) (6 shared connections)
-- [lucidity event services](lucidity_event_services.md) (4 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (4 shared connections)
-- [message handler factory](message_handler_factory.md) (3 shared connections)
-- [container events rationale](container_events_rationale.md) (3 shared connections)
+- [Error Conversion](Error_Conversion.md) (22 shared connections)
+- [inventory mutation guard](inventory_mutation_guard.md) (5 shared connections)
+- [lucidity npc combat](lucidity_npc_combat.md) (5 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (5 shared connections)
+- [validator room toolkit](validator_room_toolkit.md) (4 shared connections)
 - [Room Broadcast](Room_Broadcast.md) (3 shared connections)
-- [position player service](position_player_service.md) (3 shared connections)
-- [services ascii map](services_ascii_map.md) (3 shared connections)
-- [message nats handler](message_nats_handler.md) (2 shared connections)
+- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (3 shared connections)
+- [taunt combat commands](taunt_combat_commands.md) (2 shared connections)
+- [position player service](position_player_service.md) (2 shared connections)
+- [services user manager](services_user_manager.md) (2 shared connections)
+- [combat models rationale](combat_models_rationale.md) (2 shared connections)
+- [add used user](add_used_user.md) (1 shared connections)
 
 ## Source Files
 
-- `server/events/event_types.py`
 - `server/game/follow_service.py`
-- `server/npc/population_control.py`
-- `server/realtime/event_handler.py`
-- `server/realtime/integration/room_event_handler.py`
 - `server/tests/integration/test_follow_flow.py`
 - `server/tests/unit/game/test_follow_service.py`
-- `server/tests/unit/npc/test_population_control.py`
-- `server/tests/unit/realtime/test_event_handler.py`
-- `server/tests/unit/realtime/test_player_event_handlers.py`
-- `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Audit Trail
 
-- EXTRACTED: 737 (95%)
-- INFERRED: 35 (5%)
+- EXTRACTED: 460 (98%)
+- INFERRED: 9 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

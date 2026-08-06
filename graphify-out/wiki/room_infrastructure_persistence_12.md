@@ -1,29 +1,24 @@
 # room infrastructure persistence
 
-> 6 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **TestGetMythosTimeConsumer** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_mythos_time_consumer_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_mythos_time_consumer_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Tests for get_mythos_time_consumer dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_mythos_time_consumer returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_mythos_time_consumer raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **test_is_player_muted_true()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test is_player_muted() returns True when player is muted.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
 
 ## Relationships
 
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (3 shared connections)
-- [persistence core infrastructure](persistence_core_infrastructure.md) (1 shared connections)
+- [user manager services](user_manager_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_dependencies.py`
+- `server/tests/unit/services/test_user_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (93%)
-- INFERRED: 1 (7%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

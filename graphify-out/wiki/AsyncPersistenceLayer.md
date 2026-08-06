@@ -1,8 +1,8 @@
 # AsyncPersistenceLayer
 
-> God node · 188 connections · `server/async_persistence.py`
+> God node · 202 connections · `server/async_persistence.py`
 
-**Community:** [player event handlers](player_event_handlers.md)
+**Community:** [websocket helpers realtime](websocket_helpers_realtime.md)
 
 ## Connections by Relation
 
@@ -17,10 +17,10 @@
 
 ### imports
 - dependencies.py `EXTRACTED`
+- container_endpoints_basic.py `EXTRACTED`
 - monitoring.py `EXTRACTED`
 - endpoints.py `EXTRACTED`
 - maps.py `EXTRACTED`
-- container_endpoints_basic.py `EXTRACTED`
 - npc_combat_integration_service.py `EXTRACTED`
 - lifecycle_manager.py `EXTRACTED`
 - combat_handler.py `EXTRACTED`
@@ -43,6 +43,12 @@
 - ._move_with_integration() `INFERRED`
 - .add_admin() `INFERRED`
 - .remove_admin() `INFERRED`
+- .test_emit_close_container_event_emission_error() `INFERRED`
+- .test_emit_close_container_event_persistence_error() `INFERRED`
+- .test_emit_close_container_event_no_container_data() `INFERRED`
+- .test_emit_close_container_event_no_room_id() `INFERRED`
+- .test_emit_close_container_event_success() `INFERRED`
+- .test_emit_close_container_event_no_connection_manager() `INFERRED`
 
 ### method
 - ._ensure_room_cache_loaded() `EXTRACTED`
@@ -75,6 +81,7 @@
 - open_container() `EXTRACTED`
 - close_container() `EXTRACTED`
 - get_async_persistence() `EXTRACTED`
+- emit_close_container_event() `EXTRACTED`
 - .__init__() `EXTRACTED`
 - .__init__() `EXTRACTED`
 - _weapon_damage_from_equipped_player() `EXTRACTED`
@@ -87,7 +94,6 @@
 - .__init__() `EXTRACTED`
 - .__init__() `EXTRACTED`
 - ._get_persistence_from_app() `EXTRACTED`
-- .__init__() `EXTRACTED`
 - .__init__() `EXTRACTED`
 - .__init__() `EXTRACTED`
 
@@ -104,14 +110,14 @@
 - CoreBundle `INFERRED`
 - _NpcWithLife `INFERRED`
 - _LifecycleManagerForDeath `INFERRED`
+- TestEmitCloseContainerEvent `INFERRED`
+- TestEmitTransferEvent `INFERRED`
+- TestEmitContainerOpenedEvents `INFERRED`
 - CreateItemInstanceInput `INFERRED`
 - Any `INFERRED`
 - _CombatServiceDeps `INFERRED`
 - _ConnectionManagerLike `INFERRED`
 - _NPCCombatIntegrationLike `INFERRED`
-- UUID `INFERRED`
-- datetime `INFERRED`
-- Any `INFERRED`
 
 ---
 

@@ -1,6 +1,6 @@
 # container helpers endpoints
 
-> 94 nodes
+> 92 nodes
 
 ## Key Concepts
 
@@ -12,7 +12,6 @@
 - **test_visual_indicator.py** (13 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
 - **_try_lookup_player_implicit()** (12 connections) — `server/commands/look_player.py`
 - **test_look_player_helpers.py** (12 connections) — `server/tests/unit/commands/test_look_player_helpers.py`
-- **_get_visible_equipment()** (11 connections) — `server/commands/look_helpers.py`
 - **_get_players_in_room()** (11 connections) — `server/commands/look_player.py`
 - **_find_matching_players()** (9 connections) — `server/commands/look_player.py`
 - **Any** (6 connections)
@@ -29,21 +28,20 @@
 - **test_select_target_player_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_player.py`
 - **test_format_player_look_display_basic()** (3 connections) — `server/tests/unit/commands/test_look_player.py`
 - **test_format_player_look_display_with_equipment()** (3 connections) — `server/tests/unit/commands/test_look_player.py`
-- *... and 69 more nodes in this community*
+- **test_format_player_look_display_no_equipment()** (3 connections) — `server/tests/unit/commands/test_look_player.py`
+- *... and 67 more nodes in this community*
 
 ## Relationships
 
-- [look command commands](look_command_commands.md) (11 shared connections)
-- [connection realtime statistics](connection_realtime_statistics.md) (7 shared connections)
+- [look helpers commands](look_helpers_commands.md) (12 shared connections)
+- [look command commands](look_command_commands.md) (7 shared connections)
 - [command utility models](command_utility_models.md) (7 shared connections)
-- [look helpers commands](look_helpers_commands.md) (7 shared connections)
 - [npc combat base](npc_combat_base.md) (3 shared connections)
-- [logging processors structured](logging_processors_structured.md) (3 shared connections)
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [room realtime rationale](room_realtime_rationale.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/look_helpers.py`
 - `server/commands/look_player.py`
 - `server/tests/unit/commands/test_look_player.py`
 - `server/tests/unit/commands/test_look_player_helpers.py`
@@ -51,7 +49,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 332 (100%)
+- EXTRACTED: 320 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

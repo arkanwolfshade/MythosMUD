@@ -32,12 +32,12 @@
 
 - [DI Container Format](DI_Container_Format.md) (21 shared connections)
 - [commands lucidity recovery](commands_lucidity_recovery.md) (20 shared connections)
-- [connection realtime statistics](connection_realtime_statistics.md) (6 shared connections)
+- [look helpers commands](look_helpers_commands.md) (5 shared connections)
 - [logging setup structured](logging_setup_structured.md) (4 shared connections)
 - [room realtime subscription](room_realtime_subscription.md) (4 shared connections)
 - [calendar schemas validate](calendar_schemas_validate.md) (3 shared connections)
-- [look command commands](look_command_commands.md) (2 shared connections)
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [look command commands](look_command_commands.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
 
 ## Source Files
 

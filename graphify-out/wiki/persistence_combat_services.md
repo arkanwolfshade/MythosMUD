@@ -1,55 +1,61 @@
 # persistence combat services
 
-> 26 nodes
+> 41 nodes
 
 ## Key Concepts
 
-- **_ChatMessageFields** (8 connections) — `server/realtime/nats_message_handler_processing.py`
-- **_ValidatedChatFields** (8 connections) — `server/realtime/nats_message_handler_processing.py`
-- **._process_single_message()** (8 connections) — `server/realtime/nats_message_handler_processing.py`
-- **._handle_nats_message()** (6 connections) — `server/realtime/nats_message_handler_processing.py`
-- **._process_message_with_retry()** (5 connections) — `server/realtime/nats_message_handler_processing.py`
-- **._extract_chat_message_fields()** (5 connections) — `server/realtime/nats_message_handler_processing.py`
-- **._validate_chat_message_fields()** (5 connections) — `server/realtime/nats_message_handler_processing.py`
-- **._build_chat_event()** (5 connections) — `server/realtime/nats_message_handler_processing.py`
-- **._broadcast_by_channel_type()** (5 connections) — `server/realtime/nats_message_handler_processing.py`
-- **_optional_str()** (4 connections) — `server/realtime/nats_message_handler_processing.py`
-- **_str_field()** (4 connections) — `server/realtime/nats_message_handler_processing.py`
-- **._convert_ids_to_uuids()** (4 connections) — `server/realtime/nats_message_handler_processing.py`
-- **UUID** (3 connections)
-- **TypedDict** (2 connections)
-- **Extracted chat fields before required-field validation.** (1 connections) — `server/realtime/nats_message_handler_processing.py`
-- **Chat fields after required string fields are validated.** (1 connections) — `server/realtime/nats_message_handler_processing.py`
-- **Narrow a message field to str | None.** (1 connections) — `server/realtime/nats_message_handler_processing.py`
-- **Narrow a message field to str with a default.** (1 connections) — `server/realtime/nats_message_handler_processing.py`
-- **Handle incoming NATS message with error boundaries.          Wraps message proce** (1 connections) — `server/realtime/nats_message_handler_processing.py`
-- **Process message with retry logic.          Attempts message processing with expo** (1 connections) — `server/realtime/nats_message_handler_processing.py`
-- **Process a single NATS message (original logic, can raise exceptions).          A** (1 connections) — `server/realtime/nats_message_handler_processing.py`
-- **Extract and normalize chat message fields from message data.          Args:** (1 connections) — `server/realtime/nats_message_handler_processing.py`
-- **Validate that all required chat message fields are present.          Args:** (1 connections) — `server/realtime/nats_message_handler_processing.py`
-- **Build a WebSocket chat event from chat fields and formatted message.          Ar** (1 connections) — `server/realtime/nats_message_handler_processing.py`
-- **Convert string IDs to UUIDs for broadcasting.          Args:             sender_** (1 connections) — `server/realtime/nats_message_handler_processing.py`
-- *... and 1 more nodes in this community*
+- **get_help_content()** (15 connections) — `server/help/help_content.py`
+- **handle_help_command()** (11 connections) — `server/commands/system_commands.py`
+- **handle_system_command()** (10 connections) — `server/commands/system_commands.py`
+- **test_system_commands.py** (6 connections) — `server/tests/unit/commands/test_system_commands.py`
+- **test_websocket_handler_help.py** (6 connections) — `server/tests/unit/realtime/test_websocket_handler_help.py`
+- **test_help_commands.py** (5 connections) — `server/tests/unit/commands/test_help_commands.py`
+- **help_commands.py** (4 connections) — `server/commands/help_commands.py`
+- **__init__.py** (3 connections) — `server/help/__init__.py`
+- **_get_general_help()** (3 connections) — `server/help/help_content.py`
+- **test_handle_help_command_no_topic()** (3 connections) — `server/tests/unit/commands/test_help_commands.py`
+- **test_handle_help_command_with_topic()** (3 connections) — `server/tests/unit/commands/test_help_commands.py`
+- **test_handle_help_command_unknown_topic()** (3 connections) — `server/tests/unit/commands/test_help_commands.py`
+- **test_handle_system_command()** (3 connections) — `server/tests/unit/commands/test_system_commands.py`
+- **test_handle_system_command_no_message()** (3 connections) — `server/tests/unit/commands/test_system_commands.py`
+- **test_handle_system_command_no_chat_service()** (3 connections) — `server/tests/unit/commands/test_system_commands.py`
+- **test_get_help_content()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **test_get_help_content_with_command()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **test_get_help_content_general()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_help.py`
+- **test_get_help_content_specific()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_help.py`
+- **test_get_help_content_talk()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_help.py`
+- **Any** (2 connections)
+- **Help command adapter module.  The original help command handler lives in system_** (1 connections) — `server/commands/help_commands.py`
+- **Broadcast a system-level message via the chat service if available.** (1 connections) — `server/commands/system_commands.py`
+- **Handle the help command.      Args:         command_data: Command data dictionar** (1 connections) — `server/commands/system_commands.py`
+- **Help system for MythosMUD.  This package provides help content and command docum** (1 connections) — `server/help/__init__.py`
+- *... and 16 more nodes in this community*
 
 ## Relationships
 
-- [follow game service](follow_game_service.md) (10 shared connections)
-- [Error Conversion](Error_Conversion.md) (5 shared connections)
-- [message broadcast realtime](message_broadcast_realtime.md) (4 shared connections)
-- [websocket handler realtime](websocket_handler_realtime.md) (2 shared connections)
-- [game chat service](game_chat_service.md) (2 shared connections)
-- [schemas nats messages](schemas_nats_messages.md) (1 shared connections)
-- [npc lifecycle combat](npc_lifecycle_combat.md) (1 shared connections)
-- [combat services messaging](combat_services_messaging.md) (1 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (9 shared connections)
+- [chat logger services](chat_logger_services.md) (3 shared connections)
+- [commands npc admin](commands_npc_admin.md) (2 shared connections)
+- [character creation service](character_creation_service.md) (2 shared connections)
+- [command commands handler](command_commands_handler.md) (2 shared connections)
+- [Magic Spell Service](Magic_Spell_Service.md) (1 shared connections)
+- [shutdown admin command](shutdown_admin_command.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/nats_message_handler_processing.py`
+- `server/commands/help_commands.py`
+- `server/commands/system_commands.py`
+- `server/help/__init__.py`
+- `server/help/help_content.py`
+- `server/tests/unit/commands/test_help_commands.py`
+- `server/tests/unit/commands/test_system_commands.py`
+- `server/tests/unit/realtime/test_websocket_handler_core.py`
+- `server/tests/unit/realtime/test_websocket_handler_help.py`
 
 ## Audit Trail
 
-- EXTRACTED: 76 (90%)
-- INFERRED: 8 (10%)
+- EXTRACTED: 110 (93%)
+- INFERRED: 8 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

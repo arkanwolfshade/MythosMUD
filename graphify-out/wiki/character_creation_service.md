@@ -1,47 +1,63 @@
 # character creation service
 
-> 23 nodes
+> 38 nodes
 
 ## Key Concepts
 
-- **.is_player_in_room()** (7 connections) — `server/realtime/message_filtering.py`
-- **.check_player_mute_status()** (6 connections) — `server/realtime/message_filtering.py`
-- **.filter_target_players()** (6 connections) — `server/realtime/message_filtering.py`
+- **command_service.py** (95 connections) — `server/commands/command_service.py`
+- **__init__.py** (29 connections) — `server/commands/__init__.py`
+- **position_commands.py** (19 connections) — `server/commands/position_commands.py`
+- **_handle_position_change()** (11 connections) — `server/commands/position_commands.py`
+- **test_position_commands.py** (11 connections) — `server/tests/unit/commands/test_position_commands.py`
+- **_format_room_posture_message()** (10 connections) — `server/commands/position_commands.py`
+- **handle_stand_command()** (9 connections) — `server/commands/position_commands.py`
+- **handle_lie_command()** (9 connections) — `server/commands/position_commands.py`
+- **test_position_commands_helpers.py** (9 connections) — `server/tests/unit/commands/test_position_commands_helpers.py`
+- **handle_sit_command()** (8 connections) — `server/commands/position_commands.py`
 - **Any** (4 connections)
-- **.is_player_muted_by_receiver_with_user_manager()** (4 connections) — `server/realtime/message_filtering.py`
-- **.__init__()** (3 connections) — `server/realtime/message_filtering.py`
-- **.extract_chat_event_info()** (3 connections) — `server/realtime/message_filtering.py`
-- **.should_apply_mute_check()** (3 connections) — `server/realtime/message_filtering.py`
-- **.compare_canonical_rooms()** (3 connections) — `server/realtime/message_filtering.py`
-- **.get_player_room_from_online_players()** (3 connections) — `server/realtime/message_filtering.py`
-- **.get_player_room_from_persistence()** (3 connections) — `server/realtime/message_filtering.py`
-- **._is_player_muted_by_receiver()** (3 connections) — `server/realtime/nats_message_handler_broadcast.py`
-- **Initialize message filtering helper.          Args:             connection_manag** (1 connections) — `server/realtime/message_filtering.py`
-- **Extract information from chat event.          Args:             chat_event: Chat** (1 connections) — `server/realtime/message_filtering.py`
-- **Determine if mute check should be applied for a channel.          Args:** (1 connections) — `server/realtime/message_filtering.py`
-- **Compare two room IDs using canonical room ID resolution.          Args:** (1 connections) — `server/realtime/message_filtering.py`
-- **Get player's current room ID from online players cache.          Args:** (1 connections) — `server/realtime/message_filtering.py`
-- **Get player's current room ID from async persistence layer.          Args:** (1 connections) — `server/realtime/message_filtering.py`
-- **Check if a player is currently in the specified room.          Args:** (1 connections) — `server/realtime/message_filtering.py`
-- **Check if a receiving player has muted the sender using a provided UserManager in** (1 connections) — `server/realtime/message_filtering.py`
-- **Check if a player has muted the sender.          Args:             user_manager:** (1 connections) — `server/realtime/message_filtering.py`
-- **Filter target players based on room location and mute status.          Args:** (1 connections) — `server/realtime/message_filtering.py`
-- **Check if a receiving player has muted the sender.** (1 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **test_handle_sit_command()** (3 connections) — `server/tests/unit/commands/test_position_commands.py`
+- **test_handle_stand_command()** (3 connections) — `server/tests/unit/commands/test_position_commands.py`
+- **test_handle_lie_command()** (3 connections) — `server/tests/unit/commands/test_position_commands.py`
+- **test_format_room_posture_message_sitting()** (3 connections) — `server/tests/unit/commands/test_position_commands_helpers.py`
+- **test_format_room_posture_message_lying()** (3 connections) — `server/tests/unit/commands/test_position_commands_helpers.py`
+- **test_format_room_posture_message_standing_from_lying()** (3 connections) — `server/tests/unit/commands/test_position_commands_helpers.py`
+- **test_format_room_posture_message_standing_from_sitting()** (3 connections) — `server/tests/unit/commands/test_position_commands_helpers.py`
+- **test_format_room_posture_message_standing_no_previous()** (3 connections) — `server/tests/unit/commands/test_position_commands_helpers.py`
+- **test_format_room_posture_message_unknown()** (3 connections) — `server/tests/unit/commands/test_position_commands_helpers.py`
+- **Command processing system for MythosMUD.  This package provides the command proc** (1 connections) — `server/commands/__init__.py`
+- **Command service for MythosMUD.  This module provides the main command processing** (1 connections) — `server/commands/command_service.py`
+- **Command handlers for posture adjustments within MythosMUD.  According to margina** (1 connections) — `server/commands/position_commands.py`
+- **Create a descriptive room message for posture changes.** (1 connections) — `server/commands/position_commands.py`
+- **Shared entry point for posture-changing commands.** (1 connections) — `server/commands/position_commands.py`
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [follow game service](follow_game_service.md) (11 shared connections)
-- [game chat service](game_chat_service.md) (2 shared connections)
+- [commands admin mute](commands_admin_mute.md) (10 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (9 shared connections)
+- [realtime real time](realtime_real_time.md) (8 shared connections)
+- [commands npc admin](commands_npc_admin.md) (8 shared connections)
+- [command factories create](command_factories_create.md) (7 shared connections)
+- [character creation service](character_creation_service.md) (6 shared connections)
+- [zone configuration npc](zone_configuration_npc.md) (6 shared connections)
+- [commands magic rationale](commands_magic_rationale.md) (6 shared connections)
+- [eventLog projectorRoom roomMergeUtils](eventLog_projectorRoom_roomMergeUtils.md) (4 shared connections)
+- [shutdown command commands](shutdown_command_commands.md) (4 shared connections)
+- [mythosApp appLazyScreens mythosAppViewMo](mythosApp_appLazyScreens_mythosAppViewMo.md) (4 shared connections)
+- [message broadcast realtime](message_broadcast_realtime.md) (3 shared connections)
 
 ## Source Files
 
-- `server/realtime/message_filtering.py`
-- `server/realtime/nats_message_handler_broadcast.py`
+- `server/commands/__init__.py`
+- `server/commands/command_service.py`
+- `server/commands/position_commands.py`
+- `server/tests/unit/commands/test_position_commands.py`
+- `server/tests/unit/commands/test_position_commands_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 55 (93%)
-- INFERRED: 4 (7%)
+- EXTRACTED: 258 (100%)
+- INFERRED: 1 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

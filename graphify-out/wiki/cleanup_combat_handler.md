@@ -1,49 +1,61 @@
 # cleanup combat handler
 
-> 21 nodes
+> 30 nodes
 
 ## Key Concepts
 
-- **test_real_time_helpers.py** (31 connections) — `server/tests/unit/api/test_real_time_helpers.py`
-- **_parse_websocket_token()** (9 connections) — `server/api/real_time.py`
-- **_extract_bearer_token()** (6 connections) — `server/api/real_time.py`
-- **_parse_subprotocol_token()** (5 connections) — `server/api/real_time.py`
-- **test_resolve_player_id_from_token_no_player()** (3 connections) — `server/tests/unit/api/test_real_time_helpers.py`
-- **test_resolve_player_id_missing_token_and_player_id()** (3 connections) — `server/tests/unit/api/test_real_time_helpers.py`
-- **test_parse_websocket_token_header_parse_error()** (3 connections) — `server/tests/unit/api/test_real_time_helpers.py`
-- **test_extract_bearer_token_with_marker()** (2 connections) — `server/tests/unit/api/test_real_time_helpers.py`
-- **test_extract_bearer_token_last_part()** (2 connections) — `server/tests/unit/api/test_real_time_helpers.py`
-- **test_extract_bearer_token_empty()** (2 connections) — `server/tests/unit/api/test_real_time_helpers.py`
-- **test_parse_subprotocol_token()** (2 connections) — `server/tests/unit/api/test_real_time_helpers.py`
-- **test_resolve_connection_manager_from_state()** (2 connections) — `server/tests/unit/api/test_real_time_helpers.py`
-- **test_resolve_player_id_from_test()** (2 connections) — `server/tests/unit/api/test_real_time_helpers.py`
-- **test_parse_websocket_token_from_query()** (2 connections) — `server/tests/unit/api/test_real_time_helpers.py`
-- **test_parse_websocket_token_from_subprotocol()** (2 connections) — `server/tests/unit/api/test_real_time_helpers.py`
-- **test_validate_websocket_connection_manager()** (2 connections) — `server/tests/unit/api/test_real_time_helpers.py`
-- **test_resolve_player_id_from_token_with_character_id()** (2 connections) — `server/tests/unit/api/test_real_time_helpers.py`
-- **Extract bearer token from parsed subprotocol parts.      If 'bearer' marker is p** (1 connections) — `server/api/real_time.py`
-- **Parse token from WebSocket subprotocol header.      Example formats: "bearer, <t** (1 connections) — `server/api/real_time.py`
-- **Parse token from WebSocket subprotocol (preferred) or query params (fallback).** (1 connections) — `server/api/real_time.py`
-- **Unit tests for real_time API helper functions.** (1 connections) — `server/tests/unit/api/test_real_time_helpers.py`
+- **CombatParticipantType** (44 connections) — `server/models/combat.py`
+- **CombatEventHandler** (27 connections) — `server/services/combat_event_handler.py`
+- **test_combat_event_handler.py** (16 connections) — `server/tests/unit/services/test_combat_event_handler.py`
+- **_participant()** (10 connections) — `server/tests/unit/services/test_combat_event_handler.py`
+- **.handle_attack_events_and_xp()** (8 connections) — `server/services/combat_event_handler.py`
+- **.award_xp_to_player()** (5 connections) — `server/services/combat_event_handler.py`
+- **.publish_combat_ended_event()** (5 connections) — `server/services/combat_event_handler.py`
+- **._resolve_participant_display_name()** (4 connections) — `server/services/combat_event_handler.py`
+- **UUID** (4 connections)
+- **._calculate_xp_reward()** (4 connections) — `server/services/combat_event_handler.py`
+- **.__init__()** (3 connections) — `server/services/combat_event_handler.py`
+- **test_resolve_participant_display_name_player()** (3 connections) — `server/tests/unit/services/test_combat_event_handler.py`
+- **test_resolve_participant_display_name_npc_fallback()** (3 connections) — `server/tests/unit/services/test_combat_event_handler.py`
+- **test_resolve_participant_display_name_npc_from_lifecycle()** (3 connections) — `server/tests/unit/services/test_combat_event_handler.py`
+- **test_publish_attack_events_no_publisher()** (3 connections) — `server/tests/unit/services/test_combat_event_handler.py`
+- **test_handle_attack_events_and_xp_npc_death()** (3 connections) — `server/tests/unit/services/test_combat_event_handler.py`
+- **test_publish_attack_events_player_target()** (3 connections) — `server/tests/unit/services/test_combat_event_handler.py`
+- **test_award_xp_to_player()** (3 connections) — `server/tests/unit/services/test_combat_event_handler.py`
+- **test_calculate_xp_reward_default()** (2 connections) — `server/tests/unit/services/test_combat_event_handler.py`
+- **test_publish_combat_ended_event()** (2 connections) — `server/tests/unit/services/test_combat_event_handler.py`
+- **Type of combat participant.** (1 connections) — `server/models/combat.py`
+- **Any** (1 connections)
+- **Handles combat event publishing.** (1 connections) — `server/services/combat_event_handler.py`
+- **Initialize the event handler.          Args:             combat_service: Referen** (1 connections) — `server/services/combat_event_handler.py`
+- **Resolve display name for combat messages. For NPCs, resolve from lifecycle** (1 connections) — `server/services/combat_event_handler.py`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
-- [nats services metrics](nats_services_metrics.md) (18 shared connections)
-- [fixtures mock helpers](fixtures_mock_helpers.md) (5 shared connections)
-- [schedule services service](schedule_services_service.md) (4 shared connections)
-- [services inventory mutation](services_inventory_mutation.md) (3 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (1 shared connections)
-- [room sync service](room_sync_service.md) (1 shared connections)
+- [Memory Task Runtime](Memory_Task_Runtime.md) (16 shared connections)
+- [Item Instances](Item_Instances.md) (12 shared connections)
+- [room validator toolkit](room_validator_toolkit.md) (5 shared connections)
+- [subject admin controller](subject_admin_controller.md) (4 shared connections)
+- [command factories exploration](command_factories_exploration.md) (4 shared connections)
+- [game chat service](game_chat_service.md) (4 shared connections)
+- [npc database infrastructure](npc_database_infrastructure.md) (3 shared connections)
+- [websocket realtime handler](websocket_realtime_handler.md) (3 shared connections)
+- [commands position system](commands_position_system.md) (2 shared connections)
+- [services service phantom](services_service_phantom.md) (2 shared connections)
+- [models player rationale](models_player_rationale.md) (2 shared connections)
+- [player look commands](player_look_commands.md) (2 shared connections)
 
 ## Source Files
 
-- `server/api/real_time.py`
-- `server/tests/unit/api/test_real_time_helpers.py`
+- `server/models/combat.py`
+- `server/services/combat_event_handler.py`
+- `server/tests/unit/services/test_combat_event_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 81 (96%)
-- INFERRED: 3 (4%)
+- EXTRACTED: 156 (95%)
+- INFERRED: 9 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

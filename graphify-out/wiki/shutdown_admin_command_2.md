@@ -1,61 +1,54 @@
 # shutdown admin command
 
-> 41 nodes
+> 52 nodes
 
 ## Key Concepts
 
-- **.state()** (36 connections) — `server/realtime/connection_state_machine.py`
-- **GameStateProvider** (26 connections) — `server/realtime/integration/game_state_provider.py`
-- **UUID** (15 connections)
-- **Any** (13 connections)
-- **.send_initial_game_state()** (12 connections) — `server/realtime/integration/game_state_provider.py`
-- **._get_player_data_for_client()** (9 connections) — `server/realtime/integration/game_state_provider.py`
-- **.connection_manager()** (9 connections) — `server/realtime/nats_message_handler.py`
-- **._get_player_name_with_grace_periods()** (8 connections) — `server/realtime/integration/game_state_provider.py`
-- **._process_occupants_with_grace_periods()** (8 connections) — `server/realtime/integration/game_state_provider.py`
-- **._convert_player_uuids_to_names()** (7 connections) — `server/realtime/integration/game_state_provider.py`
-- **._add_grace_period_indicators()** (7 connections) — `server/realtime/integration/game_state_provider.py`
-- **._get_quest_log_for_client()** (7 connections) — `server/realtime/integration/game_state_provider.py`
-- **.get_player()** (6 connections) — `server/realtime/integration/game_state_provider.py`
-- **.convert_room_uuids_to_names()** (6 connections) — `server/realtime/integration/game_state_provider.py`
-- **._get_fallback_player_data()** (6 connections) — `server/realtime/integration/game_state_provider.py`
-- **._get_following_for_client()** (6 connections) — `server/realtime/integration/game_state_provider.py`
-- **Player** (5 connections)
-- **.get_room_occupants()** (5 connections) — `server/realtime/integration/game_state_provider.py`
-- **._get_room_data_with_conversion()** (5 connections) — `server/realtime/integration/game_state_provider.py`
-- **.__init__()** (4 connections) — `server/realtime/integration/game_state_provider.py`
-- **.get_players_batch()** (4 connections) — `server/realtime/integration/game_state_provider.py`
-- **.get_npcs_batch()** (4 connections) — `server/realtime/integration/game_state_provider.py`
-- **Current FSM state as a single State.          Uses python-statemachine 3.x confi** (1 connections) — `server/realtime/connection_state_machine.py`
-- **Provides initial game state for newly connected players.      This class provide** (1 connections) — `server/realtime/integration/game_state_provider.py`
-- **Initialize the game state provider.          Args:             room_manager: Roo** (1 connections) — `server/realtime/integration/game_state_provider.py`
-- *... and 16 more nodes in this community*
+- **test_admin_shutdown_command.py** (57 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **_await_shutdown_result()** (14 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_initiate_shutdown_countdown_success()** (5 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_initiate_shutdown_countdown_supersedes()** (5 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **_InitiateStateStub** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **_InitiateAppStub** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_handle_shutdown_command_no_player_service()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_handle_shutdown_command_player_not_found()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_handle_shutdown_command_no_permission()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_handle_shutdown_command_invalid_parameters()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_handle_shutdown_command_cancel()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_handle_shutdown_command_cancel_no_active()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_handle_shutdown_command_initiate()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_handle_shutdown_command_initiate_superseding()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_handle_shutdown_command_initiate_no_seconds()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_handle_shutdown_command_initiate_failure()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_validate_shutdown_admin_permission_no_player()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_validate_shutdown_admin_permission_not_admin()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_validate_shutdown_admin_permission_admin()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_broadcast_shutdown_notification_success()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_broadcast_shutdown_notification_failure()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_parse_shutdown_parameters_no_args()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_parse_shutdown_parameters_cancel()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_parse_shutdown_parameters_seconds()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_parse_shutdown_parameters_invalid_negative()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- *... and 27 more nodes in this community*
 
 ## Relationships
 
-- [command utility models](command_utility_models.md) (10 shared connections)
-- [command commands aliases](command_commands_aliases.md) (3 shared connections)
-- [nats services metrics](nats_services_metrics.md) (2 shared connections)
-- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (2 shared connections)
-- [commands communication flows](commands_communication_flows.md) (2 shared connections)
-- [command factories create](command_factories_create.md) (2 shared connections)
-- [circuit breaker realtime](circuit_breaker_realtime.md) (2 shared connections)
-- [realtime maintenance connection](realtime_maintenance_connection.md) (2 shared connections)
-- [spell models rationale](spell_models_rationale.md) (2 shared connections)
-- [game state provider](game_state_provider.md) (2 shared connections)
-- [npc combat base](npc_combat_base.md) (2 shared connections)
-- [follow game service](follow_game_service.md) (2 shared connections)
+- [eventLog projectorRoom roomMergeUtils](eventLog_projectorRoom_roomMergeUtils.md) (22 shared connections)
+- [services ascii map](services_ascii_map.md) (9 shared connections)
+- [health realtime monitoring](health_realtime_monitoring.md) (4 shared connections)
+- [lucidity models rationale](lucidity_models_rationale.md) (4 shared connections)
+- [commands npc admin](commands_npc_admin.md) (3 shared connections)
+- [realtime message nats](realtime_message_nats.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_state_machine.py`
-- `server/realtime/integration/game_state_provider.py`
-- `server/realtime/nats_message_handler.py`
+- `server/tests/unit/commands/test_admin_shutdown_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 180 (79%)
-- INFERRED: 47 (21%)
+- EXTRACTED: 175 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

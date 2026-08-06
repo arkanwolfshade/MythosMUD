@@ -1,55 +1,53 @@
 # command processor rationale
 
-> 79 nodes
+> 38 nodes
 
 ## Key Concepts
 
-- **test_command_processor.py** (39 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **CommandProcessor** (15 connections) — `server/utils/command_processor.py`
-- **get_command_processor()** (7 connections) — `server/utils/command_processor.py`
-- **.extract_command_data()** (5 connections) — `server/utils/command_processor.py`
-- **command_processor()** (4 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_get_command_processor()** (4 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **.process_command_string()** (4 connections) — `server/utils/command_processor.py`
-- **._extract_attributes()** (4 connections) — `server/utils/command_processor.py`
-- **._is_combat_command()** (4 connections) — `server/utils/command_processor.py`
-- **test_process_command_string_pydantic_validation_error()** (3 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **.__init__()** (3 connections) — `server/utils/command_processor.py`
-- **Any** (3 connections)
-- **test_command_processor_initialization()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_process_command_string_success()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_process_command_string_value_error()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_process_command_string_type_error()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_process_command_string_key_error()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_process_command_string_runtime_error()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_extract_attributes_basic()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_extract_attributes_missing_attribute()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_is_combat_command_attack()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_is_combat_command_punch()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_is_combat_command_kick()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_is_combat_command_strike()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_is_combat_command_non_combat()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- *... and 54 more nodes in this community*
+- **test_command_alias.py** (18 connections) — `server/tests/unit/models/test_command_alias.py`
+- **AliasCommand** (17 connections) — `server/models/command_alias.py`
+- **command_alias.py** (12 connections) — `server/models/command_alias.py`
+- **UnaliasCommand** (12 connections) — `server/models/command_alias.py`
+- **AliasesCommand** (8 connections) — `server/models/command_alias.py`
+- **test_alias_command_alias_name_min_length()** (4 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_alias_command_alias_name_max_length()** (4 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_alias_command_command_max_length()** (4 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_unalias_command_alias_name_min_length()** (4 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_unalias_command_alias_name_max_length()** (4 connections) — `server/tests/unit/models/test_command_alias.py`
+- **.validate_alias_name_field()** (3 connections) — `server/models/command_alias.py`
+- **test_alias_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_alias_command_with_command()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_alias_command_validate_alias_name_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_alias_command_validate_command_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_alias_command_validate_command_none()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_aliases_command_no_fields()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_unalias_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_unalias_command_validate_alias_name_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
+- **Alias command models for MythosMUD.  This module provides command models for man** (1 connections) — `server/models/command_alias.py`
+- **Command for creating or viewing command aliases.** (1 connections) — `server/models/command_alias.py`
+- **Command for listing all aliases.** (1 connections) — `server/models/command_alias.py`
+- **Command for removing an alias.** (1 connections) — `server/models/command_alias.py`
+- **Validate alias name format using centralized validation.** (1 connections) — `server/models/command_alias.py`
+- **Unit tests for alias command models.  Tests the alias command models and their v** (1 connections) — `server/tests/unit/models/test_command_alias.py`
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [command inventory factories](command_inventory_factories.md) (6 shared connections)
-- [dialogue definition persistence](dialogue_definition_persistence.md) (2 shared connections)
-- [room sync service](room_sync_service.md) (2 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (1 shared connections)
-- [add used user](add_used_user.md) (1 shared connections)
-- [payload realtime optimizer](payload_realtime_optimizer.md) (1 shared connections)
-- [combat attack handler](combat_attack_handler.md) (1 shared connections)
+- [dialogue definition persistence](dialogue_definition_persistence.md) (9 shared connections)
+- [Security Validator Tests](Security_Validator_Tests.md) (6 shared connections)
+- [command inventory models](command_inventory_models.md) (5 shared connections)
+- [command inventory factories](command_inventory_factories.md) (4 shared connections)
+- [exceptions rationale error](exceptions_rationale_error.md) (3 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_processor.py`
-- `server/utils/command_processor.py`
+- `server/models/command_alias.py`
+- `server/tests/unit/models/test_command_alias.py`
 
 ## Audit Trail
 
-- EXTRACTED: 185 (97%)
-- INFERRED: 5 (3%)
+- EXTRACTED: 122 (92%)
+- INFERRED: 11 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

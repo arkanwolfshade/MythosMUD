@@ -29,8 +29,7 @@
 
 ## Relationships
 
-- [connection disconnection realtime](connection_disconnection_realtime.md) (2 shared connections)
-- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [command player state](command_player_state.md) (3 shared connections)
 
 ## Source Files
 

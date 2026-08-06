@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_build_room_objects_with_dict_attributes()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _build_room_objects uses environment from attributes dict.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_message_filtering_helper_init()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Test MessageFilteringHelper initialization.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Relationships
 
-- [room persistence loading](room_persistence_loading.md) (1 shared connections)
+- [message filtering realtime](message_filtering_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Audit Trail
 

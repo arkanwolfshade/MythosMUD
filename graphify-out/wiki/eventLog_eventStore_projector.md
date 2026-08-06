@@ -1,11 +1,10 @@
 # eventLog eventStore projector
 
-> 28 nodes
+> 27 nodes
 
 ## Key Concepts
 
 - **test_chat_moderation.py** (30 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **moderation()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
 - **test_normalize_player_id_accepts_uuid()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
 - **player_service()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
 - **user_manager()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
@@ -29,11 +28,14 @@
 - **test_get_player_mutes_and_stats()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
 - **test_format_mute_entry_and_section()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
 - **test_get_mute_status_with_personal_mutes()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- *... and 3 more nodes in this community*
+- **test_get_mute_status_includes_player_name()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [chat moderation game](chat_moderation_game.md) (5 shared connections)
+- [chat moderation game](chat_moderation_game.md) (2 shared connections)
+- [player persistence repository](player_persistence_repository.md) (2 shared connections)
+- [lucidity commands services](lucidity_commands_services.md) (1 shared connections)
 
 ## Source Files
 
@@ -41,7 +43,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 59 (100%)
+- EXTRACTED: 57 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

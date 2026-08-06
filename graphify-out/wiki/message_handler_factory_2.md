@@ -1,55 +1,48 @@
 # message handler factory
 
-> 44 nodes
+> 21 nodes
 
 ## Key Concepts
 
-- **test_container_websocket_events.py** (23 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **container_websocket_events.py** (17 connections) — `server/services/container_websocket_events.py`
-- **emit_container_opened()** (14 connections) — `server/services/container_websocket_events.py`
-- **emit_container_opened_to_room()** (12 connections) — `server/services/container_websocket_events.py`
-- **emit_container_updated()** (10 connections) — `server/services/container_websocket_events.py`
-- **emit_container_closed()** (9 connections) — `server/services/container_websocket_events.py`
-- **emit_container_decayed()** (8 connections) — `server/services/container_websocket_events.py`
-- **UUID** (6 connections)
-- **Any** (5 connections)
-- **datetime** (3 connections)
-- **test_emit_container_opened()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_opened_with_owner()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_opened_to_room()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_closed()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_opened_with_owner_id()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_opened_to_room_with_owner()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_updated()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_updated_empty_diff()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_decayed()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_opened_returns_delivery_status()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_opened_to_room_returns_stats()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_closed_returns_stats()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **ContainerComponent** (2 connections)
-- **mock_connection_manager()** (2 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **Container WebSocket event emission for unified container system.  As documented** (1 connections) — `server/services/container_websocket_events.py`
-- *... and 19 more nodes in this community*
+- **subscribe_to_room_events_impl()** (13 connections) — `server/realtime/connection_event_helpers.py`
+- **test_connection_event_helpers.py** (13 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_subscribe_to_room_events_impl_database_error()** (4 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_subscribe_to_room_events_impl_attribute_error()** (4 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_unsubscribe_from_room_events_impl_database_error()** (4 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_unsubscribe_from_room_events_impl_attribute_error()** (4 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_subscribe_to_room_events_impl_success()** (3 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_subscribe_to_room_events_impl_no_event_bus()** (3 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_unsubscribe_from_room_events_impl_success()** (3 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_unsubscribe_from_room_events_impl_no_event_bus()** (3 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Any** (2 connections)
+- **Subscribe to room movement events for occupant broadcasting.** (1 connections) — `server/realtime/connection_event_helpers.py`
+- **Unit tests for connection event helpers.  Tests the connection_event_helpers mod** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test subscribe_to_room_events_impl() successfully subscribes to events.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test subscribe_to_room_events_impl() handles missing event bus.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test subscribe_to_room_events_impl() handles DatabaseError.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test subscribe_to_room_events_impl() handles AttributeError.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test unsubscribe_from_room_events_impl() successfully unsubscribes from events.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test unsubscribe_from_room_events_impl() handles missing event bus.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test unsubscribe_from_room_events_impl() handles DatabaseError.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test unsubscribe_from_room_events_impl() handles AttributeError.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
 
 ## Relationships
 
-- [Exception Containers](Exception_Containers.md) (12 shared connections)
-- [combat services messaging](combat_services_messaging.md) (3 shared connections)
-- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (2 shared connections)
-- [task registry app](task_registry_app.md) (2 shared connections)
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
-- [command helpers functions](command_helpers_functions.md) (1 shared connections)
-- [realtime player connection](realtime_player_connection.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (8 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (4 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (2 shared connections)
+- [command models moderation](command_models_moderation.md) (2 shared connections)
 
 ## Source Files
 
-- `server/services/container_websocket_events.py`
-- `server/tests/unit/services/test_container_websocket_events.py`
+- `server/realtime/connection_event_helpers.py`
+- `server/tests/unit/realtime/test_connection_event_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 167 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 61 (92%)
+- INFERRED: 5 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

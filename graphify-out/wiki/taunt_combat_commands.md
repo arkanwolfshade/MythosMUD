@@ -1,56 +1,59 @@
 # taunt combat commands
 
-> 36 nodes
+> 132 nodes
 
 ## Key Concepts
 
-- **subject_controller.py** (27 connections) — `server/api/admin/subject_controller.py`
-- **test_subject_controller.py** (21 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
-- **register_pattern()** (12 connections) — `server/api/admin/subject_controller.py`
-- **validate_subject()** (10 connections) — `server/api/admin/subject_controller.py`
-- **get_subject_statistics()** (8 connections) — `server/api/admin/subject_controller.py`
-- **get_patterns()** (8 connections) — `server/api/admin/subject_controller.py`
-- **ValidateSubjectRequest** (7 connections) — `server/api/admin/subject_controller.py`
-- **RegisterPatternRequest** (7 connections) — `server/api/admin/subject_controller.py`
-- **require_admin_user()** (7 connections) — `server/api/admin/subject_controller.py`
-- **_admin_user()** (7 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
-- **BaseModel** (6 connections)
-- **test_register_pattern_invalid()** (6 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
-- **ValidateSubjectResponse** (4 connections) — `server/api/admin/subject_controller.py`
-- **RegisterPatternResponse** (4 connections) — `server/api/admin/subject_controller.py`
-- **SubjectStatisticsResponse** (4 connections) — `server/api/admin/subject_controller.py`
-- **PatternsResponse** (4 connections) — `server/api/admin/subject_controller.py`
-- **test_validate_subject_valid()** (4 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
-- **test_validate_subject_invalid()** (4 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
-- **test_register_pattern_success()** (4 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
-- **test_require_admin_user_rejects_non_admin()** (3 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
-- **test_require_admin_user_allows_admin()** (3 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
-- **test_get_patterns()** (3 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
-- **test_get_subject_statistics()** (2 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
-- **NATS Subject Management API Controller for MythosMUD.  This module provides REST** (1 connections) — `server/api/admin/subject_controller.py`
-- **Request model for subject validation.** (1 connections) — `server/api/admin/subject_controller.py`
-- *... and 11 more nodes in this community*
+- **test_movement_service.py** (44 connections) — `server/tests/unit/game/test_movement_service.py`
+- **MovementService** (43 connections) — `server/game/movement_service.py`
+- **UUID** (16 connections)
+- **.move_player()** (14 connections) — `server/game/movement_service.py`
+- **._validate_movement()** (9 connections) — `server/game/movement_service.py`
+- **._handle_movement_error()** (8 connections) — `server/game/movement_service.py`
+- **._validate_move_params()** (6 connections) — `server/game/movement_service.py`
+- **._resolve_player_for_movement()** (6 connections) — `server/game/movement_service.py`
+- **._get_rooms_for_movement()** (6 connections) — `server/game/movement_service.py`
+- **._validate_player_room_membership()** (6 connections) — `server/game/movement_service.py`
+- **.add_player_to_room()** (6 connections) — `server/game/movement_service.py`
+- **._validate_remove_player_params()** (6 connections) — `server/game/movement_service.py`
+- **.remove_player_from_room()** (6 connections) — `server/game/movement_service.py`
+- **.get_player_room()** (6 connections) — `server/game/movement_service.py`
+- **._execute_room_transfer()** (5 connections) — `server/game/movement_service.py`
+- **._mark_room_explored()** (5 connections) — `server/game/movement_service.py`
+- **._check_combat_state()** (5 connections) — `server/game/movement_service.py`
+- **._check_player_posture()** (5 connections) — `server/game/movement_service.py`
+- **Any** (4 connections)
+- **Room** (4 connections)
+- **._persist_player_location()** (4 connections) — `server/game/movement_service.py`
+- **._handle_tutorial_exit_if_applicable()** (4 connections) — `server/game/movement_service.py`
+- **._extract_player_id()** (4 connections) — `server/game/movement_service.py`
+- **._validate_exit()** (4 connections) — `server/game/movement_service.py`
+- **.get_room_players()** (4 connections) — `server/game/movement_service.py`
+- *... and 107 more nodes in this community*
 
 ## Relationships
 
-- [services inventory mutation](services_inventory_mutation.md) (9 shared connections)
-- [manager subject services](manager_subject_services.md) (6 shared connections)
-- [Async Query Helpers](Async_Query_Helpers.md) (6 shared connections)
-- [subject validation services](subject_validation_services.md) (6 shared connections)
-- [persistence container rationale](persistence_container_rationale.md) (3 shared connections)
-- [Error Conversion](Error_Conversion.md) (3 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (2 shared connections)
-- [player requests schemas](player_requests_schemas.md) (1 shared connections)
+- [command inventory models](command_inventory_models.md) (13 shared connections)
+- [add used user](add_used_user.md) (11 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (10 shared connections)
+- [Error Conversion](Error_Conversion.md) (5 shared connections)
+- [container persistence rationale](container_persistence_rationale.md) (3 shared connections)
+- [commands command rationale](commands_command_rationale.md) (2 shared connections)
+- [combat models rationale](combat_models_rationale.md) (2 shared connections)
+- [party service game](party_service_game.md) (2 shared connections)
+- [Loot Generation](Loot_Generation.md) (2 shared connections)
+- [nats services service](nats_services_service.md) (1 shared connections)
+- [mythosApp useMythosAppState useStatsRoll](mythosApp_useMythosAppState_useStatsRoll.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/admin/subject_controller.py`
-- `server/tests/unit/api/admin/test_subject_controller.py`
+- `server/game/movement_service.py`
+- `server/tests/unit/game/test_movement_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 174 (98%)
-- INFERRED: 4 (2%)
+- EXTRACTED: 365 (94%)
+- INFERRED: 23 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

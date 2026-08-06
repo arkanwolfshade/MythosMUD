@@ -1,39 +1,47 @@
 # instance game manager
 
-> 15 nodes
+> 21 nodes
 
 ## Key Concepts
 
-- **rest_countdown_task.py** (12 connections) — `server/commands/rest_countdown_task.py`
-- **create_rest_countdown_task()** (7 connections) — `server/commands/rest_countdown_task.py`
-- **UUID** (6 connections)
-- **_send_countdown_message()** (6 connections) — `server/commands/rest_countdown_task.py`
-- **_handle_countdown_loop()** (6 connections) — `server/commands/rest_countdown_task.py`
-- **_is_rest_interrupted()** (5 connections) — `server/commands/rest_countdown_task.py`
-- **Any** (5 connections)
-- **_disconnect_player_after_rest()** (5 connections) — `server/commands/rest_countdown_task.py`
-- **Task** (1 connections)
-- **Rest countdown task implementation.  This module contains the async task that ha** (1 connections) — `server/commands/rest_countdown_task.py`
-- **Check if rest countdown was interrupted.      Args:         player_id: Player UU** (1 connections) — `server/commands/rest_countdown_task.py`
-- **Send countdown message to player.      Args:         player_id: Player UUID** (1 connections) — `server/commands/rest_countdown_task.py`
-- **Execute countdown loop, sending messages every second.      Args:         player** (1 connections) — `server/commands/rest_countdown_task.py`
-- **Disconnect player after rest countdown completes.      Args:         player_id:** (1 connections) — `server/commands/rest_countdown_task.py`
-- **Create and return a rest countdown task.      Args:         player_id: The playe** (1 connections) — `server/commands/rest_countdown_task.py`
+- **test_occupants.py** (14 connections) — `server/commands/npc_admin/test_occupants.py`
+- **handle_npc_test_occupants_command()** (13 connections) — `server/commands/npc_admin/test_occupants.py`
+- **Any** (7 connections)
+- **_resolve_room_and_handler_for_test_occupants()** (6 connections) — `server/commands/npc_admin/test_occupants.py`
+- **_resolve_test_occupants_context()** (6 connections) — `server/commands/npc_admin/test_occupants.py`
+- **_get_event_handler_for_test_occupants()** (5 connections) — `server/commands/npc_admin/test_occupants.py`
+- **_get_room_id_for_test_occupants()** (4 connections) — `server/commands/npc_admin/test_occupants.py`
+- **_separate_occupants()** (4 connections) — `server/commands/npc_admin/test_occupants.py`
+- **_resolve_app_and_player_for_test_occupants()** (4 connections) — `server/commands/npc_admin/test_occupants.py`
+- **_format_occupants_result()** (3 connections) — `server/commands/npc_admin/test_occupants.py`
+- **test_handle_npc_test_occupants_command_success()** (3 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
+- **NPC test-occupants command for debugging occupant queries.** (1 connections) — `server/commands/npc_admin/test_occupants.py`
+- **Get room_id from args or current room. Returns (room_id, error_result).** (1 connections) — `server/commands/npc_admin/test_occupants.py`
+- **Get event handler from app.state. Returns (event_handler, error_result).** (1 connections) — `server/commands/npc_admin/test_occupants.py`
+- **Separate occupants into players and NPCs.** (1 connections) — `server/commands/npc_admin/test_occupants.py`
+- **Format occupants result as a string.** (1 connections) — `server/commands/npc_admin/test_occupants.py`
+- **Resolve application and player object for NPC test occupants command.** (1 connections) — `server/commands/npc_admin/test_occupants.py`
+- **Resolve room_id and event handler for NPC test occupants command.** (1 connections) — `server/commands/npc_admin/test_occupants.py`
+- **Resolve application, player, room_id, and event handler for NPC test occupants c** (1 connections) — `server/commands/npc_admin/test_occupants.py`
+- **Handle NPC test occupants command - manually trigger occupant query for debuggin** (1 connections) — `server/commands/npc_admin/test_occupants.py`
+- **Test handle_npc_test_occupants_command() lists room occupants.** (1 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
 
 ## Relationships
 
-- [combat services messaging](combat_services_messaging.md) (4 shared connections)
-- [rest grace period](rest_grace_period.md) (3 shared connections)
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [tick game processing](tick_game_processing.md) (7 shared connections)
+- [commands npc admin](commands_npc_admin.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [inventory mutation guard](inventory_mutation_guard.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/rest_countdown_task.py`
+- `server/commands/npc_admin/test_occupants.py`
+- `server/tests/unit/commands/test_npc_admin_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 59 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 77 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

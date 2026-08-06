@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_move_player_player_not_found()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
-- **Test move_player returns False when player is missing.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_compare_canonical_rooms_different()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Test compare_canonical_rooms() returns False for different rooms.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Relationships
 
-- [movement service game](movement_service_game.md) (1 shared connections)
+- [message filtering realtime](message_filtering_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_movement_service.py`
+- `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Audit Trail
 

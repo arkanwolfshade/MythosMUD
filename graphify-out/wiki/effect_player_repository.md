@@ -1,47 +1,62 @@
 # effect player repository
 
-> 20 nodes
+> 26 nodes
 
 ## Key Concepts
 
-- **set_auth_epoch()** (10 connections) — `server/auth/token_epoch.py`
-- **test_jwt_strategy.py** (9 connections) — `server/tests/unit/auth/test_jwt_strategy.py`
-- **token_epoch.py** (8 connections) — `server/auth/token_epoch.py`
-- **conftest.py** (6 connections) — `server/tests/unit/auth/conftest.py`
-- **test_read_token_accepts_matching_epoch()** (5 connections) — `server/tests/unit/auth/test_jwt_strategy.py`
-- **test_read_token_rejects_wrong_epoch()** (4 connections) — `server/tests/unit/auth/test_jwt_strategy.py`
-- **test_read_token_rejects_missing_epoch()** (4 connections) — `server/tests/unit/auth/test_jwt_strategy.py`
-- **set_auth_epoch_for_tests()** (3 connections) — `server/tests/unit/auth/conftest.py`
-- **mock_request()** (2 connections) — `server/tests/unit/auth/conftest.py`
-- **mock_session()** (2 connections) — `server/tests/unit/auth/conftest.py`
-- **Auth token epoch for server-restart invalidation.  All JWTs issued before the cu** (1 connections) — `server/auth/token_epoch.py`
-- **Set the current auth epoch (call once at server startup).** (1 connections) — `server/auth/token_epoch.py`
-- **Pytest fixtures for auth unit tests.** (1 connections) — `server/tests/unit/auth/conftest.py`
-- **Set auth epoch so token generation and validation work in tests (no real server** (1 connections) — `server/tests/unit/auth/conftest.py`
-- **Create a mock request object.** (1 connections) — `server/tests/unit/auth/conftest.py`
-- **Create a mock async session.** (1 connections) — `server/tests/unit/auth/conftest.py`
-- **Unit tests for restart-invalidating JWT strategy.** (1 connections) — `server/tests/unit/auth/test_jwt_strategy.py`
-- **Tokens with srv claim different from current epoch are rejected.** (1 connections) — `server/tests/unit/auth/test_jwt_strategy.py`
-- **Tokens without srv claim (issued before restart invalidation) are rejected.** (1 connections) — `server/tests/unit/auth/test_jwt_strategy.py`
-- **Tokens with srv matching current epoch are accepted (user lookup proceeds).** (1 connections) — `server/tests/unit/auth/test_jwt_strategy.py`
+- **NPCCommunicationBridge** (14 connections) — `server/npc/threading.py`
+- **Any** (11 connections)
+- **Lock** (9 connections)
+- **.__init__()** (3 connections) — `server/container/main.py`
+- **.__init__()** (3 connections) — `server/middleware/metrics_collector.py`
+- **.add_message()** (3 connections) — `server/npc/threading.py`
+- **.__init__()** (3 connections) — `server/npc/threading.py`
+- **.send_message_to_npc()** (3 connections) — `server/npc/threading.py`
+- **.receive_message_from_npc()** (3 connections) — `server/npc/threading.py`
+- **.broadcast_to_all_npcs()** (3 connections) — `server/npc/threading.py`
+- **.get_pending_messages()** (3 connections) — `server/npc/threading.py`
+- **.get_messages_for_npc()** (3 connections) — `server/npc/threading.py`
+- **.__init__()** (2 connections) — `server/services/inventory_mutation_guard.py`
+- **test_npc_communication_bridge_messages()** (2 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
+- **test_bridge_receive_message_failure()** (2 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
+- **test_bridge_broadcast_failure()** (2 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
+- **Initialize the container. Services are NOT initialized here - use initialize().** (1 connections) — `server/container/main.py`
+- **Initialize metrics collector.          AI: Uses Lock for thread-safety in async** (1 connections) — `server/middleware/metrics_collector.py`
+- **Add a message to an NPC's pending message queue.          Args:             npc_** (1 connections) — `server/npc/threading.py`
+- **Bridge for communication between NPC threads and main game thread.      This cla** (1 connections) — `server/npc/threading.py`
+- **Initialize the communication bridge.** (1 connections) — `server/npc/threading.py`
+- **Send a message to a specific NPC.          Args:             npc_id: The NPC's I** (1 connections) — `server/npc/threading.py`
+- **Receive a message from a specific NPC.          Args:             npc_id: The NP** (1 connections) — `server/npc/threading.py`
+- **Broadcast a message to all NPCs.          Args:             message: The message** (1 connections) — `server/npc/threading.py`
+- **Get all pending outgoing messages from NPCs.** (1 connections) — `server/npc/threading.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [auth users rationale](auth_users_rationale.md) (6 shared connections)
-- [player requests schemas](player_requests_schemas.md) (4 shared connections)
-- [Magic Spell Service](Magic_Spell_Service.md) (2 shared connections)
-- [aggro threat services](aggro_threat_services.md) (1 shared connections)
+- [npc shopkeeper rationale](npc_shopkeeper_rationale.md) (9 shared connections)
+- [services npc startup](services_npc_startup.md) (2 shared connections)
+- [room cache services](room_cache_services.md) (2 shared connections)
+- [nats services service](nats_services_service.md) (1 shared connections)
+- [middleware metrics collector](middleware_metrics_collector.md) (1 shared connections)
+- [services nats service](services_nats_service.md) (1 shared connections)
+- [idle movement npc](idle_movement_npc.md) (1 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
+- [command player state](command_player_state.md) (1 shared connections)
+- [rate limiter services](rate_limiter_services.md) (1 shared connections)
+- [task registry app](task_registry_app.md) (1 shared connections)
 
 ## Source Files
 
-- `server/auth/token_epoch.py`
-- `server/tests/unit/auth/conftest.py`
-- `server/tests/unit/auth/test_jwt_strategy.py`
+- `server/container/main.py`
+- `server/middleware/metrics_collector.py`
+- `server/npc/threading.py`
+- `server/services/inventory_mutation_guard.py`
+- `server/tests/unit/npc/test_npc_threading_messages.py`
 
 ## Audit Trail
 
-- EXTRACTED: 63 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 69 (87%)
+- INFERRED: 10 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,41 +1,54 @@
 # startup npc services
 
-> 18 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **test_player_combat_service.py** (37 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_is_player_in_combat_sync_true()** (4 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_cleanup_stale_combat_states()** (4 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_player_combat_state_post_init()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_player_combat_state_post_init_with_activity()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **test_player_xp_award_event_init()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **mock_persistence()** (2 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **mock_event_bus()** (2 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **mock_npc_service()** (2 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **Unit tests for player combat service.  Tests the PlayerCombatService class for m** (1 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **Create mock persistence layer.** (1 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **Create mock event bus.** (1 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **Create mock NPC combat integration service (no _rewards so XP uses fallback path** (1 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **Test is_player_in_combat_sync returns True when in combat.** (1 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **Test cleanup_stale_combat_states cleans up stale states.** (1 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **Test PlayerCombatState.__post_init__ sets last_activity.** (1 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **Test PlayerCombatState.__post_init__ preserves provided last_activity.** (1 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- **Test PlayerXPAwardEvent initialization.** (1 connections) — `server/tests/unit/services/test_player_combat_service.py`
+- **ChatPanel()** (11 connections) — `client/src/components/panels/ChatPanelRuntime.tsx`
+- **ChatPanel.tsx** (9 connections) — `client/src/components/panels/ChatPanel.tsx`
+- **chat-panel.spec.tsx** (9 connections) — `client/src/components/panels/__tests__/chat-panel.spec.tsx`
+- **ChatPanel.test.tsx** (7 connections) — `client/src/components/__tests__/ChatPanel.test.tsx`
+- **chat-panel.test.tsx** (7 connections) — `client/src/components/panels/__tests__/chat-panel.test.tsx`
+- **ChatPanel.edgeCases.test.tsx** (6 connections) — `client/src/components/__tests__/ChatPanel.edgeCases.test.tsx`
+- **chatPanelTestHelpers.ts** (5 connections) — `client/src/components/__tests__/chatPanelTestHelpers.ts`
+- **createChatPanelDefaultProps()** (3 connections) — `client/src/components/__tests__/chatPanelTestHelpers.ts`
+- **chatPanelTestSetup.tsx** (3 connections) — `client/src/components/__tests__/chatPanelTestSetup.tsx`
+- **mockConsoleLog** (3 connections) — `client/src/components/__tests__/chatPanelTestSetup.tsx`
+- **ChatPanelCore.tsx** (3 connections) — `client/src/components/panels/ChatPanelCore.tsx`
+- **mockMessages** (2 connections) — `client/src/components/__tests__/chatPanelTestHelpers.ts`
+- **ChatPanelTestMessage** (1 connections) — `client/src/components/__tests__/chatPanelTestHelpers.ts`
+- **TerminalButtonProps** (1 connections) — `client/src/components/panels/__tests__/chat-panel.spec.tsx`
+- **TerminalInputProps** (1 connections) — `client/src/components/panels/__tests__/chat-panel.spec.tsx`
+- **Channel** (1 connections) — `client/src/components/panels/__tests__/chat-panel.spec.tsx`
+- **ChannelSelectorProps** (1 connections) — `client/src/components/panels/__tests__/chat-panel.spec.tsx`
+- **TerminalButtonProps** (1 connections) — `client/src/components/panels/__tests__/chat-panel.test.tsx`
+- **Channel** (1 connections) — `client/src/components/panels/__tests__/chat-panel.test.tsx`
+- **ChannelSelectorProps** (1 connections) — `client/src/components/panels/__tests__/chat-panel.test.tsx`
 
 ## Relationships
 
-- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (27 shared connections)
-- [Error Conversion](Error_Conversion.md) (6 shared connections)
-- [profession models rationale](profession_models_rationale.md) (2 shared connections)
+- [panels GameClientV2Dock gameLogPanelUtil](panels_GameClientV2Dock_gameLogPanelUtil.md) (4 shared connections)
+- [panels chat ChatPanelRuntimeViewParts](panels_chat_ChatPanelRuntimeViewParts.md) (3 shared connections)
+- [panels chatPanelRuntimeUtils chatPanelEx](panels_chatPanelRuntimeUtils_chatPanelEx.md) (3 shared connections)
+- [combat service services](combat_service_services.md) (2 shared connections)
+- [performanceTester performance ExtendedPe](performanceTester_performance_ExtendedPe.md) (2 shared connections)
+- [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_player_combat_service.py`
+- `client/src/components/__tests__/ChatPanel.edgeCases.test.tsx`
+- `client/src/components/__tests__/ChatPanel.test.tsx`
+- `client/src/components/__tests__/chatPanelTestHelpers.ts`
+- `client/src/components/__tests__/chatPanelTestSetup.tsx`
+- `client/src/components/panels/ChatPanel.tsx`
+- `client/src/components/panels/ChatPanelCore.tsx`
+- `client/src/components/panels/ChatPanelRuntime.tsx`
+- `client/src/components/panels/__tests__/chat-panel.spec.tsx`
+- `client/src/components/panels/__tests__/chat-panel.test.tsx`
 
 ## Audit Trail
 
-- EXTRACTED: 69 (100%)
+- EXTRACTED: 76 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

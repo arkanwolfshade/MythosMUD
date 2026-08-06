@@ -1,66 +1,51 @@
 # room sync service
 
-> 27 nodes
+> 30 nodes
 
 ## Key Concepts
 
-- **AttributeError** (45 connections)
-- **test_handle_nats_message_connection_manager_resolution_error()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_handle_nats_message_attribute_error_handled()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_create_player_occupant_info_grace_period_exception()** (3 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- **test_get_room_occupants_get_players_error()** (3 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **test_persist_player_dp_sync_get_stats_error()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
-- **test_persist_player_dp_sync_get_stats_error_new()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **test_npc_combat_integration_service_player_attacks.py** (22 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
 - **test_handle_player_attack_on_npc_grace_period_check_fails()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
-- **test_get_npc_instances_get_stats_exception()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_process_room_update_with_validation_handles_error()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_invalidate_stale_cache_error()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_fetch_fresh_room_data_handles_error()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_process_command_string_attribute_error()** (3 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_get_command_help_attribute_error()** (3 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **Test _handle_nats_message handles connection manager resolution errors.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test _handle_nats_message handles AttributeError and adds to DLQ.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test _create_player_occupant_info handles grace period check exceptions.** (1 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- **Test get_room_occupants handles get_players error.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **Test _persist_player_dp_sync handles get_stats error.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
-- **Test _persist_player_dp_sync handles get_stats error gracefully.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **test_handle_player_attack_on_npc_with_existing_combat()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_handle_player_attack_on_npc_login_grace_period_blocked()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_handle_player_attack_on_npc_npc_not_found()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_handle_player_attack_on_npc_error_handling()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_setup_combat_uuids_and_mappings_value_error()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_setup_combat_uuids_and_mappings_valid_uuid()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_store_npc_xp_mapping_no_definition()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_store_npc_xp_mapping_non_dict_base_stats()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_store_npc_xp_mapping_first_engagement()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_store_npc_xp_mapping_no_xp_value()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_process_combat_attack_queue_failure()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_process_combat_attack_start_new_combat()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_validate_and_get_npc_instance_not_found()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **Unit tests for NPC combat integration service - player-initiated combat paths.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **Test handle_player_attack_on_npc queues action when combat exists.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **Test handle_player_attack_on_npc blocks attack when player is in login grace per** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
 - **Test handle_player_attack_on_npc continues when grace period check fails.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
-- **Test get_npc_instances() handles exception from get_stats.** (1 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **Test _process_room_update_with_validation() handles errors gracefully.** (1 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **Test _invalidate_stale_cache() handles errors gracefully.** (1 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **Test _fetch_fresh_room_data() handles errors.** (1 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- *... and 2 more nodes in this community*
+- **Test handle_player_attack_on_npc returns False when NPC not found.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **Test handle_player_attack_on_npc handles exceptions gracefully.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **Test _setup_combat_uuids_and_mappings handles ValueError.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **Test _setup_combat_uuids_and_mappings with valid UUID.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **Test store_npc_xp_mapping_for_mixin when NPC definition is not found.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **Test store_npc_xp_mapping_for_mixin when base_stats is not a dict.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
-- [websocket handler realtime](websocket_handler_realtime.md) (3 shared connections)
-- [command models moderation](command_models_moderation.md) (3 shared connections)
-- [inventory mutation guard](inventory_mutation_guard.md) (3 shared connections)
-- [commands status rationale](commands_status_rationale.md) (2 shared connections)
-- [message handler factory](message_handler_factory.md) (2 shared connections)
-- [realtime connection helpers](realtime_connection_helpers.md) (2 shared connections)
-- [nats message handler](nats_message_handler.md) (2 shared connections)
-- [message queue realtime](message_queue_realtime.md) (2 shared connections)
-- [command processor rationale](command_processor_rationale.md) (2 shared connections)
-- [Magic Spell Service](Magic_Spell_Service.md) (1 shared connections)
-- [circuit breaker realtime](circuit_breaker_realtime.md) (1 shared connections)
-- [lucidity npc combat](lucidity_npc_combat.md) (1 shared connections)
+- [grace period login](grace_period_login.md) (3 shared connections)
+- [auth users rationale](auth_users_rationale.md) (3 shared connections)
+- [models player rationale](models_player_rationale.md) (1 shared connections)
+- [command models moderation](command_models_moderation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
-- `server/tests/unit/realtime/test_player_occupant_processor.py`
-- `server/tests/unit/realtime/test_room_occupant_manager.py`
-- `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
 - `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
-- `server/tests/unit/services/test_npc_instance_service.py`
-- `server/tests/unit/services/test_room_sync_service.py`
-- `server/tests/unit/utils/test_command_processor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 40 (41%)
-- INFERRED: 57 (59%)
+- EXTRACTED: 65 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

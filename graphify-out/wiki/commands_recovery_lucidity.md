@@ -1,52 +1,51 @@
 # commands recovery lucidity
 
-> 28 nodes
+> 42 nodes
 
 ## Key Concepts
 
-- **normalize_command()** (12 connections) — `server/command_handler/command_input.py`
-- **TestCommandNormalization** (12 connections) — `server/tests/unit/commands/test_command_input.py`
-- **clean_command_input()** (10 connections) — `server/command_handler/command_input.py`
-- **test_command_input.py** (8 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_clean_command_input_basic()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_clean_command_input_multiple_spaces()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_clean_command_input_leading_trailing_whitespace()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_clean_command_input_tabs()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_normalize_command_no_slash()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_normalize_command_with_slash()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_normalize_command_empty()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_normalize_command_whitespace_only()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_normalize_command_slash_only()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_normalize_command_slash_with_spaces()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
-- **Clean and normalize command input by collapsing multiple spaces and stripping wh** (1 connections) — `server/command_handler/command_input.py`
-- **Normalize command input by removing optional slash prefix.      Supports both tr** (1 connections) — `server/command_handler/command_input.py`
-- **Unit tests for command input processing.  Tests command normalization, cleaning,** (1 connections) — `server/tests/unit/commands/test_command_input.py`
-- **Test command normalization functions.** (1 connections) — `server/tests/unit/commands/test_command_input.py`
-- **Test clean_command_input() with normal command.** (1 connections) — `server/tests/unit/commands/test_command_input.py`
-- **Test clean_command_input() collapses multiple spaces.** (1 connections) — `server/tests/unit/commands/test_command_input.py`
-- **Test clean_command_input() strips leading/trailing whitespace.** (1 connections) — `server/tests/unit/commands/test_command_input.py`
-- **Test clean_command_input() handles tabs.** (1 connections) — `server/tests/unit/commands/test_command_input.py`
-- **Test normalize_command() with no slash prefix.** (1 connections) — `server/tests/unit/commands/test_command_input.py`
-- **Test normalize_command() removes slash prefix.** (1 connections) — `server/tests/unit/commands/test_command_input.py`
-- **Test normalize_command() with empty string.** (1 connections) — `server/tests/unit/commands/test_command_input.py`
-- *... and 3 more nodes in this community*
+- **test_websocket_handler_coverage_gaps.py** (24 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_handle_websocket_connection_full_flow()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_handle_game_command_resolve_connection_manager_from_app()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_handle_game_command_exception_handling()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_handle_game_command_runtime_error_handling()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_process_websocket_command_resolve_connection_manager_from_app()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_handle_chat_message_resolve_connection_manager_from_app()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_handle_chat_message_exception_handling()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_handle_chat_message_runtime_error_handling()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_handle_websocket_connection_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_handle_websocket_connection_connect_failed()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_handle_websocket_connection_setup_fails()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_handle_websocket_connection_welcome_fails()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_message_loop_should_raise_exception()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_process_exception_in_message_loop()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_setup_initial_connection_state_should_exit()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_setup_initial_connection_state_with_room()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_setup_initial_connection_state_websocket_disconnect()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_send_welcome_event_already_disconnected()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_send_welcome_event_close_message_sent()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_send_welcome_event_cannot_call_error()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **Unit tests to fill coverage gaps in websocket_handler.py.  These tests target sp** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **Test _handle_websocket_message_loop re-raises exception when should_raise is Tru** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **Test handle_websocket_connection full flow including message loop and cleanup (l** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **Test handle_game_command resolves connection_manager from app when None (lines 4** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [player model models](player_model_models.md) (5 shared connections)
-- [websocket helpers realtime](websocket_helpers_realtime.md) (4 shared connections)
-- [command validation commands](command_validation_commands.md) (2 shared connections)
-- [npc idle movement](npc_idle_movement.md) (1 shared connections)
+- [nats services metrics](nats_services_metrics.md) (6 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (4 shared connections)
+- [alias storage rationale](alias_storage_rationale.md) (4 shared connections)
+- [occupant formatter realtime](occupant_formatter_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/command_handler/command_input.py`
-- `server/tests/unit/commands/test_command_input.py`
+- `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
 
 ## Audit Trail
 
-- EXTRACTED: 86 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 93 (96%)
+- INFERRED: 4 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

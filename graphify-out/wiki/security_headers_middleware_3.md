@@ -1,29 +1,26 @@
 # security headers middleware
 
-> 8 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **test_passive_lucidity_hallucinations.py** (8 connections) — `server/tests/unit/services/test_passive_lucidity_hallucinations.py`
-- **test_handle_phantom_hostile_hallucination()** (1 connections) — `server/tests/unit/services/test_passive_lucidity_hallucinations.py`
-- **test_handle_fake_hallucination_npc_tell()** (1 connections) — `server/tests/unit/services/test_passive_lucidity_hallucinations.py`
-- **test_handle_fake_hallucination_room_overlay()** (1 connections) — `server/tests/unit/services/test_passive_lucidity_hallucinations.py`
-- **test_handle_hallucination_triggers_no_record()** (1 connections) — `server/tests/unit/services/test_passive_lucidity_hallucinations.py`
-- **test_handle_hallucination_triggers_wrong_tier()** (1 connections) — `server/tests/unit/services/test_passive_lucidity_hallucinations.py`
-- **test_handle_hallucination_triggers_phantom_path()** (1 connections) — `server/tests/unit/services/test_passive_lucidity_hallucinations.py`
-- **Unit tests for passive lucidity flux hallucination triggers.** (1 connections) — `server/tests/unit/services/test_passive_lucidity_hallucinations.py`
+- **add_fastapi_users_columns.py** (4 connections) — `server/scripts/add_fastapi_users_columns.py`
+- **apply_migration()** (3 connections) — `server/scripts/add_fastapi_users_columns.py`
+- **main()** (3 connections) — `server/scripts/add_fastapi_users_columns.py`
+- **Apply the migration to add FastAPI Users columns.      Args:         database_ur** (1 connections) — `server/scripts/add_fastapi_users_columns.py`
+- **Main entry point for the migration script.** (1 connections) — `server/scripts/add_fastapi_users_columns.py`
 
 ## Relationships
 
-- [npc population stats](npc_population_stats.md) (1 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_passive_lucidity_hallucinations.py`
+- `server/scripts/add_fastapi_users_columns.py`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

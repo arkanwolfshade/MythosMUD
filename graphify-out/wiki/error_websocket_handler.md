@@ -4,29 +4,37 @@
 
 ## Key Concepts
 
-- **TestProcessAliasExpansion** (6 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **.test_process_alias_expansion_no_alias_storage()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **.test_process_alias_expansion_no_alias()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **.test_process_alias_expansion_unsafe_alias()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **.test_process_alias_expansion_invalid_expanded()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _process_alias_expansion function.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _process_alias_expansion returns None when no alias storage.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _process_alias_expansion returns None when alias not found.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _process_alias_expansion returns error for unsafe alias.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _process_alias_expansion returns error for invalid expanded command.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **test_character_creation.py** (22 connections) — `server/tests/unit/api/test_character_creation.py`
+- **TestValidateCharacterStats** (9 connections) — `server/tests/unit/api/test_character_creation.py`
+- **mock_request()** (2 connections) — `server/tests/unit/api/test_character_creation.py`
+- **mock_stats_generator()** (2 connections) — `server/tests/unit/api/test_character_creation.py`
+- **mock_profession_service()** (2 connections) — `server/tests/unit/api/test_character_creation.py`
+- **Unit tests for character creation API endpoints.  Tests roll stats, create chara** (1 connections) — `server/tests/unit/api/test_character_creation.py`
+- **Create a mock request object.** (1 connections) — `server/tests/unit/api/test_character_creation.py`
+- **Create a mock stats generator.** (1 connections) — `server/tests/unit/api/test_character_creation.py`
+- **Create a mock profession service.** (1 connections) — `server/tests/unit/api/test_character_creation.py`
+- **Test validate_character_stats() endpoint.** (1 connections) — `server/tests/unit/api/test_character_creation.py`
 
 ## Relationships
 
-- [player model models](player_model_models.md) (5 shared connections)
+- [combat npc service](combat_npc_service.md) (7 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (3 shared connections)
+- [player requests schemas](player_requests_schemas.md) (3 shared connections)
+- [commands admin helpers](commands_admin_helpers.md) (3 shared connections)
+- [command inventory models](command_inventory_models.md) (2 shared connections)
+- [services inventory mutation](services_inventory_mutation.md) (2 shared connections)
+- [System Metrics](System_Metrics.md) (2 shared connections)
+- [persistence container rationale](persistence_container_rationale.md) (1 shared connections)
+- [Player Stats](Player_Stats.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_aliases.py`
+- `server/tests/unit/api/test_character_creation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 38 (90%)
+- INFERRED: 4 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

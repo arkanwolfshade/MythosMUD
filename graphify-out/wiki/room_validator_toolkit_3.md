@@ -1,6 +1,6 @@
 # room validator toolkit
 
-> 95 nodes
+> 93 nodes
 
 ## Key Concepts
 
@@ -21,7 +21,6 @@
 - **.validate_room_database()** (3 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
 - **.is_one_way_exit()** (3 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
 - **.is_self_reference_exit()** (3 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
-- **test_schema_validator.py** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
 - **.test_init_with_default_schema()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
 - **.test_init_with_custom_schema()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
 - **.test_init_schema_file_not_found()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
@@ -29,7 +28,8 @@
 - **.test_validate_room_valid()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
 - **.test_validate_room_missing_required_field()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
 - **.test_validate_room_invalid_id_format()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
-- *... and 70 more nodes in this community*
+- **.test_validate_room_empty_name()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- *... and 68 more nodes in this community*
 
 ## Relationships
 
@@ -48,7 +48,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 204 (71%)
+- EXTRACTED: 200 (71%)
 - INFERRED: 82 (29%)
 - AMBIGUOUS: 0 (0%)
 

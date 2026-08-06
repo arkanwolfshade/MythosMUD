@@ -1,36 +1,38 @@
 # skill game service
 
-> 13 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **verify_npc_occupants.py** (8 connections) — `server/scripts/verify_npc_occupants.py`
-- **verify_npcs_in_lifecycle_manager()** (6 connections) — `server/scripts/verify_npc_occupants.py`
-- **_check_service_availability()** (5 connections) — `server/scripts/verify_npc_occupants.py`
-- **_collect_npcs_by_room()** (4 connections) — `server/scripts/verify_npc_occupants.py`
-- **_test_query_for_room()** (4 connections) — `server/scripts/verify_npc_occupants.py`
-- **Any** (3 connections)
-- **_print_summary()** (3 connections) — `server/scripts/verify_npc_occupants.py`
-- **Verification script to check NPCs in lifecycle manager and test occupant query l** (1 connections) — `server/scripts/verify_npc_occupants.py`
-- **Check if NPC service, lifecycle manager, and active_npcs are available.      Ret** (1 connections) — `server/scripts/verify_npc_occupants.py`
-- **Collect NPCs grouped by room ID.      Args:         active_npcs: Dictionary of a** (1 connections) — `server/scripts/verify_npc_occupants.py`
-- **Test query logic for a specific room.      Args:         active_npcs: Dictionary** (1 connections) — `server/scripts/verify_npc_occupants.py`
-- **Print verification summary.      Args:         npc_count: Total number of active** (1 connections) — `server/scripts/verify_npc_occupants.py`
-- **Verify NPCs exist in lifecycle manager and test query logic.** (1 connections) — `server/scripts/verify_npc_occupants.py`
+- **NATSRequestError** (11 connections) — `server/services/nats_exceptions.py`
+- **.request()** (4 connections) — `server/services/nats_service.py`
+- **test_request_not_connected()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_request_timeout()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_request_error()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **Raised when request/response operations fail.** (1 connections) — `server/services/nats_exceptions.py`
+- **Send a request to a NATS subject and wait for a response.          Args:** (1 connections) — `server/services/nats_service.py`
+- **Test request() raises NATSRequestError when not connected.** (1 connections) — `server/tests/unit/services/test_nats_service.py`
+- **Test request() raises NATSRequestError on timeout.** (1 connections) — `server/tests/unit/services/test_nats_service.py`
+- **Test request() raises NATSRequestError on errors.** (1 connections) — `server/tests/unit/services/test_nats_service.py`
 
 ## Relationships
 
-- [commands npc admin](commands_npc_admin.md) (2 shared connections)
-- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [combat commands handler](combat_commands_handler.md) (4 shared connections)
+- [combat validator validators](combat_validator_validators.md) (3 shared connections)
+- [game chat service](game_chat_service.md) (2 shared connections)
+- [Memory Task Runtime](Memory_Task_Runtime.md) (1 shared connections)
+- [player event state](player_event_state.md) (1 shared connections)
 
 ## Source Files
 
-- `server/scripts/verify_npc_occupants.py`
+- `server/services/nats_exceptions.py`
+- `server/services/nats_service.py`
+- `server/tests/unit/services/test_nats_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 39 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 22 (76%)
+- INFERRED: 7 (24%)
 - AMBIGUOUS: 0 (0%)
 
 ---

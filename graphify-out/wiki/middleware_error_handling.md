@@ -33,15 +33,13 @@
 
 ## Relationships
 
-- [Error Handling Core](Error_Handling_Core.md) (10 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (13 shared connections)
 - [services inventory mutation](services_inventory_mutation.md) (6 shared connections)
-- [websocket handler realtime](websocket_handler_realtime.md) (4 shared connections)
-- [feature services flag](feature_services_flag.md) (2 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (2 shared connections)
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
-- [handler realtime nats](handler_realtime_nats.md) (1 shared connections)
-- [add used user](add_used_user.md) (1 shared connections)
-- [playerHandlers eventHandlers healthEvent](playerHandlers_eventHandlers_healthEvent.md) (1 shared connections)
+- [handler realtime nats](handler_realtime_nats.md) (4 shared connections)
+- [player requests schemas](player_requests_schemas.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [command inventory models](command_inventory_models.md) (1 shared connections)
+- [feature services flag](feature_services_flag.md) (1 shared connections)
 - [exceptions rationale error](exceptions_rationale_error.md) (1 shared connections)
 
 ## Source Files

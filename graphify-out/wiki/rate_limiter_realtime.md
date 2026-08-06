@@ -1,59 +1,65 @@
 # rate limiter realtime
 
-> 32 nodes
+> 88 nodes
 
 ## Key Concepts
 
-- **NPCCombatDataProvider** (39 connections) — `server/services/npc_combat_data_provider.py`
-- **test_npc_combat_data_provider.py** (17 connections) — `server/tests/unit/services/test_npc_combat_data_provider.py`
-- **UUID** (5 connections)
-- **.get_npc_combat_data()** (5 connections) — `server/services/npc_combat_data_provider.py`
-- **Any** (4 connections)
-- **.get_npc_instance()** (4 connections) — `server/services/npc_combat_data_provider.py`
-- **.get_player_combat_data()** (4 connections) — `server/services/npc_combat_data_provider.py`
-- **.__init__()** (3 connections) — `server/services/npc_combat_data_provider.py`
-- **.get_player_name()** (3 connections) — `server/services/npc_combat_data_provider.py`
-- **.get_player_room_id()** (3 connections) — `server/services/npc_combat_data_provider.py`
-- **.get_data_provider()** (3 connections) — `server/services/npc_combat_integration_service.py`
-- **test_get_npc_instance_from_lifecycle()** (2 connections) — `server/tests/unit/services/test_npc_combat_data_provider.py`
-- **test_get_npc_instance_returns_none_on_error()** (2 connections) — `server/tests/unit/services/test_npc_combat_data_provider.py`
-- **test_get_npc_definition_from_persistence()** (2 connections) — `server/tests/unit/services/test_npc_combat_data_provider.py`
-- **test_get_player_name_found()** (2 connections) — `server/tests/unit/services/test_npc_combat_data_provider.py`
-- **test_get_player_name_unknown()** (2 connections) — `server/tests/unit/services/test_npc_combat_data_provider.py`
-- **test_get_player_room_id_invalid_uuid()** (2 connections) — `server/tests/unit/services/test_npc_combat_data_provider.py`
-- **test_get_player_room_id_found()** (2 connections) — `server/tests/unit/services/test_npc_combat_data_provider.py`
-- **test_get_player_combat_data()** (2 connections) — `server/tests/unit/services/test_npc_combat_data_provider.py`
-- **test_get_player_combat_data_missing_player()** (2 connections) — `server/tests/unit/services/test_npc_combat_data_provider.py`
-- **test_get_npc_combat_data_with_get_combat_stats()** (2 connections) — `server/tests/unit/services/test_npc_combat_data_provider.py`
-- **test_get_npc_combat_data_fallback_stats()** (2 connections) — `server/tests/unit/services/test_npc_combat_data_provider.py`
-- **Provides data retrieval and preparation for NPC combat.** (1 connections) — `server/services/npc_combat_data_provider.py`
-- **Initialize the data provider.          Args:             async_persistence: A** (1 connections) — `server/services/npc_combat_data_provider.py`
-- **Get NPC instance from the spawning service.          Args:             npc_id** (1 connections) — `server/services/npc_combat_data_provider.py`
-- *... and 7 more nodes in this community*
+- **game.py** (32 connections) — `server/models/game.py`
+- **PositionState** (20 connections) — `server/models/game.py`
+- **player_schema_converter.py** (19 connections) — `server/game/player_schema_converter.py`
+- **InventoryItem** (19 connections) — `server/models/game.py`
+- **test_player_schema_converter_weapon.py** (19 connections) — `server/tests/unit/game/test_player_schema_converter_weapon.py`
+- **PlayerSchemaConverter** (16 connections) — `server/game/player_schema_converter.py`
+- **_weapon_from_prototype_registry()** (12 connections) — `server/game/player_schema_converter.py`
+- **.create_player_read_from_object()** (12 connections) — `server/game/player_schema_converter.py`
+- **Any** (11 connections)
+- **_inventory_item_with_weapon()** (11 connections) — `server/game/player_schema_converter.py`
+- **test_game_enums.py** (11 connections) — `server/tests/unit/models/test_game_enums.py`
+- **.create_player_read_from_dict()** (10 connections) — `server/game/player_schema_converter.py`
+- **.convert_player_to_schema()** (8 connections) — `server/game/player_schema_converter.py`
+- **AttributeType** (8 connections) — `server/models/game.py`
+- **weapon.py** (7 connections) — `server/schemas/game/weapon.py`
+- **.get_position_state()** (6 connections) — `server/game/player_schema_converter.py`
+- **WeaponStats** (6 connections) — `server/models/game.py`
+- **test_game_inventory_item.py** (6 connections) — `server/tests/unit/models/test_game_inventory_item.py`
+- **.item_prototype_registry()** (5 connections) — `server/commands/combat_handler.py`
+- **.check_player_combat_state()** (5 connections) — `server/game/player_schema_converter.py`
+- **.get_profession_details()** (5 connections) — `server/game/player_schema_converter.py`
+- **.compute_derived_stats_fields()** (5 connections) — `server/game/player_schema_converter.py`
+- **BaseModel** (5 connections)
+- **test_inventory_item_with_weapon_with_registry_weapon()** (5 connections) — `server/tests/unit/game/test_player_schema_converter_weapon.py`
+- **.get_player_data_methods()** (4 connections) — `server/game/player_schema_converter.py`
+- *... and 63 more nodes in this community*
 
 ## Relationships
 
-- [player event realtime](player_event_realtime.md) (7 shared connections)
-- [Error Conversion](Error_Conversion.md) (5 shared connections)
-- [subject admin controller](subject_admin_controller.md) (4 shared connections)
-- [combat services service](combat_services_service.md) (3 shared connections)
-- [models player rationale](models_player_rationale.md) (3 shared connections)
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
-- [npc database infrastructure](npc_database_infrastructure.md) (1 shared connections)
-- [player look commands](player_look_commands.md) (1 shared connections)
-- [game models player](game_models_player.md) (1 shared connections)
-- [commands npc admin](commands_npc_admin.md) (1 shared connections)
+- [combat services turn](combat_services_turn.md) (15 shared connections)
+- [System Metrics](System_Metrics.md) (10 shared connections)
+- [player room realtime](player_room_realtime.md) (10 shared connections)
+- [Player Stats](Player_Stats.md) (8 shared connections)
+- [MapView GameClientV2ContainerView Tabbed](MapView_GameClientV2ContainerView_Tabbed.md) (6 shared connections)
+- [panels domPurifyClient chat](panels_domPurifyClient_chat.md) (5 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (4 shared connections)
+- [player service game](player_service_game.md) (4 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [persistence core infrastructure](persistence_core_infrastructure.md) (2 shared connections)
+- [command inventory models](command_inventory_models.md) (2 shared connections)
+- [combat flee commands](combat_flee_commands.md) (2 shared connections)
 
 ## Source Files
 
-- `server/services/npc_combat_data_provider.py`
-- `server/services/npc_combat_integration_service.py`
-- `server/tests/unit/services/test_npc_combat_data_provider.py`
+- `server/commands/combat_handler.py`
+- `server/game/player_schema_converter.py`
+- `server/models/game.py`
+- `server/schemas/game/weapon.py`
+- `server/tests/unit/game/test_player_schema_converter_weapon.py`
+- `server/tests/unit/models/test_game_enums.py`
+- `server/tests/unit/models/test_game_inventory_item.py`
 
 ## Audit Trail
 
-- EXTRACTED: 114 (93%)
-- INFERRED: 8 (7%)
+- EXTRACTED: 344 (94%)
+- INFERRED: 23 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

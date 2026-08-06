@@ -1,16 +1,14 @@
 # rest grace period
 
-> 129 nodes
+> 87 nodes
 
 ## Key Concepts
 
 - **test_rest_command.py** (38 connections) — `server/tests/unit/commands/test_rest_command.py`
 - **rest_command.py** (26 connections) — `server/commands/rest_command.py`
-- **test_rest_and_grace_period.py** (24 connections) — `server/tests/integration/test_rest_and_grace_period.py`
 - **handle_rest_command()** (21 connections) — `server/commands/rest_command.py`
 - **cancel_rest_countdown()** (19 connections) — `server/commands/rest_command.py`
 - **is_player_resting()** (17 connections) — `server/commands/rest_command.py`
-- **MockPersistenceFull** (14 connections) — `server/tests/integration/test_rest_and_grace_period.py`
 - **_start_rest_countdown()** (12 connections) — `server/commands/rest_command.py`
 - **Any** (11 connections)
 - **_execute_rest_flow()** (11 connections) — `server/commands/rest_command.py`
@@ -20,42 +18,44 @@
 - **.check_and_interrupt_rest()** (8 connections) — `server/commands/combat_handler.py`
 - **_disconnect_player_intentionally()** (8 connections) — `server/commands/rest_command.py`
 - **_begin_seated_rest_countdown()** (8 connections) — `server/commands/rest_command.py`
-- **MockPersistence** (7 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **._interrupt_rest_for_cast()** (6 connections) — `server/commands/magic_commands.py`
 - **_resolve_rest_command_setup()** (6 connections) — `server/commands/rest_command.py`
 - **_get_services_from_app()** (4 connections) — `server/commands/rest_command.py`
-- **test_unintentional_disconnect_starts_grace_period()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_intentional_disconnect_no_grace_period()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_rest_command_blocks_during_combat()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_rest_command_starts_countdown_not_in_combat()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_rest_location_instant_disconnect()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_rest_location_blocked_during_combat()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- *... and 104 more nodes in this community*
+- **test_handle_rest_command_no_app()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **test_handle_rest_command_no_persistence()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **test_handle_rest_command_no_connection_manager()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **test_handle_rest_command_player_not_found()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **test_handle_rest_command_already_resting()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **test_handle_rest_command_in_combat()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **test_handle_rest_command_rest_location_instant()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **test_handle_rest_command_starts_countdown()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
+- *... and 62 more nodes in this community*
 
 ## Relationships
 
-- [alias storage rationale](alias_storage_rationale.md) (9 shared connections)
-- [npc combat base](npc_combat_base.md) (7 shared connections)
+- [npc combat base](npc_combat_base.md) (9 shared connections)
+- [commands magic rationale](commands_magic_rationale.md) (6 shared connections)
+- [commands npc admin](commands_npc_admin.md) (5 shared connections)
 - [commands command rationale](commands_command_rationale.md) (5 shared connections)
-- [subject admin controller](subject_admin_controller.md) (5 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (5 shared connections)
+- [Memory Task Runtime](Memory_Task_Runtime.md) (5 shared connections)
 - [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (3 shared connections)
-- [instance game manager](instance_game_manager.md) (3 shared connections)
-- [movement monitor game](movement_monitor_game.md) (3 shared connections)
-- [realtime real time](realtime_real_time.md) (2 shared connections)
+- [character creation service](character_creation_service.md) (2 shared connections)
 - [position player service](position_player_service.md) (2 shared connections)
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
-- [invite models rationale](invite_models_rationale.md) (2 shared connections)
-- [services user manager](services_user_manager.md) (1 shared connections)
+- [connection establishment realtime](connection_establishment_realtime.md) (2 shared connections)
+- [quests players rationale](quests_players_rationale.md) (2 shared connections)
+- [player schemas requests](player_schemas_requests.md) (1 shared connections)
 
 ## Source Files
 
 - `server/commands/combat_handler.py`
+- `server/commands/magic_commands.py`
 - `server/commands/rest_command.py`
-- `server/tests/integration/test_rest_and_grace_period.py`
 - `server/tests/unit/commands/test_rest_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 453 (99%)
+- EXTRACTED: 339 (99%)
 - INFERRED: 3 (1%)
 - AMBIGUOUS: 0 (0%)
 

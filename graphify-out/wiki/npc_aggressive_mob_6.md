@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_establish_websocket_connection_cancels_rest_countdown()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Reconnect cancels an in-progress rest countdown so it cannot poison the new sess** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_get_players_batch_player_not_found()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test get_players_batch() handles player not found.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Relationships
 
-- [invite models rationale](invite_models_rationale.md) (1 shared connections)
-- [connection establishment realtime](connection_establishment_realtime.md) (1 shared connections)
+- [game state provider](game_state_provider.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_connection_establishment.py`
+- `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

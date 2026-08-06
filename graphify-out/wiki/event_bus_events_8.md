@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_mark_room_explored_with_service()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
-- **Test _mark_room_explored delegates to exploration service.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_normalize_event_ids_both_provided()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test normalize_event_ids() with both player_id and room_id.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [movement service game](movement_service_game.md) (1 shared connections)
+- [player event handlers](player_event_handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_movement_service.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 

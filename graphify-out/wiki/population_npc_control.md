@@ -1,27 +1,24 @@
 # population npc control
 
-> 5 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **exception_metrics.py** (4 connections) — `server/monitoring/exception_metrics.py`
-- **get_summary()** (3 connections) — `server/monitoring/exception_metrics.py`
-- **Any** (1 connections)
-- **Exception metrics tracking for monitoring.  This module provides thread-safe exc** (1 connections) — `server/monitoring/exception_metrics.py`
-- **Get a summary of exception counts.      Returns:         dict[str, Any]: Diction** (1 connections) — `server/monitoring/exception_metrics.py`
+- **.__init__()** (3 connections) — `server/realtime/occupant_formatter.py`
+- **Initialize occupant formatter.** (1 connections) — `server/realtime/occupant_formatter.py`
 
 ## Relationships
 
-- [player game schema](player_game_schema.md) (1 shared connections)
-- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [occupant formatter realtime](occupant_formatter_realtime.md) (1 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
 
 ## Source Files
 
-- `server/monitoring/exception_metrics.py`
+- `server/realtime/occupant_formatter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -39,8 +39,8 @@
 - [optimized security validator](optimized_security_validator.md) (4 shared connections)
 - [npc aggressive mob](npc_aggressive_mob.md) (4 shared connections)
 - [metadata rationale npc](metadata_rationale_npc.md) (4 shared connections)
-- [archive QUALITY AUDIT](archive_QUALITY_AUDIT.md) (3 shared connections)
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [persistence constants rationale](persistence_constants_rationale.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
 
 ## Source Files
 

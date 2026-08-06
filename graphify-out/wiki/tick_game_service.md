@@ -1,37 +1,29 @@
 # tick game service
 
-> 19 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **Any** (8 connections)
-- **.spawn_npc_instance()** (4 connections) — `server/services/npc_instance_service.py`
-- **.get_population_stats()** (4 connections) — `server/services/npc_instance_service.py`
-- **.get_zone_stats()** (4 connections) — `server/services/npc_instance_service.py`
-- **._extract_zone_from_room_id()** (4 connections) — `server/services/npc_instance_service.py`
-- **.despawn_npc_instance()** (3 connections) — `server/services/npc_instance_service.py`
-- **.move_npc_instance()** (3 connections) — `server/services/npc_instance_service.py`
-- **.get_npc_instances()** (3 connections) — `server/services/npc_instance_service.py`
-- **.get_npc_stats()** (3 connections) — `server/services/npc_instance_service.py`
-- **.get_system_stats()** (3 connections) — `server/services/npc_instance_service.py`
-- **Spawn a new NPC instance.          Args:             definition_id: ID of the NP** (1 connections) — `server/services/npc_instance_service.py`
-- **Despawn an NPC instance.          Args:             npc_id: ID of the NPC to des** (1 connections) — `server/services/npc_instance_service.py`
-- **Move an NPC instance to a different room.          Args:             npc_id: ID** (1 connections) — `server/services/npc_instance_service.py`
-- **Get all active NPC instances.          Returns:             List of NPC instance** (1 connections) — `server/services/npc_instance_service.py`
-- **Get detailed stats for a specific NPC instance.          Args:             npc_i** (1 connections) — `server/services/npc_instance_service.py`
-- **Get NPC population statistics.          Returns:             Dictionary with pop** (1 connections) — `server/services/npc_instance_service.py`
-- **Get NPC zone statistics.          Returns:             Dictionary with zone stat** (1 connections) — `server/services/npc_instance_service.py`
-- **Get system-wide NPC statistics.          Returns:             Dictionary with sy** (1 connections) — `server/services/npc_instance_service.py`
-- **Extract zone key from room ID.          Args:             room_id: Room ID like** (1 connections) — `server/services/npc_instance_service.py`
+- **test_spell_effects_support.py** (13 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **_spell()** (8 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **_target()** (7 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **test_process_stat_modify_rejects_non_player()** (3 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **test_process_stat_modify_success()** (3 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **test_process_create_object_missing_prototype()** (3 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **test_process_create_object_for_player()** (3 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **test_create_object_for_room_placeholder()** (3 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **test_build_stat_modifications_shorthand()** (2 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **test_build_stat_modifications_missing()** (2 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **Unit tests for server.game.magic.spell_effects_support.** (1 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
 
 ## Relationships
 
-- [Error Conversion](Error_Conversion.md) (9 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
+- [panels domPurifyClient chat](panels_domPurifyClient_chat.md) (3 shared connections)
+- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/npc_instance_service.py`
+- `server/tests/unit/game/magic/test_spell_effects_support.py`
 
 ## Audit Trail
 

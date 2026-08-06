@@ -20,7 +20,7 @@
 
 - [schemas intersection schema](schemas_intersection_schema.md) (5 shared connections)
 - [intersection schema schemas](intersection_schema_schemas.md) (1 shared connections)
-- [infrastructure nats broker](infrastructure_nats_broker.md) (1 shared connections)
+- [container main rationale](container_main_rationale.md) (1 shared connections)
 - [security headers middleware](security_headers_middleware.md) (1 shared connections)
 
 ## Source Files

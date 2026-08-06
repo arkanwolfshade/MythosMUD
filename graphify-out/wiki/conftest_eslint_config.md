@@ -1,31 +1,32 @@
 # conftest eslint config
 
-> 8 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **TestGetContainer** (6 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_container_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_container_missing_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_container_no_state_attribute()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Tests for get_container dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_container returns container when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_container raises RuntimeError when container not in app.state.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_container raises RuntimeError when app.state doesn't exist.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **._initialize_item_services()** (10 connections) — `server/container/bundles/game.py`
+- **._handle_item_prototypes_db_error()** (4 connections) — `server/container/bundles/game.py`
+- **Exception** (1 connections)
+- **On SQLAlchemyError: log, optionally warn about schema/DDL, and clear item regist** (1 connections) — `server/container/bundles/game.py`
+- **Load item prototypes from PostgreSQL and create item factory.** (1 connections) — `server/container/bundles/game.py`
 
 ## Relationships
 
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (4 shared connections)
-- [persistence core infrastructure](persistence_core_infrastructure.md) (1 shared connections)
+- [nats services service](nats_services_service.md) (4 shared connections)
+- [combat models rationale](combat_models_rationale.md) (1 shared connections)
+- [schedule service services](schedule_service_services.md) (1 shared connections)
+- [connection cleaner realtime](connection_cleaner_realtime.md) (1 shared connections)
+- [MapView GameClientV2ContainerView Tabbed](MapView_GameClientV2ContainerView_Tabbed.md) (1 shared connections)
+- [player room realtime](player_room_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_dependencies.py`
+- `server/container/bundles/game.py`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (95%)
-- INFERRED: 1 (5%)
+- EXTRACTED: 16 (94%)
+- INFERRED: 1 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

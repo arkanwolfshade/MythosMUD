@@ -1,6 +1,6 @@
 # commands communication flows
 
-> 116 nodes
+> 108 nodes
 
 ## Key Concepts
 
@@ -18,7 +18,6 @@
 - **app_from_request()** (12 connections) — `server/commands/communication_commands_support.py`
 - **_message_from_command()** (11 connections) — `server/commands/communication_commands_flows.py`
 - **_RoomChannelOutcomeConfig** (11 connections) — `server/commands/communication_commands_flows.py`
-- **get_pose_persistence()** (11 connections) — `server/commands/communication_commands_support.py`
 - **chat_result_map()** (11 connections) — `server/commands/communication_commands_support.py`
 - **message_id_from_result()** (11 connections) — `server/commands/communication_commands_support.py`
 - **_require_chat_pair()** (10 connections) — `server/commands/communication_commands_flows.py`
@@ -29,21 +28,23 @@
 - **_system_send_if_admin()** (9 connections) — `server/commands/communication_commands_flows.py`
 - **flow_system_command()** (9 connections) — `server/commands/communication_commands_flows.py`
 - **flow_whisper_command()** (9 connections) — `server/commands/communication_commands_flows.py`
-- *... and 91 more nodes in this community*
+- **_global_player_bundle()** (8 connections) — `server/commands/communication_commands_flows.py`
+- *... and 83 more nodes in this community*
 
 ## Relationships
 
-- [commands whisper command](commands_whisper_command.md) (17 shared connections)
-- [dialogue service game](dialogue_service_game.md) (7 shared connections)
-- [realtime real time](realtime_real_time.md) (5 shared connections)
-- [Error Conversion](Error_Conversion.md) (4 shared connections)
-- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (3 shared connections)
-- [shutdown admin command](shutdown_admin_command.md) (2 shared connections)
-- [alias storage rationale](alias_storage_rationale.md) (1 shared connections)
+- [character creation service](character_creation_service.md) (8 shared connections)
+- [message broadcast realtime](message_broadcast_realtime.md) (7 shared connections)
+- [npc combat service](npc_combat_service.md) (7 shared connections)
+- [commands whisper command](commands_whisper_command.md) (6 shared connections)
+- [occupants npc commands](occupants_npc_commands.md) (5 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (4 shared connections)
+- [commands npc admin](commands_npc_admin.md) (2 shared connections)
 - [command inventory factories](command_inventory_factories.md) (1 shared connections)
 - [commands admin mute](commands_admin_mute.md) (1 shared connections)
-- [models player related](models_player_related.md) (1 shared connections)
-- [websocket examples logging](websocket_examples_logging.md) (1 shared connections)
+- [middleware correlation rationale](middleware_correlation_rationale.md) (1 shared connections)
+- [Magic Spell Service](Magic_Spell_Service.md) (1 shared connections)
+- [shutdown admin command](shutdown_admin_command.md) (1 shared connections)
 
 ## Source Files
 
@@ -55,8 +56,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 569 (98%)
-- INFERRED: 12 (2%)
+- EXTRACTED: 545 (98%)
+- INFERRED: 9 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

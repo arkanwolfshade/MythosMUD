@@ -1,67 +1,60 @@
 # websocket realtime handler
 
-> 85 nodes
+> 76 nodes
 
 ## Key Concepts
 
-- **test_container_bundles.py** (64 connections) — `server/tests/unit/container/test_container_bundles.py`
-- **GameBundle** (50 connections) — `server/container/bundles/game.py`
-- **CombatBundle** (28 connections) — `server/container/bundles/combat.py`
-- **RealtimeBundle** (25 connections) — `server/container/bundles/realtime.py`
-- **CoreBundle** (18 connections) — `server/container/bundles/core.py`
-- **NPCBundle** (16 connections) — `server/container/bundles/npc.py`
-- **MonitoringBundle** (15 connections) — `server/container/bundles/monitoring.py`
-- **.initialize()** (12 connections) — `server/container/main.py`
-- **ChatBundle** (10 connections) — `server/container/bundles/chat.py`
-- **.initialize()** (8 connections) — `server/container/bundles/combat.py`
-- **.initialize()** (8 connections) — `server/container/bundles/realtime.py`
-- **.initialize()** (7 connections) — `server/container/bundles/chat.py`
-- **.initialize()** (7 connections) — `server/container/bundles/monitoring.py`
-- **._setup_nats_dependent_services()** (6 connections) — `server/container/bundles/realtime.py`
-- **._require_core_services()** (5 connections) — `server/container/bundles/game.py`
-- **._require_core_services()** (5 connections) — `server/container/bundles/realtime.py`
-- **._connect_nats()** (5 connections) — `server/container/bundles/realtime.py`
-- **.shutdown()** (5 connections) — `server/container/main.py`
-- **._sanitarium_failover_callback()** (4 connections) — `server/container/bundles/combat.py`
-- **.shutdown()** (4 connections) — `server/container/bundles/core.py`
-- **._resolve_hourly_holidays()** (3 connections) — `server/container/bundles/game.py`
-- **._wire_item_registry_to_player_service()** (3 connections) — `server/container/bundles/game.py`
-- **.shutdown()** (3 connections) — `server/container/bundles/monitoring.py`
-- **.shutdown()** (3 connections) — `server/container/bundles/realtime.py`
-- **datetime** (2 connections)
-- *... and 60 more nodes in this community*
+- **CombatParticipantData** (37 connections) — `server/services/combat_types.py`
+- **.create_combat_instance()** (17 connections) — `server/services/combat_initialization.py`
+- **combat_initialization.py** (15 connections) — `server/services/combat_initialization.py`
+- **TestCombatInitializer** (15 connections) — `server/tests/unit/services/test_combat_initialization.py`
+- **TestCombatParticipantData** (12 connections) — `server/tests/unit/services/test_combat_types.py`
+- **combat_types.py** (11 connections) — `server/services/combat_types.py`
+- **CombatInitializer** (8 connections) — `server/services/combat_initialization.py`
+- **test_combat_initialization.py** (8 connections) — `server/tests/unit/services/test_combat_initialization.py`
+- **test_combat_types.py** (6 connections) — `server/tests/unit/services/test_combat_types.py`
+- **_build_participant()** (5 connections) — `server/services/combat_initialization.py`
+- **_compute_turn_order()** (5 connections) — `server/services/combat_initialization.py`
+- **.start_combat()** (5 connections) — `server/services/combat_service.py`
+- **UUID** (5 connections)
+- **.get_npc_combat_data()** (5 connections) — `server/services/npc_combat_data_provider.py`
+- **_build_combat_instance()** (4 connections) — `server/services/combat_initialization.py`
+- **.get_player_combat_data()** (4 connections) — `server/services/npc_combat_data_provider.py`
+- **.get_player_name()** (3 connections) — `server/services/npc_combat_data_provider.py`
+- **.get_player_room_id()** (3 connections) — `server/services/npc_combat_data_provider.py`
+- **.attacker_data()** (3 connections) — `server/tests/unit/services/test_combat_initialization.py`
+- **.target_data()** (3 connections) — `server/tests/unit/services/test_combat_initialization.py`
+- **.test_create_combat_instance_basic()** (3 connections) — `server/tests/unit/services/test_combat_initialization.py`
+- **.test_create_combat_instance_participants()** (3 connections) — `server/tests/unit/services/test_combat_initialization.py`
+- **.test_create_combat_instance_turn_order_higher_dexterity_first()** (3 connections) — `server/tests/unit/services/test_combat_initialization.py`
+- **.test_create_combat_instance_turn_order_lower_dexterity_first()** (3 connections) — `server/tests/unit/services/test_combat_initialization.py`
+- **.test_create_combat_instance_turn_order_equal_dexterity()** (3 connections) — `server/tests/unit/services/test_combat_initialization.py`
+- *... and 51 more nodes in this community*
 
 ## Relationships
 
-- [nats services service](nats_services_service.md) (42 shared connections)
-- [room realtime occupant](room_realtime_occupant.md) (9 shared connections)
-- [dead letter queue](dead_letter_queue.md) (9 shared connections)
-- [Error Conversion](Error_Conversion.md) (7 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (7 shared connections)
-- [realtime monitoring performance](realtime_monitoring_performance.md) (4 shared connections)
-- [player room realtime](player_room_realtime.md) (4 shared connections)
-- [player respawn event](player_respawn_event.md) (4 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (3 shared connections)
-- [game magic regeneration](game_magic_regeneration.md) (3 shared connections)
-- [chat service game](chat_service_game.md) (2 shared connections)
-- [manager subject services](manager_subject_services.md) (2 shared connections)
+- [Memory Task Runtime](Memory_Task_Runtime.md) (11 shared connections)
+- [models player rationale](models_player_rationale.md) (9 shared connections)
+- [Item Instances](Item_Instances.md) (6 shared connections)
+- [command factories exploration](command_factories_exploration.md) (4 shared connections)
+- [npc database infrastructure](npc_database_infrastructure.md) (3 shared connections)
+- [cleanup combat handler](cleanup_combat_handler.md) (3 shared connections)
+- [subject admin controller](subject_admin_controller.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
 
 ## Source Files
 
-- `server/container/bundles/chat.py`
-- `server/container/bundles/combat.py`
-- `server/container/bundles/core.py`
-- `server/container/bundles/game.py`
-- `server/container/bundles/monitoring.py`
-- `server/container/bundles/npc.py`
-- `server/container/bundles/realtime.py`
-- `server/container/main.py`
-- `server/tests/unit/container/test_container_bundles.py`
+- `server/services/combat_initialization.py`
+- `server/services/combat_service.py`
+- `server/services/combat_types.py`
+- `server/services/npc_combat_data_provider.py`
+- `server/tests/unit/services/test_combat_initialization.py`
+- `server/tests/unit/services/test_combat_types.py`
 
 ## Audit Trail
 
-- EXTRACTED: 350 (85%)
-- INFERRED: 61 (15%)
+- EXTRACTED: 256 (96%)
+- INFERRED: 11 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

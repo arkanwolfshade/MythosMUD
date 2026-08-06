@@ -33,9 +33,10 @@
 
 ## Relationships
 
-- [dialogue definition persistence](dialogue_definition_persistence.md) (5 shared connections)
 - [command inventory factories](command_inventory_factories.md) (5 shared connections)
-- [add used user](add_used_user.md) (1 shared connections)
+- [dialogue definition persistence](dialogue_definition_persistence.md) (3 shared connections)
+- [room service sync](room_service_sync.md) (2 shared connections)
+- [command inventory models](command_inventory_models.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,51 +1,61 @@
 # services service phantom
 
-> 46 nodes
+> 54 nodes
 
 ## Key Concepts
 
-- **test_hallucination_services.py** (23 connections) — `server/tests/unit/services/test_hallucination_services.py`
-- **HallucinationFrequencyService** (19 connections) — `server/services/hallucination_frequency_service.py`
-- **.should_trigger_hallucination()** (7 connections) — `server/services/hallucination_frequency_service.py`
-- **.check_room_entry_hallucination()** (6 connections) — `server/services/hallucination_frequency_service.py`
-- **.check_time_based_hallucination()** (6 connections) — `server/services/hallucination_frequency_service.py`
-- **UUID** (4 connections)
-- **AsyncSession** (3 connections)
-- **test_fake_hallucination_generate_npc_tell()** (3 connections) — `server/tests/unit/services/test_hallucination_services.py`
-- **test_fake_hallucination_generate_room_overlay()** (3 connections) — `server/tests/unit/services/test_hallucination_services.py`
-- **test_fake_hallucination_select_type()** (3 connections) — `server/tests/unit/services/test_hallucination_services.py`
-- **test_hallucination_frequency_unknown_tier()** (3 connections) — `server/tests/unit/services/test_hallucination_services.py`
-- **test_hallucination_frequency_wrong_trigger_type()** (3 connections) — `server/tests/unit/services/test_hallucination_services.py`
-- **test_hallucination_frequency_room_entry_roll()** (3 connections) — `server/tests/unit/services/test_hallucination_services.py`
-- **test_hallucination_frequency_time_based_requires_session()** (3 connections) — `server/tests/unit/services/test_hallucination_services.py`
-- **test_hallucination_frequency_time_based_cooldown_active()** (3 connections) — `server/tests/unit/services/test_hallucination_services.py`
-- **test_hallucination_frequency_time_based_triggers_and_sets_cooldown()** (3 connections) — `server/tests/unit/services/test_hallucination_services.py`
-- **test_hallucination_frequency_handles_lucidity_errors()** (3 connections) — `server/tests/unit/services/test_hallucination_services.py`
-- **test_check_room_entry_delegates_to_should_trigger()** (3 connections) — `server/tests/unit/services/test_hallucination_services.py`
-- **test_check_time_based_delegates_to_should_trigger()** (3 connections) — `server/tests/unit/services/test_hallucination_services.py`
-- **test_phantom_should_spawn_fractured()** (3 connections) — `server/tests/unit/services/test_hallucination_services.py`
-- **test_phantom_should_spawn_deranged()** (3 connections) — `server/tests/unit/services/test_hallucination_services.py`
-- **test_phantom_generate_name()** (3 connections) — `server/tests/unit/services/test_hallucination_services.py`
-- **test_phantom_create_track_remove_clear()** (3 connections) — `server/tests/unit/services/test_hallucination_services.py`
-- **.__init__()** (2 connections) — `server/services/hallucination_frequency_service.py`
-- **Service for managing hallucination frequency checks based on player tier.** (1 connections) — `server/services/hallucination_frequency_service.py`
-- *... and 21 more nodes in this community*
+- **combat_turn_participant_actions.py** (46 connections) — `server/services/combat_turn_participant_actions.py`
+- **test_combat_turn_participant_actions.py** (12 connections) — `server/tests/unit/services/test_combat_turn_participant_actions.py`
+- **_weapon_damage_from_equipped_player()** (11 connections) — `server/services/combat_turn_participant_actions.py`
+- **_resolve_npc_target()** (11 connections) — `server/services/combat_turn_participant_actions.py`
+- **process_npc_turn()** (10 connections) — `server/services/combat_turn_participant_actions.py`
+- **process_player_turn()** (10 connections) — `server/services/combat_turn_participant_actions.py`
+- **resolve_player_attack_damage()** (9 connections) — `server/services/combat_turn_participant_actions.py`
+- **get_npc_current_target()** (8 connections) — `server/services/aggro_threat.py`
+- **_get_combat_container_services()** (8 connections) — `server/services/combat_turn_participant_actions.py`
+- **_select_npc_target()** (7 connections) — `server/services/combat_turn_participant_actions.py`
+- **_execute_player_attack()** (7 connections) — `server/services/combat_turn_participant_actions.py`
+- **_execute_npc_attack()** (6 connections) — `server/services/combat_turn_participant_actions.py`
+- **test_process_npc_turn_calls_process_attack_when_target_resolved()** (6 connections) — `server/tests/unit/services/test_combat_turn_participant_actions.py`
+- **_get_target_stats_for_damage()** (5 connections) — `server/services/combat_turn_participant_actions.py`
+- **_apply_physical_strength_bonus()** (5 connections) — `server/services/combat_turn_participant_actions.py`
+- **_should_continue_npc_turn()** (5 connections) — `server/services/combat_turn_participant_actions.py`
+- **_should_continue_player_turn()** (5 connections) — `server/services/combat_turn_participant_actions.py`
+- **_select_player_target()** (5 connections) — `server/services/combat_turn_participant_actions.py`
+- **_should_skip_for_casting()** (5 connections) — `server/services/combat_turn_participant_actions.py`
+- **test_select_npc_target_prefers_mortally_wounded_player_over_skipping()** (5 connections) — `server/tests/unit/services/test_combat_turn_participant_actions.py`
+- **test_resolve_npc_target_uses_aggro_current_target()** (5 connections) — `server/tests/unit/services/test_combat_turn_participant_actions.py`
+- **test_resolve_npc_target_broadcasts_when_aggro_switches()** (5 connections) — `server/tests/unit/services/test_combat_turn_participant_actions.py`
+- **_strength_modifier_from_attacker_stats()** (4 connections) — `server/services/combat_turn_participant_actions.py`
+- **UUID** (3 connections)
+- **_attacker_stats_dict_from_full_player()** (3 connections) — `server/services/combat_turn_participant_actions.py`
+- *... and 29 more nodes in this community*
 
 ## Relationships
 
-- [npc population stats](npc_population_stats.md) (11 shared connections)
-- [player room realtime](player_room_realtime.md) (7 shared connections)
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [Item Instances](Item_Instances.md) (22 shared connections)
+- [command factories exploration](command_factories_exploration.md) (14 shared connections)
+- [npc database infrastructure](npc_database_infrastructure.md) (8 shared connections)
+- [room validator toolkit](room_validator_toolkit.md) (7 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (7 shared connections)
+- [MapView GameClientV2ContainerView Tabbed](MapView_GameClientV2ContainerView_Tabbed.md) (7 shared connections)
+- [circuit breaker realtime](circuit_breaker_realtime.md) (3 shared connections)
+- [websocket validation realtime](websocket_validation_realtime.md) (3 shared connections)
+- [nats services service](nats_services_service.md) (3 shared connections)
+- [game chat service](game_chat_service.md) (3 shared connections)
+- [Player Stats](Player_Stats.md) (2 shared connections)
+- [cleanup combat handler](cleanup_combat_handler.md) (2 shared connections)
 
 ## Source Files
 
-- `server/services/hallucination_frequency_service.py`
-- `server/tests/unit/services/test_hallucination_services.py`
+- `server/services/aggro_threat.py`
+- `server/services/combat_turn_participant_actions.py`
+- `server/tests/unit/services/test_combat_turn_participant_actions.py`
 
 ## Audit Trail
 
-- EXTRACTED: 137 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 229 (96%)
+- INFERRED: 10 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,54 +1,50 @@
 # commands communication support
 
-> 24 nodes
+> 50 nodes
 
 ## Key Concepts
 
-- **CombatMessagingService** (18 connections) — `server/services/combat_messaging_service.py`
-- **base.py** (11 connections) — `server/services/combat_messaging/base.py`
-- **combat_messaging_service.py** (9 connections) — `server/services/combat_messaging_service.py`
-- **CombatMessagingBase** (8 connections) — `server/services/combat_messaging/base.py`
-- **CombatMessages** (6 connections)
-- **test_combat_messaging_service.py** (4 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
-- **.__init__()** (3 connections) — `server/services/combat_messaging/base.py`
-- **.get_attack_message()** (3 connections) — `server/services/combat_messaging_service.py`
-- **.get_death_message()** (3 connections) — `server/services/combat_messaging_service.py`
-- **.get_combat_start_messages()** (3 connections) — `server/services/combat_messaging_service.py`
-- **.get_combat_end_messages()** (3 connections) — `server/services/combat_messaging_service.py`
-- **.__init__()** (2 connections) — `server/services/combat_messaging_service.py`
-- **.get_error_message()** (2 connections) — `server/services/combat_messaging_service.py`
-- **Base integration with connection manager resolution.** (1 connections) — `server/services/combat_messaging/base.py`
-- **Base class with connection manager setup. Used by CombatMessagingIntegration.** (1 connections) — `server/services/combat_messaging/base.py`
-- **Combat messaging service for thematic combat messages.  This service handles the** (1 connections) — `server/services/combat_messaging_service.py`
-- **Service for generating combat messages.      This service creates thematic, pers** (1 connections) — `server/services/combat_messaging_service.py`
-- **Initialize the combat messaging service.** (1 connections) — `server/services/combat_messaging_service.py`
-- **Generate an attack message based on perspective and NPC configuration.** (1 connections) — `server/services/combat_messaging_service.py`
-- **Generate a death message for an NPC.          Args:             npc_name: Name o** (1 connections) — `server/services/combat_messaging_service.py`
-- **Generate combat start messages for all room occupants.          Args:** (1 connections) — `server/services/combat_messaging_service.py`
-- **Generate combat end messages for all room occupants.          Args:** (1 connections) — `server/services/combat_messaging_service.py`
-- **Generate thematic error messages for combat actions.          Args:** (1 connections) — `server/services/combat_messaging_service.py`
-- **Unit tests for combat messaging service.  Tests the CombatMessagingService class** (1 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **test_player_event_handlers.py** (33 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **player_event_handler()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_handle_player_entered_delegates_to_room_handler()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_handle_player_entered_no_send_occupants_update()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_handle_player_left_delegates_to_room_handler()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_handle_player_xp_awarded_delegates_to_state_handler()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_handle_player_dp_updated_delegates_to_state_handler()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_handle_player_entered_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_handle_player_left_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_handle_player_xp_awarded_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_handle_player_dp_updated_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **mock_room_sync_service()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **mock_chat_logger()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **mock_task_registry()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **mock_message_builder()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **mock_name_extractor()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **mock_occupant_manager()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_player_event_handler_init()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_send_occupants_snapshot_to_player_delegates_to_room_handler()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_send_occupants_snapshot_to_player_string_id()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_handle_player_died_delegates_to_state_handler()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_handle_player_dp_decay_delegates_to_state_handler()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_handle_player_respawned_delegates_to_respawn_handler()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- **test_handle_player_delirium_respawned_delegates_to_respawn_handler()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers.py`
+- *... and 25 more nodes in this community*
 
 ## Relationships
 
-- [combat services messaging](combat_services_messaging.md) (11 shared connections)
-- [Error Handling Core](Error_Handling_Core.md) (5 shared connections)
-- [Error Conversion](Error_Conversion.md) (4 shared connections)
-- [tick game processing](tick_game_processing.md) (3 shared connections)
-- [nats services service](nats_services_service.md) (1 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (1 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
+- [inventory mutation guard](inventory_mutation_guard.md) (7 shared connections)
+- [Error Conversion](Error_Conversion.md) (7 shared connections)
+- [Database Config](Database_Config.md) (4 shared connections)
 
 ## Source Files
 
-- `server/services/combat_messaging/base.py`
-- `server/services/combat_messaging_service.py`
-- `server/tests/unit/services/test_combat_messaging_service.py`
+- `server/tests/unit/realtime/test_player_event_handlers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 80 (93%)
-- INFERRED: 6 (7%)
+- EXTRACTED: 116 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

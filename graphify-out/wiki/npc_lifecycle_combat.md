@@ -1,54 +1,57 @@
 # npc lifecycle combat
 
-> 26 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **format_message_content()** (18 connections) — `server/realtime/message_formatters.py`
-- **test_message_formatters.py** (16 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **test_format_message_content_nats_error()** (4 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **test_format_message_content_say()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **test_format_message_content_local()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **test_format_message_content_global()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **test_format_message_content_emote()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **test_format_message_content_pose()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **test_format_message_content_whisper()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **test_format_message_content_whisper_for_recipient()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **test_format_message_content_system()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **test_format_message_content_admin()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **test_format_message_content_unknown_channel()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **Format message content based on channel type and sender name.      Args:** (1 connections) — `server/realtime/message_formatters.py`
-- **Unit tests for message formatters.  Tests the message_formatters module function** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **Test format_message_content() formats 'say' channel messages.** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **Test format_message_content() formats 'local' channel messages.** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **Test format_message_content() formats 'global' channel messages.** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **Test format_message_content() formats 'emote' channel messages.** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **Test format_message_content() formats 'pose' channel messages.** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **Test format_message_content() formats 'whisper' channel messages (default).** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **Test format_message_content() formats 'whisper' for recipient as 'X whispers to** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **Test format_message_content() formats 'system' channel messages.** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **Test format_message_content() formats 'admin' channel messages.** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- **Test format_message_content() formats unknown channel messages.** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
-- *... and 1 more nodes in this community*
+- **BehaviorEngine** (73 connections) — `server/npc/behavior_engine.py`
+- **.get_behavior_engine()** (3 connections) — `server/npc/npc_base.py`
+- **test_add_rule_replaces_existing()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_add_rule_handles_exception()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_get_rules()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_evaluate_equality_true()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_evaluate_numeric_comparison_non_numeric()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_get_applicable_rules_matching()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_get_applicable_rules_priority_order()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **.__init__()** (2 connections) — `server/npc/behavior_engine.py`
+- **.remove_rule()** (2 connections) — `server/npc/behavior_engine.py`
+- **Deterministic behavior engine for NPCs.      This engine evaluates rules based o** (1 connections) — `server/npc/behavior_engine.py`
+- **Initialize the behavior engine.** (1 connections) — `server/npc/behavior_engine.py`
+- **Remove a behavior rule from the engine.          Args:             rule_name: Na** (1 connections) — `server/npc/behavior_engine.py`
+- **Get the behavior engine for this NPC.** (1 connections) — `server/npc/npc_base.py`
+- **Test add_rule() replaces existing rule with same name.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test add_rule() handles exceptions gracefully.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test get_rules() returns copy of rules.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test _evaluate_equality() returns True for matching condition.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test _evaluate_numeric_comparison() raises ValueError for non-numeric values.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test get_applicable_rules() returns matching rules.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test get_applicable_rules() returns rules in priority order.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [Error Conversion](Error_Conversion.md) (3 shared connections)
-- [game chat service](game_chat_service.md) (2 shared connections)
-- [follow game service](follow_game_service.md) (1 shared connections)
-- [command commands handler](command_commands_handler.md) (1 shared connections)
-- [persistence combat services](persistence_combat_services.md) (1 shared connections)
-- [commands communication say](commands_communication_say.md) (1 shared connections)
+- [behavior engine npc](behavior_engine_npc.md) (21 shared connections)
+- [calendar models rationale](calendar_models_rationale.md) (12 shared connections)
+- [realtime player event](realtime_player_event.md) (4 shared connections)
+- [lucidity event services](lucidity_event_services.md) (3 shared connections)
+- [services nats service](services_nats_service.md) (2 shared connections)
+- [schemas calendar schedule](schemas_calendar_schedule.md) (2 shared connections)
+- [command factories create](command_factories_create.md) (2 shared connections)
+- [game room service](game_room_service.md) (2 shared connections)
+- [schemas intersection schema](schemas_intersection_schema.md) (2 shared connections)
+- [schemas unified room](schemas_unified_room.md) (2 shared connections)
+- [player realtime event](player_realtime_event.md) (2 shared connections)
+- [realtime npc event](realtime_npc_event.md) (2 shared connections)
 
 ## Source Files
 
-- `server/realtime/message_formatters.py`
-- `server/tests/unit/realtime/test_message_formatters.py`
+- `server/npc/behavior_engine.py`
+- `server/npc/npc_base.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 81 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 111 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

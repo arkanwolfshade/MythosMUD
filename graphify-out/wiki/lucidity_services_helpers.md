@@ -1,6 +1,6 @@
 # lucidity services helpers
 
-> 56 nodes
+> 85 nodes
 
 ## Key Concepts
 
@@ -11,45 +11,47 @@
 - **LucidityChangeEventExtras** (12 connections) — `server/services/lucidity_event_dispatcher.py`
 - **send_catatonia_event()** (12 connections) — `server/services/lucidity_event_dispatcher.py`
 - **_dispatch_player_event()** (11 connections) — `server/services/lucidity_event_dispatcher.py`
+- **_lucidity_change_payload_with_liabilities()** (11 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **liability_types.py** (8 connections) — `server/utils/liability_types.py`
+- **send_hallucination_event()** (7 connections) — `server/services/lucidity_event_dispatcher.py`
+- **DecodeLiabilitiesFn** (7 connections) — `server/utils/liability_types.py`
+- **EncodeLiabilitiesFn** (7 connections) — `server/utils/liability_types.py`
 - **UUID** (6 connections)
 - **_format_liabilities()** (4 connections) — `server/services/lucidity_event_dispatcher.py`
 - **test_send_lucidity_change_event_with_max_lcd()** (4 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
 - **test_send_lucidity_change_event_with_liabilities()** (4 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
 - **test_send_lucidity_change_event_with_reason_and_source()** (4 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
 - **test_send_lucidity_change_event_with_metadata()** (4 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_format_liabilities_empty()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_format_liabilities_single()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_format_liabilities_multiple_stacks()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_format_liabilities_multiple_entries()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_format_liabilities_invalid_stacks()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_format_liabilities_empty_code()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
 - **test_send_lucidity_change_event_basic()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **test_send_lucidity_change_event_string_player_id()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **test_send_lucidity_change_event_dispatch_error()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **test_send_catatonia_event_basic()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **test_send_catatonia_event_with_current_lcd()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **test_send_catatonia_event_with_message()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **test_send_catatonia_event_with_rescuer_and_target()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **test_send_catatonia_event_dispatch_error()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **test_send_rescue_update_event_basic()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **test_send_rescue_update_event_with_all_fields()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **test_send_rescue_update_event_with_progress_only()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **test_send_rescue_update_event_dispatch_error()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- *... and 31 more nodes in this community*
+- *... and 60 more nodes in this community*
 
 ## Relationships
 
-- [room conftest toolkit](room_conftest_toolkit.md) (9 shared connections)
-- [player room realtime](player_room_realtime.md) (8 shared connections)
+- [auth endpoints rationale](auth_endpoints_rationale.md) (10 shared connections)
 - [command factories create](command_factories_create.md) (7 shared connections)
 - [Spell Validation](Spell_Validation.md) (7 shared connections)
 - [npc population stats](npc_population_stats.md) (3 shared connections)
+- [player room realtime](player_room_realtime.md) (3 shared connections)
 - [lucidity npc combat](lucidity_npc_combat.md) (2 shared connections)
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [room renderer functions](room_renderer_functions.md) (2 shared connections)
 
 ## Source Files
 
 - `server/services/lucidity_event_dispatcher.py`
 - `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- `server/utils/liability_types.py`
 
 ## Audit Trail
 
-- EXTRACTED: 219 (100%)
-- INFERRED: 1 (0%)
+- EXTRACTED: 299 (98%)
+- INFERRED: 5 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

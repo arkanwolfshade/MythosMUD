@@ -1,42 +1,41 @@
 # realtime message filtering
 
-> 19 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **GameConfig** (15 connections) — `server/config/models/game.py`
-- **.validate_max_connections()** (2 connections) — `server/config/models/game.py`
-- **.validate_aliases_dir()** (2 connections) — `server/config/models/game.py`
-- **.validate_combat_tick_interval()** (2 connections) — `server/config/models/game.py`
-- **.validate_combat_timeout()** (2 connections) — `server/config/models/game.py`
-- **.validate_combat_xp_multiplier()** (2 connections) — `server/config/models/game.py`
-- **.validate_combat_alert_threshold()** (2 connections) — `server/config/models/game.py`
-- **.validate_combat_performance_threshold()** (2 connections) — `server/config/models/game.py`
-- **.validate_combat_error_threshold()** (2 connections) — `server/config/models/game.py`
-- **BaseSettings** (1 connections)
-- **Game-specific configuration.** (1 connections) — `server/config/models/game.py`
-- **Validate max connections is reasonable.** (1 connections) — `server/config/models/game.py`
-- **Validate aliases directory path.** (1 connections) — `server/config/models/game.py`
-- **Validate combat tick interval.** (1 connections) — `server/config/models/game.py`
-- **Validate combat timeout.** (1 connections) — `server/config/models/game.py`
-- **Validate combat XP multiplier.** (1 connections) — `server/config/models/game.py`
-- **Validate combat alert threshold.** (1 connections) — `server/config/models/game.py`
-- **Validate combat performance threshold.** (1 connections) — `server/config/models/game.py`
-- **Validate combat error threshold.** (1 connections) — `server/config/models/game.py`
+- **.mark_room_as_explored()** (7 connections) — `server/services/exploration_service.py`
+- **UUID** (7 connections)
+- **._get_room_uuid_by_stable_id()** (7 connections) — `server/services/exploration_service.py`
+- **.is_room_explored()** (6 connections) — `server/services/exploration_service.py`
+- **AsyncSession** (5 connections)
+- **._mark_explored_in_session()** (5 connections) — `server/services/exploration_service.py`
+- **.get_explored_rooms()** (5 connections) — `server/services/exploration_service.py`
+- **.__init__()** (4 connections) — `server/services/exploration_service.py`
+- **.mark_room_as_explored_sync()** (4 connections) — `server/services/exploration_service.py`
+- **Any** (2 connections)
+- **Initialize the exploration service.          Args:             database_manager:** (1 connections) — `server/services/exploration_service.py`
+- **Mark a room as explored by a player.          This method inserts a record into** (1 connections) — `server/services/exploration_service.py`
+- **Get room UUID by stable_id (hierarchical room ID).          Args:             st** (1 connections) — `server/services/exploration_service.py`
+- **Mark room as explored using the provided session.          Args:             ses** (1 connections) — `server/services/exploration_service.py`
+- **Get list of room IDs that a player has explored.          Args:             play** (1 connections) — `server/services/exploration_service.py`
+- **Check if a player has explored a specific room.          Args:             playe** (1 connections) — `server/services/exploration_service.py`
+- **Synchronous wrapper for mark_room_as_explored.          This method is designed** (1 connections) — `server/services/exploration_service.py`
 
 ## Relationships
 
-- [websocket validation realtime](websocket_validation_realtime.md) (3 shared connections)
-- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [maps handle ascii](maps_handle_ascii.md) (8 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (4 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (1 shared connections)
 
 ## Source Files
 
-- `server/config/models/game.py`
+- `server/services/exploration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 40 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 59 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

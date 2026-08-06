@@ -1,53 +1,54 @@
 # health service services
 
-> 58 nodes
+> 72 nodes
 
 ## Key Concepts
 
-- **test_command_service.py** (36 connections) — `server/tests/unit/commands/test_command_service.py`
-- **test_extract_parsed_fields_handles_missing_attributes()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
-- **mock_request()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
-- **mock_user()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
-- **test_process_validated_command_success()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
-- **test_process_validated_command_no_command_type()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
-- **test_process_validated_command_unknown_command()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
-- **test_process_validated_command_handler_error()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
-- **test_process_validated_command_logging_error()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
-- **test_parse_command_string_success()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
-- **test_parse_command_string_with_subcommand()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
-- **test_parse_command_string_unexpected_error()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
-- **test_prepare_command_data_basic()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
-- **test_prepare_command_data_with_pipe_target()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
-- **test_extract_parsed_fields_basic()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
-- **test_extract_parsed_fields_with_pipe_target()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
-- **test_execute_command_handler_success()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
-- **test_execute_command_handler_error()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
-- **test_process_command_success()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
-- **test_process_command_parse_error()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
-- **test_process_command_no_handler()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
-- **test_get_available_commands()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
-- **test_register_command_handler()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
-- **test_register_command_handler_overwrites_existing()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
-- **test_unregister_command_handler()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
-- *... and 33 more nodes in this community*
+- **test_auth_utils.py** (52 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **create_access_token()** (32 connections) — `server/auth_utils.py`
+- **test_create_access_token_attribute_error()** (5 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_decode_access_token_attribute_error()** (5 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_decode_access_token_success()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_decode_access_token_expired()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_create_access_token_with_custom_secret()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_create_access_token_with_none_secret()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_decode_access_token_none_secret()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_decode_access_token_wrong_secret()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_create_access_token_jwt_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_create_access_token_value_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_decode_access_token_value_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_decode_access_token_type_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_decode_access_token_runtime_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_verify_password_attribute_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_decode_access_token_with_custom_algorithm()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_decode_access_token_with_wrong_algorithm()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_create_access_token_runtime_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_create_access_token_with_audience()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_decode_access_token_with_expired_token_immediately()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **setup_jwt_secret()** (3 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_hash_password_success()** (3 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_verify_password_returns_false_on_error()** (3 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_create_access_token_success()** (3 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- *... and 47 more nodes in this community*
 
 ## Relationships
 
-- [combat services initialization](combat_services_initialization.md) (2 shared connections)
-- [payload realtime optimizer](payload_realtime_optimizer.md) (2 shared connections)
-- [realtime real time](realtime_real_time.md) (1 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (1 shared connections)
+- [package argon2 engines](package_argon2_engines.md) (19 shared connections)
+- [nats services metrics](nats_services_metrics.md) (18 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (10 shared connections)
+- [command models moderation](command_models_moderation.md) (3 shared connections)
+- [player requests schemas](player_requests_schemas.md) (2 shared connections)
 - [add used user](add_used_user.md) (1 shared connections)
-- [room sync service](room_sync_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_service.py`
+- `server/auth_utils.py`
+- `server/tests/unit/auth/test_auth_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 121 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 233 (96%)
+- INFERRED: 10 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

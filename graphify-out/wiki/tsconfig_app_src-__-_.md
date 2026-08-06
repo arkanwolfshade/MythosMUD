@@ -1,33 +1,31 @@
 # tsconfig app src/**/*
 
-> 9 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **UUID** (6 connections)
-- **._memory_connections_section()** (6 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._memory_sessions_section()** (5 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._safe_ratio()** (5 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._count_orphaned_connections()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **Count active connections not tied to any online player.** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **Build the connections subsection of memory stats.** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **Build the sessions subsection of memory stats.** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **Return numerator/denominator, or 0 when denominator is empty.** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **.get_mute_status()** (8 connections) — `server/game/chat_moderation.py`
+- **.get_player_mutes()** (6 connections) — `server/game/chat_moderation.py`
+- **.is_admin()** (5 connections) — `server/game/chat_moderation.py`
+- **.load_player_mutes()** (2 connections) — `server/game/chat_moderation.py`
+- **Check if a player is an admin.** (1 connections) — `server/game/chat_moderation.py`
+- **Get all mutes applied by a player.** (1 connections) — `server/game/chat_moderation.py`
+- **Get comprehensive mute status for a player.          Args:             player_id** (1 connections) — `server/game/chat_moderation.py`
 
 ## Relationships
 
-- [persistence rationale room](persistence_rationale_room.md) (4 shared connections)
-- [realtime message nats](realtime_message_nats.md) (3 shared connections)
-- [commands rest command](commands_rest_command.md) (2 shared connections)
-- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [chat moderation game](chat_moderation_game.md) (6 shared connections)
+- [player persistence repository](player_persistence_repository.md) (3 shared connections)
+- [startup services npc](startup_services_npc.md) (2 shared connections)
+- [combat services service](combat_services_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/monitoring/statistics_aggregator.py`
+- `server/game/chat_moderation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 30 (100%)
+- EXTRACTED: 24 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

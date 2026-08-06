@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
-- [player model models](player_model_models.md) (1 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [command commands handler](command_commands_handler.md) (1 shared connections)
 
 ## Source Files
 

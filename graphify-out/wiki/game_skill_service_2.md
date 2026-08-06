@@ -1,28 +1,23 @@
 # game skill service
 
-> 6 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **.get_task_lifecycle_metrics()** (5 connections) — `server/app/task_registry.py`
-- **.get_active_task_count()** (3 connections) — `server/app/task_registry.py`
-- **.get_task_stats_by_type()** (3 connections) — `server/app/task_registry.py`
-- **Get count of active tasks.** (1 connections) — `server/app/task_registry.py`
-- **Get task breakdown by type.** (1 connections) — `server/app/task_registry.py`
-- **Get task lifecycle metrics including creation and completion rates.** (1 connections) — `server/app/task_registry.py`
+- **test_collect_room_targets_with_canonical_id()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Test collect_room_targets() handles canonical and original room IDs.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Relationships
 
-- [follow service game](follow_service_game.md) (3 shared connections)
-- [realtime messaging message](realtime_messaging_message.md) (1 shared connections)
+- [message filtering realtime](message_filtering_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/app/task_registry.py`
+- `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

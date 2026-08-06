@@ -33,12 +33,12 @@
 
 ## Relationships
 
-- [Magic Spell Service](Magic_Spell_Service.md) (6 shared connections)
-- [room cache services](room_cache_services.md) (4 shared connections)
-- [Error Conversion](Error_Conversion.md) (3 shared connections)
-- [websocket realtime handler](websocket_realtime_handler.md) (2 shared connections)
+- [room cache services](room_cache_services.md) (6 shared connections)
+- [aggro threat services](aggro_threat_services.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (3 shared connections)
+- [nats services service](nats_services_service.md) (3 shared connections)
 - [logging handlers structured](logging_handlers_structured.md) (1 shared connections)
-- [nats services service](nats_services_service.md) (1 shared connections)
+- [metrics memory leak](metrics_memory_leak.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,27 +1,24 @@
 # cache caching lru
 
-> 6 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_websocket_handler_json_error.py** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
-- **mock_websocket()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
-- **test_handle_json_decode_error()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
-- **Unit tests for websocket handler JSON error handling.  Tests the JSON decode err** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
-- **Create a mock WebSocket.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
-- **Test _handle_json_decode_error() sends error response.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
+- **📊 LINT ISSUE CATEGORIZATION GUIDE** (3 connections) — `.cursor/commands/lint-remediation.md`
+- **Python/Ruff Error Codes** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **React/ESLint Error Codes** (1 connections) — `.cursor/commands/lint-remediation.md`
 
 ## Relationships
 
-- [command commands aliases](command_commands_aliases.md) (1 shared connections)
+- [commands communication flows](commands_communication_flows.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_websocket_handler_json_error.py`
+- `.cursor/commands/lint-remediation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

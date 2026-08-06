@@ -1,42 +1,60 @@
 # schemas calendar rationale
 
-> 15 nodes
+> 27 nodes
 
 ## Key Concepts
 
-- **handle_time_command()** (13 connections) — `server/commands/time_commands.py`
-- **test_time_commands.py** (8 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **test_handle_time_command_success()** (3 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **test_handle_time_command_with_holidays()** (3 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **test_handle_time_command_no_holidays()** (3 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **test_handle_time_command_holiday_service_error()** (3 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **test_handle_time_command_no_holiday_service()** (3 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **Any** (1 connections)
-- **Handle the time command, exposing the current Mythos time and active holidays.** (1 connections) — `server/commands/time_commands.py`
-- **Unit tests for time command handlers.  Tests the time command functionality.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **Test handle_time_command() returns time information.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **Test handle_time_command() includes active holidays.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **Test handle_time_command() handles no active holidays.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **Test handle_time_command() handles holiday service errors.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **Test handle_time_command() handles missing holiday service.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **game_tick_processing.py** (68 connections) — `server/app/game_tick_processing.py`
+- **_process_mortally_wounded_player()** (10 connections) — `server/app/game_tick_processing.py`
+- **process_player_effects_expiration()** (9 connections) — `server/app/game_tick_processing.py`
+- **_process_mp_regeneration()** (8 connections) — `server/app/game_tick_processing.py`
+- **_process_session_dp_decay_and_death()** (8 connections) — `server/app/game_tick_processing.py`
+- **_process_single_player_mp_regeneration()** (7 connections) — `server/app/game_tick_processing.py`
+- **UUID** (6 connections)
+- **AsyncSession** (6 connections)
+- **_process_dead_players()** (6 connections) — `server/app/game_tick_processing.py`
+- **_process_mortally_wounded_players()** (5 connections) — `server/app/game_tick_processing.py`
+- **_validate_mp_regeneration_services()** (5 connections) — `server/app/game_tick_processing.py`
+- **test_process_single_player_mp_regeneration()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_validate_mp_regeneration_services()** (2 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_process_player_effects_expiration_login_warded()** (2 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_process_mortally_wounded_skips_active_combat()** (2 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_process_mortally_wounded_death_threshold()** (2 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_process_dead_players_moves_to_limbo()** (2 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **Game tick processing functions.  This module handles all game tick processing lo** (1 connections) — `server/app/game_tick_processing.py`
+- **Expire player_effects for this tick; for LOGIN_WARDED clear in-memory state and** (1 connections) — `server/app/game_tick_processing.py`
+- **Process a single mortally wounded player's DP decay and death check.      CRITIC** (1 connections) — `server/app/game_tick_processing.py`
+- **Process all mortally wounded players.** (1 connections) — `server/app/game_tick_processing.py`
+- **Validate that required services exist for MP regeneration.      Args:         co** (1 connections) — `server/app/game_tick_processing.py`
+- **Process MP regeneration for a single player.      Args:         mp_service: MP r** (1 connections) — `server/app/game_tick_processing.py`
+- **Process MP regeneration for online players.** (1 connections) — `server/app/game_tick_processing.py`
+- **Process dead players and move them to limbo if needed.** (1 connections) — `server/app/game_tick_processing.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
-- [alias storage rationale](alias_storage_rationale.md) (1 shared connections)
-- [shutdown admin command](shutdown_admin_command.md) (1 shared connections)
-- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (1 shared connections)
-- [commands who rationale](commands_who_rationale.md) (1 shared connections)
+- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (33 shared connections)
+- [command helpers functions](command_helpers_functions.md) (9 shared connections)
+- [command utility models](command_utility_models.md) (5 shared connections)
+- [player room realtime](player_room_realtime.md) (4 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (3 shared connections)
+- [database config helpers](database_config_helpers.md) (2 shared connections)
+- [npc lifecycle config](npc_lifecycle_config.md) (2 shared connections)
+- [useWebSocketConnectionTestFixtures useWe](useWebSocketConnectionTestFixtures_useWe.md) (2 shared connections)
+- [inventory mutation guard](inventory_mutation_guard.md) (2 shared connections)
+- [Item Instances](Item_Instances.md) (2 shared connections)
+- [lucidity npc combat](lucidity_npc_combat.md) (2 shared connections)
+- [player preferences services](player_preferences_services.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/time_commands.py`
-- `server/tests/unit/commands/test_time_commands.py`
+- `server/app/game_tick_processing.py`
+- `server/tests/unit/app/test_game_tick_processing.py`
 
 ## Audit Trail
 
-- EXTRACTED: 43 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 161 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

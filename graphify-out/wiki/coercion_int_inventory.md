@@ -1,60 +1,42 @@
 # coercion int inventory
 
-> 35 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **SpellLearningService** (43 connections) — `server/game/magic/spell_learning_service.py`
-- **spell_learning_service.py** (22 connections) — `server/game/magic/spell_learning_service.py`
-- **test_spell_learning_service.py** (15 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
-- **.learn_spell()** (8 connections) — `server/game/magic/spell_learning_service.py`
-- **UUID** (7 connections)
-- **._validate_prerequisites()** (6 connections) — `server/game/magic/spell_learning_service.py`
-- **Any** (5 connections)
-- **.learn_spell_from_book()** (5 connections) — `server/game/magic/spell_learning_service.py`
-- **.learn_spell_from_npc()** (5 connections) — `server/game/magic/spell_learning_service.py`
-- **.learn_spell_from_quest()** (5 connections) — `server/game/magic/spell_learning_service.py`
-- **.increase_mastery_on_cast()** (3 connections) — `server/game/magic/spell_learning_service.py`
-- **learning_service()** (2 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
-- **test_learn_spell_not_found()** (2 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
-- **test_learn_spell_player_missing()** (2 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
-- **test_learn_spell_already_known()** (2 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
-- **test_learn_spell_success()** (2 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
-- **test_validate_prerequisites_power_too_low()** (2 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
-- **test_increase_mastery_on_cast()** (2 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
-- **test_validate_prerequisites_intelligence_too_low()** (2 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
-- **test_validate_prerequisites_missing_required_spells()** (2 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
-- **test_learn_spell_from_npc()** (2 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
-- **test_learn_spell_from_book_no_spell_id()** (2 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
-- **test_learn_spell_from_book_with_spell()** (2 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
-- **Spell learning service for handling spell acquisition.  This module provides ser** (1 connections) — `server/game/magic/spell_learning_service.py`
-- **Service for handling spell learning from various sources.      Manages spell acq** (1 connections) — `server/game/magic/spell_learning_service.py`
-- *... and 10 more nodes in this community*
+- **.to_dict()** (8 connections) — `server/models/room.py`
+- **.__init__()** (5 connections) — `server/models/room.py`
+- **.get_containers()** (5 connections) — `server/models/room.py`
+- **.get_npcs()** (4 connections) — `server/models/room.py`
+- **.get_occupant_count()** (4 connections) — `server/models/room.py`
+- **Any** (3 connections)
+- **.get_objects()** (3 connections) — `server/models/room.py`
+- **.is_empty()** (3 connections) — `server/models/room.py`
+- **Initialize a Room from JSON data.          Args:             room_data: Dictiona** (1 connections) — `server/models/room.py`
+- **Get list of object IDs currently in the room.          Returns:             List** (1 connections) — `server/models/room.py`
+- **Get list of NPC IDs currently in the room.          Returns:             List of** (1 connections) — `server/models/room.py`
+- **Get the total number of occupants in the room.          Returns:             Tot** (1 connections) — `server/models/room.py`
+- **Check if the room has no occupants.          Returns:             True if the ro** (1 connections) — `server/models/room.py`
+- **Get list of containers in this room.          Returns:             List of conta** (1 connections) — `server/models/room.py`
+- **Convert the room to a dictionary representation.          Returns:             D** (1 connections) — `server/models/room.py`
 
 ## Relationships
 
-- [persistence core infrastructure](persistence_core_infrastructure.md) (12 shared connections)
-- [alias storage rationale](alias_storage_rationale.md) (4 shared connections)
-- [room realtime rationale](room_realtime_rationale.md) (4 shared connections)
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (3 shared connections)
-- [magic completion game](magic_completion_game.md) (3 shared connections)
-- [panels domPurifyClient chat](panels_domPurifyClient_chat.md) (3 shared connections)
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
-- [dead letter queue](dead_letter_queue.md) (2 shared connections)
-- [add used user](add_used_user.md) (1 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (1 shared connections)
-- [nats services service](nats_services_service.md) (1 shared connections)
-- [subject nats manager](subject_nats_manager.md) (1 shared connections)
+- [room models instance](room_models_instance.md) (7 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
+- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (1 shared connections)
+- [game rationale schemas](game_rationale_schemas.md) (1 shared connections)
+- [game magic regeneration](game_magic_regeneration.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/magic/spell_learning_service.py`
-- `server/tests/unit/game/magic/test_spell_learning_service.py`
+- `server/models/room.py`
 
 ## Audit Trail
 
-- EXTRACTED: 148 (92%)
-- INFERRED: 12 (8%)
+- EXTRACTED: 40 (95%)
+- INFERRED: 2 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

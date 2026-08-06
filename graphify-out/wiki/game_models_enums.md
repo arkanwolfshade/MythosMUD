@@ -1,40 +1,43 @@
 # game models enums
 
-> 16 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **generate_invites_db.py** (14 connections) — `tools/invite_tools/generate_invites_db.py`
-- **main()** (7 connections) — `tools/invite_tools/generate_invites_db.py`
-- **create_invite_in_db()** (6 connections) — `tools/invite_tools/generate_invites_db.py`
-- **_set_database_url_from_env()** (5 connections) — `tools/invite_tools/generate_invites_db.py`
-- **parse_expires_date()** (4 connections) — `tools/invite_tools/generate_invites_db.py`
-- **generate_unique_codes()** (4 connections) — `tools/invite_tools/generate_invites_db.py`
-- **get_existing_codes()** (4 connections) — `tools/invite_tools/generate_invites_db.py`
-- **datetime** (3 connections)
-- **generate_invite_code()** (3 connections) — `tools/invite_tools/generate_invites_db.py`
-- **Parse YYYY-MM-DD to end-of-day UTC (naive). Invite valid through that date.** (1 connections) — `tools/invite_tools/generate_invites_db.py`
-- **Generate a unique Mythos-themed invite code.** (1 connections) — `tools/invite_tools/generate_invites_db.py`
-- **Generate a list of unique invite codes.** (1 connections) — `tools/invite_tools/generate_invites_db.py`
-- **Get existing invite codes from the database.** (1 connections) — `tools/invite_tools/generate_invites_db.py`
-- **Create an invite in the database.** (1 connections) — `tools/invite_tools/generate_invites_db.py`
-- **Use DATABASE_URL so scripts can run without full AppConfig.** (1 connections) — `tools/invite_tools/generate_invites_db.py`
-- **Generate invite codes and store them in the database.** (1 connections) — `tools/invite_tools/generate_invites_db.py`
+- **SpellMaterialsService** (17 connections) — `server/game/magic/spell_materials.py`
+- **.consume_materials()** (8 connections) — `server/game/magic/spell_materials.py`
+- **.check_materials()** (4 connections) — `server/game/magic/spell_materials.py`
+- **._process_material_requirement()** (4 connections) — `server/game/magic/spell_materials.py`
+- **Any** (4 connections)
+- **._consume_material_item()** (4 connections) — `server/game/magic/spell_materials.py`
+- **._build_final_inventory()** (4 connections) — `server/game/magic/spell_materials.py`
+- **UUID** (3 connections)
+- **materials_service()** (2 connections) — `server/tests/unit/game/magic/test_spell_materials.py`
+- **Service for handling spell material requirements.      Handles checking if playe** (1 connections) — `server/game/magic/spell_materials.py`
+- **Check if player has all required materials.          Args:             player_id** (1 connections) — `server/game/magic/spell_materials.py`
+- **Process a single material requirement.          Args:             material: Mate** (1 connections) — `server/game/magic/spell_materials.py`
+- **Consume a material item.          Args:             item: Inventory item** (1 connections) — `server/game/magic/spell_materials.py`
+- **Build final inventory with consumed materials removed.          Args:** (1 connections) — `server/game/magic/spell_materials.py`
+- **Consume spell materials from player inventory.          Args:             player** (1 connections) — `server/game/magic/spell_materials.py`
 
 ## Relationships
 
-- [commands shutdown process](commands_shutdown_process.md) (6 shared connections)
-- [player requests schemas](player_requests_schemas.md) (3 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (2 shared connections)
+- [persistence core infrastructure](persistence_core_infrastructure.md) (5 shared connections)
+- [panels domPurifyClient chat](panels_domPurifyClient_chat.md) (3 shared connections)
+- [container persistence rationale](container_persistence_rationale.md) (2 shared connections)
+- [Player Stats](Player_Stats.md) (2 shared connections)
+- [subject nats manager](subject_nats_manager.md) (1 shared connections)
+- [player respawn event](player_respawn_event.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/invite_tools/generate_invites_db.py`
+- `server/game/magic/spell_materials.py`
+- `server/tests/unit/game/magic/test_spell_materials.py`
 
 ## Audit Trail
 
-- EXTRACTED: 57 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 51 (91%)
+- INFERRED: 5 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

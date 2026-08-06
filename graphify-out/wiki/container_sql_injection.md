@@ -1,47 +1,34 @@
 # container sql injection
 
-> 17 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **submitAuth.ts** (18 connections) — `client/src/mythosApp/submitAuth.ts`
-- **applyAuthenticatedSession.ts** (16 connections) — `client/src/mythosApp/applyAuthenticatedSession.ts`
-- **useMythosAuthForm.ts** (11 connections) — `client/src/mythosApp/useMythosAuthForm.ts`
-- **useMythosAuthForm()** (10 connections) — `client/src/mythosApp/useMythosAuthForm.ts`
-- **assertLoginResponse()** (6 connections) — `client/src/utils/apiTypeGuards.ts`
-- **persistTokensAndApplySession()** (5 connections) — `client/src/mythosApp/applyAuthenticatedSession.ts`
-- **submitLoginRequest()** (5 connections) — `client/src/mythosApp/submitAuth.ts`
-- **submitRegisterRequest()** (5 connections) — `client/src/mythosApp/submitAuth.ts`
-- **AuthSessionSetters** (3 connections) — `client/src/mythosApp/applyAuthenticatedSession.ts`
-- **toCharacterInfoFromLogin()** (3 connections) — `client/src/mythosApp/mapServerCharacters.ts`
-- **sanitizeLoginInputs()** (3 connections) — `client/src/mythosApp/submitAuth.ts`
-- **sanitizeRegisterInputs()** (3 connections) — `client/src/mythosApp/submitAuth.ts`
-- **AuthSuccessPayload** (2 connections) — `client/src/mythosApp/submitAuth.ts`
-- **SetBool** (1 connections) — `client/src/mythosApp/applyAuthenticatedSession.ts`
-- **SetChars** (1 connections) — `client/src/mythosApp/applyAuthenticatedSession.ts`
-- **SetStep** (1 connections) — `client/src/mythosApp/applyAuthenticatedSession.ts`
-- **SanitizedCredentials** (1 connections) — `client/src/mythosApp/submitAuth.ts`
+- **test_websocket_handler_rate_limit.py** (7 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **mock_websocket()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **test_check_rate_limit_no_connection_id()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **test_check_rate_limit_passed()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **test_check_rate_limit_exceeded()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **Unit tests for websocket handler rate limiting.  Tests the rate limiting functio** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **Create a mock WebSocket.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **Create a mock connection manager.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **Test _check_rate_limit() returns True when no connection_id.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **Test _check_rate_limit() returns True when rate limit check passes.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **Test _check_rate_limit() returns False when rate limit exceeded.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
 
 ## Relationships
 
-- [mythosApp CharacterSelectionScreen chara](mythosApp_CharacterSelectionScreen_chara.md) (11 shared connections)
-- [SkillAssignmentScreen helpers CharacterN](SkillAssignmentScreen_helpers_CharacterN.md) (8 shared connections)
-- [mythosApp security submitAuth](mythosApp_security_submitAuth.md) (4 shared connections)
-- [apiTypeGuards FIELDS SHARED](apiTypeGuards_FIELDS_SHARED.md) (4 shared connections)
-- [map maps useAsciiMap](map_maps_useAsciiMap.md) (1 shared connections)
+- [occupant formatter realtime](occupant_formatter_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/mythosApp/applyAuthenticatedSession.ts`
-- `client/src/mythosApp/mapServerCharacters.ts`
-- `client/src/mythosApp/submitAuth.ts`
-- `client/src/mythosApp/useMythosAuthForm.ts`
-- `client/src/utils/apiTypeGuards.ts`
+- `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
 
 ## Audit Trail
 
-- EXTRACTED: 92 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 23 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

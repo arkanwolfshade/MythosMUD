@@ -1,27 +1,25 @@
 # logging utilities structured
 
-> 5 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **rename_used_to_is_active.py** (4 connections) — `server/scripts/rename_used_to_is_active.py`
-- **apply_migration()** (3 connections) — `server/scripts/rename_used_to_is_active.py`
-- **main()** (3 connections) — `server/scripts/rename_used_to_is_active.py`
-- **Apply the migration to rename used back to is_active.      Args:         databas** (1 connections) — `server/scripts/rename_used_to_is_active.py`
-- **Main entry point for the migration script.** (1 connections) — `server/scripts/rename_used_to_is_active.py`
+- **test_event_bus_publish_multiple_subscribers()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test EventBus.publish() with multiple subscribers.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [event bus events](event_bus_events.md) (1 shared connections)
+- [room conftest toolkit](room_conftest_toolkit.md) (1 shared connections)
 
 ## Source Files
 
-- `server/scripts/rename_used_to_is_active.py`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

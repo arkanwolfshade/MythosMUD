@@ -1,27 +1,24 @@
 # services ascii map
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **TestGetProfessionService** (4 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_profession_service_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Tests for get_profession_service dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_profession_service creates service with persistence.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **test_get_player_info_invalid_player_id()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test get_player_info() returns None for invalid player_id.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (2 shared connections)
-- [persistence core infrastructure](persistence_core_infrastructure.md) (1 shared connections)
+- [player event handlers](player_event_handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_dependencies.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (89%)
-- INFERRED: 1 (11%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

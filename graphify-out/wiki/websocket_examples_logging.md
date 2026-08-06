@@ -1,56 +1,60 @@
 # websocket examples logging
 
-> 50 nodes
+> 72 nodes
 
 ## Key Concepts
 
-- **websocket_integration.py** (22 connections) — `docs/examples/logging/websocket_integration.py`
-- **handle_websocket_message()** (8 connections) — `docs/examples/logging/websocket_integration.py`
-- **WebSocketManager** (7 connections) — `docs/examples/logging/websocket_integration.py`
-- **websocket_endpoint()** (7 connections) — `docs/examples/logging/websocket_integration.py`
-- **.send_text()** (7 connections) — `docs/examples/logging/websocket_integration.py`
-- **.disconnect()** (6 connections) — `docs/examples/logging/websocket_integration.py`
-- **handle_game_action()** (6 connections) — `docs/examples/logging/websocket_integration.py`
-- **chat_service** (6 connections) — `docs/examples/logging/websocket_integration.py`
-- **.connect()** (5 connections) — `docs/examples/logging/websocket_integration.py`
-- **handle_chat_message()** (5 connections) — `docs/examples/logging/websocket_integration.py`
-- **WebSocket** (5 connections) — `docs/examples/logging/websocket_integration.py`
-- **.send_message()** (4 connections) — `docs/examples/logging/websocket_integration.py`
-- **.broadcast_message()** (4 connections) — `docs/examples/logging/websocket_integration.py`
-- **authenticate_websocket_connection()** (4 connections) — `docs/examples/logging/websocket_integration.py`
-- **WebSocketRateLimiter** (4 connections) — `docs/examples/logging/websocket_integration.py`
-- **handle_websocket_error()** (4 connections) — `docs/examples/logging/websocket_integration.py`
-- **websocket_heartbeat()** (3 connections) — `docs/examples/logging/websocket_integration.py`
-- **parse_websocket_message()** (3 connections) — `docs/examples/logging/websocket_integration.py`
-- **.broadcast_message()** (3 connections) — `docs/examples/logging/websocket_integration.py`
-- **.verify_token()** (3 connections) — `docs/examples/logging/websocket_integration.py`
-- **.check_rate_limit()** (2 connections) — `docs/examples/logging/websocket_integration.py`
-- **validate_websocket_message()** (2 connections) — `docs/examples/logging/websocket_integration.py`
-- **Exception** (2 connections)
-- **WebSocketDisconnect** (2 connections) — `docs/examples/logging/websocket_integration.py`
-- **websocket_manager** (2 connections) — `docs/examples/logging/websocket_integration.py`
-- *... and 25 more nodes in this community*
+- **test_command_factories_player_state.py** (27 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- **PlayerStateCommandFactory** (18 connections) — `server/utils/command_factories_player_state.py`
+- **.__init__()** (9 connections) — `server/utils/command_factories.py`
+- **.create_status_command()** (6 connections) — `server/utils/command_factories_player_state.py`
+- **.create_time_command()** (6 connections) — `server/utils/command_factories_player_state.py`
+- **.create_whoami_command()** (6 connections) — `server/utils/command_factories_player_state.py`
+- **.create_quit_command()** (6 connections) — `server/utils/command_factories_player_state.py`
+- **.create_rest_command()** (6 connections) — `server/utils/command_factories_player_state.py`
+- **.create_skills_command()** (6 connections) — `server/utils/command_factories_player_state.py`
+- **.create_journal_command()** (6 connections) — `server/utils/command_factories_player_state.py`
+- **.create_quests_command()** (6 connections) — `server/utils/command_factories_player_state.py`
+- **.create_who_command()** (5 connections) — `server/utils/command_factories_player_state.py`
+- **.create_logout_command()** (5 connections) — `server/utils/command_factories_player_state.py`
+- **.create_quest_command()** (5 connections) — `server/utils/command_factories_player_state.py`
+- **test_create_status_command_with_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- **test_create_whoami_command_with_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- **test_create_time_command_with_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- **test_create_quit_command_with_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- **test_create_rest_command_with_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- **test_create_skills_command_with_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- **test_create_journal_command_with_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- **test_create_quests_command_with_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- **test_create_status_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- **test_create_whoami_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- **test_create_time_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- *... and 47 more nodes in this community*
 
 ## Relationships
 
-- [models lucidity rationale](models_lucidity_rationale.md) (4 shared connections)
-- [Magic Spell Service](Magic_Spell_Service.md) (3 shared connections)
-- [middleware correlation rationale](middleware_correlation_rationale.md) (2 shared connections)
-- [Error Conversion](Error_Conversion.md) (1 shared connections)
-- [commands communication flows](commands_communication_flows.md) (1 shared connections)
-- [commands emote rationale](commands_emote_rationale.md) (1 shared connections)
-- [models player related](models_player_related.md) (1 shared connections)
-- [memory lifespan app](memory_lifespan_app.md) (1 shared connections)
-- [player requests schemas](player_requests_schemas.md) (1 shared connections)
+- [spell game magic](spell_game_magic.md) (11 shared connections)
+- [command inventory models](command_inventory_models.md) (10 shared connections)
+- [dialogue definition persistence](dialogue_definition_persistence.md) (10 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [world models rationale](world_models_rationale.md) (2 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
+- [admin command setstat](admin_command_setstat.md) (1 shared connections)
+- [rescue service services](rescue_service_services.md) (1 shared connections)
+- [Inventory Equip](Inventory_Equip.md) (1 shared connections)
+- [stores connectionStore commandStore](stores_connectionStore_commandStore.md) (1 shared connections)
+- [exceptions rationale error](exceptions_rationale_error.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/examples/logging/websocket_integration.py`
+- `server/tests/unit/utils/test_command_factories_player_state.py`
+- `server/utils/command_factories.py`
+- `server/utils/command_factories_player_state.py`
 
 ## Audit Trail
 
-- EXTRACTED: 150 (96%)
-- INFERRED: 7 (4%)
+- EXTRACTED: 218 (96%)
+- INFERRED: 9 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

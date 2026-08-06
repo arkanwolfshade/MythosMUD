@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_adjust_room_drop_negative_quantity()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **Test adjust_room_drop() with negative quantity.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **test_extract_name_from_occupant_dict_with_player_name()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test _extract_name_from_occupant() with dict containing player_name.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [room subscription manager](room_subscription_manager.md) (1 shared connections)
+- [player event handlers](player_event_handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 

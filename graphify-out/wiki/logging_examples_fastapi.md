@@ -1,60 +1,78 @@
 # logging examples fastapi
 
-> 30 nodes
+> 397 nodes
 
 ## Key Concepts
 
-- **AppConfig** (31 connections) — `server/config/models/app.py`
-- **__init__.py** (11 connections) — `server/config/__init__.py`
-- **.to_legacy_dict()** (7 connections) — `server/config/models/app.py`
-- **Any** (6 connections)
-- **_create_config_instance()** (5 connections) — `server/config/__init__.py`
-- **_get_config_cached()** (5 connections) — `server/config/__init__.py`
-- **_get_config_test()** (5 connections) — `server/config/__init__.py`
-- **.__init__()** (5 connections) — `server/config/models/app.py`
-- **._legacy_game_entries()** (5 connections) — `server/config/models/app.py`
-- **._legacy_nats_dict()** (5 connections) — `server/config/models/app.py`
-- **._legacy_chat_dict()** (5 connections) — `server/config/models/app.py`
-- **._legacy_cors_dict()** (5 connections) — `server/config/models/app.py`
-- **._sanitize_environment_for_nested_configs()** (4 connections) — `server/config/models/app.py`
-- **._first_cors_origins_env()** (3 connections) — `server/config/models/app.py`
-- **.set_legacy_environment_variables()** (2 connections) — `server/config/models/app.py`
-- **Configuration module for MythosMUD server.  This module provides type-safe, vali** (1 connections) — `server/config/__init__.py`
-- **Create a new AppConfig instance from current environment.      This is a helper** (1 connections) — `server/config/__init__.py`
-- **Production config loader with caching.      Uses both @lru_cache and global _con** (1 connections) — `server/config/__init__.py`
-- **Test config loader without caching - always returns fresh instances.      This e** (1 connections) — `server/config/__init__.py`
-- **BaseSettings** (1 connections)
-- **Composite application configuration.      This is the main configuration class t** (1 connections) — `server/config/models/app.py`
-- **Initialize configuration and set environment variables for legacy compatibility.** (1 connections) — `server/config/models/app.py`
-- **Set environment variables for legacy code that reads them directly.** (1 connections) — `server/config/models/app.py`
-- **Return first set CORS origins env var to reduce CCN in _sanitize.** (1 connections) — `server/config/models/app.py`
-- **Normalize environment variables so nested configs can parse them reliably.** (1 connections) — `server/config/models/app.py`
-- *... and 5 more nodes in this community*
+- **get_logger()** (522 connections) — `server/structured_logging/enhanced_logging_config.py`
+- **enhanced_logging_config.py** (496 connections) — `server/structured_logging/enhanced_logging_config.py`
+- **build_event()** (116 connections) — `server/realtime/envelope.py`
+- **time.py** (96 connections) — `server/container/bundles/time.py`
+- **threading.py** (48 connections) — `server/npc/threading.py`
+- **nats_message_handler.py** (34 connections) — `server/realtime/nats_message_handler.py`
+- **DeadLetterMessage** (27 connections) — `server/realtime/dead_letter_queue.py`
+- **envelope.py** (27 connections) — `server/realtime/envelope.py`
+- **event_handlers.py** (24 connections) — `server/realtime/event_handlers.py`
+- **test_message_handlers.py** (24 connections) — `server/tests/unit/realtime/test_message_handlers.py`
+- **nats_message_handler_processing.py** (23 connections) — `server/realtime/nats_message_handler_processing.py`
+- **connection_helpers.py** (21 connections) — `server/realtime/connection_helpers.py`
+- **inventory_mutation_guard.py** (21 connections) — `server/services/inventory_mutation_guard.py`
+- **optimized_security_validator.py** (21 connections) — `server/validators/optimized_security_validator.py`
+- **nats_message_handler_base.py** (20 connections) — `server/realtime/nats_message_handler_base.py`
+- **user_manager.py** (20 connections) — `server/services/user_manager.py`
+- **passive_mob_npc.py** (19 connections) — `server/npc/passive_mob_npc.py`
+- **NATSMessageHandlerMixinBase** (19 connections) — `server/realtime/nats_message_handler_base.py`
+- **format_message_content()** (18 connections) — `server/realtime/message_formatters.py`
+- **handle_chat_message()** (18 connections) — `server/realtime/websocket_handler.py`
+- **nats_message_handler_broadcast.py** (16 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **detect_environment()** (16 connections) — `server/structured_logging/logging_utilities.py`
+- **test_message_formatters.py** (16 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **NATSMessageProcessingMixin** (15 connections) — `server/realtime/nats_message_handler_processing.py`
+- **migrate_combat_data.py** (15 connections) — `server/scripts/migrate_combat_data.py`
+- *... and 372 more nodes in this community*
 
 ## Relationships
 
-- [websocket validation realtime](websocket_validation_realtime.md) (8 shared connections)
-- [tools generate invite](tools_generate_invite.md) (6 shared connections)
-- [EdgeCreationModal map STANDARD](EdgeCreationModal_map_STANDARD.md) (3 shared connections)
-- [config models cors](config_models_cors.md) (2 shared connections)
-- [realtime message filtering](realtime_message_filtering.md) (2 shared connections)
-- [occupants npc commands](occupants_npc_commands.md) (2 shared connections)
-- [casting game magic](casting_game_magic.md) (1 shared connections)
-- [Error Conversion](Error_Conversion.md) (1 shared connections)
-- [services passive lucidity](services_passive_lucidity.md) (1 shared connections)
-- [room validator path](room_validator_path.md) (1 shared connections)
-- [config models rationale](config_models_rationale.md) (1 shared connections)
-- [exceptions rationale error](exceptions_rationale_error.md) (1 shared connections)
+- [inventory mutation guard](inventory_mutation_guard.md) (37 shared connections)
+- [nats services service](nats_services_service.md) (34 shared connections)
+- [services nats service](services_nats_service.md) (26 shared connections)
+- [Error Conversion](Error_Conversion.md) (26 shared connections)
+- [spell game magic](spell_game_magic.md) (26 shared connections)
+- [websocket handler realtime](websocket_handler_realtime.md) (25 shared connections)
+- [inventory schemas schema](inventory_schemas_schema.md) (24 shared connections)
+- [Memory Task Runtime](Memory_Task_Runtime.md) (22 shared connections)
+- [combat npc mixin](combat_npc_mixin.md) (21 shared connections)
+- [add used user](add_used_user.md) (20 shared connections)
+- [logging handlers structured](logging_handlers_structured.md) (18 shared connections)
+- [logging structured utilities](logging_structured_utilities.md) (18 shared connections)
 
 ## Source Files
 
-- `server/config/__init__.py`
-- `server/config/models/app.py`
+- `scripts/run_test_ci.py`
+- `server/api/base.py`
+- `server/commands/admin_teleport_utils.py`
+- `server/commands/container_helpers_inventory_logging.py`
+- `server/commands/rest_countdown_task.py`
+- `server/commands/shutdown_process_termination.py`
+- `server/commands/system_commands.py`
+- `server/container/bundles/time.py`
+- `server/game/chat_pose_manager.py`
+- `server/game/instance_manager.py`
+- `server/game/level_service.py`
+- `server/game/player_search_service.py`
+- `server/help/help_content.py`
+- `server/middleware/metrics_collector.py`
+- `server/monitoring/memory_leak_metrics.py`
+- `server/npc/behavior_engine.py`
+- `server/npc/npc_combat_schedule.py`
+- `server/npc/npc_config_parsing.py`
+- `server/npc/passive_mob_npc.py`
+- `server/npc/threading.py`
 
 ## Audit Trail
 
-- EXTRACTED: 108 (91%)
-- INFERRED: 11 (9%)
+- EXTRACTED: 2909 (98%)
+- INFERRED: 48 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

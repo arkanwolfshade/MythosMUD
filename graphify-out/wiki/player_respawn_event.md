@@ -1,56 +1,62 @@
 # player respawn event
 
-> 25 nodes
+> 72 nodes
 
 ## Key Concepts
 
-- **test_time_bundle.py** (20 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **TimeBundle** (14 connections) — `server/container/bundles/time.py`
-- **.initialize()** (5 connections) — `server/container/bundles/time.py`
-- **_season_for_month()** (5 connections) — `server/time/time_service.py`
-- **test_season_for_month()** (3 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **test_time_bundle_initialize_with_deps()** (2 connections) — `server/tests/unit/container/test_container_bundles.py`
-- **test_time_bundle_initialize_missing_deps()** (2 connections) — `server/tests/unit/container/test_container_bundles.py`
-- **test_time_bundle_initialize_with_dependencies()** (2 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **test_time_bundle_initialize_missing_dependencies()** (2 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **test_chronicle_calendar_and_dayparts()** (2 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **test_chronicle_time_conversion()** (2 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **test_chronicle_advance_and_freeze()** (2 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **test_chronicle_format_clock()** (2 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **test_chronicle_advance_rejects_negative_delta()** (2 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **Mythos time consumer service.** (1 connections) — `server/container/bundles/time.py`
-- **Initialize Mythos time event consumer.** (1 connections) — `server/container/bundles/time.py`
-- **test_time_bundle_attrs()** (1 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **Unit tests for TimeBundle container wiring.** (1 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **Season mapping follows month bands.** (1 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **Calendar components and daypart helpers.** (1 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **Real/Mythos datetime conversion round-trips approximately.** (1 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **Advance and freeze update persisted state.** (1 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **Clock formatting includes Mythos suffix.** (1 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **advance_mythos rejects negative hours.** (1 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **Return the lore-friendly season label for the provided month number.** (1 connections) — `server/time/time_service.py`
+- **MagicService** (57 connections) — `server/game/magic/magic_service.py`
+- **test_magic_service.py** (47 connections) — `server/tests/unit/game/magic/test_magic_service.py`
+- **CastingStateManager** (27 connections) — `server/game/magic/casting_state_manager.py`
+- **UUID** (26 connections)
+- **casting_state_manager.py** (10 connections) — `server/game/magic/casting_state_manager.py`
+- **test_casting_state_manager.py** (10 connections) — `server/tests/unit/game/magic/test_casting_state_manager.py`
+- **CastingState** (8 connections) — `server/game/magic/casting_state_manager.py`
+- **UUID** (8 connections)
+- **_spell()** (8 connections) — `server/tests/unit/game/magic/test_casting_state_manager.py`
+- **.start_casting()** (5 connections) — `server/game/magic/casting_state_manager.py`
+- **test_can_cast_spell_unknown_and_materials()** (5 connections) — `server/tests/unit/game/magic/test_magic_service.py`
+- **test_cast_spell_material_consume_failure()** (5 connections) — `server/tests/unit/game/magic/test_magic_service.py`
+- **test_check_casting_progress_completes()** (5 connections) — `server/tests/unit/game/magic/test_magic_service.py`
+- **test_start_delayed_cast_in_combat()** (5 connections) — `server/tests/unit/game/magic/test_magic_service.py`
+- **test_start_delayed_cast_value_error()** (5 connections) — `server/tests/unit/game/magic/test_magic_service.py`
+- **.get_casting_state()** (4 connections) — `server/game/magic/casting_state_manager.py`
+- **.complete_casting()** (4 connections) — `server/game/magic/casting_state_manager.py`
+- **.interrupt_casting()** (4 connections) — `server/game/magic/casting_state_manager.py`
+- **_build_magic_service()** (4 connections) — `server/tests/unit/game/magic/test_magic_service.py`
+- **test_can_cast_spell_paths()** (4 connections) — `server/tests/unit/game/magic/test_magic_service.py`
+- **test_cast_spell_delayed()** (4 connections) — `server/tests/unit/game/magic/test_magic_service.py`
+- **test_interrupt_casting_luck_pass()** (4 connections) — `server/tests/unit/game/magic/test_magic_service.py`
+- **test_interrupt_casting_luck_fail()** (4 connections) — `server/tests/unit/game/magic/test_magic_service.py`
+- **test_complete_casting_via_combat_queue()** (4 connections) — `server/tests/unit/game/magic/test_magic_service.py`
+- **.is_casting()** (3 connections) — `server/game/magic/casting_state_manager.py`
+- *... and 47 more nodes in this community*
 
 ## Relationships
 
-- [nats services service](nats_services_service.md) (4 shared connections)
-- [Error Conversion](Error_Conversion.md) (4 shared connections)
-- [websocket realtime handler](websocket_realtime_handler.md) (4 shared connections)
-- [time service rationale](time_service_rationale.md) (4 shared connections)
-- [command service commands](command_service_commands.md) (2 shared connections)
-- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (2 shared connections)
-- [admin shutdown commands](admin_shutdown_commands.md) (2 shared connections)
+- [panels domPurifyClient chat](panels_domPurifyClient_chat.md) (18 shared connections)
+- [persistence core infrastructure](persistence_core_infrastructure.md) (14 shared connections)
+- [container persistence rationale](container_persistence_rationale.md) (8 shared connections)
+- [commands magic rationale](commands_magic_rationale.md) (7 shared connections)
+- [room occupant manager](room_occupant_manager.md) (5 shared connections)
+- [nats services service](nats_services_service.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [subject nats manager](subject_nats_manager.md) (2 shared connections)
+- [npc combat player](npc_combat_player.md) (2 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (2 shared connections)
+- [game models enums](game_models_enums.md) (1 shared connections)
+- [Player Stats](Player_Stats.md) (1 shared connections)
 
 ## Source Files
 
-- `server/container/bundles/time.py`
-- `server/tests/unit/container/test_container_bundles.py`
-- `server/tests/unit/container/test_time_bundle.py`
-- `server/time/time_service.py`
+- `server/game/magic/casting_state_manager.py`
+- `server/game/magic/magic_service.py`
+- `server/tests/unit/game/magic/test_casting_state_manager.py`
+- `server/tests/unit/game/magic/test_magic_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 74 (97%)
-- INFERRED: 2 (3%)
+- EXTRACTED: 346 (94%)
+- INFERRED: 22 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

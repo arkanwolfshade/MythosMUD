@@ -1,31 +1,26 @@
 # realtime message nats
 
-> 8 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **._build_connection_stats()** (10 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **.get_connection_stats()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._session_connection_distribution()** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._connection_age_extrema()** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **Count how many sessions have each connection-count size.** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **Return (avg, max, min) connection ages; zeros when the list is empty.** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **Compose connection statistics payload (extracted to keep get_connection_stats CC** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **Get comprehensive connection statistics.          Args:             player_webso** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **test_is_shutdown_pending_no_state()** (4 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **_AppWithoutState** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **App double with no state attribute (is_shutdown_pending must return False).** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **Test is_shutdown_pending() returns False when app has no state.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
 
 ## Relationships
 
-- [persistence rationale room](persistence_rationale_room.md) (6 shared connections)
-- [tsconfig app src/**/*](tsconfig_app_src-__-_.md) (3 shared connections)
-- [inventory service helpers](inventory_service_helpers.md) (1 shared connections)
+- [shutdown admin command](shutdown_admin_command.md) (2 shared connections)
+- [eventLog projectorRoom roomMergeUtils](eventLog_projectorRoom_roomMergeUtils.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/monitoring/statistics_aggregator.py`
+- `server/tests/unit/commands/test_admin_shutdown_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 24 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

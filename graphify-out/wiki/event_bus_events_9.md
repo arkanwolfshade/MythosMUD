@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_validate_movement_player_already_in_target()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
-- **Test _validate_movement returns False when player already in destination.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_normalize_event_ids_string_ids()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test normalize_event_ids() with string IDs.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [movement service game](movement_service_game.md) (1 shared connections)
+- [player event handlers](player_event_handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_movement_service.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 

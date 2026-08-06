@@ -1,14 +1,14 @@
 # containers stores containerStore
 
-> 66 nodes
+> 60 nodes
 
 ## Key Concepts
 
-- **gameStore.ts** (35 connections) — `client/src/stores/gameStore.ts`
 - **CorpseOverlay.tsx** (23 connections) — `client/src/components/containers/CorpseOverlay.tsx`
 - **containerStore.ts** (21 connections) — `client/src/stores/containerStore.ts`
 - **ContainerSplitPane.tsx** (16 connections) — `client/src/components/containers/ContainerSplitPane.tsx`
 - **ContainerKeyboardAccessibility.test.tsx** (15 connections) — `client/src/components/containers/__tests__/ContainerKeyboardAccessibility.test.tsx`
+- **BackpackTab.tsx** (12 connections) — `client/src/components/containers/BackpackTab.tsx`
 - **useGameStore** (11 connections) — `client/src/stores/gameStore.ts`
 - **CorpseOverlay()** (10 connections) — `client/src/components/containers/CorpseOverlay.tsx`
 - **BackpackTab.test.tsx** (10 connections) — `client/src/components/containers/__tests__/BackpackTab.test.tsx`
@@ -29,22 +29,18 @@
 - **formatTimeRemaining()** (2 connections) — `client/src/components/containers/CorpseOverlay.tsx`
 - **calculateTimeRemaining()** (2 connections) — `client/src/components/containers/CorpseOverlay.tsx`
 - **isCorpseOwner()** (2 connections) — `client/src/components/containers/CorpseOverlay.tsx`
-- *... and 41 more nodes in this community*
+- *... and 35 more nodes in this community*
 
 ## Relationships
 
-- [panels chat ChatPanelRuntimeViewParts](panels_chat_ChatPanelRuntimeViewParts.md) (17 shared connections)
-- [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (10 shared connections)
-- [stores connectionStore commandStore](stores_connectionStore_commandStore.md) (4 shared connections)
-- [panels GameClientV2Dock gameLogPanelUtil](panels_GameClientV2Dock_gameLogPanelUtil.md) (4 shared connections)
+- [panels chat ChatPanelRuntimeViewParts](panels_chat_ChatPanelRuntimeViewParts.md) (12 shared connections)
+- [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (5 shared connections)
 - [GameClientV2Container emptyOccupantsDiag](GameClientV2Container_emptyOccupantsDiag.md) (3 shared connections)
 - [memoryMonitor memoryLeakDetector constru](memoryMonitor_memoryLeakDetector_constru.md) (3 shared connections)
-- [config rationale config()](config_rationale_config%28%29.md) (3 shared connections)
 - [apiTypeGuards FIELDS SHARED](apiTypeGuards_FIELDS_SHARED.md) (2 shared connections)
-- [RoomEditModal map buildInitialFormData()](RoomEditModal_map_buildInitialFormData%28%29.md) (2 shared connections)
-- [performanceTester performance ExtendedPe](performanceTester_performance_ExtendedPe.md) (2 shared connections)
-- [map maps useAsciiMap](map_maps_useAsciiMap.md) (1 shared connections)
-- [mythosApp CharacterSelectionScreen chara](mythosApp_CharacterSelectionScreen_chara.md) (1 shared connections)
+- [auth invites rationale](auth_invites_rationale.md) (2 shared connections)
+- [idle npc movement](idle_npc_movement.md) (2 shared connections)
+- [stateNormalization stores basic](stateNormalization_stores_basic.md) (1 shared connections)
 
 ## Source Files
 
@@ -65,7 +61,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 276 (100%)
+- EXTRACTED: 246 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

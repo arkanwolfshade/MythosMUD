@@ -1,6 +1,6 @@
 # commands rescue rationale
 
-> 54 nodes
+> 65 nodes
 
 ## Key Concepts
 
@@ -8,12 +8,17 @@
 - **total_xp_for_level()** (15 connections) — `server/game/level_curve.py`
 - **test_level_curve.py** (15 connections) — `server/tests/unit/game/test_level_curve.py`
 - **level_from_total_xp()** (13 connections) — `server/game/level_curve.py`
+- **LevelService** (13 connections) — `server/game/level_service.py`
 - **level_curve.py** (6 connections) — `server/game/level_curve.py`
 - **xp_required_for_level()** (6 connections) — `server/game/level_curve.py`
+- **.__init__()** (4 connections) — `server/game/level_service.py`
+- **.grant_xp()** (4 connections) — `server/game/level_service.py`
+- **.check_level_up()** (4 connections) — `server/game/level_service.py`
 - **test_xp_required_for_level_marginal()** (4 connections) — `server/tests/unit/game/test_level_curve.py`
 - **test_level_from_total_xp_roundtrip()** (4 connections) — `server/tests/unit/game/test_level_curve.py`
 - **test_level_from_total_xp_threshold_level_two()** (4 connections) — `server/tests/unit/game/test_level_curve.py`
 - **test_grant_xp_level_up_calls_hook()** (4 connections) — `server/tests/unit/game/test_level_service.py`
+- **UUID** (3 connections)
 - **test_total_xp_for_level_one()** (3 connections) — `server/tests/unit/game/test_level_curve.py`
 - **test_total_xp_for_level_two_positive()** (3 connections) — `server/tests/unit/game/test_level_curve.py`
 - **test_total_xp_for_level_increases()** (3 connections) — `server/tests/unit/game/test_level_curve.py`
@@ -24,28 +29,26 @@
 - **level_service()** (3 connections) — `server/tests/unit/game/test_level_service.py`
 - **test_check_level_up_no_change_returns_false()** (3 connections) — `server/tests/unit/game/test_level_service.py`
 - **test_check_level_up_increase_persists_and_returns_true()** (3 connections) — `server/tests/unit/game/test_level_service.py`
-- **mock_persistence()** (2 connections) — `server/tests/unit/game/test_level_service.py`
-- **sample_player()** (2 connections) — `server/tests/unit/game/test_level_service.py`
-- **test_grant_xp_zero_no_op()** (2 connections) — `server/tests/unit/game/test_level_service.py`
-- **test_grant_xp_negative_raises()** (2 connections) — `server/tests/unit/game/test_level_service.py`
-- **test_grant_xp_player_not_found_raises()** (2 connections) — `server/tests/unit/game/test_level_service.py`
-- *... and 29 more nodes in this community*
+- *... and 40 more nodes in this community*
 
 ## Relationships
 
-- [room realtime occupant](room_realtime_occupant.md) (5 shared connections)
-- [Error Conversion](Error_Conversion.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (5 shared connections)
+- [combat models rationale](combat_models_rationale.md) (2 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (2 shared connections)
+- [nats services service](nats_services_service.md) (1 shared connections)
 
 ## Source Files
 
 - `server/game/level_curve.py`
+- `server/game/level_service.py`
 - `server/tests/unit/game/test_level_curve.py`
 - `server/tests/unit/game/test_level_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 158 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 191 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

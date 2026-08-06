@@ -1,13 +1,12 @@
 # combat messaging services
 
-> 64 nodes
+> 62 nodes
 
 ## Key Concepts
 
 - **test_combat_messaging_integration.py** (34 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
 - **messaging_integration()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
 - **test_messaging_integration_init_no_connection_manager()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_broadcast_combat_start()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
 - **mock_connection_manager()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
 - **test_messaging_integration_init()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
 - **test_connection_manager_property_lazy_load()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
@@ -29,12 +28,13 @@
 - **test_broadcast_combat_error_send_error()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
 - **test_connection_manager_lazy_load_called()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
 - **test_broadcast_combat_attack_with_attacker_id()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- *... and 39 more nodes in this community*
+- **test_broadcast_combat_attack_no_attacker_id()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- *... and 37 more nodes in this community*
 
 ## Relationships
 
-- [player room event](player_room_event.md) (3 shared connections)
-- [combat services messaging](combat_services_messaging.md) (2 shared connections)
+- [validator room toolkit](validator_room_toolkit.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
 
 ## Source Files
 
@@ -42,7 +42,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 129 (98%)
+- EXTRACTED: 125 (98%)
 - INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 

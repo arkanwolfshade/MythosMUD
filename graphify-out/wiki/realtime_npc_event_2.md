@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_add_player_to_room_player_not_found()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
-- **Test add_player_to_room() when player is not found.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_execute_applicable_rules_no_matching()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test execute_applicable_rules() returns True when no rules match.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [movement service game](movement_service_game.md) (1 shared connections)
+- [npc lifecycle combat](npc_lifecycle_combat.md) (1 shared connections)
+- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_movement_service.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

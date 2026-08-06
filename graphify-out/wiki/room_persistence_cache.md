@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [persistence rationale players](persistence_rationale_players.md) (2 shared connections)
+- [game weapon player](game_weapon_player.md) (2 shared connections)
 - [player room realtime](player_room_realtime.md) (1 shared connections)
 
 ## Source Files

@@ -1,29 +1,24 @@
 # room cache infrastructure
 
-> 6 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **TestGetSpellRegistry** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_spell_registry_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_spell_registry_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Tests for get_spell_registry dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_spell_registry returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **Test get_spell_registry raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **test_is_valid_json_array_valid()** (2 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **Test _is_valid_json_array with valid JSON array.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
 
 ## Relationships
 
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (3 shared connections)
-- [persistence core infrastructure](persistence_core_infrastructure.md) (1 shared connections)
+- [player preferences service](player_preferences_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_dependencies.py`
+- `server/tests/unit/services/test_player_preferences_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (93%)
-- INFERRED: 1 (7%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

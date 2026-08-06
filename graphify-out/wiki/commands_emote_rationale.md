@@ -30,13 +30,12 @@
 
 ## Relationships
 
-- [alias storage rationale](alias_storage_rationale.md) (2 shared connections)
+- [commands npc admin](commands_npc_admin.md) (3 shared connections)
 - [websocket helpers realtime](websocket_helpers_realtime.md) (2 shared connections)
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
 - [commands who rationale](commands_who_rationale.md) (2 shared connections)
-- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (1 shared connections)
-- [models player related](models_player_related.md) (1 shared connections)
-- [websocket examples logging](websocket_examples_logging.md) (1 shared connections)
+- [middleware correlation rationale](middleware_correlation_rationale.md) (1 shared connections)
+- [Magic Spell Service](Magic_Spell_Service.md) (1 shared connections)
 - [shutdown admin command](shutdown_admin_command.md) (1 shared connections)
 
 ## Source Files

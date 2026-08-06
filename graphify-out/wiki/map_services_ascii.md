@@ -1,6 +1,6 @@
 # map services ascii
 
-> 98 nodes
+> 100 nodes
 
 ## Key Concepts
 
@@ -9,6 +9,7 @@
 - **.render_map()** (10 connections) — `server/services/ascii_map_renderer.py`
 - **test_ascii_map_renderer_exits.py** (9 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
 - **TestVerticalExitCharBetween** (9 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **ascii_map_renderer.py** (8 connections) — `server/services/ascii_map_renderer.py`
 - **TestHorizontalExitCharBetween** (7 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
 - **TestResolveExitTarget** (7 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
 - **test_ascii_map_renderer_grid.py** (7 connections) — `server/tests/unit/services/test_ascii_map_renderer_grid.py`
@@ -28,15 +29,13 @@
 - **._get_room_symbol()** (4 connections) — `server/services/ascii_map_renderer.py`
 - **TestGetHorizontalExitCharViewportBounds** (4 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
 - **TestBuildGridPlayerMarker** (4 connections) — `server/tests/unit/services/test_ascii_map_renderer_grid.py`
-- **._auto_center_viewport()** (3 connections) — `server/services/ascii_map_renderer.py`
-- *... and 73 more nodes in this community*
+- *... and 75 more nodes in this community*
 
 ## Relationships
 
-- [Error Conversion](Error_Conversion.md) (3 shared connections)
-- [database helpers infrastructure](database_helpers_infrastructure.md) (2 shared connections)
-- [persistence container rationale](persistence_container_rationale.md) (1 shared connections)
-- [maps handle ascii](maps_handle_ascii.md) (1 shared connections)
+- [maps handle ascii](maps_handle_ascii.md) (4 shared connections)
+- [map helpers rationale](map_helpers_rationale.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
 
 ## Source Files
 
@@ -46,7 +45,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 305 (96%)
+- EXTRACTED: 314 (96%)
 - INFERRED: 12 (4%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,61 +1,63 @@
 # realtime maintenance connection
 
-> 59 nodes
+> 144 nodes
 
 ## Key Concepts
 
+- **websocket_initial_state.py** (45 connections) — `server/realtime/websocket_initial_state.py`
+- **test_websocket_helpers.py** (41 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
 - **websocket_helpers.py** (38 connections) — `server/realtime/websocket_helpers.py`
 - **test_websocket_helpers_player.py** (23 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
+- **send_initial_game_state()** (15 connections) — `server/realtime/websocket_initial_state.py`
+- **validate_occupant_name()** (14 connections) — `server/realtime/websocket_helpers.py`
 - **get_player_and_room()** (14 connections) — `server/realtime/websocket_helpers.py`
+- **check_shutdown_and_reject()** (12 connections) — `server/realtime/websocket_helpers.py`
 - **prepare_player_data()** (12 connections) — `server/realtime/websocket_helpers.py`
+- **get_occupant_names()** (11 connections) — `server/realtime/websocket_helpers.py`
+- **convert_uuids_to_strings()** (11 connections) — `server/realtime/websocket_helpers.py`
+- **is_client_disconnected_exception()** (9 connections) — `server/realtime/websocket_helpers.py`
 - **get_player_service_from_connection_manager()** (9 connections) — `server/realtime/websocket_helpers.py`
 - **get_player_stats_data()** (9 connections) — `server/realtime/websocket_helpers.py`
+- **prepare_room_data_with_occupants()** (9 connections) — `server/realtime/websocket_initial_state.py`
+- **get_npc_lifecycle_manager_from_connection_manager()** (8 connections) — `server/realtime/websocket_initial_state.py`
+- **load_player_mute_data()** (7 connections) — `server/realtime/websocket_helpers.py`
 - **convert_schema_to_dict()** (7 connections) — `server/realtime/websocket_helpers.py`
 - **build_basic_player_data()** (7 connections) — `server/realtime/websocket_helpers.py`
+- **Protocol** (7 connections)
+- **_AppWithState** (7 connections) — `server/realtime/websocket_initial_state.py`
 - **UUID** (6 connections)
 - **_ensure_player_in_room_occupancy()** (6 connections) — `server/realtime/websocket_helpers.py`
-- **_get_tracked_player_from_connection_manager()** (5 connections) — `server/realtime/websocket_helpers.py`
-- **.model_dump()** (4 connections) — `server/models/alias.py`
-- **_AppStateForPlayerService** (3 connections) — `server/realtime/websocket_helpers.py`
-- **test_get_player_service_from_connection_manager_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_get_player_service_from_connection_manager_no_app()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_get_player_service_from_connection_manager_no_state()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_get_player_stats_data_with_get_stats()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_get_player_stats_data_string_stats()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_get_player_stats_data_adds_health()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_get_player_stats_data_no_get_stats()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_build_basic_player_data()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_build_basic_player_data_defaults()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_prepare_player_data_with_service()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_prepare_player_data_no_service()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_prepare_player_data_service_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- *... and 34 more nodes in this community*
+- **_AppStateForEventHandler** (6 connections) — `server/realtime/websocket_initial_state.py`
+- **_NpcLifecycleManagerForOccupants** (6 connections) — `server/realtime/websocket_initial_state.py`
+- *... and 119 more nodes in this community*
 
 ## Relationships
 
-- [room websocket updates](room_websocket_updates.md) (9 shared connections)
-- [realtime websocket initial](realtime_websocket_initial.md) (8 shared connections)
-- [persistence rationale players](persistence_rationale_players.md) (4 shared connections)
-- [shutdown admin command](shutdown_admin_command.md) (3 shared connections)
-- [command commands aliases](command_commands_aliases.md) (2 shared connections)
-- [occupant formatter realtime](occupant_formatter_realtime.md) (2 shared connections)
-- [database config helpers](database_config_helpers.md) (2 shared connections)
-- [command models moderation](command_models_moderation.md) (2 shared connections)
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
-- [room models instance](room_models_instance.md) (2 shared connections)
-- [alias models rationale](alias_models_rationale.md) (1 shared connections)
-- [commands admin helpers](commands_admin_helpers.md) (1 shared connections)
+- [realtime websocket initial](realtime_websocket_initial.md) (24 shared connections)
+- [occupant formatter realtime](occupant_formatter_realtime.md) (16 shared connections)
+- [command models moderation](command_models_moderation.md) (10 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (9 shared connections)
+- [inventory mutation guard](inventory_mutation_guard.md) (9 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (7 shared connections)
+- [NATS Messaging](NATS_Messaging.md) (6 shared connections)
+- [player room realtime](player_room_realtime.md) (4 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (3 shared connections)
+- [game weapon player](game_weapon_player.md) (3 shared connections)
+- [alias storage rationale](alias_storage_rationale.md) (3 shared connections)
+- [eventLog projectorRoom roomMergeUtils](eventLog_projectorRoom_roomMergeUtils.md) (2 shared connections)
 
 ## Source Files
 
 - `server/models/alias.py`
 - `server/realtime/websocket_helpers.py`
+- `server/realtime/websocket_initial_state.py`
+- `server/tests/unit/realtime/test_websocket_helpers.py`
 - `server/tests/unit/realtime/test_websocket_helpers_player.py`
 
 ## Audit Trail
 
-- EXTRACTED: 214 (96%)
-- INFERRED: 9 (4%)
+- EXTRACTED: 535 (94%)
+- INFERRED: 32 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

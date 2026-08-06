@@ -27,7 +27,7 @@
 ## Relationships
 
 - [player requests schemas](player_requests_schemas.md) (5 shared connections)
-- [auth users rationale](auth_users_rationale.md) (2 shared connections)
+- [websocket handler realtime](websocket_handler_realtime.md) (2 shared connections)
 - [persistence container rationale](persistence_container_rationale.md) (1 shared connections)
 
 ## Source Files

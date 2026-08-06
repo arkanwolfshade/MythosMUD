@@ -1,40 +1,34 @@
 # services rescue service
 
-> 18 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **.get_metrics()** (6 connections) — `server/game/movement_monitor.py`
-- **.get_alerts()** (6 connections) — `server/game/movement_monitor.py`
-- **.get_performance_summary()** (5 connections) — `server/game/movement_monitor.py`
-- **.record_movement_attempt()** (4 connections) — `server/game/movement_monitor.py`
-- **.validate_room_integrity()** (4 connections) — `server/game/movement_monitor.py`
-- **._check_alerts()** (4 connections) — `server/game/movement_monitor.py`
-- **.log_performance_summary()** (4 connections) — `server/game/movement_monitor.py`
-- **.record_integrity_check()** (3 connections) — `server/game/movement_monitor.py`
-- **Any** (3 connections)
-- **UUID** (2 connections)
-- **Record a movement attempt with metrics.** (1 connections) — `server/game/movement_monitor.py`
-- **Record an integrity check result.** (1 connections) — `server/game/movement_monitor.py`
-- **Validate room data integrity.          Returns a dictionary with validation resu** (1 connections) — `server/game/movement_monitor.py`
-- **Get comprehensive movement metrics.** (1 connections) — `server/game/movement_monitor.py`
-- **Get current alerts based on thresholds.** (1 connections) — `server/game/movement_monitor.py`
-- **Check for alerts and log them.** (1 connections) — `server/game/movement_monitor.py`
-- **Get a formatted performance summary for API responses.          This method enca** (1 connections) — `server/game/movement_monitor.py`
-- **Log a comprehensive performance summary.** (1 connections) — `server/game/movement_monitor.py`
+- **._get_player_mute_file()** (7 connections) — `server/services/user_manager.py`
+- **.__init__()** (4 connections) — `server/services/user_manager.py`
+- **_get_proper_data_dir()** (4 connections) — `server/services/user_manager.py`
+- **Path** (3 connections)
+- **Initialize the user manager.          Args:             data_dir: Directory f** (1 connections) — `server/services/user_manager.py`
+- **Get the mute data file path for a specific player.** (1 connections) — `server/services/user_manager.py`
+- **Get the proper environment-aware data directory for user management.      Uses** (1 connections) — `server/services/user_manager.py`
 
 ## Relationships
 
-- [Loot Generation](Loot_Generation.md) (9 shared connections)
+- [services user manager](services_user_manager.md) (4 shared connections)
+- [chat services logger](chat_services_logger.md) (1 shared connections)
+- [room persistence loader](room_persistence_loader.md) (1 shared connections)
+- [realtime monitoring performance](realtime_monitoring_performance.md) (1 shared connections)
+- [circuit breaker realtime](circuit_breaker_realtime.md) (1 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/movement_monitor.py`
+- `server/services/user_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 49 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 20 (95%)
+- INFERRED: 1 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

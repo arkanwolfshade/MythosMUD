@@ -1,40 +1,45 @@
 # player requests schemas
 
-> 15 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **Any** (10 connections)
-- **._emit_party_updated()** (9 connections) — `server/game/party_service.py`
-- **.disband_party()** (8 connections) — `server/game/party_service.py`
-- **.remove_member()** (8 connections) — `server/game/party_service.py`
-- **.kick_member()** (8 connections) — `server/game/party_service.py`
-- **._notify_player_removed_from_party()** (7 connections) — `server/game/party_service.py`
-- **.__init__()** (6 connections) — `server/game/party_service.py`
-- **._schedule_notification()** (6 connections) — `server/game/party_service.py`
-- **Initialize empty party store. Optionally provide event_bus, connection_manager,** (1 connections) — `server/game/party_service.py`
-- **Emit PartyUpdated event if event_bus is set.** (1 connections) — `server/game/party_service.py`
-- **Disband a party. If by_player_id is given, only the leader may disband.** (1 connections) — `server/game/party_service.py`
-- **Safely schedule an async notification, handling cases where no event loop is run** (1 connections) — `server/game/party_service.py`
-- **Notify a player they have been removed from a party. Resolves leader name.** (1 connections) — `server/game/party_service.py`
-- **Remove a player from a party (leave or internal remove). If leader leaves,** (1 connections) — `server/game/party_service.py`
-- **Remove a member from the party. Only the leader may kick.** (1 connections) — `server/game/party_service.py`
+- **NPCCacheService** (30 connections) — `server/caching/cache_service.py`
+- **TestNPCCacheService** (12 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **_NpcDef** (9 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **_SpawnRule** (8 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_invalidate_caches()** (4 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.npc_service()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_definitions_cache_hit()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_npc_definition_hit_and_miss()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_spawn_rules_cache_hit()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.invalidate_npc_definitions()** (2 connections) — `server/caching/cache_service.py`
+- **.invalidate_spawn_rules()** (2 connections) — `server/caching/cache_service.py`
+- **.test_get_definitions_cache_miss()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_spawn_rules_cache_miss()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **Service for caching NPC definitions and spawn rules.** (1 connections) — `server/caching/cache_service.py`
+- **Invalidate all NPC definition caches.** (1 connections) — `server/caching/cache_service.py`
+- **Invalidate all NPC spawn rule caches.** (1 connections) — `server/caching/cache_service.py`
 
 ## Relationships
 
-- [party game service](party_game_service.md) (16 shared connections)
-- [skill game service](skill_game_service.md) (7 shared connections)
-- [Error Conversion](Error_Conversion.md) (3 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (1 shared connections)
+- [admin commands setstat](admin_commands_setstat.md) (7 shared connections)
+- [player left room](player_left_room.md) (6 shared connections)
+- [services lucidity repository](services_lucidity_repository.md) (5 shared connections)
+- [persistence container helpers](persistence_container_helpers.md) (4 shared connections)
+- [message realtime messaging](message_realtime_messaging.md) (4 shared connections)
+- [ascii map renderer](ascii_map_renderer.md) (3 shared connections)
+- [caching lru cache](caching_lru_cache.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/party_service.py`
+- `server/caching/cache_service.py`
+- `server/tests/unit/caching/test_cache_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 69 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 63 (73%)
+- INFERRED: 23 (27%)
 - AMBIGUOUS: 0 (0%)
 
 ---

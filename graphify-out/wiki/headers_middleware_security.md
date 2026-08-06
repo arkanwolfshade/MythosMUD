@@ -1,36 +1,25 @@
 # headers middleware security
 
-> 15 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_container_persistence_sql_injection.py** (6 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **_create_mock_container_row()** (6 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **TestContainerPersistenceSQLInjection** (6 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **.test_update_container_sql_injection_in_metadata()** (4 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **.test_update_container_uses_parameterized_queries()** (4 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **.test_update_container_safe_column_names()** (4 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **.test_update_container_sql_injection_in_lock_state()** (3 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **UUID** (2 connections)
-- **Tests for SQL injection protection in container persistence operations.  These t** (1 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **Create a complete mock container row with all required columns.** (1 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **Test SQL injection protection in container persistence.** (1 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **Test that SQL injection in lock_state is prevented.** (1 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **Test that SQL injection in metadata_json is prevented.** (1 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **Test that update_container uses parameterized queries, not string concatenation.** (1 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **Test that column names are hardcoded, not from user input.** (1 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
+- **.patrol_territory()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **._handle_patrol_territory()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **Patrol the NPC's territory.** (1 connections) — `server/npc/aggressive_mob_npc.py`
+- **Handle patrolling territory action.** (1 connections) — `server/npc/aggressive_mob_npc.py`
 
 ## Relationships
 
-- [retry nats handler](retry_nats_handler.md) (6 shared connections)
+- [error logging rationale](error_logging_rationale.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/test_container_persistence_sql_injection.py`
+- `server/npc/aggressive_mob_npc.py`
 
 ## Audit Trail
 
-- EXTRACTED: 42 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

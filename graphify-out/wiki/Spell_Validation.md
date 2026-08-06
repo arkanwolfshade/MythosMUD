@@ -33,12 +33,12 @@
 
 ## Relationships
 
-- [player room realtime](player_room_realtime.md) (18 shared connections)
+- [auth endpoints rationale](auth_endpoints_rationale.md) (16 shared connections)
 - [lucidity services helpers](lucidity_services_helpers.md) (7 shared connections)
-- [Error Conversion](Error_Conversion.md) (3 shared connections)
-- [auth endpoints rationale](auth_endpoints_rationale.md) (1 shared connections)
+- [player room realtime](player_room_realtime.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (3 shared connections)
 - [catatonia registry services](catatonia_registry_services.md) (1 shared connections)
-- [command parser rationale](command_parser_rationale.md) (1 shared connections)
+- [lucidity flux passive](lucidity_flux_passive.md) (1 shared connections)
 
 ## Source Files
 

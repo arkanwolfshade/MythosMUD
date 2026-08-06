@@ -1,68 +1,66 @@
 # commands admin helpers
 
-> 138 nodes
+> 119 nodes
 
 ## Key Concepts
 
-- **character_creation.py** (47 connections) — `server/api/character_creation.py`
-- **roll_character_stats()** (23 connections) — `server/api/character_creation.py`
-- **test_character_creation.py** (22 connections) — `server/tests/unit/api/test_character_creation.py`
+- **__init__.py** (38 connections) — `server/schemas/players/__init__.py`
+- **player_effects.py** (30 connections) — `server/api/player_effects.py`
+- **test_player_requests.py** (29 connections) — `server/tests/unit/schemas/test_player_requests.py`
+- **test_player_effects_endpoints.py** (28 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
 - **RollStatsRequest** (20 connections) — `server/schemas/players/player_requests.py`
-- **professions.py** (19 connections) — `server/api/professions.py`
-- **ProfessionService** (19 connections) — `server/game/profession_service.py`
-- **create_character_with_stats()** (18 connections) — `server/api/character_creation.py`
 - **CreateCharacterRequest** (17 connections) — `server/schemas/players/player_requests.py`
-- **test_profession_service.py** (15 connections) — `server/tests/unit/game/test_profession_service.py`
-- **_roll_stats_with_profession_preview()** (14 connections) — `server/api/character_creation.py`
-- **_execute_create_character()** (13 connections) — `server/api/character_creation.py`
-- **validate_character_stats()** (13 connections) — `server/api/character_creation.py`
-- **get_shutdown_blocking_message()** (13 connections) — `server/commands/admin_shutdown_command.py`
-- **profession_service.py** (13 connections) — `server/game/profession_service.py`
+- **player_requests.py** (15 connections) — `server/schemas/players/player_requests.py`
 - **TestRollCharacterStats** (13 connections) — `server/tests/unit/api/test_character_creation.py`
-- **test_professions_endpoints.py** (13 connections) — `server/tests/unit/api/test_professions_endpoints.py`
-- **get_all_professions()** (10 connections) — `server/api/professions.py`
-- **get_profession_by_id()** (10 connections) — `server/api/professions.py`
-- **TestCreateCharacterWithStats** (10 connections) — `server/tests/unit/api/test_character_creation.py`
-- **_convert_stat_summary_to_stat_summary_model()** (9 connections) — `server/api/character_creation.py`
-- **TestValidateCharacterStats** (9 connections) — `server/tests/unit/api/test_character_creation.py`
-- **_check_shutdown_status()** (8 connections) — `server/api/character_creation.py`
-- **_roll_stats_raw()** (8 connections) — `server/api/character_creation.py`
-- **_roll_stats_with_class()** (8 connections) — `server/api/character_creation.py`
-- **_stats_to_rolled_stats()** (7 connections) — `server/api/character_creation.py`
-- *... and 113 more nodes in this community*
+- **apply_lucidity_loss()** (12 connections) — `server/api/player_effects.py`
+- **EffectResponse** (12 connections) — `server/schemas/players/player_effects.py`
+- **LucidityLossRequest** (12 connections) — `server/schemas/players/player_requests.py`
+- **DamageRequest** (12 connections) — `server/schemas/players/player_requests.py`
+- **apply_fear()** (11 connections) — `server/api/player_effects.py`
+- **apply_corruption()** (11 connections) — `server/api/player_effects.py`
+- **gain_occult_knowledge()** (11 connections) — `server/api/player_effects.py`
+- **heal_player()** (11 connections) — `server/api/player_effects.py`
+- **damage_player()** (11 connections) — `server/api/player_effects.py`
+- **BaseModel** (11 connections)
+- **FearRequest** (11 connections) — `server/schemas/players/player_requests.py`
+- **CorruptionRequest** (11 connections) — `server/schemas/players/player_requests.py`
+- **OccultKnowledgeRequest** (11 connections) — `server/schemas/players/player_requests.py`
+- **HealRequest** (11 connections) — `server/schemas/players/player_requests.py`
+- **SelectCharacterRequest** (10 connections) — `server/schemas/players/player_requests.py`
+- **_user()** (8 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
+- **UUID** (7 connections)
+- *... and 94 more nodes in this community*
 
 ## Relationships
 
-- [services inventory mutation](services_inventory_mutation.md) (28 shared connections)
-- [player service game](player_service_game.md) (22 shared connections)
-- [player requests schemas](player_requests_schemas.md) (21 shared connections)
-- [add used user](add_used_user.md) (12 shared connections)
-- [System Metrics](System_Metrics.md) (12 shared connections)
-- [profession game service](profession_game_service.md) (11 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (8 shared connections)
-- [shutdown admin command](shutdown_admin_command.md) (7 shared connections)
-- [Exception Containers](Exception_Containers.md) (7 shared connections)
-- [persistence container rationale](persistence_container_rationale.md) (6 shared connections)
-- [Error Conversion](Error_Conversion.md) (6 shared connections)
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (5 shared connections)
+- [combat npc service](combat_npc_service.md) (24 shared connections)
+- [Player Stats](Player_Stats.md) (22 shared connections)
+- [services inventory mutation](services_inventory_mutation.md) (15 shared connections)
+- [command inventory models](command_inventory_models.md) (12 shared connections)
+- [player requests schemas](player_requests_schemas.md) (8 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (6 shared connections)
+- [invite models rationale](invite_models_rationale.md) (6 shared connections)
+- [persistence container rationale](persistence_container_rationale.md) (3 shared connections)
+- [error websocket handler](error_websocket_handler.md) (3 shared connections)
+- [handler realtime nats](handler_realtime_nats.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [realtime circuit breaker](realtime_circuit_breaker.md) (2 shared connections)
 
 ## Source Files
 
-- `server/api/character_creation.py`
-- `server/api/professions.py`
-- `server/commands/admin_shutdown_command.py`
-- `server/game/profession_service.py`
+- `server/api/player_effects.py`
+- `server/schemas/players/__init__.py`
+- `server/schemas/players/player_effects.py`
 - `server/schemas/players/player_requests.py`
-- `server/schemas/players/profession.py`
+- `server/schemas/players/player_respawn.py`
 - `server/tests/unit/api/test_character_creation.py`
-- `server/tests/unit/api/test_professions_endpoints.py`
-- `server/tests/unit/game/test_profession_service.py`
+- `server/tests/unit/api/test_player_effects_endpoints.py`
 - `server/tests/unit/schemas/test_player_requests.py`
 
 ## Audit Trail
 
-- EXTRACTED: 611 (96%)
-- INFERRED: 26 (4%)
+- EXTRACTED: 562 (97%)
+- INFERRED: 17 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

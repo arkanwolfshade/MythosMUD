@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_cleanup_failed_connection_error()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _cleanup_failed_connection() handles errors during cleanup.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **mock_get_app()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Create a mock get_app callback.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Relationships
 
-- [invite models rationale](invite_models_rationale.md) (1 shared connections)
-- [connection establishment realtime](connection_establishment_realtime.md) (1 shared connections)
+- [game state provider](game_state_provider.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_connection_establishment.py`
+- `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

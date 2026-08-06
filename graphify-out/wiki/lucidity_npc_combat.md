@@ -1,64 +1,62 @@
 # lucidity npc combat
 
-> 85 nodes
+> 45 nodes
 
 ## Key Concepts
 
-- **connection_manager.py** (161 connections) — `server/realtime/connection_manager.py`
 - **send_game_event()** (30 connections) — `server/realtime/connection_manager_api.py`
 - **connection_manager_api.py** (21 connections) — `server/realtime/connection_manager_api.py`
 - **broadcast_game_event()** (12 connections) — `server/realtime/connection_manager_api.py`
 - **resolve_connection_manager()** (10 connections) — `server/realtime/connection_manager_utils.py`
-- **broadcast_connection_message_impl()** (10 connections) — `server/realtime/player_presence_tracker.py`
 - **test_connection_manager_api.py** (10 connections) — `server/tests/unit/realtime/test_connection_manager_api.py`
 - **__getattr__()** (9 connections) — `server/realtime/connection_manager.py`
 - **send_room_event()** (8 connections) — `server/realtime/connection_manager_api.py`
-- **broadcast_global_event_impl()** (8 connections) — `server/realtime/connection_manager_methods.py`
 - **connection_manager_utils.py** (8 connections) — `server/realtime/connection_manager_utils.py`
 - **_ConnectionManagerAPI** (7 connections) — `server/realtime/connection_manager_api.py`
 - **_require_manager()** (7 connections) — `server/realtime/connection_manager_api.py`
 - **send_system_notification()** (7 connections) — `server/realtime/connection_manager_api.py`
 - **send_player_status_update()** (7 connections) — `server/realtime/connection_manager_api.py`
 - **send_room_description()** (7 connections) — `server/realtime/connection_manager_api.py`
-- **broadcast_global_impl()** (7 connections) — `server/realtime/connection_manager_methods.py`
 - **UUID** (6 connections)
-- **periodic_health_check_impl()** (6 connections) — `server/realtime/connection_manager_methods.py`
-- **start_health_checks_impl()** (6 connections) — `server/realtime/connection_manager_methods.py`
-- **convert_room_players_uuids_to_names_impl()** (6 connections) — `server/realtime/connection_manager_methods.py`
-- **get_npcs_batch_impl()** (6 connections) — `server/realtime/connection_manager_methods.py`
-- **get_room_occupants_impl()** (6 connections) — `server/realtime/connection_manager_methods.py`
-- **handle_player_entered_room_impl()** (6 connections) — `server/realtime/connection_manager_methods.py`
-- **handle_player_left_room_impl()** (6 connections) — `server/realtime/connection_manager_methods.py`
-- *... and 60 more nodes in this community*
+- **_ensure_async_compat()** (4 connections) — `server/realtime/connection_manager_utils.py`
+- **.send_personal_message()** (3 connections) — `server/realtime/connection_manager_api.py`
+- **_coerce_connection_manager()** (3 connections) — `server/realtime/connection_manager_utils.py`
+- **_make_async_compat_wrapper()** (3 connections) — `server/realtime/connection_manager_utils.py`
+- **.broadcast_global()** (2 connections) — `server/realtime/connection_manager_api.py`
+- **.broadcast_to_room()** (2 connections) — `server/realtime/connection_manager_api.py`
+- **Lazy import for API utility functions to avoid circular dependencies.** (1 connections) — `server/realtime/connection_manager.py`
+- **Protocol** (1 connections)
+- **Public API utility functions for connection manager.  This module provides conve** (1 connections) — `server/realtime/connection_manager_api.py`
+- **Structural type for API helpers; avoids importing ConnectionManager.** (1 connections) — `server/realtime/connection_manager_api.py`
+- **Resolve manager without importing ConnectionManager (import cycle).** (1 connections) — `server/realtime/connection_manager_api.py`
+- *... and 20 more nodes in this community*
 
 ## Relationships
 
-- [Room Broadcast](Room_Broadcast.md) (56 shared connections)
-- [Error Conversion](Error_Conversion.md) (18 shared connections)
-- [connection disconnection realtime](connection_disconnection_realtime.md) (18 shared connections)
-- [connection realtime delegates](connection_realtime_delegates.md) (12 shared connections)
-- [spell models rationale](spell_models_rationale.md) (10 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (10 shared connections)
-- [movement monitor game](movement_monitor_game.md) (9 shared connections)
-- [container service services](container_service_services.md) (7 shared connections)
-- [party service game](party_service_game.md) (6 shared connections)
-- [connection realtime error](connection_realtime_error.md) (6 shared connections)
-- [nats services service](nats_services_service.md) (6 shared connections)
-- [combat services messaging](combat_services_messaging.md) (6 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (9 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (8 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (7 shared connections)
+- [party service game](party_service_game.md) (5 shared connections)
+- [persistence core infrastructure](persistence_core_infrastructure.md) (4 shared connections)
+- [schemas calendar rationale](schemas_calendar_rationale.md) (2 shared connections)
+- [combat models rationale](combat_models_rationale.md) (2 shared connections)
+- [container persistence rationale](container_persistence_rationale.md) (2 shared connections)
+- [lucidity services helpers](lucidity_services_helpers.md) (2 shared connections)
+- [nats services service](nats_services_service.md) (2 shared connections)
+- [command models moderation](command_models_moderation.md) (1 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
 
 ## Source Files
 
 - `server/realtime/connection_manager.py`
 - `server/realtime/connection_manager_api.py`
-- `server/realtime/connection_manager_methods.py`
 - `server/realtime/connection_manager_utils.py`
-- `server/realtime/player_presence_tracker.py`
 - `server/tests/unit/realtime/test_connection_manager_api.py`
 
 ## Audit Trail
 
-- EXTRACTED: 444 (95%)
-- INFERRED: 22 (5%)
+- EXTRACTED: 171 (90%)
+- INFERRED: 20 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

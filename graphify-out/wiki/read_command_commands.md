@@ -33,10 +33,9 @@
 
 ## Relationships
 
-- [alias storage rationale](alias_storage_rationale.md) (3 shared connections)
-- [realtime real time](realtime_real_time.md) (2 shared connections)
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
-- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (1 shared connections)
+- [commands npc admin](commands_npc_admin.md) (4 shared connections)
+- [character creation service](character_creation_service.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
 - [command inventory factories](command_inventory_factories.md) (1 shared connections)
 - [connection realtime manager](connection_realtime_manager.md) (1 shared connections)
 

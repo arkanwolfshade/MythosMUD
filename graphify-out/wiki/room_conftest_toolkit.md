@@ -1,38 +1,49 @@
 # room conftest toolkit
 
-> 15 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **_lucidity_change_payload_with_liabilities()** (11 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **test_format_liabilities_empty()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **test_format_liabilities_single()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **test_format_liabilities_multiple_stacks()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **test_format_liabilities_multiple_entries()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **test_format_liabilities_invalid_stacks()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **test_format_liabilities_empty_code()** (3 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **LiabilityStackEntry** (2 connections)
-- **Dispatch a lucidity change event and return the payload.** (1 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **Test liability formatting with empty input via send_lucidity_change_event.** (1 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **Test liability formatting with a single liability.** (1 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **Test liability formatting with multiple stacks.** (1 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **Test liability formatting with multiple entries.** (1 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **Test liability formatting with invalid stack values.** (1 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **Test liability formatting skips entries with empty code.** (1 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **MockEventClass** (35 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_unsubscribe_not_found()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_publish()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_unsubscribe_multiple_handlers()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_unsubscribe_all_for_service()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_publish_isolates_sync_subscriber_errors()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_async_subscriber_error_isolation()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_inject_and_get_all_counts()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_stop_processing_and_publish_when_running()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_publish_queue_full_raises()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_inject_queue_full_and_invalid()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Mock event class for testing.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test EventBus.unsubscribe() when handler not found.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test EventBus.publish() queues or processes event.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test EventBus.unsubscribe() with multiple handlers.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test EventBus.unsubscribe_all_for_service() removes all handlers for a service.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- [lucidity services helpers](lucidity_services_helpers.md) (9 shared connections)
-- [player room realtime](player_room_realtime.md) (1 shared connections)
+- [event bus events](event_bus_events.md) (11 shared connections)
+- [services ascii map](services_ascii_map.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [inventory mutation guard](inventory_mutation_guard.md) (1 shared connections)
+- [tsconfig build DOM](tsconfig_build_DOM.md) (1 shared connections)
+- [realtime player presence](realtime_player_presence.md) (1 shared connections)
+- [liability types call](liability_types_call.md) (1 shared connections)
+- [tsconfig app DOM](tsconfig_app_DOM.md) (1 shared connections)
+- [combat npc services](combat_npc_services.md) (1 shared connections)
+- [logging utilities structured](logging_utilities_structured.md) (1 shared connections)
+- [holiday services service](holiday_services_service.md) (1 shared connections)
+- [level game service](level_game_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 37 (97%)
-- INFERRED: 1 (3%)
+- EXTRACTED: 29 (45%)
+- INFERRED: 35 (55%)
 - AMBIGUOUS: 0 (0%)
 
 ---

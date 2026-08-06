@@ -1,6 +1,6 @@
 # inventory commands command
 
-> 84 nodes
+> 86 nodes
 
 ## Key Concepts
 
@@ -22,22 +22,23 @@
 - **test_teleport_command_player_name_max_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
 - **test_goto_command_player_name_min_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
 - **test_goto_command_player_name_max_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
+- **.validate_player_name_field()** (3 connections) — `server/models/command_admin.py`
 - **.validate_direction_field()** (3 connections) — `server/models/command_admin.py`
 - **.validate_player_name_field()** (3 connections) — `server/models/command_admin.py`
 - **test_npc_command_default_values()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
 - **test_npc_command_with_subcommand()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
 - **test_npc_command_with_args()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
 - **test_summon_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_summon_command_validate_prototype_id_valid()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
-- *... and 59 more nodes in this community*
+- *... and 61 more nodes in this community*
 
 ## Relationships
 
-- [dialogue definition persistence](dialogue_definition_persistence.md) (24 shared connections)
-- [add used user](add_used_user.md) (12 shared connections)
+- [dialogue definition persistence](dialogue_definition_persistence.md) (17 shared connections)
+- [command inventory models](command_inventory_models.md) (12 shared connections)
+- [room service sync](room_service_sync.md) (7 shared connections)
 - [command inventory factories](command_inventory_factories.md) (5 shared connections)
 - [exceptions rationale error](exceptions_rationale_error.md) (5 shared connections)
-- [Security Validator Tests](Security_Validator_Tests.md) (2 shared connections)
+- [health models rationale](health_models_rationale.md) (2 shared connections)
 
 ## Source Files
 
@@ -46,7 +47,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 253 (90%)
+- EXTRACTED: 257 (90%)
 - INFERRED: 27 (10%)
 - AMBIGUOUS: 0 (0%)
 

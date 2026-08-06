@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **mock_persistence()** (2 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
-- **Persistence mock with async get_player_by_id for integration tests.** (1 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **test_behavior_engine_init()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test BehaviorEngine initialization.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [services nats service](services_nats_service.md) (1 shared connections)
+- [npc lifecycle combat](npc_lifecycle_combat.md) (1 shared connections)
+- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

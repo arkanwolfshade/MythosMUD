@@ -1,73 +1,71 @@
 # player event handlers
 
-> 333 nodes
+> 296 nodes
 
 ## Key Concepts
 
-- **AsyncPersistenceLayer** (188 connections) — `server/async_persistence.py`
-- **HolidayService** (45 connections) — `server/services/holiday_service.py`
-- **HolidayCollection** (41 connections) — `server/schemas/calendar/calendar.py`
-- **HolidayEntry** (31 connections) — `server/schemas/calendar/calendar.py`
-- **TestHolidayService** (27 connections) — `server/tests/unit/services/test_holiday_service.py`
-- **holiday_service.py** (24 connections) — `server/services/holiday_service.py`
-- **Player** (22 connections)
-- **UUID** (21 connections)
-- **test_calendar_schemas.py** (21 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **Any** (19 connections)
-- **validate_calendar.py** (17 connections) — `scripts/validate_calendar.py`
-- **._ensure_room_cache_loaded()** (13 connections) — `server/async_persistence.py`
-- **ChronicleLike** (13 connections) — `server/time/time_service.py`
-- **ScheduleCollection** (12 connections) — `server/schemas/calendar/calendar.py`
-- **CreateItemInstanceInput** (11 connections) — `server/async_persistence_constants.py`
-- **__init__.py** (10 connections) — `server/schemas/calendar/__init__.py`
-- **run_validation()** (9 connections) — `scripts/validate_calendar.py`
-- **calendar.py** (9 connections) — `server/schemas/calendar/calendar.py`
-- **test_holiday_service.py** (9 connections) — `server/tests/unit/services/test_holiday_service.py`
-- **load_schedule_directory()** (8 connections) — `server/schemas/calendar/calendar.py`
-- **extract_observance_ids()** (8 connections) — `server/schemas/calendar/calendar.py`
-- **_holiday_entry_from_row()** (8 connections) — `server/services/holiday_service.py`
-- **.__init__()** (8 connections) — `server/services/holiday_service.py`
-- **.get_upcoming_holidays()** (8 connections) — `server/services/holiday_service.py`
-- **_get_calendar_paths()** (7 connections) — `scripts/validate_calendar.py`
-- *... and 308 more nodes in this community*
+- **ContainerComponent** (111 connections) — `server/models/container.py`
+- **LootAllRequest** (57 connections) — `server/api/container_models.py`
+- **test_container.py** (38 connections) — `server/tests/unit/models/test_container.py`
+- **container.py** (32 connections) — `server/models/container.py`
+- **ContainerSourceType** (30 connections) — `server/models/container.py`
+- **container_events.py** (26 connections) — `server/api/container_events.py`
+- **test_container_events.py** (25 connections) — `server/tests/unit/api/test_container_events.py`
+- **test_container_helpers_loot.py** (22 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
+- **transfer_all_items_from_container()** (21 connections) — `server/api/container_helpers.py`
+- **corpse_lifecycle_service.py** (19 connections) — `server/services/corpse_lifecycle_service.py`
+- **ContainerLockState** (18 connections) — `server/models/container.py`
+- **TestTransferAllItemsFromContainer** (18 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
+- **emit_transfer_event()** (17 connections) — `server/api/container_events.py`
+- **emit_loot_all_event()** (17 connections) — `server/api/container_events.py`
+- **get_container_and_player_for_loot_all()** (17 connections) — `server/api/container_helpers.py`
+- **container_service_access.py** (17 connections) — `server/services/container_service_access.py`
+- **emit_container_opened_events()** (16 connections) — `server/api/container_events.py`
+- **test_container_events_loot.py** (16 connections) — `server/tests/unit/api/test_container_events_loot.py`
+- **emit_close_container_event()** (15 connections) — `server/api/container_events.py`
+- **environmental_container_loader.py** (14 connections) — `server/services/environmental_container_loader.py`
+- **TestRegisterLootEndpoints** (14 connections) — `server/tests/unit/api/test_container_endpoints_loot_register.py`
+- **TestEmitTransferEvent** (13 connections) — `server/tests/unit/api/test_container_events.py`
+- **TestEmitCloseContainerEvent** (13 connections) — `server/tests/unit/api/test_container_events.py`
+- **TestEmitLootAllEvent** (13 connections) — `server/tests/unit/api/test_container_events_loot.py`
+- **test_container_endpoints_loot.py** (12 connections) — `server/tests/unit/api/test_container_endpoints_loot.py`
+- *... and 271 more nodes in this community*
 
 ## Relationships
 
-- [room realtime occupant](room_realtime_occupant.md) (32 shared connections)
-- [Error Conversion](Error_Conversion.md) (24 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (23 shared connections)
-- [persistence rationale players](persistence_rationale_players.md) (22 shared connections)
-- [persistence container rationale](persistence_container_rationale.md) (10 shared connections)
-- [Exception Containers](Exception_Containers.md) (6 shared connections)
-- [persistence container helpers](persistence_container_helpers.md) (6 shared connections)
-- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (6 shared connections)
-- [EdgeCreationModal map STANDARD](EdgeCreationModal_map_STANDARD.md) (6 shared connections)
-- [services user manager](services_user_manager.md) (5 shared connections)
-- [tick game processing](tick_game_processing.md) (5 shared connections)
-- [lucidity event services](lucidity_event_services.md) (4 shared connections)
+- [Exception Containers](Exception_Containers.md) (50 shared connections)
+- [services inventory mutation](services_inventory_mutation.md) (45 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (42 shared connections)
+- [Game Terminal UI](Game_Terminal_UI.md) (28 shared connections)
+- [alias storage commands](alias_storage_commands.md) (23 shared connections)
+- [add used user](add_used_user.md) (17 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (16 shared connections)
+- [player preferences services](player_preferences_services.md) (14 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (8 shared connections)
+- [player effects endpoints](player_effects_endpoints.md) (8 shared connections)
+- [task registry app](task_registry_app.md) (7 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (7 shared connections)
 
 ## Source Files
 
-- `scripts/validate_calendar.py`
-- `server/async_persistence.py`
-- `server/async_persistence_constants.py`
-- `server/npc/combat_integration_base.py`
-- `server/npc/idle_movement.py`
-- `server/npc/movement_integration.py`
-- `server/schemas/calendar/__init__.py`
-- `server/schemas/calendar/calendar.py`
-- `server/services/holiday_service.py`
-- `server/tests/unit/infrastructure/conftest.py`
-- `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- `server/tests/unit/schemas/test_calendar_schemas.py`
-- `server/tests/unit/services/test_holiday_service.py`
-- `server/time/time_service.py`
+- `server/api/container_events.py`
+- `server/api/container_helpers.py`
+- `server/api/container_models.py`
+- `server/models/container.py`
+- `server/services/container_service_access.py`
+- `server/services/corpse_lifecycle_service.py`
+- `server/services/environmental_container_loader.py`
+- `server/tests/unit/api/test_container_endpoints_loot.py`
+- `server/tests/unit/api/test_container_endpoints_loot_register.py`
+- `server/tests/unit/api/test_container_events.py`
+- `server/tests/unit/api/test_container_events_loot.py`
+- `server/tests/unit/api/test_container_helpers_loot.py`
+- `server/tests/unit/models/test_container.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1213 (94%)
-- INFERRED: 81 (6%)
+- EXTRACTED: 1196 (92%)
+- INFERRED: 108 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,6 +1,6 @@
 # occupant formatter realtime
 
-> 77 nodes
+> 73 nodes
 
 ## Key Concepts
 
@@ -9,14 +9,12 @@
 - **._is_uuid_string()** (8 connections) — `server/realtime/occupant_formatter.py`
 - **._is_valid_name_for_occupant()** (7 connections) — `server/realtime/occupant_formatter.py`
 - **._process_dict_occupant_for_update()** (7 connections) — `server/realtime/occupant_formatter.py`
-- **occupant_formatter.py** (6 connections) — `server/realtime/occupant_formatter.py`
 - **._process_player_name_for_update()** (6 connections) — `server/realtime/occupant_formatter.py`
 - **._process_npc_name_for_update()** (6 connections) — `server/realtime/occupant_formatter.py`
 - **Any** (5 connections)
 - **.separate_occupants_by_type()** (5 connections) — `server/realtime/occupant_formatter.py`
 - **._add_valid_name_to_lists()** (4 connections) — `server/realtime/occupant_formatter.py`
 - **._process_string_occupant_for_update()** (4 connections) — `server/realtime/occupant_formatter.py`
-- **.__init__()** (3 connections) — `server/realtime/occupant_formatter.py`
 - **test_occupant_formatter_init()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
 - **test_occupant_formatter_is_uuid_string_valid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
 - **test_occupant_formatter_is_uuid_string_invalid_length()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
@@ -29,13 +27,16 @@
 - **test_occupant_formatter_is_valid_name_for_occupant_non_string()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
 - **test_occupant_formatter_add_valid_name_to_lists()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
 - **test_occupant_formatter_process_player_name_for_update_valid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- *... and 52 more nodes in this community*
+- **test_occupant_formatter_process_player_name_for_update_uuid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_occupant_formatter_process_npc_name_for_update_valid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- *... and 48 more nodes in this community*
 
 ## Relationships
 
-- [Error Conversion](Error_Conversion.md) (3 shared connections)
-- [schemas players profession](schemas_players_profession.md) (3 shared connections)
-- [profession models rationale](profession_models_rationale.md) (1 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [skill service game](skill_service_game.md) (2 shared connections)
+- [population npc control](population_npc_control.md) (1 shared connections)
+- [schemas players profession](schemas_players_profession.md) (1 shared connections)
 
 ## Source Files
 
@@ -44,7 +45,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 242 (100%)
+- EXTRACTED: 231 (100%)
 - INFERRED: 1 (0%)
 - AMBIGUOUS: 0 (0%)
 

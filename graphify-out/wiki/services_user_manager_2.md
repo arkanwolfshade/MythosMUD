@@ -1,6 +1,6 @@
 # services user manager
 
-> 98 nodes
+> 59 nodes
 
 ## Key Concepts
 
@@ -8,13 +8,8 @@
 - **UUID** (39 connections)
 - **._normalize_to_uuid()** (26 connections) — `server/services/user_manager.py`
 - **.save_player_mutes()** (14 connections) — `server/services/user_manager.py`
-- **.load_player_mutes()** (12 connections) — `server/services/user_manager.py`
 - **.is_admin()** (8 connections) — `server/services/user_manager.py`
-- **._cleanup_player_mutes()** (8 connections) — `server/services/user_manager.py`
 - **.is_admin_sync()** (7 connections) — `server/services/user_manager.py`
-- **datetime** (7 connections)
-- **.get_player_mutes()** (7 connections) — `server/services/user_manager.py`
-- **._get_player_mute_file()** (7 connections) — `server/services/user_manager.py`
 - **.load_player_mutes_async()** (7 connections) — `server/services/user_manager.py`
 - **.add_admin()** (6 connections) — `server/services/user_manager.py`
 - **.remove_admin()** (6 connections) — `server/services/user_manager.py`
@@ -24,26 +19,31 @@
 - **.unmute_global()** (6 connections) — `server/services/user_manager.py`
 - **.is_player_muted()** (6 connections) — `server/services/user_manager.py`
 - **.can_send_message()** (6 connections) — `server/services/user_manager.py`
-- **._cleanup_expired_mutes()** (6 connections) — `server/services/user_manager.py`
-- **._load_player_mutes_from_data()** (6 connections) — `server/services/user_manager.py`
-- **._load_global_mutes_from_data()** (6 connections) — `server/services/user_manager.py`
 - **.load_player_mutes_batch()** (6 connections) — `server/services/user_manager.py`
 - **.mute_channel()** (5 connections) — `server/services/user_manager.py`
-- *... and 73 more nodes in this community*
+- **.unmute_channel()** (5 connections) — `server/services/user_manager.py`
+- **.is_player_muted_async()** (5 connections) — `server/services/user_manager.py`
+- **.is_channel_muted()** (5 connections) — `server/services/user_manager.py`
+- **.is_globally_muted()** (5 connections) — `server/services/user_manager.py`
+- **._update_cache_on_error()** (5 connections) — `server/services/user_manager.py`
+- **._serialize_mute_info_for_json()** (5 connections) — `server/services/user_manager.py`
+- **._save_player_mutes_to_data()** (5 connections) — `server/services/user_manager.py`
+- **._save_channel_mutes_to_data()** (5 connections) — `server/services/user_manager.py`
+- *... and 34 more nodes in this community*
 
 ## Relationships
 
-- [follow game service](follow_game_service.md) (8 shared connections)
-- [player event handlers](player_event_handlers.md) (3 shared connections)
-- [realtime player connection](realtime_player_connection.md) (3 shared connections)
-- [room realtime occupant](room_realtime_occupant.md) (2 shared connections)
+- [realtime monitoring performance](realtime_monitoring_performance.md) (17 shared connections)
+- [room persistence loader](room_persistence_loader.md) (16 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (6 shared connections)
+- [nats services service](nats_services_service.md) (4 shared connections)
+- [services rescue service](services_rescue_service.md) (4 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (3 shared connections)
+- [combat models rationale](combat_models_rationale.md) (2 shared connections)
 - [party service game](party_service_game.md) (2 shared connections)
-- [user manager services](user_manager_services.md) (2 shared connections)
-- [task registry app](task_registry_app.md) (2 shared connections)
-- [websocket realtime handler](websocket_realtime_handler.md) (1 shared connections)
+- [add used user](add_used_user.md) (2 shared connections)
 - [chat services logger](chat_services_logger.md) (1 shared connections)
-- [game chat whisper](game_chat_whisper.md) (1 shared connections)
-- [tools generate invite](tools_generate_invite.md) (1 shared connections)
+- [user manager services](user_manager_services.md) (1 shared connections)
 
 ## Source Files
 
@@ -51,8 +51,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 431 (98%)
-- INFERRED: 9 (2%)
+- EXTRACTED: 302 (97%)
+- INFERRED: 8 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

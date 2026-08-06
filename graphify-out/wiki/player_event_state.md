@@ -1,53 +1,55 @@
 # player event state
 
-> 28 nodes
+> 64 nodes
 
 ## Key Concepts
 
-- **WearableContainerServiceError** (22 connections) — `server/services/wearable_container_service.py`
-- **test_handle_equip_wearable_container_capacity_exceeded()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_add_items_to_wearable_container_not_found()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_add_items_to_wearable_container_capacity_exceeded()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_handle_container_overflow_player_not_found()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_handle_equip_wearable_container_creation_error()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_add_items_to_wearable_container_wrong_player()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_add_items_to_wearable_container_wrong_source_type()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_add_items_to_wearable_container_update_fails()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_update_wearable_container_items_not_found()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_update_wearable_container_items_capacity_exceeded()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_update_wearable_container_items_update_fails()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_update_wearable_container_items_wrong_player()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_update_wearable_container_items_wrong_source_type()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Base exception for wearable container service operations.** (1 connections) — `server/services/wearable_container_service.py`
-- **Test handle_equip_wearable_container raises error when capacity exceeded.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test add_items_to_wearable_container raises error when container not found.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test add_items_to_wearable_container raises error when capacity exceeded.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test handle_container_overflow raises error when player not found.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test handle_equip_wearable_container handles container creation error.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test add_items_to_wearable_container raises error when container belongs to diff** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test add_items_to_wearable_container raises error when container is not equipmen** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test add_items_to_wearable_container raises error when update fails.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test update_wearable_container_items raises error when container not found.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test update_wearable_container_items raises error when capacity exceeded.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- *... and 3 more nodes in this community*
+- **Any** (17 connections)
+- **.publish_with_pool()** (10 connections) — `server/services/nats_service.py`
+- **._create_tracked_task()** (9 connections) — `server/services/nats_service.py`
+- **.connect()** (8 connections) — `server/services/nats_service.py`
+- **.__init__()** (7 connections) — `server/services/nats_service.py`
+- **._flush_batch()** (7 connections) — `server/services/nats_service.py`
+- **.publish_batch()** (6 connections) — `server/services/nats_service.py`
+- **._start_health_monitoring()** (5 connections) — `server/services/nats_service.py`
+- **.publish()** (5 connections) — `server/services/nats_service.py`
+- **._on_error()** (5 connections) — `server/services/nats_service.py`
+- **._get_connection()** (5 connections) — `server/services/nats_service.py`
+- **._retry_failed_batch_groups()** (5 connections) — `server/services/nats_service.py`
+- **._build_connect_options()** (4 connections) — `server/services/nats_service.py`
+- **._configure_tls()** (4 connections) — `server/services/nats_service.py`
+- **._health_check_loop()** (4 connections) — `server/services/nats_service.py`
+- **.subscribe()** (4 connections) — `server/services/nats_service.py`
+- **._handle_error_async()** (4 connections) — `server/services/nats_service.py`
+- **._on_reconnect()** (4 connections) — `server/services/nats_service.py`
+- **NATS** (4 connections)
+- **._return_connection()** (4 connections) — `server/services/nats_service.py`
+- **._batch_timeout()** (4 connections) — `server/services/nats_service.py`
+- **._check_connection_allowed()** (3 connections) — `server/services/nats_service.py`
+- **._setup_connection_handlers()** (3 connections) — `server/services/nats_service.py`
+- **._perform_health_check()** (3 connections) — `server/services/nats_service.py`
+- **._decode_message_data()** (3 connections) — `server/services/nats_service.py`
+- *... and 39 more nodes in this community*
 
 ## Relationships
 
-- [wearable container service](wearable_container_service.md) (14 shared connections)
-- [npc combat service](npc_combat_service.md) (4 shared connections)
-- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
-- [Error Conversion](Error_Conversion.md) (1 shared connections)
-- [player cache rationale](player_cache_rationale.md) (1 shared connections)
+- [combat validator validators](combat_validator_validators.md) (35 shared connections)
+- [Memory Task Runtime](Memory_Task_Runtime.md) (3 shared connections)
+- [connection state machine](connection_state_machine.md) (1 shared connections)
+- [combat commands handler](combat_commands_handler.md) (1 shared connections)
+- [manager subject services](manager_subject_services.md) (1 shared connections)
+- [skill game service](skill_game_service.md) (1 shared connections)
+- [game chat service](game_chat_service.md) (1 shared connections)
+- [broker infrastructure nats](broker_infrastructure_nats.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/wearable_container_service.py`
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `server/services/nats_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 45 (60%)
-- INFERRED: 30 (40%)
+- EXTRACTED: 190 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

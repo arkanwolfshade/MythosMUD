@@ -1,52 +1,51 @@
 # message broadcast realtime
 
-> 80 nodes
+> 34 nodes
 
 ## Key Concepts
 
-- **DeadLetterQueue** (37 connections) — `server/realtime/dead_letter_queue.py`
-- **test_dead_letter_queue.py** (28 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
-- **DeadLetterMessage** (27 connections) — `server/realtime/dead_letter_queue.py`
-- **Any** (7 connections)
-- **.from_dict()** (6 connections) — `server/realtime/dead_letter_queue.py`
-- **.to_dict()** (5 connections) — `server/realtime/dead_letter_queue.py`
-- **.enqueue_async()** (5 connections) — `server/realtime/dead_letter_queue.py`
-- **Path** (5 connections)
-- **.enqueue()** (5 connections) — `server/realtime/dead_letter_queue.py`
-- **.__init__()** (4 connections) — `server/realtime/dead_letter_queue.py`
-- **.replay_message()** (4 connections) — `server/realtime/dead_letter_queue.py`
-- **test_enqueue_creates_file()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
-- **test_enqueue_writes_correct_data()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
-- **test_dequeue_returns_oldest_message()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
-- **test_dequeue_removes_file()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
-- **test_get_statistics_with_messages()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
-- **test_list_messages_returns_all()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
-- **test_list_messages_respects_limit()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
-- **test_list_messages_handles_read_error()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
-- **test_replay_message()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
-- **test_delete_message()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
-- **test_cleanup_old_messages()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
-- **test_cleanup_old_messages_no_old_messages()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
-- **.dequeue_async()** (3 connections) — `server/realtime/dead_letter_queue.py`
-- **.dequeue()** (3 connections) — `server/realtime/dead_letter_queue.py`
-- *... and 55 more nodes in this community*
+- **test_communication_commands_channels.py** (20 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **handle_global_command()** (11 connections) — `server/commands/communication_commands.py`
+- **handle_local_command()** (10 connections) — `server/commands/communication_commands.py`
+- **handle_system_command()** (10 connections) — `server/commands/communication_commands.py`
+- **test_handle_local_command_success()** (4 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_global_command_level_too_low()** (4 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_global_command_success()** (4 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_system_command_not_admin()** (4 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_system_command_success()** (4 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_local_command_no_room()** (4 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_global_command_player_not_found()** (4 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_local_command_no_message()** (3 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_local_command_no_services()** (3 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_global_command_no_message()** (3 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_global_command_no_services()** (3 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_system_command_no_message()** (3 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **test_handle_system_command_no_services()** (3 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **Local channel message.** (1 connections) — `server/commands/communication_commands.py`
+- **Global channel message (level-gated in flow).** (1 connections) — `server/commands/communication_commands.py`
+- **Admin-only system broadcast.** (1 connections) — `server/commands/communication_commands.py`
+- **Unit tests for local, global, and system chat command handlers.** (1 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **Test handle_local_command with no message.** (1 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **Test handle_local_command when services are not available.** (1 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **Test handle_local_command successful execution.** (1 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- **Test handle_global_command with no message.** (1 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [follow game service](follow_game_service.md) (6 shared connections)
-- [Error Conversion](Error_Conversion.md) (4 shared connections)
-- [persistence combat services](persistence_combat_services.md) (4 shared connections)
-- [tools generate invite](tools_generate_invite.md) (1 shared connections)
+- [character creation service](character_creation_service.md) (12 shared connections)
+- [commands communication flows](commands_communication_flows.md) (7 shared connections)
+- [commands npc admin](commands_npc_admin.md) (3 shared connections)
 
 ## Source Files
 
-- `server/realtime/dead_letter_queue.py`
-- `server/tests/unit/realtime/test_dead_letter_queue.py`
+- `server/commands/communication_commands.py`
+- `server/tests/unit/commands/test_communication_commands_channels.py`
 
 ## Audit Trail
 
-- EXTRACTED: 268 (98%)
-- INFERRED: 5 (2%)
+- EXTRACTED: 114 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

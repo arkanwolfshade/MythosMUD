@@ -29,11 +29,10 @@
 
 ## Relationships
 
-- [Error Conversion](Error_Conversion.md) (3 shared connections)
-- [command parser rationale](command_parser_rationale.md) (3 shared connections)
-- [manager subject services](manager_subject_services.md) (2 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (1 shared connections)
-- [lucidity flux passive](lucidity_flux_passive.md) (1 shared connections)
+- [manager subject services](manager_subject_services.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (3 shared connections)
+- [lucidity flux passive](lucidity_flux_passive.md) (2 shared connections)
+- [player room realtime](player_room_realtime.md) (2 shared connections)
 
 ## Source Files
 

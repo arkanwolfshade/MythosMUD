@@ -1,27 +1,43 @@
 # room persistence loader
 
-> 5 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **.__init__()** (4 connections) — `server/services/npc_combat_rewards.py`
-- **.calculate_xp_reward()** (3 connections) — `server/services/npc_combat_rewards.py`
-- **Any** (2 connections)
-- **Initialize the rewards manager.          Args:             async_persistence: As** (1 connections) — `server/services/npc_combat_rewards.py`
-- **Calculate XP reward from NPC definition.          Args:             npc_definiti** (1 connections) — `server/services/npc_combat_rewards.py`
+- **._cleanup_player_mutes()** (8 connections) — `server/services/user_manager.py`
+- **datetime** (7 connections)
+- **.get_player_mutes()** (7 connections) — `server/services/user_manager.py`
+- **._cleanup_expired_mutes()** (6 connections) — `server/services/user_manager.py`
+- **._get_active_player_mutes()** (5 connections) — `server/services/user_manager.py`
+- **._get_active_channel_mutes()** (5 connections) — `server/services/user_manager.py`
+- **._get_active_global_mutes()** (5 connections) — `server/services/user_manager.py`
+- **._cleanup_channel_mutes()** (4 connections) — `server/services/user_manager.py`
+- **._cleanup_global_mutes()** (4 connections) — `server/services/user_manager.py`
+- **.get_system_stats()** (3 connections) — `server/services/user_manager.py`
+- **Get active player mutes for a player.** (1 connections) — `server/services/user_manager.py`
+- **Get active channel mutes for a player.** (1 connections) — `server/services/user_manager.py`
+- **Get active global mutes applied by a player.** (1 connections) — `server/services/user_manager.py`
+- **Get all mutes applied by a player.          Args:             player_id: Play** (1 connections) — `server/services/user_manager.py`
+- **Get system-wide user management statistics.          Returns:             Dic** (1 connections) — `server/services/user_manager.py`
+- **Clean up expired player mutes.** (1 connections) — `server/services/user_manager.py`
+- **Clean up expired channel mutes.** (1 connections) — `server/services/user_manager.py`
+- **Clean up expired global mutes.** (1 connections) — `server/services/user_manager.py`
+- **Clean up expired mutes from all storage.** (1 connections) — `server/services/user_manager.py`
+- **Remove mute data for a player from memory and optionally delete their file.** (1 connections) — `server/services/user_manager.py`
 
 ## Relationships
 
-- [player event realtime](player_event_realtime.md) (2 shared connections)
-- [add used user](add_used_user.md) (1 shared connections)
+- [services user manager](services_user_manager.md) (16 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
+- [services rescue service](services_rescue_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/npc_combat_rewards.py`
+- `server/services/user_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 64 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

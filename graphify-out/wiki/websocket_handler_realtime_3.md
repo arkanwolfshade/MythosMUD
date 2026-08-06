@@ -1,13 +1,11 @@
 # websocket handler realtime
 
-> 86 nodes
+> 81 nodes
 
 ## Key Concepts
 
 - **CircuitBreaker** (43 connections) — `server/realtime/circuit_breaker.py`
 - **test_circuit_breaker.py** (31 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **CircuitBreakerOpen** (14 connections) — `server/realtime/circuit_breaker.py`
-- **circuit_breaker.py** (12 connections) — `server/realtime/circuit_breaker.py`
 - **.call()** (9 connections) — `server/realtime/circuit_breaker.py`
 - **CircuitState** (6 connections) — `server/realtime/circuit_breaker.py`
 - **._transition_to()** (6 connections) — `server/realtime/circuit_breaker.py`
@@ -29,14 +27,14 @@
 - **test_call_reopens_from_half_open_on_failure()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
 - **test_on_success_resets_failure_count_closed()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
 - **test_on_success_increments_success_count_half_open()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- *... and 61 more nodes in this community*
+- **test_on_failure_increments_failure_count()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_on_failure_opens_circuit_at_threshold()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- *... and 56 more nodes in this community*
 
 ## Relationships
 
-- [follow game service](follow_game_service.md) (8 shared connections)
-- [Error Conversion](Error_Conversion.md) (4 shared connections)
-- [nats message handler](nats_message_handler.md) (4 shared connections)
-- [persistence combat services](persistence_combat_services.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (11 shared connections)
+- [command parser helpers](command_parser_helpers.md) (2 shared connections)
 
 ## Source Files
 
@@ -45,8 +43,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 267 (97%)
-- INFERRED: 7 (3%)
+- EXTRACTED: 242 (99%)
+- INFERRED: 3 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

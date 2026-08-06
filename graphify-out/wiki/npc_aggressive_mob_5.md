@@ -4,22 +4,20 @@
 
 ## Key Concepts
 
-- **test_establish_websocket_connection_error()** (4 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test establish_websocket_connection() handles errors.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **mock_send_personal_message()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Create a mock send_personal_message callback.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Relationships
 
-- [commands shutdown process](commands_shutdown_process.md) (1 shared connections)
-- [invite models rationale](invite_models_rationale.md) (1 shared connections)
-- [connection establishment realtime](connection_establishment_realtime.md) (1 shared connections)
+- [game state provider](game_state_provider.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_connection_establishment.py`
+- `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

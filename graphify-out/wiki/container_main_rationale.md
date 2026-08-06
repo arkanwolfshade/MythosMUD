@@ -1,28 +1,25 @@
 # container main rationale
 
-> 6 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **.generate_fake_npc_tell()** (4 connections) — `server/services/fake_hallucination_service.py`
-- **.generate_room_text_overlay()** (4 connections) — `server/services/fake_hallucination_service.py`
-- **UUID** (3 connections)
-- **Any** (2 connections)
-- **Generate a fake NPC tell hallucination.          Args:             player_id: Pl** (1 connections) — `server/services/fake_hallucination_service.py`
-- **Generate a room text overlay hallucination.          Args:             player_id** (1 connections) — `server/services/fake_hallucination_service.py`
+- **sub_zone** (4 connections) — `schemas/intersection_schema.json`
+- **type** (1 connections) — `schemas/intersection_schema.json`
+- **pattern** (1 connections) — `schemas/intersection_schema.json`
+- **description** (1 connections) — `schemas/intersection_schema.json`
 
 ## Relationships
 
-- [npc population stats](npc_population_stats.md) (2 shared connections)
-- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [schemas intersection schema](schemas_intersection_schema.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/fake_hallucination_service.py`
+- `schemas/intersection_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

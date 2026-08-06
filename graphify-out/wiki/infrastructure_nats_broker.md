@@ -1,26 +1,25 @@
 # infrastructure nats broker
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **sub_zone** (4 connections) — `schemas/intersection_schema.json`
-- **type** (1 connections) — `schemas/intersection_schema.json`
-- **pattern** (1 connections) — `schemas/intersection_schema.json`
-- **description** (1 connections) — `schemas/intersection_schema.json`
+- **test_get_subscriber_stats()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test EventBus.get_subscriber_stats() returns subscriber statistics.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- [schemas intersection schema](schemas_intersection_schema.md) (1 shared connections)
+- [event bus events](event_bus_events.md) (1 shared connections)
+- [room conftest toolkit](room_conftest_toolkit.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/intersection_schema.json`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

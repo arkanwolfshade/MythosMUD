@@ -1,46 +1,48 @@
 # monitoring dashboard rationale
 
-> 25 nodes
+> 36 nodes
 
 ## Key Concepts
 
-- **Any** (12 connections)
-- **._try_evaluators()** (7 connections) — `server/npc/behavior_engine.py`
-- **.evaluate_condition()** (6 connections) — `server/npc/behavior_engine.py`
-- **.get_applicable_rules()** (5 connections) — `server/npc/behavior_engine.py`
-- **.execute_applicable_rules()** (5 connections) — `server/npc/behavior_engine.py`
-- **._evaluate_equality()** (4 connections) — `server/npc/behavior_engine.py`
-- **._evaluate_inequality()** (4 connections) — `server/npc/behavior_engine.py`
-- **._evaluate_numeric_comparison()** (4 connections) — `server/npc/behavior_engine.py`
-- **._evaluate_boolean_condition()** (4 connections) — `server/npc/behavior_engine.py`
-- **.execute_action()** (4 connections) — `server/npc/behavior_engine.py`
-- **.add_rule()** (3 connections) — `server/npc/behavior_engine.py`
-- **.get_rules()** (3 connections) — `server/npc/behavior_engine.py`
-- **.register_action_handler()** (3 connections) — `server/npc/behavior_engine.py`
-- **Add a behavior rule to the engine.          Args:             rule: Rule diction** (1 connections) — `server/npc/behavior_engine.py`
-- **Get all behavior rules.** (1 connections) — `server/npc/behavior_engine.py`
-- **Evaluate equality condition (==).          Returns:             bool if conditio** (1 connections) — `server/npc/behavior_engine.py`
-- **Evaluate inequality condition (!=).          Returns:             bool if condit** (1 connections) — `server/npc/behavior_engine.py`
-- **Evaluate numeric comparison conditions (>=, <=, >, <).          Args:** (1 connections) — `server/npc/behavior_engine.py`
-- **Try multiple evaluator methods in sequence.          Args:             condition** (1 connections) — `server/npc/behavior_engine.py`
-- **Evaluate boolean conditions and variable lookups.          Args:             con** (1 connections) — `server/npc/behavior_engine.py`
-- **Evaluate a condition string against context.          Args:             conditio** (1 connections) — `server/npc/behavior_engine.py`
-- **Get rules that are applicable given the current context.          Args:** (1 connections) — `server/npc/behavior_engine.py`
-- **Register an action handler for a specific action.          Args:             act** (1 connections) — `server/npc/behavior_engine.py`
-- **Execute a specific action.          Args:             action_name: Name of the a** (1 connections) — `server/npc/behavior_engine.py`
-- **Execute all applicable rules based on context.          Args:             contex** (1 connections) — `server/npc/behavior_engine.py`
+- **test_room_id_utils.py** (15 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **.normalize_room_id_for_comparison()** (7 connections) — `server/realtime/room_id_utils.py`
+- **.check_normalized_ids_match()** (5 connections) — `server/realtime/room_id_utils.py`
+- **.check_normalized_room_matches()** (5 connections) — `server/realtime/room_id_utils.py`
+- **.check_npc_room_match()** (5 connections) — `server/realtime/room_id_utils.py`
+- **.check_fallback_room_matches()** (4 connections) — `server/realtime/room_id_utils.py`
+- **test_room_id_utils_init()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_get_canonical_room_id()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_get_canonical_room_id_no_manager()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_normalize_room_id_for_comparison_none()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_normalize_room_id_for_comparison_string()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_normalize_room_id_for_comparison_whitespace()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_normalize_room_id_for_comparison_empty()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_check_normalized_ids_match()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_check_normalized_ids_match_none()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_check_normalized_room_matches()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_check_fallback_room_matches()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **test_check_npc_room_match()** (3 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **Normalize room ID for comparison.          Args:             rid: Room ID to nor** (1 connections) — `server/realtime/room_id_utils.py`
+- **Check if two normalized room IDs match.          Args:             id1: First no** (1 connections) — `server/realtime/room_id_utils.py`
+- **Check if normalized NPC room IDs match normalized target room IDs.          Args** (1 connections) — `server/realtime/room_id_utils.py`
+- **Check if NPC room IDs match target room IDs using fallback comparison.** (1 connections) — `server/realtime/room_id_utils.py`
+- **Check if NPC room matches target room using normalized comparison.          Args** (1 connections) — `server/realtime/room_id_utils.py`
+- **Unit tests for room ID utilities.  Tests the RoomIDUtils class for room ID norma** (1 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- **Test RoomIDUtils initialization.** (1 connections) — `server/tests/unit/realtime/test_room_id_utils.py`
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
-- [room occupant manager](room_occupant_manager.md) (12 shared connections)
+- [schemas players profession](schemas_players_profession.md) (11 shared connections)
 
 ## Source Files
 
-- `server/npc/behavior_engine.py`
+- `server/realtime/room_id_utils.py`
+- `server/tests/unit/realtime/test_room_id_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 76 (100%)
+- EXTRACTED: 95 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

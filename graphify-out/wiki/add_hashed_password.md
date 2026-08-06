@@ -1,25 +1,25 @@
 # add hashed password
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **fakerandom()** (3 connections) — `server/tests/fixtures/unit/__init__.py`
-- **Any** (1 connections)
-- **Provide deterministic random seed for unit tests.** (1 connections) — `server/tests/fixtures/unit/__init__.py`
+- **test_event_bus_subscribe_multiple()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test EventBus.subscribe() with multiple handlers.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- [nats services service](nats_services_service.md) (1 shared connections)
+- [event bus events](event_bus_events.md) (1 shared connections)
+- [room conftest toolkit](room_conftest_toolkit.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/fixtures/unit/__init__.py`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

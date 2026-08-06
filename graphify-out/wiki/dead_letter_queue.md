@@ -1,45 +1,42 @@
 # dead letter queue
 
-> 15 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **MagicBundle** (22 connections) — `server/container/bundles/magic.py`
-- **_create_registry_and_targeting()** (15 connections) — `server/container/bundles/magic.py`
-- **_create_learning_mp_regen_and_magic()** (11 connections) — `server/container/bundles/magic.py`
-- **_validate_magic_prerequisites()** (6 connections) — `server/container/bundles/magic.py`
-- **.initialize()** (6 connections) — `server/container/bundles/magic.py`
-- **test_magic_bundle_create_registry_and_targeting()** (3 connections) — `server/tests/unit/container/test_container_bundles.py`
-- **test_magic_create_learning_mp_regen_and_magic()** (3 connections) — `server/tests/unit/container/test_container_bundles.py`
-- **Any** (2 connections)
-- **test_magic_validate_prerequisites()** (2 connections) — `server/tests/unit/container/test_container_bundles.py`
-- **test_magic_bundle_initialize_unit_test()** (2 connections) — `server/tests/unit/container/test_container_bundles.py`
-- **Raise if prerequisites for magic services are missing.** (1 connections) — `server/container/bundles/magic.py`
-- **Create spell registry, targeting, and effects services. Return (spell_registry,** (1 connections) — `server/container/bundles/magic.py`
-- **Create spell learning, MP regen, and magic services; link magic to combat.** (1 connections) — `server/container/bundles/magic.py`
-- **Magic system services.** (1 connections) — `server/container/bundles/magic.py`
-- **Initialize magic services.** (1 connections) — `server/container/bundles/magic.py`
+- **Any** (7 connections)
+- **.__init__()** (6 connections) — `server/services/room_sync_service.py`
+- **._handle_stale_room_data()** (6 connections) — `server/services/room_sync_service.py`
+- **._process_room_update_with_validation()** (4 connections) — `server/services/room_sync_service.py`
+- **._fetch_fresh_room_data()** (4 connections) — `server/services/room_sync_service.py`
+- **.set_room_service()** (3 connections) — `server/services/room_sync_service.py`
+- **._invalidate_stale_cache()** (3 connections) — `server/services/room_sync_service.py`
+- **._process_room_transition()** (3 connections) — `server/services/room_sync_service.py`
+- **.get_room_data_cache_stats()** (3 connections) — `server/services/room_sync_service.py`
+- **Initialize the room synchronization service.          Args:             room_ser** (1 connections) — `server/services/room_sync_service.py`
+- **Set the room service for fetching fresh room data.          Args:             ro** (1 connections) — `server/services/room_sync_service.py`
+- **Process room update with comprehensive validation.          Args:             ro** (1 connections) — `server/services/room_sync_service.py`
+- **Invalidate stale room cache entry.          Args:             room_id: Room ID t** (1 connections) — `server/services/room_sync_service.py`
+- **Fetch fresh room data from room service.          Args:             room_id: Roo** (1 connections) — `server/services/room_sync_service.py`
+- **Handle stale room data by requesting fresh data.          Args:             room** (1 connections) — `server/services/room_sync_service.py`
+- **Process room transition with proper ordering and validation.          Args:** (1 connections) — `server/services/room_sync_service.py`
+- **Get statistics about the room data cache.          Returns:             Dict[str** (1 connections) — `server/services/room_sync_service.py`
 
 ## Relationships
 
-- [nats services service](nats_services_service.md) (11 shared connections)
-- [websocket realtime handler](websocket_realtime_handler.md) (9 shared connections)
-- [persistence core infrastructure](persistence_core_infrastructure.md) (9 shared connections)
-- [panels domPurifyClient chat](panels_domPurifyClient_chat.md) (2 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (2 shared connections)
-- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (2 shared connections)
-- [player respawn event](player_respawn_event.md) (2 shared connections)
-- [coercion int inventory](coercion_int_inventory.md) (2 shared connections)
+- [inventory mutation guard](inventory_mutation_guard.md) (8 shared connections)
+- [room fixer services](room_fixer_services.md) (1 shared connections)
+- [rate limiter rationale](rate_limiter_rationale.md) (1 shared connections)
+- [room validator services](room_validator_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/container/bundles/magic.py`
-- `server/tests/unit/container/test_container_bundles.py`
+- `server/services/room_sync_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 66 (86%)
-- INFERRED: 11 (14%)
+- EXTRACTED: 47 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

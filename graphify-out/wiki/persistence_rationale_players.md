@@ -1,71 +1,64 @@
 # persistence rationale players
 
-> 309 nodes
+> 88 nodes
 
 ## Key Concepts
 
-- **Player** (240 connections) — `server/models/player.py`
-- **test_player_respawn_service.py** (54 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **test_player_model.py** (48 connections) — `server/tests/unit/models/test_player_model.py`
-- **test_async_persistence_delegates.py** (35 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **HealthRepository** (31 connections) — `server/persistence/repositories/health_repository.py`
-- **get_async_persistence()** (19 connections) — `server/async_persistence.py`
-- **test_health_repository.py** (19 connections) — `server/tests/unit/persistence/repositories/test_health_repository.py`
-- **.get_stats()** (13 connections) — `server/models/player.py`
-- **.update_player_health()** (8 connections) — `server/persistence/repositories/health_repository.py`
-- **._damage_player_inner()** (7 connections) — `server/persistence/repositories/health_repository.py`
-- **_utc_now()** (7 connections) — `server/services/player_respawn_service.py`
-- **test_health_repository_cold_resistance.py** (7 connections) — `server/tests/unit/persistence/test_health_repository_cold_resistance.py`
-- **reset_async_persistence()** (6 connections) — `server/async_persistence.py`
-- **.set_stats()** (6 connections) — `server/models/player.py`
-- **_stats_int()** (6 connections) — `server/persistence/repositories/health_repository.py`
-- **Player** (6 connections)
-- **._heal_player_inner()** (6 connections) — `server/persistence/repositories/health_repository.py`
-- **.apply_dp_decay()** (5 connections) — `server/models/player.py`
-- **.restore_to_full_health()** (5 connections) — `server/models/player.py`
-- **.apply_dp_change()** (5 connections) — `server/models/player.py`
-- **._log_damage_error()** (5 connections) — `server/persistence/repositories/health_repository.py`
-- **._update_player_health_inner()** (5 connections) — `server/persistence/repositories/health_repository.py`
-- **.damage_player()** (5 connections) — `server/persistence/repositories/health_repository.py`
-- **quest_seed_data()** (5 connections) — `server/tests/integration/test_quest_flow.py`
-- **.is_alive()** (4 connections) — `server/models/player.py`
-- *... and 284 more nodes in this community*
+- **command_result_text()** (41 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
+- **test_inventory_put_command.py** (24 connections) — `server/tests/unit/commands/test_inventory_put_command.py`
+- **inventory_put_command.py** (22 connections) — `server/commands/inventory_put_command.py`
+- **test_inventory_commands.py** (20 connections) — `server/tests/unit/commands/test_inventory_commands.py`
+- **PickupTestWiring** (19 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
+- **test_inventory_commands_pickup.py** (17 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
+- **handle_put_command()** (16 connections) — `server/commands/inventory_put_command.py`
+- **handle_inventory_command()** (13 connections) — `server/commands/inventory_commands.py`
+- **_put_resolve_container_id()** (13 connections) — `server/commands/inventory_put_command.py`
+- **_put_transfer_finish()** (13 connections) — `server/commands/inventory_put_command.py`
+- **_put_run_validated()** (10 connections) — `server/commands/inventory_put_command.py`
+- **inventory_commands_test_support.py** (10 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
+- **PutCommandRuntime** (7 connections) — `server/commands/inventory_put_command.py`
+- **PutValidatedWork** (7 connections) — `server/commands/inventory_put_command.py`
+- **test_handle_pickup_command()** (7 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
+- **test_handle_pickup_command_inventory_capacity_error()** (7 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
+- **sample_floor_item_stack()** (6 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
+- **_pickup_with_persist_patch()** (6 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
+- **test_handle_pickup_command_persist_failure_restores_drop_and_inventory()** (6 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
+- **test_put_run_validated_container_error()** (6 connections) — `server/tests/unit/commands/test_inventory_put_command.py`
+- **test_put_run_validated_success()** (6 connections) — `server/tests/unit/commands/test_inventory_put_command.py`
+- **inventory_has_named_item()** (5 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
+- **test_handle_drop_command_broadcasts_room_event_after_persist()** (5 connections) — `server/tests/unit/commands/test_inventory_commands.py`
+- **test_handle_pickup_command_no_target()** (5 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
+- **test_handle_pickup_command_no_room_manager()** (5 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
+- *... and 63 more nodes in this community*
 
 ## Relationships
 
-- [player room realtime](player_room_realtime.md) (54 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (53 shared connections)
-- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (29 shared connections)
-- [player event handlers](player_event_handlers.md) (22 shared connections)
-- [player service game](player_service_game.md) (13 shared connections)
-- [realtime websocket initial](realtime_websocket_initial.md) (9 shared connections)
-- [player cache rationale](player_cache_rationale.md) (8 shared connections)
-- [add used user](add_used_user.md) (7 shared connections)
-- [profession models rationale](profession_models_rationale.md) (6 shared connections)
+- [database helpers infrastructure](database_helpers_infrastructure.md) (26 shared connections)
+- [game weapon player](game_weapon_player.md) (13 shared connections)
+- [player cache rationale](player_cache_rationale.md) (12 shared connections)
+- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (5 shared connections)
 - [task registry app](task_registry_app.md) (5 shared connections)
-- [combat npc service](combat_npc_service.md) (5 shared connections)
-- [realtime maintenance connection](realtime_maintenance_connection.md) (4 shared connections)
+- [commands npc admin](commands_npc_admin.md) (4 shared connections)
+- [game rationale schemas](game_rationale_schemas.md) (3 shared connections)
+- [container inventory helpers](container_inventory_helpers.md) (3 shared connections)
+- [character creation service](character_creation_service.md) (2 shared connections)
+- [container inventory display](container_inventory_display.md) (2 shared connections)
+- [player room realtime](player_room_realtime.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
 
 ## Source Files
 
-- `server/async_persistence.py`
-- `server/models/player.py`
-- `server/persistence/repositories/health_repository.py`
-- `server/services/player_respawn_service.py`
-- `server/tests/integration/test_quest_flow.py`
-- `server/tests/unit/commands/test_inventory_commands_persistence_helpers.py`
-- `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- `server/tests/unit/models/test_player_model.py`
-- `server/tests/unit/persistence/repositories/test_health_repository.py`
-- `server/tests/unit/persistence/test_health_repository_cold_resistance.py`
-- `server/tests/unit/services/test_player_death_service.py`
-- `server/tests/unit/services/test_player_respawn_service.py`
+- `server/commands/inventory_commands.py`
+- `server/commands/inventory_put_command.py`
+- `server/tests/unit/commands/inventory_commands_test_support.py`
+- `server/tests/unit/commands/test_inventory_commands.py`
+- `server/tests/unit/commands/test_inventory_commands_pickup.py`
+- `server/tests/unit/commands/test_inventory_put_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 952 (86%)
-- INFERRED: 156 (14%)
+- EXTRACTED: 392 (92%)
+- INFERRED: 36 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

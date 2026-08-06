@@ -1,21 +1,19 @@
 # commands communication flows
 
-> 19 nodes
+> 17 nodes
 
 ## Key Concepts
 
 - **Lint Remediation Prompt - AI-Optimized Version** (11 connections) — `.cursor/commands/lint-remediation.md`
 - **🚨 AI ERROR HANDLING** (3 connections) — `.cursor/commands/lint-remediation.md`
-- **📊 LINT ISSUE CATEGORIZATION GUIDE** (3 connections) — `.cursor/commands/lint-remediation.md`
 - **🔍 DEBUGGING GUIDE** (3 connections) — `.cursor/commands/lint-remediation.md`
 - **🚀 OPTIMIZATION TIPS** (3 connections) — `.cursor/commands/lint-remediation.md`
 - **📝 DOCUMENTATION REQUIREMENTS** (3 connections) — `.cursor/commands/lint-remediation.md`
+- **lint-remediation.md** (2 connections) — `.cursor/commands/lint-remediation.md`
 - **If Lint Still Fails After Fixes** (1 connections) — `.cursor/commands/lint-remediation.md`
 - **If Multiple Categories Have Issues** (1 connections) — `.cursor/commands/lint-remediation.md`
 - **📋 AI EXECUTION CHECKLIST** (1 connections) — `.cursor/commands/lint-remediation.md`
 - **🎯 AI SUCCESS METRICS** (1 connections) — `.cursor/commands/lint-remediation.md`
-- **Python/Ruff Error Codes** (1 connections) — `.cursor/commands/lint-remediation.md`
-- **React/ESLint Error Codes** (1 connections) — `.cursor/commands/lint-remediation.md`
 - **If Lint Command Fails** (1 connections) — `.cursor/commands/lint-remediation.md`
 - **If Specific Issues Persist** (1 connections) — `.cursor/commands/lint-remediation.md`
 - **For Large Codebases** (1 connections) — `.cursor/commands/lint-remediation.md`
@@ -28,6 +26,7 @@
 
 - [monitoring models rationale](monitoring_models_rationale.md) (1 shared connections)
 - [level service game](level_service_game.md) (1 shared connections)
+- [cache caching lru](cache_caching_lru.md) (1 shared connections)
 - [lint remediation commands](lint_remediation_commands.md) (1 shared connections)
 
 ## Source Files
@@ -36,7 +35,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 39 (100%)
+- EXTRACTED: 36 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

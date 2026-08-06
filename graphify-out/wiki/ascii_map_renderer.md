@@ -17,8 +17,8 @@
 
 ## Relationships
 
-- [uuid services npc](uuid_services_npc.md) (3 shared connections)
-- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [player requests schemas](player_requests_schemas.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
 
 ## Source Files
 

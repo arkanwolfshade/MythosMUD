@@ -1,42 +1,39 @@
 # panels monitoringPanelTestFixtures Monit
 
-> 14 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **_apply_exploration_filter_if_needed()** (13 connections) — `server/api/rooms.py`
-- **test_apply_exploration_filter_superuser_bypasses_filter()** (6 connections) — `server/tests/unit/api/test_rooms_exploration_filter.py`
-- **test_apply_exploration_filter_admin_sees_all_rooms_when_filter_requested()** (6 connections) — `server/tests/unit/api/test_rooms_exploration_filter.py`
-- **test_apply_exploration_filter_non_admin_uses_room_service_intersection()** (6 connections) — `server/tests/unit/api/test_rooms_exploration_filter.py`
-- **test_apply_exploration_filter_no_player_returns_unfiltered()** (6 connections) — `server/tests/unit/api/test_rooms_exploration_filter.py`
-- **RoomDictList** (5 connections)
-- **sample_rooms()** (3 connections) — `server/tests/unit/api/test_rooms_exploration_filter.py`
-- **Any** (1 connections)
-- **Apply exploration filter to rooms if requested and user is not admin.      Args:** (1 connections) — `server/api/rooms.py`
-- **Two stable room dict rows (stable_id, name) for filter tests.** (1 connections) — `server/tests/unit/api/test_rooms_exploration_filter.py`
-- **Superuser bypass matches admin: full room list without exploration intersection.** (1 connections) — `server/tests/unit/api/test_rooms_exploration_filter.py`
-- **Admin / superuser bypasses exploration filter; room_service is not called.** (1 connections) — `server/tests/unit/api/test_rooms_exploration_filter.py`
-- **Non-admin with player record gets filter_rooms_by_exploration(stable room rows).** (1 connections) — `server/tests/unit/api/test_rooms_exploration_filter.py`
-- **If user has no linked player, exploration cannot run; unknown rooms list returne** (1 connections) — `server/tests/unit/api/test_rooms_exploration_filter.py`
+- **test_inventory_mutation_guard_error_handling.py** (10 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
+- **guard()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
+- **test_cleanup_async_state_lock_attribute_error()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
+- **test_cleanup_async_state_lock_runtime_error()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
+- **test_acquire_record_custom_alert_with_message_param()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
+- **test_acquire_async_record_custom_alert_with_message_param()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
+- **test_acquire_record_custom_alert_type_error_fallback()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
+- **test_acquire_async_record_custom_alert_type_error_fallback()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
+- **Unit tests for inventory mutation guard - error handling and monitoring.  Tests** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
+- **Create an InventoryMutationGuard instance.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
+- **Test _cleanup_async_state handles AttributeError from lock.locked().** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
+- **Test _cleanup_async_state handles RuntimeError from lock.locked().** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
+- **Test acquire handles record_custom_alert with message parameter.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
+- **Test acquire_async handles record_custom_alert with message parameter.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
+- **Test acquire handles TypeError from record_custom_alert and uses fallback.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
+- **Test acquire_async handles TypeError from record_custom_alert and uses fallback.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
 
 ## Relationships
 
-- [database helpers infrastructure](database_helpers_infrastructure.md) (6 shared connections)
-- [maps handle ascii](maps_handle_ascii.md) (5 shared connections)
-- [corpse lifecycle service](corpse_lifecycle_service.md) (5 shared connections)
-- [room game service](room_game_service.md) (2 shared connections)
-- [persistence container rationale](persistence_container_rationale.md) (1 shared connections)
-- [player requests schemas](player_requests_schemas.md) (1 shared connections)
+- [task registry app](task_registry_app.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/rooms.py`
-- `server/tests/unit/api/test_rooms_exploration_filter.py`
+- `server/tests/unit/services/test_inventory_mutation_guard_error_handling.py`
 
 ## Audit Trail
 
-- EXTRACTED: 44 (85%)
-- INFERRED: 8 (15%)
+- EXTRACTED: 33 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

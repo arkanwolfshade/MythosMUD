@@ -1,51 +1,48 @@
 # alias graph rationale
 
-> 32 nodes
+> 26 nodes
 
 ## Key Concepts
 
-- **AliasGraph** (18 connections) — `server/utils/alias_graph.py`
-- **test_alias_graph.py** (9 connections) — `server/tests/unit/utils/test_alias_graph.py`
-- **alias_graph.py** (8 connections) — `server/utils/alias_graph.py`
-- **test_alias_graph_init()** (3 connections) — `server/tests/unit/utils/test_alias_graph.py`
-- **test_alias_graph_build_graph()** (3 connections) — `server/tests/unit/utils/test_alias_graph.py`
-- **test_alias_graph_detect_cycle_no_cycle()** (3 connections) — `server/tests/unit/utils/test_alias_graph.py`
-- **test_alias_graph_is_safe_to_expand()** (3 connections) — `server/tests/unit/utils/test_alias_graph.py`
-- **test_alias_graph_get_expansion_depth()** (3 connections) — `server/tests/unit/utils/test_alias_graph.py`
-- **test_alias_graph_clear()** (3 connections) — `server/tests/unit/utils/test_alias_graph.py`
-- **.__init__()** (3 connections) — `server/utils/alias_graph.py`
-- **.build_graph()** (3 connections) — `server/utils/alias_graph.py`
-- **._extract_alias_references()** (3 connections) — `server/utils/alias_graph.py`
-- **.detect_cycle()** (3 connections) — `server/utils/alias_graph.py`
-- **.is_safe_to_expand()** (3 connections) — `server/utils/alias_graph.py`
-- **.get_expansion_depth()** (2 connections) — `server/utils/alias_graph.py`
-- **.clear()** (2 connections) — `server/utils/alias_graph.py`
-- **Unit tests for alias_graph utilities.  Tests the AliasGraph class.** (1 connections) — `server/tests/unit/utils/test_alias_graph.py`
-- **Test AliasGraph initialization.** (1 connections) — `server/tests/unit/utils/test_alias_graph.py`
-- **Test AliasGraph.build_graph() builds dependency graph.** (1 connections) — `server/tests/unit/utils/test_alias_graph.py`
-- **Test AliasGraph.detect_cycle() returns None when no cycle.** (1 connections) — `server/tests/unit/utils/test_alias_graph.py`
-- **Test AliasGraph.is_safe_to_expand() returns True when safe.** (1 connections) — `server/tests/unit/utils/test_alias_graph.py`
-- **Test AliasGraph.get_expansion_depth() returns depth.** (1 connections) — `server/tests/unit/utils/test_alias_graph.py`
-- **Test AliasGraph.clear() clears the graph.** (1 connections) — `server/tests/unit/utils/test_alias_graph.py`
-- **Alias circular dependency detection using graph analysis.  This module provides** (1 connections) — `server/utils/alias_graph.py`
-- **Graph-based circular dependency detection for alias expansion.      Uses depth-f** (1 connections) — `server/utils/alias_graph.py`
-- *... and 7 more nodes in this community*
+- **test_player_event_handlers_room_left.py** (15 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **test_handle_player_left_success()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **test_handle_player_left_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **test_handle_player_left_no_player_info()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **test_handle_player_left_disconnecting()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **test_handle_player_left_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **test_unsubscribe_player_from_room_success()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **test_unsubscribe_player_from_room_string_id()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **test_unsubscribe_player_from_room_invalid_id()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **test_broadcast_player_left_message_not_disconnecting()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **test_broadcast_player_left_message_disconnecting()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **test_broadcast_player_left_message_no_room_id()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **test_log_occupants_info()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **Unit tests for player room event handlers (player left / unsubscribe / broadcast** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **Test unsubscribe_player_from_room() successfully unsubscribes player.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **Test unsubscribe_player_from_room() handles string player_id.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **Test unsubscribe_player_from_room() handles invalid player_id.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **Test broadcast_player_left_message() broadcasts when not disconnecting.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **Test broadcast_player_left_message() skips when player is disconnecting.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **Test broadcast_player_left_message() skips when room_id is None.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **Test handle_player_left() successfully handles event.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **Test handle_player_left() skips when connection manager not available.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **Test handle_player_left() handles player not found.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **Test handle_player_left() skips broadcast when player is disconnecting.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **Test handle_player_left() handles errors.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [player left room](player_left_room.md) (3 shared connections)
-- [alias storage rationale](alias_storage_rationale.md) (2 shared connections)
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
-- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (6 shared connections)
+- [inventory mutation guard](inventory_mutation_guard.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_alias_graph.py`
-- `server/utils/alias_graph.py`
+- `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
 
 ## Audit Trail
 
-- EXTRACTED: 88 (100%)
+- EXTRACTED: 57 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

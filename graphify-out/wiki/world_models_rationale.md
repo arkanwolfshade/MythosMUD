@@ -1,49 +1,55 @@
 # world models rationale
 
-> 32 nodes
+> 50 nodes
 
 ## Key Concepts
 
-- **test_item.py** (19 connections) — `server/tests/unit/models/test_item.py`
-- **.unique_key()** (8 connections) — `server/models/item.py`
-- **test_item_prototype_primary_slot_with_slots()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_prototype_primary_slot_single_slot()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_prototype_primary_slot_empty()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_prototype_primary_slot_none()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_instance_apply_flag_new_flag()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_instance_apply_flag_existing_flag()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_instance_apply_flag_multiple_flags()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_instance_apply_flag_preserves_order()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_component_state_unique_key()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_component_state_unique_key_different_values()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_component_state_unique_key_same_instance_different_component()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_component_state_unique_key_different_instance_same_component()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_component_state_unique_key_empty_strings()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_component_state_unique_key_static_method()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **Convenience helper for composing uniqueness checks in higher layers.** (1 connections) — `server/models/item.py`
-- **Unit tests for item models.  Tests the ItemPrototype, ItemInstance, and ItemComp** (1 connections) — `server/tests/unit/models/test_item.py`
-- **Test primary_slot returns first wear slot when slots exist.** (1 connections) — `server/tests/unit/models/test_item.py`
-- **Test primary_slot returns the slot when only one exists.** (1 connections) — `server/tests/unit/models/test_item.py`
-- **Test primary_slot returns None when no wear slots.** (1 connections) — `server/tests/unit/models/test_item.py`
-- **Test primary_slot returns None when wear_slots is None (edge case).** (1 connections) — `server/tests/unit/models/test_item.py`
-- **Test apply_flag adds a new flag to flags_override.** (1 connections) — `server/tests/unit/models/test_item.py`
-- **Test apply_flag does not duplicate existing flags (idempotent).** (1 connections) — `server/tests/unit/models/test_item.py`
-- **Test apply_flag adds flag when other flags exist.** (1 connections) — `server/tests/unit/models/test_item.py`
-- *... and 7 more nodes in this community*
+- **test_command_player_state.py** (23 connections) — `server/tests/unit/models/test_command_player_state.py`
+- **command_player_state.py** (15 connections) — `server/models/command_player_state.py`
+- **LieCommand** (15 connections) — `server/models/command_player_state.py`
+- **GroundCommand** (12 connections) — `server/models/command_player_state.py`
+- **QuitCommand** (8 connections) — `server/models/command_player_state.py`
+- **LogoutCommand** (8 connections) — `server/models/command_player_state.py`
+- **SitCommand** (8 connections) — `server/models/command_player_state.py`
+- **StandCommand** (8 connections) — `server/models/command_player_state.py`
+- **test_lie_command_validate_modifier_invalid()** (4 connections) — `server/tests/unit/models/test_command_player_state.py`
+- **test_lie_command_validate_modifier_empty_string()** (4 connections) — `server/tests/unit/models/test_command_player_state.py`
+- **test_ground_command_target_player_min_length()** (4 connections) — `server/tests/unit/models/test_command_player_state.py`
+- **test_ground_command_target_player_max_length()** (4 connections) — `server/tests/unit/models/test_command_player_state.py`
+- **.validate_target_player()** (3 connections) — `server/models/command_player_state.py`
+- **test_quit_command_no_fields()** (3 connections) — `server/tests/unit/models/test_command_player_state.py`
+- **test_logout_command_no_fields()** (3 connections) — `server/tests/unit/models/test_command_player_state.py`
+- **test_sit_command_no_fields()** (3 connections) — `server/tests/unit/models/test_command_player_state.py`
+- **test_stand_command_no_fields()** (3 connections) — `server/tests/unit/models/test_command_player_state.py`
+- **test_lie_command_default_values()** (3 connections) — `server/tests/unit/models/test_command_player_state.py`
+- **test_lie_command_with_modifier_down()** (3 connections) — `server/tests/unit/models/test_command_player_state.py`
+- **test_lie_command_validate_modifier_strips_and_lowercases()** (3 connections) — `server/tests/unit/models/test_command_player_state.py`
+- **test_lie_command_validate_modifier_case_insensitive()** (3 connections) — `server/tests/unit/models/test_command_player_state.py`
+- **test_lie_command_validate_modifier_none()** (3 connections) — `server/tests/unit/models/test_command_player_state.py`
+- **test_ground_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_player_state.py`
+- **test_ground_command_validate_target_player_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_player_state.py`
+- **.validate_modifier()** (2 connections) — `server/models/command_player_state.py`
+- *... and 25 more nodes in this community*
 
 ## Relationships
 
-- [commands shutdown process](commands_shutdown_process.md) (13 shared connections)
+- [dialogue definition persistence](dialogue_definition_persistence.md) (16 shared connections)
+- [command inventory factories](command_inventory_factories.md) (7 shared connections)
+- [Inventory Equip](Inventory_Equip.md) (4 shared connections)
+- [command inventory models](command_inventory_models.md) (4 shared connections)
+- [health models rationale](health_models_rationale.md) (2 shared connections)
+- [websocket examples logging](websocket_examples_logging.md) (2 shared connections)
+- [Security Validator Tests](Security_Validator_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/item.py`
-- `server/tests/unit/models/test_item.py`
+- `server/models/command_player_state.py`
+- `server/tests/unit/models/test_command_player_state.py`
 
 ## Audit Trail
 
-- EXTRACTED: 85 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 160 (91%)
+- INFERRED: 16 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

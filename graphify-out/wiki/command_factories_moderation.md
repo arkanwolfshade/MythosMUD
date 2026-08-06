@@ -35,8 +35,8 @@
 
 - [persistence container rationale](persistence_container_rationale.md) (6 shared connections)
 - [player requests schemas](player_requests_schemas.md) (6 shared connections)
-- [add used user](add_used_user.md) (4 shared connections)
-- [command parser helpers](command_parser_helpers.md) (3 shared connections)
+- [command inventory models](command_inventory_models.md) (4 shared connections)
+- [useDraggablePanelInteractions draggableP](useDraggablePanelInteractions_draggableP.md) (3 shared connections)
 
 ## Source Files
 

@@ -33,8 +33,7 @@
 
 ## Relationships
 
-- [maps handle ascii](maps_handle_ascii.md) (16 shared connections)
-- [database helpers infrastructure](database_helpers_infrastructure.md) (1 shared connections)
+- [maps handle ascii](maps_handle_ascii.md) (17 shared connections)
 
 ## Source Files
 

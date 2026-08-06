@@ -1,57 +1,59 @@
 # zone configuration npc
 
-> 30 nodes
+> 81 nodes
 
 ## Key Concepts
 
-- **SkillService** (37 connections) — `server/game/skill_service.py`
-- **Any** (10 connections)
-- **.set_player_skills()** (9 connections) — `server/game/skill_service.py`
-- **UUID** (8 connections)
-- **._validate_occupation_slots()** (6 connections) — `server/game/skill_service.py`
-- **._validate_personal_interest()** (6 connections) — `server/game/skill_service.py`
-- **.validate_skills_payload()** (6 connections) — `server/game/skill_service.py`
-- **._validate_no_overlap()** (5 connections) — `server/game/skill_service.py`
-- **._build_profession_mod_by_key()** (5 connections) — `server/game/skill_service.py`
-- **._compute_final_skill_values()** (5 connections) — `server/game/skill_service.py`
-- **.get_player_skills()** (4 connections) — `server/game/skill_service.py`
-- **.record_successful_skill_use()** (4 connections) — `server/game/skill_service.py`
-- **.get_skills_used_this_level()** (4 connections) — `server/game/skill_service.py`
-- **.run_improvement_rolls()** (4 connections) — `server/game/skill_service.py`
-- **.roll_skill_check()** (4 connections) — `server/game/skill_service.py`
-- **.get_skills_catalog()** (3 connections) — `server/game/skill_service.py`
-- **Service for skills catalog, per-character skills, use logging, and improvement r** (1 connections) — `server/game/skill_service.py`
-- **Return list of skill dicts (id, key, name, base_value, allow_at_creation, catego** (1 connections) — `server/game/skill_service.py`
-- **Raise ValueError if occupation_slots are not exactly one 70, two 60, three 50, t** (1 connections) — `server/game/skill_service.py`
-- **Require exactly 4 skill_ids; Cthulhu Mythos not allowed; all skill_ids unique.** (1 connections) — `server/game/skill_service.py`
-- **Raise ValueError if any skill_id appears in both occupation and personal interes** (1 connections) — `server/game/skill_service.py`
-- **Build skill_key -> total modifier from profession skill_modifiers (supports skil** (1 connections) — `server/game/skill_service.py`
-- **Compute final skill_id -> value: base + profession mod, then occupation overlay,** (1 connections) — `server/game/skill_service.py`
-- **Validate skills allocation without persisting. Raises ValueError if invalid.** (1 connections) — `server/game/skill_service.py`
-- **Set all skills for a character at creation.          Validates occupation_slots** (1 connections) — `server/game/skill_service.py`
-- *... and 5 more nodes in this community*
+- **test_lucidity_recovery_commands.py** (34 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **lucidity_recovery_commands.py** (25 connections) — `server/commands/lucidity_recovery_commands.py`
+- **handle_pray_command()** (21 connections) — `server/commands/lucidity_recovery_commands.py`
+- **LucidityActionOnCooldownError** (18 connections) — `server/services/active_lucidity_service.py`
+- **_perform_recovery_action()** (15 connections) — `server/commands/lucidity_recovery_commands.py`
+- **UnknownLucidityActionError** (12 connections) — `server/services/active_lucidity_service.py`
+- **handle_meditate_command()** (10 connections) — `server/commands/lucidity_recovery_commands.py`
+- **handle_group_solace_command()** (9 connections) — `server/commands/lucidity_recovery_commands.py`
+- **Any** (8 connections)
+- **handle_therapy_command()** (8 connections) — `server/commands/lucidity_recovery_commands.py`
+- **handle_folk_tonic_command()** (8 connections) — `server/commands/lucidity_recovery_commands.py`
+- **LucidityActionError** (7 connections) — `server/services/active_lucidity_service.py`
+- **_validate_recovery_context()** (5 connections) — `server/commands/lucidity_recovery_commands.py`
+- **_restore_mp_for_action()** (5 connections) — `server/commands/lucidity_recovery_commands.py`
+- **_format_cooldown_message()** (4 connections) — `server/commands/lucidity_recovery_commands.py`
+- **test_handle_pray_command_cooldown()** (4 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **test_handle_pray_command_unknown_action()** (4 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **test_handle_pray_command_cooldown_no_expiry()** (4 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **test_handle_pray_command_cooldown_no_cooldown_object()** (4 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **test_handle_pray_command_cooldown_naive_datetime()** (4 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **test_handle_meditate_command_cooldown()** (4 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **test_handle_group_solace_command_unknown_action()** (4 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **_format_recovery_success_message()** (3 connections) — `server/commands/lucidity_recovery_commands.py`
+- **test_handle_pray_command_no_persistence()** (3 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **test_handle_pray_command_player_not_found()** (3 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- *... and 56 more nodes in this community*
 
 ## Relationships
 
-- [commands shutdown process](commands_shutdown_process.md) (11 shared connections)
-- [commands admin helpers](commands_admin_helpers.md) (3 shared connections)
-- [player event handlers](player_event_handlers.md) (3 shared connections)
-- [npc threading rationale](npc_threading_rationale.md) (3 shared connections)
-- [Player Stats](Player_Stats.md) (2 shared connections)
-- [room realtime occupant](room_realtime_occupant.md) (2 shared connections)
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (2 shared connections)
-- [archive QUALITY AUDIT](archive_QUALITY_AUDIT.md) (2 shared connections)
-- [websocket realtime handler](websocket_realtime_handler.md) (1 shared connections)
-- [endpoints auth rationale](endpoints_auth_rationale.md) (1 shared connections)
+- [auth endpoints rationale](auth_endpoints_rationale.md) (16 shared connections)
+- [commands npc admin](commands_npc_admin.md) (8 shared connections)
+- [character creation service](character_creation_service.md) (6 shared connections)
+- [npc population control](npc_population_control.md) (4 shared connections)
+- [useWebSocketConnectionTestFixtures useWe](useWebSocketConnectionTestFixtures_useWe.md) (3 shared connections)
+- [task registry app](task_registry_app.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [connection realtime manager](connection_realtime_manager.md) (1 shared connections)
+- [regeneration service magic](regeneration_service_magic.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/skill_service.py`
+- `server/commands/lucidity_recovery_commands.py`
+- `server/services/active_lucidity_service.py`
+- `server/tests/unit/commands/test_lucidity_recovery_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 125 (93%)
-- INFERRED: 9 (7%)
+- EXTRACTED: 304 (98%)
+- INFERRED: 7 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

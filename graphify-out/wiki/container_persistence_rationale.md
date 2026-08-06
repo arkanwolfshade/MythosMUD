@@ -1,52 +1,68 @@
 # container persistence rationale
 
-> 77 nodes
+> 140 nodes
 
 ## Key Concepts
 
-- **test_logging_processors.py** (36 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **set_global_player_service()** (17 connections) — `server/structured_logging/logging_processors.py`
-- **enhance_player_ids()** (17 connections) — `server/structured_logging/logging_processors.py`
-- **sanitize_sensitive_data()** (14 connections) — `server/structured_logging/logging_processors.py`
-- **logging_processors.py** (12 connections) — `server/structured_logging/logging_processors.py`
-- **add_request_context()** (11 connections) — `server/structured_logging/logging_processors.py`
-- **add_correlation_id()** (8 connections) — `server/structured_logging/logging_processors.py`
-- **EventDict** (5 connections)
-- **test_enhance_player_ids_persistence_error()** (5 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **_EnhancePlayerIdsTls** (4 connections) — `server/structured_logging/logging_processors.py`
-- **test_enhance_player_ids_no_player_service()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_enhance_player_ids_player_found()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_enhance_player_ids_player_not_found()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_enhance_player_ids_invalid_uuid_format()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_enhance_player_ids_short_string()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_enhance_player_ids_non_string_value()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_enhance_player_ids_no_player_id_field()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_enhance_player_ids_player_no_name_attribute()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_enhance_player_ids_prevents_recursion()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_enhance_player_ids_no_persistence_attribute()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_set_global_player_service()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_sanitize_sensitive_data_password()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_sanitize_sensitive_data_token()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_sanitize_sensitive_data_api_key()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_sanitize_sensitive_data_safe_fields()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- *... and 52 more nodes in this community*
+- **SpellEffects** (61 connections) — `server/game/magic/spell_effects.py`
+- **test_spell_effects.py** (45 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
+- **PlayerSpellRepository** (38 connections) — `server/persistence/repositories/player_spell_repository.py`
+- **lifespan_magic.py** (34 connections) — `server/app/lifespan_magic.py`
+- **SpellTargetingService** (32 connections) — `server/game/magic/spell_targeting.py`
+- **MPRegenerationService** (20 connections) — `server/game/magic/mp_regeneration_service.py`
+- **MagicServiceOptionalDeps** (17 connections) — `server/game/magic/magic_service.py`
+- **initialize_magic_services()** (15 connections) — `server/app/lifespan_magic.py`
+- **_initialize_magic_service()** (13 connections) — `server/app/lifespan_magic.py`
+- **mp_regeneration_service.py** (13 connections) — `server/game/magic/mp_regeneration_service.py`
+- **.__init__()** (11 connections) — `server/game/magic/magic_service.py`
+- **FastAPI** (9 connections)
+- **_initialize_spell_targeting_service()** (9 connections) — `server/app/lifespan_magic.py`
+- **_initialize_spell_effects()** (9 connections) — `server/app/lifespan_magic.py`
+- **_initialize_spell_learning_service()** (8 connections) — `server/app/lifespan_magic.py`
+- **.combat_service()** (7 connections) — `server/game/magic/spell_effects.py`
+- **_initialize_spell_repositories()** (6 connections) — `server/app/lifespan_magic.py`
+- **_initialize_spell_registry()** (6 connections) — `server/app/lifespan_magic.py`
+- **_initialize_mp_regeneration_service()** (6 connections) — `server/app/lifespan_magic.py`
+- **_link_magic_to_combat()** (6 connections) — `server/app/lifespan_magic.py`
+- **.process_tick_regeneration()** (6 connections) — `server/game/magic/mp_regeneration_service.py`
+- **.__init__()** (6 connections) — `server/game/magic/spell_effects.py`
+- **UUID** (5 connections)
+- **Any** (5 connections)
+- **.__init__()** (5 connections) — `server/game/magic/spell_targeting.py`
+- *... and 115 more nodes in this community*
 
 ## Relationships
 
-- [Error Conversion](Error_Conversion.md) (11 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (4 shared connections)
-- [aggro threat services](aggro_threat_services.md) (1 shared connections)
-- [room sync service](room_sync_service.md) (1 shared connections)
+- [panels domPurifyClient chat](panels_domPurifyClient_chat.md) (48 shared connections)
+- [nats services service](nats_services_service.md) (21 shared connections)
+- [persistence core infrastructure](persistence_core_infrastructure.md) (20 shared connections)
+- [mythosApp useMythosAppState useStatsRoll](mythosApp_useMythosAppState_useStatsRoll.md) (9 shared connections)
+- [lucidity active service](lucidity_active_service.md) (9 shared connections)
+- [player respawn event](player_respawn_event.md) (8 shared connections)
+- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (8 shared connections)
+- [room occupant manager](room_occupant_manager.md) (7 shared connections)
+- [Player Stats](Player_Stats.md) (7 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (7 shared connections)
+- [npc combat player](npc_combat_player.md) (6 shared connections)
+- [npc database infrastructure](npc_database_infrastructure.md) (6 shared connections)
 
 ## Source Files
 
-- `server/structured_logging/logging_processors.py`
-- `server/tests/unit/structured_logging/test_logging_processors.py`
+- `server/app/lifespan_magic.py`
+- `server/game/magic/magic_service.py`
+- `server/game/magic/mp_regeneration_service.py`
+- `server/game/magic/spell_effects.py`
+- `server/game/magic/spell_targeting.py`
+- `server/persistence/repositories/player_spell_repository.py`
+- `server/tests/unit/app/test_lifespan_startup.py`
+- `server/tests/unit/game/magic/test_spell_effects.py`
+- `server/tests/unit/game/magic/test_spell_targeting.py`
+- `server/tests/unit/services/test_damage_grace_period.py`
 
 ## Audit Trail
 
-- EXTRACTED: 253 (97%)
-- INFERRED: 8 (3%)
+- EXTRACTED: 524 (87%)
+- INFERRED: 76 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

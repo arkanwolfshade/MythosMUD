@@ -1,52 +1,67 @@
 # NPC Combat
 
-> 33 nodes
+> 156 nodes
 
 ## Key Concepts
 
-- **PerformanceTracker** (25 connections) — `server/realtime/monitoring/performance_tracker.py`
-- **test_performance_tracker.py** (9 connections) — `server/tests/unit/realtime/monitoring/test_performance_tracker.py`
-- **._trim_samples()** (7 connections) — `server/realtime/monitoring/performance_tracker.py`
-- **.record_connection_establishment()** (3 connections) — `server/realtime/monitoring/performance_tracker.py`
-- **.record_message_delivery()** (3 connections) — `server/realtime/monitoring/performance_tracker.py`
-- **.record_disconnection()** (3 connections) — `server/realtime/monitoring/performance_tracker.py`
-- **.record_session_switch()** (3 connections) — `server/realtime/monitoring/performance_tracker.py`
-- **.record_health_check()** (3 connections) — `server/realtime/monitoring/performance_tracker.py`
-- **.get_stats()** (3 connections) — `server/realtime/monitoring/performance_tracker.py`
-- **test_record_events_increase_counters()** (3 connections) — `server/tests/unit/realtime/monitoring/test_performance_tracker.py`
-- **test_trim_samples_keeps_max_samples()** (3 connections) — `server/tests/unit/realtime/monitoring/test_performance_tracker.py`
-- **test_get_stats_empty_returns_zeros()** (3 connections) — `server/tests/unit/realtime/monitoring/test_performance_tracker.py`
-- **test_get_stats_calculates_averages()** (3 connections) — `server/tests/unit/realtime/monitoring/test_performance_tracker.py`
-- **test_get_stats_non_websocket_connections_excluded_from_websocket_stats()** (3 connections) — `server/tests/unit/realtime/monitoring/test_performance_tracker.py`
-- **test_get_stats_error_path_returns_error_dict()** (3 connections) — `server/tests/unit/realtime/monitoring/test_performance_tracker.py`
-- **.__init__()** (2 connections) — `server/realtime/monitoring/performance_tracker.py`
-- **Any** (1 connections)
-- **Tracks performance metrics for connection management operations.      This class** (1 connections) — `server/realtime/monitoring/performance_tracker.py`
-- **Initialize the performance tracker.          Args:             max_samples: Maxi** (1 connections) — `server/realtime/monitoring/performance_tracker.py`
-- **Record a connection establishment event.          Args:             connection_t** (1 connections) — `server/realtime/monitoring/performance_tracker.py`
-- **Record a message delivery event.          Args:             message_type: Type o** (1 connections) — `server/realtime/monitoring/performance_tracker.py`
-- **Record a disconnection event.          Args:             connection_type: Type o** (1 connections) — `server/realtime/monitoring/performance_tracker.py`
-- **Record a session switch event.          Args:             duration_ms: Duration** (1 connections) — `server/realtime/monitoring/performance_tracker.py`
-- **Record a health check event.          Args:             duration_ms: Duration in** (1 connections) — `server/realtime/monitoring/performance_tracker.py`
-- **Trim samples to prevent unbounded memory growth.          Args:             metr** (1 connections) — `server/realtime/monitoring/performance_tracker.py`
-- *... and 8 more nodes in this community*
+- **subject_controller.py** (27 connections) — `server/api/admin/subject_controller.py`
+- **game.py** (25 connections) — `server/api/game.py`
+- **test_auth_dependencies.py** (24 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
+- **test_subject_controller.py** (21 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
+- **test_game.py** (20 connections) — `server/tests/unit/api/test_game.py`
+- **dependencies.py** (18 connections) — `server/auth/dependencies.py`
+- **MythosTimeResponse** (15 connections) — `server/schemas/game/game.py`
+- **get_mythos_time()** (14 connections) — `server/api/game.py`
+- **broadcast_message()** (13 connections) — `server/api/game.py`
+- **register_pattern()** (12 connections) — `server/api/admin/subject_controller.py`
+- **get_current_superuser()** (12 connections) — `server/auth/dependencies.py`
+- **TestGetMythosTime** (12 connections) — `server/tests/unit/api/test_game.py`
+- **require_invite_code()** (11 connections) — `server/auth/dependencies.py`
+- **__init__.py** (10 connections) — `server/api/__init__.py`
+- **validate_subject()** (10 connections) — `server/api/admin/subject_controller.py`
+- **GameStatusResponse** (9 connections) — `server/schemas/game/game.py`
+- **BroadcastMessageResponse** (9 connections) — `server/schemas/game/game.py`
+- **get_subject_statistics()** (8 connections) — `server/api/admin/subject_controller.py`
+- **get_patterns()** (8 connections) — `server/api/admin/subject_controller.py`
+- **get_current_verified_user()** (8 connections) — `server/auth/dependencies.py`
+- **ValidateSubjectRequest** (7 connections) — `server/api/admin/subject_controller.py`
+- **RegisterPatternRequest** (7 connections) — `server/api/admin/subject_controller.py`
+- **require_admin_user()** (7 connections) — `server/api/admin/subject_controller.py`
+- **get_game_status()** (7 connections) — `server/api/game.py`
+- **__init__.py** (7 connections) — `server/schemas/game/__init__.py`
+- *... and 131 more nodes in this community*
 
 ## Relationships
 
-- [Error Conversion](Error_Conversion.md) (5 shared connections)
-- [spell models rationale](spell_models_rationale.md) (3 shared connections)
-- [commands rest command](commands_rest_command.md) (1 shared connections)
-- [persistence rationale room](persistence_rationale_room.md) (1 shared connections)
+- [player requests schemas](player_requests_schemas.md) (32 shared connections)
+- [services inventory mutation](services_inventory_mutation.md) (22 shared connections)
+- [persistence container rationale](persistence_container_rationale.md) (11 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (10 shared connections)
+- [combat models rationale](combat_models_rationale.md) (7 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (6 shared connections)
+- [manager subject services](manager_subject_services.md) (6 shared connections)
+- [subject validation services](subject_validation_services.md) (6 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (2 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (2 shared connections)
+- [websocket handler realtime](websocket_handler_realtime.md) (2 shared connections)
+- [Exception Containers](Exception_Containers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/monitoring/performance_tracker.py`
-- `server/tests/unit/realtime/monitoring/test_performance_tracker.py`
+- `server/api/__init__.py`
+- `server/api/admin/subject_controller.py`
+- `server/api/game.py`
+- `server/auth/dependencies.py`
+- `server/schemas/game/__init__.py`
+- `server/schemas/game/game.py`
+- `server/tests/unit/api/admin/test_subject_controller.py`
+- `server/tests/unit/api/test_game.py`
+- `server/tests/unit/auth/test_auth_dependencies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 93 (97%)
-- INFERRED: 3 (3%)
+- EXTRACTED: 592 (94%)
+- INFERRED: 37 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

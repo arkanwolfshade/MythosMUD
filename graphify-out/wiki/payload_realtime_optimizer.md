@@ -1,44 +1,63 @@
 # payload realtime optimizer
 
-> 10 nodes
+> 132 nodes
 
 ## Key Concepts
 
-- **MythosValidationError** (10 connections)
-- **test_parse_command_string_validation_error()** (4 connections) — `server/tests/unit/commands/test_command_service.py`
-- **test_create_command_object_re_raises_mythos_validation_error()** (4 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_process_command_string_mythos_validation_error()** (4 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_process_validated_command_validation_error()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
-- **test_apply_combat_effects_validation_error()** (3 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
-- **Test process_validated_command handles ValidationError.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
-- **Test _parse_command_string handles ValidationError.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
-- **Test _create_command_object re-raises MythosValidationError without wrapping.** (1 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **Test process_command_string handles MythosMUD validation errors.** (1 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_command_parser.py** (45 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **parse_command()** (24 connections) — `server/utils/command_parser.py`
+- **CommandParser** (19 connections) — `server/utils/command_parser.py`
+- **CommandProcessor** (15 connections) — `server/utils/command_processor.py`
+- **command_processor.py** (13 connections) — `server/utils/command_processor.py`
+- **test_command_parser_smoke.py** (8 connections) — `server/tests/unit/test_command_parser_smoke.py`
+- **.parse_command()** (7 connections) — `server/utils/command_parser.py`
+- **._create_command_object()** (7 connections) — `server/utils/command_parser.py`
+- **get_command_processor()** (7 connections) — `server/utils/command_processor.py`
+- **.extract_command_data()** (5 connections) — `server/utils/command_processor.py`
+- **command_processor()** (4 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_get_command_processor()** (4 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **Command** (4 connections)
+- **._parse_command_parts()** (4 connections) — `server/utils/command_parser.py`
+- **._invoke_create_method()** (4 connections) — `server/utils/command_parser.py`
+- **.process_command_string()** (4 connections) — `server/utils/command_processor.py`
+- **._extract_attributes()** (4 connections) — `server/utils/command_processor.py`
+- **._is_combat_command()** (4 connections) — `server/utils/command_processor.py`
+- **test_parse_command_basic()** (3 connections) — `server/tests/unit/test_command_parser_smoke.py`
+- **test_parse_command_with_args()** (3 connections) — `server/tests/unit/test_command_parser_smoke.py`
+- **test_parse_command_with_pipes()** (3 connections) — `server/tests/unit/test_command_parser_smoke.py`
+- **command_parser()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_empty_string()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_whitespace_only()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_too_long()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- *... and 107 more nodes in this community*
 
 ## Relationships
 
-- [add used user](add_used_user.md) (3 shared connections)
-- [handler realtime nats](handler_realtime_nats.md) (2 shared connections)
-- [health service services](health_service_services.md) (2 shared connections)
-- [services inventory mutation](services_inventory_mutation.md) (1 shared connections)
-- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (1 shared connections)
-- [command communication models](command_communication_models.md) (1 shared connections)
-- [services nats service](services_nats_service.md) (1 shared connections)
-- [command parser rationale](command_parser_rationale.md) (1 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
-- [command processor rationale](command_processor_rationale.md) (1 shared connections)
+- [command inventory factories](command_inventory_factories.md) (7 shared connections)
+- [command processor rationale](command_processor_rationale.md) (7 shared connections)
+- [dialogue definition persistence](dialogue_definition_persistence.md) (5 shared connections)
+- [spell game magic](spell_game_magic.md) (3 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (2 shared connections)
+- [command inventory models](command_inventory_models.md) (2 shared connections)
+- [schedule services service](schedule_services_service.md) (2 shared connections)
+- [combat attack handler](combat_attack_handler.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [character creation service](character_creation_service.md) (1 shared connections)
+- [combat services initialization](combat_services_initialization.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_service.py`
-- `server/tests/unit/npc/test_combat_integration_base.py`
+- `server/tests/unit/test_command_parser_smoke.py`
 - `server/tests/unit/utils/test_command_parser.py`
+- `server/tests/unit/utils/test_command_parser_helpers.py`
 - `server/tests/unit/utils/test_command_processor.py`
+- `server/utils/command_parser.py`
+- `server/utils/command_processor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 19 (59%)
-- INFERRED: 13 (41%)
+- EXTRACTED: 361 (98%)
+- INFERRED: 7 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

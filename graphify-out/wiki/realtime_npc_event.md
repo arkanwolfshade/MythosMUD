@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **mock_persistence()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
-- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_get_applicable_rules_no_matching()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test get_applicable_rules() returns empty list when no rules match.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [movement service game](movement_service_game.md) (1 shared connections)
+- [npc lifecycle combat](npc_lifecycle_combat.md) (1 shared connections)
+- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_movement_service.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

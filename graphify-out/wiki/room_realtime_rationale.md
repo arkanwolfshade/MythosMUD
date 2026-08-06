@@ -1,69 +1,54 @@
 # room realtime rationale
 
-> 156 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **magic_service.py** (40 connections) — `server/game/magic/magic_service.py`
-- **test_spell.py** (30 connections) — `server/tests/unit/models/test_spell.py`
-- **spell.py** (28 connections) — `server/models/spell.py`
-- **SpellMaterial** (25 connections) — `server/models/spell.py`
-- **test_spell_materials.py** (22 connections) — `server/tests/unit/game/magic/test_spell_materials.py`
-- **test_magic_healing_events.py** (20 connections) — `server/tests/unit/game/magic/test_magic_healing_events.py`
-- **test_spell_costs.py** (19 connections) — `server/tests/unit/game/magic/test_spell_costs.py`
-- **test_spell_registry.py** (18 connections) — `server/tests/unit/game/magic/test_spell_registry.py`
-- **MagicServiceHealingMixin** (17 connections) — `server/game/magic/magic_healing_events.py`
-- **_HealingService** (17 connections) — `server/tests/unit/game/magic/test_magic_healing_events.py`
-- **SpellCostsService** (16 connections) — `server/game/magic/spell_costs.py`
-- **spell_registry.py** (16 connections) — `server/game/magic/spell_registry.py`
-- **magic_healing_events.py** (15 connections) — `server/game/magic/magic_healing_events.py`
-- **SpellSchool** (15 connections) — `server/models/spell.py`
-- **SpellEffectType** (15 connections) — `server/models/spell.py`
-- **SpellTargetType** (14 connections) — `server/models/spell.py`
-- **spell_costs.py** (13 connections) — `server/game/magic/spell_costs.py`
-- **SpellRangeType** (12 connections) — `server/models/spell.py`
-- **spell_materials.py** (11 connections) — `server/game/magic/spell_materials.py`
-- **_spell()** (11 connections) — `server/tests/unit/game/magic/test_spell_materials.py`
-- **._send_healing_update_event()** (7 connections) — `server/game/magic/magic_healing_events.py`
-- **._publish_dp_event()** (7 connections) — `server/game/magic/magic_healing_events.py`
-- **UUID** (6 connections)
-- **._publish_or_send_dp_update()** (6 connections) — `server/game/magic/magic_healing_events.py`
-- **_spell()** (6 connections) — `server/tests/unit/game/magic/test_spell_costs.py`
-- *... and 131 more nodes in this community*
+- **PlayerOccupantProcessor** (21 connections) — `server/realtime/player_occupant_processor.py`
+- **._create_player_occupant_info()** (7 connections) — `server/realtime/player_occupant_processor.py`
+- **.process_players_for_occupants()** (7 connections) — `server/realtime/player_occupant_processor.py`
+- **.__init__()** (5 connections) — `server/realtime/player_occupant_processor.py`
+- **UUID** (5 connections)
+- **._ensure_player_included_in_list()** (4 connections) — `server/realtime/player_occupant_processor.py`
+- **._convert_player_ids_to_uuids()** (4 connections) — `server/realtime/player_occupant_processor.py`
+- **test_warded_indicator_not_shown_for_reconnections()** (4 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
+- **Any** (3 connections)
+- **processor()** (3 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_player_occupant_processor_adds_linkdead_indicator()** (3 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
+- **test_player_occupant_processor_no_linkdead_when_not_in_grace_period()** (3 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
+- **Processes player occupants for rooms.** (1 connections) — `server/realtime/player_occupant_processor.py`
+- **Initialize player occupant processor.          Args:             connection_mana** (1 connections) — `server/realtime/player_occupant_processor.py`
+- **Ensure a player is included in the player ID strings list if specified.** (1 connections) — `server/realtime/player_occupant_processor.py`
+- **Convert player ID strings to UUIDs for batch loading.          Args:** (1 connections) — `server/realtime/player_occupant_processor.py`
+- **Create occupant information dictionary for a single player.          Args:** (1 connections) — `server/realtime/player_occupant_processor.py`
+- **Process players and convert to occupant information.          Args:** (1 connections) — `server/realtime/player_occupant_processor.py`
+- **Test that '(warded)' indicator is not shown for reconnections.** (1 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
+- **Create PlayerOccupantProcessor instance.** (1 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **Test PlayerOccupantProcessor adds (linkdead) indicator for grace period players.** (1 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
+- **Test PlayerOccupantProcessor does not add (linkdead) when player not in grace pe** (1 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
 
 ## Relationships
 
-- [panels domPurifyClient chat](panels_domPurifyClient_chat.md) (46 shared connections)
-- [persistence core infrastructure](persistence_core_infrastructure.md) (26 shared connections)
-- [player respawn event](player_respawn_event.md) (14 shared connections)
-- [Error Conversion](Error_Conversion.md) (10 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (9 shared connections)
-- [add used user](add_used_user.md) (6 shared connections)
-- [lucidity npc combat](lucidity_npc_combat.md) (5 shared connections)
-- [magic completion game](magic_completion_game.md) (5 shared connections)
-- [manager room npcs](manager_room_npcs.md) (5 shared connections)
-- [subject nats manager](subject_nats_manager.md) (4 shared connections)
-- [spell game magic](spell_game_magic.md) (4 shared connections)
-- [coercion int inventory](coercion_int_inventory.md) (4 shared connections)
+- [command utility models](command_utility_models.md) (8 shared connections)
+- [Player Name Validation](Player_Name_Validation.md) (3 shared connections)
+- [container helpers endpoints](container_helpers_endpoints.md) (3 shared connections)
+- [skill service game](skill_service_game.md) (2 shared connections)
+- [logging processors structured](logging_processors_structured.md) (2 shared connections)
+- [schemas players profession](schemas_players_profession.md) (1 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
+- [npc combat base](npc_combat_base.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/magic/magic_healing_events.py`
-- `server/game/magic/magic_service.py`
-- `server/game/magic/spell_costs.py`
-- `server/game/magic/spell_materials.py`
-- `server/game/magic/spell_registry.py`
-- `server/models/spell.py`
-- `server/tests/unit/game/magic/test_magic_healing_events.py`
-- `server/tests/unit/game/magic/test_spell_costs.py`
-- `server/tests/unit/game/magic/test_spell_materials.py`
-- `server/tests/unit/game/magic/test_spell_registry.py`
-- `server/tests/unit/models/test_spell.py`
+- `server/realtime/player_occupant_processor.py`
+- `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
+- `server/tests/unit/realtime/test_player_occupant_processor.py`
+- `server/tests/unit/realtime/test_visual_indicator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 632 (96%)
-- INFERRED: 29 (4%)
+- EXTRACTED: 77 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

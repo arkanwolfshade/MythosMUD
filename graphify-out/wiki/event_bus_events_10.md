@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_evaluate_equality_string()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test _evaluate_equality() handles string values.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_normalize_event_ids_none_values()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test normalize_event_ids() with None values.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [room occupant manager](room_occupant_manager.md) (1 shared connections)
-- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
+- [player event handlers](player_event_handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_behavior_engine.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

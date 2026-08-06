@@ -33,9 +33,10 @@
 
 ## Relationships
 
-- [add used user](add_used_user.md) (5 shared connections)
+- [command inventory models](command_inventory_models.md) (4 shared connections)
 - [System Metrics](System_Metrics.md) (4 shared connections)
-- [persistence core infrastructure](persistence_core_infrastructure.md) (3 shared connections)
+- [Player Stats](Player_Stats.md) (3 shared connections)
+- [persistence core infrastructure](persistence_core_infrastructure.md) (1 shared connections)
 
 ## Source Files
 

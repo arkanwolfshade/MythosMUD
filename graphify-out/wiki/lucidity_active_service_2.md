@@ -1,10 +1,13 @@
 # lucidity active service
 
-> 38 nodes
+> 44 nodes
 
 ## Key Concepts
 
 - **test_connection_cleaner.py** (26 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **connection_cleaner()** (3 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **test_check_and_cleanup_skips_when_not_due()** (3 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **test_check_and_cleanup()** (3 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
 - **mock_memory_monitor()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
 - **mock_rate_limiter()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
 - **mock_message_queue()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
@@ -26,16 +29,14 @@
 - **Unit tests for connection cleaner.  Tests the ConnectionCleaner class.** (1 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
 - **Create a mock memory monitor.** (1 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
 - **Create a mock rate limiter.** (1 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **Create a mock message queue.** (1 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **Create a mock room manager.** (1 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **Create a mock cleanup_dead_websocket callback.** (1 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- *... and 13 more nodes in this community*
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
 - [container service services](container_service_services.md) (3 shared connections)
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
 - [realtime maintenance connection](realtime_maintenance_connection.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
+- [command player state](command_player_state.md) (1 shared connections)
 
 ## Source Files
 
@@ -43,7 +44,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 81 (100%)
+- EXTRACTED: 93 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

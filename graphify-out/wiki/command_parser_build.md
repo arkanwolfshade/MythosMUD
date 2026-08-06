@@ -1,27 +1,25 @@
 # command parser build
 
-> 5 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **name** (5 connections) — `schemas/room_schema.json`
-- **type** (1 connections) — `schemas/room_schema.json`
-- **minLength** (1 connections) — `schemas/room_schema.json`
-- **maxLength** (1 connections) — `schemas/room_schema.json`
-- **description** (1 connections) — `schemas/room_schema.json`
+- **test_subscribe_invalid_handler()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test subscribe() raises error for non-callable handler.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- [schemas room schema](schemas_room_schema.md) (1 shared connections)
+- [event bus events](event_bus_events.md) (1 shared connections)
+- [room conftest toolkit](room_conftest_toolkit.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/room_schema.json`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,32 +1,28 @@
 # command commands validation
 
-> 8 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **.__call__()** (8 connections) — `server/middleware/correlation_middleware.py`
-- **_get_header()** (6 connections) — `server/middleware/correlation_middleware.py`
-- **Scope** (2 connections)
-- **test_get_header_case_insensitive()** (2 connections) — `server/tests/unit/middleware/test_correlation_middleware.py`
-- **Receive** (1 connections)
-- **Send** (1 connections)
-- **Return first header value for name (case-insensitive) from ASGI scope.** (1 connections) — `server/middleware/correlation_middleware.py`
-- **ASGI application interface.          Args:             scope: ASGI connection sc** (1 connections) — `server/middleware/correlation_middleware.py`
+- **.__init__()** (4 connections) — `server/services/npc_combat_rewards.py`
+- **.calculate_xp_reward()** (3 connections) — `server/services/npc_combat_rewards.py`
+- **Any** (2 connections)
+- **Initialize the rewards manager.          Args:             async_persistence: As** (1 connections) — `server/services/npc_combat_rewards.py`
+- **Calculate XP reward from NPC definition.          Args:             npc_definiti** (1 connections) — `server/services/npc_combat_rewards.py`
 
 ## Relationships
 
-- [app factory rationale](app_factory_rationale.md) (4 shared connections)
-- [middleware correlation rationale](middleware_correlation_rationale.md) (2 shared connections)
+- [player event realtime](player_event_realtime.md) (2 shared connections)
+- [add used user](add_used_user.md) (1 shared connections)
 
 ## Source Files
 
-- `server/middleware/correlation_middleware.py`
-- `server/tests/unit/middleware/test_correlation_middleware.py`
+- `server/services/npc_combat_rewards.py`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (91%)
-- INFERRED: 2 (9%)
+- EXTRACTED: 11 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

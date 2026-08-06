@@ -33,17 +33,17 @@
 
 ## Relationships
 
-- [npc service services](npc_service_services.md) (9 shared connections)
-- [Error Conversion](Error_Conversion.md) (4 shared connections)
-- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (4 shared connections)
+- [npc service services](npc_service_services.md) (7 shared connections)
+- [npc rewards combat](npc_rewards_combat.md) (5 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (4 shared connections)
+- [shutdown command commands](shutdown_command_commands.md) (4 shared connections)
 - [container schemas containers](container_schemas_containers.md) (4 shared connections)
 - [security sessionManager SessionManager](security_sessionManager_SessionManager.md) (3 shared connections)
 - [commands admin mute](commands_admin_mute.md) (3 shared connections)
 - [command models admin](command_models_admin.md) (3 shared connections)
 - [realtime game state](realtime_game_state.md) (3 shared connections)
-- [npc rewards combat](npc_rewards_combat.md) (3 shared connections)
 - [eventLog projectorRoom roomMergeUtils](eventLog_projectorRoom_roomMergeUtils.md) (2 shared connections)
-- [tools generate invite](tools_generate_invite.md) (2 shared connections)
+- [circuit breaker realtime](circuit_breaker_realtime.md) (2 shared connections)
 
 ## Source Files
 

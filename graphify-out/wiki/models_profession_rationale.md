@@ -1,35 +1,41 @@
 # models profession rationale
 
-> 12 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **.get_limit()** (6 connections) — `server/services/rate_limiter.py`
-- **._cleanup_old_entries()** (6 connections) — `server/services/rate_limiter.py`
-- **.check_rate_limit()** (5 connections) — `server/services/rate_limiter.py`
-- **.record_message()** (4 connections) — `server/services/rate_limiter.py`
-- **.get_remaining_messages()** (4 connections) — `server/services/rate_limiter.py`
-- **.is_player_rate_limited()** (3 connections) — `server/services/rate_limiter.py`
-- **Get the current rate limit for a channel.          Args:             channel: Ch** (1 connections) — `server/services/rate_limiter.py`
-- **Remove timestamps older than the window size.          Args:             player_** (1 connections) — `server/services/rate_limiter.py`
-- **Check if a player is within rate limits for a channel.          Args:** (1 connections) — `server/services/rate_limiter.py`
-- **Record a message for rate limiting.          Args:             player_id: Player** (1 connections) — `server/services/rate_limiter.py`
-- **Check if a player is currently rate limited on a channel.          Args:** (1 connections) — `server/services/rate_limiter.py`
-- **Get the number of remaining messages a player can send on a channel.          Ar** (1 connections) — `server/services/rate_limiter.py`
+- **handle_unequip_command()** (18 connections) — `server/commands/inventory_unequip_command.py`
+- **test_inventory_unequip_command.py** (12 connections) — `server/tests/unit/commands/test_inventory_unequip_command.py`
+- **test_handle_unequip_command_slot_validation_error()** (6 connections) — `server/tests/unit/commands/test_inventory_unequip_command.py`
+- **_mutation_cm()** (5 connections) — `server/tests/unit/commands/test_inventory_unequip_command.py`
+- **_player_with_equipped()** (5 connections) — `server/tests/unit/commands/test_inventory_unequip_command.py`
+- **_request_wiring()** (5 connections) — `server/tests/unit/commands/test_inventory_unequip_command.py`
+- **test_handle_unequip_command_success()** (5 connections) — `server/tests/unit/commands/test_inventory_unequip_command.py`
+- **test_handle_unequip_command_mutation_suppressed()** (5 connections) — `server/tests/unit/commands/test_inventory_unequip_command.py`
+- **test_handle_unequip_command_persist_rollback()** (5 connections) — `server/tests/unit/commands/test_inventory_unequip_command.py`
+- **test_handle_unequip_command()** (3 connections) — `server/tests/unit/commands/test_inventory_commands.py`
+- **Unequip an item into the player's inventory.** (1 connections) — `server/commands/inventory_unequip_command.py`
+- **Test handle_unequip_command() unequips item.** (1 connections) — `server/tests/unit/commands/test_inventory_commands.py`
+- **Unit tests for inventory_unequip_command module.** (1 connections) — `server/tests/unit/commands/test_inventory_unequip_command.py`
 
 ## Relationships
 
-- [event events serialization](event_events_serialization.md) (6 shared connections)
-- [dead letter realtime](dead_letter_realtime.md) (2 shared connections)
+- [task registry app](task_registry_app.md) (9 shared connections)
+- [database helpers infrastructure](database_helpers_infrastructure.md) (3 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (2 shared connections)
+- [commands npc admin](commands_npc_admin.md) (1 shared connections)
+- [player cache rationale](player_cache_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/rate_limiter.py`
+- `server/commands/inventory_unequip_command.py`
+- `server/tests/unit/commands/test_inventory_commands.py`
+- `server/tests/unit/commands/test_inventory_unequip_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 34 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 69 (96%)
+- INFERRED: 3 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

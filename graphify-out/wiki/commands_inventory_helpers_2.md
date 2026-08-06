@@ -1,10 +1,11 @@
 # commands inventory helpers
 
-> 24 nodes
+> 26 nodes
 
 ## Key Concepts
 
 - **RoomEventHandler** (21 connections) — `server/realtime/integration/room_event_handler.py`
+- **room_event_handler.py** (13 connections) — `server/realtime/integration/room_event_handler.py`
 - **test_room_event_handler.py** (13 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
 - **__init__.py** (5 connections) — `server/realtime/integration/__init__.py`
 - **.__init__()** (4 connections) — `server/realtime/integration/room_event_handler.py`
@@ -23,19 +24,18 @@
 - **test_handle_player_entered_nats_publish_failure()** (2 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
 - **test_subscribe_handles_exception()** (2 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
 - **Integration components for connection management.  This package provides integra** (1 connections) — `server/realtime/integration/__init__.py`
+- **Room event handling for connection management.  This module provides integration** (1 connections) — `server/realtime/integration/room_event_handler.py`
 - **Handles room movement events and broadcasts occupant updates.      This class pr** (1 connections) — `server/realtime/integration/room_event_handler.py`
 - **Initialize the room event handler.          Args:             room_manager: Room** (1 connections) — `server/realtime/integration/room_event_handler.py`
 - **Handle PlayerEnteredRoom events by broadcasting updated occupant count.** (1 connections) — `server/realtime/integration/room_event_handler.py`
 - **Handle PlayerLeftRoom events by broadcasting updated occupant count.** (1 connections) — `server/realtime/integration/room_event_handler.py`
-- **Unit tests for RoomEventHandler integration.** (1 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
+- [command player state](command_player_state.md) (6 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (5 shared connections)
 - [Error Conversion](Error_Conversion.md) (4 shared connections)
-- [spell models rationale](spell_models_rationale.md) (2 shared connections)
-- [party service game](party_service_game.md) (2 shared connections)
-- [combat services messaging](combat_services_messaging.md) (2 shared connections)
-- [command utility models](command_utility_models.md) (1 shared connections)
 - [shutdown admin command](shutdown_admin_command.md) (1 shared connections)
 
 ## Source Files
@@ -46,7 +46,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 82 (100%)
+- EXTRACTED: 96 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

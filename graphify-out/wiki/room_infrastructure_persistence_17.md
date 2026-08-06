@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_register_action_handler_overwrites()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test register_action_handler() overwrites existing handler.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_unmute_player_not_found()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test unmute_player() when mute doesn't exist.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
 
 ## Relationships
 
-- [room occupant manager](room_occupant_manager.md) (1 shared connections)
-- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
+- [user manager services](user_manager_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_behavior_engine.py`
+- `server/tests/unit/services/test_user_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

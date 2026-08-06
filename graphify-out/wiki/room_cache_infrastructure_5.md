@@ -4,22 +4,22 @@
 
 ## Key Concepts
 
-- **test_execute_applicable_rules_no_handler()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test execute_applicable_rules() returns False when no handler.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_unmute_channel_database_error()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **Test unmuting channel with database error.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
 
 ## Relationships
 
-- [room occupant manager](room_occupant_manager.md) (1 shared connections)
-- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
+- [player requests schemas](player_requests_schemas.md) (1 shared connections)
+- [player preferences service](player_preferences_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_behavior_engine.py`
+- `server/tests/unit/services/test_player_preferences_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

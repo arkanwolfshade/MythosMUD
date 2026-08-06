@@ -1,30 +1,29 @@
 # command commands validation
 
-> 8 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **TestHandleSpecialCommandRouting** (5 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **.test_handle_special_command_routing_alias_command()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **.test_handle_special_command_routing_alias_command_no_storage()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **.test_handle_special_command_routing_emote_conversion()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _handle_special_command_routing function.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _handle_special_command_routing handles alias management commands.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _handle_special_command_routing returns error when alias storage unavailabl** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _handle_special_command_routing converts single-word emotes.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **TestGetChatService** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_chat_service_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_chat_service_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Tests for get_chat_service dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_chat_service returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_chat_service raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Relationships
 
-- [player model models](player_model_models.md) (4 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (3 shared connections)
+- [Player Stats](Player_Stats.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_aliases.py`
+- `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 13 (93%)
+- INFERRED: 1 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

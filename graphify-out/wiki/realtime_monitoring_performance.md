@@ -1,31 +1,38 @@
 # realtime monitoring performance
 
-> 8 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **.initialize_nats_combat()** (7 connections) — `server/container/bundles/combat.py`
-- **._validate_nats_combat_prerequisites()** (4 connections) — `server/container/bundles/combat.py`
-- **._start_nats_message_handler()** (4 connections) — `server/container/bundles/combat.py`
-- **._handle_nats_unavailable()** (3 connections) — `server/container/bundles/combat.py`
-- **Raise if prerequisites for NATS combat are missing.** (1 connections) — `server/container/bundles/combat.py`
-- **Start NATS message handler if available. Logs and swallows errors.** (1 connections) — `server/container/bundles/combat.py`
-- **Handle case when NATS is not connected. Raises in prod, sets combat_service to N** (1 connections) — `server/container/bundles/combat.py`
-- **Initialize NATS-dependent combat service and start NATS message handler.** (1 connections) — `server/container/bundles/combat.py`
+- **.load_player_mutes()** (12 connections) — `server/services/user_manager.py`
+- **._load_player_mutes_from_data()** (6 connections) — `server/services/user_manager.py`
+- **._load_global_mutes_from_data()** (6 connections) — `server/services/user_manager.py`
+- **._convert_mute_info_timestamps()** (5 connections) — `server/services/user_manager.py`
+- **._convert_mute_info_uuids()** (5 connections) — `server/services/user_manager.py`
+- **._load_channel_mutes_from_data()** (5 connections) — `server/services/user_manager.py`
+- **user_manager()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Convert timestamp strings in mute_info to datetime objects.** (1 connections) — `server/services/user_manager.py`
+- **Convert UUID strings in mute_info to UUID objects.** (1 connections) — `server/services/user_manager.py`
+- **Load player mutes from JSON data into memory.** (1 connections) — `server/services/user_manager.py`
+- **Load channel mutes from JSON data into memory.** (1 connections) — `server/services/user_manager.py`
+- **Load global mutes from JSON data into memory.** (1 connections) — `server/services/user_manager.py`
+- **Load mute data for a specific player from JSON file.          Args:** (1 connections) — `server/services/user_manager.py`
+- **Create a UserManager instance.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
 
 ## Relationships
 
-- [websocket realtime handler](websocket_realtime_handler.md) (4 shared connections)
-- [nats services service](nats_services_service.md) (3 shared connections)
-- [services npc startup](services_npc_startup.md) (1 shared connections)
+- [services user manager](services_user_manager.md) (17 shared connections)
+- [services rescue service](services_rescue_service.md) (1 shared connections)
+- [user manager services](user_manager_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/container/bundles/combat.py`
+- `server/services/user_manager.py`
+- `server/tests/unit/services/test_user_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 22 (100%)
+- EXTRACTED: 49 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

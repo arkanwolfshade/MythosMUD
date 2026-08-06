@@ -1,58 +1,61 @@
 # commands position system
 
-> 42 nodes
+> 58 nodes
 
 ## Key Concepts
 
-- **test_follow_commands.py** (23 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **handle_follow_command()** (18 connections) — `server/commands/follow_commands.py`
-- **follow_commands.py** (15 connections) — `server/commands/follow_commands.py`
-- **_make_container()** (12 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **_make_request()** (12 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **handle_unfollow_command()** (10 connections) — `server/commands/follow_commands.py`
-- **handle_following_command()** (10 connections) — `server/commands/follow_commands.py`
-- **test_handle_follow_self_rejected()** (7 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_follow_same_room_player_sends_request()** (7 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_follow_same_room_npc_immediate()** (7 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **_get_container()** (6 connections) — `server/commands/follow_commands.py`
-- **test_handle_follow_no_such_player_or_npc()** (6 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_follow_no_persistence()** (5 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_follow_no_target()** (5 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_follow_player_not_in_game()** (5 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_unfollow_success()** (5 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_unfollow_was_not_following()** (5 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_following_display()** (5 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **Any** (4 connections)
-- **test_handle_follow_no_container()** (3 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_unfollow_no_container()** (3 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_following_no_container()** (3 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **Follow commands for MythosMUD.  Handlers for /follow, /unfollow, and /following.** (1 connections) — `server/commands/follow_commands.py`
-- **Get application container from request.** (1 connections) — `server/commands/follow_commands.py`
-- **Handle /follow <target>. Target must be a player or NPC in the same room.** (1 connections) — `server/commands/follow_commands.py`
-- *... and 17 more nodes in this community*
+- **combat_taunt.py** (32 connections) — `server/commands/combat_taunt.py`
+- **TauntCommandHandler** (29 connections) — `server/commands/combat_taunt.py`
+- **test_combat_taunt.py** (20 connections) — `server/tests/unit/commands/test_combat_taunt.py`
+- **_validate_taunt_context()** (13 connections) — `server/commands/combat_taunt.py`
+- **run_handle_taunt_command()** (13 connections) — `server/commands/combat_taunt.py`
+- **_validate_taunt_target()** (9 connections) — `server/commands/combat_taunt.py`
+- **_resolve_taunt_combat_and_participant()** (9 connections) — `server/commands/combat_taunt.py`
+- **_apply_taunt_and_maybe_broadcast()** (9 connections) — `server/commands/combat_taunt.py`
+- **test_run_handle_taunt_success()** (7 connections) — `server/tests/unit/commands/test_combat_taunt.py`
+- **_resolve_taunt_room_and_player()** (6 connections) — `server/commands/combat_taunt.py`
+- **UUID** (6 connections)
+- **_validate_taunt_target_name()** (6 connections) — `server/commands/combat_taunt.py`
+- **_RoomWithIdOnly** (6 connections) — `server/tests/unit/commands/test_combat_taunt.py`
+- **test_validate_taunt_target_not_npc()** (5 connections) — `server/tests/unit/commands/test_combat_taunt.py`
+- **test_validate_taunt_target_dead()** (5 connections) — `server/tests/unit/commands/test_combat_taunt.py`
+- **test_run_handle_taunt_no_combat_service()** (5 connections) — `server/tests/unit/commands/test_combat_taunt.py`
+- **test_run_handle_taunt_not_in_combat()** (5 connections) — `server/tests/unit/commands/test_combat_taunt.py`
+- **.get_player_and_room()** (4 connections) — `server/commands/combat_taunt.py`
+- **AppWithState** (4 connections)
+- **.resolve_combat_target()** (4 connections) — `server/commands/combat_taunt.py`
+- **.check_and_interrupt_rest()** (4 connections) — `server/commands/combat_taunt.py`
+- **.is_alive()** (4 connections) — `server/models/combat.py`
+- **test_resolve_taunt_room_and_player_falls_back_to_id()** (4 connections) — `server/tests/unit/commands/test_combat_taunt.py`
+- **test_validate_taunt_target_name_from_target_key()** (4 connections) — `server/tests/unit/commands/test_combat_taunt.py`
+- **.combat_service()** (3 connections) — `server/commands/combat_taunt.py`
+- *... and 33 more nodes in this community*
 
 ## Relationships
 
-- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (8 shared connections)
-- [alias storage rationale](alias_storage_rationale.md) (4 shared connections)
-- [realtime real time](realtime_real_time.md) (4 shared connections)
-- [panels domPurifyClient chat](panels_domPurifyClient_chat.md) (4 shared connections)
-- [connection realtime manager](connection_realtime_manager.md) (3 shared connections)
-- [services ascii map](services_ascii_map.md) (2 shared connections)
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
-- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (1 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
-- [models player related](models_player_related.md) (1 shared connections)
+- [panels domPurifyClient chat](panels_domPurifyClient_chat.md) (12 shared connections)
+- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (9 shared connections)
+- [Item Instances](Item_Instances.md) (9 shared connections)
+- [commands npc admin](commands_npc_admin.md) (7 shared connections)
+- [command factories exploration](command_factories_exploration.md) (6 shared connections)
+- [npc database infrastructure](npc_database_infrastructure.md) (6 shared connections)
+- [room validator toolkit](room_validator_toolkit.md) (5 shared connections)
+- [cleanup combat handler](cleanup_combat_handler.md) (2 shared connections)
+- [grace period login](grace_period_login.md) (2 shared connections)
+- [Memory Task Runtime](Memory_Task_Runtime.md) (1 shared connections)
+- [models player rationale](models_player_rationale.md) (1 shared connections)
+- [connection models realtime](connection_models_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/follow_commands.py`
-- `server/tests/unit/commands/test_follow_commands.py`
+- `server/commands/combat_taunt.py`
+- `server/models/combat.py`
+- `server/tests/unit/commands/test_combat_taunt.py`
 
 ## Audit Trail
 
-- EXTRACTED: 192 (98%)
-- INFERRED: 4 (2%)
+- EXTRACTED: 244 (95%)
+- INFERRED: 13 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

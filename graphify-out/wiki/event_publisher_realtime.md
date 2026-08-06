@@ -33,14 +33,12 @@
 
 ## Relationships
 
-- [Error Conversion](Error_Conversion.md) (4 shared connections)
-- [websocket realtime handler](websocket_realtime_handler.md) (2 shared connections)
-- [nats services service](nats_services_service.md) (1 shared connections)
-- [lucidity npc combat](lucidity_npc_combat.md) (1 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (1 shared connections)
-- [spell models rationale](spell_models_rationale.md) (1 shared connections)
+- [nats services service](nats_services_service.md) (4 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (3 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (2 shared connections)
+- [command player state](command_player_state.md) (1 shared connections)
+- [schemas player rationale](schemas_player_rationale.md) (1 shared connections)
 - [manager subject services](manager_subject_services.md) (1 shared connections)
-- [realtime player connection](realtime_player_connection.md) (1 shared connections)
 
 ## Source Files
 

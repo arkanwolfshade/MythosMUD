@@ -1,69 +1,65 @@
 # lucidity event services
 
-> 194 nodes
+> 121 nodes
 
 ## Key Concepts
 
 - **NPCBase** (83 connections) — `server/npc/npc_base.py`
-- **NPCSpawningService** (67 connections) — `server/npc/spawning_service.py`
-- **test_spawning_modules.py** (41 connections) — `server/tests/unit/npc/test_spawning_modules.py`
-- **spawning_instance_factory.py** (25 connections) — `server/npc/spawning_instance_factory.py`
-- **spawning_request_execution.py** (20 connections) — `server/npc/spawning_request_execution.py`
-- **SimpleNPCDefinition** (17 connections) — `server/npc/spawning_models.py`
-- **NPCSpawnRequest** (17 connections) — `server/npc/spawning_models.py`
-- **spawn_npc_from_request()** (17 connections) — `server/npc/spawning_request_execution.py`
-- **create_npc_instance()** (16 connections) — `server/npc/spawning_instance_factory.py`
-- **NPCSpawnResult** (16 connections) — `server/npc/spawning_models.py`
-- **spawning_models.py** (13 connections) — `server/npc/spawning_models.py`
 - **.event_bus()** (12 connections) — `server/realtime/connection_manager.py`
+- **.__init__()** (11 connections) — `server/npc/npc_base.py`
 - **CommunicationIntegrationProtocol** (10 connections) — `server/npc/npc_protocols.py`
-- **generate_npc_id()** (10 connections) — `server/npc/spawning_instance_factory.py`
-- **_instantiate_by_type()** (10 connections) — `server/npc/spawning_instance_factory.py`
-- **_build_aggressive()** (9 connections) — `server/npc/spawning_instance_factory.py`
+- **schedule_end_combat_if_npc_died_best_effort()** (8 connections) — `server/npc/npc_combat_schedule.py`
+- **._finalize_spawn_record()** (7 connections) — `server/npc/lifecycle_manager.py`
+- **to_int_or_default()** (7 connections) — `server/npc/npc_config_parsing.py`
+- **get_combat_stats_dict()** (7 connections) — `server/npc/npc_config_parsing.py`
 - **CombatIntegrationProtocol** (7 connections) — `server/npc/npc_protocols.py`
-- **_spawn_success()** (7 connections) — `server/npc/spawning_request_execution.py`
-- **.__init__()** (7 connections) — `server/npc/spawning_service.py`
 - **._handle_npc_death()** (6 connections) — `server/npc/npc_base.py`
 - **._move_with_integration()** (6 connections) — `server/npc/npc_base.py`
-- **_build_shopkeeper()** (6 connections) — `server/npc/spawning_instance_factory.py`
-- **_build_passive()** (6 connections) — `server/npc/spawning_instance_factory.py`
-- **._spawn_npc_from_request()** (6 connections) — `server/npc/spawning_service.py`
-- **._create_npc_instance()** (6 connections) — `server/npc/spawning_service.py`
-- *... and 169 more nodes in this community*
+- **._register_reactions_and_chat_name()** (5 connections) — `server/npc/npc_base.py`
+- **.take_damage()** (5 connections) — `server/npc/npc_base.py`
+- **._get_integration_dependencies()** (5 connections) — `server/npc/npc_base.py`
+- **.move_to_room()** (5 connections) — `server/npc/npc_base.py`
+- **_safe_stat_int()** (5 connections) — `server/npc/npc_config_parsing.py`
+- **test_npc_combat_schedule.py** (5 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
+- **._set_npc_room_tracking()** (4 connections) — `server/npc/lifecycle_manager.py`
+- **._validate_npc_room_tracking()** (4 connections) — `server/npc/lifecycle_manager.py`
+- **._safe_get()** (4 connections) — `server/npc/npc_base.py`
+- **._apply_definition_attributes()** (4 connections) — `server/npc/npc_base.py`
+- **._publish_damage_event()** (4 connections) — `server/npc/npc_base.py`
+- **._schedule_end_combat_if_npc_died()** (4 connections) — `server/npc/npc_base.py`
+- **.heal()** (4 connections) — `server/npc/npc_base.py`
+- **.speak()** (4 connections) — `server/npc/npc_base.py`
+- *... and 96 more nodes in this community*
 
 ## Relationships
 
-- [Error Conversion](Error_Conversion.md) (110 shared connections)
-- [room look commands](room_look_commands.md) (12 shared connections)
-- [container events rationale](container_events_rationale.md) (10 shared connections)
-- [player event realtime](player_event_realtime.md) (7 shared connections)
-- [services nats service](services_nats_service.md) (6 shared connections)
-- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (4 shared connections)
-- [player event handlers](player_event_handlers.md) (4 shared connections)
-- [party service game](party_service_game.md) (4 shared connections)
-- [commands npc admin](commands_npc_admin.md) (2 shared connections)
-- [error logging rationale](error_logging_rationale.md) (2 shared connections)
-- [room occupant manager](room_occupant_manager.md) (2 shared connections)
+- [services nats service](services_nats_service.md) (18 shared connections)
+- [Error Conversion](Error_Conversion.md) (12 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (11 shared connections)
+- [inventory mutation guard](inventory_mutation_guard.md) (10 shared connections)
+- [room look commands](room_look_commands.md) (10 shared connections)
+- [npc lifecycle combat](npc_lifecycle_combat.md) (3 shared connections)
 - [commands logout helpers](commands_logout_helpers.md) (2 shared connections)
+- [combat services rationale](combat_services_rationale.md) (2 shared connections)
+- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (2 shared connections)
+- [error logging rationale](error_logging_rationale.md) (1 shared connections)
+- [quest game service](quest_game_service.md) (1 shared connections)
+- [combat services turn](combat_services_turn.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/idle_movement.py`
+- `server/npc/lifecycle_manager.py`
 - `server/npc/npc_base.py`
+- `server/npc/npc_combat_schedule.py`
+- `server/npc/npc_config_parsing.py`
 - `server/npc/npc_protocols.py`
-- `server/npc/spawning_instance_factory.py`
-- `server/npc/spawning_models.py`
-- `server/npc/spawning_request_execution.py`
-- `server/npc/spawning_service.py`
 - `server/realtime/connection_manager.py`
-- `server/services/target_resolution_service.py`
-- `server/tests/unit/npc/test_spawning_modules.py`
-- `server/tests/unit/services/test_npc_instance_service.py`
+- `server/tests/unit/npc/test_npc_combat_schedule.py`
 
 ## Audit Trail
 
-- EXTRACTED: 718 (90%)
-- INFERRED: 83 (10%)
+- EXTRACTED: 345 (90%)
+- INFERRED: 37 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

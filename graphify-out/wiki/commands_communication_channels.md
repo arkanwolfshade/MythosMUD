@@ -1,47 +1,55 @@
 # commands communication channels
 
-> 24 nodes
+> 59 nodes
 
 ## Key Concepts
 
+- **NPCEventHandler** (25 connections) — `server/realtime/npc_event_handlers.py`
 - **test_npc_event_handlers_helpers.py** (14 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
+- **.handle_npc_entered()** (8 connections) — `server/realtime/npc_event_handlers.py`
+- **._send_npc_left_message()** (8 connections) — `server/realtime/npc_event_handlers.py`
+- **._get_npc_spawn_message()** (7 connections) — `server/realtime/npc_event_handlers.py`
+- **._send_room_message()** (6 connections) — `server/realtime/npc_event_handlers.py`
+- **.handle_npc_left()** (6 connections) — `server/realtime/npc_event_handlers.py`
+- **.__init__()** (5 connections) — `server/realtime/npc_event_handlers.py`
+- **Any** (5 connections)
+- **._get_npc_instance()** (5 connections) — `server/realtime/npc_event_handlers.py`
+- **._get_npc_name()** (5 connections) — `server/realtime/npc_event_handlers.py`
+- **._get_behavior_config_from_instance()** (4 connections) — `server/realtime/npc_event_handlers.py`
+- **._parse_behavior_config()** (4 connections) — `server/realtime/npc_event_handlers.py`
+- **._extract_spawn_message_from_config()** (4 connections) — `server/realtime/npc_event_handlers.py`
+- **._determine_direction_from_rooms()** (4 connections) — `server/realtime/npc_event_handlers.py`
+- **._get_npc_departure_message()** (4 connections) — `server/realtime/npc_event_handlers.py`
+- **._validate_npc_left_room()** (4 connections) — `server/realtime/npc_event_handlers.py`
+- **._schedule_room_occupants_update()** (4 connections) — `server/realtime/npc_event_handlers.py`
+- **npc_event_handler()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
 - **npc_event_handler()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
 - **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
 - **mock_message_builder()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
 - **test_extract_spawn_message_from_config()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
 - **test_extract_spawn_message_from_config_none()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
 - **test_get_npc_spawn_message()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **test_get_npc_spawn_message_custom()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **test_get_npc_name()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **test_determine_direction_from_rooms()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **test_determine_direction_from_rooms_not_found()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **test_get_npc_departure_message()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **Unit tests for NPC event handlers helper functions.  Tests the helper functions** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **Create a mock connection manager.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **Create a mock message builder.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **Create an NPCEventHandler instance.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **Test _extract_spawn_message_from_config() extracts spawn message.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **Test _extract_spawn_message_from_config() returns None when not found.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **Test _get_npc_spawn_message() returns spawn message.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **Test _get_npc_spawn_message() returns custom spawn message.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **Test _get_npc_name() returns NPC name.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **Test _determine_direction_from_rooms() determines direction.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **Test _determine_direction_from_rooms() returns None when direction not found.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **Test _get_npc_departure_message() returns departure message.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
+- *... and 34 more nodes in this community*
 
 ## Relationships
 
-- [profession models rationale](profession_models_rationale.md) (2 shared connections)
-- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (8 shared connections)
+- [inventory mutation guard](inventory_mutation_guard.md) (3 shared connections)
+- [tick game processing](tick_game_processing.md) (3 shared connections)
+- [schemas player rationale](schemas_player_rationale.md) (3 shared connections)
+- [npc event handlers](npc_event_handlers.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
 
 ## Source Files
 
+- `server/realtime/npc_event_handlers.py`
+- `server/tests/unit/realtime/test_npc_event_handlers.py`
 - `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 49 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 175 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,60 +1,58 @@
 # feature services flag
 
-> 30 nodes
+> 40 nodes
 
 ## Key Concepts
 
-- **factory.py** (45 connections) — `server/app/factory.py`
+- **main.py** (15 connections) — `server/main.py`
+- **create_app()** (14 connections) — `server/app/factory.py`
 - **CORSConfigDict** (7 connections) — `server/app/factory.py`
-- **_register_v1_routers()** (7 connections) — `server/app/factory.py`
 - **_get_cors_config_from_app_config()** (6 connections) — `server/app/factory.py`
 - **_parse_cors_env_vars()** (6 connections) — `server/app/factory.py`
 - **_configure_cors()** (6 connections) — `server/app/factory.py`
-- **UserRead** (6 connections) — `server/auth/endpoints.py`
-- **UserUpdate** (6 connections) — `server/auth/endpoints.py`
 - **_apply_cors_env_overrides()** (5 connections) — `server/app/factory.py`
+- **main()** (4 connections) — `scripts/generate_openapi_spec.py`
 - **CORSConfigOverrides** (4 connections) — `server/app/factory.py`
 - **_get_default_cors_config()** (4 connections) — `server/app/factory.py`
 - **_parse_cors_origin_list()** (4 connections) — `server/app/factory.py`
+- **main()** (4 connections) — `server/main.py`
+- **_create_get_app()** (4 connections) — `server/main.py`
+- **generate_openapi_spec.py** (3 connections) — `scripts/generate_openapi_spec.py`
+- **_sanitize_token_examples()** (3 connections) — `scripts/generate_openapi_spec.py`
 - **_first_set_env()** (3 connections) — `server/app/factory.py`
 - **_try_json_str_list()** (3 connections) — `server/app/factory.py`
 - **FastAPI** (3 connections)
+- **test_auth()** (3 connections) — `server/main.py`
 - **TypedDict** (2 connections)
-- **FastAPI application factory for MythosMUD server.  This module handles FastAPI a** (1 connections) — `server/app/factory.py`
+- **read_root()** (2 connections) — `server/main.py`
+- **Replace auth token examples with clearly fake placeholders.** (1 connections) — `scripts/generate_openapi_spec.py`
+- **Generate and write OpenAPI spec to docs/openapi/openapi.json.** (1 connections) — `scripts/generate_openapi_spec.py`
 - **Type definition for CORS configuration dictionary.** (1 connections) — `server/app/factory.py`
 - **Partial CORS overrides from environment variables.** (1 connections) — `server/app/factory.py`
-- **Get default CORS configuration values.      Returns:         CORSConfigDict: Dic** (1 connections) — `server/app/factory.py`
-- **Get CORS configuration from AppConfig, with fallback to defaults.      Returns:** (1 connections) — `server/app/factory.py`
-- **Return the first non-empty environment value among keys.** (1 connections) — `server/app/factory.py`
-- **Parse candidate as a JSON string list, or None on failure.** (1 connections) — `server/app/factory.py`
-- **Parse CORS origins env value as JSON array or comma-separated list.** (1 connections) — `server/app/factory.py`
-- **Parse CORS-related environment variables and return overrides.      Environment** (1 connections) — `server/app/factory.py`
-- *... and 5 more nodes in this community*
+- *... and 15 more nodes in this community*
 
 ## Relationships
 
-- [player requests schemas](player_requests_schemas.md) (7 shared connections)
-- [playerHandlers eventHandlers healthEvent](playerHandlers_eventHandlers_healthEvent.md) (5 shared connections)
-- [Error Conversion](Error_Conversion.md) (4 shared connections)
-- [persistence container rationale](persistence_container_rationale.md) (3 shared connections)
-- [auth users rationale](auth_users_rationale.md) (3 shared connections)
-- [Player Stats](Player_Stats.md) (2 shared connections)
-- [Magic Spell Service](Magic_Spell_Service.md) (2 shared connections)
-- [tools generate invite](tools_generate_invite.md) (2 shared connections)
-- [config models cors](config_models_cors.md) (2 shared connections)
-- [middleware error handling](middleware_error_handling.md) (2 shared connections)
-- [Exception Containers](Exception_Containers.md) (1 shared connections)
-- [metrics schemas rationale](metrics_schemas_rationale.md) (1 shared connections)
+- [player requests schemas](player_requests_schemas.md) (14 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (3 shared connections)
+- [circuit breaker realtime](circuit_breaker_realtime.md) (2 shared connections)
+- [app factory rationale](app_factory_rationale.md) (2 shared connections)
+- [aggro threat services](aggro_threat_services.md) (1 shared connections)
+- [middleware comprehensive logging](middleware_comprehensive_logging.md) (1 shared connections)
+- [middleware error handling](middleware_error_handling.md) (1 shared connections)
+- [security headers middleware](security_headers_middleware.md) (1 shared connections)
+- [websocket handler realtime](websocket_handler_realtime.md) (1 shared connections)
 
 ## Source Files
 
+- `scripts/generate_openapi_spec.py`
 - `server/app/factory.py`
-- `server/auth/endpoints.py`
+- `server/main.py`
 
 ## Audit Trail
 
-- EXTRACTED: 122 (93%)
-- INFERRED: 9 (7%)
+- EXTRACTED: 121 (98%)
+- INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

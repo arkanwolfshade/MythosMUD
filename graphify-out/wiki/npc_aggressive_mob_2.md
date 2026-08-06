@@ -1,30 +1,29 @@
 # npc aggressive mob
 
-> 8 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **.get_lifecycle_statistics()** (5 connections) — `server/npc/lifecycle_manager.py`
-- **._compute_state_counts()** (3 connections) — `server/npc/lifecycle_manager.py`
-- **._compute_type_counts()** (3 connections) — `server/npc/lifecycle_manager.py`
-- **._compute_aggregate_counts()** (3 connections) — `server/npc/lifecycle_manager.py`
-- **Get overall lifecycle statistics.          Returns:             Dictionary co** (1 connections) — `server/npc/lifecycle_manager.py`
-- **Return counts of lifecycle records by current_state.** (1 connections) — `server/npc/lifecycle_manager.py`
-- **Return counts of lifecycle records by NPC type string.** (1 connections) — `server/npc/lifecycle_manager.py`
-- **Return (total_spawns, total_despawns, total_errors) across all lifecycle records** (1 connections) — `server/npc/lifecycle_manager.py`
+- **TestGetRoomService** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_room_service_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_room_service_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Tests for get_room_service dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_room_service returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_room_service raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Relationships
 
-- [Error Conversion](Error_Conversion.md) (4 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (3 shared connections)
+- [Player Stats](Player_Stats.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/lifecycle_manager.py`
+- `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 13 (93%)
+- INFERRED: 1 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

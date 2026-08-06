@@ -1,51 +1,49 @@
 # profession models rationale
 
-> 88 nodes
+> 44 nodes
 
 ## Key Concepts
 
-- **Profession** (54 connections) — `server/models/profession.py`
-- **test_profession.py** (30 connections) — `server/tests/unit/models/test_profession.py`
-- **Any** (8 connections)
-- **.get_stat_requirements()** (5 connections) — `server/models/profession.py`
-- **.set_stat_requirements()** (3 connections) — `server/models/profession.py`
-- **.get_mechanical_effects()** (3 connections) — `server/models/profession.py`
-- **.set_mechanical_effects()** (3 connections) — `server/models/profession.py`
-- **.get_stat_modifiers()** (3 connections) — `server/models/profession.py`
-- **.set_stat_modifiers()** (3 connections) — `server/models/profession.py`
-- **.get_skill_modifiers()** (3 connections) — `server/models/profession.py`
-- **.set_skill_modifiers()** (3 connections) — `server/models/profession.py`
-- **.meets_stat_requirements()** (3 connections) — `server/models/profession.py`
-- **.get_requirement_display_text()** (3 connections) — `server/models/profession.py`
-- **test_get_professions_success()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_profession_by_id_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_profession_repr()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_get_stat_requirements_valid_json()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_get_stat_requirements_invalid_json()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_get_stat_requirements_empty_string()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_get_stat_requirements_none()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_set_stat_requirements()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_set_stat_requirements_empty_dict()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_get_mechanical_effects_valid_json()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_get_mechanical_effects_invalid_json()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **test_profession_get_mechanical_effects_empty_string()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- *... and 63 more nodes in this community*
+- **Commands** (12 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **gh-stack** (11 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **Workflows** (9 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **gh-stack (MythosMUD)** (7 connections) — `.cursor/skills/gh-stack/SKILL.md`
+- **Thinking about stack structure** (6 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **SKILL.md** (2 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **SKILL.md** (2 connections) — `.cursor/skills/gh-stack/SKILL.md`
+- **When to use this skill** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **Prerequisites** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **Agent rules** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **Dependency chain** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **Branch naming** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **Staging changes deliberately** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **When to create a new branch** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **One stack, one story** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **Quick reference** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **End-to-end: create a stack from scratch** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **Making mid-stack changes** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **Modify a mid-stack branch and sync** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **Routine sync after merges** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **Squash-merge recovery** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **Handle rebase conflicts (agent workflow)** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **Parsing `--json` output** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **Restructure a stack (remove a branch, reorder, or rename)** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **Initialize a stack — `gh stack init`** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [commands shutdown process](commands_shutdown_process.md) (12 shared connections)
-- [commands admin helpers](commands_admin_helpers.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/models/profession.py`
-- `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- `server/tests/unit/models/test_profession.py`
+- `.agents/skills/gh-stack/SKILL.md`
+- `.cursor/skills/gh-stack/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 252 (97%)
-- INFERRED: 7 (3%)
+- EXTRACTED: 86 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

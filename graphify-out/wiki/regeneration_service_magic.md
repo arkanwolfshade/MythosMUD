@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [persistence core infrastructure](persistence_core_infrastructure.md) (5 shared connections)
-- [realtime real time](realtime_real_time.md) (1 shared connections)
+- [container persistence rationale](container_persistence_rationale.md) (5 shared connections)
+- [zone configuration npc](zone_configuration_npc.md) (1 shared connections)
 
 ## Source Files
 

@@ -4,22 +4,22 @@
 
 ## Key Concepts
 
-- **test_match_inventory_item_by_name_no_match()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **Test _match_inventory_item_by_name with no match.** (1 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_event_bus_unsubscribe()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test EventBus.unsubscribe() removes subscriber.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- [player cache rationale](player_cache_rationale.md) (1 shared connections)
-- [commands inventory command](commands_inventory_command.md) (1 shared connections)
+- [event bus events](event_bus_events.md) (1 shared connections)
+- [room conftest toolkit](room_conftest_toolkit.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_inventory_helpers.py`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

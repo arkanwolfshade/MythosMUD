@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_evaluate_inequality_false()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test _evaluate_inequality() returns False for matching condition.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_preload_receiver_mute_data()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Test preload_receiver_mute_data() preloads mute data.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Relationships
 
-- [room occupant manager](room_occupant_manager.md) (1 shared connections)
-- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
+- [message filtering realtime](message_filtering_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_behavior_engine.py`
+- `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

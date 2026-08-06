@@ -1,6 +1,6 @@
 # connection realtime error
 
-> 29 nodes
+> 33 nodes
 
 ## Key Concepts
 
@@ -14,6 +14,8 @@
 - **recover_from_error_impl()** (9 connections) — `server/realtime/connection_error_methods.py`
 - **UUID** (6 connections)
 - **Any** (5 connections)
+- **.handle_security_violation()** (4 connections) — `server/realtime/connection_manager.py`
+- **.recover_from_error()** (4 connections) — `server/realtime/connection_manager.py`
 - **test_delegate_error_handler_success()** (3 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
 - **test_delegate_error_handler_none()** (3 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
 - **test_detect_and_handle_error_state_impl_delegates()** (2 connections) — `server/tests/unit/realtime/test_connection_error_methods.py`
@@ -27,26 +29,25 @@
 - **Detect when a client is in an error state and handle it appropriately.** (1 connections) — `server/realtime/connection_error_methods.py`
 - **Handle WebSocket-specific errors.** (1 connections) — `server/realtime/connection_error_methods.py`
 - **Handle authentication-related errors.** (1 connections) — `server/realtime/connection_error_methods.py`
-- **Handle security violations.** (1 connections) — `server/realtime/connection_error_methods.py`
-- **Attempt to recover from an error state for a player.** (1 connections) — `server/realtime/connection_error_methods.py`
-- *... and 4 more nodes in this community*
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
+- [Room Broadcast](Room_Broadcast.md) (8 shared connections)
 - [connection realtime delegates](connection_realtime_delegates.md) (6 shared connections)
-- [lucidity npc combat](lucidity_npc_combat.md) (6 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (5 shared connections)
+- [target resolution service](target_resolution_service.md) (5 shared connections)
 
 ## Source Files
 
 - `server/realtime/connection_delegates.py`
 - `server/realtime/connection_error_methods.py`
+- `server/realtime/connection_manager.py`
 - `server/tests/unit/realtime/test_connection_delegates.py`
 - `server/tests/unit/realtime/test_connection_error_methods.py`
 
 ## Audit Trail
 
-- EXTRACTED: 123 (100%)
+- EXTRACTED: 133 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

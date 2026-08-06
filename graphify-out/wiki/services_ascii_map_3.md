@@ -4,13 +4,13 @@
 
 ## Key Concepts
 
-- **event_bus()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Create an EventBus instance.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_handle_task_result_async_with_error()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test _handle_task_result_async() with task that raises error.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- [Error Conversion](Error_Conversion.md) (1 shared connections)
 - [event bus events](event_bus_events.md) (1 shared connections)
+- [room conftest toolkit](room_conftest_toolkit.md) (1 shared connections)
 
 ## Source Files
 

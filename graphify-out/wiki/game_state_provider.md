@@ -1,40 +1,34 @@
 # game state provider
 
-> 78 nodes
+> 10 nodes
 
 ## Key Concepts
 
 - **test_game_state_provider.py** (41 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **game_state_provider()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **mock_room_manager()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
 - **mock_get_async_persistence()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **mock_send_personal_message()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **mock_get_app()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_player()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_players_batch()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_players_batch_empty()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_players_batch_no_persistence()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_players_batch_player_not_found()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_npcs_batch()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_npcs_batch_empty()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
 - **test_convert_room_uuids_to_names()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_room_occupants()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_send_initial_game_state()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_player_not_found()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_npcs_batch_none_ids()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_convert_room_uuids_to_names_empty_room_data()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_convert_room_uuids_to_names_no_player_ids()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_convert_room_uuids_to_names_invalid_uuid()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_convert_room_uuids_to_names_player_not_found()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_room_occupants_empty_online_players()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_room_occupants_with_online_players()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_send_initial_game_state_no_player()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- *... and 53 more nodes in this community*
+- **test_get_fallback_player_data_json_stats()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_convert_room_uuids_with_npcs()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Unit tests for game state provider.  Tests the GameStateProvider class.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Create a mock get_async_persistence callback.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test convert_room_uuids_to_names() converts UUIDs to names.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test _get_fallback_player_data() parses JSON stats string.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test convert_room_uuids_to_names() converts NPC IDs to display names.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Relationships
 
-- [shutdown admin command](shutdown_admin_command.md) (2 shared connections)
-- [command utility models](command_utility_models.md) (1 shared connections)
+- [npc aggressive mob](npc_aggressive_mob.md) (3 shared connections)
+- [realtime player event](realtime_player_event.md) (3 shared connections)
+- [room toolkit validator](room_toolkit_validator.md) (3 shared connections)
+- [command factories create](command_factories_create.md) (2 shared connections)
+- [command player state](command_player_state.md) (1 shared connections)
+- [shutdown admin command](shutdown_admin_command.md) (1 shared connections)
+- [persistence damage player()](persistence_damage_player%28%29.md) (1 shared connections)
+- [persistence heal player()](persistence_heal_player%28%29.md) (1 shared connections)
+- [archive 2025 REMEDIATION](archive_2025_REMEDIATION.md) (1 shared connections)
+- [models profession available](models_profession_available.md) (1 shared connections)
+- [player realtime event](player_realtime_event.md) (1 shared connections)
+- [infrastructure security rationale](infrastructure_security_rationale.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,7 +36,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 157 (100%)
+- EXTRACTED: 54 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

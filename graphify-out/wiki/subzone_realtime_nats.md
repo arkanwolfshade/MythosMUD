@@ -1,30 +1,24 @@
 # subzone realtime nats
 
-> 8 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_inventory_commands_format_helpers.py** (6 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
-- **test_format_metadata_empty()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
-- **test_format_metadata_simple()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
-- **test_format_metadata_nested_dict()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
-- **Unit tests for inventory command formatting helper functions.  Tests the formatt** (1 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
-- **Test _format_metadata() returns empty string for None.** (1 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
-- **Test _format_metadata() formats simple metadata.** (1 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
-- **Test _format_metadata() formats nested dict.** (1 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
+- **.to_legacy_dict()** (3 connections) — `server/config/models/security_logging.py`
+- **Any** (1 connections)
+- **Convert to legacy logging config dict format for backward compatibility.** (1 connections) — `server/config/models/security_logging.py`
 
 ## Relationships
 
-- [commands inventory helpers](commands_inventory_helpers.md) (4 shared connections)
-- [player helpers error](player_helpers_error.md) (1 shared connections)
+- [websocket validation realtime](websocket_validation_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
+- `server/config/models/security_logging.py`
 
 ## Audit Trail
 
-- EXTRACTED: 19 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

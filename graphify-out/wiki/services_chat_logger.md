@@ -1,52 +1,60 @@
 # services chat logger
 
-> 36 nodes
+> 51 nodes
 
 ## Key Concepts
 
-- **MessageBroadcaster** (19 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **message_broadcaster.py** (15 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **UUID** (9 connections)
-- **_stats_counter()** (7 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **.broadcast_global()** (7 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **._process_batch_delivery_results()** (6 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **._deliver_room_broadcast()** (6 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **.broadcast_to_room()** (6 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **._process_global_batch_results()** (6 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **._build_target_mapping()** (5 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **._fallback_individual_send()** (5 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **._fallback_global_individual()** (5 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **_narrow_gather_delivery_dict()** (4 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **_global_targets_and_stats()** (4 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **.__init__()** (4 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **.broadcast_room_event()** (4 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **.broadcast_global_event()** (4 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **._prepare_room_targets()** (3 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **SendPersonalMessage** (1 connections)
-- **Message broadcasting for connection management.  This module provides room and g** (1 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **Narrow asyncio.gather results when return_exceptions=True.** (1 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **Read an integer delivery counter from stats dicts typed as dict[str, object].** (1 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **Compute recipient list and initial stats for broadcast_global.** (1 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **Broadcasts messages to rooms and globally.      This class provides:     - Room-** (1 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **Initialize the message broadcaster.          Args:             room_manager: Roo** (1 connections) — `server/realtime/messaging/message_broadcaster.py`
-- *... and 11 more nodes in this community*
+- **system_monitoring.py** (23 connections) — `server/api/system_monitoring.py`
+- **TestMonitoringEndpoints** (16 connections) — `server/tests/unit/test_main.py`
+- **test_main.py** (13 connections) — `server/tests/unit/test_main.py`
+- **get_system_metrics()** (11 connections) — `server/api/system_monitoring.py`
+- **get_system_monitoring_summary()** (10 connections) — `server/api/system_monitoring.py`
+- **resolve_system_alert()** (10 connections) — `server/api/system_monitoring.py`
+- **get_system_health()** (9 connections) — `server/api/system_monitoring.py`
+- **get_system_monitoring_alerts()** (9 connections) — `server/api/system_monitoring.py`
+- **SystemHealthResponse** (5 connections) — `server/api/monitoring_models.py`
+- **SystemMetricsResponse** (5 connections) — `server/api/monitoring_models.py`
+- **SystemMonitoringSummaryResponse** (5 connections) — `server/api/monitoring_models.py`
+- **AlertResolveResponse** (5 connections) — `server/api/monitoring_models.py`
+- **Request** (5 connections)
+- **.test_health_check_failure()** (4 connections) — `server/tests/unit/test_main.py`
+- **.test_get_metrics_failure()** (4 connections) — `server/tests/unit/test_main.py`
+- **.test_get_monitoring_summary_failure()** (4 connections) — `server/tests/unit/test_main.py`
+- **.test_get_alerts_failure()** (4 connections) — `server/tests/unit/test_main.py`
+- **.test_resolve_alert_not_found()** (4 connections) — `server/tests/unit/test_main.py`
+- **.test_resolve_alert_failure()** (4 connections) — `server/tests/unit/test_main.py`
+- **.test_health_check_success()** (3 connections) — `server/tests/unit/test_main.py`
+- **.test_get_metrics_success()** (3 connections) — `server/tests/unit/test_main.py`
+- **.test_get_monitoring_summary_success()** (3 connections) — `server/tests/unit/test_main.py`
+- **.test_get_alerts_success()** (3 connections) — `server/tests/unit/test_main.py`
+- **.test_resolve_alert_success()** (3 connections) — `server/tests/unit/test_main.py`
+- **.mock_app()** (2 connections) — `server/tests/unit/test_main.py`
+- *... and 26 more nodes in this community*
 
 ## Relationships
 
-- [spell models rationale](spell_models_rationale.md) (5 shared connections)
-- [combat services messaging](combat_services_messaging.md) (4 shared connections)
-- [Error Conversion](Error_Conversion.md) (3 shared connections)
-- [combat configuration service](combat_configuration_service.md) (3 shared connections)
-- [connection disconnection realtime](connection_disconnection_realtime.md) (2 shared connections)
+- [services inventory mutation](services_inventory_mutation.md) (14 shared connections)
+- [Loot Generation](Loot_Generation.md) (13 shared connections)
+- [room cache services](room_cache_services.md) (7 shared connections)
+- [aggro threat services](aggro_threat_services.md) (3 shared connections)
+- [admin commands setstat](admin_commands_setstat.md) (2 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (2 shared connections)
+- [metrics memory leak](metrics_memory_leak.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (1 shared connections)
+- [player requests schemas](player_requests_schemas.md) (1 shared connections)
+- [nats services service](nats_services_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/messaging/message_broadcaster.py`
+- `server/api/monitoring_models.py`
+- `server/api/system_monitoring.py`
+- `server/tests/unit/test_main.py`
 
 ## Audit Trail
 
-- EXTRACTED: 137 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 187 (96%)
+- INFERRED: 7 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

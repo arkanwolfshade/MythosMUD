@@ -1,63 +1,23 @@
 # tools generate invite
 
-> 47 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **get_config()** (105 connections) — `server/config/__init__.py`
-- **reset_config()** (9 connections) — `server/config/__init__.py`
-- **test_config.py** (9 connections) — `server/tests/unit/config/test_config.py`
-- **test_config_init.py** (9 connections) — `server/tests/unit/config/test_config_init.py`
-- **generate_unique_codes()** (5 connections) — `tools/invite_tools/generate_invites.py`
-- **_is_test_mode()** (4 connections) — `server/config/__init__.py`
-- **test_reset_config_clears_state()** (4 connections) — `server/tests/unit/config/test_config.py`
-- **test_reset_config_in_test_mode()** (4 connections) — `server/tests/unit/config/test_config_init.py`
-- **generate_invites.py** (4 connections) — `tools/invite_tools/generate_invites.py`
-- **reset_config_singleton()** (3 connections) — `server/tests/conftest.py`
-- **test_get_config_returns_app_config()** (3 connections) — `server/tests/unit/config/test_config.py`
-- **test_get_config_test_mode_returns_fresh_instances()** (3 connections) — `server/tests/unit/config/test_config.py`
-- **test_get_config_has_server_config()** (3 connections) — `server/tests/unit/config/test_config.py`
-- **test_get_config_has_database_config()** (3 connections) — `server/tests/unit/config/test_config.py`
-- **test_get_config_has_game_config()** (3 connections) — `server/tests/unit/config/test_config.py`
-- **test_get_config_returns_app_config()** (3 connections) — `server/tests/unit/config/test_config_init.py`
-- **test_get_config_fresh_instances_in_test_mode()** (3 connections) — `server/tests/unit/config/test_config_init.py`
-- **test_get_config_has_server_config()** (3 connections) — `server/tests/unit/config/test_config_init.py`
-- **test_get_config_has_database_config()** (3 connections) — `server/tests/unit/config/test_config_init.py`
-- **test_get_config_has_game_config()** (3 connections) — `server/tests/unit/config/test_config_init.py`
-- **test_config_smoke.py** (3 connections) — `server/tests/unit/test_config_smoke.py`
-- **test_get_config_returns_app_config()** (3 connections) — `server/tests/unit/test_config_smoke.py`
-- **generate_invite_code()** (3 connections) — `tools/invite_tools/generate_invites.py`
-- **main()** (3 connections) — `tools/invite_tools/generate_invites.py`
-- **Detect if running in test environment.      Uses multiple detection methods to r** (1 connections) — `server/config/__init__.py`
-- *... and 22 more nodes in this community*
+- **test_stop_processing_not_running()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test _stop_processing() when not running.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- [Error Conversion](Error_Conversion.md) (7 shared connections)
-- [logging examples fastapi](logging_examples_fastapi.md) (6 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (5 shared connections)
-- [models npc rationale](models_npc_rationale.md) (4 shared connections)
-- [subject admin controller](subject_admin_controller.md) (4 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (3 shared connections)
-- [Item Instances](Item_Instances.md) (3 shared connections)
-- [circuit breaker realtime](circuit_breaker_realtime.md) (3 shared connections)
-- [realtime errors error](realtime_errors_error.md) (3 shared connections)
-- [combat monitoring service](combat_monitoring_service.md) (3 shared connections)
-- [EdgeCreationModal map STANDARD](EdgeCreationModal_map_STANDARD.md) (3 shared connections)
-- [feature services flag](feature_services_flag.md) (2 shared connections)
+- [event bus events](event_bus_events.md) (1 shared connections)
 
 ## Source Files
 
-- `server/config/__init__.py`
-- `server/tests/conftest.py`
-- `server/tests/unit/config/test_config.py`
-- `server/tests/unit/config/test_config_init.py`
-- `server/tests/unit/test_config_smoke.py`
-- `tools/invite_tools/generate_invites.py`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 221 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

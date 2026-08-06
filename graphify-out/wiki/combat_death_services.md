@@ -1,31 +1,31 @@
 # combat death services
 
-> 9 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **populate_test_npc_databases.py** (6 connections) — `scripts/populate_test_npc_databases.py`
-- **main()** (5 connections) — `scripts/populate_test_npc_databases.py`
-- **get_npc_data_from_source()** (4 connections) — `scripts/populate_test_npc_databases.py`
-- **populate_database()** (4 connections) — `scripts/populate_test_npc_databases.py`
-- **get_npc_database_url()** (3 connections) — `scripts/populate_test_npc_databases.py`
-- **Get NPC database URL for the specified environment.      Args:         environme** (1 connections) — `scripts/populate_test_npc_databases.py`
-- **Extract NPC data from the source PostgreSQL database.      Args:         source_** (1 connections) — `scripts/populate_test_npc_databases.py`
-- **Populate a PostgreSQL database with NPC data.      Args:         target_url: Pos** (1 connections) — `scripts/populate_test_npc_databases.py`
-- **Main function to populate test NPC databases.** (1 connections) — `scripts/populate_test_npc_databases.py`
+- **TestGetContainer** (6 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_container_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_container_missing_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_container_no_state_attribute()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Tests for get_container dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_container returns container when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_container raises RuntimeError when container not in app.state.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_container raises RuntimeError when app.state doesn't exist.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Relationships
 
-- [commands shutdown process](commands_shutdown_process.md) (4 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (4 shared connections)
+- [Player Stats](Player_Stats.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/populate_test_npc_databases.py`
+- `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 24 (92%)
-- INFERRED: 2 (8%)
+- EXTRACTED: 18 (95%)
+- INFERRED: 1 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

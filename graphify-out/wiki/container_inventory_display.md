@@ -1,15 +1,19 @@
 # container inventory display
 
-> 22 nodes
+> 29 nodes
 
 ## Key Concepts
 
+- **container_helpers_inventory_display.py** (18 connections) — `server/commands/container_helpers_inventory_display.py`
 - **test_container_helpers_inventory_display.py** (18 connections) — `server/tests/unit/commands/test_container_helpers_inventory_display.py`
 - **get_container_data_for_inventory()** (10 connections) — `server/commands/container_helpers_inventory_display.py`
 - **match_container_to_slot()** (9 connections) — `server/commands/container_helpers_inventory_display.py`
+- **_apply_container_component_to_slot()** (8 connections) — `server/commands/container_helpers_inventory_display.py`
 - **update_equipped_with_container_info()** (7 connections) — `server/commands/container_helpers_inventory_display.py`
 - **_equipped_matches_container_metadata()** (6 connections) — `server/commands/container_helpers_inventory_display.py`
 - **_lock_state_as_str()** (5 connections) — `server/commands/container_helpers_inventory_display.py`
+- **_inventory_stack_to_display_dict()** (4 connections) — `server/commands/container_helpers_inventory_display.py`
+- **_component_metadata()** (3 connections) — `server/commands/container_helpers_inventory_display.py`
 - **test_equipped_matches_by_name()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_display.py`
 - **test_equipped_matches_by_id()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_display.py`
 - **test_equipped_no_match()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_display.py`
@@ -21,18 +25,21 @@
 - **test_get_container_data_for_inventory_handles_error()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_display.py`
 - **test_update_equipped_with_container_info()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_display.py`
 - **test_update_equipped_skips_missing_slot()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_display.py`
+- **InventoryStack** (1 connections)
 - **Player** (1 connections)
-- **Match a container component to an equipped slot. Returns slot name or None.** (1 connections) — `server/commands/container_helpers_inventory_display.py`
-- **Get container contents, capacities, and lock states for equipped containers.** (1 connections) — `server/commands/container_helpers_inventory_display.py`
-- **Update equipped items' metadata to include container information.** (1 connections) — `server/commands/container_helpers_inventory_display.py`
-- **Unit tests for container_helpers_inventory_display.** (1 connections) — `server/tests/unit/commands/test_container_helpers_inventory_display.py`
+- **Container display helpers for inventory UI (wearable contents, slot matching).** (1 connections) — `server/commands/container_helpers_inventory_display.py`
+- **Shallow-copy a wearable stack into a plain dict for equipped-view metadata.** (1 connections) — `server/commands/container_helpers_inventory_display.py`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
-- [task registry app](task_registry_app.md) (10 shared connections)
-- [mythosApp useMythosAppState useStatsRoll](mythosApp_useMythosAppState_useStatsRoll.md) (3 shared connections)
-- [realtime real time](realtime_real_time.md) (2 shared connections)
-- [player cache rationale](player_cache_rationale.md) (1 shared connections)
+- [task registry app](task_registry_app.md) (6 shared connections)
+- [game rationale schemas](game_rationale_schemas.md) (4 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
+- [player room realtime](player_room_realtime.md) (1 shared connections)
+- [game weapon player](game_weapon_player.md) (1 shared connections)
+- [caching lru cache](caching_lru_cache.md) (1 shared connections)
 
 ## Source Files
 
@@ -41,8 +48,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 80 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 114 (97%)
+- INFERRED: 4 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -30,18 +30,18 @@
 
 ## Relationships
 
-- [services exploration service](services_exploration_service.md) (11 shared connections)
-- [Error Conversion](Error_Conversion.md) (5 shared connections)
-- [realtime player event](realtime_player_event.md) (3 shared connections)
-- [game room service](game_room_service.md) (2 shared connections)
-- [room toolkit validator](room_toolkit_validator.md) (2 shared connections)
-- [services ascii map](services_ascii_map.md) (1 shared connections)
-- [npc behavior engine](npc_behavior_engine.md) (1 shared connections)
-- [services chat rate](services_chat_rate.md) (1 shared connections)
-- [room infrastructure persistence](room_infrastructure_persistence.md) (1 shared connections)
-- [infrastructure security rationale](infrastructure_security_rationale.md) (1 shared connections)
-- [infrastructure persistence room](infrastructure_persistence_room.md) (1 shared connections)
-- [services chat logger](services_chat_logger.md) (1 shared connections)
+- [room conftest toolkit](room_conftest_toolkit.md) (11 shared connections)
+- [inventory mutation guard](inventory_mutation_guard.md) (3 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [services ascii map](services_ascii_map.md) (2 shared connections)
+- [dead letter realtime](dead_letter_realtime.md) (1 shared connections)
+- [tsconfig build DOM](tsconfig_build_DOM.md) (1 shared connections)
+- [realtime player presence](realtime_player_presence.md) (1 shared connections)
+- [liability types call](liability_types_call.md) (1 shared connections)
+- [tsconfig app DOM](tsconfig_app_DOM.md) (1 shared connections)
+- [combat npc services](combat_npc_services.md) (1 shared connections)
+- [logging utilities structured](logging_utilities_structured.md) (1 shared connections)
+- [holiday services service](holiday_services_service.md) (1 shared connections)
 
 ## Source Files
 

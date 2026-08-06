@@ -33,10 +33,11 @@
 
 ## Relationships
 
-- [player cache rationale](player_cache_rationale.md) (6 shared connections)
-- [npc spawn validator](npc_spawn_validator.md) (5 shared connections)
+- [MapView GameClientV2ContainerView Tabbed](MapView_GameClientV2ContainerView_Tabbed.md) (5 shared connections)
+- [player cache rationale](player_cache_rationale.md) (4 shared connections)
+- [task registry app](task_registry_app.md) (2 shared connections)
 - [shutdown admin command](shutdown_admin_command.md) (1 shared connections)
-- [combat npc mixin](combat_npc_mixin.md) (1 shared connections)
+- [tick service services](tick_service_services.md) (1 shared connections)
 
 ## Source Files
 

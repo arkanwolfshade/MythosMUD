@@ -1,9 +1,10 @@
 # PanelSystem PanelManager panelLayoutClam
 
-> 93 nodes
+> 95 nodes
 
 ## Key Concepts
 
+- **types.ts** (79 connections) — `client/src/components/ui-v2/types.ts`
 - **panelReducerHandlers.ts** (24 connections) — `client/src/components/ui-v2/PanelSystem/panelReducerHandlers.ts`
 - **PanelState** (24 connections) — `client/src/components/ui-v2/types.ts`
 - **panelManagerReducer.ts** (20 connections) — `client/src/components/ui-v2/PanelSystem/panelManagerReducer.ts`
@@ -28,17 +29,22 @@
 - **relayoutMinimizedDock()** (8 connections) — `client/src/components/ui-v2/PanelSystem/panelMinimizeDock.ts`
 - **handleToggleMinimize()** (8 connections) — `client/src/components/ui-v2/PanelSystem/panelReducerHandlers.ts`
 - **usePanelManager.ts** (8 connections) — `client/src/components/ui-v2/PanelSystem/usePanelManager.ts`
-- **panelLayoutBootstrap.test.ts** (7 connections) — `client/src/components/ui-v2/PanelSystem/__tests__/panelLayoutBootstrap.test.ts`
-- *... and 68 more nodes in this community*
+- *... and 70 more nodes in this community*
 
 ## Relationships
 
-- [combat service services](combat_service_services.md) (42 shared connections)
-- [panels chat ChatPanelRuntimeViewParts](panels_chat_ChatPanelRuntimeViewParts.md) (5 shared connections)
-- [emote game service](emote_game_service.md) (2 shared connections)
-- [map maps useAsciiMap](map_maps_useAsciiMap.md) (1 shared connections)
-- [panels GameClientV2Dock gameLogPanelUtil](panels_GameClientV2Dock_gameLogPanelUtil.md) (1 shared connections)
-- [e2e fixtures spec](e2e_fixtures_spec.md) (1 shared connections)
+- [command factories communication](command_factories_communication.md) (42 shared connections)
+- [game terminal lucidity](game_terminal_lucidity.md) (7 shared connections)
+- [argon2 auth rationale](argon2_auth_rationale.md) (7 shared connections)
+- [panels chat ChatPanelRuntimeViewParts](panels_chat_ChatPanelRuntimeViewParts.md) (6 shared connections)
+- [magic completion game](magic_completion_game.md) (4 shared connections)
+- [lucidityEventUtils mythosTime MythosTime](lucidityEventUtils_mythosTime_MythosTime.md) (3 shared connections)
+- [map maps useAsciiMap](map_maps_useAsciiMap.md) (2 shared connections)
+- [casting game magic](casting_game_magic.md) (2 shared connections)
+- [services combat sync](services_combat_sync.md) (2 shared connections)
+- [cache caching service](cache_caching_service.md) (2 shared connections)
+- [mythosApp security submitAuth](mythosApp_security_submitAuth.md) (2 shared connections)
+- [auth invites rationale](auth_invites_rationale.md) (1 shared connections)
 
 ## Source Files
 
@@ -65,7 +71,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 521 (99%)
+- EXTRACTED: 604 (99%)
 - INFERRED: 5 (1%)
 - AMBIGUOUS: 0 (0%)
 

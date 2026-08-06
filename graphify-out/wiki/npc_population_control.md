@@ -33,9 +33,8 @@
 
 ## Relationships
 
-- [game models player](game_models_player.md) (7 shared connections)
-- [realtime real time](realtime_real_time.md) (4 shared connections)
-- [auth endpoints rationale](auth_endpoints_rationale.md) (1 shared connections)
+- [auth endpoints rationale](auth_endpoints_rationale.md) (8 shared connections)
+- [zone configuration npc](zone_configuration_npc.md) (4 shared connections)
 
 ## Source Files
 

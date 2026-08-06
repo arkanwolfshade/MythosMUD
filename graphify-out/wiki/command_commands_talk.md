@@ -33,14 +33,15 @@
 
 ## Relationships
 
-- [commands shutdown process](commands_shutdown_process.md) (7 shared connections)
 - [movement monitor game](movement_monitor_game.md) (6 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (5 shared connections)
 - [npc combat base](npc_combat_base.md) (3 shared connections)
 - [help content websocket](help_content_websocket.md) (3 shared connections)
 - [player disconnect handlers](player_disconnect_handlers.md) (3 shared connections)
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
 - [player room realtime](player_room_realtime.md) (1 shared connections)
-- [room sync service](room_sync_service.md) (1 shared connections)
+- [command models moderation](command_models_moderation.md) (1 shared connections)
 
 ## Source Files
 

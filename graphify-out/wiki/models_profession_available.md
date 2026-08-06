@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_set_player_combat_service()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
-- **Test set_player_combat_service updates combat service reference.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_convert_room_uuids_to_names_empty_room_data()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test convert_room_uuids_to_names() with empty room_data.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Relationships
 
-- [movement service game](movement_service_game.md) (1 shared connections)
+- [game state provider](game_state_provider.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_movement_service.py`
+- `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Audit Trail
 

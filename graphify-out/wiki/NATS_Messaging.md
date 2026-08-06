@@ -1,9 +1,11 @@
 # NATS Messaging
 
-> 65 nodes
+> 127 nodes
 
 ## Key Concepts
 
+- **test_player_event_handlers_respawn.py** (34 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **player_event_handlers_respawn.py** (33 connections) — `server/realtime/player_event_handlers_respawn.py`
 - **PlayerRespawnEventHandler** (33 connections) — `server/realtime/player_event_handlers_respawn.py`
 - **RespawnPlayerEventPayload** (13 connections) — `server/realtime/player_event_handlers_respawn.py`
 - **UUID** (11 connections)
@@ -27,29 +29,31 @@
 - **.update_connection_manager_position()** (5 connections) — `server/realtime/player_event_handlers_respawn.py`
 - **._room_data_from_persistence_room()** (5 connections) — `server/realtime/player_event_handlers_respawn.py`
 - **.get_player_data_for_delirium_respawn()** (5 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **._position_from_stats()** (4 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **._convert_npc_ids_to_names()** (4 connections) — `server/realtime/player_event_handlers_respawn.py`
-- *... and 40 more nodes in this community*
+- *... and 102 more nodes in this community*
 
 ## Relationships
 
-- [player room realtime](player_room_realtime.md) (13 shared connections)
-- [profession models rationale](profession_models_rationale.md) (13 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (4 shared connections)
-- [useWebSocketConnectionTestFixtures useWe](useWebSocketConnectionTestFixtures_useWe.md) (3 shared connections)
-- [combat services messaging](combat_services_messaging.md) (3 shared connections)
-- [realtime websocket initial](realtime_websocket_initial.md) (3 shared connections)
-- [persistence rationale players](persistence_rationale_players.md) (1 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (1 shared connections)
+- [inventory mutation guard](inventory_mutation_guard.md) (13 shared connections)
+- [player room realtime](player_room_realtime.md) (9 shared connections)
+- [profession models rationale](profession_models_rationale.md) (9 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (6 shared connections)
+- [realtime maintenance connection](realtime_maintenance_connection.md) (6 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (4 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (4 shared connections)
+- [useWebSocketConnectionTestFixtures useWe](useWebSocketConnectionTestFixtures_useWe.md) (2 shared connections)
+- [game weapon player](game_weapon_player.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [room models instance](room_models_instance.md) (1 shared connections)
 
 ## Source Files
 
 - `server/realtime/player_event_handlers_respawn.py`
+- `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
 
 ## Audit Trail
 
-- EXTRACTED: 244 (96%)
-- INFERRED: 9 (4%)
+- EXTRACTED: 403 (98%)
+- INFERRED: 9 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,12 +1,11 @@
 # combat commands handler
 
-> 65 nodes
+> 63 nodes
 
 ## Key Concepts
 
 - **NPCCombatUUIDMapping** (39 connections) — `server/services/npc_combat_uuid_mapping.py`
 - **TestNPCCombatUUIDMapping** (22 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
-- **npc_combat_uuid_mapping.py** (8 connections) — `server/services/npc_combat_uuid_mapping.py`
 - **UUID** (8 connections)
 - **.is_valid_uuid()** (4 connections) — `server/services/npc_combat_uuid_mapping.py`
 - **.convert_to_uuid()** (4 connections) — `server/services/npc_combat_uuid_mapping.py`
@@ -29,14 +28,15 @@
 - **.test_get_original_string_id_found()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
 - **.test_get_original_string_id_not_found()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
 - **.test_get_uuid_for_string_id_found()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
-- *... and 40 more nodes in this community*
+- **.test_get_uuid_for_string_id_not_found()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- *... and 38 more nodes in this community*
 
 ## Relationships
 
-- [player event realtime](player_event_realtime.md) (5 shared connections)
-- [models player rationale](models_player_rationale.md) (3 shared connections)
-- [game models player](game_models_player.md) (2 shared connections)
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [models player rationale](models_player_rationale.md) (5 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (3 shared connections)
+- [grace period login](grace_period_login.md) (2 shared connections)
+- [player event realtime](player_event_realtime.md) (1 shared connections)
 
 ## Source Files
 
@@ -46,7 +46,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 193 (97%)
+- EXTRACTED: 184 (97%)
 - INFERRED: 5 (3%)
 - AMBIGUOUS: 0 (0%)
 

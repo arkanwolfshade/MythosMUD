@@ -1,55 +1,77 @@
 # inventory mutation guard
 
-> 69 nodes
+> 359 nodes
 
 ## Key Concepts
 
+- **event_types.py** (86 connections) — `server/events/event_types.py`
+- **BaseEvent** (75 connections) — `server/events/event_types.py`
+- **lifecycle_manager.py** (49 connections) — `server/npc/lifecycle_manager.py`
+- **RealTimeEventHandler** (44 connections) — `server/realtime/event_handler.py`
+- **test_event_handler.py** (41 connections) — `server/tests/unit/realtime/test_event_handler.py`
 - **test_room_sync_service.py** (40 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **PlayerDPUpdated** (39 connections) — `server/events/event_types.py`
+- **NPCDied** (35 connections) — `server/events/event_types.py`
+- **event_handler.py** (35 connections) — `server/realtime/event_handler.py`
+- **event_bus.py** (31 connections) — `server/events/event_bus.py`
+- **player_event_handlers.py** (26 connections) — `server/realtime/player_event_handlers.py`
+- **PlayerEventHandler** (26 connections) — `server/realtime/player_event_handlers.py`
+- **lifecycle_death.py** (24 connections) — `server/npc/lifecycle_death.py`
+- **player_event_handlers_state.py** (23 connections) — `server/realtime/player_event_handlers_state.py`
+- **DistributedEventBus** (22 connections) — `server/events/distributed_event_bus.py`
+- **PlayerRespawnedEvent** (20 connections) — `server/events/event_types.py`
+- **PlayerDiedEvent** (19 connections) — `server/events/event_types.py`
+- **NPCLifecycleRecord** (19 connections) — `server/npc/lifecycle_types.py`
 - **RoomSyncService** (19 connections) — `server/services/room_sync_service.py`
-- **room_sync_service()** (4 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **.process_event_with_ordering()** (3 connections) — `server/services/room_sync_service.py`
-- **room_sync_service_with_room_service()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **sample_event()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_get_room_sync_service_returns_singleton()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **.clear_cache()** (2 connections) — `server/services/room_sync_service.py`
-- **mock_room_service()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_room_sync_service_init()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_room_sync_service_init_with_room_service()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_set_room_service()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_process_event_with_ordering()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_process_event_with_ordering_increments_counter()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_process_event_with_ordering_tracks_last_processed()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_process_event_with_ordering_handles_error()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_process_room_update_with_validation_valid_data()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_process_room_update_with_validation_invalid_data()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_process_room_update_with_validation_stale_data()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_invalidate_stale_cache_success()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_invalidate_stale_cache_no_room_service()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_fetch_fresh_room_data_success()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_fetch_fresh_room_data_no_room_service()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_fetch_fresh_room_data_not_found()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_handle_stale_room_data_success()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- *... and 44 more nodes in this community*
+- **NATSEventBusBridge** (18 connections) — `server/events/nats_event_bridge.py`
+- **RoomOccupantsRefreshRequested** (17 connections) — `server/events/event_types.py`
+- **_SpawnTrackedNPC** (17 connections) — `server/npc/lifecycle_manager.py`
+- **NPCSpoke** (16 connections) — `server/events/event_types.py`
+- **PlayerDPDecayEvent** (16 connections) — `server/events/event_types.py`
+- **_LifecycleManagerForDeath** (16 connections) — `server/npc/lifecycle_death.py`
+- *... and 334 more nodes in this community*
 
 ## Relationships
 
-- [connection models realtime](connection_models_realtime.md) (8 shared connections)
-- [Error Conversion](Error_Conversion.md) (6 shared connections)
-- [profession models rationale](profession_models_rationale.md) (4 shared connections)
-- [room sync service](room_sync_service.md) (3 shared connections)
-- [room fixer services](room_fixer_services.md) (1 shared connections)
-- [rate limiter rationale](rate_limiter_rationale.md) (1 shared connections)
-- [room validator services](room_validator_services.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (110 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (37 shared connections)
+- [services nats service](services_nats_service.md) (32 shared connections)
+- [wearable container service](wearable_container_service.md) (24 shared connections)
+- [profession models rationale](profession_models_rationale.md) (23 shared connections)
+- [Database Config](Database_Config.md) (19 shared connections)
+- [scripts worktree ops](scripts_worktree_ops.md) (15 shared connections)
+- [NATS Messaging](NATS_Messaging.md) (13 shared connections)
+- [player service game](player_service_game.md) (12 shared connections)
+- [command service commands](command_service_commands.md) (12 shared connections)
+- [Memory Task Runtime](Memory_Task_Runtime.md) (11 shared connections)
+- [player room realtime](player_room_realtime.md) (11 shared connections)
 
 ## Source Files
 
+- `server/events/distributed_event_bus.py`
+- `server/events/event_bus.py`
+- `server/events/event_types.py`
+- `server/events/nats_event_bridge.py`
+- `server/npc/event_reaction_system.py`
+- `server/npc/lifecycle_death.py`
+- `server/npc/lifecycle_manager.py`
+- `server/npc/lifecycle_types.py`
+- `server/realtime/event_handler.py`
+- `server/realtime/player_event_handlers.py`
+- `server/realtime/player_event_handlers_state.py`
+- `server/services/combat_hp_sync.py`
 - `server/services/room_sync_service.py`
+- `server/tests/integration/test_party_flow.py`
+- `server/tests/unit/events/test_distributed_event_bus.py`
+- `server/tests/unit/events/test_nats_event_bridge.py`
+- `server/tests/unit/npc/test_lifecycle_death.py`
+- `server/tests/unit/realtime/test_event_handler.py`
 - `server/tests/unit/services/test_room_sync_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 159 (97%)
-- INFERRED: 5 (3%)
+- EXTRACTED: 1461 (90%)
+- INFERRED: 165 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

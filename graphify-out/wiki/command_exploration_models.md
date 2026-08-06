@@ -1,11 +1,12 @@
 # command exploration models
 
-> 31 nodes
+> 33 nodes
 
 ## Key Concepts
 
 - **NPCCommunicationIntegration** (24 connections) — `server/npc/communication_integration.py`
 - **test_communication_integration.py** (16 connections) — `server/tests/unit/npc/test_communication_integration.py`
+- **communication_integration.py** (12 connections) — `server/npc/communication_integration.py`
 - **.__init__()** (4 connections) — `server/npc/communication_integration.py`
 - **.send_message_to_room()** (4 connections) — `server/npc/communication_integration.py`
 - **.handle_player_message()** (4 connections) — `server/npc/communication_integration.py`
@@ -26,15 +27,18 @@
 - **test_subscribe_error_returns_false()** (2 connections) — `server/tests/unit/npc/test_communication_integration.py`
 - **test_unsubscribe_error_returns_false()** (2 connections) — `server/tests/unit/npc/test_communication_integration.py`
 - **test_init_without_event_bus_uses_default()** (2 connections) — `server/tests/unit/npc/test_communication_integration.py`
+- **NPC Communication Integration for MythosMUD.  This module provides integration b** (1 connections) — `server/npc/communication_integration.py`
 - **Integrates NPCs with the existing chat and whisper systems.      This class prov** (1 connections) — `server/npc/communication_integration.py`
-- **Initialize the NPC communication integration.          Args:             event_b** (1 connections) — `server/npc/communication_integration.py`
-- **Send a message from an NPC to a room.          Args:             npc_id: ID of t** (1 connections) — `server/npc/communication_integration.py`
-- *... and 6 more nodes in this community*
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [Error Conversion](Error_Conversion.md) (7 shared connections)
-- [chat service game](chat_service_game.md) (1 shared connections)
+- [inventory mutation guard](inventory_mutation_guard.md) (4 shared connections)
+- [services nats service](services_nats_service.md) (4 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [chat service game](chat_service_game.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [chat game message](chat_game_message.md) (1 shared connections)
 
 ## Source Files
 
@@ -43,7 +47,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 98 (100%)
+- EXTRACTED: 111 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -33,7 +33,8 @@
 
 ## Relationships
 
-- [follow game service](follow_game_service.md) (4 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (3 shared connections)
+- [command parser helpers](command_parser_helpers.md) (1 shared connections)
 - [room rationale subzone](room_rationale_subzone.md) (1 shared connections)
 
 ## Source Files

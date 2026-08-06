@@ -1,34 +1,41 @@
 # tick service services
 
-> 12 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **.validate_current_vs_max_stats()** (5 connections) — `server/models/game.py`
-- **._calculate_max_magic_points()** (4 connections) — `server/models/game.py`
-- **._calculate_max_lucidity()** (4 connections) — `server/models/game.py`
-- **.max_magic_points()** (3 connections) — `server/models/game.py`
-- **.max_lucidity()** (3 connections) — `server/models/game.py`
-- **._calculate_max_dp()** (3 connections) — `server/models/game.py`
-- **Calculate max magic points (MP) using formula: 20% of Power (ceiling rounded).** (1 connections) — `server/models/game.py`
-- **Calculate max lucidity based on education.          AI: This computed field uses** (1 connections) — `server/models/game.py`
-- **Calculate max determination points (DP) using formula: (CON + SIZ) / 5.** (1 connections) — `server/models/game.py`
-- **Calculate max magic points (MP) using formula: 20% of Power (ceiling rounded).** (1 connections) — `server/models/game.py`
-- **Calculate max lucidity based on education.          AI: Helper method to calcula** (1 connections) — `server/models/game.py`
-- **Ensure current_dp (DP), magic_points (MP), and lucidity don't exceed their max v** (1 connections) — `server/models/game.py`
+- **.load_from_path()** (13 connections) — `server/game/items/prototype_registry.py`
+- **.get()** (6 connections) — `server/game/items/prototype_registry.py`
+- **Path** (5 connections)
+- **test_load_from_path_missing_directory()** (4 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
+- **parse_arguments()** (3 connections) — `server/scripts/validate_prototypes.py`
+- **main()** (3 connections) — `server/scripts/validate_prototypes.py`
+- **test_load_from_path_valid_json()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
+- **test_load_from_path_invalid_json()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
+- **test_load_from_path_validation_error()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
+- **test_load_from_path_durability_anomaly()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
+- **Path** (1 connections)
+- **Load item prototypes from JSON files in a directory.          Args:** (1 connections) — `server/game/items/prototype_registry.py`
+- **Get a prototype by ID.          Args:             prototype_id: The ID of the pr** (1 connections) — `server/game/items/prototype_registry.py`
+- **Namespace** (1 connections)
 
 ## Relationships
 
-- [System Metrics](System_Metrics.md) (6 shared connections)
+- [MapView GameClientV2ContainerView Tabbed](MapView_GameClientV2ContainerView_Tabbed.md) (12 shared connections)
+- [connection cleaner realtime](connection_cleaner_realtime.md) (2 shared connections)
+- [room cache services](room_cache_services.md) (1 shared connections)
+- [stats game generator](stats_game_generator.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/game.py`
+- `server/game/items/prototype_registry.py`
+- `server/scripts/validate_prototypes.py`
+- `server/tests/unit/game/items/test_prototype_registry.py`
 
 ## Audit Trail
 
-- EXTRACTED: 28 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 48 (96%)
+- INFERRED: 2 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,54 +1,59 @@
 # commands inventory command
 
-> 46 nodes
+> 80 nodes
 
 ## Key Concepts
 
-- **test_inventory_helpers.py** (38 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_normalize_slot_name_none()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_normalize_slot_name_valid()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_normalize_slot_name_empty_string()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_normalize_slot_name_whitespace()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_match_room_drop_by_name_empty_search()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_match_room_drop_by_name_exact_match()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_match_room_drop_by_name_substring_match()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_match_room_drop_by_name_item_id_match()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_match_room_drop_by_name_prototype_id_match()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_match_room_drop_by_name_no_match()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_match_inventory_item_by_name_exact_match()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_match_inventory_item_by_name_prefix_match()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_match_inventory_item_by_name_substring_match()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_match_equipped_item_by_name_exact_match()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_match_equipped_item_by_name_prefix_match()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_match_equipped_item_by_name_substring_match()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_match_equipped_item_by_name_item_id_match()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_match_equipped_item_by_name_no_match()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_match_equipped_item_by_name_empty_search()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_resolve_state_no_app()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_resolve_state_no_state()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_resolve_state_success()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **Unit tests for inventory command helper functions.  Tests helper functions used** (1 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **Test _normalize_slot_name with None.** (1 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- *... and 21 more nodes in this community*
+- **NPCDefinitionCRUDMixin** (18 connections) — `server/services/npc_service/definition_crud.py`
+- **__init__.py** (15 connections) — `server/services/npc_service/__init__.py`
+- **definition_crud.py** (15 connections) — `server/services/npc_service/definition_crud.py`
+- **npc_service_models.py** (13 connections) — `server/services/npc_service_models.py`
+- **_row_to_npc_definition()** (12 connections) — `server/services/npc_service_models.py`
+- **queries.py** (11 connections) — `server/services/npc_service/queries.py`
+- **spawn_rule_crud.py** (11 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **NPCDefinitionUpdateParams** (11 connections) — `server/services/npc_service_models.py`
+- **NPCSpawnRuleCRUDMixin** (10 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **.update_npc_definition()** (9 connections) — `server/services/npc_service/definition_crud.py`
+- **AsyncSession** (8 connections)
+- **.create_npc_definition()** (8 connections) — `server/services/npc_service/definition_crud.py`
+- **._execute_create_npc_definition()** (8 connections) — `server/services/npc_service/definition_crud.py`
+- **._execute_npc_update()** (8 connections) — `server/services/npc_service/definition_crud.py`
+- **._execute_create_spawn_rule()** (8 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **_row_to_npc_spawn_rule()** (8 connections) — `server/services/npc_service_models.py`
+- **.get_npc_definitions()** (7 connections) — `server/services/npc_service/definition_crud.py`
+- **.get_npc_definition()** (7 connections) — `server/services/npc_service/definition_crud.py`
+- **._build_npc_update_data()** (7 connections) — `server/services/npc_service/definition_crud.py`
+- **NPCQueryMixin** (7 connections) — `server/services/npc_service/queries.py`
+- **.create_spawn_rule()** (7 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **.get_spawn_rules()** (6 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **AsyncSession** (6 connections)
+- **.get_spawn_rule()** (6 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **CreateNPCDefinitionInput** (6 connections) — `server/services/npc_service_models.py`
+- *... and 55 more nodes in this community*
 
 ## Relationships
 
-- [player cache rationale](player_cache_rationale.md) (24 shared connections)
-- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (5 shared connections)
-- [commands inventory helpers](commands_inventory_helpers.md) (4 shared connections)
-- [player helpers error](player_helpers_error.md) (1 shared connections)
-- [tsconfig app DOM](tsconfig_app_DOM.md) (1 shared connections)
-- [lucidity services npc](lucidity_services_npc.md) (1 shared connections)
-- [tsconfig build DOM](tsconfig_build_DOM.md) (1 shared connections)
+- [room look commands](room_look_commands.md) (25 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (9 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (8 shared connections)
+- [aggro threat services](aggro_threat_services.md) (4 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (3 shared connections)
+- [tick game processing](tick_game_processing.md) (3 shared connections)
+- [persistence container rationale](persistence_container_rationale.md) (2 shared connections)
+- [task registry app](task_registry_app.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_inventory_helpers.py`
+- `server/services/npc_service/__init__.py`
+- `server/services/npc_service/definition_crud.py`
+- `server/services/npc_service/queries.py`
+- `server/services/npc_service/spawn_rule_crud.py`
+- `server/services/npc_service_models.py`
 
 ## Audit Trail
 
-- EXTRACTED: 127 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 336 (99%)
+- INFERRED: 3 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

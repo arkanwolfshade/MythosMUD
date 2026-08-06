@@ -1,71 +1,51 @@
 # realtime real time
 
-> 174 nodes
+> 69 nodes
 
 ## Key Concepts
 
-- **command_service.py** (95 connections) — `server/commands/command_service.py`
-- **test_lucidity_recovery_commands.py** (34 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
 - **test_alias_commands.py** (30 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **__init__.py** (29 connections) — `server/commands/__init__.py`
-- **lucidity_recovery_commands.py** (25 connections) — `server/commands/lucidity_recovery_commands.py`
 - **handle_alias_command()** (24 connections) — `server/commands/alias_commands.py`
-- **handle_pray_command()** (21 connections) — `server/commands/lucidity_recovery_commands.py`
-- **LucidityActionOnCooldownError** (18 connections) — `server/services/active_lucidity_service.py`
 - **alias_commands.py** (15 connections) — `server/commands/alias_commands.py`
-- **_perform_recovery_action()** (15 connections) — `server/commands/lucidity_recovery_commands.py`
-- **handle_pose_command()** (13 connections) — `server/commands/communication_commands.py`
-- **handle_inventory_command()** (13 connections) — `server/commands/inventory_commands.py`
-- **system_commands.py** (13 connections) — `server/commands/system_commands.py`
 - **handle_unalias_command()** (12 connections) — `server/commands/alias_commands.py`
-- **UnknownLucidityActionError** (12 connections) — `server/services/active_lucidity_service.py`
 - **handle_aliases_command()** (11 connections) — `server/commands/alias_commands.py`
-- **handle_help_command()** (11 connections) — `server/commands/system_commands.py`
-- **handle_meditate_command()** (10 connections) — `server/commands/lucidity_recovery_commands.py`
-- **handle_group_solace_command()** (9 connections) — `server/commands/lucidity_recovery_commands.py`
-- **Any** (8 connections)
-- **handle_therapy_command()** (8 connections) — `server/commands/lucidity_recovery_commands.py`
-- **handle_folk_tonic_command()** (8 connections) — `server/commands/lucidity_recovery_commands.py`
-- **.perform_recovery_action()** (6 connections) — `server/services/active_lucidity_service.py`
 - **_create_alias()** (5 connections) — `server/commands/alias_commands.py`
-- **_validate_recovery_context()** (5 connections) — `server/commands/lucidity_recovery_commands.py`
-- *... and 149 more nodes in this community*
+- **_extract_alias_params()** (4 connections) — `server/commands/alias_commands.py`
+- **Any** (4 connections)
+- **_view_alias()** (4 connections) — `server/commands/alias_commands.py`
+- **_validate_alias_params()** (3 connections) — `server/commands/alias_commands.py`
+- **test_handle_alias_command_no_storage()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_no_args()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_view_existing()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_view_nonexistent()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_create_from_args()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_create_from_structured_data()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_invalid_name_too_long()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_invalid_command_too_long()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_circular_reference()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_create_error()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_aliases_command_no_storage()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_aliases_command_no_aliases()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_aliases_command_with_aliases()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_aliases_command_error()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_unalias_command_no_storage()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- *... and 44 more nodes in this community*
 
 ## Relationships
 
-- [alias storage rationale](alias_storage_rationale.md) (24 shared connections)
-- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (15 shared connections)
-- [commands whisper command](commands_whisper_command.md) (14 shared connections)
-- [auth endpoints rationale](auth_endpoints_rationale.md) (11 shared connections)
-- [commands admin mute](commands_admin_mute.md) (10 shared connections)
-- [Error Conversion](Error_Conversion.md) (10 shared connections)
-- [position player service](position_player_service.md) (8 shared connections)
-- [commands communication flows](commands_communication_flows.md) (5 shared connections)
-- [game models player](game_models_player.md) (5 shared connections)
-- [eventLog projectorRoom roomMergeUtils](eventLog_projectorRoom_roomMergeUtils.md) (4 shared connections)
-- [command factories create](command_factories_create.md) (4 shared connections)
-- [commands position system](commands_position_system.md) (4 shared connections)
+- [character creation service](character_creation_service.md) (8 shared connections)
+- [commands npc admin](commands_npc_admin.md) (7 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/__init__.py`
 - `server/commands/alias_commands.py`
-- `server/commands/command_service.py`
-- `server/commands/communication_commands.py`
-- `server/commands/help_commands.py`
-- `server/commands/inventory_commands.py`
-- `server/commands/lucidity_recovery_commands.py`
-- `server/commands/system_commands.py`
-- `server/services/active_lucidity_service.py`
 - `server/tests/unit/commands/test_alias_commands.py`
-- `server/tests/unit/commands/test_help_commands.py`
-- `server/tests/unit/commands/test_inventory_commands.py`
-- `server/tests/unit/commands/test_lucidity_recovery_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 720 (98%)
-- INFERRED: 15 (2%)
+- EXTRACTED: 219 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

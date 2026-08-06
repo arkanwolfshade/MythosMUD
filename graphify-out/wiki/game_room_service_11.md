@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_process_room_rows_zone_without_slash()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _process_room_rows handles zone_stable_id without slash.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_process_dict_occupant_invalid_name()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test process_dict_occupant() skips invalid name.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [room persistence loading](room_persistence_loading.md) (1 shared connections)
+- [player event handlers](player_event_handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 

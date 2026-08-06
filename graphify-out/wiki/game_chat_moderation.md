@@ -1,54 +1,66 @@
 # game chat moderation
 
-> 28 nodes
+> 53 nodes
 
 ## Key Concepts
 
-- **quest_chat_notify.py** (20 connections) — `server/game/quest/quest_chat_notify.py`
-- **schedule_personal_system()** (12 connections) — `server/game/chat_npc_system.py`
-- **should_notify_quest_progress()** (10 connections) — `server/game/quest/quest_chat_notify.py`
-- **notify_quest_progress()** (9 connections) — `server/game/quest/quest_chat_notify.py`
-- **notify_quest_started()** (8 connections) — `server/game/quest/quest_chat_notify.py`
-- **notify_quest_completed()** (8 connections) — `server/game/quest/quest_chat_notify.py`
-- **notify_quest_abandoned()** (8 connections) — `server/game/quest/quest_chat_notify.py`
-- **test_notify_quest_lifecycle_schedules_personal_system()** (6 connections) — `server/tests/unit/game/test_chat_npc_system.py`
-- **UUID** (5 connections)
-- **_goal_is_met()** (5 connections) — `server/game/quest/quest_chat_notify.py`
-- **schedule_coro()** (4 connections) — `server/game/chat_npc_system.py`
-- **Any** (4 connections)
-- **_progress_has_any_value()** (4 connections) — `server/game/quest/quest_chat_notify.py`
-- **_as_int()** (3 connections) — `server/game/quest/quest_chat_notify.py`
-- **test_should_notify_quest_progress_milestones()** (3 connections) — `server/tests/unit/game/test_chat_npc_system.py`
-- **Fire-and-forget a coroutine on the running loop when available.** (1 connections) — `server/game/chat_npc_system.py`
-- **Schedule personal system chat from sync or async callers.** (1 connections) — `server/game/chat_npc_system.py`
-- **Quest lifecycle and NPC quest-line chat helpers (issue #146 MVP).  # group: ques** (1 connections) — `server/game/quest/quest_chat_notify.py`
-- **Personal system chat when a quest becomes active.** (1 connections) — `server/game/quest/quest_chat_notify.py`
-- **Personal system chat for milestone progress (first tick or goal newly met).** (1 connections) — `server/game/quest/quest_chat_notify.py`
-- **Personal system chat when a quest completes.** (1 connections) — `server/game/quest/quest_chat_notify.py`
-- **Personal system chat when a quest is abandoned.** (1 connections) — `server/game/quest/quest_chat_notify.py`
-- **Coerce progress/config scalars to int; non-numeric becomes default.** (1 connections) — `server/game/quest/quest_chat_notify.py`
-- **Return True if one goal is satisfied given current progress.** (1 connections) — `server/game/quest/quest_chat_notify.py`
-- **True if any goal slot has a non-zero / non-empty progress value.** (1 connections) — `server/game/quest/quest_chat_notify.py`
-- *... and 3 more nodes in this community*
+- **useMythosAppState.ts** (28 connections) — `client/src/mythosApp/useMythosAppState.ts`
+- **1774539086359-useMythosAppState.ts** (24 connections) — `client/src/mythosApp/1774539086359-useMythosAppState.ts`
+- **submitAuth.ts** (18 connections) — `client/src/mythosApp/submitAuth.ts`
+- **applyAuthenticatedSession.ts** (16 connections) — `client/src/mythosApp/applyAuthenticatedSession.ts`
+- **useAuthSessionRestore.ts** (15 connections) — `client/src/mythosApp/useAuthSessionRestore.ts`
+- **mythosAppViewModelFactory.ts** (12 connections) — `client/src/mythosApp/mythosAppViewModelFactory.ts`
+- **useMythosAuthForm.ts** (11 connections) — `client/src/mythosApp/useMythosAuthForm.ts`
+- **useMythosAuthForm()** (10 connections) — `client/src/mythosApp/useMythosAuthForm.ts`
+- **useMythosApp.tsx** (9 connections) — `client/src/mythosApp/useMythosApp.tsx`
+- **useMythosAppState()** (9 connections) — `client/src/mythosApp/useMythosAppState.ts`
+- **useAuthSessionRestore()** (7 connections) — `client/src/mythosApp/useAuthSessionRestore.ts`
+- **useMythosApp()** (6 connections) — `client/src/mythosApp/useMythosApp.tsx`
+- **assertLoginResponse()** (6 connections) — `client/src/utils/apiTypeGuards.ts`
+- **useReducerStateSlices()** (5 connections) — `client/src/mythosApp/1774539086359-useMythosAppState.ts`
+- **persistTokensAndApplySession()** (5 connections) — `client/src/mythosApp/applyAuthenticatedSession.ts`
+- **restoreCharactersOnMount()** (5 connections) — `client/src/mythosApp/characterSessionApi.ts`
+- **buildMythosAppViewModel()** (5 connections) — `client/src/mythosApp/mythosAppViewModelFactory.ts`
+- **submitLoginRequest()** (5 connections) — `client/src/mythosApp/submitAuth.ts`
+- **submitRegisterRequest()** (5 connections) — `client/src/mythosApp/submitAuth.ts`
+- **useReducerStateSlices()** (5 connections) — `client/src/mythosApp/useMythosAppState.ts`
+- **useMythosAppState()** (4 connections) — `client/src/mythosApp/1774539086359-useMythosAppState.ts`
+- **CreationSlice** (4 connections) — `client/src/mythosApp/useMythosAppState.ts`
+- **useMythosAppState.test.ts** (3 connections) — `client/src/mythosApp/__tests__/useMythosAppState.test.ts`
+- **AuthSessionSetters** (3 connections) — `client/src/mythosApp/applyAuthenticatedSession.ts`
+- **toCharacterInfoFromLogin()** (3 connections) — `client/src/mythosApp/mapServerCharacters.ts`
+- *... and 28 more nodes in this community*
 
 ## Relationships
 
-- [quest chat game](quest_chat_game.md) (13 shared connections)
-- [quest game service](quest_game_service.md) (13 shared connections)
-- [commands quest rationale](commands_quest_rationale.md) (6 shared connections)
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
-- [dialogue service game](dialogue_service_game.md) (2 shared connections)
+- [mythosApp CharacterSelectionScreen chara](mythosApp_CharacterSelectionScreen_chara.md) (37 shared connections)
+- [SkillAssignmentScreen helpers CharacterN](SkillAssignmentScreen_helpers_CharacterN.md) (11 shared connections)
+- [auth invites rationale](auth_invites_rationale.md) (9 shared connections)
+- [apiTypeGuards FIELDS SHARED](apiTypeGuards_FIELDS_SHARED.md) (5 shared connections)
+- [memoryMonitor memoryLeakDetector constru](memoryMonitor_memoryLeakDetector_constru.md) (4 shared connections)
+- [logout command commands](logout_command_commands.md) (4 shared connections)
+- [App helpers professionSystemErrorHandlin](App_helpers_professionSystemErrorHandlin.md) (2 shared connections)
+- [roomHandlers eventHandlers calculateOccu](roomHandlers_eventHandlers_calculateOccu.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/chat_npc_system.py`
-- `server/game/quest/quest_chat_notify.py`
-- `server/tests/unit/game/test_chat_npc_system.py`
+- `client/src/mythosApp/1774539086359-useMythosAppState.ts`
+- `client/src/mythosApp/__tests__/useMythosAppState.test.ts`
+- `client/src/mythosApp/applyAuthenticatedSession.ts`
+- `client/src/mythosApp/characterSessionApi.ts`
+- `client/src/mythosApp/mapServerCharacters.ts`
+- `client/src/mythosApp/mythosAppViewModelFactory.ts`
+- `client/src/mythosApp/submitAuth.ts`
+- `client/src/mythosApp/useAuthSessionRestore.ts`
+- `client/src/mythosApp/useMythosApp.tsx`
+- `client/src/mythosApp/useMythosAppState.ts`
+- `client/src/mythosApp/useMythosAuthForm.ts`
+- `client/src/utils/apiTypeGuards.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 122 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 256 (96%)
+- INFERRED: 11 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

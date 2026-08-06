@@ -1,64 +1,61 @@
 # alias storage rationale
 
-> 186 nodes
+> 68 nodes
 
 ## Key Concepts
 
-- **AliasStorage** (283 connections) — `server/alias_storage.py`
-- **test_alias_storage.py** (67 connections) — `server/tests/unit/test_alias_storage.py`
-- **MagicCommandHandler** (34 connections) — `server/commands/magic_commands.py`
-- **magic_commands.py** (26 connections) — `server/commands/magic_commands.py`
-- **Any** (20 connections)
-- **magic_service()** (13 connections) — `server/tests/unit/game/magic/test_magic_service.py`
-- **SpellCommandError** (12 connections) — `server/commands/magic_commands.py`
-- **Path** (11 connections)
-- **handle_cast_command()** (9 connections) — `server/commands/magic_commands.py`
-- **handle_spells_command()** (9 connections) — `server/commands/magic_commands.py`
-- **handle_spell_command()** (9 connections) — `server/commands/magic_commands.py`
-- **handle_learn_command()** (9 connections) — `server/commands/magic_commands.py`
-- **handle_stop_command()** (9 connections) — `server/commands/magic_commands.py`
-- **.handle_cast_command()** (7 connections) — `server/commands/magic_commands.py`
-- **Any** (6 connections)
-- **._build_cast_response()** (6 connections) — `server/commands/magic_commands.py`
-- **._interrupt_rest_for_cast()** (6 connections) — `server/commands/magic_commands.py`
-- **.handle_spell_command()** (6 connections) — `server/commands/magic_commands.py`
-- **.handle_learn_command()** (6 connections) — `server/commands/magic_commands.py`
-- **alias_storage()** (6 connections) — `server/tests/unit/test_alias_storage.py`
-- **.handle_attack_command()** (5 connections) — `server/commands/combat_handler.py`
-- **.handle_taunt_command()** (5 connections) — `server/commands/combat_handler.py`
-- **._resolve_spell_context()** (5 connections) — `server/commands/magic_commands.py`
-- **._resolve_learn_context()** (5 connections) — `server/commands/magic_commands.py`
-- **test_alias_storage_init_with_env_var()** (5 connections) — `server/tests/unit/test_alias_storage.py`
-- *... and 161 more nodes in this community*
+- **websocket_handler_commands.py** (32 connections) — `server/realtime/websocket_handler_commands.py`
+- **handle_game_command()** (29 connections) — `server/realtime/websocket_handler_commands.py`
+- **test_websocket_handler_commands.py** (28 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
+- **process_websocket_command()** (19 connections) — `server/realtime/websocket_handler_commands.py`
+- **resolve_websocket_connection_manager()** (11 connections) — `server/realtime/websocket_handler_commands.py`
+- **validate_player_and_persistence()** (9 connections) — `server/realtime/websocket_handler_commands.py`
+- **parse_game_command_tokens()** (8 connections) — `server/realtime/websocket_handler_commands.py`
+- **_attach_room_state_to_result()** (8 connections) — `server/realtime/websocket_handler_commands.py`
+- **_resolve_get_room_state_callable()** (6 connections) — `server/realtime/websocket_handler_commands.py`
+- **test_process_websocket_command_attaches_room_state()** (5 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
+- **test_process_websocket_command_room_state_get_room_fails_softly()** (5 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
+- **_send_invalid_command_empty()** (4 connections) — `server/realtime/websocket_handler_commands.py`
+- **_broadcast_command_room_if_needed()** (4 connections) — `server/realtime/websocket_handler_commands.py`
+- **_cm_with_player_and_app()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
+- **Path** (4 connections)
+- **test_process_websocket_command_room_changed_no_player_handler_skips_room_state()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
+- **_invoke_get_room_state_event()** (3 connections) — `server/realtime/websocket_handler_commands.py`
+- **test_handle_game_command_broadcasts_when_result_requests()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
+- **test_handle_game_command()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **test_handle_game_command_empty_command()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **test_handle_game_command_whitespace_only()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **test_handle_game_command_single_word_no_args()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **test_handle_game_command_with_provided_args()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **test_process_websocket_command()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **test_process_websocket_command_no_player()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- *... and 43 more nodes in this community*
 
 ## Relationships
 
-- [alias models rationale](alias_models_rationale.md) (33 shared connections)
-- [realtime real time](realtime_real_time.md) (24 shared connections)
-- [commands npc admin](commands_npc_admin.md) (23 shared connections)
-- [commands magic rationale](commands_magic_rationale.md) (17 shared connections)
-- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (16 shared connections)
-- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (15 shared connections)
-- [player model models](player_model_models.md) (13 shared connections)
-- [commands admin mute](commands_admin_mute.md) (11 shared connections)
-- [rest grace period](rest_grace_period.md) (9 shared connections)
-- [rescue service services](rescue_service_services.md) (8 shared connections)
-- [persistence core infrastructure](persistence_core_infrastructure.md) (8 shared connections)
-- [commands whisper command](commands_whisper_command.md) (7 shared connections)
+- [chat logger services](chat_logger_services.md) (11 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (9 shared connections)
+- [persistence container item](persistence_container_item.md) (6 shared connections)
+- [occupant formatter realtime](occupant_formatter_realtime.md) (5 shared connections)
+- [handler realtime nats](handler_realtime_nats.md) (4 shared connections)
+- [request context realtime](request_context_realtime.md) (4 shared connections)
+- [commands recovery lucidity](commands_recovery_lucidity.md) (4 shared connections)
+- [realtime maintenance connection](realtime_maintenance_connection.md) (3 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (2 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (2 shared connections)
+- [shutdown admin command](shutdown_admin_command.md) (2 shared connections)
+- [commands npc admin](commands_npc_admin.md) (1 shared connections)
 
 ## Source Files
 
-- `server/alias_storage.py`
-- `server/commands/combat_handler.py`
-- `server/commands/magic_commands.py`
-- `server/realtime/request_context.py`
-- `server/tests/unit/game/magic/test_magic_service.py`
-- `server/tests/unit/test_alias_storage.py`
+- `server/realtime/websocket_handler_commands.py`
+- `server/tests/unit/realtime/test_websocket_handler_commands.py`
+- `server/tests/unit/realtime/test_websocket_handler_core.py`
 
 ## Audit Trail
 
-- EXTRACTED: 863 (94%)
-- INFERRED: 57 (6%)
+- EXTRACTED: 237 (87%)
+- INFERRED: 36 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

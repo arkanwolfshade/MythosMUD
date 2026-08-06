@@ -1,37 +1,35 @@
 # memory lifespan app
 
-> 11 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **handle_system_command()** (10 connections) — `server/commands/system_commands.py`
-- **test_system_commands.py** (6 connections) — `server/tests/unit/commands/test_system_commands.py`
-- **test_handle_system_command()** (3 connections) — `server/tests/unit/commands/test_system_commands.py`
-- **test_handle_system_command_no_message()** (3 connections) — `server/tests/unit/commands/test_system_commands.py`
-- **test_handle_system_command_no_chat_service()** (3 connections) — `server/tests/unit/commands/test_system_commands.py`
-- **Any** (2 connections)
-- **Broadcast a system-level message via the chat service if available.** (1 connections) — `server/commands/system_commands.py`
-- **Unit tests for system command handlers.  Tests the system command functionality.** (1 connections) — `server/tests/unit/commands/test_system_commands.py`
-- **Test handle_system_command() broadcasts system message.** (1 connections) — `server/tests/unit/commands/test_system_commands.py`
-- **Test handle_system_command() handles missing message.** (1 connections) — `server/tests/unit/commands/test_system_commands.py`
-- **Test handle_system_command() handles missing chat service.** (1 connections) — `server/tests/unit/commands/test_system_commands.py`
+- **test_websocket_handler_error_handling.py** (9 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **mock_websocket()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **test_send_error_response_success()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **test_send_error_response_disconnected()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **test_handle_runtime_error_disconnected()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **test_handle_runtime_error_other()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **Unit tests for websocket handler error handling.  Tests the error handling funct** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **Create a mock WebSocket.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **Test _send_error_response() successfully sends error.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **Test _send_error_response() handles WebSocket disconnection.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **Test _handle_runtime_error() detects WebSocket disconnection.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **Test _handle_runtime_error() handles other runtime errors.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
 
 ## Relationships
 
-- [realtime real time](realtime_real_time.md) (3 shared connections)
-- [websocket examples logging](websocket_examples_logging.md) (1 shared connections)
-- [alias storage rationale](alias_storage_rationale.md) (1 shared connections)
-- [shutdown admin command](shutdown_admin_command.md) (1 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (2 shared connections)
+- [occupant formatter realtime](occupant_formatter_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/system_commands.py`
-- `server/tests/unit/commands/test_system_commands.py`
+- `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
 
 ## Audit Trail
 
-- EXTRACTED: 30 (94%)
-- INFERRED: 2 (6%)
+- EXTRACTED: 25 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

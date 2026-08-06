@@ -1,6 +1,6 @@
 # npc commands admin
 
-> 138 nodes
+> 142 nodes
 
 ## Key Concepts
 
@@ -8,9 +8,11 @@
 - **EquipCommand** (23 connections) — `server/models/command_inventory.py`
 - **PickupCommand** (22 connections) — `server/models/command_inventory.py`
 - **UnequipCommand** (22 connections) — `server/models/command_inventory.py`
+- **command_inventory.py** (13 connections) — `server/models/command_inventory.py`
 - **DropCommand** (12 connections) — `server/models/command_inventory.py`
 - **PutCommand** (12 connections) — `server/models/command_inventory.py`
 - **GetCommand** (12 connections) — `server/models/command_inventory.py`
+- **InventoryCommand** (8 connections) — `server/models/command_inventory.py`
 - **test_pickup_command_validate_search_term_empty_string()** (4 connections) — `server/tests/unit/models/test_command_inventory.py`
 - **test_pickup_command_validate_requirements_neither_provided()** (4 connections) — `server/tests/unit/models/test_command_inventory.py`
 - **test_pickup_command_index_validation_min()** (4 connections) — `server/tests/unit/models/test_command_inventory.py`
@@ -27,16 +29,13 @@
 - **test_get_command_quantity_validation_min()** (4 connections) — `server/tests/unit/models/test_command_inventory.py`
 - **test_equip_command_validate_search_term_empty_string()** (4 connections) — `server/tests/unit/models/test_command_inventory.py`
 - **test_equip_command_validate_requirements_neither_provided()** (4 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **test_equip_command_validate_slot_empty_string()** (4 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **test_equip_command_validate_slot_whitespace_only()** (4 connections) — `server/tests/unit/models/test_command_inventory.py`
-- *... and 113 more nodes in this community*
+- *... and 117 more nodes in this community*
 
 ## Relationships
 
-- [add used user](add_used_user.md) (24 shared connections)
-- [dialogue definition persistence](dialogue_definition_persistence.md) (21 shared connections)
-- [command inventory factories](command_inventory_factories.md) (6 shared connections)
-- [command inventory models](command_inventory_models.md) (6 shared connections)
+- [command inventory models](command_inventory_models.md) (31 shared connections)
+- [dialogue definition persistence](dialogue_definition_persistence.md) (17 shared connections)
+- [command inventory factories](command_inventory_factories.md) (8 shared connections)
 
 ## Source Files
 
@@ -45,8 +44,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 401 (92%)
-- INFERRED: 36 (8%)
+- EXTRACTED: 422 (92%)
+- INFERRED: 38 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

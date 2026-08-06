@@ -1,6 +1,6 @@
 # logging handlers structured
 
-> 137 nodes
+> 139 nodes
 
 ## Key Concepts
 
@@ -28,23 +28,20 @@
 - **_ConsoleHandlerConfig** (6 connections) — `server/structured_logging/logging_file_setup.py`
 - **_setup_async_logging_queue()** (6 connections) — `server/structured_logging/logging_file_setup.py`
 - **_create_formatter()** (6 connections) — `server/structured_logging/logging_file_setup.py`
-- **_get_or_create_log_queue()** (5 connections) — `server/structured_logging/logging_file_setup.py`
-- *... and 112 more nodes in this community*
+- **test_nats_message_handler_base.py** (6 connections) — `server/tests/unit/realtime/test_nats_message_handler_base.py`
+- *... and 114 more nodes in this community*
 
 ## Relationships
 
+- [logging examples fastapi](logging_examples_fastapi.md) (18 shared connections)
 - [logging structured utilities](logging_structured_utilities.md) (18 shared connections)
-- [Error Conversion](Error_Conversion.md) (14 shared connections)
 - [windows safe rotation](windows_safe_rotation.md) (11 shared connections)
 - [services admin auth](services_admin_auth.md) (9 shared connections)
 - [player guid formatter](player_guid_formatter.md) (4 shared connections)
-- [follow game service](follow_game_service.md) (4 shared connections)
 - [log structured logging](log_structured_logging.md) (1 shared connections)
-- [aggro threat services](aggro_threat_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/structured_logging/enhanced_logging_config.py`
 - `server/structured_logging/logging_file_setup.py`
 - `server/structured_logging/logging_handlers.py`
 - `server/structured_logging/logging_utilities.py`
@@ -54,8 +51,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 504 (94%)
-- INFERRED: 35 (6%)
+- EXTRACTED: 512 (94%)
+- INFERRED: 34 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

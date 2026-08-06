@@ -31,16 +31,15 @@
 
 ## Relationships
 
-- [config rationale config()](config_rationale_config%28%29.md) (5 shared connections)
-- [uuid services npc](uuid_services_npc.md) (5 shared connections)
-- [startup npc service](startup_npc_service.md) (5 shared connections)
-- [commands skills rationale](commands_skills_rationale.md) (4 shared connections)
-- [Error Conversion](Error_Conversion.md) (3 shared connections)
-- [cache caching service](cache_caching_service.md) (3 shared connections)
-- [room realtime occupant](room_realtime_occupant.md) (2 shared connections)
-- [websocket realtime handler](websocket_realtime_handler.md) (2 shared connections)
+- [admin commands setstat](admin_commands_setstat.md) (6 shared connections)
+- [player left room](player_left_room.md) (6 shared connections)
+- [player requests schemas](player_requests_schemas.md) (5 shared connections)
+- [message realtime messaging](message_realtime_messaging.md) (4 shared connections)
+- [persistence container helpers](persistence_container_helpers.md) (3 shared connections)
+- [nats services service](nats_services_service.md) (3 shared connections)
+- [combat models rationale](combat_models_rationale.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
 - [caching lru cache](caching_lru_cache.md) (1 shared connections)
-- [game magic regeneration](game_magic_regeneration.md) (1 shared connections)
 
 ## Source Files
 

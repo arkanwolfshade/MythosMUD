@@ -33,14 +33,13 @@
 
 ## Relationships
 
+- [logging examples fastapi](logging_examples_fastapi.md) (5 shared connections)
+- [commands npc admin](commands_npc_admin.md) (3 shared connections)
 - [commands admin mute](commands_admin_mute.md) (3 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (3 shared connections)
-- [combat services messaging](combat_services_messaging.md) (3 shared connections)
 - [admin structured logging](admin_structured_logging.md) (3 shared connections)
-- [alias storage rationale](alias_storage_rationale.md) (2 shared connections)
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
-- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (1 shared connections)
-- [models player related](models_player_related.md) (1 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (2 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
+- [middleware correlation rationale](middleware_correlation_rationale.md) (1 shared connections)
 
 ## Source Files
 

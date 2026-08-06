@@ -13,7 +13,7 @@
 
 ## Relationships
 
-- [player cache rationale](player_cache_rationale.md) (1 shared connections)
+- [task registry app](task_registry_app.md) (1 shared connections)
 
 ## Source Files
 

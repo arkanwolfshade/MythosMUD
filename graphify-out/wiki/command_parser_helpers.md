@@ -1,55 +1,62 @@
 # command parser helpers
 
-> 25 nodes
+> 51 nodes
 
 ## Key Concepts
 
-- **validate_inventory_payload()** (13 connections) — `server/schemas/shared/inventory_schema.py`
-- **__init__.py** (12 connections) — `server/schemas/shared/__init__.py`
-- **test_inventory_schema.py** (11 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **validate_inventory_items()** (9 connections) — `server/schemas/shared/inventory_schema.py`
-- **inventory_schema.py** (7 connections) — `server/schemas/shared/inventory_schema.py`
-- **_build_validator()** (5 connections) — `server/schemas/shared/inventory_schema.py`
-- **test_validate_inventory_payload_missing_required()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **test_validate_inventory_payload_invalid_inventory()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **test_validate_inventory_items_missing_required()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **test_validate_inventory_items_invalid_quantity()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **Any** (3 connections)
-- **test_validate_inventory_payload_valid()** (3 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **test_validate_inventory_items_valid()** (3 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **Shared schemas: base models, target resolution, inventory validation.** (1 connections) — `server/schemas/shared/__init__.py`
-- **Inventory JSON schema validation utilities.  As recorded in the restricted stack** (1 connections) — `server/schemas/shared/inventory_schema.py`
-- **Internal helper to construct a Draft7 validator instance.** (1 connections) — `server/schemas/shared/inventory_schema.py`
-- **Validate a complete inventory payload against the canonical schema.      Raises:** (1 connections) — `server/schemas/shared/inventory_schema.py`
-- **Validate only the inventory portion to simplify testing workflows.      Raises:** (1 connections) — `server/schemas/shared/inventory_schema.py`
-- **Unit tests for inventory_schema validation functions.  Tests the validation func** (1 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **Test validate_inventory_payload() accepts valid payload.** (1 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **Test validate_inventory_payload() raises error for missing required fields.** (1 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **Test validate_inventory_payload() raises error for invalid inventory.** (1 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **Test validate_inventory_items() accepts valid items.** (1 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **Test validate_inventory_items() raises error for missing required fields.** (1 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **Test validate_inventory_items() raises error for invalid quantity.** (1 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **MessageFilteringHelper** (25 connections) — `server/realtime/message_filtering.py`
+- **NATSMessageHandler** (24 connections) — `server/realtime/nats_message_handler.py`
+- **test_message_filtering_helpers.py** (10 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
+- **.is_player_in_room()** (7 connections) — `server/realtime/message_filtering.py`
+- **.__init__()** (7 connections) — `server/realtime/nats_message_handler.py`
+- **.check_player_mute_status()** (6 connections) — `server/realtime/message_filtering.py`
+- **.filter_target_players()** (6 connections) — `server/realtime/message_filtering.py`
+- **Any** (4 connections)
+- **.is_player_muted_by_receiver()** (4 connections) — `server/realtime/message_filtering.py`
+- **.is_player_muted_by_receiver_with_user_manager()** (4 connections) — `server/realtime/message_filtering.py`
+- **.__init__()** (3 connections) — `server/realtime/message_filtering.py`
+- **._get_user_manager()** (3 connections) — `server/realtime/message_filtering.py`
+- **.extract_chat_event_info()** (3 connections) — `server/realtime/message_filtering.py`
+- **.should_apply_mute_check()** (3 connections) — `server/realtime/message_filtering.py`
+- **.compare_canonical_rooms()** (3 connections) — `server/realtime/message_filtering.py`
+- **.get_player_room_from_online_players()** (3 connections) — `server/realtime/message_filtering.py`
+- **.get_player_room_from_persistence()** (3 connections) — `server/realtime/message_filtering.py`
+- **nats_message_handler()** (3 connections) — `server/tests/unit/realtime/conftest.py`
+- **message_filtering_helper()** (3 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
+- **.collect_room_targets()** (2 connections) — `server/realtime/message_filtering.py`
+- **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
+- **test_extract_chat_event_info()** (2 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
+- **test_should_apply_mute_check()** (2 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
+- **test_compare_canonical_rooms()** (2 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
+- **test_get_player_room_from_online_players()** (2 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
+- *... and 26 more nodes in this community*
 
 ## Relationships
 
-- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (8 shared connections)
-- [command factories moderation](command_factories_moderation.md) (3 shared connections)
-- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (2 shared connections)
-- [logging file setup](logging_file_setup.md) (2 shared connections)
-- [panels domPurifyClient chat](panels_domPurifyClient_chat.md) (1 shared connections)
-- [services ascii map](services_ascii_map.md) (1 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
+- [game chat service](game_chat_service.md) (10 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (7 shared connections)
+- [nats services service](nats_services_service.md) (3 shared connections)
+- [command commands handler](command_commands_handler.md) (2 shared connections)
+- [websocket handler realtime](websocket_handler_realtime.md) (2 shared connections)
+- [inventory schemas schema](inventory_schemas_schema.md) (2 shared connections)
+- [follow game service](follow_game_service.md) (2 shared connections)
+- [commands alias rationale](commands_alias_rationale.md) (2 shared connections)
+- [profession models rationale](profession_models_rationale.md) (2 shared connections)
+- [message filtering realtime](message_filtering_realtime.md) (1 shared connections)
+- [command factories create](command_factories_create.md) (1 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (1 shared connections)
 
 ## Source Files
 
-- `server/schemas/shared/__init__.py`
-- `server/schemas/shared/inventory_schema.py`
-- `server/tests/unit/schemas/test_inventory_schema.py`
+- `server/realtime/message_filtering.py`
+- `server/realtime/nats_message_handler.py`
+- `server/tests/unit/realtime/conftest.py`
+- `server/tests/unit/realtime/test_message_filtering_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 90 (96%)
-- INFERRED: 4 (4%)
+- EXTRACTED: 147 (90%)
+- INFERRED: 16 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

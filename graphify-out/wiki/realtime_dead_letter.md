@@ -1,34 +1,34 @@
 # realtime dead letter
 
-> 11 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **commandStore.ts** (12 connections) — `client/src/stores/commandStore.ts`
-- **useCommandStore** (5 connections) — `client/src/stores/commandStore.ts`
-- **commandStore.test.ts** (2 connections) — `client/src/stores/__tests__/commandStore.test.ts`
-- **CommandHistoryEntry** (1 connections) — `client/src/stores/commandStore.ts`
-- **CommandAlias** (1 connections) — `client/src/stores/commandStore.ts`
-- **CommandTrigger** (1 connections) — `client/src/stores/commandStore.ts`
-- **CommandState** (1 connections) — `client/src/stores/commandStore.ts`
-- **CommandActions** (1 connections) — `client/src/stores/commandStore.ts`
-- **CommandSelectors** (1 connections) — `client/src/stores/commandStore.ts`
-- **CommandStore** (1 connections) — `client/src/stores/commandStore.ts`
-- **createInitialState()** (1 connections) — `client/src/stores/commandStore.ts`
+- **_errors_len()** (7 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_required_npcs_no_spawn_room()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_required_npcs_exception()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_optional_npcs_exception()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_npcs_on_startup_exception_in_session()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_npcs_on_startup_critical_exception()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Narrow spawn/startup result dict for len(results['errors']) without propagating** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _spawn_required_npcs() handles missing spawn room.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _spawn_required_npcs() handles exceptions during spawning.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _spawn_optional_npcs() handles exceptions during spawning.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test spawn_npcs_on_startup() handles exceptions during session processing.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test spawn_npcs_on_startup() handles critical exceptions.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
 
 ## Relationships
 
-- [stores connectionStore commandStore](stores_connectionStore_commandStore.md) (3 shared connections)
-- [config rationale config()](config_rationale_config%28%29.md) (2 shared connections)
+- [world loader room](world_loader_room.md) (6 shared connections)
+- [room validator path](room_validator_path.md) (5 shared connections)
 
 ## Source Files
 
-- `client/src/stores/__tests__/commandStore.test.ts`
-- `client/src/stores/commandStore.ts`
+- `server/tests/unit/services/test_npc_startup_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 27 (100%)
+- EXTRACTED: 33 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

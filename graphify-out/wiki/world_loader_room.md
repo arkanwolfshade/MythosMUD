@@ -1,46 +1,48 @@
 # world loader room
 
-> 19 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **test_item_instance_persistence.py** (16 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **create_item_instance()** (12 connections) — `server/persistence/item_instance_persistence.py`
-- **ensure_item_instance()** (11 connections) — `server/persistence/item_instance_persistence.py`
-- **get_item_instance()** (7 connections) — `server/persistence/item_instance_persistence.py`
-- **item_instance_exists()** (7 connections) — `server/persistence/item_instance_persistence.py`
-- **Any** (4 connections)
-- **test_create_item_instance_missing_id()** (3 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **test_create_item_instance_db_error()** (3 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **test_item_instance_exists_true()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **test_item_instance_exists_false()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **test_get_item_instance_found()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **test_get_item_instance_not_found()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **test_ensure_item_instance_calls_create()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **test_create_item_instance_success()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **Create a new item instance in the database.      Args:         conn: Database co** (1 connections) — `server/persistence/item_instance_persistence.py`
-- **Retrieve an item instance by ID.      Args:         conn: Database connection** (1 connections) — `server/persistence/item_instance_persistence.py`
-- **Check if an item instance exists in the database.      Args:         conn: Datab** (1 connections) — `server/persistence/item_instance_persistence.py`
-- **Ensure an item instance exists in the database, creating it if necessary.      T** (1 connections) — `server/persistence/item_instance_persistence.py`
-- **Unit tests for item_instance_persistence helpers.** (1 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
+- **test_npc_startup_service.py** (39 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_npc_startup_service_init()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_required_npcs_success()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_optional_npcs_with_probability()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_optional_npcs_skips_low_probability()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_get_default_room_for_sub_zone_case_insensitive()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_optional_npcs_no_probability_attribute()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_npcs_on_startup_with_optional_npcs()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_arena_npcs_no_prior_spawns_returns_empty()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_arena_npcs_skips_unknown_definition_id()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_arena_room_ids()** (2 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Unit tests for NPC startup service.  Tests the NPCStartupService class.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test ARENA_ROOM_IDS defines 121 arena rooms (11x11) and includes center.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test NPCStartupService initialization.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _spawn_required_npcs() successfully spawns required NPCs.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _spawn_optional_npcs() spawns based on probability.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _spawn_optional_npcs() skips NPCs with low probability.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _get_default_room_for_sub_zone() is case insensitive.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _spawn_optional_npcs() handles NPCs without spawn_probability attribute.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test spawn_npcs_on_startup() spawns optional NPCs.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Arena pass is skipped when required/optional passes spawned nothing.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Stale definition_id in spawned_npcs that is not in definitions list is ignored.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
 
 ## Relationships
 
-- [commands shutdown process](commands_shutdown_process.md) (9 shared connections)
-- [auth users rationale](auth_users_rationale.md) (4 shared connections)
-- [add used user](add_used_user.md) (3 shared connections)
-- [commands time handle](commands_time_handle.md) (2 shared connections)
-- [retry nats handler](retry_nats_handler.md) (2 shared connections)
+- [room validator path](room_validator_path.md) (18 shared connections)
+- [realtime player connection](realtime_player_connection.md) (11 shared connections)
+- [realtime dead letter](realtime_dead_letter.md) (6 shared connections)
+- [room look commands](room_look_commands.md) (1 shared connections)
+- [aggro threat services](aggro_threat_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/persistence/item_instance_persistence.py`
-- `server/tests/unit/persistence/test_item_instance_persistence.py`
+- `server/tests/unit/services/test_npc_startup_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 76 (95%)
-- INFERRED: 4 (5%)
+- EXTRACTED: 79 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,10 +1,11 @@
 # exceptions rationale error
 
-> 121 nodes
+> 123 nodes
 
 ## Key Concepts
 
 - **test_command_factories_utility.py** (51 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
+- **UtilityCommandFactory** (20 connections) — `server/utils/command_factories_utility.py`
 - **.create_summon_command()** (14 connections) — `server/utils/command_factories_utility.py`
 - **.create_cast_command()** (12 connections) — `server/utils/command_factories_utility.py`
 - **.create_teleport_command()** (11 connections) — `server/utils/command_factories_utility.py`
@@ -28,23 +29,22 @@
 - **test_create_summon_command_negative_quantity()** (4 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
 - **test_create_summon_command_invalid_token()** (4 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
 - **test_create_summon_command_extra_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
-- **test_create_teleport_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
-- *... and 96 more nodes in this community*
+- *... and 98 more nodes in this community*
 
 ## Relationships
 
-- [add used user](add_used_user.md) (18 shared connections)
-- [command inventory factories](command_inventory_factories.md) (16 shared connections)
-- [Inventory Equip](Inventory_Equip.md) (10 shared connections)
-- [dialogue definition persistence](dialogue_definition_persistence.md) (5 shared connections)
+- [command inventory models](command_inventory_models.md) (18 shared connections)
+- [spell game magic](spell_game_magic.md) (13 shared connections)
 - [inventory commands command](inventory_commands_command.md) (5 shared connections)
 - [game models stats](game_models_stats.md) (4 shared connections)
-- [time service rationale](time_service_rationale.md) (2 shared connections)
-- [command processor rationale](command_processor_rationale.md) (2 shared connections)
+- [dialogue definition persistence](dialogue_definition_persistence.md) (3 shared connections)
+- [command processor rationale](command_processor_rationale.md) (3 shared connections)
+- [rate limiter services](rate_limiter_services.md) (2 shared connections)
 - [aggro threat services](aggro_threat_services.md) (1 shared connections)
-- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
+- [websocket validation realtime](websocket_validation_realtime.md) (1 shared connections)
 - [middleware error handling](middleware_error_handling.md) (1 shared connections)
-- [player service game](player_service_game.md) (1 shared connections)
+- [Async Query Helpers](Async_Query_Helpers.md) (1 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
 
 ## Source Files
 
@@ -54,8 +54,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 346 (93%)
-- INFERRED: 27 (7%)
+- EXTRACTED: 366 (93%)
+- INFERRED: 28 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

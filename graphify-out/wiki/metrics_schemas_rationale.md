@@ -34,13 +34,12 @@
 ## Relationships
 
 - [services inventory mutation](services_inventory_mutation.md) (16 shared connections)
-- [player requests schemas](player_requests_schemas.md) (14 shared connections)
+- [player requests schemas](player_requests_schemas.md) (15 shared connections)
 - [persistence container rationale](persistence_container_rationale.md) (8 shared connections)
-- [Error Conversion](Error_Conversion.md) (3 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (2 shared connections)
-- [auth users rationale](auth_users_rationale.md) (1 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (3 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (2 shared connections)
+- [websocket handler realtime](websocket_handler_realtime.md) (1 shared connections)
 - [NPC Definitions Admin](NPC_Definitions_Admin.md) (1 shared connections)
-- [feature services flag](feature_services_flag.md) (1 shared connections)
 - [combat commands handler](combat_commands_handler.md) (1 shared connections)
 
 ## Source Files

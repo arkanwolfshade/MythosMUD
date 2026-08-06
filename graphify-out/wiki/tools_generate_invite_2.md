@@ -1,36 +1,36 @@
 # tools generate invite
 
-> 12 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **_cleanup_dead_connections()** (10 connections) — `server/realtime/connection_establishment.py`
-- **_remove_dead_connection()** (7 connections) — `server/realtime/connection_establishment.py`
-- **test_remove_dead_connection()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_remove_dead_connection_not_present()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_cleanup_dead_connections_empty_list()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_cleanup_dead_connections_with_dead()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Remove a single dead connection from tracking structures.      Args:         con** (1 connections) — `server/realtime/connection_establishment.py`
-- **Clean up dead connections under lock.      Args:         dead_connection_ids: Li** (1 connections) — `server/realtime/connection_establishment.py`
-- **Test _remove_dead_connection() removes connection from tracking.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _remove_dead_connection() handles connection not present.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _cleanup_dead_connections() handles empty list.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _cleanup_dead_connections() cleans up dead connections.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_inventory_mutation_guard_async.py** (9 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **guard()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **test_acquire_async_enforces_max_tokens()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **test_acquire_async_token_expiry()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **test_acquire_async_token_ttl_zero()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **test_acquire_async_cleanup_empty_state()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **test_acquire_async_concurrent_same_player()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **Unit tests for inventory mutation guard - asynchronous acquire operations.  Test** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **Create an InventoryMutationGuard instance.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **Test acquire_async enforces max_tokens limit.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **Test acquire_async allows token reuse after expiry.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **Test acquire_async with token_ttl=0 (no expiry).** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **Test acquire_async cleans up state when tokens are empty.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **Test acquire_async serializes concurrent mutations for same player.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
 
 ## Relationships
 
-- [invite models rationale](invite_models_rationale.md) (6 shared connections)
-- [connection establishment realtime](connection_establishment_realtime.md) (6 shared connections)
-- [channel broadcasting realtime](channel_broadcasting_realtime.md) (1 shared connections)
+- [task registry app](task_registry_app.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_establishment.py`
-- `server/tests/unit/realtime/test_connection_establishment.py`
+- `server/tests/unit/services/test_inventory_mutation_guard_async.py`
 
 ## Audit Trail
 
-- EXTRACTED: 35 (100%)
+- EXTRACTED: 29 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

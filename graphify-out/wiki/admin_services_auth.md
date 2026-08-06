@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **._publish_attack_event()** (3 connections) — `server/npc/combat_integration.py`
-- **Publish NPC attack event to event bus.** (1 connections) — `server/npc/combat_integration.py`
+- **test_service_shutdown_removes_subscribers()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test that service shutdown removes all subscribers for that service.      This t** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- [Error Conversion](Error_Conversion.md) (1 shared connections)
-- [services nats service](services_nats_service.md) (1 shared connections)
+- [event bus events](event_bus_events.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/combat_integration.py`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

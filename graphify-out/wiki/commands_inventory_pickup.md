@@ -33,9 +33,9 @@
 
 ## Relationships
 
-- [commands quest rationale](commands_quest_rationale.md) (11 shared connections)
-- [alias storage rationale](alias_storage_rationale.md) (1 shared connections)
-- [realtime real time](realtime_real_time.md) (1 shared connections)
+- [player helpers error](player_helpers_error.md) (11 shared connections)
+- [commands npc admin](commands_npc_admin.md) (1 shared connections)
+- [character creation service](character_creation_service.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,33 +1,35 @@
 # connection realtime name
 
-> 12 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **test_grace_period_blocking.py** (8 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
-- **test_check_grace_period_block_blocks_commands()** (3 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
-- **test_check_grace_period_block_allows_commands_when_not_in_grace_period()** (3 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
-- **test_check_grace_period_block_handles_missing_services()** (3 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
-- **test_check_grace_period_block_handles_player_not_found()** (3 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
-- **mock_request()** (2 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
-- **Unit tests for grace period command blocking in unified command handler.  Tests** (1 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
-- **Create a mock request.** (1 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
-- **Test _check_grace_period_block() blocks commands for grace period players.** (1 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
-- **Test _check_grace_period_block() allows commands when player not in grace period** (1 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
-- **Test _check_grace_period_block() handles missing services gracefully.** (1 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
-- **Test _check_grace_period_block() handles player not found gracefully.** (1 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **verify_npc_occupants.py** (8 connections) — `server/scripts/verify_npc_occupants.py`
+- **verify_npcs_in_lifecycle_manager()** (6 connections) — `server/scripts/verify_npc_occupants.py`
+- **_check_service_availability()** (5 connections) — `server/scripts/verify_npc_occupants.py`
+- **_collect_npcs_by_room()** (4 connections) — `server/scripts/verify_npc_occupants.py`
+- **_test_query_for_room()** (4 connections) — `server/scripts/verify_npc_occupants.py`
+- **Any** (3 connections)
+- **_print_summary()** (3 connections) — `server/scripts/verify_npc_occupants.py`
+- **Verification script to check NPCs in lifecycle manager and test occupant query l** (1 connections) — `server/scripts/verify_npc_occupants.py`
+- **Check if NPC service, lifecycle manager, and active_npcs are available.      Ret** (1 connections) — `server/scripts/verify_npc_occupants.py`
+- **Collect NPCs grouped by room ID.      Args:         active_npcs: Dictionary of a** (1 connections) — `server/scripts/verify_npc_occupants.py`
+- **Test query logic for a specific room.      Args:         active_npcs: Dictionary** (1 connections) — `server/scripts/verify_npc_occupants.py`
+- **Print verification summary.      Args:         npc_count: Total number of active** (1 connections) — `server/scripts/verify_npc_occupants.py`
+- **Verify NPCs exist in lifecycle manager and test query logic.** (1 connections) — `server/scripts/verify_npc_occupants.py`
 
 ## Relationships
 
-- [player model models](player_model_models.md) (6 shared connections)
+- [tick game processing](tick_game_processing.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- `server/scripts/verify_npc_occupants.py`
 
 ## Audit Trail
 
-- EXTRACTED: 28 (100%)
+- EXTRACTED: 39 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

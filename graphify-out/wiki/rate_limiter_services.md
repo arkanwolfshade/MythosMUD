@@ -1,59 +1,68 @@
 # rate limiter services
 
-> 26 nodes
+> 139 nodes
 
 ## Key Concepts
 
-- **test_rate_limiter.py** (35 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_cleanup_old_entries()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_check_rate_limit_within_limits()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_check_rate_limit_exceeds_limit()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_check_rate_limit_error_handling()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_record_message_error_handling()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_get_player_stats_empty()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_reset_player_limits_nonexistent_player()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_get_system_stats()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_is_player_rate_limited_false()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_get_remaining_messages_zero()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_rate_limit_different_channels()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_check_rate_limit_logs_violation()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **Unit tests for rate limiter service.  Tests the RateLimiter class which provides** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **Test _cleanup_old_entries removes old timestamps.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **Test check_rate_limit returns True when within limits.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **Test check_rate_limit returns False when limit exceeded.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **Test check_rate_limit handles errors gracefully (fails open).** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **Test record_message handles errors gracefully.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **Test get_player_stats handles player with no messages.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **Test reset_player_limits handles nonexistent player.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **Test get_system_stats returns system-wide statistics.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **Test is_player_rate_limited returns False when not rate limited.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **Test get_remaining_messages returns 0 when at limit.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **Test rate limiting is per-channel.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- *... and 1 more nodes in this community*
+- **MythosTickScheduler** (29 connections) — `server/time/tick_scheduler.py`
+- **MythosChronicle** (29 connections) — `server/time/time_service.py`
+- **MythosTimeEventConsumer** (24 connections) — `server/time/time_event_consumer.py`
+- **test_time_bundle.py** (20 connections) — `server/tests/unit/container/test_time_bundle.py`
+- **test_tick_scheduler.py** (17 connections) — `server/tests/unit/time/test_tick_scheduler.py`
+- **MythosHourTickEvent** (16 connections) — `server/events/event_types.py`
+- **tick_scheduler.py** (15 connections) — `server/time/tick_scheduler.py`
+- **datetime** (15 connections)
+- **TimeBundle** (14 connections) — `server/container/bundles/time.py`
+- **_ensure_utc()** (13 connections) — `server/time/time_service.py`
+- **.get_calendar_components()** (10 connections) — `server/time/time_service.py`
+- **ChronicleState** (9 connections) — `server/time/time_service.py`
+- **.get_current_mythos_datetime()** (9 connections) — `server/time/time_service.py`
+- **test_time_event_consumer.py** (8 connections) — `server/tests/unit/time/test_time_event_consumer.py`
+- **__init__.py** (8 connections) — `server/time/__init__.py`
+- **.get_daypart()** (8 connections) — `server/time/time_service.py`
+- **._load_state()** (8 connections) — `server/time/time_service.py`
+- **._persist_state()** (8 connections) — `server/time/time_service.py`
+- **.__init__()** (7 connections) — `server/time/tick_scheduler.py`
+- **.to_mythos_datetime()** (7 connections) — `server/time/time_service.py`
+- **.is_witching_hour()** (7 connections) — `server/time/time_service.py`
+- **.is_daytime()** (7 connections) — `server/time/time_service.py`
+- **._handle_tick()** (6 connections) — `server/time/time_event_consumer.py`
+- **._migrate_old_state_file()** (6 connections) — `server/time/time_service.py`
+- **.initialize()** (5 connections) — `server/container/bundles/time.py`
+- *... and 114 more nodes in this community*
 
 ## Relationships
 
-- [event events serialization](event_events_serialization.md) (4 shared connections)
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
-- [test_messaging_integration_init](test_messaging_integration_init.md) (1 shared connections)
-- [test_resolve_connection_manager_from_container_no_manager](test_resolve_connection_manager_from_container_no_manager.md) (1 shared connections)
-- [test_validate_combat_state_not_in_combat_required](test_validate_combat_state_not_in_combat_required.md) (1 shared connections)
-- [test_validate_combat_state_in_combat_required](test_validate_combat_state_in_combat_required.md) (1 shared connections)
-- [test_validate_combat_command_target_too_long](test_validate_combat_command_target_too_long.md) (1 shared connections)
-- [test_validate_target_exists_partial_match](test_validate_target_exists_partial_match.md) (1 shared connections)
-- [test_validate_target_exists_no_match](test_validate_target_exists_no_match.md) (1 shared connections)
-- [test_validate_target_exists_exact_match](test_validate_target_exists_exact_match.md) (1 shared connections)
-- [test_validate_target_exists_case_insensitive](test_validate_target_exists_case_insensitive.md) (1 shared connections)
-- [test_validate_target_alive_alive](test_validate_target_alive_alive.md) (1 shared connections)
+- [combat models rationale](combat_models_rationale.md) (28 shared connections)
+- [nats services service](nats_services_service.md) (9 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (6 shared connections)
+- [inventory mutation guard](inventory_mutation_guard.md) (5 shared connections)
+- [Error Conversion](Error_Conversion.md) (5 shared connections)
+- [follow service game](follow_service_game.md) (4 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (3 shared connections)
+- [aggro threat services](aggro_threat_services.md) (2 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (2 shared connections)
+- [exceptions rationale error](exceptions_rationale_error.md) (2 shared connections)
+- [command service commands](command_service_commands.md) (1 shared connections)
+- [effect player repository](effect_player_repository.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_rate_limiter.py`
+- `server/container/bundles/time.py`
+- `server/events/event_types.py`
+- `server/tests/unit/container/test_container_bundles.py`
+- `server/tests/unit/container/test_time_bundle.py`
+- `server/tests/unit/time/test_tick_scheduler.py`
+- `server/tests/unit/time/test_time_event_consumer.py`
+- `server/time/__init__.py`
+- `server/time/tick_scheduler.py`
+- `server/time/time_event_consumer.py`
+- `server/time/time_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 72 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 502 (95%)
+- INFERRED: 26 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

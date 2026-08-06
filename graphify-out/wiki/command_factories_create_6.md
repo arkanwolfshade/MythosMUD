@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_take_room_drop_removes_empty_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **Test take_room_drop() removes room when drop list becomes empty.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **test_send_initial_game_state_send_fails()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test send_initial_game_state() handles send_personal_message failure.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Relationships
 
-- [room subscription manager](room_subscription_manager.md) (1 shared connections)
+- [game state provider](game_state_provider.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Audit Trail
 

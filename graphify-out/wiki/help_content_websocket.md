@@ -32,18 +32,17 @@
 
 ## Relationships
 
-- [commands shutdown process](commands_shutdown_process.md) (5 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (5 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (5 shared connections)
 - [npc combat base](npc_combat_base.md) (3 shared connections)
-- [combat services messaging](combat_services_messaging.md) (3 shared connections)
 - [command utility models](command_utility_models.md) (3 shared connections)
 - [command commands talk](command_commands_talk.md) (3 shared connections)
 - [movement monitor game](movement_monitor_game.md) (3 shared connections)
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
 - [player room realtime](player_room_realtime.md) (1 shared connections)
-- [tsconfig build {ts,tsx}](tsconfig_build_%7Bts%2Ctsx%7D.md) (1 shared connections)
 - [shutdown admin command](shutdown_admin_command.md) (1 shared connections)
 - [quest service game](quest_service_game.md) (1 shared connections)
-- [profession models rationale](profession_models_rationale.md) (1 shared connections)
+- [inventory mutation guard](inventory_mutation_guard.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,12 +1,15 @@
 # room service sync
 
-> 38 nodes
+> 73 nodes
 
 ## Key Concepts
 
+- **Direction** (22 connections) — `server/models/command_base.py`
 - **test_command_exploration.py** (20 connections) — `server/tests/unit/models/test_command_exploration.py`
 - **LookCommand** (19 connections) — `server/models/command_exploration.py`
+- **.create_look_command()** (18 connections) — `server/utils/command_factories_exploration.py`
 - **GoCommand** (14 connections) — `server/models/command_exploration.py`
+- **command_exploration.py** (9 connections) — `server/models/command_exploration.py`
 - **test_look_command_validate_direction_invalid()** (4 connections) — `server/tests/unit/models/test_command_exploration.py`
 - **test_look_command_instance_number_validation_min()** (4 connections) — `server/tests/unit/models/test_command_exploration.py`
 - **test_go_command_validate_direction_invalid()** (4 connections) — `server/tests/unit/models/test_command_exploration.py`
@@ -23,31 +26,34 @@
 - **test_go_command_required_direction()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
 - **test_go_command_validate_direction_valid()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
 - **test_go_command_all_directions()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
-- **Command for looking around, in a specific direction, or at an NPC.** (1 connections) — `server/models/command_exploration.py`
-- **Validate direction is one of the allowed values.** (1 connections) — `server/models/command_exploration.py`
-- **Command for moving in a specific direction.** (1 connections) — `server/models/command_exploration.py`
-- **Validate direction is one of the allowed values.** (1 connections) — `server/models/command_exploration.py`
-- **Unit tests for exploration command models.  Tests the LookCommand and GoCommand** (1 connections) — `server/tests/unit/models/test_command_exploration.py`
-- **Test LookCommand has correct default values.** (1 connections) — `server/tests/unit/models/test_command_exploration.py`
-- *... and 13 more nodes in this community*
+- **test_create_look_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- **test_create_look_command_with_target()** (3 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- **test_create_look_command_with_explicit_player_type()** (3 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- *... and 48 more nodes in this community*
 
 ## Relationships
 
-- [dialogue definition persistence](dialogue_definition_persistence.md) (13 shared connections)
-- [add used user](add_used_user.md) (4 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [Inventory Equip](Inventory_Equip.md) (2 shared connections)
+- [Inventory Equip](Inventory_Equip.md) (16 shared connections)
+- [dialogue definition persistence](dialogue_definition_persistence.md) (12 shared connections)
+- [inventory commands command](inventory_commands_command.md) (7 shared connections)
+- [command inventory models](command_inventory_models.md) (4 shared connections)
+- [command inventory factories](command_inventory_factories.md) (3 shared connections)
+- [npc realtime occupant](npc_realtime_occupant.md) (2 shared connections)
+- [exceptions rationale error](exceptions_rationale_error.md) (1 shared connections)
 - [memory profiler rationale](memory_profiler_rationale.md) (1 shared connections)
 
 ## Source Files
 
+- `server/models/command_base.py`
 - `server/models/command_exploration.py`
 - `server/tests/unit/models/test_command_exploration.py`
+- `server/tests/unit/utils/test_command_factories_exploration.py`
+- `server/utils/command_factories_exploration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 113 (91%)
-- INFERRED: 11 (9%)
+- EXTRACTED: 212 (91%)
+- INFERRED: 22 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

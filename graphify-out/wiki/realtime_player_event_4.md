@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_remove_player_from_room_room_not_found()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
-- **Test remove_player_from_room() when room is not found.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_register_action_handler_overwrites()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test register_action_handler() overwrites existing handler.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [movement service game](movement_service_game.md) (1 shared connections)
+- [npc lifecycle combat](npc_lifecycle_combat.md) (1 shared connections)
+- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_movement_service.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

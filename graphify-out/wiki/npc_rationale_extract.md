@@ -1,10 +1,12 @@
 # npc rationale extract
 
-> 48 nodes
+> 52 nodes
 
 ## Key Concepts
 
 - **test_character_creation_service.py** (31 connections) — `server/tests/unit/game/test_character_creation_service.py`
+- **character_creation_service()** (3 connections) — `server/tests/unit/game/test_character_creation_service.py`
+- **test_character_creation_service_init()** (3 connections) — `server/tests/unit/game/test_character_creation_service.py`
 - **test_roll_character_stats_with_profession()** (3 connections) — `server/tests/unit/game/test_character_creation_service.py`
 - **test_roll_character_stats_with_class()** (3 connections) — `server/tests/unit/game/test_character_creation_service.py`
 - **test_roll_character_stats_without_class_or_profession()** (3 connections) — `server/tests/unit/game/test_character_creation_service.py`
@@ -27,16 +29,13 @@
 - **test_get_class_description_known_class()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
 - **test_get_class_description_unknown_class()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
 - **test_get_class_description_all_classes()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- **test_validate_character_stats_failed_prerequisites()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- **Unit tests for character creation service.  Tests the CharacterCreationService c** (1 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- *... and 23 more nodes in this community*
+- *... and 27 more nodes in this community*
 
 ## Relationships
 
-- [add used user](add_used_user.md) (7 shared connections)
-- [System Metrics](System_Metrics.md) (7 shared connections)
-- [services npc startup](services_npc_startup.md) (3 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (1 shared connections)
+- [System Metrics](System_Metrics.md) (10 shared connections)
+- [command inventory models](command_inventory_models.md) (7 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
 
 ## Source Files
 
@@ -44,8 +43,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 102 (91%)
-- INFERRED: 10 (9%)
+- EXTRACTED: 110 (92%)
+- INFERRED: 10 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

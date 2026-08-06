@@ -1,34 +1,50 @@
 # npc behavior engine
 
-> 10 nodes
+> 27 nodes
 
 ## Key Concepts
 
-- **.wander()** (6 connections) — `server/npc/passive_mob_npc.py`
-- **.schedule_idle_movement()** (6 connections) — `server/npc/passive_mob_npc.py`
-- **._create_wander_action()** (4 connections) — `server/npc/passive_mob_npc.py`
-- **._should_schedule_movement()** (3 connections) — `server/npc/passive_mob_npc.py`
-- **._handle_wander()** (3 connections) — `server/npc/passive_mob_npc.py`
-- **Perform wandering behavior using idle movement system.** (1 connections) — `server/npc/passive_mob_npc.py`
-- **Check if idle movement should be scheduled based on configuration and timing.** (1 connections) — `server/npc/passive_mob_npc.py`
-- **Create a WANDER action message.          Args:             current_time: Curr** (1 connections) — `server/npc/passive_mob_npc.py`
-- **Schedule a WANDER action for idle movement if interval has elapsed.          T** (1 connections) — `server/npc/passive_mob_npc.py`
-- **Handle wandering action.** (1 connections) — `server/npc/passive_mob_npc.py`
+- **test_admin_summon_command.py** (33 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_persist_summoned_item_swallows_db_error()** (2 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_validate_summon_prerequisites_missing_item_services()** (1 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_validate_summon_prerequisites_missing_room_manager()** (1 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_validate_summon_prerequisites_ok()** (1 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_summon_npc_stub_response()** (1 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_summon_npc_stub_response_item_type()** (1 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_create_summon_item_instance_success()** (1 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_parse_summon_command_data_missing_prototype()** (1 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_parse_summon_command_data_npc_stub()** (1 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_parse_summon_command_data_item_ok()** (1 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_persist_summoned_item_success()** (1 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_parse_summon_command_data_quantity_spike()** (1 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_parse_summon_command_data_room_manager_missing_at_execution()** (1 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_complete_summon_success()** (1 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_complete_summon_no_instance_without_error()** (1 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_broadcast_and_log_summon_success()** (1 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_handle_summon_command_success()** (1 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_handle_summon_command_context_error()** (1 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_handle_summon_command_parse_error()** (1 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_resolve_summon_context_permission_denied()** (1 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_validate_summon_prerequisites_room_manager_no_add_drop()** (1 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_log_summon_success()** (1 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_resolve_summon_context_success()** (1 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_resolve_summon_context_player_error()** (1 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [command input commands](command_input_commands.md) (5 shared connections)
-- [npc shopkeeper rationale](npc_shopkeeper_rationale.md) (2 shared connections)
-- [realtime player connection](realtime_player_connection.md) (1 shared connections)
-- [idle movement npc](idle_movement_npc.md) (1 shared connections)
+- [schedule service services](schedule_service_services.md) (4 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (2 shared connections)
+- [shutdown command commands](shutdown_command_commands.md) (1 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/passive_mob_npc.py`
+- `server/tests/unit/commands/test_admin_summon_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 27 (100%)
+- EXTRACTED: 60 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -21,12 +21,12 @@
 
 ## Relationships
 
-- [npc service services](npc_service_services.md) (4 shared connections)
 - [admin structured logging](admin_structured_logging.md) (3 shared connections)
-- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (2 shared connections)
-- [npc rewards combat](npc_rewards_combat.md) (2 shared connections)
+- [npc service services](npc_service_services.md) (3 shared connections)
+- [npc rewards combat](npc_rewards_combat.md) (3 shared connections)
+- [shutdown command commands](shutdown_command_commands.md) (2 shared connections)
 - [realtime game state](realtime_game_state.md) (1 shared connections)
-- [room sync service](room_sync_service.md) (1 shared connections)
+- [command models moderation](command_models_moderation.md) (1 shared connections)
 
 ## Source Files
 

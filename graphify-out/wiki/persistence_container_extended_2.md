@@ -21,7 +21,7 @@
 
 ## Relationships
 
-- [retry nats handler](retry_nats_handler.md) (1 shared connections)
+- [commands party examples](commands_party_examples.md) (1 shared connections)
 
 ## Source Files
 

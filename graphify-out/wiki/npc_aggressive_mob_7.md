@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_apply_dampening_and_send_message_blocked()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _apply_dampening_and_send_message handles blocked messages.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **mock_logger()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Create a mock logger.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [message chat nats](message_chat_nats.md) (1 shared connections)
+- [player event handlers](player_event_handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 

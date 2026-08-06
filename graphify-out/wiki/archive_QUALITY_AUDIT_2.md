@@ -1,27 +1,23 @@
 # archive QUALITY AUDIT
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **benchmark_validation_performance()** (5 connections) — `server/validators/optimized_security_validator.py`
-- **test_benchmark_validation_performance()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Test benchmark function runs without errors.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Benchmark the performance of optimized vs original validation functions.** (1 connections) — `server/validators/optimized_security_validator.py`
+- **test_unsubscribe_all_for_service_nonexistent()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test EventBus.unsubscribe_all_for_service() with nonexistent service_id.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- [optimized security validator](optimized_security_validator.md) (3 shared connections)
-- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [event bus events](event_bus_events.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_optimized_security_validator.py`
-- `server/validators/optimized_security_validator.py`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,46 +1,54 @@
 # cache lru caching
 
-> 22 nodes
+> 30 nodes
 
 ## Key Concepts
 
-- **test_passive_lucidity_flux_service.py** (32 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
-- **_make_service()** (22 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
-- **test_process_tick_applies_adjustment()** (4 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
-- **test_process_single_player_no_delta()** (3 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
-- **test_should_process_tick()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
-- **test_parse_last_active_variants()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
-- **test_normalize_datetime_timezone()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
-- **test_filter_active_players_includes_recent_and_null_last_active()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
-- **test_apply_residual_accumulates_and_emits_delta()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
-- **test_apply_adaptive_resistance_reduces_negative_flux()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
-- **test_companion_modifier_with_lucid_and_destabilizing()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
-- **test_lookup_base_flux_for_room_overrides()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
-- **test_prune_trackers()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
-- **test_process_tick_skipped_when_not_due()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
-- **test_lookup_base_flux_sub_zone_override()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
-- **test_lookup_world_override_flux()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
-- **test_count_companion_tiers()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
-- **test_is_player_active_recent()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
-- **test_apply_adaptive_resistance_positive_flux_unchanged()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
-- **test_apply_residual_negative_delta()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
-- **test_resolve_context_async_with_room()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
-- **Unit tests for PassiveLucidityFluxService.** (1 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- **run_flee_effect()** (25 connections) — `server/game/magic/spell_effect_flee.py`
+- **spell_effect_flee.py** (18 connections) — `server/game/magic/spell_effect_flee.py`
+- **test_spell_effect_flee.py** (17 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
+- **Any** (10 connections)
+- **_flee_effect_validate_room_exits()** (7 connections) — `server/game/magic/spell_effect_flee.py`
+- **_player_target()** (7 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
+- **_flee_effect_services_available()** (6 connections) — `server/game/magic/spell_effect_flee.py`
+- **_flee_effect_not_in_combat_response()** (4 connections) — `server/game/magic/spell_effect_flee.py`
+- **_flee_effect_success_response()** (4 connections) — `server/game/magic/spell_effect_flee.py`
+- **_flee_effect_failure_response()** (4 connections) — `server/game/magic/spell_effect_flee.py`
+- **_flee_effect_invalid_target_type_response()** (3 connections) — `server/game/magic/spell_effect_flee.py`
+- **_flee_effect_services_unavailable_response()** (3 connections) — `server/game/magic/spell_effect_flee.py`
+- **_flee_effect_invalid_target_response()** (3 connections) — `server/game/magic/spell_effect_flee.py`
+- **_flee_effect_room_error_response()** (3 connections) — `server/game/magic/spell_effect_flee.py`
+- **.get_room_by_id()** (3 connections) — `server/game/magic/spell_effects.py`
+- **test_run_flee_effect_invalid_target_type()** (3 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
+- **test_run_flee_effect_services_unavailable()** (3 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
+- **test_run_flee_effect_invalid_uuid()** (3 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
+- **test_run_flee_effect_not_in_combat()** (3 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
+- **test_run_flee_effect_room_error()** (3 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
+- **test_run_flee_effect_success_and_failure()** (3 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
+- **UUID** (2 connections)
+- **test_flee_effect_services_available()** (2 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
+- **test_flee_effect_validate_room_exits()** (2 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
+- **Flee spell effect: voluntary flee mechanics (success roll, lose-attack-on-fail,** (1 connections) — `server/game/magic/spell_effect_flee.py`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
-- [command parser rationale](command_parser_rationale.md) (8 shared connections)
-- [lucidity flux passive](lucidity_flux_passive.md) (6 shared connections)
-- [player room realtime](player_room_realtime.md) (2 shared connections)
+- [panels domPurifyClient chat](panels_domPurifyClient_chat.md) (13 shared connections)
+- [command factories exploration](command_factories_exploration.md) (3 shared connections)
+- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (2 shared connections)
+- [mythosApp useMythosAppState useStatsRoll](mythosApp_useMythosAppState_useStatsRoll.md) (2 shared connections)
+- [container persistence rationale](container_persistence_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- `server/game/magic/spell_effect_flee.py`
+- `server/game/magic/spell_effects.py`
+- `server/tests/unit/game/magic/test_spell_effect_flee.py`
 
 ## Audit Trail
 
-- EXTRACTED: 95 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 145 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

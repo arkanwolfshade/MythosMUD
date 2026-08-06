@@ -33,7 +33,9 @@
 
 ## Relationships
 
-- [Error Conversion](Error_Conversion.md) (7 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (4 shared connections)
+- [inventory mutation guard](inventory_mutation_guard.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
 
 ## Source Files
 

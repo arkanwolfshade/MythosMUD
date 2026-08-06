@@ -1,11 +1,12 @@
 # eventLog projectorRoom roomMergeUtils
 
-> 42 nodes
+> 44 nodes
 
 ## Key Concepts
 
 - **admin_shutdown_command.py** (35 connections) — `server/commands/admin_shutdown_command.py`
 - **Any** (20 connections)
+- **is_shutdown_pending()** (14 connections) — `server/commands/admin_shutdown_command.py`
 - **initiate_shutdown_countdown()** (13 connections) — `server/commands/admin_shutdown_command.py`
 - **handle_shutdown_command()** (13 connections) — `server/commands/admin_shutdown_command.py`
 - **cancel_shutdown_countdown()** (11 connections) — `server/commands/admin_shutdown_command.py`
@@ -27,24 +28,23 @@
 - **_get_shutdown_services()** (4 connections) — `server/commands/admin_shutdown_command.py`
 - **Task** (2 connections)
 - **Admin shutdown command for MythosMUD.  This module provides the /shutdown comman** (1 connections) — `server/commands/admin_shutdown_command.py`
-- **Validate that a player has admin permissions for server shutdown.      Args:** (1 connections) — `server/commands/admin_shutdown_command.py`
-- **Broadcast shutdown notification to all players.      Args:         connection_ma** (1 connections) — `server/commands/admin_shutdown_command.py`
-- *... and 17 more nodes in this community*
+- **Check if server shutdown is currently pending.      Args:         app: FastAPI a** (1 connections) — `server/commands/admin_shutdown_command.py`
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
 - [shutdown admin command](shutdown_admin_command.md) (22 shared connections)
-- [realtime real time](realtime_real_time.md) (4 shared connections)
+- [character creation service](character_creation_service.md) (4 shared connections)
+- [services ascii map](services_ascii_map.md) (4 shared connections)
+- [commands npc admin](commands_npc_admin.md) (3 shared connections)
 - [shutdown commands sequence](shutdown_commands_sequence.md) (3 shared connections)
-- [Error Conversion](Error_Conversion.md) (3 shared connections)
-- [alias storage rationale](alias_storage_rationale.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (3 shared connections)
+- [combat npc service](combat_npc_service.md) (3 shared connections)
 - [lucidity models rationale](lucidity_models_rationale.md) (2 shared connections)
 - [admin structured logging](admin_structured_logging.md) (2 shared connections)
-- [connection manager realtime](connection_manager_realtime.md) (2 shared connections)
-- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (1 shared connections)
-- [commands admin helpers](commands_admin_helpers.md) (1 shared connections)
-- [commands admin mute](commands_admin_mute.md) (1 shared connections)
-- [logout command commands](logout_command_commands.md) (1 shared connections)
+- [player requests schemas](player_requests_schemas.md) (2 shared connections)
+- [realtime maintenance connection](realtime_maintenance_connection.md) (2 shared connections)
+- [health realtime monitoring](health_realtime_monitoring.md) (1 shared connections)
 
 ## Source Files
 
@@ -52,7 +52,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 201 (100%)
+- EXTRACTED: 216 (100%)
 - INFERRED: 1 (0%)
 - AMBIGUOUS: 0 (0%)
 

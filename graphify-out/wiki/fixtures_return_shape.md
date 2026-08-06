@@ -33,11 +33,12 @@
 
 ## Relationships
 
-- [commands shutdown process](commands_shutdown_process.md) (8 shared connections)
 - [player requests schemas](player_requests_schemas.md) (8 shared connections)
-- [Error Conversion](Error_Conversion.md) (3 shared connections)
-- [player room realtime](player_room_realtime.md) (1 shared connections)
-- [persistence rationale players](persistence_rationale_players.md) (1 shared connections)
+- [player room realtime](player_room_realtime.md) (4 shared connections)
+- [manager subject services](manager_subject_services.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (3 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (2 shared connections)
+- [game weapon player](game_weapon_player.md) (1 shared connections)
 
 ## Source Files
 

@@ -35,11 +35,10 @@
 
 - [persistence combat handler](persistence_combat_handler.md) (8 shared connections)
 - [argon2 auth rationale](argon2_auth_rationale.md) (5 shared connections)
-- [alias storage rationale](alias_storage_rationale.md) (3 shared connections)
+- [commands npc admin](commands_npc_admin.md) (4 shared connections)
 - [commands who rationale](commands_who_rationale.md) (3 shared connections)
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
 - [connection realtime manager](connection_realtime_manager.md) (2 shared connections)
-- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (1 shared connections)
 - [command inventory factories](command_inventory_factories.md) (1 shared connections)
 
 ## Source Files

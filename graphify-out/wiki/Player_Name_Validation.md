@@ -1,12 +1,13 @@
 # Player Name Validation
 
-> 162 nodes
+> 164 nodes
 
 ## Key Concepts
 
 - **PlayerNameExtractor** (104 connections) — `server/realtime/player_name_utils.py`
 - **TestPlayerNameExtractor** (62 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
 - **Any** (14 connections)
+- **player_name_utils.py** (13 connections) — `server/realtime/player_name_utils.py`
 - **UUID** (8 connections)
 - **._validate_name_not_uuid()** (8 connections) — `server/realtime/player_name_utils.py`
 - **.extract_and_validate_player_name()** (8 connections) — `server/realtime/player_name_utils.py`
@@ -28,18 +29,18 @@
 - **.test_extract_player_name_user_exception()** (4 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
 - **.__init__()** (3 connections) — `server/realtime/player_name_utils.py`
 - **._check_uuid_pattern_match()** (3 connections) — `server/realtime/player_name_utils.py`
-- **.test_init()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- *... and 137 more nodes in this community*
+- *... and 139 more nodes in this community*
 
 ## Relationships
 
-- [profession models rationale](profession_models_rationale.md) (14 shared connections)
-- [command utility models](command_utility_models.md) (5 shared connections)
-- [logging processors structured](logging_processors_structured.md) (3 shared connections)
-- [message nats handler](message_nats_handler.md) (2 shared connections)
+- [inventory mutation guard](inventory_mutation_guard.md) (8 shared connections)
+- [profession models rationale](profession_models_rationale.md) (8 shared connections)
+- [command utility models](command_utility_models.md) (7 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (3 shared connections)
+- [room realtime rationale](room_realtime_rationale.md) (3 shared connections)
 - [schemas players profession](schemas_players_profession.md) (2 shared connections)
-- [Error Conversion](Error_Conversion.md) (1 shared connections)
-- [room sync service](room_sync_service.md) (1 shared connections)
+- [skill service game](skill_service_game.md) (2 shared connections)
+- [command models moderation](command_models_moderation.md) (1 shared connections)
 
 ## Source Files
 
@@ -48,7 +49,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 533 (98%)
+- EXTRACTED: 547 (98%)
 - INFERRED: 9 (2%)
 - AMBIGUOUS: 0 (0%)
 

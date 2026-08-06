@@ -2,7 +2,7 @@
 
 > God node · 240 connections · `server/models/player.py`
 
-**Community:** [persistence rationale players](persistence_rationale_players.md)
+**Community:** [game weapon player](game_weapon_player.md)
 
 ## Connections by Relation
 

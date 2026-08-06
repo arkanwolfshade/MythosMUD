@@ -1,41 +1,41 @@
 # fixtures mock helpers
 
-> 14 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **handle_new_game_session()** (11 connections) — `server/api/real_time.py`
-- **_ensure_connection_manager()** (10 connections) — `server/api/real_time.py`
-- **get_player_connections()** (9 connections) — `server/api/real_time.py`
-- **get_connection_statistics()** (7 connections) — `server/api/real_time.py`
-- **Request** (4 connections)
-- **test_ensure_connection_manager_missing()** (3 connections) — `server/tests/unit/api/test_real_time_helpers.py`
-- **test_handle_new_game_session_missing_session_id()** (3 connections) — `server/tests/unit/api/test_real_time_helpers.py`
-- **test_handle_new_game_session_invalid_json()** (3 connections) — `server/tests/unit/api/test_real_time_helpers.py`
-- **test_get_player_connections()** (2 connections) — `server/tests/unit/api/test_real_time_helpers.py`
-- **test_handle_new_game_session()** (2 connections) — `server/tests/unit/api/test_real_time_helpers.py`
-- **Ensure connection manager is available.     Raises LoggedHTTPException with prop** (1 connections) — `server/api/real_time.py`
-- **Get connection information for a player.     Returns detailed connection metadat** (1 connections) — `server/api/real_time.py`
-- **Handle a new game session for a player.     This will disconnect existing connec** (1 connections) — `server/api/real_time.py`
-- **Get comprehensive connection statistics.     Returns detailed statistics about a** (1 connections) — `server/api/real_time.py`
+- **handle_time_command()** (13 connections) — `server/commands/time_commands.py`
+- **test_time_commands.py** (8 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **test_handle_time_command_success()** (3 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **test_handle_time_command_with_holidays()** (3 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **test_handle_time_command_no_holidays()** (3 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **test_handle_time_command_holiday_service_error()** (3 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **test_handle_time_command_no_holiday_service()** (3 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **Any** (1 connections)
+- **Handle the time command, exposing the current Mythos time and active holidays.** (1 connections) — `server/commands/time_commands.py`
+- **Unit tests for time command handlers.  Tests the time command functionality.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **Test handle_time_command() returns time information.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **Test handle_time_command() includes active holidays.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **Test handle_time_command() handles no active holidays.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **Test handle_time_command() handles holiday service errors.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **Test handle_time_command() handles missing holiday service.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
 
 ## Relationships
 
-- [nats services metrics](nats_services_metrics.md) (8 shared connections)
-- [services inventory mutation](services_inventory_mutation.md) (5 shared connections)
-- [schedule services service](schedule_services_service.md) (5 shared connections)
-- [cleanup combat handler](cleanup_combat_handler.md) (5 shared connections)
-- [Error Conversion](Error_Conversion.md) (3 shared connections)
+- [combat models rationale](combat_models_rationale.md) (3 shared connections)
+- [commands npc admin](commands_npc_admin.md) (1 shared connections)
+- [shutdown admin command](shutdown_admin_command.md) (1 shared connections)
+- [commands who rationale](commands_who_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/real_time.py`
-- `server/tests/unit/api/test_real_time_helpers.py`
+- `server/commands/time_commands.py`
+- `server/tests/unit/commands/test_time_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 55 (95%)
-- INFERRED: 3 (5%)
+- EXTRACTED: 43 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

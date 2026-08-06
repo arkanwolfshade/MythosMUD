@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_stop_processing_not_running()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Test _stop_processing() when not running.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_execute_applicable_rules_no_handler()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test execute_applicable_rules() returns False when no handler.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [event bus events](event_bus_events.md) (1 shared connections)
+- [npc lifecycle combat](npc_lifecycle_combat.md) (1 shared connections)
+- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/events/test_event_bus.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

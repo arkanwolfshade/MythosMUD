@@ -1,52 +1,62 @@
 # message nats handler
 
-> 44 nodes
+> 53 nodes
 
 ## Key Concepts
 
-- **PlayerRoomEventHandler** (30 connections) — `server/realtime/player_event_handlers_room.py`
-- **UUID** (12 connections)
-- **Any** (10 connections)
-- **.handle_player_entered()** (9 connections) — `server/realtime/player_event_handlers_room.py`
-- **.__init__()** (7 connections) — `server/realtime/player_event_handlers_room.py`
-- **.send_occupants_snapshot_to_player()** (7 connections) — `server/realtime/player_event_handlers_room.py`
-- **.send_room_updates_to_entering_player()** (7 connections) — `server/realtime/player_event_handlers_room.py`
-- **.handle_player_left()** (7 connections) — `server/realtime/player_event_handlers_room.py`
-- **._prepare_room_data()** (6 connections) — `server/realtime/player_event_handlers_room.py`
-- **.send_room_update_to_player()** (6 connections) — `server/realtime/player_event_handlers_room.py`
-- **.log_player_movement()** (5 connections) — `server/realtime/player_event_handlers_room.py`
-- **._send_room_name_message()** (5 connections) — `server/realtime/player_event_handlers_room.py`
-- **._log_occupants_info()** (5 connections) — `server/realtime/player_event_handlers_room.py`
-- **.query_room_occupants_snapshot()** (5 connections) — `server/realtime/player_event_handlers_room.py`
-- **.send_room_state_to_player()** (5 connections) — `server/realtime/player_event_handlers_room.py`
-- **.get_room_state_event()** (5 connections) — `server/realtime/player_event_handlers_room.py`
-- **.broadcast_player_entered_message()** (4 connections) — `server/realtime/player_event_handlers_room.py`
-- **.subscribe_player_to_room()** (4 connections) — `server/realtime/player_event_handlers_room.py`
-- **.build_room_occupants_message()** (4 connections) — `server/realtime/player_event_handlers_room.py`
-- **._process_player_entered_event()** (4 connections) — `server/realtime/player_event_handlers_room.py`
-- **.unsubscribe_player_from_room()** (4 connections) — `server/realtime/player_event_handlers_room.py`
-- **.broadcast_player_left_message()** (4 connections) — `server/realtime/player_event_handlers_room.py`
-- **player_room_event_handler()** (3 connections) — `server/tests/unit/realtime/conftest.py`
-- **Handles room-related player events (entered, left, occupants).** (1 connections) — `server/realtime/player_event_handlers_room.py`
-- **Initialize room event handler.          Args:             connection_manager: Co** (1 connections) — `server/realtime/player_event_handlers_room.py`
-- *... and 19 more nodes in this community*
+- **test_combat_death_handler.py** (30 connections) — `server/tests/unit/services/test_combat_death_handler.py`
+- **CombatDeathHandler** (20 connections) — `server/services/combat_death_handler.py`
+- **.connection_manager()** (15 connections) — `server/services/combat_messaging/base.py`
+- **._create_corpse_on_death()** (9 connections) — `server/services/combat_death_handler.py`
+- **._log_room_subscribers_before_npc_death()** (8 connections) — `server/services/combat_death_handler.py`
+- **._publish_npc_death_event()** (8 connections) — `server/services/combat_death_handler.py`
+- **._handle_npc_death()** (8 connections) — `server/services/combat_death_handler.py`
+- **._handle_player_death_events()** (7 connections) — `server/services/combat_death_handler.py`
+- **.handle_target_state_changes()** (6 connections) — `server/services/combat_death_handler.py`
+- **.check_connection_state()** (5 connections) — `server/services/combat_cleanup_handler.py`
+- **._resolve_connection_manager_for_corpse_creation()** (5 connections) — `server/services/combat_death_handler.py`
+- **.canonical_room_id()** (3 connections) — `server/services/combat_death_handler.py`
+- **.publish_npc_died_event_to_nats()** (3 connections) — `server/services/combat_death_handler.py`
+- **.__init__()** (3 connections) — `server/services/combat_death_handler.py`
+- **handler()** (2 connections) — `server/tests/unit/services/test_combat_death_handler.py`
+- **combat()** (2 connections) — `server/tests/unit/services/test_combat_death_handler.py`
+- **player_target()** (2 connections) — `server/tests/unit/services/test_combat_death_handler.py`
+- **npc_target()** (2 connections) — `server/tests/unit/services/test_combat_death_handler.py`
+- **Check connection state before publishing combat ended event.** (1 connections) — `server/services/combat_cleanup_handler.py`
+- **Return canonical room id when available.** (1 connections) — `server/services/combat_death_handler.py`
+- **Publish NPCDiedEvent to NATS.** (1 connections) — `server/services/combat_death_handler.py`
+- **Handles combat death events and state changes.** (1 connections) — `server/services/combat_death_handler.py`
+- **Initialize the death handler.          Args:             combat_service: Refe** (1 connections) — `server/services/combat_death_handler.py`
+- **Return connection manager from CombatService getter when exposed.** (1 connections) — `server/services/combat_death_handler.py`
+- **Handle player death events including mortally wounded, death, and corpse creatio** (1 connections) — `server/services/combat_death_handler.py`
+- *... and 28 more nodes in this community*
 
 ## Relationships
 
-- [profession models rationale](profession_models_rationale.md) (14 shared connections)
-- [Player Name Validation](Player_Name_Validation.md) (2 shared connections)
-- [party service game](party_service_game.md) (2 shared connections)
-- [combat services messaging](combat_services_messaging.md) (1 shared connections)
+- [Memory Task Runtime](Memory_Task_Runtime.md) (13 shared connections)
+- [Item Instances](Item_Instances.md) (9 shared connections)
+- [command factories exploration](command_factories_exploration.md) (8 shared connections)
+- [game chat service](game_chat_service.md) (6 shared connections)
+- [nats services service](nats_services_service.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (3 shared connections)
+- [correct patterns examples](correct_patterns_examples.md) (2 shared connections)
+- [Game Terminal UI](Game_Terminal_UI.md) (2 shared connections)
+- [player event realtime](player_event_realtime.md) (2 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (1 shared connections)
+- [npc database infrastructure](npc_database_infrastructure.md) (1 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/player_event_handlers_room.py`
-- `server/tests/unit/realtime/conftest.py`
+- `server/services/combat_cleanup_handler.py`
+- `server/services/combat_death_handler.py`
+- `server/services/combat_messaging/base.py`
+- `server/tests/unit/services/test_combat_death_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 174 (97%)
-- INFERRED: 5 (3%)
+- EXTRACTED: 147 (85%)
+- INFERRED: 26 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,57 +1,67 @@
 # game weapon player
 
-> 27 nodes
+> 130 nodes
 
 ## Key Concepts
 
-- **._build_player_attacked_event()** (8 connections) — `server/npc/combat_integration.py`
-- **UUID** (7 connections)
-- **._compute_dp_update_fields()** (6 connections) — `server/npc/combat_integration.py`
-- **._get_combat_event_publisher()** (6 connections) — `server/npc/combat_integration.py`
-- **._calculate_max_dp()** (6 connections) — `server/npc/combat_integration.py`
-- **._publish_player_dp_updated_after_npc_damage()** (5 connections) — `server/npc/combat_integration.py`
-- **._publish_player_dp_updated_event()** (5 connections) — `server/npc/combat_integration.py`
-- **._publish_npc_attack_to_nats()** (5 connections) — `server/npc/combat_integration.py`
-- **._get_int_stat()** (5 connections) — `server/npc/combat_integration.py`
-- **._get_player_for_dp_update()** (4 connections) — `server/npc/combat_integration.py`
-- **._get_player_and_stats_for_nats()** (4 connections) — `server/npc/combat_integration.py`
-- **.handle_npc_death()** (4 connections) — `server/npc/combat_integration.py`
-- **._get_player_combat_stats()** (4 connections) — `server/npc/combat_integration.py`
-- **.get_stats()** (3 connections) — `server/npc/npc_base.py`
-- **Publish PlayerDPUpdated so the client's health/DP bar updates after NPC damage.** (1 connections) — `server/npc/combat_integration.py`
-- **Resolve the player and UUID needed for DP update events.** (1 connections) — `server/npc/combat_integration.py`
-- **Compute old_dp, new_dp, and max_dp values for PlayerDPUpdated.** (1 connections) — `server/npc/combat_integration.py`
-- **Publish the PlayerDPUpdated event to the event bus.** (1 connections) — `server/npc/combat_integration.py`
-- **Publish NPC-on-player attack as player_attacked to NATS so the client receives i** (1 connections) — `server/npc/combat_integration.py`
-- **Resolve the combat event publisher used to send PlayerAttacked events to NATS.** (1 connections) — `server/npc/combat_integration.py`
-- **Resolve target UUID, player object, and stats needed for NATS attack event.** (1 connections) — `server/npc/combat_integration.py`
-- **Construct the PlayerAttackedEvent payload for NATS publication.** (1 connections) — `server/npc/combat_integration.py`
-- **Handle NPC death and related effects.          Args:             npc_id: ID of t** (1 connections) — `server/npc/combat_integration.py`
-- **Return an integer stat from stats[key], handling common primitive types.** (1 connections) — `server/npc/combat_integration.py`
-- **Calculate max_dp from stats with fallbacks.** (1 connections) — `server/npc/combat_integration.py`
-- *... and 2 more nodes in this community*
+- **Player** (240 connections) — `server/models/player.py`
+- **HealthRepository** (31 connections) — `server/persistence/repositories/health_repository.py`
+- **test_health_repository.py** (19 connections) — `server/tests/unit/persistence/repositories/test_health_repository.py`
+- **health_repository.py** (17 connections) — `server/persistence/repositories/health_repository.py`
+- **.get_stats()** (13 connections) — `server/models/player.py`
+- **test_inventory_commands_persistence_helpers.py** (12 connections) — `server/tests/unit/commands/test_inventory_commands_persistence_helpers.py`
+- **.update_player_health()** (8 connections) — `server/persistence/repositories/health_repository.py`
+- **.respawn_player_from_delirium_by_user_id()** (7 connections) — `server/game/player_respawn_wrapper.py`
+- **._damage_player_inner()** (7 connections) — `server/persistence/repositories/health_repository.py`
+- **test_health_repository_cold_resistance.py** (7 connections) — `server/tests/unit/persistence/test_health_repository_cold_resistance.py`
+- **.set_stats()** (6 connections) — `server/models/player.py`
+- **_stats_int()** (6 connections) — `server/persistence/repositories/health_repository.py`
+- **Player** (6 connections)
+- **._heal_player_inner()** (6 connections) — `server/persistence/repositories/health_repository.py`
+- **.apply_dp_decay()** (5 connections) — `server/models/player.py`
+- **.restore_to_full_health()** (5 connections) — `server/models/player.py`
+- **.apply_dp_change()** (5 connections) — `server/models/player.py`
+- **._log_damage_error()** (5 connections) — `server/persistence/repositories/health_repository.py`
+- **._update_player_health_inner()** (5 connections) — `server/persistence/repositories/health_repository.py`
+- **.damage_player()** (5 connections) — `server/persistence/repositories/health_repository.py`
+- **quest_seed_data()** (5 connections) — `server/tests/integration/test_quest_flow.py`
+- **.is_alive()** (4 connections) — `server/models/player.py`
+- **.is_mortally_wounded()** (4 connections) — `server/models/player.py`
+- **.is_dead()** (4 connections) — `server/models/player.py`
+- **.get_health_state()** (4 connections) — `server/models/player.py`
+- *... and 105 more nodes in this community*
 
 ## Relationships
 
-- [services nats service](services_nats_service.md) (12 shared connections)
-- [add used user](add_used_user.md) (3 shared connections)
-- [Memory Task Runtime](Memory_Task_Runtime.md) (2 shared connections)
-- [Error Conversion](Error_Conversion.md) (1 shared connections)
-- [profession models rationale](profession_models_rationale.md) (1 shared connections)
-- [tools generate invite](tools_generate_invite.md) (1 shared connections)
-- [shutdown admin command](shutdown_admin_command.md) (1 shared connections)
-- [combat models rationale](combat_models_rationale.md) (1 shared connections)
-- [lucidity event services](lucidity_event_services.md) (1 shared connections)
+- [player room realtime](player_room_realtime.md) (45 shared connections)
+- [npc spawn validator](npc_spawn_validator.md) (43 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (22 shared connections)
+- [database helpers infrastructure](database_helpers_infrastructure.md) (14 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (13 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (11 shared connections)
+- [level curve game](level_curve_game.md) (9 shared connections)
+- [add used user](add_used_user.md) (8 shared connections)
+- [player service game](player_service_game.md) (8 shared connections)
+- [player cache rationale](player_cache_rationale.md) (7 shared connections)
+- [room renderer functions](room_renderer_functions.md) (5 shared connections)
+- [realtime websocket initial](realtime_websocket_initial.md) (5 shared connections)
 
 ## Source Files
 
-- `server/npc/combat_integration.py`
-- `server/npc/npc_base.py`
+- `server/game/player_respawn_wrapper.py`
+- `server/models/player.py`
+- `server/persistence/repositories/health_repository.py`
+- `server/tests/integration/test_quest_flow.py`
+- `server/tests/unit/commands/test_inventory_commands_persistence_helpers.py`
+- `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- `server/tests/unit/persistence/repositories/test_health_repository.py`
+- `server/tests/unit/persistence/test_health_repository_cold_resistance.py`
+- `server/tests/unit/services/test_player_respawn_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 81 (95%)
-- INFERRED: 4 (5%)
+- EXTRACTED: 488 (78%)
+- INFERRED: 140 (22%)
 - AMBIGUOUS: 0 (0%)
 
 ---

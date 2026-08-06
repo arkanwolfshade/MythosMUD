@@ -1,6 +1,6 @@
 # Loot Generation
 
-> 246 nodes
+> 238 nodes
 
 ## Key Concepts
 
@@ -12,7 +12,6 @@
 - **ServerComponent** (23 connections) — `server/models/health.py`
 - **monitoring_models.py** (22 connections) — `server/api/monitoring_models.py`
 - **ConnectionsComponent** (22 connections) — `server/models/health.py`
-- **MovementMonitor** (21 connections) — `server/game/movement_monitor.py`
 - **HealthComponents** (21 connections) — `server/models/health.py`
 - **health_service.py** (20 connections) — `server/services/health_service.py`
 - **Request** (19 connections)
@@ -29,22 +28,23 @@
 - **_request_with_container()** (11 connections) — `server/tests/unit/api/test_monitoring_endpoints.py`
 - **get_memory_stats()** (10 connections) — `server/api/monitoring.py`
 - **_resolve_memory_leak_collector()** (10 connections) — `server/api/monitoring.py`
-- *... and 221 more nodes in this community*
+- **HealthErrorResponse** (10 connections) — `server/models/health.py`
+- *... and 213 more nodes in this community*
 
 ## Relationships
 
-- [Magic Spell Service](Magic_Spell_Service.md) (22 shared connections)
 - [services inventory mutation](services_inventory_mutation.md) (19 shared connections)
+- [nats exceptions services](nats_exceptions_services.md) (14 shared connections)
 - [uuid npc combat](uuid_npc_combat.md) (14 shared connections)
-- [Error Conversion](Error_Conversion.md) (12 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (10 shared connections)
-- [services rescue service](services_rescue_service.md) (9 shared connections)
-- [nats exceptions services](nats_exceptions_services.md) (7 shared connections)
-- [add used user](add_used_user.md) (7 shared connections)
-- [memory profiler rationale](memory_profiler_rationale.md) (5 shared connections)
-- [lucidity npc combat](lucidity_npc_combat.md) (4 shared connections)
-- [follow service game](follow_service_game.md) (2 shared connections)
-- [player event handlers](player_event_handlers.md) (2 shared connections)
+- [services chat logger](services_chat_logger.md) (13 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (12 shared connections)
+- [command inventory models](command_inventory_models.md) (7 shared connections)
+- [memory profiler rationale](memory_profiler_rationale.md) (6 shared connections)
+- [metrics memory leak](metrics_memory_leak.md) (5 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (5 shared connections)
+- [player room realtime](player_room_realtime.md) (4 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (3 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (3 shared connections)
 
 ## Source Files
 
@@ -55,13 +55,13 @@
 - `server/realtime/connection_manager.py`
 - `server/services/health_service.py`
 - `server/tests/unit/api/test_monitoring_endpoints.py`
-- `server/tests/unit/game/test_movement_monitor.py`
 - `server/tests/unit/models/test_health.py`
 - `server/tests/unit/services/test_health_service.py`
+- `server/utils/memory_profiler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1112 (99%)
+- EXTRACTED: 1082 (99%)
 - INFERRED: 16 (1%)
 - AMBIGUOUS: 0 (0%)
 

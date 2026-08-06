@@ -1,6 +1,6 @@
 # npc aggressive mob
 
-> 49 nodes
+> 51 nodes
 
 ## Key Concepts
 
@@ -16,6 +16,7 @@
 - **._get_current_memory_usage()** (3 connections) — `server/app/memory_cleanup_service.py`
 - **._get_active_task_count()** (3 connections) — `server/app/memory_cleanup_service.py`
 - **._flush_memory_indexes_cache()** (3 connections) — `server/app/memory_cleanup_service.py`
+- **.__init__()** (3 connections) — `server/app/memory_lifespan_coordinator.py`
 - **monitor()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
 - **test_get_current_memory_usage_success()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
 - **test_get_current_memory_usage_failure()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
@@ -28,22 +29,23 @@
 - **test_managed_task_cleanup_success()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
 - **test_managed_task_cleanup_timeout()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
 - **test_managed_task_cleanup_execution_failure()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
-- **Any** (1 connections)
-- *... and 24 more nodes in this community*
+- *... and 26 more nodes in this community*
 
 ## Relationships
 
-- [Error Conversion](Error_Conversion.md) (7 shared connections)
-- [dialogue definitions admin](dialogue_definitions_admin.md) (1 shared connections)
+- [schemas player rationale](schemas_player_rationale.md) (5 shared connections)
+- [dialogue definitions admin](dialogue_definitions_admin.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
 
 ## Source Files
 
 - `server/app/memory_cleanup_service.py`
+- `server/app/memory_lifespan_coordinator.py`
 - `server/tests/unit/app/test_memory_cleanup_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 148 (99%)
+- EXTRACTED: 152 (99%)
 - INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 

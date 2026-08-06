@@ -1,6 +1,6 @@
 # NPC Definitions Admin
 
-> 66 nodes
+> 205 nodes
 
 ## Key Concepts
 
@@ -9,11 +9,13 @@
 - **get_container()** (41 connections) — `server/dependencies.py`
 - **RuntimeError** (37 connections)
 - **Request** (29 connections)
+- **test_dependency_injection.py** (18 connections) — `server/tests/unit/test_dependency_injection.py`
 - **get_player_service()** (12 connections) — `server/dependencies.py`
 - **get_room_service()** (12 connections) — `server/dependencies.py`
+- **get_connection_manager()** (10 connections) — `server/dependencies.py`
+- **get_async_persistence()** (10 connections) — `server/dependencies.py`
 - **get_combat_service()** (10 connections) — `server/dependencies.py`
-- **get_connection_manager()** (9 connections) — `server/dependencies.py`
-- **get_async_persistence()** (9 connections) — `server/dependencies.py`
+- **get_player_service_for_testing()** (9 connections) — `server/dependencies.py`
 - **get_player_respawn_service()** (9 connections) — `server/dependencies.py`
 - **get_player_combat_service()** (9 connections) — `server/dependencies.py`
 - **get_player_death_service()** (9 connections) — `server/dependencies.py`
@@ -27,35 +29,33 @@
 - **get_npc_spawning_service()** (9 connections) — `server/dependencies.py`
 - **get_npc_population_controller()** (9 connections) — `server/dependencies.py`
 - **get_catatonia_registry()** (9 connections) — `server/dependencies.py`
-- **get_passive_lucidity_flux_service()** (9 connections) — `server/dependencies.py`
-- **get_mythos_time_consumer()** (9 connections) — `server/dependencies.py`
-- *... and 41 more nodes in this community*
+- *... and 180 more nodes in this community*
 
 ## Relationships
 
-- [room infrastructure persistence](room_infrastructure_persistence.md) (32 shared connections)
-- [infrastructure persistence room](infrastructure_persistence_room.md) (24 shared connections)
-- [persistence container extended](persistence_container_extended.md) (17 shared connections)
-- [Error Conversion](Error_Conversion.md) (12 shared connections)
-- [room cache infrastructure](room_cache_infrastructure.md) (12 shared connections)
-- [persistence core infrastructure](persistence_core_infrastructure.md) (10 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (6 shared connections)
-- [commands admin helpers](commands_admin_helpers.md) (5 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (4 shared connections)
-- [persistence container rationale](persistence_container_rationale.md) (4 shared connections)
+- [Player Stats](Player_Stats.md) (30 shared connections)
+- [maps handle ascii](maps_handle_ascii.md) (12 shared connections)
+- [System Metrics](System_Metrics.md) (10 shared connections)
+- [Error Conversion](Error_Conversion.md) (8 shared connections)
+- [persistence core infrastructure](persistence_core_infrastructure.md) (7 shared connections)
+- [container persistence rationale](container_persistence_rationale.md) (7 shared connections)
+- [npc aggressive mob](npc_aggressive_mob.md) (6 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (5 shared connections)
+- [Exception Containers](Exception_Containers.md) (4 shared connections)
 - [nats services service](nats_services_service.md) (4 shared connections)
-- [conftest eslint config](conftest_eslint_config.md) (4 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (4 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (4 shared connections)
 
 ## Source Files
 
-- `server/database.py`
 - `server/dependencies.py`
 - `server/tests/unit/infrastructure/test_dependencies.py`
+- `server/tests/unit/test_dependency_injection.py`
 
 ## Audit Trail
 
-- EXTRACTED: 458 (85%)
-- INFERRED: 82 (15%)
+- EXTRACTED: 789 (87%)
+- INFERRED: 114 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

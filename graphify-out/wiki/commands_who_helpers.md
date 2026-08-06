@@ -34,9 +34,10 @@
 ## Relationships
 
 - [dialogue definition persistence](dialogue_definition_persistence.md) (13 shared connections)
-- [command inventory factories](command_inventory_factories.md) (8 shared connections)
-- [add used user](add_used_user.md) (8 shared connections)
+- [command inventory models](command_inventory_models.md) (8 shared connections)
+- [command inventory factories](command_inventory_factories.md) (4 shared connections)
 - [Security Validator Tests](Security_Validator_Tests.md) (4 shared connections)
+- [admin command setstat](admin_command_setstat.md) (4 shared connections)
 
 ## Source Files
 

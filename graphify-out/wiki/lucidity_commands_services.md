@@ -1,32 +1,35 @@
 # lucidity commands services
 
-> 10 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **TestCheckAllCommandBlocks** (6 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_all_command_blocks_catatonia()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_all_command_blocks_grace_period()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_all_command_blocks_casting()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_all_command_blocks_no_blocks()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _check_all_command_blocks function.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _check_all_command_blocks returns block result for catatonia.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _check_all_command_blocks returns block result for grace period.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _check_all_command_blocks returns block result for casting.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _check_all_command_blocks returns None when no blocks.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **chat_moderation.py** (11 connections) — `server/game/chat_moderation.py`
+- **PlayerServiceProtocol** (5 connections) — `server/game/chat_moderation.py`
+- **._format_mute_duration()** (4 connections) — `server/game/chat_moderation.py`
+- **Protocol** (2 connections)
+- **datetime** (2 connections)
+- **Chat moderation utilities.  This module provides moderation functionality includ** (1 connections) — `server/game/chat_moderation.py`
+- **Protocol for player service.** (1 connections) — `server/game/chat_moderation.py`
+- **Format mute duration text with remaining time or expiration status.** (1 connections) — `server/game/chat_moderation.py`
 
 ## Relationships
 
-- [player model models](player_model_models.md) (4 shared connections)
-- [command validation commands](command_validation_commands.md) (1 shared connections)
+- [chat moderation game](chat_moderation_game.md) (4 shared connections)
+- [player persistence repository](player_persistence_repository.md) (2 shared connections)
+- [combat services service](combat_services_service.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [chat game message](chat_game_message.md) (1 shared connections)
+- [eventLog eventStore projector](eventLog_eventStore_projector.md) (1 shared connections)
+- [startup services npc](startup_services_npc.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_validation.py`
+- `server/game/chat_moderation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (100%)
+- EXTRACTED: 27 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

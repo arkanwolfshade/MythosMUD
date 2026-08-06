@@ -1,31 +1,25 @@
 # schemas items item
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **__init__.py** (8 connections) — `server/time/__init__.py`
-- **MythosCalendarComponents** (4 connections) — `server/time/time_service.py`
-- **Time management package for MythosMUD.  This package provides time-related servi** (1 connections) — `server/time/__init__.py`
-- **Structured view of the accelerated calendar for downstream systems.** (1 connections) — `server/time/time_service.py`
+- **test_unsubscribe_all_for_service_partial_cleanup()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test EventBus.unsubscribe_all_for_service() only removes tracked handlers.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- [Error Conversion](Error_Conversion.md) (3 shared connections)
-- [time service rationale](time_service_rationale.md) (2 shared connections)
-- [rate limiter services](rate_limiter_services.md) (1 shared connections)
-- [player event handlers](player_event_handlers.md) (1 shared connections)
-- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (1 shared connections)
+- [event bus events](event_bus_events.md) (1 shared connections)
+- [room conftest toolkit](room_conftest_toolkit.md) (1 shared connections)
 
 ## Source Files
 
-- `server/time/__init__.py`
-- `server/time/time_service.py`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

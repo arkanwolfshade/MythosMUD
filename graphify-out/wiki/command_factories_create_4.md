@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_add_room_drop_new_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **Test add_room_drop() adds drop to new room.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **test_evaluate_boolean_condition_variable_false()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test _evaluate_boolean_condition() returns False for missing variable.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [room subscription manager](room_subscription_manager.md) (1 shared connections)
+- [npc lifecycle combat](npc_lifecycle_combat.md) (1 shared connections)
+- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

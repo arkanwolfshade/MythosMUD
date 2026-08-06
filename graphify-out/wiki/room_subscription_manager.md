@@ -1,31 +1,39 @@
 # room subscription manager
 
-> 8 nodes
+> 52 nodes
 
 ## Key Concepts
 
 - **test_room_subscription_manager.py** (28 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **subscription_manager()** (3 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_room_subscription_manager_init()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_set_async_persistence()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
 - **test_subscribe_to_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_subscribe_to_room_multiple_players()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_unsubscribe_from_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_unsubscribe_from_room_not_subscribed()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_unsubscribe_from_room_removes_empty_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_subscribe_to_room_error()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_unsubscribe_from_room_error()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_get_room_subscribers()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_get_room_subscribers_empty()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_get_room_subscribers_error()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_add_room_occupant()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
 - **test_add_room_occupant_multiple()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_add_room_occupant_new_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_add_room_occupant_existing_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_remove_room_occupant()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_remove_room_occupant_not_occupant()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_remove_room_occupant_removes_empty_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_add_room_occupant_error_handling()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_remove_room_occupant_error_handling()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
 - **test_get_room_occupants()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **Unit tests for room subscription manager.  Tests the RoomSubscriptionManager cla** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **Test subscribe_to_room() subscribes player to room.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **Test add_room_occupant() with multiple occupants.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **Test get_room_occupants() returns occupants.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_get_room_occupants_empty()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- *... and 27 more nodes in this community*
 
 ## Relationships
 
-- [npc behavior engine](npc_behavior_engine.md) (14 shared connections)
-- [Error Conversion](Error_Conversion.md) (1 shared connections)
-- [connection disconnection realtime](connection_disconnection_realtime.md) (1 shared connections)
-- [subscription_manager](subscription_manager.md) (1 shared connections)
-- [test_connection_manager_setter](test_connection_manager_setter.md) (1 shared connections)
-- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
-- [test_occupant_formatter_process_dict_occupant_for_update_fallback_name](test_occupant_formatter_process_dict_occupant_for_update_fallback_name.md) (1 shared connections)
-- [test_unsubscribe_from_subzone_decrease_count](test_unsubscribe_from_subzone_decrease_count.md) (1 shared connections)
-- [test_occupant_formatter_process_string_occupant_for_update_uuid](test_occupant_formatter_process_string_occupant_for_update_uuid.md) (1 shared connections)
-- [test_send_dp_decay_message](test_send_dp_decay_message.md) (1 shared connections)
-- [test_occupant_formatter_separate_occupants_by_type_none](test_occupant_formatter_separate_occupants_by_type_none.md) (1 shared connections)
+- [command player state](command_player_state.md) (3 shared connections)
 
 ## Source Files
 
@@ -33,7 +41,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 38 (100%)
+- EXTRACTED: 105 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

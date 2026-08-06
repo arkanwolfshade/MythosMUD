@@ -19,8 +19,8 @@
 
 ## Relationships
 
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
-- [tools generate invite](tools_generate_invite.md) (1 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [circuit breaker realtime](circuit_breaker_realtime.md) (1 shared connections)
 
 ## Source Files
 

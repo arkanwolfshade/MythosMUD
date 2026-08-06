@@ -1,11 +1,13 @@
 # message queue realtime
 
-> 33 nodes
+> 37 nodes
 
 ## Key Concepts
 
 - **test_combat_persistence_handler_persistence.py** (21 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
 - **persistence_handler()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **test_persist_player_dp_sync_get_stats_error()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **test_persist_player_dp_sync_get_stats_error_new()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
 - **mock_combat_service()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
 - **test_verify_player_save_success()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
 - **test_verify_player_save_player_not_found()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
@@ -27,14 +29,12 @@
 - **Test _verify_player_save verifies player save successfully.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
 - **Test _verify_player_save handles player not found.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
 - **Test _persist_player_dp_sync persists DP successfully.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
-- **Test _persist_player_dp_sync handles no persistence layer.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
-- **Test _persist_player_dp_sync handles player not found.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
-- *... and 8 more nodes in this community*
+- *... and 12 more nodes in this community*
 
 ## Relationships
 
 - [game chat service](game_chat_service.md) (3 shared connections)
-- [room sync service](room_sync_service.md) (2 shared connections)
+- [command models moderation](command_models_moderation.md) (2 shared connections)
 
 ## Source Files
 
@@ -42,8 +42,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 69 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 75 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

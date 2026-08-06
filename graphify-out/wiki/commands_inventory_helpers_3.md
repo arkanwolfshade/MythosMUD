@@ -1,12 +1,11 @@
 # commands inventory helpers
 
-> 58 nodes
+> 60 nodes
 
 ## Key Concepts
 
 - **test_party_service.py** (38 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_party_post_init_includes_leader_in_members()** (3 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_party_post_init_preserves_other_members()** (3 connections) — `server/tests/unit/game/test_party_service.py`
+- **party_service()** (3 connections) — `server/tests/unit/game/test_party_service.py`
 - **test_create_party_success()** (2 connections) — `server/tests/unit/game/test_party_service.py`
 - **test_create_party_already_in_party_rejected()** (2 connections) — `server/tests/unit/game/test_party_service.py`
 - **test_add_member_success()** (2 connections) — `server/tests/unit/game/test_party_service.py`
@@ -28,16 +27,15 @@
 - **test_get_party_members_empty_when_not_in_party()** (2 connections) — `server/tests/unit/game/test_party_service.py`
 - **test_get_party_members_includes_self()** (2 connections) — `server/tests/unit/game/test_party_service.py`
 - **test_is_leader_false_when_not_in_party()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_is_leader_false_when_member()** (2 connections) — `server/tests/unit/game/test_party_service.py`
 - **test_on_player_disconnect_member_removed()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- *... and 33 more nodes in this community*
+- *... and 35 more nodes in this community*
 
 ## Relationships
 
-- [Error Conversion](Error_Conversion.md) (4 shared connections)
-- [skill game service](skill_game_service.md) (3 shared connections)
-- [player room event](player_room_event.md) (2 shared connections)
-- [archive MODERNIZATION PLAN](archive_MODERNIZATION_PLAN.md) (1 shared connections)
-- [archive 2025 AUDIT](archive_2025_AUDIT.md) (1 shared connections)
+- [message handler factory](message_handler_factory.md) (4 shared connections)
+- [validator room toolkit](validator_room_toolkit.md) (3 shared connections)
+- [party game service](party_game_service.md) (2 shared connections)
 
 ## Source Files
 
@@ -45,7 +43,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 125 (100%)
+- EXTRACTED: 127 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

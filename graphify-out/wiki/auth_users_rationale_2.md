@@ -1,62 +1,48 @@
 # auth users rationale
 
-> 70 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **test_container_persistence_extended_crud.py** (41 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **ContainerData** (35 connections) — `server/persistence/container_data.py`
-- **__init__.py** (32 connections) — `server/persistence/__init__.py`
-- **container_query_helpers.py** (21 connections) — `server/persistence/container_query_helpers.py`
-- **get_decayed_containers()** (13 connections) — `server/persistence/container_query_helpers.py`
-- **_build_container_data_from_row()** (12 connections) — `server/persistence/container_query_helpers.py`
-- **get_containers_by_room_id()** (12 connections) — `server/persistence/container_query_helpers.py`
-- **get_containers_by_entity_id()** (12 connections) — `server/persistence/container_query_helpers.py`
-- **test_create_container_uuid_string_conversion()** (6 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_create_container_success()** (5 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **Any** (4 connections)
-- **ContainerData** (4 connections)
-- **test_create_container_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_container_success()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_container_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_containers_by_room_id_success()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_containers_by_room_id_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_containers_by_entity_id_success()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_containers_by_entity_id_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_update_container_success()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_update_container_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_decayed_containers_success()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_decayed_containers_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_delete_container_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_container_not_found()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- *... and 45 more nodes in this community*
+- **CombatDPSync** (13 connections) — `server/services/combat_hp_sync.py`
+- **UUID** (9 connections)
+- **._persist_player_dp_sync()** (8 connections) — `server/services/combat_hp_sync.py`
+- **._publish_player_dp_update_event()** (6 connections) — `server/services/combat_hp_sync.py`
+- **._publish_player_dp_correction_event()** (6 connections) — `server/services/combat_hp_sync.py`
+- **._get_persistence()** (5 connections) — `server/services/combat_hp_sync.py`
+- **._update_and_save_player_dp()** (5 connections) — `server/services/combat_hp_sync.py`
+- **._verify_player_save()** (4 connections) — `server/services/combat_hp_sync.py`
+- **._log_death_threshold_events()** (4 connections) — `server/services/combat_hp_sync.py`
+- **.__init__()** (3 connections) — `server/services/combat_hp_sync.py`
+- **._persist_player_dp_background()** (3 connections) — `server/services/combat_hp_sync.py`
+- **Any** (2 connections)
+- **Handles DP synchronization for combat operations.** (1 connections) — `server/services/combat_hp_sync.py`
+- **Initialize DP sync with reference to parent combat service.** (1 connections) — `server/services/combat_hp_sync.py`
+- **Persist player DP to database in background (fire-and-forget).          This met** (1 connections) — `server/services/combat_hp_sync.py`
+- **Get persistence layer from application container.          Args:             pla** (1 connections) — `server/services/combat_hp_sync.py`
+- **Verify that player DP was successfully saved to database.          Args:** (1 connections) — `server/services/combat_hp_sync.py`
+- **Log death threshold events based on DP changes.          Args:             curre** (1 connections) — `server/services/combat_hp_sync.py`
+- **Update player DP and save to database.          Args:             persistence: P** (1 connections) — `server/services/combat_hp_sync.py`
+- **Synchronously persist player DP to database.          This is the actual persist** (1 connections) — `server/services/combat_hp_sync.py`
+- **Publish a PlayerDPUpdated event for real-time UI updates.** (1 connections) — `server/services/combat_hp_sync.py`
+- **Publish a correction event when database persistence fails.** (1 connections) — `server/services/combat_hp_sync.py`
 
 ## Relationships
 
-- [retry nats handler](retry_nats_handler.md) (39 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (23 shared connections)
-- [persistence container item](persistence_container_item.md) (12 shared connections)
-- [websocket helpers realtime](websocket_helpers_realtime.md) (4 shared connections)
-- [command combat models](command_combat_models.md) (4 shared connections)
-- [world loader room](world_loader_room.md) (4 shared connections)
-- [commands alias rationale](commands_alias_rationale.md) (4 shared connections)
-- [persistence protocols rationale](persistence_protocols_rationale.md) (3 shared connections)
-- [commands party examples](commands_party_examples.md) (3 shared connections)
-- [commands time handle](commands_time_handle.md) (3 shared connections)
+- [inventory mutation guard](inventory_mutation_guard.md) (4 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (3 shared connections)
+- [subject admin controller](subject_admin_controller.md) (2 shared connections)
 - [Error Conversion](Error_Conversion.md) (2 shared connections)
-- [add used user](add_used_user.md) (1 shared connections)
+- [nats services service](nats_services_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/persistence/__init__.py`
-- `server/persistence/container_data.py`
-- `server/persistence/container_query_helpers.py`
-- `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- `server/services/combat_hp_sync.py`
 
 ## Audit Trail
 
-- EXTRACTED: 287 (92%)
-- INFERRED: 24 (8%)
+- EXTRACTED: 75 (96%)
+- INFERRED: 3 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

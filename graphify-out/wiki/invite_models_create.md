@@ -1,30 +1,26 @@
 # invite models create
 
-> 6 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **._despawn_npc()** (4 connections) — `server/services/npc_combat_lifecycle.py`
-- **.despawn_npc_safely()** (3 connections) — `server/services/npc_combat_lifecycle.py`
-- **.get_npc_lifecycle_manager()** (3 connections) — `server/services/player_combat_service_support.py`
-- **Despawn NPC with defensive error handling.          Args:             npc_id: ID** (1 connections) — `server/services/npc_combat_lifecycle.py`
-- **Despawn an NPC.          Args:             npc_id: ID of the NPC to despawn** (1 connections) — `server/services/npc_combat_lifecycle.py`
-- **Return lifecycle manager (sync); may be wrapped by asyncio.to_thread.** (1 connections) — `server/services/player_combat_service_support.py`
+- **sub_zone** (4 connections) — `schemas/room_schema.json`
+- **type** (1 connections) — `schemas/room_schema.json`
+- **pattern** (1 connections) — `schemas/room_schema.json`
+- **description** (1 connections) — `schemas/room_schema.json`
 
 ## Relationships
 
-- [player event realtime](player_event_realtime.md) (2 shared connections)
-- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [schemas room schema](schemas_room_schema.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/npc_combat_lifecycle.py`
-- `server/services/player_combat_service_support.py`
+- `schemas/room_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (85%)
-- INFERRED: 2 (15%)
+- EXTRACTED: 7 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

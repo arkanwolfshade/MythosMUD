@@ -1,78 +1,76 @@
 # combat service services
 
-> 139 nodes
+> 66 nodes
 
 ## Key Concepts
 
-- **types.ts** (79 connections) — `client/src/components/ui-v2/types.ts`
-- **GameClientV2.tsx** (52 connections) — `client/src/components/ui-v2/GameClientV2.tsx`
-- **types.ts** (44 connections) — `client/src/components/ui-v2/eventHandlers/types.ts`
-- **stateUpdateUtils.ts** (41 connections) — `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
-- **Room** (36 connections) — `client/src/components/ui-v2/types.ts`
-- **Player** (32 connections) — `client/src/components/ui-v2/types.ts`
-- **ChatMessage** (32 connections) — `client/src/components/ui-v2/types.ts`
-- **GameClientV2AuxiliaryPanels.tsx** (29 connections) — `client/src/components/ui-v2/GameClientV2AuxiliaryPanels.tsx`
-- **lucidity.ts** (29 connections) — `client/src/types/lucidity.ts`
-- **GameState** (26 connections) — `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
-- **health.ts** (26 connections) — `client/src/types/health.ts`
-- **LucidityStatus** (26 connections) — `client/src/types/lucidity.ts`
-- **useGameClientV2ContainerRefsAndBootstrap.ts** (25 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerRefsAndBootstrap.ts`
-- **HealthStatus** (25 connections) — `client/src/types/health.ts`
-- **projectorHandlersState.ts** (23 connections) — `client/src/components/ui-v2/eventLog/projectorHandlersState.ts`
-- **MythosTimeState** (23 connections) — `client/src/types/mythosTime.ts`
-- **useRespawnHandlers.ts** (21 connections) — `client/src/components/ui-v2/hooks/useRespawnHandlers.ts`
-- **useGameClientV2ContainerState.ts** (17 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerState.ts`
-- **CharacterInfoPanel.tsx** (17 connections) — `client/src/components/ui-v2/panels/CharacterInfoPanel.tsx`
-- **RescueState** (17 connections) — `client/src/types/lucidity.ts`
-- **messageHandlers.test-utils.ts** (15 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/messageHandlers.test-utils.ts`
-- **EventHandlerContext** (15 connections) — `client/src/components/ui-v2/eventHandlers/types.ts`
-- **useGameConnectionManagement.ts** (15 connections) — `client/src/components/ui-v2/hooks/useGameConnectionManagement.ts`
-- **useEventProcessing.test.ts** (14 connections) — `client/src/components/ui-v2/hooks/__tests__/useEventProcessing.test.ts`
-- **useRefSynchronization.ts** (14 connections) — `client/src/components/ui-v2/hooks/useRefSynchronization.ts`
-- *... and 114 more nodes in this community*
+- **GameTerminal.tsx** (46 connections) — `client/src/components/GameTerminal.tsx`
+- **lucidityEventUtils.ts** (19 connections) — `client/src/utils/lucidityEventUtils.ts`
+- **RoomInfoPanel.tsx** (10 connections) — `client/src/components/RoomInfoPanel.tsx`
+- **HallucinationMessage** (10 connections) — `client/src/types/lucidity.ts`
+- **buildLucidityStatus()** (10 connections) — `client/src/utils/lucidityEventUtils.ts`
+- **HallucinationTicker.tsx** (9 connections) — `client/src/components/lucidity/HallucinationTicker.tsx`
+- **RescueStatusBanner.tsx** (9 connections) — `client/src/components/lucidity/RescueStatusBanner.tsx`
+- **determineDpTier()** (9 connections) — `client/src/types/health.ts`
+- **GameTerminal()** (8 connections) — `client/src/components/GameTerminal.tsx`
+- **game-terminal-integration.spec.tsx** (7 connections) — `client/src/components/__tests__/game-terminal-integration.spec.tsx`
+- **game-terminal-integration.test.tsx** (7 connections) — `client/src/components/__tests__/game-terminal-integration.test.tsx`
+- **RoomInfoPanel()** (6 connections) — `client/src/components/RoomInfoPanel.tsx`
+- **IncapacitatedBanner.tsx** (5 connections) — `client/src/components/health/IncapacitatedBanner.tsx`
+- **HallucinationTicker.test.tsx** (5 connections) — `client/src/components/lucidity/__tests__/HallucinationTicker.test.tsx`
+- **RescueStatusBanner.test.tsx** (5 connections) — `client/src/components/lucidity/__tests__/RescueStatusBanner.test.tsx`
+- **DismissButton.tsx** (5 connections) — `client/src/components/ui/DismissButton.tsx`
+- **lucidityEventUtils.test.ts** (5 connections) — `client/src/utils/__tests__/lucidityEventUtils.test.ts`
+- **parseNumber()** (5 connections) — `client/src/utils/lucidityEventUtils.ts`
+- **GameTerminal.test.tsx** (4 connections) — `client/src/components/__tests__/GameTerminal.test.tsx`
+- **RoomInfoPanel.test.tsx** (4 connections) — `client/src/components/__tests__/RoomInfoPanel.test.tsx`
+- **DismissButton()** (4 connections) — `client/src/components/ui/DismissButton.tsx`
+- **resolveCurrentLucidity()** (4 connections) — `client/src/utils/lucidityEventUtils.ts`
+- **buildHealthStatus()** (3 connections) — `client/src/components/GameTerminal.tsx`
+- **RoomInfoPanel.test.tsx** (3 connections) — `client/src/components/RoomInfoPanel.test.tsx`
+- **HallucinationTicker** (3 connections) — `client/src/components/lucidity/HallucinationTicker.tsx`
+- *... and 41 more nodes in this community*
 
 ## Relationships
 
-- [lucidityEventUtils mythosTime MythosTime](lucidityEventUtils_mythosTime_MythosTime.md) (60 shared connections)
-- [PanelSystem PanelManager panelLayoutClam](PanelSystem_PanelManager_panelLayoutClam.md) (42 shared connections)
-- [GameClientV2Container emptyOccupantsDiag](GameClientV2Container_emptyOccupantsDiag.md) (42 shared connections)
-- [game terminal lucidity](game_terminal_lucidity.md) (35 shared connections)
-- [eventHandlers messageHandlers statusPars](eventHandlers_messageHandlers_statusPars.md) (31 shared connections)
-- [combat services persistence](combat_services_persistence.md) (23 shared connections)
-- [services combat sync](services_combat_sync.md) (19 shared connections)
-- [panels chat ChatPanelRuntimeViewParts](panels_chat_ChatPanelRuntimeViewParts.md) (9 shared connections)
-- [argon2 auth rationale](argon2_auth_rationale.md) (8 shared connections)
-- [emote game service](emote_game_service.md) (7 shared connections)
-- [persistence services combat](persistence_services_combat.md) (4 shared connections)
-- [panels GameClientV2Dock gameLogPanelUtil](panels_GameClientV2Dock_gameLogPanelUtil.md) (3 shared connections)
+- [command factories communication](command_factories_communication.md) (28 shared connections)
+- [lucidityEventUtils mythosTime MythosTime](lucidityEventUtils_mythosTime_MythosTime.md) (8 shared connections)
+- [panels GameClientV2Dock gameLogPanelUtil](panels_GameClientV2Dock_gameLogPanelUtil.md) (5 shared connections)
+- [services combat sync](services_combat_sync.md) (4 shared connections)
+- [panels chat ChatPanelRuntimeViewParts](panels_chat_ChatPanelRuntimeViewParts.md) (3 shared connections)
+- [combat services persistence](combat_services_persistence.md) (3 shared connections)
+- [item models rationale](item_models_rationale.md) (2 shared connections)
+- [startup npc services](startup_npc_services.md) (2 shared connections)
+- [roomHandlers eventHandlers calculateOccu](roomHandlers_eventHandlers_calculateOccu.md) (2 shared connections)
+- [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (1 shared connections)
+- [GameClientV2Container emptyOccupantsDiag](GameClientV2Container_emptyOccupantsDiag.md) (1 shared connections)
 
 ## Source Files
 
+- `client/src/components/GameTerminal.test.tsx`
 - `client/src/components/GameTerminal.tsx`
-- `client/src/components/health/HealthMeter.tsx`
-- `client/src/components/health/__tests__/HealthMeter.test.tsx`
-- `client/src/components/lucidity/LucidityMeter.tsx`
-- `client/src/components/lucidity/__tests__/LucidityMeter.test.tsx`
-- `client/src/components/magic/MagicPointsMeter.tsx`
-- `client/src/components/magic/__tests__/MagicPointsMeter.test.tsx`
-- `client/src/components/ui-v2/GameClientV2.tsx`
-- `client/src/components/ui-v2/GameClientV2AuxiliaryPanels.tsx`
-- `client/src/components/ui-v2/PanelSystem/PanelContainer.tsx`
-- `client/src/components/ui-v2/TentacleBackdrop.tsx`
-- `client/src/components/ui-v2/__tests__/GameClientV2.test.tsx`
-- `client/src/components/ui-v2/__tests__/TentacleBackdrop.test.tsx`
-- `client/src/components/ui-v2/eventHandlers/__tests__/messageHandlers.test-utils.ts`
-- `client/src/components/ui-v2/eventHandlers/types.ts`
-- `client/src/components/ui-v2/eventLog/projectorHandlersState.ts`
-- `client/src/components/ui-v2/hooks/__tests__/useEventProcessing.test.ts`
-- `client/src/components/ui-v2/hooks/useGameClientV2ContainerRefsAndBootstrap.ts`
-- `client/src/components/ui-v2/hooks/useGameClientV2ContainerState.ts`
-- `client/src/components/ui-v2/hooks/useGameConnectionManagement.ts`
+- `client/src/components/RoomInfoPanel.test.tsx`
+- `client/src/components/RoomInfoPanel.tsx`
+- `client/src/components/__tests__/GameTerminal.test.tsx`
+- `client/src/components/__tests__/RoomInfoPanel.test.tsx`
+- `client/src/components/__tests__/game-terminal-integration.spec.tsx`
+- `client/src/components/__tests__/game-terminal-integration.test.tsx`
+- `client/src/components/health/IncapacitatedBanner.tsx`
+- `client/src/components/lucidity/HallucinationTicker.tsx`
+- `client/src/components/lucidity/RescueStatusBanner.tsx`
+- `client/src/components/lucidity/__tests__/HallucinationTicker.test.tsx`
+- `client/src/components/lucidity/__tests__/RescueStatusBanner.test.tsx`
+- `client/src/components/ui/DismissButton.tsx`
+- `client/src/types/__tests__/health.test.ts`
+- `client/src/types/health.ts`
+- `client/src/types/lucidity.ts`
+- `client/src/utils/__tests__/lucidityEventUtils.test.ts`
+- `client/src/utils/lucidityEventUtils.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 1142 (100%)
-- INFERRED: 5 (0%)
+- EXTRACTED: 267 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

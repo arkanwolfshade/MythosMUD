@@ -1,61 +1,60 @@
 # room renderer functions
 
-> 58 nodes
+> 59 nodes
 
 ## Key Concepts
 
-- **combat_taunt.py** (32 connections) — `server/commands/combat_taunt.py`
-- **TauntCommandHandler** (29 connections) — `server/commands/combat_taunt.py`
-- **test_combat_taunt.py** (20 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **_validate_taunt_context()** (13 connections) — `server/commands/combat_taunt.py`
-- **run_handle_taunt_command()** (13 connections) — `server/commands/combat_taunt.py`
-- **_validate_taunt_target()** (9 connections) — `server/commands/combat_taunt.py`
-- **_resolve_taunt_combat_and_participant()** (9 connections) — `server/commands/combat_taunt.py`
-- **_apply_taunt_and_maybe_broadcast()** (9 connections) — `server/commands/combat_taunt.py`
-- **test_run_handle_taunt_success()** (7 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **_resolve_taunt_room_and_player()** (6 connections) — `server/commands/combat_taunt.py`
-- **UUID** (6 connections)
-- **_validate_taunt_target_name()** (6 connections) — `server/commands/combat_taunt.py`
-- **_RoomWithIdOnly** (6 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **test_validate_taunt_target_not_npc()** (5 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **test_validate_taunt_target_dead()** (5 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **test_run_handle_taunt_no_combat_service()** (5 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **test_run_handle_taunt_not_in_combat()** (5 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **.get_player_and_room()** (4 connections) — `server/commands/combat_taunt.py`
-- **AppWithState** (4 connections)
-- **.resolve_combat_target()** (4 connections) — `server/commands/combat_taunt.py`
-- **.check_and_interrupt_rest()** (4 connections) — `server/commands/combat_taunt.py`
-- **.is_alive()** (4 connections) — `server/models/combat.py`
-- **test_resolve_taunt_room_and_player_falls_back_to_id()** (4 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **test_validate_taunt_target_name_from_target_key()** (4 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **.combat_service()** (3 connections) — `server/commands/combat_taunt.py`
-- *... and 33 more nodes in this community*
+- **PlayerRespawnService** (39 connections) — `server/services/player_respawn_service.py`
+- **UUID** (16 connections)
+- **._prepare_sanitarium_respawn()** (16 connections) — `server/services/player_respawn_service.py`
+- **.respawn_player()** (11 connections) — `server/services/player_respawn_service.py`
+- **.respawn_player_from_delirium()** (10 connections) — `server/services/player_respawn_service.py`
+- **.respawn_player_from_sanitarium()** (10 connections) — `server/services/player_respawn_service.py`
+- **Player** (8 connections)
+- **._clear_respawn_combat_state()** (8 connections) — `server/services/player_respawn_service.py`
+- **._publish_standard_respawn_event()** (8 connections) — `server/services/player_respawn_service.py`
+- **._prepare_delirium_respawn()** (8 connections) — `server/services/player_respawn_service.py`
+- **_utc_now()** (7 connections) — `server/services/player_respawn_service.py`
+- **AsyncSession** (7 connections)
+- **.move_player_to_limbo()** (7 connections) — `server/services/player_respawn_service.py`
+- **.get_respawn_room()** (7 connections) — `server/services/player_respawn_service.py`
+- **_RespawnEventPublisher** (6 connections) — `server/services/player_respawn_service.py`
+- **_PlayerCombatClearing** (6 connections) — `server/services/player_respawn_service.py`
+- **._publish_delirium_respawn_event()** (6 connections) — `server/services/player_respawn_service.py`
+- **.publish()** (5 connections) — `server/services/player_respawn_service.py`
+- **._can_move_to_limbo()** (5 connections) — `server/services/player_respawn_service.py`
+- **._apply_standard_respawn_state()** (5 connections) — `server/services/player_respawn_service.py`
+- **._log_standard_respawn()** (5 connections) — `server/services/player_respawn_service.py`
+- **._log_sanitarium_respawn()** (5 connections) — `server/services/player_respawn_service.py`
+- **._log_delirium_respawn()** (5 connections) — `server/services/player_respawn_service.py`
+- **.clear_player_combat_state()** (4 connections) — `server/services/player_respawn_service.py`
+- **.__init__()** (4 connections) — `server/services/player_respawn_service.py`
+- *... and 34 more nodes in this community*
 
 ## Relationships
 
-- [panels domPurifyClient chat](panels_domPurifyClient_chat.md) (12 shared connections)
-- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (7 shared connections)
-- [Item Instances](Item_Instances.md) (7 shared connections)
-- [alias storage rationale](alias_storage_rationale.md) (6 shared connections)
-- [command factories exploration](command_factories_exploration.md) (6 shared connections)
-- [npc database infrastructure](npc_database_infrastructure.md) (6 shared connections)
-- [room validator toolkit](room_validator_toolkit.md) (5 shared connections)
-- [models npc rationale](models_npc_rationale.md) (4 shared connections)
-- [player event realtime](player_event_realtime.md) (4 shared connections)
-- [services ascii map](services_ascii_map.md) (2 shared connections)
-- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (1 shared connections)
-- [subject admin controller](subject_admin_controller.md) (1 shared connections)
+- [player room realtime](player_room_realtime.md) (16 shared connections)
+- [auth endpoints rationale](auth_endpoints_rationale.md) (10 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (6 shared connections)
+- [game weapon player](game_weapon_player.md) (5 shared connections)
+- [inventory mutation guard](inventory_mutation_guard.md) (3 shared connections)
+- [nats services service](nats_services_service.md) (3 shared connections)
+- [aggro threat services](aggro_threat_services.md) (2 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (2 shared connections)
+- [player service game](player_service_game.md) (2 shared connections)
+- [lucidity services helpers](lucidity_services_helpers.md) (2 shared connections)
+- [models player related](models_player_related.md) (1 shared connections)
+- [persistence core infrastructure](persistence_core_infrastructure.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/combat_taunt.py`
-- `server/models/combat.py`
-- `server/tests/unit/commands/test_combat_taunt.py`
+- `server/services/player_respawn_service.py`
+- `server/tests/unit/services/test_player_respawn_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 244 (95%)
-- INFERRED: 13 (5%)
+- EXTRACTED: 241 (91%)
+- INFERRED: 25 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

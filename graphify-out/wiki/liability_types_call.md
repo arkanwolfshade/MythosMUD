@@ -1,26 +1,25 @@
 # liability types call
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **rest_location** (4 connections) — `schemas/unified_room_schema.json`
-- **type** (1 connections) — `schemas/unified_room_schema.json`
-- **default** (1 connections) — `schemas/unified_room_schema.json`
-- **description** (1 connections) — `schemas/unified_room_schema.json`
+- **test_event_bus_get_subscriber_count()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test EventBus.get_subscriber_count() returns count.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- [schemas unified room](schemas_unified_room.md) (1 shared connections)
+- [event bus events](event_bus_events.md) (1 shared connections)
+- [room conftest toolkit](room_conftest_toolkit.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/unified_room_schema.json`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

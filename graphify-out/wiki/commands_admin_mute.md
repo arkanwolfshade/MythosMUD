@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [alias storage rationale](alias_storage_rationale.md) (11 shared connections)
-- [realtime real time](realtime_real_time.md) (10 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (10 shared connections)
+- [commands npc admin](commands_npc_admin.md) (13 shared connections)
+- [character creation service](character_creation_service.md) (10 shared connections)
 - [realtime game state](realtime_game_state.md) (8 shared connections)
-- [Error Conversion](Error_Conversion.md) (5 shared connections)
-- [npc service services](npc_service_services.md) (4 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (8 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (5 shared connections)
 - [container schemas containers](container_schemas_containers.md) (3 shared connections)
 - [command models admin](command_models_admin.md) (3 shared connections)
 - [admin structured logging](admin_structured_logging.md) (3 shared connections)
+- [combat models rationale](combat_models_rationale.md) (3 shared connections)
 - [connection realtime manager](connection_realtime_manager.md) (3 shared connections)
-- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (2 shared connections)
-- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (2 shared connections)
+- [npc service services](npc_service_services.md) (2 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (2 shared connections)
 
 ## Source Files
 

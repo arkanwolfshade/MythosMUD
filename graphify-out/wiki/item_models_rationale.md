@@ -33,7 +33,7 @@
 ## Relationships
 
 - [panels chat ChatPanelRuntimeViewParts](panels_chat_ChatPanelRuntimeViewParts.md) (7 shared connections)
-- [combat services persistence](combat_services_persistence.md) (2 shared connections)
+- [combat service services](combat_service_services.md) (2 shared connections)
 - [panels GameClientV2Dock gameLogPanelUtil](panels_GameClientV2Dock_gameLogPanelUtil.md) (2 shared connections)
 
 ## Source Files

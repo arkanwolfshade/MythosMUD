@@ -1,60 +1,65 @@
 # auth endpoints rationale
 
-> 60 nodes
+> 177 nodes
 
 ## Key Concepts
 
+- **LucidityService** (88 connections) — `server/services/lucidity_service.py`
+- **lucidity_service.py** (52 connections) — `server/services/lucidity_service.py`
 - **debrief_command.py** (26 connections) — `server/commands/debrief_command.py`
 - **test_debrief_command.py** (25 connections) — `server/tests/unit/commands/test_debrief_command.py`
+- **lucidity_helpers.py** (24 connections) — `server/services/lucidity_helpers.py`
+- **test_lucidity_service.py** (24 connections) — `server/tests/unit/services/test_lucidity_service.py`
 - **active_lucidity_service.py** (23 connections) — `server/services/active_lucidity_service.py`
+- **ActiveLucidityService** (20 connections) — `server/services/active_lucidity_service.py`
 - **handle_debrief_command()** (19 connections) — `server/commands/debrief_command.py`
+- **UUID** (14 connections)
+- **encode_liabilities()** (12 connections) — `server/services/lucidity_helpers.py`
+- **._apply_sanitarium_liability_update()** (12 connections) — `server/services/player_respawn_service.py`
+- **decode_liabilities()** (11 connections) — `server/services/lucidity_helpers.py`
 - **_generate_narrative_recap()** (10 connections) — `server/commands/debrief_command.py`
+- **UnknownEncounterCategoryError** (10 connections) — `server/services/active_lucidity_service.py`
+- **LucidityUpdateResult** (10 connections) — `server/services/lucidity_helpers.py`
+- **._send_lucidity_change_event_if_needed()** (10 connections) — `server/services/lucidity_service.py`
+- **._finalize_lucidity_adjustment()** (10 connections) — `server/services/lucidity_service.py`
 - **_perform_therapy_if_requested()** (9 connections) — `server/commands/debrief_command.py`
+- **.apply_lucidity_adjustment()** (9 connections) — `server/services/lucidity_service.py`
 - **Any** (8 connections)
+- **._calculate_max_lcd()** (8 connections) — `server/services/lucidity_service.py`
+- **._apply_delta_to_record()** (8 connections) — `server/services/lucidity_service.py`
 - **_validate_debrief_context()** (7 connections) — `server/commands/debrief_command.py`
 - **_check_debrief_availability()** (7 connections) — `server/commands/debrief_command.py`
-- **LucidityActionError** (7 connections) — `server/services/active_lucidity_service.py`
-- **_get_persistence_from_app()** (6 connections) — `server/commands/debrief_command.py`
-- **_get_catatonia_registry_from_app()** (6 connections) — `server/commands/debrief_command.py`
-- **_complete_debrief()** (5 connections) — `server/commands/debrief_command.py`
-- **.__init__()** (5 connections) — `server/services/active_lucidity_service.py`
-- **test_perform_therapy_on_cooldown()** (4 connections) — `server/tests/unit/commands/test_debrief_command.py`
-- **EncounterProfile** (3 connections) — `server/services/active_lucidity_service.py`
-- **RecoveryActionProfile** (3 connections) — `server/services/active_lucidity_service.py`
-- **test_validate_debrief_context_no_persistence()** (3 connections) — `server/tests/unit/commands/test_debrief_command.py`
-- **test_validate_debrief_context_player_missing()** (3 connections) — `server/tests/unit/commands/test_debrief_command.py`
-- **test_get_persistence_from_app_container()** (3 connections) — `server/tests/unit/commands/test_debrief_command.py`
-- **test_get_catatonia_registry_from_state_fallback()** (3 connections) — `server/tests/unit/commands/test_debrief_command.py`
-- **test_check_debrief_availability_not_pending()** (3 connections) — `server/tests/unit/commands/test_debrief_command.py`
-- **test_perform_therapy_if_not_requested()** (3 connections) — `server/tests/unit/commands/test_debrief_command.py`
-- **test_perform_therapy_success()** (3 connections) — `server/tests/unit/commands/test_debrief_command.py`
-- **test_generate_narrative_recap_no_adjustments()** (3 connections) — `server/tests/unit/commands/test_debrief_command.py`
-- *... and 35 more nodes in this community*
+- *... and 152 more nodes in this community*
 
 ## Relationships
 
-- [player room realtime](player_room_realtime.md) (18 shared connections)
-- [realtime real time](realtime_real_time.md) (11 shared connections)
-- [game models player](game_models_player.md) (8 shared connections)
-- [Error Conversion](Error_Conversion.md) (6 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (3 shared connections)
-- [alias storage rationale](alias_storage_rationale.md) (2 shared connections)
-- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (1 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
-- [connection realtime manager](connection_realtime_manager.md) (1 shared connections)
-- [npc population control](npc_population_control.md) (1 shared connections)
-- [Spell Validation](Spell_Validation.md) (1 shared connections)
+- [player room realtime](player_room_realtime.md) (45 shared connections)
+- [zone configuration npc](zone_configuration_npc.md) (16 shared connections)
+- [Spell Validation](Spell_Validation.md) (16 shared connections)
+- [lucidity services helpers](lucidity_services_helpers.md) (10 shared connections)
+- [room renderer functions](room_renderer_functions.md) (10 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (8 shared connections)
+- [npc population control](npc_population_control.md) (8 shared connections)
+- [npc population stats](npc_population_stats.md) (8 shared connections)
+- [command factories create](command_factories_create.md) (7 shared connections)
+- [models player rationale](models_player_rationale.md) (6 shared connections)
+- [lucidity flux passive](lucidity_flux_passive.md) (4 shared connections)
+- [container schemas containers](container_schemas_containers.md) (4 shared connections)
 
 ## Source Files
 
 - `server/commands/debrief_command.py`
 - `server/services/active_lucidity_service.py`
+- `server/services/lucidity_helpers.py`
+- `server/services/lucidity_service.py`
+- `server/services/player_respawn_service.py`
 - `server/tests/unit/commands/test_debrief_command.py`
+- `server/tests/unit/services/test_lucidity_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 238 (98%)
-- INFERRED: 5 (2%)
+- EXTRACTED: 747 (93%)
+- INFERRED: 52 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

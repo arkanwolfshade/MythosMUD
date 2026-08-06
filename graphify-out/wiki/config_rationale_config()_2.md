@@ -1,42 +1,31 @@
 # config rationale config()
 
-> 12 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **CacheService** (24 connections) — `server/caching/cache_service.py`
-- **TestCacheService** (12 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.__init__()** (7 connections) — `server/caching/cache_service.py`
-- **.test_init_without_npc_service()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_init_with_npc_service()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_get_cache_stats_and_clear()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_preload_frequently_accessed_data()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_preload_handles_room_failure()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_preload_handles_profession_failure()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.clear_all_caches()** (1 connections) — `server/caching/cache_service.py`
-- **Main cache service that coordinates all caching operations.      This service pr** (1 connections) — `server/caching/cache_service.py`
-- **Initialize the cache service.          Args:             persistence: Persistenc** (1 connections) — `server/caching/cache_service.py`
+- **TestGetPlayerServiceForTesting** (7 connections) — `server/tests/unit/test_dependency_injection.py`
+- **.test_get_player_service_for_testing_with_injection()** (4 connections) — `server/tests/unit/test_dependency_injection.py`
+- **.test_get_player_service_for_testing_without_injection()** (4 connections) — `server/tests/unit/test_dependency_injection.py`
+- **Test get_player_service_for_testing() function.** (1 connections) — `server/tests/unit/test_dependency_injection.py`
+- **Test get_player_service_for_testing() with injected service.** (1 connections) — `server/tests/unit/test_dependency_injection.py`
+- **Test get_player_service_for_testing() creates mock when None.** (1 connections) — `server/tests/unit/test_dependency_injection.py`
 
 ## Relationships
 
-- [uuid services npc](uuid_services_npc.md) (5 shared connections)
-- [services lucidity repository](services_lucidity_repository.md) (5 shared connections)
-- [startup npc service](startup_npc_service.md) (4 shared connections)
-- [cache caching service](cache_caching_service.md) (3 shared connections)
-- [commands skills rationale](commands_skills_rationale.md) (3 shared connections)
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
-- [caching lru cache](caching_lru_cache.md) (1 shared connections)
-- [Magic Spell Service](Magic_Spell_Service.md) (1 shared connections)
+- [Player Stats](Player_Stats.md) (3 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (3 shared connections)
+- [maps handle ascii](maps_handle_ascii.md) (1 shared connections)
+- [System Metrics](System_Metrics.md) (1 shared connections)
 
 ## Source Files
 
-- `server/caching/cache_service.py`
-- `server/tests/unit/caching/test_cache_service.py`
+- `server/tests/unit/test_dependency_injection.py`
 
 ## Audit Trail
 
-- EXTRACTED: 44 (76%)
-- INFERRED: 14 (24%)
+- EXTRACTED: 13 (72%)
+- INFERRED: 5 (28%)
 - AMBIGUOUS: 0 (0%)
 
 ---

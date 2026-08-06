@@ -1,64 +1,70 @@
 # spell game magic
 
-> 100 nodes
+> 97 nodes
 
 ## Key Concepts
 
-- **spell_effects.py** (47 connections) — `server/game/magic/spell_effects.py`
-- **spell_effects_heal.py** (41 connections) — `server/game/magic/spell_effects_heal.py`
-- **NpcSpellDamageTarget** (17 connections) — `server/game/magic/spell_effect_types.py`
-- **run_heal_effect()** (15 connections) — `server/game/magic/spell_effects_heal.py`
-- **SpellEffectPlayer** (14 connections) — `server/game/magic/spell_effect_types.py`
-- **SpellEffectsEngineHealPort** (13 connections) — `server/game/magic/spell_effect_types.py`
-- **UUID** (13 connections)
-- **spell_effect_types.py** (11 connections) — `server/game/magic/spell_effect_types.py`
-- **_steal_life_resolve_target_dp()** (11 connections) — `server/game/magic/spell_effects_heal.py`
-- **_steal_life_apply_target_damage()** (11 connections) — `server/game/magic/spell_effects_heal.py`
-- **_run_steal_life()** (11 connections) — `server/game/magic/spell_effects_heal.py`
-- **spell_effects_internal.py** (11 connections) — `server/game/magic/spell_effects_internal.py`
-- **PlayerPersistenceSpellPort** (10 connections) — `server/game/magic/spell_effect_types.py`
-- **_run_standard_heal_after_validation()** (10 connections) — `server/game/magic/spell_effects_heal.py`
-- **get_npc_instance_for_steal_life()** (9 connections) — `server/game/magic/spell_effects_heal.py`
-- **coerce_effect_int_times_mastery()** (9 connections) — `server/game/magic/spell_effects_internal.py`
-- **_steal_life_publish_npc_events()** (8 connections) — `server/game/magic/spell_effects_heal.py`
-- **combat_room_id_for_npc_spell()** (8 connections) — `server/game/magic/spell_effects_internal.py`
-- **get_combat_service()** (8 connections) — `server/services/combat_service_state.py`
-- **test_spell_effects_internal.py** (8 connections) — `server/tests/unit/game/magic/test_spell_effects_internal.py`
-- **Protocol** (7 connections)
-- **_add_healing_threat_if_in_combat()** (7 connections) — `server/game/magic/spell_effects_heal.py`
-- **_lookup_npc_by_id_or_uuid()** (7 connections) — `server/game/magic/spell_effects_heal.py`
-- **NpcLifecycleManagerPort** (6 connections) — `server/game/magic/spell_effect_types.py`
-- **NpcIntegrationStringIdPort** (6 connections) — `server/game/magic/spell_effect_types.py`
-- *... and 75 more nodes in this community*
+- **log_and_raise_enhanced()** (97 connections) — `server/utils/enhanced_error_logging.py`
+- **enhanced_error_logging.py** (38 connections) — `server/utils/enhanced_error_logging.py`
+- **test_enhanced_error_logging.py** (22 connections) — `server/tests/unit/utils/test_enhanced_error_logging.py`
+- **command_factories.py** (20 connections) — `server/utils/command_factories.py`
+- **player_creation_service.py** (14 connections) — `server/game/player_creation_service.py`
+- **create_enhanced_error_context()** (14 connections) — `server/utils/enhanced_error_logging.py`
+- **PlayerStateService** (12 connections) — `server/game/player_state_service.py`
+- **wrap_third_party_exception_enhanced()** (12 connections) — `server/utils/enhanced_error_logging.py`
+- **command_factories_communication.py** (11 connections) — `server/utils/command_factories_communication.py`
+- **command_factories_exploration.py** (11 connections) — `server/utils/command_factories_exploration.py`
+- **command_factories_moderation.py** (11 connections) — `server/utils/command_factories_moderation.py`
+- **command_factories_player_state.py** (11 connections) — `server/utils/command_factories_player_state.py`
+- **command_factories_utility.py** (11 connections) — `server/utils/command_factories_utility.py`
+- **log_structured_error()** (11 connections) — `server/utils/enhanced_error_logging.py`
+- **player_state_service.py** (10 connections) — `server/game/player_state_service.py`
+- **PlayerCreationService** (9 connections) — `server/game/player_creation_service.py`
+- **.create_player_with_stats()** (9 connections) — `server/game/player_creation_service.py`
+- **Any** (9 connections)
+- **create_logged_http_exception_enhanced()** (9 connections) — `server/utils/enhanced_error_logging.py`
+- **.create_player()** (8 connections) — `server/game/player_creation_service.py`
+- **_log_http_error()** (8 connections) — `server/utils/enhanced_error_logging.py`
+- **log_and_raise_http_enhanced()** (8 connections) — `server/utils/enhanced_error_logging.py`
+- **Any** (7 connections)
+- **UUID** (7 connections)
+- **log_performance_metric()** (7 connections) — `server/utils/enhanced_error_logging.py`
+- *... and 72 more nodes in this community*
 
 ## Relationships
 
-- [panels domPurifyClient chat](panels_domPurifyClient_chat.md) (37 shared connections)
-- [npc database infrastructure](npc_database_infrastructure.md) (21 shared connections)
-- [persistence core infrastructure](persistence_core_infrastructure.md) (10 shared connections)
-- [Error Conversion](Error_Conversion.md) (6 shared connections)
-- [subject admin controller](subject_admin_controller.md) (5 shared connections)
-- [room realtime rationale](room_realtime_rationale.md) (4 shared connections)
-- [room validator toolkit](room_validator_toolkit.md) (3 shared connections)
-- [admin commands setstat](admin_commands_setstat.md) (2 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (2 shared connections)
-- [services ascii map](services_ascii_map.md) (2 shared connections)
-- [commands npc admin](commands_npc_admin.md) (2 shared connections)
-- [quest game service](quest_game_service.md) (1 shared connections)
+- [command inventory models](command_inventory_models.md) (35 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (23 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (20 shared connections)
+- [exceptions rationale error](exceptions_rationale_error.md) (13 shared connections)
+- [Inventory Equip](Inventory_Equip.md) (12 shared connections)
+- [rescue service services](rescue_service_services.md) (11 shared connections)
+- [websocket examples logging](websocket_examples_logging.md) (11 shared connections)
+- [stores connectionStore commandStore](stores_connectionStore_commandStore.md) (10 shared connections)
+- [Player Stats](Player_Stats.md) (9 shared connections)
+- [add used user](add_used_user.md) (8 shared connections)
+- [persistence core infrastructure](persistence_core_infrastructure.md) (6 shared connections)
+- [dialogue definition persistence](dialogue_definition_persistence.md) (6 shared connections)
 
 ## Source Files
 
-- `server/game/magic/spell_effect_types.py`
-- `server/game/magic/spell_effects.py`
-- `server/game/magic/spell_effects_heal.py`
-- `server/game/magic/spell_effects_internal.py`
-- `server/services/combat_service_state.py`
-- `server/tests/unit/game/magic/test_spell_effects_internal.py`
+- `server/game/player_creation_service.py`
+- `server/game/player_service.py`
+- `server/game/player_state_service.py`
+- `server/monitoring/exception_metrics.py`
+- `server/tests/unit/utils/test_enhanced_error_logging.py`
+- `server/utils/command_factories.py`
+- `server/utils/command_factories_communication.py`
+- `server/utils/command_factories_exploration.py`
+- `server/utils/command_factories_moderation.py`
+- `server/utils/command_factories_player_state.py`
+- `server/utils/command_factories_utility.py`
+- `server/utils/enhanced_error_logging.py`
 
 ## Audit Trail
 
-- EXTRACTED: 454 (97%)
-- INFERRED: 12 (3%)
+- EXTRACTED: 515 (96%)
+- INFERRED: 21 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

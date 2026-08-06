@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_setup_session_tracking_existing_session()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _setup_session_tracking() adds to existing session.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_evaluate_inequality_false()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test _evaluate_inequality() returns False for matching condition.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [invite models rationale](invite_models_rationale.md) (1 shared connections)
-- [connection establishment realtime](connection_establishment_realtime.md) (1 shared connections)
+- [npc lifecycle combat](npc_lifecycle_combat.md) (1 shared connections)
+- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_connection_establishment.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 

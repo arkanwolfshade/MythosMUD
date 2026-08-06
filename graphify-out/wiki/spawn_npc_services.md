@@ -1,48 +1,50 @@
 # spawn npc services
 
-> 22 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **CombatDPSync** (13 connections) — `server/services/combat_hp_sync.py`
-- **UUID** (9 connections)
-- **._persist_player_dp_sync()** (8 connections) — `server/services/combat_hp_sync.py`
-- **._publish_player_dp_update_event()** (6 connections) — `server/services/combat_hp_sync.py`
-- **._publish_player_dp_correction_event()** (6 connections) — `server/services/combat_hp_sync.py`
-- **._get_persistence()** (5 connections) — `server/services/combat_hp_sync.py`
-- **._update_and_save_player_dp()** (5 connections) — `server/services/combat_hp_sync.py`
-- **._verify_player_save()** (4 connections) — `server/services/combat_hp_sync.py`
-- **._log_death_threshold_events()** (4 connections) — `server/services/combat_hp_sync.py`
-- **.__init__()** (3 connections) — `server/services/combat_hp_sync.py`
-- **._persist_player_dp_background()** (3 connections) — `server/services/combat_hp_sync.py`
-- **Any** (2 connections)
-- **Handles DP synchronization for combat operations.** (1 connections) — `server/services/combat_hp_sync.py`
-- **Initialize DP sync with reference to parent combat service.** (1 connections) — `server/services/combat_hp_sync.py`
-- **Persist player DP to database in background (fire-and-forget).          This met** (1 connections) — `server/services/combat_hp_sync.py`
-- **Get persistence layer from application container.          Args:             pla** (1 connections) — `server/services/combat_hp_sync.py`
-- **Verify that player DP was successfully saved to database.          Args:** (1 connections) — `server/services/combat_hp_sync.py`
-- **Log death threshold events based on DP changes.          Args:             curre** (1 connections) — `server/services/combat_hp_sync.py`
-- **Update player DP and save to database.          Args:             persistence: P** (1 connections) — `server/services/combat_hp_sync.py`
-- **Synchronously persist player DP to database.          This is the actual persist** (1 connections) — `server/services/combat_hp_sync.py`
-- **Publish a PlayerDPUpdated event for real-time UI updates.** (1 connections) — `server/services/combat_hp_sync.py`
-- **Publish a correction event when database persistence fails.** (1 connections) — `server/services/combat_hp_sync.py`
+- **test_lifespan_event_subscriptions.py** (15 connections) — `server/tests/unit/app/test_lifespan_event_subscriptions.py`
+- **subscribe_quest_events()** (13 connections) — `server/app/lifespan_event_subscriptions.py`
+- **QuestCompleted** (13 connections) — `server/events/event_types.py`
+- **lifespan_event_subscriptions.py** (12 connections) — `server/app/lifespan_event_subscriptions.py`
+- **subscribe_room_occupants_refresh()** (11 connections) — `server/app/lifespan_event_subscriptions.py`
+- **test_quest_log_updated_event_envelope_shape()** (5 connections) — `server/tests/unit/app/test_lifespan_event_subscriptions.py`
+- **test_subscribe_room_occupants_refresh_broadcasts_on_event()** (3 connections) — `server/tests/unit/app/test_lifespan_event_subscriptions.py`
+- **test_room_occupants_refresh_no_running_loop_returns_silently()** (3 connections) — `server/tests/unit/app/test_lifespan_event_subscriptions.py`
+- **test_quest_completed_invalid_player_id_logs_warning()** (3 connections) — `server/tests/unit/app/test_lifespan_event_subscriptions.py`
+- **test_quest_completed_missing_services_skips_push()** (3 connections) — `server/tests/unit/app/test_lifespan_event_subscriptions.py`
+- **test_subscribe_room_occupants_refresh_skips_without_event_bus()** (2 connections) — `server/tests/unit/app/test_lifespan_event_subscriptions.py`
+- **Event subscription setup for application startup.  Extracted from lifespan_start** (1 connections) — `server/app/lifespan_event_subscriptions.py`
+- **Subscribe to RoomOccupantsRefreshRequested so Occupants panel updates after NPC** (1 connections) — `server/app/lifespan_event_subscriptions.py`
+- **Subscribe to room events for quest triggers and progress (start on enter, comple** (1 connections) — `server/app/lifespan_event_subscriptions.py`
+- **Event fired when a quest instance is completed (rewards applied, state set to co** (1 connections) — `server/events/event_types.py`
+- **Unit tests for lifespan event subscription producers.** (1 connections) — `server/tests/unit/app/test_lifespan_event_subscriptions.py`
+- **quest_log_updated producer emits a build_event-shaped envelope with player_id.** (1 connections) — `server/tests/unit/app/test_lifespan_event_subscriptions.py`
 
 ## Relationships
 
-- [Error Conversion](Error_Conversion.md) (4 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (3 shared connections)
-- [subject admin controller](subject_admin_controller.md) (2 shared connections)
-- [profession models rationale](profession_models_rationale.md) (2 shared connections)
-- [realtime player connection](realtime_player_connection.md) (1 shared connections)
+- [inventory mutation guard](inventory_mutation_guard.md) (8 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (4 shared connections)
+- [aggro threat services](aggro_threat_services.md) (4 shared connections)
+- [nats services service](nats_services_service.md) (3 shared connections)
+- [quest game service](quest_game_service.md) (3 shared connections)
+- [validator room toolkit](validator_room_toolkit.md) (3 shared connections)
+- [player room event](player_room_event.md) (2 shared connections)
+- [command models moderation](command_models_moderation.md) (2 shared connections)
+- [lucidity event services](lucidity_event_services.md) (1 shared connections)
+- [command service commands](command_service_commands.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/combat_hp_sync.py`
+- `server/app/lifespan_event_subscriptions.py`
+- `server/events/event_types.py`
+- `server/tests/unit/app/test_lifespan_event_subscriptions.py`
 
 ## Audit Trail
 
-- EXTRACTED: 75 (96%)
-- INFERRED: 3 (4%)
+- EXTRACTED: 84 (94%)
+- INFERRED: 5 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

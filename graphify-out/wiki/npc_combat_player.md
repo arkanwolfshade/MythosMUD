@@ -1,47 +1,60 @@
 # npc combat player
 
-> 24 nodes
+> 35 nodes
 
 ## Key Concepts
 
-- **test_statistics_aggregator.py** (14 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **statistics_aggregator()** (3 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **mock_memory_monitor()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **mock_rate_limiter()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **mock_message_queue()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **mock_room_manager()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **mock_performance_tracker()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **test_statistics_aggregator_init()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **test_get_memory_stats()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **test_get_connection_stats()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **test_get_connection_health_stats()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **test_get_memory_alerts()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **Unit tests for statistics aggregator.  Tests the StatisticsAggregator class.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **Create a mock memory monitor.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **Create a mock rate limiter.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **Create a mock message queue.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **Create a mock room manager.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **Create a mock performance tracker.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **Create a StatisticsAggregator instance.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **Test StatisticsAggregator initialization.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **Test get_memory_stats() returns comprehensive statistics.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **Test get_connection_stats() returns connection statistics.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **Test get_connection_health_stats() returns health statistics.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **Test get_memory_alerts() returns memory alerts.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **SpellLearningService** (43 connections) — `server/game/magic/spell_learning_service.py`
+- **test_spell_learning_service.py** (15 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
+- **.__init__()** (8 connections) — `server/commands/magic_commands.py`
+- **.learn_spell()** (8 connections) — `server/game/magic/spell_learning_service.py`
+- **UUID** (7 connections)
+- **._validate_prerequisites()** (6 connections) — `server/game/magic/spell_learning_service.py`
+- **.__init__()** (5 connections) — `server/game/magic/spell_learning_service.py`
+- **Any** (5 connections)
+- **.learn_spell_from_book()** (5 connections) — `server/game/magic/spell_learning_service.py`
+- **.learn_spell_from_npc()** (5 connections) — `server/game/magic/spell_learning_service.py`
+- **.learn_spell_from_quest()** (5 connections) — `server/game/magic/spell_learning_service.py`
+- **.increase_mastery_on_cast()** (3 connections) — `server/game/magic/spell_learning_service.py`
+- **.__init__()** (2 connections) — `server/commands/magic_commands.py`
+- **learning_service()** (2 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
+- **test_learn_spell_not_found()** (2 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
+- **test_learn_spell_player_missing()** (2 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
+- **test_learn_spell_already_known()** (2 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
+- **test_learn_spell_success()** (2 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
+- **test_validate_prerequisites_power_too_low()** (2 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
+- **test_increase_mastery_on_cast()** (2 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
+- **test_validate_prerequisites_intelligence_too_low()** (2 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
+- **test_validate_prerequisites_missing_required_spells()** (2 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
+- **test_learn_spell_from_npc()** (2 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
+- **test_learn_spell_from_book_no_spell_id()** (2 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
+- **test_learn_spell_from_book_with_spell()** (2 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
+- *... and 10 more nodes in this community*
 
 ## Relationships
 
-- [persistence rationale room](persistence_rationale_room.md) (2 shared connections)
-- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [persistence core infrastructure](persistence_core_infrastructure.md) (7 shared connections)
+- [container persistence rationale](container_persistence_rationale.md) (6 shared connections)
+- [commands magic rationale](commands_magic_rationale.md) (5 shared connections)
+- [nats services service](nats_services_service.md) (3 shared connections)
+- [player respawn event](player_respawn_event.md) (2 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (2 shared connections)
+- [room occupant manager](room_occupant_manager.md) (2 shared connections)
+- [Player Stats](Player_Stats.md) (2 shared connections)
+- [panels domPurifyClient chat](panels_domPurifyClient_chat.md) (2 shared connections)
+- [chat service game](chat_service_game.md) (1 shared connections)
+- [subject nats manager](subject_nats_manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- `server/commands/magic_commands.py`
+- `server/game/magic/spell_learning_service.py`
+- `server/tests/unit/game/magic/test_spell_learning_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 49 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 139 (92%)
+- INFERRED: 12 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,6 +1,6 @@
 # App helpers professionSystemErrorHandlin
 
-> 59 nodes
+> 56 nodes
 
 ## Key Concepts
 
@@ -14,7 +14,6 @@
 - **registerAppTestHooks()** (11 connections) — `client/src/__tests__/app.test.helpers.ts`
 - **fetchSpy** (10 connections) — `client/src/__tests__/app.test.mocks.tsx`
 - **AppRouter.tsx** (9 connections) — `client/src/AppRouter.tsx`
-- **App.logout.test.tsx** (8 connections) — `client/src/__tests__/App.logout.test.tsx`
 - **App.keyboard.test.tsx** (7 connections) — `client/src/__tests__/App.keyboard.test.tsx`
 - **App.loading.test.tsx** (7 connections) — `client/src/__tests__/App.loading.test.tsx`
 - **App.login.test.tsx** (7 connections) — `client/src/__tests__/App.login.test.tsx`
@@ -29,14 +28,15 @@
 - **StatRollingWithProfessionRequirements.test.tsx** (5 connections) — `client/src/__tests__/StatRollingWithProfessionRequirements.test.tsx`
 - **createMockProfessions()** (5 connections) — `client/src/__tests__/professionSystemErrorHandling.test.helpers.ts`
 - **LogoutFlow.integration.test.tsx** (5 connections) — `client/src/components/__tests__/LogoutFlow.integration.test.tsx`
-- *... and 34 more nodes in this community*
+- **createMockProfessionsFetchResponse()** (4 connections) — `client/src/__tests__/app.test.helpers.ts`
+- *... and 31 more nodes in this community*
 
 ## Relationships
 
-- [SkillAssignmentScreen helpers CharacterN](SkillAssignmentScreen_helpers_CharacterN.md) (4 shared connections)
-- [mythosApp security submitAuth](mythosApp_security_submitAuth.md) (4 shared connections)
-- [auth invites rationale](auth_invites_rationale.md) (2 shared connections)
-- [npc behavior engine](npc_behavior_engine.md) (2 shared connections)
+- [auth invites rationale](auth_invites_rationale.md) (4 shared connections)
+- [logout command commands](logout_command_commands.md) (2 shared connections)
+- [game chat moderation](game_chat_moderation.md) (2 shared connections)
+- [SkillAssignmentScreen helpers CharacterN](SkillAssignmentScreen_helpers_CharacterN.md) (2 shared connections)
 - [panels GameClientV2Dock gameLogPanelUtil](panels_GameClientV2Dock_gameLogPanelUtil.md) (1 shared connections)
 
 ## Source Files
@@ -49,7 +49,6 @@
 - `client/src/__tests__/App.keyboard.test.tsx`
 - `client/src/__tests__/App.loading.test.tsx`
 - `client/src/__tests__/App.login.test.tsx`
-- `client/src/__tests__/App.logout.test.tsx`
 - `client/src/__tests__/App.logoutError.test.tsx`
 - `client/src/__tests__/App.motd.test.tsx`
 - `client/src/__tests__/App.registration.test.tsx`
@@ -61,10 +60,11 @@
 - `client/src/__tests__/ProfessionSelectionVariants.test.tsx`
 - `client/src/__tests__/ProfessionSystemErrorHandling.test.tsx`
 - `client/src/__tests__/StatRollingWithProfessionRequirements.test.tsx`
+- `client/src/__tests__/app.test.helpers.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 303 (100%)
+- EXTRACTED: 293 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,41 +1,41 @@
 # models npc rationale
 
-> 17 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **parse_json_field()** (11 connections) — `server/npc/zone_config_loader.py`
-- **_store_subzone_row()** (9 connections) — `server/npc/zone_config_loader.py`
-- **parse_zone_special_rules()** (6 connections) — `server/npc/zone_config_loader.py`
-- **test_parse_json_field_none()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_parse_json_field_string()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_parse_json_field_dict()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_parse_json_field_list()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_parse_json_field_invalid_json()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **Record** (1 connections)
-- **Parse a JSON field from database, handling both dict/list and string formats.** (1 connections) — `server/npc/zone_config_loader.py`
-- **Parse a zone special_rules field from the database.** (1 connections) — `server/npc/zone_config_loader.py`
-- **Build and store one subzone configuration from a database row.** (1 connections) — `server/npc/zone_config_loader.py`
-- **Test parse_json_field() returns default when None.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **Test parse_json_field() parses JSON string.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **Test parse_json_field() returns dict as-is.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **Test parse_json_field() returns list as-is.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **Test parse_json_field() raises error on invalid JSON string.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_message_builders.py** (15 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **_builder()** (8 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **test_create_player_entered_message()** (4 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **test_create_player_left_message()** (4 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **test_get_next_sequence_uses_callable()** (3 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **test_get_next_sequence_non_callable_returns_zero()** (3 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **test_create_npc_movement_message_variants()** (3 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **test_build_occupants_update_message()** (3 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **test_build_room_update_message()** (3 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **test_build_room_state_message()** (3 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **Unit tests for MessageBuilder.** (1 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **Sequence counter callable is invoked.** (1 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **Non-callable sequence counter returns 0.** (1 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **Player entered message includes ids and player name.** (1 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **Player left message includes ids and player name.** (1 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **NPC movement messages cover direction and movement type branches.** (1 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **Occupants update includes structured and legacy fields.** (1 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **Room update wraps room data without occupants.** (1 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **Room state includes occupants from room_data.** (1 connections) — `server/tests/unit/realtime/test_message_builders.py`
 
 ## Relationships
 
-- [spell game magic](spell_game_magic.md) (10 shared connections)
-- [container events rationale](container_events_rationale.md) (5 shared connections)
-- [validator room toolkit](validator_room_toolkit.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (9 shared connections)
+- [inventory mutation guard](inventory_mutation_guard.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/zone_config_loader.py`
-- `server/tests/unit/npc/test_zone_config_loader.py`
+- `server/tests/unit/realtime/test_message_builders.py`
 
 ## Audit Trail
 
-- EXTRACTED: 50 (100%)
+- EXTRACTED: 58 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

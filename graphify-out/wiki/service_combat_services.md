@@ -1,28 +1,26 @@
 # service combat services
 
-> 6 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **.on_enter_state()** (4 connections) — `server/realtime/connection_state_machine.py`
-- **.get_stats()** (3 connections) — `server/realtime/connection_state_machine.py`
-- **State** (2 connections)
-- **Any** (2 connections)
-- **Called whenever state machine enters a new state.          Logs state transition** (1 connections) — `server/realtime/connection_state_machine.py`
-- **Get connection statistics.          Returns:             Dictionary with connect** (1 connections) — `server/realtime/connection_state_machine.py`
+- **.handle_player_attack_on_npc()** (4 connections) — `server/services/npc_combat_integration_service.py`
+- **._complete_player_attack_on_npc_after_grace()** (3 connections) — `server/services/npc_combat_integration_service.py`
+- **Player attack path after login grace check passes.** (1 connections) — `server/services/npc_combat_integration_service.py`
+- **Handle a player attacking an NPC using auto-progression combat system.** (1 connections) — `server/services/npc_combat_integration_service.py`
 
 ## Relationships
 
-- [connection state machine](connection_state_machine.md) (2 shared connections)
-- [shutdown admin command](shutdown_admin_command.md) (1 shared connections)
+- [grace period login](grace_period_login.md) (2 shared connections)
+- [config models game](config_models_game.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_state_machine.py`
+- `server/services/npc_combat_integration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

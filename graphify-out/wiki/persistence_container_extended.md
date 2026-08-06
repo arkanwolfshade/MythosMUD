@@ -1,55 +1,59 @@
 # persistence container extended
 
-> 48 nodes
+> 82 nodes
 
 ## Key Concepts
 
-- **test_dependency_injection.py** (18 connections) — `server/tests/unit/test_dependency_injection.py`
-- **get_player_service_for_testing()** (9 connections) — `server/dependencies.py`
-- **get_stats_generator()** (8 connections) — `server/dependencies.py`
-- **TestGetContainer** (8 connections) — `server/tests/unit/test_dependency_injection.py`
-- **TestGetPlayerService** (7 connections) — `server/tests/unit/test_dependency_injection.py`
-- **TestGetPlayerServiceForTesting** (7 connections) — `server/tests/unit/test_dependency_injection.py`
-- **TestGetRoomService** (7 connections) — `server/tests/unit/test_dependency_injection.py`
-- **TestGetStatsGenerator** (7 connections) — `server/tests/unit/test_dependency_injection.py`
-- **TestGetPlayerServiceForTesting** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_player_service_for_testing_creates_mock()** (4 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **TestGetStatsGenerator** (4 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_player_service_success()** (4 connections) — `server/tests/unit/test_dependency_injection.py`
-- **.test_get_player_service_for_testing_with_injection()** (4 connections) — `server/tests/unit/test_dependency_injection.py`
-- **.test_get_player_service_for_testing_without_injection()** (4 connections) — `server/tests/unit/test_dependency_injection.py`
-- **.test_get_room_service_success()** (4 connections) — `server/tests/unit/test_dependency_injection.py`
-- **.test_get_stats_generator()** (4 connections) — `server/tests/unit/test_dependency_injection.py`
-- **.test_get_stats_generator_stateless()** (4 connections) — `server/tests/unit/test_dependency_injection.py`
-- **.test_get_player_service_for_testing_with_provided_service()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_stats_generator_returns_instance()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **.test_get_container_success()** (3 connections) — `server/tests/unit/test_dependency_injection.py`
-- **.test_get_container_missing()** (3 connections) — `server/tests/unit/test_dependency_injection.py`
-- **.test_get_container_no_app_state()** (3 connections) — `server/tests/unit/test_dependency_injection.py`
-- **.test_get_player_service_not_initialized()** (3 connections) — `server/tests/unit/test_dependency_injection.py`
-- **.test_get_room_service_not_initialized()** (3 connections) — `server/tests/unit/test_dependency_injection.py`
-- **Get a PlayerService instance for testing purposes.      This function allows tes** (1 connections) — `server/dependencies.py`
-- *... and 23 more nodes in this community*
+- **test_combat_attack_handler.py** (37 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **CombatAttackHandler** (17 connections) — `server/services/combat_attack_handler.py`
+- **._apply_damage()** (9 connections) — `server/services/combat_attack_handler.py`
+- **.validate_and_get_combat_participants()** (6 connections) — `server/services/combat_attack_handler.py`
+- **.apply_attack_damage()** (5 connections) — `server/services/combat_attack_handler.py`
+- **._validate_attack()** (4 connections) — `server/services/combat_attack_handler.py`
+- **._room_has_no_death()** (4 connections) — `server/services/combat_attack_handler.py`
+- **test_apply_damage_blocked_during_grace_period()** (4 connections) — `server/tests/unit/services/test_damage_grace_period.py`
+- **.__init__()** (3 connections) — `server/services/combat_attack_handler.py`
+- **attack_handler()** (3 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **mock_combat()** (3 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **mock_attacker()** (3 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **mock_target_player()** (3 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **mock_target_npc()** (3 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_apply_damage_player_no_death_room_caps_damage()** (3 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_apply_damage_player_no_death_room_zero_damage_when_at_zero()** (3 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_apply_damage_allowed_after_grace_period()** (3 connections) — `server/tests/unit/services/test_damage_grace_period.py`
+- **test_apply_damage_fails_open_on_error()** (3 connections) — `server/tests/unit/services/test_damage_grace_period.py`
+- **UUID** (2 connections)
+- **mock_combat_service()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_attack_handler_init()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_validate_attack_active()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_validate_attack_inactive()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_apply_damage_player()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_apply_damage_player_kills()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- *... and 57 more nodes in this community*
 
 ## Relationships
 
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (17 shared connections)
-- [persistence core infrastructure](persistence_core_infrastructure.md) (13 shared connections)
-- [System Metrics](System_Metrics.md) (10 shared connections)
-- [maps handle ascii](maps_handle_ascii.md) (7 shared connections)
-- [add used user](add_used_user.md) (1 shared connections)
-- [database helpers infrastructure](database_helpers_infrastructure.md) (1 shared connections)
+- [Item Instances](Item_Instances.md) (16 shared connections)
+- [command factories exploration](command_factories_exploration.md) (8 shared connections)
+- [command utility models](command_utility_models.md) (2 shared connections)
+- [Memory Task Runtime](Memory_Task_Runtime.md) (1 shared connections)
+- [npc database infrastructure](npc_database_infrastructure.md) (1 shared connections)
+- [correct patterns examples](correct_patterns_examples.md) (1 shared connections)
+- [circuit breaker realtime](circuit_breaker_realtime.md) (1 shared connections)
+- [message nats handler](message_nats_handler.md) (1 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (1 shared connections)
+- [cleanup combat handler](cleanup_combat_handler.md) (1 shared connections)
 
 ## Source Files
 
-- `server/dependencies.py`
-- `server/tests/unit/infrastructure/test_dependencies.py`
-- `server/tests/unit/test_dependency_injection.py`
+- `server/services/combat_attack_handler.py`
+- `server/tests/unit/services/test_combat_attack_handler.py`
+- `server/tests/unit/services/test_damage_grace_period.py`
 
 ## Audit Trail
 
-- EXTRACTED: 129 (84%)
-- INFERRED: 24 (16%)
+- EXTRACTED: 197 (97%)
+- INFERRED: 6 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

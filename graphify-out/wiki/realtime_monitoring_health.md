@@ -1,26 +1,23 @@
 # realtime monitoring health
 
-> 5 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **add_fastapi_users_columns.py** (4 connections) — `server/scripts/add_fastapi_users_columns.py`
-- **apply_migration()** (3 connections) — `server/scripts/add_fastapi_users_columns.py`
-- **main()** (3 connections) — `server/scripts/add_fastapi_users_columns.py`
-- **Apply the migration to add FastAPI Users columns.      Args:         database_ur** (1 connections) — `server/scripts/add_fastapi_users_columns.py`
-- **Main entry point for the migration script.** (1 connections) — `server/scripts/add_fastapi_users_columns.py`
+- **test_event_bus_set_main_loop()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test EventBus.set_main_loop() sets main loop.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [event bus events](event_bus_events.md) (1 shared connections)
 
 ## Source Files
 
-- `server/scripts/add_fastapi_users_columns.py`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

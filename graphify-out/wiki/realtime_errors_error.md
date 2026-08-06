@@ -33,9 +33,9 @@
 
 ## Relationships
 
-- [tools generate invite](tools_generate_invite.md) (3 shared connections)
-- [spell models rationale](spell_models_rationale.md) (3 shared connections)
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [circuit breaker realtime](circuit_breaker_realtime.md) (3 shared connections)
+- [command player state](command_player_state.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
 
 ## Source Files
 

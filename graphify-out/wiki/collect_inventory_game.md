@@ -34,8 +34,8 @@
 ## Relationships
 
 - [quest game service](quest_game_service.md) (7 shared connections)
-- [persistence rationale players](persistence_rationale_players.md) (3 shared connections)
-- [EdgeCreationModal map STANDARD](EdgeCreationModal_map_STANDARD.md) (1 shared connections)
+- [game weapon player](game_weapon_player.md) (3 shared connections)
+- [services service phantom](services_service_phantom.md) (1 shared connections)
 
 ## Source Files
 

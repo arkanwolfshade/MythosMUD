@@ -1,64 +1,64 @@
 # websocket handler realtime
 
-> 189 nodes
+> 147 nodes
 
 ## Key Concepts
 
-- **AuthenticationError** (63 connections) — `server/exceptions.py`
-- **test_auth_utils.py** (52 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_argon2_utils.py** (42 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **create_access_token()** (32 connections) — `server/auth_utils.py`
-- **hash_password()** (27 connections) — `server/auth/argon2_utils.py`
-- **decode_access_token()** (25 connections) — `server/auth_utils.py`
-- **argon2_utils.py** (18 connections) — `server/auth/argon2_utils.py`
-- **hash_password()** (18 connections) — `server/auth_utils.py`
-- **auth_utils.py** (17 connections) — `server/auth_utils.py`
-- **verify_password()** (16 connections) — `server/auth/argon2_utils.py`
-- **create_hasher_with_params()** (11 connections) — `server/auth/argon2_utils.py`
-- **is_argon2_hash()** (9 connections) — `server/auth/argon2_utils.py`
-- **verify_password()** (9 connections) — `server/auth_utils.py`
-- **needs_rehash()** (7 connections) — `server/auth/argon2_utils.py`
-- **get_hash_info()** (6 connections) — `server/auth/argon2_utils.py`
-- **test_create_access_token_attribute_error()** (5 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_decode_access_token_attribute_error()** (5 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_verify_password_success()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_verify_password_failure()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_hash_password_empty_string()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_verify_password_empty_string()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_hash_password_invalid_type()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_hash_password_non_string_type()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_verify_password_non_string_password()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **test_is_argon2_hash_valid()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- *... and 164 more nodes in this community*
+- **test_users.py** (53 connections) — `server/tests/unit/auth/test_users.py`
+- **users.py** (49 connections) — `server/auth/users.py`
+- **UserManager** (46 connections) — `server/auth/users.py`
+- **RestartInvalidatingJWTStrategy** (15 connections) — `server/auth/jwt_strategy.py`
+- **get_user_manager()** (13 connections) — `server/auth/users.py`
+- **get_auth_backend()** (12 connections) — `server/auth/users.py`
+- **test_email_utils.py** (12 connections) — `server/tests/unit/auth/test_email_utils.py`
+- **get_user_db()** (11 connections) — `server/auth/users.py`
+- **email_utils.py** (10 connections) — `server/auth/email_utils.py`
+- **UsernameAuthenticationBackend** (9 connections) — `server/auth/users.py`
+- **get_username_auth_backend()** (9 connections) — `server/auth/users.py`
+- **generate_unique_bogus_email()** (8 connections) — `server/auth/email_utils.py`
+- **__init__.py** (7 connections) — `server/auth/__init__.py`
+- **is_bogus_email()** (7 connections) — `server/auth/email_utils.py`
+- **validate_bogus_email_format()** (7 connections) — `server/auth/email_utils.py`
+- **.read_token()** (7 connections) — `server/auth/jwt_strategy.py`
+- **UUID** (7 connections)
+- **.login()** (6 connections) — `server/auth/users.py`
+- **.__init__()** (5 connections) — `server/auth/users.py`
+- **.on_after_register()** (5 connections) — `server/auth/users.py`
+- **.on_after_forgot_password()** (4 connections) — `server/auth/users.py`
+- **.on_after_request_verify()** (4 connections) — `server/auth/users.py`
+- **test_user_manager_on_after_register_bogus_email()** (4 connections) — `server/tests/unit/auth/test_users.py`
+- **test_user_manager_on_after_register_non_bogus_email()** (4 connections) — `server/tests/unit/auth/test_users.py`
+- **test_user_manager_on_after_register_no_email()** (4 connections) — `server/tests/unit/auth/test_users.py`
+- *... and 122 more nodes in this community*
 
 ## Relationships
 
-- [Error Handling Core](Error_Handling_Core.md) (19 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (13 shared connections)
-- [handler realtime nats](handler_realtime_nats.md) (7 shared connections)
-- [auth users rationale](auth_users_rationale.md) (5 shared connections)
-- [player requests schemas](player_requests_schemas.md) (5 shared connections)
-- [Async Query Helpers](Async_Query_Helpers.md) (5 shared connections)
-- [Error Conversion](Error_Conversion.md) (4 shared connections)
-- [nats services metrics](nats_services_metrics.md) (4 shared connections)
-- [package argon2 engines](package_argon2_engines.md) (3 shared connections)
-- [room sync service](room_sync_service.md) (3 shared connections)
-- [connection realtime delegates](connection_realtime_delegates.md) (2 shared connections)
-- [player death service](player_death_service.md) (1 shared connections)
+- [player requests schemas](player_requests_schemas.md) (43 shared connections)
+- [persistence container rationale](persistence_container_rationale.md) (9 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (6 shared connections)
+- [package argon2 engines](package_argon2_engines.md) (5 shared connections)
+- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [Exception Containers](Exception_Containers.md) (2 shared connections)
+- [maps handle ascii](maps_handle_ascii.md) (2 shared connections)
+- [command handler processing](command_handler_processing.md) (2 shared connections)
+- [useWebSocketConnectionTestFixtures useWe](useWebSocketConnectionTestFixtures_useWe.md) (2 shared connections)
+- [channel broadcasting strategies](channel_broadcasting_strategies.md) (2 shared connections)
+- [combat npc service](combat_npc_service.md) (1 shared connections)
+- [metrics schemas rationale](metrics_schemas_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/auth/argon2_utils.py`
+- `server/auth/__init__.py`
+- `server/auth/email_utils.py`
+- `server/auth/jwt_strategy.py`
 - `server/auth/users.py`
-- `server/auth_utils.py`
-- `server/exceptions.py`
-- `server/tests/unit/auth/test_argon2_utils.py`
-- `server/tests/unit/auth/test_auth_utils.py`
+- `server/tests/unit/auth/test_email_utils.py`
+- `server/tests/unit/auth/test_users.py`
 
 ## Audit Trail
 
-- EXTRACTED: 663 (91%)
-- INFERRED: 66 (9%)
+- EXTRACTED: 517 (96%)
+- INFERRED: 21 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

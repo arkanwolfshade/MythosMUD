@@ -1,27 +1,27 @@
 # persistence constants rationale
 
-> 6 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_websocket_handler_helpers.py** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers.py`
-- **test_is_websocket_disconnected_true()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers.py`
-- **test_is_websocket_disconnected_false()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers.py`
-- **Unit tests for websocket handler helper functions.  Tests the helper functions i** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers.py`
-- **Test _is_websocket_disconnected() returns True for disconnection messages.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers.py`
-- **Test _is_websocket_disconnected() returns False for other messages.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers.py`
+- **benchmark_validation_performance()** (5 connections) — `server/validators/optimized_security_validator.py`
+- **test_benchmark_validation_performance()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test benchmark function runs without errors.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Benchmark the performance of optimized vs original validation functions.** (1 connections) — `server/validators/optimized_security_validator.py`
 
 ## Relationships
 
-- [command commands aliases](command_commands_aliases.md) (1 shared connections)
+- [optimized security validator](optimized_security_validator.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_websocket_handler_helpers.py`
+- `server/tests/unit/validators/test_optimized_security_validator.py`
+- `server/validators/optimized_security_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 10 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,78 +1,73 @@
 # add used user
 
-> 321 nodes
+> 154 nodes
 
 ## Key Concepts
 
-- **ValidationError** (582 connections) — `server/exceptions.py`
-- **player_service.py** (45 connections) — `server/game/player_service.py`
-- **test_player_service_mutations.py** (34 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_command_factories_communication.py** (29 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **test_command_factories_moderation.py** (29 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
+- **log_and_raise()** (186 connections) — `server/utils/error_logging.py`
+- **error_logging.py** (61 connections) — `server/utils/error_logging.py`
+- **movement_service.py** (28 connections) — `server/game/movement_service.py`
 - **ExperienceRepository** (28 connections) — `server/persistence/repositories/experience_repository.py`
+- **container_service_session.py** (28 connections) — `server/services/container_service_session.py`
 - **GameMechanicsService** (27 connections) — `server/game/mechanics.py`
-- **test_command_factories_player_state.py** (27 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- **container_service_lock.py** (26 connections) — `server/services/container_service_lock.py`
+- **ContainerAccessMixin** (19 connections) — `server/services/container_service_access.py`
+- **experience_repository.py** (16 connections) — `server/persistence/repositories/experience_repository.py`
+- **SpellRepository** (16 connections) — `server/persistence/repositories/spell_repository.py`
 - **test_mechanics.py** (16 connections) — `server/tests/unit/game/test_mechanics.py`
 - **test_experience_repository.py** (16 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
-- **validate_room_data()** (16 connections) — `server/world_loader.py`
-- **player_respawn_wrapper.py** (15 connections) — `server/game/player_respawn_wrapper.py`
-- **PlayerRespawnWrapper** (15 connections) — `server/game/player_respawn_wrapper.py`
-- **player_creation_service.py** (14 connections) — `server/game/player_creation_service.py`
+- **async_persistence_direct_queries.py** (15 connections) — `server/async_persistence_direct_queries.py`
+- **skill_use_log_repository.py** (14 connections) — `server/persistence/repositories/skill_use_log_repository.py`
+- **spell_repository.py** (14 connections) — `server/persistence/repositories/spell_repository.py`
+- **ContainerLockMixin** (14 connections) — `server/services/container_service_lock.py`
+- **test_spell_repository.py** (14 connections) — `server/tests/unit/persistence/repositories/test_spell_repository.py`
 - **mechanics.py** (13 connections) — `server/game/mechanics.py`
-- **test_player_respawn_wrapper.py** (13 connections) — `server/tests/unit/game/test_player_respawn_wrapper.py`
-- **PlayerStateService** (12 connections) — `server/game/player_state_service.py`
-- **TestValidateRoomData** (11 connections) — `server/tests/unit/test_world_loader.py`
-- **PlayerSearchService** (10 connections) — `server/game/player_search_service.py`
-- **player_state_service.py** (10 connections) — `server/game/player_state_service.py`
-- **PlayerCreationService** (9 connections) — `server/game/player_creation_service.py`
-- **.create_player_with_stats()** (9 connections) — `server/game/player_creation_service.py`
-- **.create_player()** (8 connections) — `server/game/player_creation_service.py`
-- **.__init__()** (8 connections) — `server/game/player_service.py`
-- **.load_container_from_room_json()** (8 connections) — `server/services/environmental_container_loader.py`
-- *... and 296 more nodes in this community*
+- **._require_container_for_lock_ops()** (10 connections) — `server/services/container_service_lock.py`
+- **fetch_user_by_username_case_insensitive()** (9 connections) — `server/async_persistence_direct_queries.py`
+- **fetch_professions()** (9 connections) — `server/async_persistence_direct_queries.py`
+- **._validate_container_access()** (8 connections) — `server/services/container_service_access.py`
+- **._require_player_for_lock_ops()** (8 connections) — `server/services/container_service_lock.py`
+- **._raise_if_cannot_lock()** (8 connections) — `server/services/container_service_lock.py`
+- **._persist_lock_state()** (8 connections) — `server/services/container_service_lock.py`
+- *... and 129 more nodes in this community*
 
 ## Relationships
 
-- [commands shutdown process](commands_shutdown_process.md) (86 shared connections)
-- [Inventory Equip](Inventory_Equip.md) (52 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (39 shared connections)
-- [command communication models](command_communication_models.md) (34 shared connections)
-- [services inventory mutation](services_inventory_mutation.md) (28 shared connections)
-- [command inventory models](command_inventory_models.md) (28 shared connections)
-- [health models rationale](health_models_rationale.md) (26 shared connections)
-- [Error Handling Core](Error_Handling_Core.md) (24 shared connections)
-- [npc commands admin](npc_commands_admin.md) (24 shared connections)
-- [player service game](player_service_game.md) (21 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (21 shared connections)
-- [Error Conversion](Error_Conversion.md) (18 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (42 shared connections)
+- [player effects endpoints](player_effects_endpoints.md) (34 shared connections)
+- [commands party examples](commands_party_examples.md) (29 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (24 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (20 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (18 shared connections)
+- [command inventory models](command_inventory_models.md) (17 shared connections)
+- [player event handlers](player_event_handlers.md) (17 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (16 shared connections)
+- [level curve game](level_curve_game.md) (14 shared connections)
+- [command combat models](command_combat_models.md) (12 shared connections)
+- [taunt combat commands](taunt_combat_commands.md) (11 shared connections)
 
 ## Source Files
 
-- `server/exceptions.py`
+- `server/async_persistence.py`
+- `server/async_persistence_direct_queries.py`
 - `server/game/mechanics.py`
-- `server/game/player_creation_service.py`
-- `server/game/player_respawn_wrapper.py`
-- `server/game/player_search_service.py`
-- `server/game/player_service.py`
-- `server/game/player_state_service.py`
-- `server/npc/combat_integration.py`
+- `server/game/movement_service.py`
+- `server/npc/combat_integration_base.py`
 - `server/persistence/repositories/experience_repository.py`
-- `server/services/environmental_container_loader.py`
+- `server/persistence/repositories/skill_use_log_repository.py`
+- `server/persistence/repositories/spell_repository.py`
+- `server/services/container_service_access.py`
+- `server/services/container_service_lock.py`
+- `server/services/container_service_session.py`
 - `server/tests/unit/game/test_mechanics.py`
-- `server/tests/unit/game/test_player_respawn_wrapper.py`
-- `server/tests/unit/game/test_player_service_mutations.py`
-- `server/tests/unit/models/test_container.py`
 - `server/tests/unit/persistence/repositories/test_experience_repository.py`
-- `server/tests/unit/test_world_loader.py`
-- `server/tests/unit/utils/test_command_factories_communication.py`
-- `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- `server/tests/unit/utils/test_command_factories_moderation.py`
-- `server/tests/unit/utils/test_command_factories_player_state.py`
+- `server/tests/unit/persistence/repositories/test_spell_repository.py`
+- `server/utils/error_logging.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1159 (68%)
-- INFERRED: 538 (32%)
+- EXTRACTED: 893 (94%)
+- INFERRED: 57 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

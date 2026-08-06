@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_move_player_validation_fails()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
-- **Test move_player returns False when validation fails.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_extract_occupant_names_empty_list()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test extract_occupant_names() with empty list.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [movement service game](movement_service_game.md) (1 shared connections)
+- [player event handlers](player_event_handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_movement_service.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 

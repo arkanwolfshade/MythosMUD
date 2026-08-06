@@ -1,51 +1,58 @@
 # player left room
 
-> 20 nodes
+> 26 nodes
 
 ## Key Concepts
 
-- **alias_expansion.py** (17 connections) — `server/command_handler/alias_expansion.py`
-- **test_alias_expansion.py** (13 connections) — `server/tests/unit/commands/test_alias_expansion.py`
-- **handle_expanded_command()** (11 connections) — `server/command_handler/alias_expansion.py`
-- **check_alias_safety()** (10 connections) — `server/command_handler/alias_expansion.py`
-- **validate_expanded_command()** (10 connections) — `server/command_handler/alias_expansion.py`
-- **Any** (2 connections)
-- **CommandExecutionRequest** (2 connections)
-- **test_check_alias_safety_cycle_detected()** (2 connections) — `server/tests/unit/commands/test_alias_expansion.py`
-- **test_check_alias_safety_depth_too_deep()** (2 connections) — `server/tests/unit/commands/test_alias_expansion.py`
-- **test_check_alias_safety_ok()** (2 connections) — `server/tests/unit/commands/test_alias_expansion.py`
-- **test_validate_expanded_command_too_long()** (2 connections) — `server/tests/unit/commands/test_alias_expansion.py`
-- **test_validate_expanded_command_invalid_content()** (2 connections) — `server/tests/unit/commands/test_alias_expansion.py`
-- **test_validate_expanded_command_ok()** (2 connections) — `server/tests/unit/commands/test_alias_expansion.py`
-- **test_handle_expanded_command_depth_limit()** (2 connections) — `server/tests/unit/commands/test_alias_expansion.py`
-- **test_handle_expanded_command_delegates()** (2 connections) — `server/tests/unit/commands/test_alias_expansion.py`
-- **Alias Expansion Logic for MythosMUD.  This module handles alias resolution, expa** (1 connections) — `server/command_handler/alias_expansion.py`
-- **Check if an alias is safe to expand.      Builds an alias dependency graph and c** (1 connections) — `server/command_handler/alias_expansion.py`
-- **Validate an expanded command for length and content.      Args:         expanded** (1 connections) — `server/command_handler/alias_expansion.py`
-- **Handle command processing with alias expansion and loop detection.      This fun** (1 connections) — `server/command_handler/alias_expansion.py`
-- **Unit tests for alias_expansion module.** (1 connections) — `server/tests/unit/commands/test_alias_expansion.py`
+- **RoomCacheService** (38 connections) — `server/caching/cache_service.py`
+- **TestRoomCacheService** (17 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **_RoomObj** (9 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.__init__()** (7 connections) — `server/caching/cache_service.py`
+- **.__init__()** (4 connections) — `server/caching/cache_service.py`
+- **.test_init_uses_existing_rooms_cache()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_init_lazy_creates_rooms_cache()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_init_concurrent_create_uses_existing()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_room_sync_miss_with_to_dict()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_preload_rooms()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.invalidate_room()** (2 connections) — `server/caching/cache_service.py`
+- **.preload_rooms()** (2 connections) — `server/caching/cache_service.py`
+- **.to_dict()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.persistence()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_room_cache_hit()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_room_miss_with_to_dict()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_room_miss_returns_none()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_room_sync_cache_hit()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_room_sync_miss_caches_dict()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_invalidate_room()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **Service for caching room data.** (1 connections) — `server/caching/cache_service.py`
+- **Initialize the room cache service.          Args:             persistence: Persi** (1 connections) — `server/caching/cache_service.py`
+- **Invalidate cached room data.          Args:             room_id: The room ID to** (1 connections) — `server/caching/cache_service.py`
+- **Preload multiple rooms into cache.          Args:             room_ids: List of** (1 connections) — `server/caching/cache_service.py`
+- **Initialize the cache service.          Args:             persistence: Persistenc** (1 connections) — `server/caching/cache_service.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [player model models](player_model_models.md) (7 shared connections)
-- [command validation commands](command_validation_commands.md) (6 shared connections)
-- [alias graph rationale](alias_graph_rationale.md) (3 shared connections)
-- [command validator validators](command_validator_validators.md) (3 shared connections)
-- [combat attack handler](combat_attack_handler.md) (2 shared connections)
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
-- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (1 shared connections)
-- [alias storage rationale](alias_storage_rationale.md) (1 shared connections)
-- [task registry app](task_registry_app.md) (1 shared connections)
+- [admin commands setstat](admin_commands_setstat.md) (11 shared connections)
+- [services lucidity repository](services_lucidity_repository.md) (6 shared connections)
+- [player requests schemas](player_requests_schemas.md) (6 shared connections)
+- [message realtime messaging](message_realtime_messaging.md) (5 shared connections)
+- [room build realtime](room_build_realtime.md) (3 shared connections)
+- [persistence container helpers](persistence_container_helpers.md) (3 shared connections)
+- [caching lru cache](caching_lru_cache.md) (1 shared connections)
+- [combat models rationale](combat_models_rationale.md) (1 shared connections)
+- [nats services service](nats_services_service.md) (1 shared connections)
+- [maps handle ascii](maps_handle_ascii.md) (1 shared connections)
 
 ## Source Files
 
-- `server/command_handler/alias_expansion.py`
-- `server/tests/unit/commands/test_alias_expansion.py`
+- `server/caching/cache_service.py`
+- `server/tests/unit/caching/test_cache_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 84 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 96 (83%)
+- INFERRED: 20 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

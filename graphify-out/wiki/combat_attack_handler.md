@@ -1,12 +1,18 @@
 # combat attack handler
 
-> 32 nodes
+> 54 nodes
 
 ## Key Concepts
 
 - **processing.py** (26 connections) — `server/command_handler/processing.py`
+- **alias_expansion.py** (17 connections) — `server/command_handler/alias_expansion.py`
 - **test_command_processing.py** (15 connections) — `server/tests/unit/commands/test_command_processing.py`
+- **__init__.py** (13 connections) — `server/command_handler/__init__.py`
 - **process_command_with_validation()** (13 connections) — `server/command_handler/processing.py`
+- **test_alias_expansion.py** (13 connections) — `server/tests/unit/commands/test_alias_expansion.py`
+- **handle_expanded_command()** (11 connections) — `server/command_handler/alias_expansion.py`
+- **check_alias_safety()** (10 connections) — `server/command_handler/alias_expansion.py`
+- **validate_expanded_command()** (10 connections) — `server/command_handler/alias_expansion.py`
 - **_dispatch_parsed_command()** (8 connections) — `server/command_handler/processing.py`
 - **_run_command_service_for_validated()** (7 connections) — `server/command_handler/processing.py`
 - **_log_security_sensitive_command()** (7 connections) — `server/command_handler/processing.py`
@@ -16,45 +22,42 @@
 - **CommandExecutionRequest** (5 connections)
 - **test_handle_validation_error_security_sensitive()** (3 connections) — `server/tests/unit/commands/test_command_processing.py`
 - **test_process_command_with_validation_validation_error()** (3 connections) — `server/tests/unit/commands/test_command_processing.py`
+- **Any** (2 connections)
+- **CommandExecutionRequest** (2 connections)
 - **ValidationError** (2 connections)
 - **Exception** (2 connections)
-- **test_parse_command_line_or_client_error_with_message()** (2 connections) — `server/tests/unit/commands/test_command_processing.py`
-- **test_parse_command_line_or_client_error_no_validated()** (2 connections) — `server/tests/unit/commands/test_command_processing.py`
-- **test_parse_command_line_or_client_error_success()** (2 connections) — `server/tests/unit/commands/test_command_processing.py`
-- **test_dispatch_parsed_command_client_error()** (2 connections) — `server/tests/unit/commands/test_command_processing.py`
-- **test_dispatch_parsed_command_success()** (2 connections) — `server/tests/unit/commands/test_command_processing.py`
-- **test_run_command_service_security_sensitive_audit()** (2 connections) — `server/tests/unit/commands/test_command_processing.py`
-- **test_log_security_sensitive_command_no_session()** (2 connections) — `server/tests/unit/commands/test_command_processing.py`
-- **test_handle_processing_error()** (2 connections) — `server/tests/unit/commands/test_command_processing.py`
-- **test_process_command_with_validation_generic_error()** (2 connections) — `server/tests/unit/commands/test_command_processing.py`
-- **Command Processing Logic for MythosMUD.  This module contains the core command** (1 connections) — `server/command_handler/processing.py`
-- **Validate the raw command string via CommandProcessor.      Returns:         (** (1 connections) — `server/command_handler/processing.py`
-- *... and 7 more nodes in this community*
+- **test_check_alias_safety_cycle_detected()** (2 connections) — `server/tests/unit/commands/test_alias_expansion.py`
+- **test_check_alias_safety_depth_too_deep()** (2 connections) — `server/tests/unit/commands/test_alias_expansion.py`
+- **test_check_alias_safety_ok()** (2 connections) — `server/tests/unit/commands/test_alias_expansion.py`
+- *... and 29 more nodes in this community*
 
 ## Relationships
 
-- [command validator validators](command_validator_validators.md) (6 shared connections)
-- [command validation commands](command_validation_commands.md) (5 shared connections)
-- [add used user](add_used_user.md) (4 shared connections)
-- [player model models](player_model_models.md) (3 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (2 shared connections)
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
-- [Security Validator Tests](Security_Validator_Tests.md) (2 shared connections)
-- [player left room](player_left_room.md) (2 shared connections)
-- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (1 shared connections)
-- [alias storage rationale](alias_storage_rationale.md) (1 shared connections)
-- [realtime real time](realtime_real_time.md) (1 shared connections)
-- [combat services initialization](combat_services_initialization.md) (1 shared connections)
+- [command commands handler](command_commands_handler.md) (14 shared connections)
+- [command validator validators](command_validator_validators.md) (9 shared connections)
+- [command validation commands](command_validation_commands.md) (7 shared connections)
+- [commands npc admin](commands_npc_admin.md) (4 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (4 shared connections)
+- [command inventory models](command_inventory_models.md) (4 shared connections)
+- [time service rationale](time_service_rationale.md) (3 shared connections)
+- [Security Validator Tests](Security_Validator_Tests.md) (3 shared connections)
+- [player effects endpoints](player_effects_endpoints.md) (2 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (2 shared connections)
+- [payload realtime optimizer](payload_realtime_optimizer.md) (2 shared connections)
+- [character creation service](character_creation_service.md) (1 shared connections)
 
 ## Source Files
 
+- `server/command_handler/__init__.py`
+- `server/command_handler/alias_expansion.py`
 - `server/command_handler/processing.py`
+- `server/tests/unit/commands/test_alias_expansion.py`
 - `server/tests/unit/commands/test_command_processing.py`
 
 ## Audit Trail
 
-- EXTRACTED: 133 (97%)
-- INFERRED: 4 (3%)
+- EXTRACTED: 231 (97%)
+- INFERRED: 6 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

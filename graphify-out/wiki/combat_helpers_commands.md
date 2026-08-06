@@ -1,35 +1,48 @@
 # combat helpers commands
 
-> 12 nodes
+> 68 nodes
 
 ## Key Concepts
 
-- **_find_dead_connections()** (11 connections) — `server/realtime/connection_establishment.py`
-- **test_find_dead_connections_no_player()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_find_dead_connections_all_active()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_find_dead_connections_not_in_active()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_find_dead_connections_none_websocket()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_find_dead_connections_not_connected()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Find dead WebSocket connections for a player before acquiring lock.      Args:** (1 connections) — `server/realtime/connection_establishment.py`
-- **Test _find_dead_connections() returns empty list when player not found.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _find_dead_connections() returns empty list when all connections are active** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _find_dead_connections() skips connections not in active_websockets.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _find_dead_connections() raises ConnectionError when websocket is None.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _find_dead_connections() finds dead connections.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_nats_message_handler_subzone_events.py** (36 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_unsubscribe_from_subzone_error()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_handle_player_movement_exception()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_subscribe_to_subzone_error()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_subscribe_to_event_subjects_partial_failure()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_handle_player_movement_error()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_cleanup_empty_subzone_subscriptions_error()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_unsubscribe_from_subzone_decrease_count()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_unsubscribe_from_subzone_not_subscribed()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_track_player_subzone_subscription_different_subzone()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_get_players_in_subzone()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_get_players_in_subzone_empty()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_handle_player_movement_different_subzone()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_handle_player_movement_same_subzone()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_cleanup_empty_subzone_subscriptions()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_subscribe_to_subzone_no_subject_manager()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_unsubscribe_from_event_subjects_partial()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_get_event_subscription_count()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_is_event_subscription_active()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_get_user_manager_injected()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_get_user_manager_fallback()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_handle_player_movement_old_subzone_none()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_handle_player_movement_new_subzone_none()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_subscribe_to_subzone_subscribe_failure()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_unsubscribe_from_subzone_unsubscribe_failure()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- *... and 43 more nodes in this community*
 
 ## Relationships
 
-- [connection establishment realtime](connection_establishment_realtime.md) (6 shared connections)
-- [invite models rationale](invite_models_rationale.md) (4 shared connections)
+- [game chat service](game_chat_service.md) (7 shared connections)
+- [Memory Task Runtime](Memory_Task_Runtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_establishment.py`
-- `server/tests/unit/realtime/test_connection_establishment.py`
+- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
 
 ## Audit Trail
 
-- EXTRACTED: 32 (100%)
+- EXTRACTED: 142 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

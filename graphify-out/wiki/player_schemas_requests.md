@@ -1,44 +1,32 @@
 # player schemas requests
 
-> 21 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **.execute_idle_movement()** (8 connections) — `server/npc/idle_movement.py`
-- **_npc_id_str()** (7 connections) — `server/npc/idle_movement.py`
-- **.select_exit()** (6 connections) — `server/npc/idle_movement.py`
-- **._calculate_exit_weights()** (5 connections) — `server/npc/idle_movement.py`
-- **_passes_movement_probability()** (4 connections) — `server/npc/idle_movement.py`
-- **._try_idle_room_change()** (4 connections) — `server/npc/idle_movement.py`
-- **_cfg_bool()** (3 connections) — `server/npc/idle_movement.py`
-- **.get_valid_exits()** (3 connections) — `server/npc/idle_movement.py`
-- **._calculate_exit_weight()** (3 connections) — `server/npc/idle_movement.py`
-- **._select_weighted_exit()** (3 connections) — `server/npc/idle_movement.py`
-- **._calculate_distance_to_room()** (3 connections) — `server/npc/idle_movement.py`
-- **._log_idle_move_outcome()** (3 connections) — `server/npc/idle_movement.py`
-- **_cfg_float()** (2 connections) — `server/npc/idle_movement.py`
-- **_resolve_spawn_room()** (2 connections) — `server/npc/idle_movement.py`
-- **Get exits from current room that stay within subzone boundaries.          Args** (1 connections) — `server/npc/idle_movement.py`
-- **Calculate weight for an exit based on distance from spawn.          Args:** (1 connections) — `server/npc/idle_movement.py`
-- **Calculate weights for all exits.          Args:             valid_exits: Dict** (1 connections) — `server/npc/idle_movement.py`
-- **Select exit based on weighted probabilities.          Args:             exit_** (1 connections) — `server/npc/idle_movement.py`
-- **Select an exit using weighted random selection favoring exits closer to spawn ro** (1 connections) — `server/npc/idle_movement.py`
-- **Calculate approximate distance between two rooms.          This is a simplifie** (1 connections) — `server/npc/idle_movement.py`
-- **Execute idle movement for an NPC.          This method orchestrates the full i** (1 connections) — `server/npc/idle_movement.py`
+- **.get_player_and_room()** (6 connections) — `server/commands/combat_handler.py`
+- **AppWithState** (5 connections)
+- **._get_persistence_from_app()** (5 connections) — `server/commands/combat_handler.py`
+- **Get player data and room, returning error dict if any step fails. Public API.** (1 connections) — `server/commands/combat_handler.py`
+- **Resolve persistence from app (container preferred, then app.state). Returns None** (1 connections) — `server/commands/combat_handler.py`
+- **Get player data and room, returning error dict if any step fails.** (1 connections) — `server/commands/combat_handler.py`
 
 ## Relationships
 
-- [idle movement npc](idle_movement_npc.md) (14 shared connections)
-- [Error Conversion](Error_Conversion.md) (5 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (2 shared connections)
+- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (2 shared connections)
+- [commands npc admin](commands_npc_admin.md) (1 shared connections)
+- [rest grace period](rest_grace_period.md) (1 shared connections)
+- [connection realtime manager](connection_realtime_manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/idle_movement.py`
+- `server/commands/combat_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 63 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 16 (84%)
+- INFERRED: 3 (16%)
 - AMBIGUOUS: 0 (0%)
 
 ---

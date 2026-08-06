@@ -1,52 +1,35 @@
 # npc combat service
 
-> 27 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **_get_enum_value()** (9 connections) — `server/services/wearable_container_service.py`
-- **_filter_container_data()** (9 connections) — `server/services/wearable_container_service.py`
-- **Any** (8 connections)
-- **.add_items_to_wearable_container()** (8 connections) — `server/services/wearable_container_service.py`
-- **.update_wearable_container_items()** (8 connections) — `server/services/wearable_container_service.py`
-- **UUID** (7 connections)
-- **.handle_equip_wearable_container()** (6 connections) — `server/services/wearable_container_service.py`
-- **.handle_unequip_wearable_container()** (6 connections) — `server/services/wearable_container_service.py`
-- **.handle_container_overflow()** (6 connections) — `server/services/wearable_container_service.py`
-- **.get_wearable_containers_for_player()** (5 connections) — `server/services/wearable_container_service.py`
-- **.__init__()** (3 connections) — `server/services/wearable_container_service.py`
-- **test_get_enum_value_with_enum()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_get_enum_value_with_string()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_filter_container_data()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **ContainerComponent** (1 connections)
-- **Safely get enum value, handling both enum instances and string values.      When** (1 connections) — `server/services/wearable_container_service.py`
-- **Filter out database-only fields from container data before validation.      The** (1 connections) — `server/services/wearable_container_service.py`
-- **Initialize the wearable container service.          Args:             persistenc** (1 connections) — `server/services/wearable_container_service.py`
-- **Handle equipping a wearable container item.          Creates a container in Post** (1 connections) — `server/services/wearable_container_service.py`
-- **Handle unequipping a wearable container item.          Preserves the container a** (1 connections) — `server/services/wearable_container_service.py`
-- **Get all wearable containers for a player.          Args:             player_id:** (1 connections) — `server/services/wearable_container_service.py`
-- **Add items to a wearable container.          Args:             player_id: UUID of** (1 connections) — `server/services/wearable_container_service.py`
-- **Update items in a wearable container.          Args:             player_id: UUID** (1 connections) — `server/services/wearable_container_service.py`
-- **Handle container overflow by spilling items to inventory or ground.          Arg** (1 connections) — `server/services/wearable_container_service.py`
-- **Test _get_enum_value returns value from enum instance.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- *... and 2 more nodes in this community*
+- **get_pose_persistence()** (11 connections) — `server/commands/communication_commands_support.py`
+- **AsyncPersistenceForPose** (6 connections) — `server/commands/communication_commands_support.py`
+- **.get_player_by_name()** (2 connections) — `server/commands/communication_commands_support.py`
+- **.save_player()** (2 connections) — `server/commands/communication_commands_support.py`
+- **test_get_pose_persistence_from_container()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **test_get_pose_persistence_state_fallback()** (2 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **Minimal persistence for pose read/write in emote/pose flows.** (1 connections) — `server/commands/communication_commands_support.py`
+- **Resolve async persistence from app state or container for pose commands.** (1 connections) — `server/commands/communication_commands_support.py`
 
 ## Relationships
 
-- [player cache rationale](player_cache_rationale.md) (10 shared connections)
-- [wearable container service](wearable_container_service.md) (5 shared connections)
-- [player event state](player_event_state.md) (4 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (4 shared connections)
+- [commands communication flows](commands_communication_flows.md) (7 shared connections)
+- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (2 shared connections)
+- [occupants npc commands](occupants_npc_commands.md) (2 shared connections)
+- [character creation service](character_creation_service.md) (1 shared connections)
+- [shutdown admin command](shutdown_admin_command.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/wearable_container_service.py`
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `server/commands/communication_commands_support.py`
+- `server/tests/unit/commands/test_communication_commands_support.py`
 
 ## Audit Trail
 
-- EXTRACTED: 93 (96%)
-- INFERRED: 4 (4%)
+- EXTRACTED: 24 (89%)
+- INFERRED: 3 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

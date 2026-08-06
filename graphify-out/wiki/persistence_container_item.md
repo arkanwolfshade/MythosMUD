@@ -1,60 +1,58 @@
 # persistence container item
 
-> 37 nodes
+> 87 nodes
 
 ## Key Concepts
 
-- **container_query_helpers_async.py** (24 connections) — `server/persistence/container_query_helpers_async.py`
-- **container_repository.py** (24 connections) — `server/persistence/repositories/container_repository.py`
-- **ContainerDataExtras** (20 connections) — `server/persistence/container_data.py`
-- **test_container_query_helpers_async.py** (17 connections) — `server/tests/unit/persistence/test_container_query_helpers_async.py`
-- **_build_container_data_from_row_async()** (14 connections) — `server/persistence/container_query_helpers_async.py`
-- **get_decayed_containers_async()** (14 connections) — `server/persistence/container_query_helpers_async.py`
-- **container_data.py** (13 connections) — `server/persistence/container_data.py`
-- **get_containers_by_entity_id_async()** (13 connections) — `server/persistence/container_query_helpers_async.py`
-- **get_containers_by_room_id_async()** (12 connections) — `server/persistence/container_query_helpers_async.py`
-- **parse_jsonb_column()** (11 connections) — `server/persistence/container_helpers.py`
-- **_parse_jsonb()** (6 connections) — `server/persistence/container_query_helpers_async.py`
-- **AsyncSession** (4 connections)
-- **ContainerData** (4 connections)
-- **.__init__()** (3 connections) — `server/persistence/container_data.py`
-- **UUID** (3 connections)
-- **_sample_row()** (3 connections) — `server/tests/unit/persistence/test_container_query_helpers_async.py`
-- **test_get_containers_by_room_id_success()** (3 connections) — `server/tests/unit/persistence/test_container_query_helpers_async.py`
-- **test_get_containers_by_room_id_db_error()** (3 connections) — `server/tests/unit/persistence/test_container_query_helpers_async.py`
-- **test_get_containers_by_entity_id_success()** (3 connections) — `server/tests/unit/persistence/test_container_query_helpers_async.py`
-- **test_get_containers_by_entity_id_db_error()** (3 connections) — `server/tests/unit/persistence/test_container_query_helpers_async.py`
-- **test_get_decayed_containers_db_error()** (3 connections) — `server/tests/unit/persistence/test_container_query_helpers_async.py`
-- **Any** (2 connections)
-- **datetime** (2 connections)
-- **datetime** (2 connections)
-- **test_parse_jsonb_delegates()** (2 connections) — `server/tests/unit/persistence/test_container_query_helpers_async.py`
-- *... and 12 more nodes in this community*
+- **test_websocket_handler_validation_errors.py** (39 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **send_system_message()** (13 connections) — `server/realtime/websocket_handler.py`
+- **handle_websocket_message()** (10 connections) — `server/realtime/websocket_handler.py`
+- **test_websocket_handler_system_message.py** (8 connections) — `server/tests/unit/realtime/test_websocket_handler_system_message.py`
+- **WebSocket** (4 connections)
+- **test_send_system_message()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **test_handle_websocket_message()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **test_handle_websocket_message_chat()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **test_handle_websocket_message_command()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **test_send_system_message_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_system_message.py`
+- **test_send_system_message_warning()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_system_message.py`
+- **test_send_system_message_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_system_message.py`
+- **test_send_system_message_disconnected()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_system_message.py`
+- **test_validate_message_validation_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_validate_message_restores_csrf_from_message_jwt_when_metadata_token_missing()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_handle_chat_message_no_player()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_handle_chat_message_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_handle_game_command_with_broadcast()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_handle_game_command_broadcast_no_player()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_handle_game_command_broadcast_no_current_room_id()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_handle_game_command_with_args()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_handle_game_command_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_handle_websocket_message_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_send_system_message_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_process_websocket_command_player_no_current_room_id()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- *... and 62 more nodes in this community*
 
 ## Relationships
 
-- [commands shutdown process](commands_shutdown_process.md) (18 shared connections)
-- [commands party examples](commands_party_examples.md) (14 shared connections)
-- [retry nats handler](retry_nats_handler.md) (13 shared connections)
-- [auth users rationale](auth_users_rationale.md) (12 shared connections)
-- [websocket helpers realtime](websocket_helpers_realtime.md) (12 shared connections)
-- [commands alias rationale](commands_alias_rationale.md) (4 shared connections)
-- [Error Conversion](Error_Conversion.md) (4 shared connections)
-- [commands time handle](commands_time_handle.md) (2 shared connections)
-- [command combat models](command_combat_models.md) (1 shared connections)
+- [chat logger services](chat_logger_services.md) (6 shared connections)
+- [alias storage rationale](alias_storage_rationale.md) (6 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (5 shared connections)
+- [occupant formatter realtime](occupant_formatter_realtime.md) (4 shared connections)
+- [realtime message validator](realtime_message_validator.md) (4 shared connections)
+- [handler realtime nats](handler_realtime_nats.md) (2 shared connections)
+- [nats services metrics](nats_services_metrics.md) (1 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
 
 ## Source Files
 
-- `server/persistence/container_data.py`
-- `server/persistence/container_helpers.py`
-- `server/persistence/container_query_helpers_async.py`
-- `server/persistence/repositories/container_repository.py`
-- `server/tests/unit/persistence/test_container_query_helpers_async.py`
+- `server/realtime/websocket_handler.py`
+- `server/tests/unit/realtime/test_websocket_handler_core.py`
+- `server/tests/unit/realtime/test_websocket_handler_system_message.py`
+- `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
 
 ## Audit Trail
 
-- EXTRACTED: 214 (96%)
-- INFERRED: 8 (4%)
+- EXTRACTED: 209 (97%)
+- INFERRED: 6 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

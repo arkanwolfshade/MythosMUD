@@ -1,10 +1,11 @@
 # room service game
 
-> 106 nodes
+> 108 nodes
 
 ## Key Concepts
 
 - **test_room_service.py** (56 connections) — `server/tests/unit/game/test_room_service.py`
+- **room_service()** (5 connections) — `server/tests/unit/game/test_room_service.py`
 - **room_service_with_cache()** (3 connections) — `server/tests/unit/game/test_room_service.py`
 - **mock_persistence()** (2 connections) — `server/tests/unit/game/test_room_service.py`
 - **mock_room_cache()** (2 connections) — `server/tests/unit/game/test_room_service.py`
@@ -28,14 +29,12 @@
 - **test_validate_room_exists_with_cache()** (2 connections) — `server/tests/unit/game/test_room_service.py`
 - **test_validate_room_exists_cache_not_found()** (2 connections) — `server/tests/unit/game/test_room_service.py`
 - **test_validate_room_exists_without_cache()** (2 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_validate_exit_exists_success()** (2 connections) — `server/tests/unit/game/test_room_service.py`
-- *... and 81 more nodes in this community*
+- *... and 83 more nodes in this community*
 
 ## Relationships
 
-- [maps handle ascii](maps_handle_ascii.md) (2 shared connections)
-- [database helpers infrastructure](database_helpers_infrastructure.md) (1 shared connections)
-- [uuid npc combat](uuid_npc_combat.md) (1 shared connections)
+- [maps handle ascii](maps_handle_ascii.md) (4 shared connections)
+- [uuid npc combat](uuid_npc_combat.md) (2 shared connections)
 
 ## Source Files
 
@@ -43,8 +42,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 214 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 218 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

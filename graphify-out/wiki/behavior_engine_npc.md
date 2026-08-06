@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [room occupant manager](room_occupant_manager.md) (21 shared connections)
-- [room infrastructure persistence](room_infrastructure_persistence.md) (7 shared connections)
-- [skill game service](skill_game_service.md) (6 shared connections)
-- [infrastructure persistence room](infrastructure_persistence_room.md) (5 shared connections)
-- [room game service](room_game_service.md) (4 shared connections)
-- [game skill service](game_skill_service.md) (2 shared connections)
-- [Error Conversion](Error_Conversion.md) (1 shared connections)
-- [test_validate_combat_command_invalid_command_type](test_validate_combat_command_invalid_command_type.md) (1 shared connections)
-- [chat game service](chat_game_service.md) (1 shared connections)
-- [test_get_combat_status_message_in_combat](test_get_combat_status_message_in_combat.md) (1 shared connections)
-- [event bus events](event_bus_events.md) (1 shared connections)
-- [test_get_combat_victory_message](test_get_combat_victory_message.md) (1 shared connections)
+- [npc lifecycle combat](npc_lifecycle_combat.md) (21 shared connections)
+- [realtime player event](realtime_player_event.md) (4 shared connections)
+- [schemas calendar schedule](schemas_calendar_schedule.md) (2 shared connections)
+- [command factories create](command_factories_create.md) (2 shared connections)
+- [game room service](game_room_service.md) (2 shared connections)
+- [schemas intersection schema](schemas_intersection_schema.md) (2 shared connections)
+- [schemas unified room](schemas_unified_room.md) (2 shared connections)
+- [player realtime event](player_realtime_event.md) (2 shared connections)
+- [realtime npc event](realtime_npc_event.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
+- [events event bus](events_event_bus.md) (1 shared connections)
+- [player services death](player_services_death.md) (1 shared connections)
 
 ## Source Files
 

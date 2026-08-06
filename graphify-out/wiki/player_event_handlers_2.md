@@ -19,18 +19,17 @@
 
 ## Relationships
 
+- [game room service](game_room_service.md) (11 shared connections)
+- [room game service](room_game_service.md) (10 shared connections)
+- [event bus events](event_bus_events.md) (7 shared connections)
+- [events event bus](events_event_bus.md) (5 shared connections)
 - [profession models rationale](profession_models_rationale.md) (2 shared connections)
-- [test_get_event_handler_map](test_get_event_handler_map.md) (1 shared connections)
-- [test_validate_event_message](test_validate_event_message.md) (1 shared connections)
-- [test_unsubscribe_from_subzone_error](test_unsubscribe_from_subzone_error.md) (1 shared connections)
+- [models profession repr](models_profession_repr.md) (1 shared connections)
+- [npc aggressive mob](npc_aggressive_mob.md) (1 shared connections)
+- [realtime maintenance rationale](realtime_maintenance_rationale.md) (1 shared connections)
 - [player_event_handler_utils](player_event_handler_utils.md) (1 shared connections)
-- [test_broadcast_player_mortally_wounded](test_broadcast_player_mortally_wounded.md) (1 shared connections)
-- [test_spawn_arena_npcs_spawns_each_spawned_definition](test_spawn_arena_npcs_spawns_each_spawned_definition.md) (1 shared connections)
-- [test_occupant_formatter_is_valid_name_for_occupant_non_string](test_occupant_formatter_is_valid_name_for_occupant_non_string.md) (1 shared connections)
-- [test_occupant_formatter_is_valid_name_for_occupant_none](test_occupant_formatter_is_valid_name_for_occupant_none.md) (1 shared connections)
-- [test_get_player_stats_empty](test_get_player_stats_empty.md) (1 shared connections)
-- [test_record_message_error_handling](test_record_message_error_handling.md) (1 shared connections)
-- [test_reset_player_limits_nonexistent_player](test_reset_player_limits_nonexistent_player.md) (1 shared connections)
+- [event events bus](event_events_bus.md) (1 shared connections)
+- [services ascii map](services_ascii_map.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,60 +1,51 @@
 # combat npc mixin
 
-> 32 nodes
+> 45 nodes
 
 ## Key Concepts
 
-- **PrototypeRegistry** (41 connections) — `server/game/items/prototype_registry.py`
-- **test_prototype_registry.py** (17 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
-- **.load_from_path()** (13 connections) — `server/game/items/prototype_registry.py`
-- **validate_prototypes.py** (8 connections) — `server/scripts/validate_prototypes.py`
-- **.get()** (6 connections) — `server/game/items/prototype_registry.py`
-- **_make_prototype()** (5 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
-- **Path** (5 connections)
-- **test_load_from_path_missing_directory()** (4 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
-- **.__init__()** (3 connections) — `server/game/items/item_factory.py`
-- **.__init__()** (3 connections) — `server/game/items/prototype_registry.py`
-- **.invalid_entries()** (3 connections) — `server/game/items/prototype_registry.py`
-- **parse_arguments()** (3 connections) — `server/scripts/validate_prototypes.py`
-- **main()** (3 connections) — `server/scripts/validate_prototypes.py`
-- **test_get_returns_prototype()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
-- **test_get_missing_raises()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
-- **test_find_by_tag()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
-- **test_all_returns_values()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
-- **test_load_from_path_valid_json()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
-- **test_load_from_path_invalid_json()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
-- **test_load_from_path_validation_error()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
-- **test_load_from_path_durability_anomaly()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
-- **Any** (2 connections)
-- **test_invalid_entries_returns_copy()** (2 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
-- **Initialize the item factory with a prototype registry.          Args:** (1 connections) — `server/game/items/item_factory.py`
-- **Path** (1 connections)
-- *... and 7 more nodes in this community*
+- **test_envelope.py** (28 connections) — `server/tests/unit/realtime/test_envelope.py`
+- **UUIDEncoder** (8 connections) — `server/realtime/envelope.py`
+- **test_build_event_with_connection_manager()** (4 connections) — `server/tests/unit/realtime/test_envelope.py`
+- **test_build_event_sequence_priority()** (4 connections) — `server/tests/unit/realtime/test_envelope.py`
+- **test_build_event_json_serializable()** (4 connections) — `server/tests/unit/realtime/test_envelope.py`
+- **test_uuid_encoder_handles_uuid()** (3 connections) — `server/tests/unit/realtime/test_envelope.py`
+- **test_uuid_encoder_handles_other_types()** (3 connections) — `server/tests/unit/realtime/test_envelope.py`
+- **test_uuid_encoder_json_dumps()** (3 connections) — `server/tests/unit/realtime/test_envelope.py`
+- **test_utc_now_z_format()** (3 connections) — `server/tests/unit/realtime/test_envelope.py`
+- **test_utc_now_z_is_utc()** (3 connections) — `server/tests/unit/realtime/test_envelope.py`
+- **test_build_event_basic()** (3 connections) — `server/tests/unit/realtime/test_envelope.py`
+- **test_build_event_with_room_id()** (3 connections) — `server/tests/unit/realtime/test_envelope.py`
+- **test_build_event_with_player_id_uuid()** (3 connections) — `server/tests/unit/realtime/test_envelope.py`
+- **test_build_event_with_player_id_string()** (3 connections) — `server/tests/unit/realtime/test_envelope.py`
+- **test_build_event_with_sequence_number()** (3 connections) — `server/tests/unit/realtime/test_envelope.py`
+- **test_build_event_uses_global_sequence_when_no_manager()** (3 connections) — `server/tests/unit/realtime/test_envelope.py`
+- **test_build_event_empty_data()** (3 connections) — `server/tests/unit/realtime/test_envelope.py`
+- **test_build_event_no_data_parameter()** (3 connections) — `server/tests/unit/realtime/test_envelope.py`
+- **test_build_event_timestamp_format()** (3 connections) — `server/tests/unit/realtime/test_envelope.py`
+- **test_build_event_all_parameters()** (3 connections) — `server/tests/unit/realtime/test_envelope.py`
+- **test_build_event_optional_parameters_none()** (3 connections) — `server/tests/unit/realtime/test_envelope.py`
+- **.default()** (2 connections) — `server/realtime/envelope.py`
+- **test_get_next_global_sequence_thread_safe()** (2 connections) — `server/tests/unit/realtime/test_envelope.py`
+- **Custom JSON encoder that handles UUID objects.** (1 connections) — `server/realtime/envelope.py`
+- **Unit tests for envelope utilities.  Tests the build_event function, UUIDEncoder,** (1 connections) — `server/tests/unit/realtime/test_envelope.py`
+- *... and 20 more nodes in this community*
 
 ## Relationships
 
-- [npc spawn validator](npc_spawn_validator.md) (14 shared connections)
-- [MapView GameClientV2ContainerView Tabbed](MapView_GameClientV2ContainerView_Tabbed.md) (14 shared connections)
-- [connection cleaner realtime](connection_cleaner_realtime.md) (9 shared connections)
-- [EdgeCreationModal map STANDARD](EdgeCreationModal_map_STANDARD.md) (3 shared connections)
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
-- [room realtime occupant](room_realtime_occupant.md) (1 shared connections)
-- [websocket realtime handler](websocket_realtime_handler.md) (1 shared connections)
-- [room infrastructure persistence](room_infrastructure_persistence.md) (1 shared connections)
-- [Magic Spell Service](Magic_Spell_Service.md) (1 shared connections)
-- [stats game generator](stats_game_generator.md) (1 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (21 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (4 shared connections)
+- [middleware comprehensive logging](middleware_comprehensive_logging.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/items/item_factory.py`
-- `server/game/items/prototype_registry.py`
-- `server/scripts/validate_prototypes.py`
-- `server/tests/unit/game/items/test_prototype_registry.py`
+- `server/realtime/envelope.py`
+- `server/tests/unit/realtime/test_envelope.py`
 
 ## Audit Trail
 
-- EXTRACTED: 135 (89%)
-- INFERRED: 16 (11%)
+- EXTRACTED: 115 (94%)
+- INFERRED: 7 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

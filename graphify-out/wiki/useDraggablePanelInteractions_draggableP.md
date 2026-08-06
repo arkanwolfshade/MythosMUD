@@ -1,45 +1,57 @@
 # useDraggablePanelInteractions draggableP
 
-> 21 nodes
+> 30 nodes
 
 ## Key Concepts
 
-- **ShopkeeperNPC** (20 connections) — `server/npc/shopkeeper_npc.py`
-- **.__init__()** (3 connections) — `server/npc/shopkeeper_npc.py`
-- **._setup_shopkeeper_behavior_rules()** (3 connections) — `server/npc/shopkeeper_npc.py`
-- **.get_behavior_rules()** (2 connections) — `server/npc/shopkeeper_npc.py`
-- **.add_shop_item()** (2 connections) — `server/npc/shopkeeper_npc.py`
-- **.add_buyable_item()** (2 connections) — `server/npc/shopkeeper_npc.py`
-- **.buy_from_player()** (2 connections) — `server/npc/shopkeeper_npc.py`
-- **.calculate_price()** (2 connections) — `server/npc/shopkeeper_npc.py`
-- **._handle_greet_customer()** (2 connections) — `server/npc/shopkeeper_npc.py`
-- **._handle_restock_inventory()** (2 connections) — `server/npc/shopkeeper_npc.py`
-- **.get_shop_inventory()** (1 connections) — `server/npc/shopkeeper_npc.py`
-- **Shopkeeper NPC type with buy/sell functionality.** (1 connections) — `server/npc/shopkeeper_npc.py`
-- **Initialize shopkeeper NPC.** (1 connections) — `server/npc/shopkeeper_npc.py`
-- **Setup shopkeeper-specific behavior rules.** (1 connections) — `server/npc/shopkeeper_npc.py`
-- **Get shopkeeper-specific behavior rules.** (1 connections) — `server/npc/shopkeeper_npc.py`
-- **Add item to shop inventory.** (1 connections) — `server/npc/shopkeeper_npc.py`
-- **Add item to buyable items list.** (1 connections) — `server/npc/shopkeeper_npc.py`
-- **Buy item from player.** (1 connections) — `server/npc/shopkeeper_npc.py`
-- **Calculate final price with markup.** (1 connections) — `server/npc/shopkeeper_npc.py`
-- **Handle greeting customer action.** (1 connections) — `server/npc/shopkeeper_npc.py`
-- **Handle restocking inventory action.** (1 connections) — `server/npc/shopkeeper_npc.py`
+- **InventorySchemaValidationError** (20 connections) — `server/schemas/shared/inventory_schema.py`
+- **validate_inventory_payload()** (13 connections) — `server/schemas/shared/inventory_schema.py`
+- **__init__.py** (12 connections) — `server/schemas/shared/__init__.py`
+- **test_inventory_schema.py** (11 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **validate_inventory_items()** (9 connections) — `server/schemas/shared/inventory_schema.py`
+- **inventory_schema.py** (7 connections) — `server/schemas/shared/inventory_schema.py`
+- **_build_validator()** (5 connections) — `server/schemas/shared/inventory_schema.py`
+- **test_persist_player_error()** (4 connections) — `server/tests/unit/commands/test_inventory_commands_persistence_helpers.py`
+- **test_validate_inventory_payload_missing_required()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **test_validate_inventory_payload_invalid_inventory()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **test_validate_inventory_items_missing_required()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **test_validate_inventory_items_invalid_quantity()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **Any** (3 connections)
+- **test_validate_inventory_payload_valid()** (3 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **test_validate_inventory_items_valid()** (3 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **Shared schemas: base models, target resolution, inventory validation.** (1 connections) — `server/schemas/shared/__init__.py`
+- **Exception** (1 connections)
+- **Inventory JSON schema validation utilities.  As recorded in the restricted stack** (1 connections) — `server/schemas/shared/inventory_schema.py`
+- **Raised when inventory payloads fail schema validation.** (1 connections) — `server/schemas/shared/inventory_schema.py`
+- **Internal helper to construct a Draft7 validator instance.** (1 connections) — `server/schemas/shared/inventory_schema.py`
+- **Validate a complete inventory payload against the canonical schema.      Raises:** (1 connections) — `server/schemas/shared/inventory_schema.py`
+- **Validate only the inventory portion to simplify testing workflows.      Raises:** (1 connections) — `server/schemas/shared/inventory_schema.py`
+- **Test _persist_player() handles save errors.** (1 connections) — `server/tests/unit/commands/test_inventory_commands_persistence_helpers.py`
+- **Unit tests for inventory_schema validation functions.  Tests the validation func** (1 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **Test validate_inventory_payload() accepts valid payload.** (1 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
-- [grace period disconnect](grace_period_disconnect.md) (4 shared connections)
-- [Error Conversion](Error_Conversion.md) (3 shared connections)
-- [lucidity event services](lucidity_event_services.md) (2 shared connections)
+- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (6 shared connections)
+- [logging file setup](logging_file_setup.md) (5 shared connections)
+- [command factories moderation](command_factories_moderation.md) (3 shared connections)
+- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (3 shared connections)
+- [game weapon player](game_weapon_player.md) (2 shared connections)
+- [panels domPurifyClient chat](panels_domPurifyClient_chat.md) (1 shared connections)
+- [admin auth service](admin_auth_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/shopkeeper_npc.py`
+- `server/schemas/shared/__init__.py`
+- `server/schemas/shared/inventory_schema.py`
+- `server/tests/unit/commands/test_inventory_commands_persistence_helpers.py`
+- `server/tests/unit/schemas/test_inventory_schema.py`
 
 ## Audit Trail
 
-- EXTRACTED: 48 (94%)
-- INFERRED: 3 (6%)
+- EXTRACTED: 113 (93%)
+- INFERRED: 8 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

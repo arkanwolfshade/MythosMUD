@@ -1,59 +1,54 @@
 # scripts worktree ops
 
-> 33 nodes
+> 34 nodes
 
 ## Key Concepts
 
-- **DistributedEventBus** (22 connections) — `server/events/distributed_event_bus.py`
-- **test_distributed_event_bus.py** (14 connections) — `server/tests/unit/events/test_distributed_event_bus.py`
-- **.initialize()** (12 connections) — `server/container/bundles/core.py`
-- **SampleEvent** (6 connections) — `server/tests/unit/events/test_distributed_event_bus.py`
-- **.set_nats_service()** (4 connections) — `server/events/distributed_event_bus.py`
-- **test_publish_without_nats_delegates_to_parent()** (4 connections) — `server/tests/unit/events/test_distributed_event_bus.py`
-- **test_publish_with_nats_bridge_publishes_to_nats()** (4 connections) — `server/tests/unit/events/test_distributed_event_bus.py`
-- **.__init__()** (3 connections) — `server/events/distributed_event_bus.py`
-- **.publish()** (3 connections) — `server/events/distributed_event_bus.py`
-- **distributed_bus()** (3 connections) — `server/tests/unit/events/test_distributed_event_bus.py`
-- **test_distributed_event_bus_init_without_nats()** (3 connections) — `server/tests/unit/events/test_distributed_event_bus.py`
-- **test_set_nats_service_same_reference_noop()** (3 connections) — `server/tests/unit/events/test_distributed_event_bus.py`
-- **test_shutdown_stops_bridge()** (3 connections) — `server/tests/unit/events/test_distributed_event_bus.py`
-- **test_shutdown_bridge_stop_error_is_swallowed()** (3 connections) — `server/tests/unit/events/test_distributed_event_bus.py`
-- **test_set_nats_service_starts_bridge_when_loop_running()** (3 connections) — `server/tests/unit/events/test_distributed_event_bus.py`
-- **Any** (2 connections)
-- **.shutdown()** (2 connections) — `server/events/distributed_event_bus.py`
-- **Initialize core services. No dependencies.** (1 connections) — `server/container/bundles/core.py`
-- **EventBus that distributes domain events via NATS for horizontal scaling.      Wh** (1 connections) — `server/events/distributed_event_bus.py`
-- **Initialize distributed EventBus.          Args:             nats_service: NATS s** (1 connections) — `server/events/distributed_event_bus.py`
-- **Set NATS service and start the bridge (call after NATS connects).** (1 connections) — `server/events/distributed_event_bus.py`
-- **Publish event locally and to NATS when bridge is active.** (1 connections) — `server/events/distributed_event_bus.py`
-- **Shutdown EventBus and stop NATS bridge.** (1 connections) — `server/events/distributed_event_bus.py`
-- **Unit tests for DistributedEventBus.** (1 connections) — `server/tests/unit/events/test_distributed_event_bus.py`
-- **Minimal event for distributed bus tests.** (1 connections) — `server/tests/unit/events/test_distributed_event_bus.py`
-- *... and 8 more nodes in this community*
+- **test_event_serialization.py** (15 connections) — `server/tests/unit/events/test_event_serialization.py`
+- **deserialize_event()** (14 connections) — `server/events/event_serialization.py`
+- **serialize_event()** (13 connections) — `server/events/event_serialization.py`
+- **event_serialization.py** (12 connections) — `server/events/event_serialization.py`
+- **_register_event_types()** (6 connections) — `server/events/event_serialization.py`
+- **._handle_nats_message_impl()** (5 connections) — `server/events/nats_event_bridge.py`
+- **test_serialize_deserialize_player_entered_room()** (5 connections) — `server/tests/unit/events/test_event_serialization.py`
+- **test_serialize_deserialize_player_died_event()** (5 connections) — `server/tests/unit/events/test_event_serialization.py`
+- **test_serialize_deserialize_player_xp_award_event()** (5 connections) — `server/tests/unit/events/test_event_serialization.py`
+- **_convert_value_for_json()** (4 connections) — `server/events/event_serialization.py`
+- **Any** (4 connections)
+- **_convert_value_from_json()** (4 connections) — `server/events/event_serialization.py`
+- **.__init__()** (4 connections) — `server/events/nats_event_bridge.py`
+- **.handle_nats_message()** (4 connections) — `server/events/nats_event_bridge.py`
+- **Any** (3 connections)
+- **test_deserialize_unknown_event_type_raises()** (3 connections) — `server/tests/unit/events/test_event_serialization.py`
+- **test_deserialize_missing_event_type_raises()** (3 connections) — `server/tests/unit/events/test_event_serialization.py`
+- **test_serialize_non_base_event_raises()** (3 connections) — `server/tests/unit/events/test_event_serialization.py`
+- **Event serialization for distributed EventBus over NATS.  Serializes and deserial** (1 connections) — `server/events/event_serialization.py`
+- **Populate the event class registry. Lazy import to avoid circular deps.** (1 connections) — `server/events/event_serialization.py`
+- **Convert a value to JSON-serializable form.** (1 connections) — `server/events/event_serialization.py`
+- **Convert a JSON value back to the expected Python type.** (1 connections) — `server/events/event_serialization.py`
+- **Serialize a BaseEvent to a JSON-compatible dict.      Args:         event: Domai** (1 connections) — `server/events/event_serialization.py`
+- **Deserialize a dict back to a BaseEvent instance.      Args:         data: Dict f** (1 connections) — `server/events/event_serialization.py`
+- **Initialize the NATS EventBus bridge.          Args:             event_bus: Local** (1 connections) — `server/events/nats_event_bridge.py`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [Error Conversion](Error_Conversion.md) (10 shared connections)
-- [websocket realtime handler](websocket_realtime_handler.md) (2 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (2 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (2 shared connections)
-- [follow service game](follow_service_game.md) (1 shared connections)
-- [schemas player rationale](schemas_player_rationale.md) (1 shared connections)
-- [player event handlers](player_event_handlers.md) (1 shared connections)
-- [tools generate invite](tools_generate_invite.md) (1 shared connections)
-- [nats services service](nats_services_service.md) (1 shared connections)
-- [room realtime occupant](room_realtime_occupant.md) (1 shared connections)
+- [inventory mutation guard](inventory_mutation_guard.md) (15 shared connections)
+- [Database Config](Database_Config.md) (5 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [Memory Task Runtime](Memory_Task_Runtime.md) (1 shared connections)
+- [combat validator validators](combat_validator_validators.md) (1 shared connections)
 
 ## Source Files
 
-- `server/container/bundles/core.py`
-- `server/events/distributed_event_bus.py`
-- `server/tests/unit/events/test_distributed_event_bus.py`
+- `server/events/event_serialization.py`
+- `server/events/nats_event_bridge.py`
+- `server/tests/unit/events/test_event_serialization.py`
 
 ## Audit Trail
 
-- EXTRACTED: 101 (92%)
-- INFERRED: 9 (8%)
+- EXTRACTED: 126 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

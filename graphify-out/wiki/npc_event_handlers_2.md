@@ -1,11 +1,10 @@
 # npc event handlers
 
-> 78 nodes
+> 76 nodes
 
 ## Key Concepts
 
 - **test_npc_event_handlers.py** (44 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **npc_event_handler()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
 - **test_handle_npc_entered_room()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
 - **test_handle_npc_left_room()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
 - **test_handle_npc_entered_room_with_npc_instance()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
@@ -29,12 +28,14 @@
 - **test_parse_behavior_config_string()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
 - **test_parse_behavior_config_invalid_json()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
 - **test_get_npc_instance_found()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- *... and 53 more nodes in this community*
+- **test_get_npc_instance_no_service()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- *... and 51 more nodes in this community*
 
 ## Relationships
 
-- [Error Conversion](Error_Conversion.md) (14 shared connections)
-- [profession models rationale](profession_models_rationale.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (13 shared connections)
+- [commands communication channels](commands_communication_channels.md) (2 shared connections)
+- [inventory mutation guard](inventory_mutation_guard.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,7 +43,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 170 (100%)
+- EXTRACTED: 166 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

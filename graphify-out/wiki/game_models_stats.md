@@ -34,7 +34,7 @@
 ## Relationships
 
 - [dialogue definition persistence](dialogue_definition_persistence.md) (12 shared connections)
-- [add used user](add_used_user.md) (10 shared connections)
+- [command inventory models](command_inventory_models.md) (10 shared connections)
 - [exceptions rationale error](exceptions_rationale_error.md) (4 shared connections)
 - [command inventory factories](command_inventory_factories.md) (3 shared connections)
 

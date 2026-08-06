@@ -4,22 +4,21 @@
 
 ## Key Concepts
 
-- **test_remove_player_invalid_params()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
-- **Test remove_player_from_room validates empty player_id.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- **__init__.py** (1 connections) — `server/tests/unit/realtime/maintenance/__init__.py`
+- **Realtime maintenance unit tests.** (1 connections) — `server/tests/unit/realtime/maintenance/__init__.py`
 
 ## Relationships
 
-- [add used user](add_used_user.md) (1 shared connections)
-- [movement service game](movement_service_game.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/game/test_movement_service.py`
+- `server/tests/unit/realtime/maintenance/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 2 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

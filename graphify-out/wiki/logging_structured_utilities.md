@@ -1,6 +1,6 @@
 # logging structured utilities
 
-> 82 nodes
+> 84 nodes
 
 ## Key Concepts
 
@@ -10,6 +10,7 @@
 - **rotate_log_files()** (18 connections) — `server/structured_logging/logging_utilities.py`
 - **resolve_log_base()** (13 connections) — `server/structured_logging/logging_utilities.py`
 - **_rotation_bound_logger()** (4 connections) — `server/structured_logging/logging_utilities.py`
+- **player_guid_formatter.py** (4 connections) — `server/structured_logging/player_guid_formatter.py`
 - **test_ensure_log_directory_creates_directory()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
 - **test_ensure_log_directory_existing_directory()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
 - **test_ensure_log_directory_no_parent()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
@@ -28,24 +29,24 @@
 - **test_rotate_log_files_skips_empty_files()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
 - **test_rotate_log_files_handles_permission_error()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
 - **test_rotate_log_files_windows_platform()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
-- **test_rotate_log_files_non_windows_platform()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
-- *... and 57 more nodes in this community*
+- *... and 59 more nodes in this community*
 
 ## Relationships
 
-- [Error Conversion](Error_Conversion.md) (18 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (18 shared connections)
 - [logging handlers structured](logging_handlers_structured.md) (18 shared connections)
-- [player guid formatter](player_guid_formatter.md) (2 shared connections)
+- [player guid formatter](player_guid_formatter.md) (3 shared connections)
 - [services user manager](services_user_manager.md) (2 shared connections)
 
 ## Source Files
 
 - `server/structured_logging/logging_utilities.py`
+- `server/structured_logging/player_guid_formatter.py`
 - `server/tests/unit/structured_logging/test_logging_utilities.py`
 
 ## Audit Trail
 
-- EXTRACTED: 282 (100%)
+- EXTRACTED: 287 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

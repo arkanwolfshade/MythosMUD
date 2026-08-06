@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [lucidity npc combat](lucidity_npc_combat.md) (2 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (2 shared connections)
 
 ## Source Files
 

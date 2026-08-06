@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_list_room_drops()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **Test list_room_drops() returns defensive copy.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **test_get_player_room_from_online_players_not_found()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Test get_player_room_from_online_players() returns None when player not found.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Relationships
 
-- [room subscription manager](room_subscription_manager.md) (1 shared connections)
+- [message filtering realtime](message_filtering_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Audit Trail
 

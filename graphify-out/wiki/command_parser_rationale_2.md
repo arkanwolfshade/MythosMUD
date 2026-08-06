@@ -1,63 +1,48 @@
 # command parser rationale
 
-> 26 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **service.py** (30 connections) — `server/services/passive_lucidity_flux/service.py`
-- **PassiveFluxContext** (13 connections) — `server/services/passive_lucidity_flux/models.py`
-- **config.py** (12 connections) — `server/services/passive_lucidity_flux/config.py`
-- **FluxServiceConfig** (9 connections) — `server/services/passive_lucidity_flux/config.py`
-- **models.py** (7 connections) — `server/services/passive_lucidity_flux/models.py`
-- **.__init__()** (7 connections) — `server/services/passive_lucidity_flux/service.py`
-- **__init__.py** (6 connections) — `server/services/passive_lucidity_flux/__init__.py`
-- **period_label()** (6 connections) — `server/services/passive_lucidity_flux/config.py`
-- **CachedRoom** (6 connections) — `server/services/passive_lucidity_flux/models.py`
-- **normalize_environment_config()** (5 connections) — `server/services/passive_lucidity_flux/config.py`
-- **lookup_profile()** (4 connections) — `server/services/passive_lucidity_flux/config.py`
-- **load_lucidity_rate_overrides()** (4 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
-- **test_resolve_context_with_custom_resolver()** (4 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
-- **datetime** (2 connections)
-- **Passive lucidity flux service package.** (1 connections) — `server/services/passive_lucidity_flux/__init__.py`
-- **Any** (1 connections)
-- **Configuration and normalization for passive lucidity flux.** (1 connections) — `server/services/passive_lucidity_flux/config.py`
-- **Optional configuration for PassiveLucidityFluxService. All fields have defaults.** (1 connections) — `server/services/passive_lucidity_flux/config.py`
-- **Return a coarse period label used for environment profiles.** (1 connections) — `server/services/passive_lucidity_flux/config.py`
-- **Normalize environment config to validated structure.** (1 connections) — `server/services/passive_lucidity_flux/config.py`
-- **Look up flux value from profile by period.** (1 connections) — `server/services/passive_lucidity_flux/config.py`
-- **Data models for passive lucidity flux.** (1 connections) — `server/services/passive_lucidity_flux/models.py`
-- **Cached room entry with timestamp for TTL management.** (1 connections) — `server/services/passive_lucidity_flux/models.py`
-- **Resolved environmental context for passive flux evaluation.** (1 connections) — `server/services/passive_lucidity_flux/models.py`
-- **Load lucidity rate overrides from PostgreSQL zones/subzones tables.** (1 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
-- *... and 1 more nodes in this community*
+- **RoomRepository** (17 connections) — `server/persistence/repositories/room_repository.py`
+- **room_repository.py** (8 connections) — `server/persistence/repositories/room_repository.py`
+- **test_room_repository.py** (7 connections) — `server/tests/unit/persistence/test_room_repository.py`
+- **.__init__()** (3 connections) — `server/persistence/repositories/room_repository.py`
+- **.get_room_by_id()** (2 connections) — `server/persistence/repositories/room_repository.py`
+- **.list_rooms()** (2 connections) — `server/persistence/repositories/room_repository.py`
+- **.save_room()** (2 connections) — `server/persistence/repositories/room_repository.py`
+- **.save_rooms()** (2 connections) — `server/persistence/repositories/room_repository.py`
+- **test_get_room_by_id_from_cache()** (2 connections) — `server/tests/unit/persistence/test_room_repository.py`
+- **test_list_rooms_returns_cache_values()** (2 connections) — `server/tests/unit/persistence/test_room_repository.py`
+- **test_save_room_updates_cache()** (2 connections) — `server/tests/unit/persistence/test_room_repository.py`
+- **test_save_rooms_updates_cache()** (2 connections) — `server/tests/unit/persistence/test_room_repository.py`
+- **Room repository for async persistence operations.  This module provides async da** (1 connections) — `server/persistence/repositories/room_repository.py`
+- **Repository for room persistence operations.      Handles room caching and retrie** (1 connections) — `server/persistence/repositories/room_repository.py`
+- **Initialize the room repository.          Args:             room_cache: Shared ro** (1 connections) — `server/persistence/repositories/room_repository.py`
+- **Get a room by ID from cache.          Args:             room_id: Room identifier** (1 connections) — `server/persistence/repositories/room_repository.py`
+- **List all cached rooms.          Returns:             list[Room]: List of all roo** (1 connections) — `server/persistence/repositories/room_repository.py`
+- **Save a room to the cache.          Args:             room: Room object to save** (1 connections) — `server/persistence/repositories/room_repository.py`
+- **Save multiple rooms to the cache.          Args:             rooms: List of room** (1 connections) — `server/persistence/repositories/room_repository.py`
+- **Unit tests for RoomRepository.** (1 connections) — `server/tests/unit/persistence/test_room_repository.py`
 
 ## Relationships
 
-- [lucidity flux passive](lucidity_flux_passive.md) (14 shared connections)
-- [cache lru caching](cache_lru_caching.md) (8 shared connections)
-- [player room realtime](player_room_realtime.md) (6 shared connections)
-- [rate lucidity services](rate_lucidity_services.md) (3 shared connections)
-- [Error Conversion](Error_Conversion.md) (3 shared connections)
-- [models lucidity rationale](models_lucidity_rationale.md) (3 shared connections)
-- [persistence rationale players](persistence_rationale_players.md) (2 shared connections)
-- [player event handlers](player_event_handlers.md) (2 shared connections)
-- [npc population stats](npc_population_stats.md) (2 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (1 shared connections)
-- [Spell Validation](Spell_Validation.md) (1 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (3 shared connections)
+- [room models instance](room_models_instance.md) (2 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (2 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [commands party examples](commands_party_examples.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/passive_lucidity_flux/__init__.py`
-- `server/services/passive_lucidity_flux/config.py`
-- `server/services/passive_lucidity_flux/models.py`
-- `server/services/passive_lucidity_flux/rate_overrides.py`
-- `server/services/passive_lucidity_flux/service.py`
-- `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- `server/persistence/repositories/room_repository.py`
+- `server/tests/unit/persistence/test_room_repository.py`
 
 ## Audit Trail
 
-- EXTRACTED: 122 (96%)
-- INFERRED: 5 (4%)
+- EXTRACTED: 58 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,6 +1,6 @@
 # panels chatPanelRefactoredDerived ChatPa
 
-> 27 nodes
+> 26 nodes
 
 ## Key Concepts
 
@@ -24,19 +24,19 @@
 - **ChatMessagesList()** (3 connections) — `client/src/components/panels/chat/ChatMessagesList.tsx`
 - **ChatPanelRefactoredProps** (2 connections) — `client/src/components/panels/ChatPanelRefactored.tsx`
 - **ChatPanelRefactoredView()** (2 connections) — `client/src/components/panels/ChatPanelRefactoredView.tsx`
-- **ChatHistoryToggle()** (2 connections) — `client/src/components/panels/chat/ChatHistoryToggle.tsx`
 - **ChatMessagesList.test.tsx** (2 connections) — `client/src/components/panels/chat/__tests__/ChatMessagesList.test.tsx`
 - **UseChatPanelRefactoredResult** (2 connections) — `client/src/components/panels/useChatPanelRefactored.ts`
 - **ChatPanelRefactoredChromeProps** (1 connections) — `client/src/components/panels/ChatPanelRefactoredView.tsx`
 - **ChatPanelRefactoredViewProps** (1 connections) — `client/src/components/panels/ChatPanelRefactoredView.tsx`
-- *... and 2 more nodes in this community*
+- **base()** (1 connections) — `client/src/components/panels/__tests__/chatPanelRefactoredDerived.test.ts`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
 - [panels chat ChatPanelRuntimeViewParts](panels_chat_ChatPanelRuntimeViewParts.md) (12 shared connections)
 - [panels chatPanelRuntimeUtils chatPanelEx](panels_chatPanelRuntimeUtils_chatPanelEx.md) (5 shared connections)
-- [emote game service](emote_game_service.md) (2 shared connections)
-- [containers stores containerStore](containers_stores_containerStore.md) (1 shared connections)
+- [mythosApp security submitAuth](mythosApp_security_submitAuth.md) (2 shared connections)
+- [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (1 shared connections)
 - [panels GameClientV2Dock gameLogPanelUtil](panels_GameClientV2Dock_gameLogPanelUtil.md) (1 shared connections)
 
 ## Source Files
@@ -45,7 +45,6 @@
 - `client/src/components/panels/ChatPanelRefactoredView.tsx`
 - `client/src/components/panels/__tests__/ChatPanelRefactored.test.tsx`
 - `client/src/components/panels/__tests__/chatPanelRefactoredDerived.test.ts`
-- `client/src/components/panels/chat/ChatHistoryToggle.tsx`
 - `client/src/components/panels/chat/ChatMessagesList.tsx`
 - `client/src/components/panels/chat/__tests__/ChatMessagesList.test.tsx`
 - `client/src/components/panels/chatPanelRefactoredDerived.ts`
@@ -54,7 +53,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 143 (100%)
+- EXTRACTED: 141 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

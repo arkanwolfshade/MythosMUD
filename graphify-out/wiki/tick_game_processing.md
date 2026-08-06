@@ -1,64 +1,70 @@
 # tick game processing
 
-> 91 nodes
+> 177 nodes
 
 ## Key Concepts
 
-- **test_combat_death_handler.py** (30 connections) — `server/tests/unit/services/test_combat_death_handler.py`
-- **CorpseLifecycleService** (23 connections) — `server/services/corpse_lifecycle_service.py`
-- **CombatDeathHandler** (20 connections) — `server/services/combat_death_handler.py`
-- **.connection_manager()** (15 connections) — `server/services/combat_messaging/base.py`
-- **_CombatServiceDeps** (10 connections) — `server/services/combat_death_handler.py`
-- **_ConnectionManagerLike** (9 connections) — `server/services/combat_death_handler.py`
-- **_NPCCombatIntegrationLike** (9 connections) — `server/services/combat_death_handler.py`
-- **._create_corpse_on_death()** (9 connections) — `server/services/combat_death_handler.py`
-- **._log_room_subscribers_before_npc_death()** (8 connections) — `server/services/combat_death_handler.py`
-- **._resolve_original_npc_id()** (8 connections) — `server/services/combat_death_handler.py`
-- **._publish_npc_death_event()** (8 connections) — `server/services/combat_death_handler.py`
-- **._handle_npc_death()** (8 connections) — `server/services/combat_death_handler.py`
-- **._handle_player_death_events()** (7 connections) — `server/services/combat_death_handler.py`
-- **.handle_target_state_changes()** (6 connections) — `server/services/combat_death_handler.py`
-- **.get_decayed_corpses_in_room()** (6 connections) — `server/services/corpse_lifecycle_service.py`
-- **.check_connection_state()** (5 connections) — `server/services/combat_cleanup_handler.py`
-- **._resolve_connection_manager_for_corpse_creation()** (5 connections) — `server/services/combat_death_handler.py`
-- **._resolve_connection_manager_from_container()** (5 connections) — `server/services/combat_messaging/base.py`
-- **ContainerComponent** (5 connections)
-- **.get_all_decayed_corpses()** (5 connections) — `server/services/corpse_lifecycle_service.py`
-- **.get_original_string_id()** (4 connections) — `server/services/combat_death_handler.py`
-- **.can_access_corpse()** (4 connections) — `server/services/corpse_lifecycle_service.py`
-- **.is_corpse_decayed()** (4 connections) — `server/services/corpse_lifecycle_service.py`
-- **.cleanup_decayed_corpses_in_room()** (4 connections) — `server/services/corpse_lifecycle_service.py`
-- **.cleanup_all_decayed_corpses()** (4 connections) — `server/services/corpse_lifecycle_service.py`
-- *... and 66 more nodes in this community*
+- **get_npc_instance_service()** (79 connections) — `server/services/npc_instance_service.py`
+- **test_npc_admin_commands.py** (54 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
+- **router.py** (30 connections) — `server/commands/npc_admin/router.py`
+- **__init__.py** (24 connections) — `server/commands/npc_admin/__init__.py`
+- **instance.py** (22 connections) — `server/commands/npc_admin/instance.py`
+- **npc_admin_commands.py** (21 connections) — `server/commands/npc_admin_commands.py`
+- **_build_subcommand_map()** (20 connections) — `server/commands/npc_admin/router.py`
+- **definition.py** (16 connections) — `server/commands/npc_admin/definition.py`
+- **handle_npc_command()** (16 connections) — `server/commands/npc_admin/router.py`
+- **handle_npc_behavior_command()** (14 connections) — `server/commands/npc_admin/behavior.py`
+- **handle_npc_create_command()** (14 connections) — `server/commands/npc_admin/definition.py`
+- **handle_npc_spawn_command()** (14 connections) — `server/commands/npc_admin/instance.py`
+- **handle_npc_edit_command()** (13 connections) — `server/commands/npc_admin/definition.py`
+- **handle_npc_react_command()** (12 connections) — `server/commands/npc_admin/behavior.py`
+- **handle_npc_stop_command()** (12 connections) — `server/commands/npc_admin/behavior.py`
+- **behavior.py** (11 connections) — `server/commands/npc_admin/behavior.py`
+- **handle_npc_delete_command()** (11 connections) — `server/commands/npc_admin/definition.py`
+- **handle_npc_list_command()** (11 connections) — `server/commands/npc_admin/definition.py`
+- **handle_npc_despawn_command()** (11 connections) — `server/commands/npc_admin/instance.py`
+- **handle_npc_move_command()** (11 connections) — `server/commands/npc_admin/instance.py`
+- **monitoring.py** (11 connections) — `server/commands/npc_admin/monitoring.py`
+- **handle_npc_population_command()** (11 connections) — `server/commands/npc_admin/monitoring.py`
+- **handle_npc_zone_command()** (11 connections) — `server/commands/npc_admin/monitoring.py`
+- **handle_npc_status_command()** (11 connections) — `server/commands/npc_admin/monitoring.py`
+- **NPCDefinitionType** (11 connections) — `server/models/npc.py`
+- *... and 152 more nodes in this community*
 
 ## Relationships
 
-- [task registry app](task_registry_app.md) (13 shared connections)
-- [models npc rationale](models_npc_rationale.md) (12 shared connections)
-- [game chat service](game_chat_service.md) (9 shared connections)
-- [Item Instances](Item_Instances.md) (9 shared connections)
-- [command factories exploration](command_factories_exploration.md) (9 shared connections)
-- [player event handlers](player_event_handlers.md) (5 shared connections)
-- [Memory Task Runtime](Memory_Task_Runtime.md) (5 shared connections)
-- [realtime player connection](realtime_player_connection.md) (4 shared connections)
-- [subject admin controller](subject_admin_controller.md) (3 shared connections)
-- [commands communication support](commands_communication_support.md) (3 shared connections)
-- [player event realtime](player_event_realtime.md) (2 shared connections)
-- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (2 shared connections)
+- [commands npc admin](commands_npc_admin.md) (26 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (13 shared connections)
+- [persistence container rationale](persistence_container_rationale.md) (12 shared connections)
+- [Error Conversion](Error_Conversion.md) (11 shared connections)
+- [instance game manager](instance_game_manager.md) (7 shared connections)
+- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (5 shared connections)
+- [room look commands](room_look_commands.md) (4 shared connections)
+- [commands quest rationale](commands_quest_rationale.md) (4 shared connections)
+- [command player state](command_player_state.md) (4 shared connections)
+- [command models moderation](command_models_moderation.md) (4 shared connections)
+- [commands inventory command](commands_inventory_command.md) (3 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (3 shared connections)
 
 ## Source Files
 
-- `server/services/combat_cleanup_handler.py`
-- `server/services/combat_death_handler.py`
-- `server/services/combat_messaging/base.py`
-- `server/services/corpse_lifecycle_service.py`
-- `server/tests/unit/services/test_combat_death_handler.py`
-- `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- `server/commands/combat_handler.py`
+- `server/commands/npc_admin/__init__.py`
+- `server/commands/npc_admin/behavior.py`
+- `server/commands/npc_admin/definition.py`
+- `server/commands/npc_admin/instance.py`
+- `server/commands/npc_admin/monitoring.py`
+- `server/commands/npc_admin/router.py`
+- `server/commands/npc_admin_commands.py`
+- `server/models/npc.py`
+- `server/services/npc_instance_service.py`
+- `server/tests/unit/commands/test_npc_admin_commands.py`
+- `server/tests/unit/services/test_npc_instance_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 262 (84%)
-- INFERRED: 49 (16%)
+- EXTRACTED: 732 (91%)
+- INFERRED: 69 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

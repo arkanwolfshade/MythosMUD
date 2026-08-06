@@ -4,30 +4,31 @@
 
 ## Key Concepts
 
-- **.retry_async()** (5 connections) — `server/realtime/nats_retry_handler.py`
-- **.calculate_backoff()** (4 connections) — `server/realtime/nats_retry_handler.py`
-- **Any** (3 connections)
-- **.get_retry_stats()** (3 connections) — `server/realtime/nats_retry_handler.py`
-- **.retry_with_backoff()** (3 connections) — `server/realtime/nats_retry_handler.py`
-- **.update_config()** (3 connections) — `server/realtime/nats_retry_handler.py`
-- **Calculate exponential backoff delay with jitter.          Args:             atte** (1 connections) — `server/realtime/nats_retry_handler.py`
-- **Retry a function with exponential backoff.          Args:             func: Asyn** (1 connections) — `server/realtime/nats_retry_handler.py`
-- **Get retry statistics.          Returns:             Dictionary with retry metric** (1 connections) — `server/realtime/nats_retry_handler.py`
-- **Retry async function with exponential backoff.          Attempts the function up** (1 connections) — `server/realtime/nats_retry_handler.py`
-- **Update retry configuration dynamically.          Allows runtime adjustment of re** (1 connections) — `server/realtime/nats_retry_handler.py`
+- **apply_stat_modifications()** (10 connections) — `server/game/magic/spell_effects_stats.py`
+- **test_spell_effects_stats.py** (8 connections) — `server/tests/unit/game/magic/test_spell_effects_stats.py`
+- **spell_effects_stats.py** (6 connections) — `server/game/magic/spell_effects_stats.py`
+- **test_apply_stat_modifications_basic()** (2 connections) — `server/tests/unit/game/magic/test_spell_effects_stats.py`
+- **test_apply_stat_modifications_clamps_to_bounds()** (2 connections) — `server/tests/unit/game/magic/test_spell_effects_stats.py`
+- **test_apply_stat_modifications_skips_invalid_stat()** (2 connections) — `server/tests/unit/game/magic/test_spell_effects_stats.py`
+- **test_apply_stat_modifications_string_coercion()** (2 connections) — `server/tests/unit/game/magic/test_spell_effects_stats.py`
+- **test_apply_stat_modifications_bad_string_skipped()** (2 connections) — `server/tests/unit/game/magic/test_spell_effects_stats.py`
+- **Stat modification helpers for spell effects.  This module contains utility fun** (1 connections) — `server/game/magic/spell_effects_stats.py`
+- **Apply stat modification dict to stats.      Returns (updated stats, stat_chang** (1 connections) — `server/game/magic/spell_effects_stats.py`
+- **Unit tests for spell_effects_stats helpers.** (1 connections) — `server/tests/unit/game/magic/test_spell_effects_stats.py`
 
 ## Relationships
 
-- [follow game service](follow_game_service.md) (5 shared connections)
-- [combat models rationale](combat_models_rationale.md) (1 shared connections)
+- [panels domPurifyClient chat](panels_domPurifyClient_chat.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
 
 ## Source Files
 
-- `server/realtime/nats_retry_handler.py`
+- `server/game/magic/spell_effects_stats.py`
+- `server/tests/unit/game/magic/test_spell_effects_stats.py`
 
 ## Audit Trail
 
-- EXTRACTED: 26 (100%)
+- EXTRACTED: 37 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

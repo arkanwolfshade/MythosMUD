@@ -1,33 +1,32 @@
 # commands command validation
 
-> 12 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **TestPrepareCommandForProcessing** (7 connections) — `server/tests/unit/commands/test_command_preparation.py`
-- **.test_prepare_command_rate_limited()** (3 connections) — `server/tests/unit/commands/test_command_preparation.py`
-- **.test_prepare_command_validation_failed()** (3 connections) — `server/tests/unit/commands/test_command_preparation.py`
-- **.test_prepare_command_empty_after_cleaning()** (3 connections) — `server/tests/unit/commands/test_command_preparation.py`
-- **.test_prepare_command_empty_after_normalization()** (3 connections) — `server/tests/unit/commands/test_command_preparation.py`
-- **.test_prepare_command_success()** (3 connections) — `server/tests/unit/commands/test_command_preparation.py`
-- **Test _prepare_command_for_processing function.** (1 connections) — `server/tests/unit/commands/test_command_preparation.py`
-- **Test _prepare_command_for_processing returns rate limit result when rate limited** (1 connections) — `server/tests/unit/commands/test_command_preparation.py`
-- **Test _prepare_command_for_processing returns validation result when validation f** (1 connections) — `server/tests/unit/commands/test_command_preparation.py`
-- **Test _prepare_command_for_processing handles empty command after cleaning.** (1 connections) — `server/tests/unit/commands/test_command_preparation.py`
-- **Test _prepare_command_for_processing handles empty command after normalization.** (1 connections) — `server/tests/unit/commands/test_command_preparation.py`
-- **Test _prepare_command_for_processing successfully prepares command.** (1 connections) — `server/tests/unit/commands/test_command_preparation.py`
+- **._attack_target_impl()** (6 connections) — `server/npc/aggressive_mob_npc.py`
+- **._attack_via_combat_integration()** (4 connections) — `server/npc/aggressive_mob_npc.py`
+- **.attack_target()** (4 connections) — `server/npc/aggressive_mob_npc.py`
+- **._get_attack_damage()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **._handle_attack_target()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **Resolve attack_damage from behavior config with robust typing.** (1 connections) — `server/npc/aggressive_mob_npc.py`
+- **Try to handle the attack via combat integration.          Returns:** (1 connections) — `server/npc/aggressive_mob_npc.py`
+- **Internal implementation for attacking a target.** (1 connections) — `server/npc/aggressive_mob_npc.py`
+- **Attack a specific target.** (1 connections) — `server/npc/aggressive_mob_npc.py`
+- **Handle attacking target action.** (1 connections) — `server/npc/aggressive_mob_npc.py`
 
 ## Relationships
 
-- [player model models](player_model_models.md) (6 shared connections)
+- [error logging rationale](error_logging_rationale.md) (5 shared connections)
+- [services nats service](services_nats_service.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_preparation.py`
+- `server/npc/aggressive_mob_npc.py`
 
 ## Audit Trail
 
-- EXTRACTED: 28 (100%)
+- EXTRACTED: 25 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

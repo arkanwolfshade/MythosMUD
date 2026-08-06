@@ -36,10 +36,10 @@
 - [npc service services](npc_service_services.md) (15 shared connections)
 - [commands admin mute](commands_admin_mute.md) (8 shared connections)
 - [npc rewards combat](npc_rewards_combat.md) (7 shared connections)
-- [alias storage rationale](alias_storage_rationale.md) (4 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (4 shared connections)
+- [commands npc admin](commands_npc_admin.md) (4 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (4 shared connections)
 - [admin structured logging](admin_structured_logging.md) (3 shared connections)
-- [realtime real time](realtime_real_time.md) (2 shared connections)
+- [character creation service](character_creation_service.md) (2 shared connections)
 - [security sessionManager SessionManager](security_sessionManager_SessionManager.md) (1 shared connections)
 
 ## Source Files

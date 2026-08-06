@@ -1,25 +1,25 @@
 # level game service
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **8. Error Handling and Debugging** (3 connections) — `.cursor/commands/server-test-remediation.md`
-- **Test Debugging** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **Common Debug Commands** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **test_event_bus_subscribe()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test EventBus.subscribe() adds subscriber.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- [commands remediation cursor](commands_remediation_cursor.md) (1 shared connections)
+- [event bus events](event_bus_events.md) (1 shared connections)
+- [room conftest toolkit](room_conftest_toolkit.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/commands/server-test-remediation.md`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

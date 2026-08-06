@@ -1,51 +1,47 @@
 # playerHandlers eventHandlers healthEvent
 
-> 19 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **main.py** (15 connections) — `server/main.py`
-- **create_app()** (14 connections) — `server/app/factory.py`
-- **main()** (4 connections) — `scripts/generate_openapi_spec.py`
-- **main()** (4 connections) — `server/main.py`
-- **_create_get_app()** (4 connections) — `server/main.py`
-- **generate_openapi_spec.py** (3 connections) — `scripts/generate_openapi_spec.py`
-- **_sanitize_token_examples()** (3 connections) — `scripts/generate_openapi_spec.py`
-- **FastAPI** (3 connections)
-- **test_auth()** (3 connections) — `server/main.py`
-- **read_root()** (2 connections) — `server/main.py`
-- **Replace auth token examples with clearly fake placeholders.** (1 connections) — `scripts/generate_openapi_spec.py`
-- **Generate and write OpenAPI spec to docs/openapi/openapi.json.** (1 connections) — `scripts/generate_openapi_spec.py`
-- **Create and configure the FastAPI application.      This function sets up the Fas** (1 connections) — `server/app/factory.py`
-- **Any** (1 connections)
-- **MythosMUD Server - Main Application Entry Point  This module serves as the prima** (1 connections) — `server/main.py`
-- **Main entry point for the MythosMUD server.** (1 connections) — `server/main.py`
-- **Factory function that creates the get_app function with encapsulated cache.** (1 connections) — `server/main.py`
-- **Root endpoint providing basic server information.** (1 connections) — `server/main.py`
-- **Test endpoint to verify JWT authentication is working.** (1 connections) — `server/main.py`
+- **_row_scalar_one_or_none()** (10 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **_async_session_maker_mock()** (5 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **test_get_room_uuid_by_stable_id_no_session()** (5 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **test_mark_room_as_explored_no_session()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **test_get_room_uuid_by_stable_id_with_session()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **test_get_room_uuid_by_stable_id_not_found()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **test_get_room_uuid_by_stable_id_string_uuid()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **test_get_room_uuid_by_stable_id_asyncpg_like_uuid_object()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **test_mark_explored_in_session_new_record()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **test_mark_explored_in_session_existing_record()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **test_get_room_uuid_by_stable_id_asyncpg_uuid()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **test_mark_room_as_explored_commits_session()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **SQLAlchemy-style result mock with scalar_one_or_none() -> value.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **Async context manager returned by get_session_maker() -> maker() in tests.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **Test mark_room_as_explored() creates new session when none provided.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **Test _get_room_uuid_by_stable_id() with provided session.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **Test _get_room_uuid_by_stable_id() creates session when none provided.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **Test _get_room_uuid_by_stable_id() returns None when room not found.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **Test _get_room_uuid_by_stable_id() handles string UUID from database.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **DB drivers may return non-stdlib UUID; conversion via str() must yield stdlib UU** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **Test _mark_explored_in_session() inserts new exploration record.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **Test _mark_explored_in_session() returns True for existing record.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **Test _get_room_uuid_by_stable_id() handles asyncpg UUID objects.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **Test mark_room_as_explored() commits session when creating new session.** (1 connections) — `server/tests/unit/services/test_exploration_service.py`
 
 ## Relationships
 
-- [feature services flag](feature_services_flag.md) (5 shared connections)
-- [Error Conversion](Error_Conversion.md) (3 shared connections)
-- [app factory rationale](app_factory_rationale.md) (2 shared connections)
-- [aggro threat services](aggro_threat_services.md) (1 shared connections)
-- [middleware comprehensive logging](middleware_comprehensive_logging.md) (1 shared connections)
-- [middleware error handling](middleware_error_handling.md) (1 shared connections)
-- [persistence rationale player](persistence_rationale_player.md) (1 shared connections)
-- [auth users rationale](auth_users_rationale.md) (1 shared connections)
-- [tools generate invite](tools_generate_invite.md) (1 shared connections)
+- [corpse lifecycle service](corpse_lifecycle_service.md) (12 shared connections)
+- [maps handle ascii](maps_handle_ascii.md) (10 shared connections)
 
 ## Source Files
 
-- `scripts/generate_openapi_spec.py`
-- `server/app/factory.py`
-- `server/main.py`
+- `server/tests/unit/services/test_exploration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 61 (95%)
-- INFERRED: 3 (5%)
+- EXTRACTED: 68 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

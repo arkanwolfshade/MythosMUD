@@ -31,9 +31,8 @@
 
 ## Relationships
 
-- [map maps useAsciiMap](map_maps_useAsciiMap.md) (3 shared connections)
-- [eventHandlers messageHandlers statusPars](eventHandlers_messageHandlers_statusPars.md) (2 shared connections)
-- [mythosApp security submitAuth](mythosApp_security_submitAuth.md) (2 shared connections)
+- [auth invites rationale](auth_invites_rationale.md) (5 shared connections)
+- [roomHandlers eventHandlers calculateOccu](roomHandlers_eventHandlers_calculateOccu.md) (2 shared connections)
 
 ## Source Files
 

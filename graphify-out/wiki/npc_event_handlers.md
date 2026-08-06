@@ -33,9 +33,9 @@
 
 ## Relationships
 
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
-- [realtime connection helpers](realtime_connection_helpers.md) (2 shared connections)
-- [spell models rationale](spell_models_rationale.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (3 shared connections)
+- [commands follow rationale](commands_follow_rationale.md) (2 shared connections)
+- [realtime connection helpers](realtime_connection_helpers.md) (1 shared connections)
 
 ## Source Files
 

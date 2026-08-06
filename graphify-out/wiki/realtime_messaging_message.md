@@ -33,8 +33,7 @@
 
 ## Relationships
 
-- [follow service game](follow_service_game.md) (15 shared connections)
-- [game skill service](game_skill_service.md) (1 shared connections)
+- [follow service game](follow_service_game.md) (16 shared connections)
 
 ## Source Files
 

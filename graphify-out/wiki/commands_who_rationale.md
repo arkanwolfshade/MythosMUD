@@ -35,15 +35,16 @@
 
 - [commands logout rationale](commands_logout_rationale.md) (3 shared connections)
 - [commands status rationale](commands_status_rationale.md) (3 shared connections)
-- [Error Conversion](Error_Conversion.md) (3 shared connections)
-- [realtime real time](realtime_real_time.md) (2 shared connections)
+- [character creation service](character_creation_service.md) (2 shared connections)
 - [commands emote rationale](commands_emote_rationale.md) (2 shared connections)
-- [schemas calendar rationale](schemas_calendar_rationale.md) (1 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [combat models rationale](combat_models_rationale.md) (1 shared connections)
+- [fixtures mock helpers](fixtures_mock_helpers.md) (1 shared connections)
 - [persistence combat handler](persistence_combat_handler.md) (1 shared connections)
 - [commands whoami utility](commands_whoami_utility.md) (1 shared connections)
 - [player room realtime](player_room_realtime.md) (1 shared connections)
-- [persistence rationale players](persistence_rationale_players.md) (1 shared connections)
-- [room sync service](room_sync_service.md) (1 shared connections)
+- [game weapon player](game_weapon_player.md) (1 shared connections)
+- [command models moderation](command_models_moderation.md) (1 shared connections)
 
 ## Source Files
 

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_take_room_drop_quantity_too_large()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **Test take_room_drop() with quantity larger than available.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **test_get_quest_log_for_client()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test _get_quest_log_for_client() returns quest entries from service.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Relationships
 
-- [room subscription manager](room_subscription_manager.md) (1 shared connections)
+- [game state provider](game_state_provider.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Audit Trail
 

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_take_room_drop_partial_quantity()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **Test take_room_drop() adjusts quantity when quantity < available.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **test_get_room_occupants_with_online_players()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test get_room_occupants() with online players.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Relationships
 
-- [room subscription manager](room_subscription_manager.md) (1 shared connections)
+- [game state provider](game_state_provider.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Audit Trail
 

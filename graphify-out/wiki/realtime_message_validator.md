@@ -33,21 +33,21 @@
 
 ## Relationships
 
-- [command commands aliases](command_commands_aliases.md) (8 shared connections)
-- [handler realtime nats](handler_realtime_nats.md) (6 shared connections)
-- [Error Conversion](Error_Conversion.md) (5 shared connections)
-- [occupant formatter realtime](occupant_formatter_realtime.md) (4 shared connections)
+- [occupant formatter realtime](occupant_formatter_realtime.md) (8 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (5 shared connections)
+- [persistence container item](persistence_container_item.md) (4 shared connections)
+- [handler realtime nats](handler_realtime_nats.md) (4 shared connections)
 - [websocket realtime handler](websocket_realtime_handler.md) (3 shared connections)
-- [lucidity npc combat](lucidity_npc_combat.md) (1 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (1 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (2 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (2 shared connections)
 
 ## Source Files
 
 - `server/realtime/message_validator.py`
 - `server/realtime/websocket_handler_validation.py`
 - `server/tests/unit/realtime/test_message_validator.py`
+- `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
 - `server/tests/unit/realtime/test_websocket_handler_validation.py`
-- `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
 
 ## Audit Trail
 

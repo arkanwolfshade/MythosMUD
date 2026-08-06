@@ -1,6 +1,6 @@
 # panels chatPanelRuntimeUtils chatPanelEx
 
-> 74 nodes
+> 73 nodes
 
 ## Key Concepts
 
@@ -26,20 +26,20 @@
 - **chatPanelRuntimeViewTypes.ts** (6 connections) — `client/src/components/panels/chatPanelRuntimeViewTypes.ts`
 - **bumpUnreadCountForMessage()** (6 connections) — `client/src/components/panels/chatPanelUnreadBump.ts`
 - **computeUnreadChatCounts()** (6 connections) — `client/src/components/panels/chatPanelUnreadCounts.ts`
-- **ChatHistoryPanel()** (6 connections) — `client/src/components/ui-v2/panels/ChatHistoryPanel.tsx`
 - **chatPanelChannelFilter.ts** (5 connections) — `client/src/components/panels/chatPanelChannelFilter.ts`
 - **chatPanelMessageClass.ts** (5 connections) — `client/src/components/panels/chatPanelMessageClass.ts`
-- *... and 49 more nodes in this community*
+- **applyChatSearchFilters()** (5 connections) — `client/src/components/panels/chatPanelRuntimeUtils.ts`
+- *... and 48 more nodes in this community*
 
 ## Relationships
 
-- [panels chat ChatPanelRuntimeViewParts](panels_chat_ChatPanelRuntimeViewParts.md) (17 shared connections)
-- [emote game service](emote_game_service.md) (8 shared connections)
+- [panels chat ChatPanelRuntimeViewParts](panels_chat_ChatPanelRuntimeViewParts.md) (16 shared connections)
+- [mythosApp security submitAuth](mythosApp_security_submitAuth.md) (7 shared connections)
 - [panels chatPanelRefactoredDerived ChatPa](panels_chatPanelRefactoredDerived_ChatPa.md) (5 shared connections)
 - [eventHandlers messageHandlers statusPars](eventHandlers_messageHandlers_statusPars.md) (4 shared connections)
-- [performanceTester performance ExtendedPe](performanceTester_performance_ExtendedPe.md) (3 shared connections)
-- [combat service services](combat_service_services.md) (2 shared connections)
-- [lucidityEventUtils mythosTime MythosTime](lucidityEventUtils_mythosTime_MythosTime.md) (1 shared connections)
+- [startup npc services](startup_npc_services.md) (3 shared connections)
+- [command factories communication](command_factories_communication.md) (2 shared connections)
+- [argon2 auth rationale](argon2_auth_rationale.md) (1 shared connections)
 
 ## Source Files
 
@@ -57,13 +57,12 @@
 - `client/src/components/panels/chatPanelUnreadBump.ts`
 - `client/src/components/panels/chatPanelUnreadCounts.ts`
 - `client/src/components/panels/useChatPanelRuntime.ts`
-- `client/src/components/ui-v2/panels/ChatHistoryPanel.tsx`
 - `client/src/utils/__tests__/messageTypeUtils.test.ts`
 - `client/src/utils/messageTypeUtils.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 384 (98%)
+- EXTRACTED: 378 (98%)
 - INFERRED: 8 (2%)
 - AMBIGUOUS: 0 (0%)
 

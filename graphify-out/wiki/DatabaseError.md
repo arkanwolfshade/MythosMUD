@@ -2,7 +2,7 @@
 
 > God node · 497 connections · `server/exceptions.py`
 
-**Community:** [commands shutdown process](commands_shutdown_process.md)
+**Community:** [endpoints auth rationale](endpoints_auth_rationale.md)
 
 ## Connections by Relation
 
@@ -50,8 +50,8 @@
 - test_exploration_service.py `EXTRACTED`
 - player_respawn_service.py `EXTRACTED`
 - test_admin_setlucidity_command.py `EXTRACTED`
-- container_persistence.py `EXTRACTED`
 - test_exceptions.py `EXTRACTED`
+- container_persistence.py `EXTRACTED`
 
 ### indirect_call
 - _handle_admin_set_stat_command() `INFERRED`

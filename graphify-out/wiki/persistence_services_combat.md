@@ -1,6 +1,6 @@
 # persistence services combat
 
-> 32 nodes
+> 28 nodes
 
 ## Key Concepts
 
@@ -9,7 +9,6 @@
 - **TabbedInterfaceOverlay.tsx** (7 connections) — `client/src/components/ui-v2/components/TabbedInterfaceOverlay.tsx`
 - **Tab** (6 connections) — `client/src/components/ui-v2/TabbedInterface.tsx`
 - **useTabbedInterface.ts** (5 connections) — `client/src/components/ui-v2/useTabbedInterface.ts`
-- **ModalContainer.tsx** (5 connections) — `client/src/components/ui/ModalContainer.tsx`
 - **DeathInterstitial.tsx** (4 connections) — `client/src/components/DeathInterstitial.tsx`
 - **MainMenuModal.tsx** (4 connections) — `client/src/components/MainMenuModal.tsx`
 - **GameClientV2ContainerView.test.tsx** (4 connections) — `client/src/components/ui-v2/__tests__/GameClientV2ContainerView.test.tsx`
@@ -21,7 +20,6 @@
 - **MainMenuModal()** (3 connections) — `client/src/components/MainMenuModal.tsx`
 - **GameClientV2ContainerView()** (3 connections) — `client/src/components/ui-v2/GameClientV2ContainerView.tsx`
 - **TabbedInterfaceOverlay()** (3 connections) — `client/src/components/ui-v2/components/TabbedInterfaceOverlay.tsx`
-- **ModalContainer()** (3 connections) — `client/src/components/ui/ModalContainer.tsx`
 - **DeliriumInterstitial()** (2 connections) — `client/src/components/DeliriumInterstitial.tsx`
 - **DeathInterstitial.test.tsx** (2 connections) — `client/src/components/__tests__/DeathInterstitial.test.tsx`
 - **MainMenuModal.test.tsx** (2 connections) — `client/src/components/__tests__/MainMenuModal.test.tsx`
@@ -29,15 +27,17 @@
 - **TabbedInterface()** (2 connections) — `client/src/components/ui-v2/TabbedInterface.tsx`
 - **TabbedInterface.test.tsx** (2 connections) — `client/src/components/ui-v2/__tests__/TabbedInterface.test.tsx`
 - **TabbedInterfaceOverlayProps** (2 connections) — `client/src/components/ui-v2/components/TabbedInterfaceOverlay.tsx`
-- *... and 7 more nodes in this community*
+- **DeathInterstitialProps** (1 connections) — `client/src/components/DeathInterstitial.tsx`
+- **DeliriumInterstitialProps** (1 connections) — `client/src/components/DeliriumInterstitial.tsx`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [GameClientV2Container emptyOccupantsDiag](GameClientV2Container_emptyOccupantsDiag.md) (5 shared connections)
-- [combat service services](combat_service_services.md) (4 shared connections)
-- [map maps useAsciiMap](map_maps_useAsciiMap.md) (3 shared connections)
-- [eventHandlers messageHandlers statusPars](eventHandlers_messageHandlers_statusPars.md) (2 shared connections)
+- [GameClientV2Container emptyOccupantsDiag](GameClientV2Container_emptyOccupantsDiag.md) (7 shared connections)
+- [auth invites rationale](auth_invites_rationale.md) (3 shared connections)
+- [command factories communication](command_factories_communication.md) (2 shared connections)
 - [panels chat ChatPanelRuntimeViewParts](panels_chat_ChatPanelRuntimeViewParts.md) (2 shared connections)
+- [roomHandlers eventHandlers calculateOccu](roomHandlers_eventHandlers_calculateOccu.md) (2 shared connections)
 
 ## Source Files
 
@@ -54,11 +54,10 @@
 - `client/src/components/ui-v2/components/TabbedInterfaceOverlay.tsx`
 - `client/src/components/ui-v2/components/__tests__/TabbedInterfaceOverlay.test.tsx`
 - `client/src/components/ui-v2/useTabbedInterface.ts`
-- `client/src/components/ui/ModalContainer.tsx`
 
 ## Audit Trail
 
-- EXTRACTED: 116 (100%)
+- EXTRACTED: 106 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

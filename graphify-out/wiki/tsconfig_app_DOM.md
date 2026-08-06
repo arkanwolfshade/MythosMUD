@@ -4,22 +4,22 @@
 
 ## Key Concepts
 
-- **test_format_metadata_empty()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **Test format_metadata with empty dict.** (1 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_event_bus_get_subscriber_count_none()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test EventBus.get_subscriber_count() returns 0 for no subscribers.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- [commands inventory helpers](commands_inventory_helpers.md) (1 shared connections)
-- [commands inventory command](commands_inventory_command.md) (1 shared connections)
+- [event bus events](event_bus_events.md) (1 shared connections)
+- [room conftest toolkit](room_conftest_toolkit.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_inventory_helpers.py`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

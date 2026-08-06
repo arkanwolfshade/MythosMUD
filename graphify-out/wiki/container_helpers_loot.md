@@ -33,11 +33,12 @@
 
 ## Relationships
 
-- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (9 shared connections)
+- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (7 shared connections)
 - [command factories exploration](command_factories_exploration.md) (4 shared connections)
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
-- [Item Instances](Item_Instances.md) (2 shared connections)
-- [player service game](player_service_game.md) (2 shared connections)
+- [Item Instances](Item_Instances.md) (3 shared connections)
+- [shutdown commands admin](shutdown_commands_admin.md) (2 shared connections)
+- [rate limiter realtime](rate_limiter_realtime.md) (2 shared connections)
+- [cleanup combat handler](cleanup_combat_handler.md) (1 shared connections)
 
 ## Source Files
 

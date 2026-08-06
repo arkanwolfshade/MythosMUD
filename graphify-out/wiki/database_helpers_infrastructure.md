@@ -1,64 +1,67 @@
 # database helpers infrastructure
 
-> 58 nodes
+> 97 nodes
 
 ## Key Concepts
 
-- **room_service.py** (22 connections) — `server/game/room_service.py`
-- **map_minimap.py** (21 connections) — `server/api/map_minimap.py`
-- **MapZoneContext** (20 connections) — `server/api/map_helpers.py`
-- **test_map_minimap_helpers.py** (20 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- **generate_minimap_html()** (16 connections) — `server/api/map_minimap.py`
-- **exploration_service.py** (16 connections) — `server/services/exploration_service.py`
-- **test_rooms_exploration_filter.py** (12 connections) — `server/tests/unit/api/test_rooms_exploration_filter.py`
-- **_ensure_current_room_in_minimap_rooms()** (11 connections) — `server/api/map_minimap.py`
-- **_resolve_current_room_for_minimap()** (9 connections) — `server/api/map_minimap.py`
-- **_apply_minimap_fallback_coordinates()** (9 connections) — `server/api/map_minimap.py`
-- **_append_room_with_fallback_coords_if_needed()** (8 connections) — `server/api/map_minimap.py`
-- **TestApplyMinimapFallbackCoordinates** (8 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- **TestAppendRoomWithFallbackCoordsIfNeeded** (7 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- **test_generate_minimap_html_admin_path()** (5 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- **test_generate_minimap_html_non_admin_filters_exploration()** (5 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- **Any** (4 connections)
-- **AsyncSession** (3 connections)
-- **.test_appends_room_unchanged_when_has_coords()** (3 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- **.test_appends_copy_with_fallback_0_0_when_coords_missing()** (3 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- **.test_appends_fallback_when_only_one_coord_missing()** (3 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- **.test_admin_gets_grid_layout_for_rooms_without_coords()** (3 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- **.test_fallback_grid_wraps_by_fallback_grid_width()** (3 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- **.test_non_admin_gets_fallback_only_for_current_room()** (3 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- **.test_non_admin_uses_stable_id_for_current_room_match()** (3 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- **test_resolve_current_room_from_pre_filter_list()** (3 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- *... and 33 more nodes in this community*
+- **inventory_pickup_command.py** (35 connections) — `server/commands/inventory_pickup_command.py`
+- **inventory_get_command.py** (30 connections) — `server/commands/inventory_get_command.py`
+- **inventory_commands.py** (28 connections) — `server/commands/inventory_commands.py`
+- **inventory_drop_command.py** (25 connections) — `server/commands/inventory_drop_command.py`
+- **test_inventory_get_command.py** (25 connections) — `server/tests/unit/commands/test_inventory_get_command.py`
+- **RoomDropManager** (19 connections) — `server/commands/inventory_command_contracts.py`
+- **resolve_state_and_player()** (19 connections) — `server/commands/inventory_command_helpers.py`
+- **clone_inventory()** (18 connections) — `server/commands/inventory_command_helpers.py`
+- **_handle_get_from_room()** (17 connections) — `server/commands/inventory_get_command.py`
+- **handle_pickup_command()** (17 connections) — `server/commands/inventory_pickup_command.py`
+- **handle_get_command()** (16 connections) — `server/commands/inventory_get_command.py`
+- **_get_from_container_path()** (15 connections) — `server/commands/inventory_get_command.py`
+- **handle_drop_command()** (14 connections) — `server/commands/inventory_drop_command.py`
+- **_pickup_commit_inventory_after_floor_extract()** (13 connections) — `server/commands/inventory_pickup_command.py`
+- **_drop_resolve_stack_or_error()** (12 connections) — `server/commands/inventory_drop_command.py`
+- **GetCommandRuntime** (12 connections) — `server/commands/inventory_get_command.py`
+- **GetItemSpec** (12 connections) — `server/commands/inventory_get_command.py`
+- **_get_transfer_out_of_container()** (11 connections) — `server/commands/inventory_get_command.py`
+- **add_pickup_to_inventory()** (10 connections) — `server/commands/inventory_command_helpers.py`
+- **FloorPickupAfterExtract** (10 connections) — `server/commands/inventory_pickup_command.py`
+- **_pickup_resolve_floor_stack_or_error()** (10 connections) — `server/commands/inventory_pickup_command.py`
+- **inventory_command_contracts.py** (9 connections) — `server/commands/inventory_command_contracts.py`
+- **FloorPickupEnvironment** (9 connections) — `server/commands/inventory_pickup_command.py`
+- **FloorPickupPayload** (9 connections) — `server/commands/inventory_pickup_command.py`
+- **complete_pickup_after_floor_extract()** (9 connections) — `server/commands/inventory_pickup_command.py`
+- *... and 72 more nodes in this community*
 
 ## Relationships
 
-- [maps handle ascii](maps_handle_ascii.md) (20 shared connections)
-- [Error Conversion](Error_Conversion.md) (9 shared connections)
-- [persistence container rationale](persistence_container_rationale.md) (8 shared connections)
-- [map helpers rationale](map_helpers_rationale.md) (7 shared connections)
-- [corpse lifecycle service](corpse_lifecycle_service.md) (7 shared connections)
-- [panels monitoringPanelTestFixtures Monit](panels_monitoringPanelTestFixtures_Monit.md) (6 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (3 shared connections)
-- [map services ascii](map_services_ascii.md) (2 shared connections)
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (2 shared connections)
-- [room cache services](room_cache_services.md) (1 shared connections)
-- [player event handlers](player_event_handlers.md) (1 shared connections)
-- [startup npc service](startup_npc_service.md) (1 shared connections)
+- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (32 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (26 shared connections)
+- [task registry app](task_registry_app.md) (14 shared connections)
+- [game weapon player](game_weapon_player.md) (14 shared connections)
+- [player room realtime](player_room_realtime.md) (12 shared connections)
+- [commands npc admin](commands_npc_admin.md) (11 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (8 shared connections)
+- [container inventory helpers](container_inventory_helpers.md) (5 shared connections)
+- [player cache rationale](player_cache_rationale.md) (4 shared connections)
+- [game rationale schemas](game_rationale_schemas.md) (4 shared connections)
+- [models profession rationale](models_profession_rationale.md) (3 shared connections)
+- [character creation service](character_creation_service.md) (2 shared connections)
 
 ## Source Files
 
-- `server/api/map_helpers.py`
-- `server/api/map_minimap.py`
-- `server/game/room_service.py`
-- `server/services/exploration_service.py`
-- `server/tests/unit/api/test_map_minimap_helpers.py`
-- `server/tests/unit/api/test_rooms_exploration_filter.py`
+- `server/commands/inventory_command_coercion.py`
+- `server/commands/inventory_command_contracts.py`
+- `server/commands/inventory_command_helpers.py`
+- `server/commands/inventory_commands.py`
+- `server/commands/inventory_drop_command.py`
+- `server/commands/inventory_get_command.py`
+- `server/commands/inventory_pickup_command.py`
+- `server/tests/unit/commands/test_inventory_commands_persistence_helpers.py`
+- `server/tests/unit/commands/test_inventory_get_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 253 (97%)
-- INFERRED: 9 (3%)
+- EXTRACTED: 524 (89%)
+- INFERRED: 65 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

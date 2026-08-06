@@ -33,11 +33,10 @@
 
 ## Relationships
 
-- [commands shutdown process](commands_shutdown_process.md) (5 shared connections)
-- [room look commands](room_look_commands.md) (3 shared connections)
-- [catatonia registry services](catatonia_registry_services.md) (3 shared connections)
-- [container events rationale](container_events_rationale.md) (2 shared connections)
-- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [room look commands](room_look_commands.md) (6 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (4 shared connections)
+- [aggro threat services](aggro_threat_services.md) (3 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
 
 ## Source Files
 

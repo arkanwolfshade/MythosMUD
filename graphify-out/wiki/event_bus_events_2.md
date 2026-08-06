@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_service_shutdown_removes_subscribers()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Test that service shutdown removes all subscribers for that service.      This t** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_evaluate_numeric_comparison_false()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test _evaluate_numeric_comparison() returns False when condition not met.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [event bus events](event_bus_events.md) (1 shared connections)
+- [npc lifecycle combat](npc_lifecycle_combat.md) (1 shared connections)
+- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/events/test_event_bus.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

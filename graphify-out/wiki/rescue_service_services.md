@@ -1,46 +1,56 @@
 # rescue service services
 
-> 20 nodes
+> 70 nodes
 
 ## Key Concepts
 
-- **._load_alias_data()** (9 connections) — `server/alias_storage.py`
-- **.get_alias_file_path()** (7 connections) — `server/alias_storage.py`
-- **._save_alias_data()** (7 connections) — `server/alias_storage.py`
-- **._validate_alias_payload()** (7 connections) — `server/alias_storage.py`
-- **Path** (6 connections)
-- **AliasPayload** (5 connections)
-- **._resolved_alias_open_path()** (5 connections) — `server/alias_storage.py`
-- **_as_alias_payload()** (4 connections) — `server/alias_storage.py`
-- **.backup_aliases()** (4 connections) — `server/alias_storage.py`
-- **_empty_alias_payload()** (3 connections) — `server/alias_storage.py`
-- **.delete_player_aliases()** (3 connections) — `server/alias_storage.py`
-- **.__init__()** (2 connections) — `server/alias_storage.py`
-- **Narrow json.load output to a string-keyed object map.** (1 connections) — `server/alias_storage.py`
-- **Get the file path for a player's aliases.          Human: reject path separators** (1 connections) — `server/alias_storage.py`
-- **Absolute str path for open(); re-checks containment at the open site.          H** (1 connections) — `server/alias_storage.py`
-- **Load alias data from JSON file.** (1 connections) — `server/alias_storage.py`
-- **Save alias data to JSON file.** (1 connections) — `server/alias_storage.py`
-- **Delete a player's alias file.** (1 connections) — `server/alias_storage.py`
-- **Create a backup of a player's aliases.** (1 connections) — `server/alias_storage.py`
-- **Validate alias payload against the shared schema when available.          Args:** (1 connections) — `server/alias_storage.py`
+- **test_command_factories_communication.py** (29 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
+- **CommunicationCommandFactory** (15 connections) — `server/utils/command_factories_communication.py`
+- **.create_local_command()** (8 connections) — `server/utils/command_factories_communication.py`
+- **.create_whisper_command()** (8 connections) — `server/utils/command_factories_communication.py`
+- **.create_channel_command()** (8 connections) — `server/utils/command_factories_communication.py`
+- **.create_reply_command()** (7 connections) — `server/utils/command_factories_communication.py`
+- **.create_say_command()** (6 connections) — `server/utils/command_factories_communication.py`
+- **.create_system_command()** (6 connections) — `server/utils/command_factories_communication.py`
+- **.create_emote_command()** (6 connections) — `server/utils/command_factories_communication.py`
+- **.create_me_command()** (6 connections) — `server/utils/command_factories_communication.py`
+- **.create_pose_command()** (5 connections) — `server/utils/command_factories_communication.py`
+- **test_create_say_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
+- **test_create_local_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
+- **test_create_whisper_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
+- **test_create_whisper_command_no_message()** (4 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
+- **test_create_reply_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
+- **test_create_local_command_too_long()** (4 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
+- **test_create_system_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
+- **test_create_emote_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
+- **test_create_me_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
+- **test_create_channel_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
+- **test_create_channel_command_default_no_channel()** (4 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
+- **test_create_reply_command_empty_message()** (4 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
+- **test_create_whisper_command_too_long()** (4 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
+- **test_create_say_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
+- *... and 45 more nodes in this community*
 
 ## Relationships
 
-- [alias storage rationale](alias_storage_rationale.md) (8 shared connections)
-- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (2 shared connections)
-- [alias models rationale](alias_models_rationale.md) (2 shared connections)
-- [Security Validator Tests](Security_Validator_Tests.md) (1 shared connections)
-- [websocket helpers realtime](websocket_helpers_realtime.md) (1 shared connections)
+- [command inventory models](command_inventory_models.md) (14 shared connections)
+- [spell game magic](spell_game_magic.md) (11 shared connections)
+- [command communication models](command_communication_models.md) (8 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
+- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [websocket examples logging](websocket_examples_logging.md) (1 shared connections)
+- [command processor rationale](command_processor_rationale.md) (1 shared connections)
+- [dialogue definition persistence](dialogue_definition_persistence.md) (1 shared connections)
 
 ## Source Files
 
-- `server/alias_storage.py`
+- `server/tests/unit/utils/test_command_factories_communication.py`
+- `server/utils/command_factories_communication.py`
 
 ## Audit Trail
 
-- EXTRACTED: 70 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 209 (93%)
+- INFERRED: 15 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

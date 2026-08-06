@@ -1,58 +1,25 @@
 # services ascii map
 
-> 41 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **ChatMessage** (41 connections) — `server/game/chat_message.py`
-- **chat_message.py** (17 connections) — `server/game/chat_message.py`
-- **create_and_log_chat_message()** (13 connections) — `server/game/chat_message_helpers.py`
-- **chat_message_helpers.py** (12 connections) — `server/game/chat_message_helpers.py`
-- **test_chat_message_helpers.py** (12 connections) — `server/tests/unit/game/test_chat_message_helpers.py`
-- **create_and_log_say_message()** (7 connections) — `server/game/chat_message_helpers.py`
-- **store_global_message_in_history()** (6 connections) — `server/game/chat_message_helpers.py`
-- **test_get_room_messages()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
-- **.to_dict()** (3 connections) — `server/game/chat_message.py`
-- **test_create_and_log_chat_message()** (3 connections) — `server/tests/unit/game/test_chat_message_helpers.py`
-- **test_store_message_in_room_history_creates_and_trims()** (3 connections) — `server/tests/unit/game/test_chat_message_helpers.py`
-- **test_store_global_message_in_history_trims()** (3 connections) — `server/tests/unit/game/test_chat_message_helpers.py`
-- **test_chat_message_to_dict_includes_speaker_kind()** (3 connections) — `server/tests/unit/game/test_chat_npc_system.py`
-- **test_chat_message_init()** (3 connections) — `server/tests/unit/game/test_chat_service.py`
-- **test_chat_message_init_with_target()** (3 connections) — `server/tests/unit/game/test_chat_service.py`
-- **test_chat_message_to_dict()** (3 connections) — `server/tests/unit/game/test_chat_service.py`
-- **test_chat_message_to_dict_with_target()** (3 connections) — `server/tests/unit/game/test_chat_service.py`
-- **test_chat_message_log_message()** (3 connections) — `server/tests/unit/game/test_chat_service.py`
-- **test_chat_message_to_dict_with_echo_sent()** (3 connections) — `server/tests/unit/game/test_chat_service.py`
-- **.__init__()** (2 connections) — `server/game/chat_message.py`
-- **UUID** (2 connections)
-- **.log_message()** (2 connections) — `server/game/chat_message.py`
-- **test_create_and_log_say_message()** (2 connections) — `server/tests/unit/game/test_chat_message_helpers.py`
-- **Any** (1 connections)
-- **Chat message model for MythosMUD.  This module provides the ChatMessage class wh** (1 connections) — `server/game/chat_message.py`
-- *... and 16 more nodes in this community*
+- **test_handle_event_async_async_subscriber_error()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test _handle_event_async() handles async subscriber errors.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- [chat game message](chat_game_message.md) (22 shared connections)
-- [quest chat game](quest_chat_game.md) (12 shared connections)
-- [chat service game](chat_service_game.md) (11 shared connections)
-- [alias command models](alias_command_models.md) (5 shared connections)
-- [app tick game](app_tick_game.md) (5 shared connections)
-- [Error Conversion](Error_Conversion.md) (3 shared connections)
-- [combat messaging service](combat_messaging_service.md) (3 shared connections)
+- [event bus events](event_bus_events.md) (1 shared connections)
+- [room conftest toolkit](room_conftest_toolkit.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/chat_message.py`
-- `server/game/chat_message_helpers.py`
-- `server/tests/unit/game/test_chat_message_helpers.py`
-- `server/tests/unit/game/test_chat_npc_system.py`
-- `server/tests/unit/game/test_chat_service.py`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 165 (96%)
-- INFERRED: 6 (4%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

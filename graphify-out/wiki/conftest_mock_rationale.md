@@ -4,31 +4,34 @@
 
 ## Key Concepts
 
-- **test_inventory_mutation_guard_sync.py** (10 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **test_acquire_serializes_per_player()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **test_acquire_token_expiry()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **test_acquire_token_ttl_zero()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **test_acquire_enforces_max_tokens()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **test_acquire_cleanup_empty_state()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **Unit tests for inventory mutation guard - synchronous acquire operations.  Tests** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **Test acquire serializes mutations per player.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **Test acquire allows token reuse after expiry.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **Test acquire with token_ttl=0 (no expiry).** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **Test acquire enforces max_tokens limit.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **Test acquire cleans up state when tokens are empty.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
+- **useConnectionStateMachine.ts** (8 connections) — `client/src/hooks/useConnectionStateMachine.ts`
+- **useConnectionState.ts** (7 connections) — `client/src/hooks/useConnectionState.ts`
+- **useConnectionState()** (4 connections) — `client/src/hooks/useConnectionState.ts`
+- **connectionMachine** (4 connections) — `client/src/hooks/useConnectionStateMachine.ts`
+- **ConnectionContext** (3 connections) — `client/src/hooks/useConnectionStateMachine.ts`
+- **useConnectionState.test.ts** (2 connections) — `client/src/hooks/__tests__/useConnectionState.test.ts`
+- **useConnectionStateMachine.test.ts** (2 connections) — `client/src/hooks/__tests__/useConnectionStateMachine.test.ts`
+- **UseConnectionStateResult** (2 connections) — `client/src/hooks/useConnectionState.ts`
+- **useConnectionStateMachine.test.ts** (2 connections) — `client/src/hooks/useConnectionStateMachine.test.ts`
+- **ConnectionState** (1 connections) — `client/src/hooks/useConnectionStateMachine.ts`
+- **ConnectionEvent** (1 connections) — `client/src/hooks/useConnectionStateMachine.ts`
+- **ConnectionMachineInput** (1 connections) — `client/src/hooks/useConnectionStateMachine.ts`
 
 ## Relationships
 
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
-- [task registry app](task_registry_app.md) (2 shared connections)
+- [roomHandlers eventHandlers calculateOccu](roomHandlers_eventHandlers_calculateOccu.md) (3 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
+- `client/src/hooks/__tests__/useConnectionState.test.ts`
+- `client/src/hooks/__tests__/useConnectionStateMachine.test.ts`
+- `client/src/hooks/useConnectionState.ts`
+- `client/src/hooks/useConnectionStateMachine.test.ts`
+- `client/src/hooks/useConnectionStateMachine.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 26 (100%)
+- EXTRACTED: 37 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

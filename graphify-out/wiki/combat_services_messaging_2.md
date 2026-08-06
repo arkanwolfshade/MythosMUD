@@ -1,28 +1,51 @@
 # combat services messaging
 
-> 6 nodes
+> 58 nodes
 
 ## Key Concepts
 
-- **test_websocket_handler_disconnect.py** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
-- **test_handle_websocket_disconnect()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
-- **test_handle_websocket_disconnect_no_connection_id()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
-- **Unit tests for websocket handler disconnect handling.  Tests the disconnect hand** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
-- **Test _handle_websocket_disconnect() returns True.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
-- **Test _handle_websocket_disconnect() with no connection_id.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
+- **TestCombatMessagingService** (21 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **CombatMessagingService** (18 connections) — `server/services/combat_messaging_service.py`
+- **CombatMessages** (6 connections)
+- **.validate_npc_messages()** (6 connections) — `server/services/combat_messaging_service.py`
+- **test_combat_messaging_service.py** (4 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **.get_attack_message()** (3 connections) — `server/services/combat_messaging_service.py`
+- **.get_death_message()** (3 connections) — `server/services/combat_messaging_service.py`
+- **.get_combat_start_messages()** (3 connections) — `server/services/combat_messaging_service.py`
+- **.get_combat_end_messages()** (3 connections) — `server/services/combat_messaging_service.py`
+- **.service()** (3 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **.test_init()** (3 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **.__init__()** (2 connections) — `server/services/combat_messaging_service.py`
+- **.get_error_message()** (2 connections) — `server/services/combat_messaging_service.py`
+- **Any** (2 connections)
+- **.test_get_attack_message_attacker_perspective()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **.test_get_attack_message_defender_perspective()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **.test_get_attack_message_other_perspective()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **.test_get_attack_message_custom_action_type()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **.test_get_attack_message_custom_npc_messages()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **.test_get_attack_message_fallback_to_default()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **.test_get_death_message_default()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **.test_get_death_message_custom()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **.test_get_combat_start_messages()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **.test_get_combat_start_messages_single_occupant()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **.test_get_combat_end_messages()** (2 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- *... and 33 more nodes in this community*
 
 ## Relationships
 
-- [command commands aliases](command_commands_aliases.md) (1 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (6 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (4 shared connections)
+- [admin auth service](admin_auth_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
+- `server/services/combat_messaging_service.py`
+- `server/tests/unit/services/test_combat_messaging_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 132 (95%)
+- INFERRED: 7 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,47 +1,56 @@
 # mythosApp appLazyScreens mythosAppViewMo
 
-> 25 nodes
+> 42 nodes
 
 ## Key Concepts
 
-- **._get_random_error_message()** (8 connections) — `server/validators/combat_validator.py`
-- **.validate_combat_command()** (7 connections) — `server/validators/combat_validator.py`
+- **test_follow_commands.py** (23 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **handle_follow_command()** (18 connections) — `server/commands/follow_commands.py`
+- **follow_commands.py** (15 connections) — `server/commands/follow_commands.py`
+- **_make_container()** (12 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **_make_request()** (12 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **handle_unfollow_command()** (10 connections) — `server/commands/follow_commands.py`
+- **handle_following_command()** (10 connections) — `server/commands/follow_commands.py`
+- **test_handle_follow_self_rejected()** (7 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_follow_same_room_player_sends_request()** (7 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_follow_same_room_npc_immediate()** (7 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **_get_container()** (6 connections) — `server/commands/follow_commands.py`
+- **test_handle_follow_no_such_player_or_npc()** (6 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_follow_no_persistence()** (5 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_follow_no_target()** (5 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_follow_player_not_in_game()** (5 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_unfollow_success()** (5 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_unfollow_was_not_following()** (5 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_following_display()** (5 connections) — `server/tests/unit/commands/test_follow_commands.py`
 - **Any** (4 connections)
-- **._is_rate_limited()** (4 connections) — `server/validators/combat_validator.py`
-- **.__init__()** (3 connections) — `server/validators/combat_validator.py`
-- **.validate_can_attack_target()** (3 connections) — `server/validators/combat_validator.py`
-- **.validate_target_exists()** (3 connections) — `server/validators/combat_validator.py`
-- **.validate_target_alive()** (3 connections) — `server/validators/combat_validator.py`
-- **.validate_combat_state()** (3 connections) — `server/validators/combat_validator.py`
-- **.validate_attack_strength()** (3 connections) — `server/validators/combat_validator.py`
-- **._is_valid_target_name()** (3 connections) — `server/validators/combat_validator.py`
-- **._contains_suspicious_patterns()** (3 connections) — `server/validators/combat_validator.py`
-- **.get_combat_status_message()** (3 connections) — `server/validators/combat_validator.py`
-- **Initialize the combat validator.          Args:             party_service: Optio** (1 connections) — `server/validators/combat_validator.py`
-- **Validate that attacker is allowed to attack target (e.g. not same party).** (1 connections) — `server/validators/combat_validator.py`
-- **Validate a combat command with thematic error messages.          Args:** (1 connections) — `server/validators/combat_validator.py`
-- **Validate that a target exists with thematic error messages.          Args:** (1 connections) — `server/validators/combat_validator.py`
-- **Validate that a target is alive with thematic error messages.          Args:** (1 connections) — `server/validators/combat_validator.py`
-- **Validate combat state with thematic error messages.          Args:             i** (1 connections) — `server/validators/combat_validator.py`
-- **Validate attack strength with thematic error messages.          Args:** (1 connections) — `server/validators/combat_validator.py`
-- **Check if target name is valid.** (1 connections) — `server/validators/combat_validator.py`
-- **Check for suspicious patterns in target name.** (1 connections) — `server/validators/combat_validator.py`
-- **Check if player is rate limited.** (1 connections) — `server/validators/combat_validator.py`
-- **Get a random error message for the given error type.** (1 connections) — `server/validators/combat_validator.py`
-- **Get a thematic combat status message.** (1 connections) — `server/validators/combat_validator.py`
+- **test_handle_follow_no_container()** (3 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_unfollow_no_container()** (3 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_following_no_container()** (3 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **Follow commands for MythosMUD.  Handlers for /follow, /unfollow, and /following.** (1 connections) — `server/commands/follow_commands.py`
+- **Get application container from request.** (1 connections) — `server/commands/follow_commands.py`
+- **Handle /follow <target>. Target must be a player or NPC in the same room.** (1 connections) — `server/commands/follow_commands.py`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (12 shared connections)
+- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (10 shared connections)
+- [commands npc admin](commands_npc_admin.md) (5 shared connections)
+- [character creation service](character_creation_service.md) (4 shared connections)
+- [panels domPurifyClient chat](panels_domPurifyClient_chat.md) (4 shared connections)
+- [connection realtime manager](connection_realtime_manager.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [middleware correlation rationale](middleware_correlation_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/validators/combat_validator.py`
+- `server/commands/follow_commands.py`
+- `server/tests/unit/commands/test_follow_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 62 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 192 (98%)
+- INFERRED: 4 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

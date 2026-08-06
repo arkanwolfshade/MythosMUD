@@ -16,8 +16,8 @@
 
 ## Relationships
 
-- [startup npc service](startup_npc_service.md) (3 shared connections)
-- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [player left room](player_left_room.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
 
 ## Source Files
 

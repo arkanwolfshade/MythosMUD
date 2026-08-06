@@ -34,9 +34,9 @@
 ## Relationships
 
 - [chat game message](chat_game_message.md) (5 shared connections)
-- [services ascii map](services_ascii_map.md) (3 shared connections)
+- [quest chat game](quest_chat_game.md) (3 shared connections)
 - [alias command models](alias_command_models.md) (3 shared connections)
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
 
 ## Source Files
 

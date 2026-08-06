@@ -1,6 +1,6 @@
 # subject validation services
 
-> 101 nodes
+> 89 nodes
 
 ## Key Concepts
 
@@ -11,7 +11,6 @@
 - **InvalidPatternError** (19 connections) — `server/services/nats_subject_manager/exceptions.py`
 - **MissingParameterError** (17 connections) — `server/services/nats_subject_manager/exceptions.py`
 - **NATSSubjectError** (16 connections) — `server/services/nats_subject_manager/exceptions.py`
-- **SubjectManagerMetrics** (16 connections) — `server/services/nats_subject_manager/metrics.py`
 - **test_nats_subject_exceptions.py** (16 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
 - **test_subscription_patterns.py** (14 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
 - **exceptions.py** (13 connections) — `server/services/nats_subject_manager/exceptions.py`
@@ -23,25 +22,25 @@
 - **validation.py** (7 connections) — `server/services/nats_subject_manager/validation.py`
 - **test_exception_hierarchy()** (7 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
 - **test_exceptions_can_be_raised()** (6 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
-- **.__init__()** (5 connections) — `server/services/nats_subject_manager/manager.py`
 - **metrics.py** (5 connections) — `server/services/nats_subject_manager/metrics.py`
 - **.validate_parameter_value()** (5 connections) — `server/services/nats_subject_manager/validation.py`
 - **test_exceptions_can_be_caught_by_base()** (5 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
 - **.validate_pattern_params()** (4 connections) — `server/services/nats_subject_manager/validation.py`
 - **test_pattern_not_found_error()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
-- *... and 76 more nodes in this community*
+- **test_missing_parameter_error_single()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
+- **test_invalid_pattern_error()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
+- *... and 64 more nodes in this community*
 
 ## Relationships
 
-- [manager subject services](manager_subject_services.md) (31 shared connections)
+- [manager subject services](manager_subject_services.md) (29 shared connections)
 - [zone npc config](zone_npc_config.md) (15 shared connections)
-- [taunt combat commands](taunt_combat_commands.md) (6 shared connections)
-- [manager services nats](manager_services_nats.md) (6 shared connections)
+- [NPC Combat](NPC_Combat.md) (6 shared connections)
+- [manager services nats](manager_services_nats.md) (4 shared connections)
 - [pattern matcher services](pattern_matcher_services.md) (3 shared connections)
 - [alias command models](alias_command_models.md) (2 shared connections)
 - [broker infrastructure nats](broker_infrastructure_nats.md) (1 shared connections)
-- [connection state machine](connection_state_machine.md) (1 shared connections)
-- [mythos mud mapbuilder](mythos_mud_mapbuilder.md) (1 shared connections)
+- [combat validator validators](combat_validator_validators.md) (1 shared connections)
 
 ## Source Files
 
@@ -57,8 +56,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 391 (91%)
-- INFERRED: 37 (9%)
+- EXTRACTED: 357 (91%)
+- INFERRED: 36 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

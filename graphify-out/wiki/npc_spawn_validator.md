@@ -1,64 +1,50 @@
 # npc spawn validator
 
-> 32 nodes
+> 88 nodes
 
 ## Key Concepts
 
-- **PrototypeRegistryError** (26 connections) — `server/game/items/prototype_registry.py`
-- **prototype_registry.py** (22 connections) — `server/game/items/prototype_registry.py`
-- **ItemFactory** (17 connections) — `server/game/items/item_factory.py`
-- **item_factory.py** (16 connections) — `server/game/items/item_factory.py`
-- **ItemFactoryError** (15 connections) — `server/game/items/item_factory.py`
-- **__init__.py** (11 connections) — `server/game/items/__init__.py`
-- **test_item_factory.py** (11 connections) — `server/tests/unit/game/test_item_factory.py`
-- **ItemInstance** (10 connections) — `server/game/items/item_instance.py`
-- **item_instance.py** (5 connections) — `server/game/items/item_instance.py`
-- **test_item_instance.py** (5 connections) — `server/tests/unit/game/test_item_instance.py`
-- **test_create_instance_prototype_not_found()** (4 connections) — `server/tests/unit/game/test_item_factory.py`
-- **.to_inventory_stack()** (3 connections) — `server/game/items/item_instance.py`
-- **test_create_instance_invalid_quantity()** (3 connections) — `server/tests/unit/game/test_item_factory.py`
-- **factory()** (2 connections) — `server/tests/unit/game/test_item_factory.py`
-- **test_create_instance_success()** (2 connections) — `server/tests/unit/game/test_item_factory.py`
-- **test_create_instance_with_overrides()** (2 connections) — `server/tests/unit/game/test_item_factory.py`
-- **test_item_instance_to_inventory_stack_minimal()** (2 connections) — `server/tests/unit/game/test_item_instance.py`
-- **test_item_instance_to_inventory_stack_includes_optional_fields()** (2 connections) — `server/tests/unit/game/test_item_instance.py`
-- **Item system package.  This module exposes the prototype schema and registry util** (1 connections) — `server/game/items/__init__.py`
-- **Exception** (1 connections)
-- **Item factory for creating item instances from prototypes.  This module provides** (1 connections) — `server/game/items/item_factory.py`
-- **Raised when the factory cannot produce a valid instance.** (1 connections) — `server/game/items/item_factory.py`
-- **Factory responsible for instantiating runtime item instances.** (1 connections) — `server/game/items/item_factory.py`
-- **Any** (1 connections)
-- **Item instance model for runtime item representation.  This module defines the It** (1 connections) — `server/game/items/item_instance.py`
-- *... and 7 more nodes in this community*
+- **test_player_model.py** (48 connections) — `server/tests/unit/models/test_player_model.py`
+- **test_player_creation()** (3 connections) — `server/tests/unit/models/test_player_model.py`
+- **test_player_defaults()** (3 connections) — `server/tests/unit/models/test_player_model.py`
+- **test_player_get_stats()** (3 connections) — `server/tests/unit/models/test_player_model.py`
+- **test_player_get_stats_default()** (3 connections) — `server/tests/unit/models/test_player_model.py`
+- **test_player_set_stats()** (3 connections) — `server/tests/unit/models/test_player_model.py`
+- **test_player_get_inventory()** (3 connections) — `server/tests/unit/models/test_player_model.py`
+- **test_player_get_inventory_empty()** (3 connections) — `server/tests/unit/models/test_player_model.py`
+- **test_player_set_inventory()** (3 connections) — `server/tests/unit/models/test_player_model.py`
+- **test_player_set_inventory_serializes_uuid_values()** (3 connections) — `server/tests/unit/models/test_player_model.py`
+- **test_player_get_status_effects()** (3 connections) — `server/tests/unit/models/test_player_model.py`
+- **test_player_set_status_effects()** (3 connections) — `server/tests/unit/models/test_player_model.py`
+- **test_player_get_equipped_items()** (3 connections) — `server/tests/unit/models/test_player_model.py`
+- **test_player_get_equipped_items_empty()** (3 connections) — `server/tests/unit/models/test_player_model.py`
+- **test_player_set_equipped_items()** (3 connections) — `server/tests/unit/models/test_player_model.py`
+- **test_player_add_experience()** (3 connections) — `server/tests/unit/models/test_player_model.py`
+- **test_player_add_experience_zero()** (3 connections) — `server/tests/unit/models/test_player_model.py`
+- **test_player_is_alive()** (3 connections) — `server/tests/unit/models/test_player_model.py`
+- **test_player_is_alive_false()** (3 connections) — `server/tests/unit/models/test_player_model.py`
+- **test_player_is_mortally_wounded()** (3 connections) — `server/tests/unit/models/test_player_model.py`
+- **test_player_is_mortally_wounded_false()** (3 connections) — `server/tests/unit/models/test_player_model.py`
+- **test_player_is_dead()** (3 connections) — `server/tests/unit/models/test_player_model.py`
+- **test_player_is_dead_false()** (3 connections) — `server/tests/unit/models/test_player_model.py`
+- **test_player_is_mortally_wounded_uses_stats_int_coercion()** (3 connections) — `server/tests/unit/models/test_player_model.py`
+- **test_player_is_dead_uses_stats_int_nan_default()** (3 connections) — `server/tests/unit/models/test_player_model.py`
+- *... and 63 more nodes in this community*
 
 ## Relationships
 
-- [combat npc mixin](combat_npc_mixin.md) (14 shared connections)
-- [MapView GameClientV2ContainerView Tabbed](MapView_GameClientV2ContainerView_Tabbed.md) (7 shared connections)
-- [connection cleaner realtime](connection_cleaner_realtime.md) (5 shared connections)
-- [Error Conversion](Error_Conversion.md) (5 shared connections)
-- [stats game generator](stats_game_generator.md) (5 shared connections)
-- [player service game](player_service_game.md) (5 shared connections)
-- [schedule service services](schedule_service_services.md) (4 shared connections)
-- [game chat moderation](game_chat_moderation.md) (3 shared connections)
-- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (2 shared connections)
-- [Magic Spell Service](Magic_Spell_Service.md) (2 shared connections)
-- [room realtime occupant](room_realtime_occupant.md) (1 shared connections)
-- [websocket realtime handler](websocket_realtime_handler.md) (1 shared connections)
+- [game weapon player](game_weapon_player.md) (43 shared connections)
+- [rate limiter realtime](rate_limiter_realtime.md) (2 shared connections)
+- [player room realtime](player_room_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/items/__init__.py`
-- `server/game/items/item_factory.py`
-- `server/game/items/item_instance.py`
-- `server/game/items/prototype_registry.py`
-- `server/tests/unit/game/test_item_factory.py`
-- `server/tests/unit/game/test_item_instance.py`
+- `server/tests/unit/models/test_player_model.py`
 
 ## Audit Trail
 
-- EXTRACTED: 153 (89%)
-- INFERRED: 19 (11%)
+- EXTRACTED: 220 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

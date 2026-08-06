@@ -14,7 +14,6 @@
 - **characterSessionApi.ts** (18 connections) — `client/src/mythosApp/characterSessionApi.ts`
 - **isObject()** (18 connections) — `client/src/mythosApp/guards.ts`
 - **isServerUnavailable()** (18 connections) — `client/src/mythosApp/serverAvailability.ts`
-- **API_V1_BASE** (18 connections) — `client/src/utils/config.ts`
 - **CharacterSelectionScreen.tsx** (17 connections) — `client/src/components/CharacterSelectionScreen.tsx`
 - **creationCompleteActions.ts** (16 connections) — `client/src/mythosApp/creationCompleteActions.ts`
 - **serverAvailability.ts** (16 connections) — `client/src/mythosApp/serverAvailability.ts`
@@ -22,6 +21,7 @@
 - **deleteCharacterActions.ts** (14 connections) — `client/src/mythosApp/deleteCharacterActions.ts`
 - **motdContinueFlow.ts** (14 connections) — `client/src/mythosApp/motdContinueFlow.ts`
 - **errorHandler.test.ts** (14 connections) — `client/src/utils/errorHandler.test.ts`
+- **CreationStep** (13 connections) — `client/src/mythosApp/creationTypes.ts`
 - **selectCharacterFlow.ts** (13 connections) — `client/src/mythosApp/selectCharacterFlow.ts`
 - **useMythosAppActions()** (13 connections) — `client/src/mythosApp/useMythosAppActions.ts`
 - **runDeleteCharacterFlow()** (11 connections) — `client/src/mythosApp/deleteCharacterFlow.ts`
@@ -33,28 +33,24 @@
 
 ## Relationships
 
-- [SkillAssignmentScreen helpers CharacterN](SkillAssignmentScreen_helpers_CharacterN.md) (53 shared connections)
-- [apiTypeGuards FIELDS SHARED](apiTypeGuards_FIELDS_SHARED.md) (15 shared connections)
-- [container sql injection](container_sql_injection.md) (11 shared connections)
-- [auth invites rationale](auth_invites_rationale.md) (7 shared connections)
-- [map maps useAsciiMap](map_maps_useAsciiMap.md) (6 shared connections)
-- [mythosApp security submitAuth](mythosApp_security_submitAuth.md) (6 shared connections)
-- [npc behavior engine](npc_behavior_engine.md) (5 shared connections)
-- [eventHandlers messageHandlers statusPars](eventHandlers_messageHandlers_statusPars.md) (2 shared connections)
+- [game chat moderation](game_chat_moderation.md) (37 shared connections)
+- [SkillAssignmentScreen helpers CharacterN](SkillAssignmentScreen_helpers_CharacterN.md) (30 shared connections)
+- [auth invites rationale](auth_invites_rationale.md) (18 shared connections)
+- [apiTypeGuards FIELDS SHARED](apiTypeGuards_FIELDS_SHARED.md) (16 shared connections)
+- [logout command commands](logout_command_commands.md) (6 shared connections)
 - [roomHandlers eventHandlers calculateOccu](roomHandlers_eventHandlers_calculateOccu.md) (2 shared connections)
-- [containers stores containerStore](containers_stores_containerStore.md) (1 shared connections)
-- [lucidityEventUtils mythosTime MythosTime](lucidityEventUtils_mythosTime_MythosTime.md) (1 shared connections)
-- [combat service services](combat_service_services.md) (1 shared connections)
+- [casting game magic](casting_game_magic.md) (1 shared connections)
 
 ## Source Files
 
 - `client/src/components/CharacterSelectionScreen.tsx`
-- `client/src/hooks/useStatsRolling.ts`
+- `client/src/hooks/useProfessions.ts`
 - `client/src/mythosApp/__tests__/useMythosSessionChrome.test.ts`
 - `client/src/mythosApp/apiErrorMessage.ts`
 - `client/src/mythosApp/characterSessionApi.ts`
 - `client/src/mythosApp/creationCompleteActions.ts`
 - `client/src/mythosApp/creationCompleteFlow.ts`
+- `client/src/mythosApp/creationTypes.ts`
 - `client/src/mythosApp/deleteCharacterActions.ts`
 - `client/src/mythosApp/deleteCharacterFlow.ts`
 - `client/src/mythosApp/guards.ts`
@@ -67,11 +63,10 @@
 - `client/src/mythosApp/startLoginGracePeriod.ts`
 - `client/src/mythosApp/useMythosAppActions.ts`
 - `client/src/mythosApp/useMythosSessionChrome.ts`
-- `client/src/types/auth.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 673 (100%)
+- EXTRACTED: 674 (100%)
 - INFERRED: 2 (0%)
 - AMBIGUOUS: 0 (0%)
 

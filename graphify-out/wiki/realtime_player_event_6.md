@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_player_room_player_not_found()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
-- **Test get_player_room() when player is not found.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_convert_room_uuids_to_names_player_not_found()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test convert_room_uuids_to_names() when player not found.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Relationships
 
-- [movement service game](movement_service_game.md) (1 shared connections)
+- [game state provider](game_state_provider.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_movement_service.py`
+- `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Audit Trail
 

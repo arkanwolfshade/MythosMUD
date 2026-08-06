@@ -35,8 +35,8 @@
 
 - [combat configuration service](combat_configuration_service.md) (3 shared connections)
 - [combat monitoring service](combat_monitoring_service.md) (3 shared connections)
-- [tools generate invite](tools_generate_invite.md) (2 shared connections)
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [circuit breaker realtime](circuit_breaker_realtime.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
 
 ## Source Files
 

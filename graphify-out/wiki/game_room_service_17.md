@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_add_room_drop_invalid_quantity()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **Test add_room_drop() raises error for invalid quantity.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **test_is_player_disconnecting_no_disconnecting_players_attr()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test is_player_disconnecting() handles missing disconnecting_players attribute.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [room subscription manager](room_subscription_manager.md) (1 shared connections)
+- [player event handlers](player_event_handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 

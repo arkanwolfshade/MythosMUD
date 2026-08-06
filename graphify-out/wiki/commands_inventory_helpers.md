@@ -1,50 +1,54 @@
 # commands inventory helpers
 
-> 23 nodes
+> 101 nodes
 
 ## Key Concepts
 
+- **test_inventory_helpers.py** (38 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
 - **test_inventory_display_helpers.py** (25 connections) — `server/tests/unit/commands/test_inventory_display_helpers.py`
 - **format_metadata()** (20 connections) — `server/commands/inventory_display_helpers.py`
+- **inventory_display_helpers.py** (13 connections) — `server/commands/inventory_display_helpers.py`
+- **render_inventory()** (12 connections) — `server/commands/inventory_display_helpers.py`
 - **filter_non_equipped_inventory()** (8 connections) — `server/commands/inventory_display_helpers.py`
+- **build_inventory_lines()** (8 connections) — `server/commands/inventory_display_helpers.py`
 - **build_container_metadata()** (8 connections) — `server/commands/inventory_display_helpers.py`
-- **test_format_metadata_none()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_format_metadata_simple()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_format_metadata_complex()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **test_format_metadata_empty()** (2 connections) — `server/tests/unit/commands/test_inventory_display_helpers.py`
-- **test_format_metadata_sorted_keys()** (2 connections) — `server/tests/unit/commands/test_inventory_display_helpers.py`
-- **test_format_metadata_nested_dict()** (2 connections) — `server/tests/unit/commands/test_inventory_display_helpers.py`
-- **test_format_metadata_exception_returns_empty()** (2 connections) — `server/tests/unit/commands/test_inventory_display_helpers.py`
-- **test_filter_non_equipped_inventory()** (2 connections) — `server/tests/unit/commands/test_inventory_display_helpers.py`
-- **test_filter_keeps_non_equipped_items()** (2 connections) — `server/tests/unit/commands/test_inventory_display_helpers.py`
-- **test_build_container_metadata_without_contents()** (2 connections) — `server/tests/unit/commands/test_inventory_display_helpers.py`
-- **test_build_container_metadata_with_contents()** (2 connections) — `server/tests/unit/commands/test_inventory_display_helpers.py`
-- **test_filter_equipped_by_item_id()** (2 connections) — `server/tests/unit/commands/test_inventory_display_helpers.py`
-- **Format metadata for display.** (1 connections) — `server/commands/inventory_display_helpers.py`
-- **Filter out equipped items and container items from inventory.** (1 connections) — `server/commands/inventory_display_helpers.py`
-- **Build and format metadata for equipped item with container.** (1 connections) — `server/commands/inventory_display_helpers.py`
-- **Unit tests for inventory display helpers.** (1 connections) — `server/tests/unit/commands/test_inventory_display_helpers.py`
-- **Test _format_metadata with None.** (1 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **Test format_metadata with simple metadata.** (1 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **Test format_metadata with complex metadata.** (1 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **build_equipped_lines()** (8 connections) — `server/commands/inventory_display_helpers.py`
+- **Any** (7 connections)
+- **get_equipped_item_identifiers()** (6 connections) — `server/commands/inventory_display_helpers.py`
+- **test_inventory_commands_format_helpers.py** (6 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
+- **test_format_metadata_empty()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
+- **test_format_metadata_simple()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
+- **test_format_metadata_nested_dict()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
+- **test_normalize_slot_name_none()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_normalize_slot_name_valid()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_normalize_slot_name_empty_string()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_normalize_slot_name_whitespace()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_match_room_drop_by_name_empty_search()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_match_room_drop_by_name_exact_match()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_match_room_drop_by_name_prefix_match()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_match_room_drop_by_name_substring_match()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_match_room_drop_by_name_item_id_match()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_match_room_drop_by_name_prototype_id_match()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- *... and 76 more nodes in this community*
 
 ## Relationships
 
-- [player helpers error](player_helpers_error.md) (21 shared connections)
-- [subzone realtime nats](subzone_realtime_nats.md) (4 shared connections)
-- [commands inventory command](commands_inventory_command.md) (4 shared connections)
-- [Error Conversion](Error_Conversion.md) (1 shared connections)
-- [tsconfig app DOM](tsconfig_app_DOM.md) (1 shared connections)
+- [player cache rationale](player_cache_rationale.md) (26 shared connections)
+- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (5 shared connections)
+- [database helpers infrastructure](database_helpers_infrastructure.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (1 shared connections)
 
 ## Source Files
 
 - `server/commands/inventory_display_helpers.py`
+- `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
 - `server/tests/unit/commands/test_inventory_display_helpers.py`
 - `server/tests/unit/commands/test_inventory_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 95 (100%)
+- EXTRACTED: 326 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

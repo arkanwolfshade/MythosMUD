@@ -1,36 +1,32 @@
 # quests players rationale
 
-> 14 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **test_inventory_mutation_guard_async.py** (9 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
-- **guard()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
-- **test_acquire_async_enforces_max_tokens()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
-- **test_acquire_async_token_expiry()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
-- **test_acquire_async_token_ttl_zero()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
-- **test_acquire_async_cleanup_empty_state()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
-- **test_acquire_async_concurrent_same_player()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
-- **Unit tests for inventory mutation guard - asynchronous acquire operations.  Test** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
-- **Create an InventoryMutationGuard instance.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
-- **Test acquire_async enforces max_tokens limit.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
-- **Test acquire_async allows token reuse after expiry.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
-- **Test acquire_async with token_ttl=0 (no expiry).** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
-- **Test acquire_async cleans up state when tokens are empty.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
-- **Test acquire_async serializes concurrent mutations for same player.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **MockPersistence** (7 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **mock_persistence()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **.get_player_by_name()** (2 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **.get_room_by_id()** (2 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **.__setattr__()** (2 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **.__init__()** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **Mock persistence layer with async methods.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **Mock async method that uses configured mock.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **Mock method that uses configured mock.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **Allow setting get_player_by_name and get_room_by_id to mocks.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
 
 ## Relationships
 
-- [task registry app](task_registry_app.md) (2 shared connections)
-- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [rest grace period](rest_grace_period.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- `server/tests/unit/commands/test_rest_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 29 (100%)
+- EXTRACTED: 22 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

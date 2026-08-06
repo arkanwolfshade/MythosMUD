@@ -1,6 +1,6 @@
 # command input commands
 
-> 53 nodes
+> 57 nodes
 
 ## Key Concepts
 
@@ -8,6 +8,8 @@
 - **test_npc_base.py** (24 connections) — `server/tests/unit/npc/test_npc_base.py`
 - **test_passive_mob_npc.py** (19 connections) — `server/tests/unit/npc/test_passive_mob_npc.py`
 - **._setup_passive_mob_behavior_rules()** (3 connections) — `server/npc/passive_mob_npc.py`
+- **.respond_to_player()** (3 connections) — `server/npc/passive_mob_npc.py`
+- **._handle_respond_to_greeting()** (3 connections) — `server/npc/passive_mob_npc.py`
 - **test_npc_base_get_combat_stats()** (3 connections) — `server/tests/unit/npc/test_npc_base.py`
 - **test_npc_base_get_combat_stats_legacy_dp()** (3 connections) — `server/tests/unit/npc/test_npc_base.py`
 - **test_npc_base_is_alive_property()** (3 connections) — `server/tests/unit/npc/test_npc_base.py`
@@ -27,19 +29,16 @@
 - **test_npc_base_take_damage_when_dead()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
 - **test_npc_base_execute_behavior()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
 - **test_npc_base_ai_placeholders()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
-- **test_npc_base_get_behavior_and_ai_config()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
-- **test_npc_base_move_with_event_reaction_system()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
-- *... and 28 more nodes in this community*
+- *... and 32 more nodes in this community*
 
 ## Relationships
 
-- [Error Conversion](Error_Conversion.md) (8 shared connections)
-- [npc behavior engine](npc_behavior_engine.md) (5 shared connections)
-- [lucidity event services](lucidity_event_services.md) (2 shared connections)
-- [realtime maintenance connection](realtime_maintenance_connection.md) (2 shared connections)
-- [npc shopkeeper rationale](npc_shopkeeper_rationale.md) (2 shared connections)
-- [room look commands](room_look_commands.md) (2 shared connections)
+- [services npc startup](services_npc_startup.md) (7 shared connections)
+- [services nats service](services_nats_service.md) (4 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (4 shared connections)
+- [room look commands](room_look_commands.md) (3 shared connections)
 - [idle movement npc](idle_movement_npc.md) (1 shared connections)
+- [lucidity event services](lucidity_event_services.md) (1 shared connections)
 
 ## Source Files
 
@@ -49,8 +48,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 191 (96%)
-- INFERRED: 7 (4%)
+- EXTRACTED: 199 (97%)
+- INFERRED: 7 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

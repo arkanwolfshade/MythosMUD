@@ -1,48 +1,35 @@
 # npc threading rationale
 
-> 16 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **skills_commands.py** (16 connections) — `server/commands/skills_commands.py`
-- **handle_skills_command()** (10 connections) — `server/commands/skills_commands.py`
-- **_get_container_services()** (6 connections) — `server/commands/skills_commands.py`
-- **Any** (5 connections)
-- **_resolve_player_id()** (5 connections) — `server/commands/skills_commands.py`
-- **_resolve_user_id()** (4 connections) — `server/commands/skills_commands.py`
-- **_format_skills_output()** (4 connections) — `server/commands/skills_commands.py`
-- **skill_service()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
-- **UUID** (2 connections)
-- **Skills command handler (plan 10.7 V4).  Returns the active character's skills as** (1 connections) — `server/commands/skills_commands.py`
-- **Get container, persistence, and skill_service from request, or None if unavailab** (1 connections) — `server/commands/skills_commands.py`
-- **Extract and validate player_id from player object, returning UUID or None.** (1 connections) — `server/commands/skills_commands.py`
-- **Resolve user_id from current_user (auth user) or fallback to player.user_id.** (1 connections) — `server/commands/skills_commands.py`
-- **Format skills list as text output lines.** (1 connections) — `server/commands/skills_commands.py`
-- **Handle the /skills command: return the active character's skills as text.      R** (1 connections) — `server/commands/skills_commands.py`
-- **SkillService with mocks.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_combat_service_npc_in_combat.py** (8 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
+- **combat_service()** (3 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
+- **test_is_npc_in_combat_sync_returns_false_when_npc_not_in_combat()** (2 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
+- **test_is_npc_in_combat_sync_returns_true_when_npc_uuid_in_combat()** (2 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
+- **test_is_npc_in_combat_sync_returns_false_for_invalid_uuid_string()** (2 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
+- **test_is_npc_in_combat_sync_returns_true_when_string_id_mapped_to_combat()** (2 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
+- **Unit tests for CombatService.is_npc_in_combat_sync.  Tests the NPC-in-combat che** (1 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
+- **Create CombatService with mocked dependencies so is_npc_in_combat_sync can be te** (1 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
+- **Test is_npc_in_combat_sync returns False when NPC is not in any combat.** (1 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
+- **Test is_npc_in_combat_sync returns True when NPC UUID is in _npc_combats.** (1 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
+- **Test is_npc_in_combat_sync returns False for non-UUID string when no mapping.** (1 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
+- **Test is_npc_in_combat_sync returns True when integration service maps string id** (1 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
 
 ## Relationships
 
-- [zone configuration npc](zone_configuration_npc.md) (3 shared connections)
-- [alias storage rationale](alias_storage_rationale.md) (2 shared connections)
-- [realtime real time](realtime_real_time.md) (2 shared connections)
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
-- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (1 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (1 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
-- [archive QUALITY AUDIT](archive_QUALITY_AUDIT.md) (1 shared connections)
-- [connection realtime manager](connection_realtime_manager.md) (1 shared connections)
-- [endpoints auth rationale](endpoints_auth_rationale.md) (1 shared connections)
+- [npc database infrastructure](npc_database_infrastructure.md) (2 shared connections)
+- [Memory Task Runtime](Memory_Task_Runtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/skills_commands.py`
-- `server/tests/unit/game/test_skill_service.py`
+- `server/tests/unit/services/test_combat_service_npc_in_combat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 60 (95%)
-- INFERRED: 3 (5%)
+- EXTRACTED: 25 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

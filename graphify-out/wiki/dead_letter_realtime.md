@@ -19,7 +19,7 @@
 
 ## Relationships
 
-- [commands shutdown process](commands_shutdown_process.md) (3 shared connections)
+- [player room realtime](player_room_realtime.md) (3 shared connections)
 
 ## Source Files
 

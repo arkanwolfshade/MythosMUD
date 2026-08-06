@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_add_room_drop_zero_quantity()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **Test add_room_drop() handles zero quantity gracefully.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **test_add_valid_name_to_lists_player()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test add_valid_name_to_lists() adds player name.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [room subscription manager](room_subscription_manager.md) (1 shared connections)
+- [player event handlers](player_event_handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 

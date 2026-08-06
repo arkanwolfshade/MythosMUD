@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_add_room_drop_existing_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **Test add_room_drop() adds drop to existing room.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **test_send_initial_game_state_no_player()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test send_initial_game_state() handles None player.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Relationships
 
-- [room subscription manager](room_subscription_manager.md) (1 shared connections)
+- [game state provider](game_state_provider.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Audit Trail
 

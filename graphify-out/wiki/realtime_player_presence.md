@@ -1,27 +1,25 @@
 # realtime player presence
 
-> 5 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **add_hashed_password_column.py** (4 connections) — `server/scripts/add_hashed_password_column.py`
-- **apply_migration()** (3 connections) — `server/scripts/add_hashed_password_column.py`
-- **main()** (3 connections) — `server/scripts/add_hashed_password_column.py`
-- **Apply the migration to add hashed_password column.      Args:         database_u** (1 connections) — `server/scripts/add_hashed_password_column.py`
-- **Main entry point for the migration script.** (1 connections) — `server/scripts/add_hashed_password_column.py`
+- **test_event_bus_get_all_subscriber_counts_multiple_types()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test EventBus.get_all_subscriber_counts() with multiple event types.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [event bus events](event_bus_events.md) (1 shared connections)
+- [room conftest toolkit](room_conftest_toolkit.md) (1 shared connections)
 
 ## Source Files
 
-- `server/scripts/add_hashed_password_column.py`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

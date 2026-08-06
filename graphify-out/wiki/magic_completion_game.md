@@ -1,58 +1,62 @@
 # magic completion game
 
-> 25 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **magic_service_completion.py** (25 connections) — `server/game/magic/magic_service_completion.py`
-- **MagicServiceCompletionMixin** (21 connections) — `server/game/magic/magic_service_completion.py`
-- **UUID** (12 connections)
-- **Any** (11 connections)
-- **._execute_casting_immediately()** (9 connections) — `server/game/magic/magic_service_completion.py`
-- **._complete_casting()** (8 connections) — `server/game/magic/magic_service_completion.py`
-- **._recreate_target_from_state()** (7 connections) — `server/game/magic/magic_service_completion.py`
-- **._try_queue_spell_for_combat()** (6 connections) — `server/game/magic/magic_service_completion.py`
-- **._try_complete_casting_via_combat()** (6 connections) — `server/game/magic/magic_service_completion.py`
-- **._get_player_and_room()** (5 connections) — `server/game/magic/magic_service_completion.py`
-- **._apply_spell_costs_and_effects()** (5 connections) — `server/game/magic/magic_service_completion.py`
-- **._parse_casting_target_id()** (5 connections) — `server/game/magic/magic_service_completion.py`
-- **_send_spell_completion_message()** (4 connections) — `server/game/magic/magic_service_completion.py`
-- **_is_heal_other_target()** (4 connections) — `server/game/magic/magic_service_completion.py`
-- **_send_healing_update_event()** (4 connections) — `server/game/magic/magic_service_completion.py`
-- **Casting completion flow for spellcasting.  Mixin that handles completing a casti** (1 connections) — `server/game/magic/magic_service_completion.py`
-- **Mixin for MagicService: complete casting (player/room, target, costs/effects, co** (1 connections) — `server/game/magic/magic_service_completion.py`
-- **Get player and room_id for casting completion.          Returns:             Tup** (1 connections) — `server/game/magic/magic_service_completion.py`
-- **Recreate target from stored casting state.          Args:             casting_st** (1 connections) — `server/game/magic/magic_service_completion.py`
-- **Apply spell costs and process effects.          Args:             player_id: Pla** (1 connections) — `server/game/magic/magic_service_completion.py`
-- **Parse target_id from casting state. Returns None if missing or invalid.** (1 connections) — `server/game/magic/magic_service_completion.py`
-- **Apply costs and queue spell for next combat round. Returns True if queued, False** (1 connections) — `server/game/magic/magic_service_completion.py`
-- **Apply spell costs/effects, send completion message and healing event.** (1 connections) — `server/game/magic/magic_service_completion.py`
-- **If in combat, try to queue spell for next round. Return True if queued, False ot** (1 connections) — `server/game/magic/magic_service_completion.py`
-- **Complete a casting and apply spell effects.          In combat, spells are queue** (1 connections) — `server/game/magic/magic_service_completion.py`
+- **sanitizeChatMessageForState()** (24 connections) — `client/src/components/ui-v2/utils/messageUtils.ts`
+- **useRespawnHandlers.ts** (21 connections) — `client/src/components/ui-v2/hooks/useRespawnHandlers.ts`
+- **messageUtils.ts** (18 connections) — `client/src/components/ui-v2/utils/messageUtils.ts`
+- **combatHandlers.ts** (14 connections) — `client/src/components/ui-v2/eventHandlers/combatHandlers.ts`
+- **combatHandlers.test.ts** (12 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/combatHandlers.test.ts`
+- **useRespawnHandlers()** (8 connections) — `client/src/components/ui-v2/hooks/useRespawnHandlers.ts`
+- **getMessageMetadata()** (5 connections) — `client/src/components/ui-v2/utils/messageUtils.ts`
+- **messageUtils.test.ts** (4 connections) — `client/src/components/ui-v2/utils/__tests__/messageUtils.test.ts`
+- **handleNpcAttacked()** (3 connections) — `client/src/components/ui-v2/eventHandlers/combatHandlers.ts`
+- **handlePlayerAttacked()** (3 connections) — `client/src/components/ui-v2/eventHandlers/combatHandlers.ts`
+- **handleNpcDied()** (3 connections) — `client/src/components/ui-v2/eventHandlers/combatHandlers.ts`
+- **handleCombatDeath()** (3 connections) — `client/src/components/ui-v2/eventHandlers/combatHandlers.ts`
+- **handleCombatTargetSwitch()** (3 connections) — `client/src/components/ui-v2/eventHandlers/combatHandlers.ts`
+- **useRespawnHandlers.test.ts** (3 connections) — `client/src/components/ui-v2/hooks/__tests__/useRespawnHandlers.test.ts`
+- **isRespawnApiResponse()** (3 connections) — `client/src/utils/apiTypeGuards.ts`
+- **handleCombatStarted()** (2 connections) — `client/src/components/ui-v2/eventHandlers/combatHandlers.ts`
+- **handleCombatEnded()** (2 connections) — `client/src/components/ui-v2/eventHandlers/combatHandlers.ts`
+- **getRawTextFromMessage()** (2 connections) — `client/src/components/ui-v2/utils/messageUtils.ts`
+- **sanitizeMessageText()** (2 connections) — `client/src/components/ui-v2/utils/messageUtils.ts`
+- **getMessageType()** (2 connections) — `client/src/components/ui-v2/utils/messageUtils.ts`
+- **getMessageChannel()** (2 connections) — `client/src/components/ui-v2/utils/messageUtils.ts`
+- **getMessageTypeField()** (2 connections) — `client/src/components/ui-v2/utils/messageUtils.ts`
+- **ADR-0016** (1 connections) — `client/src/components/ui-v2/eventHandlers/combatHandlers.ts`
+- **fetchSpy** (1 connections) — `client/src/components/ui-v2/hooks/__tests__/useRespawnHandlers.test.ts`
 
 ## Relationships
 
-- [persistence core infrastructure](persistence_core_infrastructure.md) (7 shared connections)
-- [room realtime rationale](room_realtime_rationale.md) (5 shared connections)
-- [player respawn event](player_respawn_event.md) (4 shared connections)
-- [coercion int inventory](coercion_int_inventory.md) (3 shared connections)
-- [panels domPurifyClient chat](panels_domPurifyClient_chat.md) (2 shared connections)
-- [services ascii map](services_ascii_map.md) (2 shared connections)
-- [npc database infrastructure](npc_database_infrastructure.md) (2 shared connections)
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
-- [spell game magic](spell_game_magic.md) (1 shared connections)
-- [add used user](add_used_user.md) (1 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (1 shared connections)
-- [subject admin controller](subject_admin_controller.md) (1 shared connections)
+- [game terminal lucidity](game_terminal_lucidity.md) (12 shared connections)
+- [command factories communication](command_factories_communication.md) (7 shared connections)
+- [lucidityEventUtils mythosTime MythosTime](lucidityEventUtils_mythosTime_MythosTime.md) (5 shared connections)
+- [PanelSystem PanelManager panelLayoutClam](PanelSystem_PanelManager_panelLayoutClam.md) (4 shared connections)
+- [GameClientV2Container emptyOccupantsDiag](GameClientV2Container_emptyOccupantsDiag.md) (4 shared connections)
+- [argon2 auth rationale](argon2_auth_rationale.md) (4 shared connections)
+- [casting game magic](casting_game_magic.md) (3 shared connections)
+- [auth invites rationale](auth_invites_rationale.md) (3 shared connections)
+- [roomHandlers eventHandlers calculateOccu](roomHandlers_eventHandlers_calculateOccu.md) (3 shared connections)
+- [apiTypeGuards FIELDS SHARED](apiTypeGuards_FIELDS_SHARED.md) (2 shared connections)
+- [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (2 shared connections)
 
 ## Source Files
 
-- `server/game/magic/magic_service_completion.py`
+- `client/src/components/ui-v2/eventHandlers/__tests__/combatHandlers.test.ts`
+- `client/src/components/ui-v2/eventHandlers/combatHandlers.ts`
+- `client/src/components/ui-v2/hooks/__tests__/useRespawnHandlers.test.ts`
+- `client/src/components/ui-v2/hooks/useRespawnHandlers.ts`
+- `client/src/components/ui-v2/utils/__tests__/messageUtils.test.ts`
+- `client/src/components/ui-v2/utils/messageUtils.ts`
+- `client/src/utils/apiTypeGuards.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 132 (93%)
-- INFERRED: 10 (7%)
+- EXTRACTED: 141 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

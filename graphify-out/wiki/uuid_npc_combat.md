@@ -1,6 +1,6 @@
 # uuid npc combat
 
-> 38 nodes
+> 36 nodes
 
 ## Key Concepts
 
@@ -15,7 +15,6 @@
 - **.get_database_component_health()** (5 connections) — `server/services/health_service.py`
 - **.get_connections_component_health()** (5 connections) — `server/services/health_service.py`
 - **.determine_overall_status()** (5 connections) — `server/services/health_service.py`
-- **room_service()** (5 connections) — `server/tests/unit/game/test_room_service.py`
 - **.get_server_uptime()** (4 connections) — `server/services/health_service.py`
 - **.get_database_component_health_async()** (4 connections) — `server/services/health_service.py`
 - **.generate_alerts()** (4 connections) — `server/services/health_service.py`
@@ -29,25 +28,24 @@
 - **Get server uptime in seconds.** (1 connections) — `server/services/health_service.py`
 - **Get current memory usage in MB.** (1 connections) — `server/services/health_service.py`
 - **Get current CPU usage percentage.** (1 connections) — `server/services/health_service.py`
-- *... and 13 more nodes in this community*
+- **Create a standardized health check response dictionary.          Args:** (1 connections) — `server/services/health_service.py`
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
 - [Loot Generation](Loot_Generation.md) (14 shared connections)
-- [realtime player connection](realtime_player_connection.md) (2 shared connections)
-- [maps handle ascii](maps_handle_ascii.md) (1 shared connections)
-- [room service game](room_service_game.md) (1 shared connections)
+- [nats services service](nats_services_service.md) (2 shared connections)
+- [room service game](room_service_game.md) (2 shared connections)
 
 ## Source Files
 
 - `server/services/health_service.py`
-- `server/tests/unit/game/test_room_service.py`
 - `server/tests/unit/services/test_health_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 125 (96%)
-- INFERRED: 5 (4%)
+- EXTRACTED: 121 (98%)
+- INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -33,7 +33,8 @@
 
 ## Relationships
 
-- [command inventory factories](command_inventory_factories.md) (3 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [spell game magic](spell_game_magic.md) (1 shared connections)
 
 ## Source Files
 

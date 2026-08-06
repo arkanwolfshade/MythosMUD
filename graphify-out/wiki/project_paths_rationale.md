@@ -1,46 +1,50 @@
 # project paths rationale
 
-> 23 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **test_emote.py** (13 connections) — `server/tests/unit/models/test_emote.py`
-- **Emote** (9 connections) — `server/models/emote.py`
-- **test_emote_creation()** (3 connections) — `server/tests/unit/models/test_emote.py`
-- **test_emote_repr()** (3 connections) — `server/tests/unit/models/test_emote.py`
-- **test_emote_with_placeholders()** (3 connections) — `server/tests/unit/models/test_emote.py`
-- **test_emote_alias_creation()** (3 connections) — `server/tests/unit/models/test_emote.py`
-- **test_emote_alias_repr()** (3 connections) — `server/tests/unit/models/test_emote.py`
-- **test_emote_alias_multiple_aliases()** (3 connections) — `server/tests/unit/models/test_emote.py`
-- **test_emote_alias_case_sensitive()** (3 connections) — `server/tests/unit/models/test_emote.py`
-- **Base** (2 connections)
-- **test_emote_table_name()** (2 connections) — `server/tests/unit/models/test_emote.py`
-- **test_emote_alias_table_name()** (2 connections) — `server/tests/unit/models/test_emote.py`
-- **Predefined emote definitions.** (1 connections) — `server/models/emote.py`
-- **Unit tests for emote models.  Tests the Emote and EmoteAlias SQLAlchemy models.** (1 connections) — `server/tests/unit/models/test_emote.py`
-- **Test Emote can be instantiated with required fields.** (1 connections) — `server/tests/unit/models/test_emote.py`
-- **Test Emote has correct table name.** (1 connections) — `server/tests/unit/models/test_emote.py`
-- **Test Emote __repr__ method.** (1 connections) — `server/tests/unit/models/test_emote.py`
-- **Test Emote can have placeholders in messages.** (1 connections) — `server/tests/unit/models/test_emote.py`
-- **Test EmoteAlias can be instantiated with required fields.** (1 connections) — `server/tests/unit/models/test_emote.py`
-- **Test EmoteAlias has correct table name.** (1 connections) — `server/tests/unit/models/test_emote.py`
-- **Test EmoteAlias __repr__ method.** (1 connections) — `server/tests/unit/models/test_emote.py`
-- **Test EmoteAlias can have different aliases for same emote.** (1 connections) — `server/tests/unit/models/test_emote.py`
-- **Test EmoteAlias aliases are case sensitive.** (1 connections) — `server/tests/unit/models/test_emote.py`
+- **EnvironmentalContainerLoader** (16 connections) — `server/services/environmental_container_loader.py`
+- **test_environmental_container_loader.py** (16 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
+- **.load_container_from_room_json()** (8 connections) — `server/services/environmental_container_loader.py`
+- **.migrate_room_container_to_postgresql()** (7 connections) — `server/services/environmental_container_loader.py`
+- **.__init__()** (3 connections) — `server/services/environmental_container_loader.py`
+- **Any** (3 connections)
+- **.load_containers_for_room()** (3 connections) — `server/services/environmental_container_loader.py`
+- **test_load_container_from_room_json_invalid_capacity()** (3 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
+- **test_load_container_from_room_json_invalid_lock_state()** (3 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
+- **ContainerComponent** (2 connections)
+- **UUID** (2 connections)
+- **test_environmental_loader_requires_persistence()** (2 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
+- **test_load_container_from_room_json_none_when_missing()** (2 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
+- **test_load_container_from_room_json_disabled()** (2 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
+- **test_load_container_from_room_json_success()** (2 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
+- **test_migrate_room_container_existing()** (2 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
+- **test_migrate_room_container_creates_new()** (2 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
+- **test_load_containers_for_room_filters_environment()** (2 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
+- **Service for loading environmental containers from JSON and PostgreSQL.      Hand** (1 connections) — `server/services/environmental_container_loader.py`
+- **Initialize the environmental container loader.          Args:             persis** (1 connections) — `server/services/environmental_container_loader.py`
+- **Load a container definition from room JSON.          Args:             room_json** (1 connections) — `server/services/environmental_container_loader.py`
+- **Migrate a container from room JSON to PostgreSQL.          Checks if container a** (1 connections) — `server/services/environmental_container_loader.py`
+- **Load all environmental containers for a room from PostgreSQL.          Args:** (1 connections) — `server/services/environmental_container_loader.py`
+- **Unit tests for EnvironmentalContainerLoader (room JSON -> container models).** (1 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
 
 ## Relationships
 
-- [commands shutdown process](commands_shutdown_process.md) (10 shared connections)
+- [player event handlers](player_event_handlers.md) (6 shared connections)
+- [command inventory models](command_inventory_models.md) (5 shared connections)
+- [add used user](add_used_user.md) (2 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/emote.py`
-- `server/tests/unit/models/test_emote.py`
+- `server/services/environmental_container_loader.py`
+- `server/tests/unit/services/test_environmental_container_loader.py`
 
 ## Audit Trail
 
-- EXTRACTED: 59 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 82 (95%)
+- INFERRED: 4 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

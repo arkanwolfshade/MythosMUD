@@ -1,61 +1,62 @@
 # models player related
 
-> 53 nodes
+> 35 nodes
 
 ## Key Concepts
 
-- **player_service()** (23 connections) — `docs/examples/logging/fastapi_integration.py`
-- **test_party_commands.py** (22 connections) — `server/tests/unit/commands/test_party_commands.py`
-- **handle_party_command()** (21 connections) — `server/commands/party_commands.py`
-- **party_commands.py** (20 connections) — `server/commands/party_commands.py`
-- **_party_request()** (11 connections) — `server/tests/unit/commands/test_party_commands.py`
-- **Any** (9 connections)
-- **_handle_party_chat()** (8 connections) — `server/commands/party_commands.py`
-- **_get_party_command_context()** (6 connections) — `server/commands/party_commands.py`
-- **_handle_party_invite()** (6 connections) — `server/commands/party_commands.py`
-- **_handle_party_kick()** (6 connections) — `server/commands/party_commands.py`
-- **_get_member_display()** (6 connections) — `server/commands/party_commands.py`
-- **_handle_party_leave()** (5 connections) — `server/commands/party_commands.py`
-- **_handle_party_list()** (5 connections) — `server/commands/party_commands.py`
-- **_get_container()** (4 connections) — `server/commands/party_commands.py`
-- **test_handle_party_command_player_not_in_game()** (4 connections) — `server/tests/unit/commands/test_party_commands.py`
-- **test_handle_party_command_list_not_in_party()** (4 connections) — `server/tests/unit/commands/test_party_commands.py`
-- **test_handle_party_command_list_with_members()** (4 connections) — `server/tests/unit/commands/test_party_commands.py`
-- **test_handle_party_command_leave()** (4 connections) — `server/tests/unit/commands/test_party_commands.py`
-- **test_handle_party_command_invite_no_target()** (4 connections) — `server/tests/unit/commands/test_party_commands.py`
-- **test_handle_party_command_invite_success()** (4 connections) — `server/tests/unit/commands/test_party_commands.py`
-- **test_handle_party_command_kick_not_leader()** (4 connections) — `server/tests/unit/commands/test_party_commands.py`
-- **test_handle_party_command_unknown_subcommand()** (4 connections) — `server/tests/unit/commands/test_party_commands.py`
-- **test_handle_party_command_no_party_service()** (3 connections) — `server/tests/unit/commands/test_party_commands.py`
-- **test_handle_party_leave_not_in_party()** (3 connections) — `server/tests/unit/commands/test_party_commands.py`
-- **test_handle_party_chat_no_party()** (3 connections) — `server/tests/unit/commands/test_party_commands.py`
-- *... and 28 more nodes in this community*
+- **player_respawn.py** (25 connections) — `server/api/player_respawn.py`
+- **test_player_respawn_api.py** (17 connections) — `server/tests/unit/api/test_player_respawn_api.py`
+- **respawn_player()** (15 connections) — `server/api/player_respawn.py`
+- **test_player_respawn_handlers.py** (14 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
+- **respawn_player_from_delirium()** (13 connections) — `server/api/player_respawn.py`
+- **_handle_delirium_respawn_validation_error()** (12 connections) — `server/api/player_respawn.py`
+- **_handle_respawn_validation_error()** (11 connections) — `server/api/player_respawn.py`
+- **_user()** (9 connections) — `server/tests/unit/api/test_player_respawn_api.py`
+- **RespawnResponse** (8 connections) — `server/schemas/players/player_respawn.py`
+- **_user()** (8 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
+- **test_respawn_player_validation_error()** (5 connections) — `server/tests/unit/api/test_player_respawn_api.py`
+- **test_respawn_player_from_delirium_not_found()** (5 connections) — `server/tests/unit/api/test_player_respawn_api.py`
+- **test_respawn_player_not_found()** (5 connections) — `server/tests/unit/api/test_player_respawn_api.py`
+- **test_handle_respawn_validation_not_found()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
+- **test_handle_respawn_validation_must_be_dead()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
+- **test_handle_respawn_validation_generic_500()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
+- **test_handle_delirium_validation_not_found()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
+- **test_handle_delirium_validation_must_be_delirious()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
+- **test_handle_delirium_validation_lucidity_keyword()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
+- **test_handle_delirium_validation_generic_500()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
+- **Request** (4 connections)
+- **test_respawn_player_success()** (4 connections) — `server/tests/unit/api/test_player_respawn_api.py`
+- **test_respawn_player_from_delirium_success()** (4 connections) — `server/tests/unit/api/test_player_respawn_api.py`
+- **test_respawn_player_unexpected_error()** (4 connections) — `server/tests/unit/api/test_player_respawn_api.py`
+- **test_respawn_player_no_session()** (4 connections) — `server/tests/unit/api/test_player_respawn_api.py`
+- *... and 10 more nodes in this community*
 
 ## Relationships
 
-- [middleware correlation rationale](middleware_correlation_rationale.md) (6 shared connections)
-- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (4 shared connections)
-- [services ascii map](services_ascii_map.md) (3 shared connections)
-- [player model models](player_model_models.md) (2 shared connections)
-- [command commands aliases](command_commands_aliases.md) (2 shared connections)
-- [alias storage rationale](alias_storage_rationale.md) (2 shared connections)
-- [realtime real time](realtime_real_time.md) (2 shared connections)
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
-- [commands admin mute](commands_admin_mute.md) (1 shared connections)
-- [container schemas containers](container_schemas_containers.md) (1 shared connections)
-- [command models admin](command_models_admin.md) (1 shared connections)
-- [commands communication flows](commands_communication_flows.md) (1 shared connections)
+- [services inventory mutation](services_inventory_mutation.md) (20 shared connections)
+- [command inventory models](command_inventory_models.md) (13 shared connections)
+- [player requests schemas](player_requests_schemas.md) (5 shared connections)
+- [Player Stats](Player_Stats.md) (4 shared connections)
+- [useWebSocketConnectionTestFixtures useWe](useWebSocketConnectionTestFixtures_useWe.md) (3 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (3 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (2 shared connections)
+- [persistence container rationale](persistence_container_rationale.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [commands admin helpers](commands_admin_helpers.md) (2 shared connections)
+- [websocket handler realtime](websocket_handler_realtime.md) (1 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/examples/logging/fastapi_integration.py`
-- `server/commands/party_commands.py`
-- `server/tests/unit/commands/test_party_commands.py`
+- `server/api/player_respawn.py`
+- `server/schemas/players/player_respawn.py`
+- `server/tests/unit/api/test_player_respawn_api.py`
+- `server/tests/unit/api/test_player_respawn_handlers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 206 (91%)
-- INFERRED: 20 (9%)
+- EXTRACTED: 205 (94%)
+- INFERRED: 13 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

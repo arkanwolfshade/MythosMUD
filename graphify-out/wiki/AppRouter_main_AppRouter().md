@@ -1,29 +1,26 @@
 # AppRouter main AppRouter()
 
-> 8 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **TestEnsureAliasStorage** (5 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **.test_ensure_alias_storage_returns_existing()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **.test_ensure_alias_storage_initializes_new()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **.test_ensure_alias_storage_handles_error()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _ensure_alias_storage function.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _ensure_alias_storage returns existing storage if provided.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _ensure_alias_storage initializes new storage when None.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _ensure_alias_storage returns None on initialization error.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **get_invite_codes.py** (4 connections) — `e2e-tests/load-tests/get_invite_codes.py`
+- **get_10_active_invites()** (4 connections) — `e2e-tests/load-tests/get_invite_codes.py`
+- **main()** (2 connections) — `e2e-tests/load-tests/get_invite_codes.py`
+- **Get 10 active invite codes from the database.** (1 connections) — `e2e-tests/load-tests/get_invite_codes.py`
 
 ## Relationships
 
-- [player model models](player_model_models.md) (4 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (2 shared connections)
+- [useWebSocketConnectionTestFixtures useWe](useWebSocketConnectionTestFixtures_useWe.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_aliases.py`
+- `e2e-tests/load-tests/get_invite_codes.py`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

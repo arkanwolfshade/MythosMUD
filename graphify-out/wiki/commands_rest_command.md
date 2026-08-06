@@ -1,34 +1,33 @@
 # commands rest command
 
-> 9 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **._compose_memory_stats()** (7 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **MemoryStatsSnapshot** (6 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **.get_memory_stats()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._memory_monitor_config_section()** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **TypedDict** (1 connections)
-- **Connection-manager snapshot consumed by get_memory_stats.** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **Get comprehensive memory and connection statistics.          Args:             s** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **Assemble memory stats from a snapshot dict (keeps call sites param-stable).** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **Expose memory monitor configuration knobs for stats payload.** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **process_combat_tick()** (9 connections) — `server/app/game_tick_processing.py`
+- **test_process_combat_tick_no_service()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
+- **test_process_combat_tick_success()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
+- **test_process_combat_tick_calls_service()** (2 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **Process combat auto-progression.** (1 connections) — `server/app/game_tick_processing.py`
+- **Test process_combat_tick() when combat service is not available.** (1 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
+- **Test process_combat_tick() successful execution.** (1 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
 
 ## Relationships
 
-- [persistence rationale room](persistence_rationale_room.md) (3 shared connections)
-- [tsconfig app src/**/*](tsconfig_app_src-__-_.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (1 shared connections)
-- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (4 shared connections)
+- [command helpers functions](command_helpers_functions.md) (3 shared connections)
+- [schemas calendar rationale](schemas_calendar_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/monitoring/statistics_aggregator.py`
+- `server/app/game_tick_processing.py`
+- `server/tests/unit/app/test_game_tick_processing.py`
+- `server/tests/unit/app/test_game_tick_processing_async.py`
 
 ## Audit Trail
 
-- EXTRACTED: 24 (96%)
-- INFERRED: 1 (4%)
+- EXTRACTED: 20 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [add used user](add_used_user.md) (4 shared connections)
+- [command inventory models](command_inventory_models.md) (4 shared connections)
 
 ## Source Files
 

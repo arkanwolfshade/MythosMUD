@@ -1,41 +1,42 @@
 # security headers middleware
 
-> 33 nodes
+> 49 nodes
 
 ## Key Concepts
 
 - **test_security_headers.py** (20 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **SecurityHeadersMiddleware** (13 connections) — `server/middleware/security_headers.py`
+- **security_headers.py** (6 connections) — `server/middleware/security_headers.py`
 - **MutableHeaders** (6 connections)
+- **.__call__()** (5 connections) — `server/middleware/security_headers.py`
+- **.dispatch()** (5 connections) — `server/middleware/security_headers.py`
+- **._add_security_headers_to_response()** (4 connections) — `server/middleware/security_headers.py`
+- **.__init__()** (3 connections) — `server/middleware/security_headers.py`
 - **._add_security_headers()** (3 connections) — `server/middleware/security_headers.py`
-- **test_security_headers_middleware_non_http_scope()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **test_security_headers_middleware_adds_headers()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **test_security_headers_middleware_error_handling()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **test_security_headers_middleware_init()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **test_security_headers_middleware_init_with_env_vars()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
 - **test_add_security_headers()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
 - **test_add_security_headers_hsts_value()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
 - **test_add_security_headers_permissions_policy()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
 - **test_add_security_headers_csp_policy()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
 - **test_add_security_headers_referrer_policy()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **Any** (2 connections)
 - **mock_app()** (2 connections) — `server/tests/unit/middleware/test_security_headers.py`
 - **test_add_security_headers_to_response()** (2 connections) — `server/tests/unit/middleware/test_security_headers.py`
 - **test_add_security_headers_to_response_hsts_with_subdomains()** (2 connections) — `server/tests/unit/middleware/test_security_headers.py`
 - **test_add_security_headers_to_response_hsts_without_subdomains()** (2 connections) — `server/tests/unit/middleware/test_security_headers.py`
 - **test_dispatch_method()** (2 connections) — `server/tests/unit/middleware/test_security_headers.py`
 - **test_dispatch_method_error_handling()** (2 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **Add all security headers to the response.** (1 connections) — `server/middleware/security_headers.py`
-- **Unit tests for security headers middleware.  Tests the SecurityHeadersMiddleware** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **Create a mock ASGI app.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **Test middleware passes through non-HTTP connections.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **Test middleware adds security headers to HTTP responses.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **Test middleware error handling.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **Test _add_security_headers_to_response adds headers to Response.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **Test _add_security_headers_to_response includes subdomains in HSTS.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- *... and 8 more nodes in this community*
+- **ASGIApp** (1 connections)
+- **Scope** (1 connections)
+- *... and 24 more nodes in this community*
 
 ## Relationships
 
-- [persistence rationale player](persistence_rationale_player.md) (4 shared connections)
-- [app factory rationale](app_factory_rationale.md) (4 shared connections)
-- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [app factory rationale](app_factory_rationale.md) (5 shared connections)
+- [player requests schemas](player_requests_schemas.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [feature services flag](feature_services_flag.md) (1 shared connections)
 
 ## Source Files
 
@@ -44,8 +45,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 71 (88%)
-- INFERRED: 10 (12%)
+- EXTRACTED: 115 (91%)
+- INFERRED: 11 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

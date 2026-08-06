@@ -28,8 +28,8 @@
 - [player room persistence](player_room_persistence.md) (3 shared connections)
 - [channel broadcasting realtime](channel_broadcasting_realtime.md) (2 shared connections)
 - [world loader rationale](world_loader_rationale.md) (2 shared connections)
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
-- [auth users rationale](auth_users_rationale.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [websocket handler realtime](websocket_handler_realtime.md) (2 shared connections)
 
 ## Source Files
 

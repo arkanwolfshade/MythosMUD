@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_evaluate_condition_unknown()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test evaluate_condition() returns False for unknown condition.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_load_player_mutes_file_not_exists()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test load_player_mutes() returns False when file doesn't exist.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
 
 ## Relationships
 
-- [room occupant manager](room_occupant_manager.md) (1 shared connections)
-- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
+- [user manager services](user_manager_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_behavior_engine.py`
+- `server/tests/unit/services/test_user_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

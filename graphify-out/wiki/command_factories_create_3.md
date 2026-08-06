@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **subscription_manager()** (3 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **Create a RoomSubscriptionManager instance.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **test_remove_rule_success()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test remove_rule() successfully removes rule.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [connection disconnection realtime](connection_disconnection_realtime.md) (1 shared connections)
-- [room subscription manager](room_subscription_manager.md) (1 shared connections)
+- [npc lifecycle combat](npc_lifecycle_combat.md) (1 shared connections)
+- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 

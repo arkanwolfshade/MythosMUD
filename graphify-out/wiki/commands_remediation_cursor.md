@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_handle_task_result_async_no_error()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Test _handle_task_result_async() with successful task.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_get_room_data_with_conversion()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test _get_room_data_with_conversion() loads room and converts UUIDs.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Relationships
 
-- [event bus events](event_bus_events.md) (1 shared connections)
-- [services exploration service](services_exploration_service.md) (1 shared connections)
+- [game state provider](game_state_provider.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/events/test_event_bus.py`
+- `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

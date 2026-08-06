@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [spell models rationale](spell_models_rationale.md) (3 shared connections)
-- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [persistence rationale room](persistence_rationale_room.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
 
 ## Source Files
 

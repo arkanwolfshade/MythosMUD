@@ -1,46 +1,49 @@
 # command parser rationale
 
-> 24 nodes
+> 56 nodes
 
 ## Key Concepts
 
-- **_occupation_slots_9()** (11 connections) — `server/tests/unit/game/test_skill_service.py`
-- **_personal_interest_4()** (8 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_valid_creates_rows()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_own_language_not_allocated_equals_edu()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_cthulhu_mythos_in_occupation_rejected()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_wrong_occupation_values_raises()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_duplicate_occupation_skill_ids_raises()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_cthulhu_mythos_in_personal_rejected()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_wrong_occupation_count_raises()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_personal_interest_not_four_raises()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_duplicate_personal_skill_ids_raises()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_overlap_occupation_and_personal_raises()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **Valid 9 slots: one 70, two 60, three 50, three 40; 9 distinct skill_ids (no over** (1 connections) — `server/tests/unit/game/test_skill_service.py`
-- **Four personal interest (skill_ids only); distinct and no overlap with occupation** (1 connections) — `server/tests/unit/game/test_skill_service.py`
-- **set_player_skills with valid occupation and personal calls delete then insert_ma** (1 connections) — `server/tests/unit/game/test_skill_service.py`
-- **When Own Language is not in occupation or personal, its value is stats_for_edu.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
-- **Occupation slot with Cthulhu Mythos (allow_at_creation=False) raises ValueError.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
-- **Personal interest with Cthulhu Mythos raises ValueError.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
-- **occupation_slots not length 9 raises ValueError.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
-- **occupation_slots with wrong value set (e.g. two 70s) raises ValueError.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
-- **personal_interest must have exactly 4 entries.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
-- **occupation_slots with duplicate skill_id raises ValueError.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
-- **personal_interest with duplicate skill_id raises ValueError.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
-- **Occupation and personal interest sharing a skill_id raises ValueError.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_rescue_service.py** (32 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **rescue_service()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **sample_lucidity_record()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **test_rescue_no_persistence()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **mock_persistence()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **mock_session()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **async_session_factory()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **mock_lucidity_service()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **lucidity_service_factory()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **mock_event_dispatcher()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **sample_rescuer()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **sample_target()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **test_rescue_rescuer_not_found()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **test_rescue_target_not_found()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **test_rescue_different_rooms()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **test_rescue_lucidity_record_not_found()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **test_rescue_not_catatonic()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **test_rescue_success()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **test_rescue_with_player_name()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **test_rescue_delta_calculation()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **test_rescue_delta_zero_or_negative()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **test_rescue_apply_lucidity_error()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **test_rescue_event_dispatcher_error()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **test_rescue_metadata_includes_rescuer()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **test_rescue_metadata_includes_location()** (2 connections) — `server/tests/unit/services/test_rescue_service.py`
+- *... and 31 more nodes in this community*
 
 ## Relationships
 
-- [endpoints auth rationale](endpoints_auth_rationale.md) (12 shared connections)
+- [command factories create](command_factories_create.md) (4 shared connections)
+- [player room realtime](player_room_realtime.md) (3 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_skill_service.py`
+- `server/tests/unit/services/test_rescue_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 66 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 116 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

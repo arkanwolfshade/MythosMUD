@@ -1,54 +1,66 @@
 # models player rationale
 
-> 32 nodes
+> 130 nodes
 
 ## Key Concepts
 
+- **npc_combat_integration_service.py** (50 connections) — `server/services/npc_combat_integration_service.py`
+- **NPCCombatDataProvider** (39 connections) — `server/services/npc_combat_data_provider.py`
+- **NPCCombatLucidity** (30 connections) — `server/services/npc_combat_lucidity.py`
+- **npc_combat_integration_validation_mixin.py** (20 connections) — `server/services/npc_combat_integration_validation_mixin.py`
 - **_NPCCombatIntegrationValidationDeps** (19 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **npc_combat_data_provider.py** (18 connections) — `server/services/npc_combat_data_provider.py`
+- **test_npc_combat_data_provider.py** (17 connections) — `server/tests/unit/services/test_npc_combat_data_provider.py`
+- **TestNPCCombatLucidity** (17 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **get_current_tick()** (16 connections) — `server/app/game_tick_processing.py`
+- **npc_combat_integration_combat_mixin.py** (16 connections) — `server/services/npc_combat_integration_combat_mixin.py`
 - **NPCCombatIntegrationValidationMixin** (15 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **_NPCCombatIntegrationDeps** (14 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **npc_combat_lucidity.py** (12 connections) — `server/services/npc_combat_lucidity.py`
+- **NPCCombatIntegrationCombatMixin** (11 connections) — `server/services/npc_combat_integration_combat_mixin.py`
 - **.store_npc_xp_mapping_for_mixin()** (10 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **._process_combat_attack()** (8 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **.start_new_combat_for_mixin()** (8 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **._apply_npc_attack_damage_for_npc_initiated_combat()** (7 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **._broadcast_room_after_npc_death()** (7 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **.get_combat_service()** (6 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **UUID** (6 connections)
 - **.get_data_provider()** (6 connections) — `server/services/npc_combat_integration_validation_mixin.py`
 - **.get_uuid_mapping()** (6 connections) — `server/services/npc_combat_integration_validation_mixin.py`
 - **UUID** (6 connections)
 - **._setup_combat_uuids_and_mappings()** (6 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **._validate_and_get_npc_instance()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **._validate_combat_location()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **._end_combat_if_participant_in_combat()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **._setup_combat_uuids_npc_attacker()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **.get_combat_service()** (4 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **.get_lucidity_service()** (4 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **_coerce_xp_mapping_value()** (3 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **_warn_attacked_dead_npc()** (3 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **.store_npc_xp_mapping_for_mixin()** (3 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **Protocol** (1 connections)
-- **Parse xp_value from NPC base_stats JSON; bool maps to 0 (avoid True -> 1).** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **Log when a player targets an NPC that exists but is not alive.** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **Attributes supplied by NPCCombatIntegrationService (mixin cannot initialize them** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **Return combat service dependency.** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **Return data provider dependency.** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **Return UUID mapping dependency.** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **Return lucidity dependency.** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **Store XP mapping for NPC combat setup from validation mixin.** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- *... and 7 more nodes in this community*
+- *... and 105 more nodes in this community*
 
 ## Relationships
 
-- [game models player](game_models_player.md) (8 shared connections)
-- [npc database infrastructure](npc_database_infrastructure.md) (3 shared connections)
-- [rate limiter realtime](rate_limiter_realtime.md) (3 shared connections)
-- [combat commands handler](combat_commands_handler.md) (3 shared connections)
-- [room validator services](room_validator_services.md) (3 shared connections)
-- [player event realtime](player_event_realtime.md) (2 shared connections)
-- [countdown rest task](countdown_rest_task.md) (1 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (15 shared connections)
+- [player event realtime](player_event_realtime.md) (13 shared connections)
+- [npc database infrastructure](npc_database_infrastructure.md) (10 shared connections)
+- [websocket realtime handler](websocket_realtime_handler.md) (9 shared connections)
+- [grace period login](grace_period_login.md) (8 shared connections)
+- [Memory Task Runtime](Memory_Task_Runtime.md) (7 shared connections)
+- [auth endpoints rationale](auth_endpoints_rationale.md) (6 shared connections)
+- [player look commands](player_look_commands.md) (5 shared connections)
+- [combat commands handler](combat_commands_handler.md) (5 shared connections)
+- [Item Instances](Item_Instances.md) (4 shared connections)
+- [Error Conversion](Error_Conversion.md) (4 shared connections)
+- [room validator services](room_validator_services.md) (4 shared connections)
 
 ## Source Files
 
+- `server/app/game_tick_processing.py`
+- `server/services/npc_combat_data_provider.py`
+- `server/services/npc_combat_integration_combat_mixin.py`
+- `server/services/npc_combat_integration_service.py`
 - `server/services/npc_combat_integration_validation_mixin.py`
+- `server/services/npc_combat_lucidity.py`
+- `server/tests/unit/services/test_npc_combat_data_provider.py`
+- `server/tests/unit/services/test_npc_combat_lucidity.py`
 
 ## Audit Trail
 
-- EXTRACTED: 109 (90%)
-- INFERRED: 12 (10%)
+- EXTRACTED: 542 (94%)
+- INFERRED: 37 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_validate_movement_success()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
-- **Test _validate_movement returns True for valid movement.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_get_player_info_player_not_found()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test get_player_info() returns None when player not found.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [movement service game](movement_service_game.md) (1 shared connections)
+- [player event handlers](player_event_handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_movement_service.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 

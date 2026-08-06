@@ -4,22 +4,21 @@
 
 ## Key Concepts
 
-- **test_subscribe_with_service_id()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Test EventBus.subscribe() with service_id for tracking.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_add_grace_period_indicators()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test _add_grace_period_indicators() appends linkdead marker.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Relationships
 
-- [event bus events](event_bus_events.md) (1 shared connections)
-- [services exploration service](services_exploration_service.md) (1 shared connections)
+- [game state provider](game_state_provider.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/events/test_event_bus.py`
+- `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

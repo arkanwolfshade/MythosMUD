@@ -33,9 +33,8 @@
 
 ## Relationships
 
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
-- [event connection helpers](event_connection_helpers.md) (1 shared connections)
-- [follow game service](follow_game_service.md) (1 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (3 shared connections)
+- [effect player repository](effect_player_repository.md) (1 shared connections)
 
 ## Source Files
 

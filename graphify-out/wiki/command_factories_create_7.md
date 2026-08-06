@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_adjust_room_drop_index_out_of_range()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **Test adjust_room_drop() with index out of range.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **message_filtering_helper()** (3 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Create a MessageFilteringHelper instance.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Relationships
 
-- [room subscription manager](room_subscription_manager.md) (1 shared connections)
+- [command parser helpers](command_parser_helpers.md) (1 shared connections)
+- [message filtering realtime](message_filtering_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

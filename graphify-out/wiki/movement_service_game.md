@@ -1,43 +1,62 @@
 # movement service game
 
-> 10 nodes
+> 55 nodes
 
 ## Key Concepts
 
-- **test_movement_service.py** (44 connections) — `server/tests/unit/game/test_movement_service.py`
-- **movement_service()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
-- **test_validate_player_location_true()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
-- **test_validate_move_params_same_room()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
-- **test_check_player_posture_blocks_sitting()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
-- **Unit tests for movement service.  Tests the MovementService class.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
-- **Create a MovementService instance.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
-- **Test validate_player_location() returns True when player is in room.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
-- **Test _validate_move_params returns False for same room.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
-- **Test _check_player_posture blocks non-standing posture.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- **SkillService** (37 connections) — `server/game/skill_service.py`
+- **skills_commands.py** (16 connections) — `server/commands/skills_commands.py`
+- **test_skills_commands.py** (11 connections) — `server/tests/unit/commands/test_skills_commands.py`
+- **handle_skills_command()** (10 connections) — `server/commands/skills_commands.py`
+- **Any** (10 connections)
+- **.set_player_skills()** (9 connections) — `server/game/skill_service.py`
+- **UUID** (8 connections)
+- **_get_container_services()** (6 connections) — `server/commands/skills_commands.py`
+- **._validate_occupation_slots()** (6 connections) — `server/game/skill_service.py`
+- **._validate_personal_interest()** (6 connections) — `server/game/skill_service.py`
+- **.validate_skills_payload()** (6 connections) — `server/game/skill_service.py`
+- **Any** (5 connections)
+- **_resolve_player_id()** (5 connections) — `server/commands/skills_commands.py`
+- **._validate_no_overlap()** (5 connections) — `server/game/skill_service.py`
+- **._build_profession_mod_by_key()** (5 connections) — `server/game/skill_service.py`
+- **._compute_final_skill_values()** (5 connections) — `server/game/skill_service.py`
+- **_resolve_user_id()** (4 connections) — `server/commands/skills_commands.py`
+- **_format_skills_output()** (4 connections) — `server/commands/skills_commands.py`
+- **.get_player_skills()** (4 connections) — `server/game/skill_service.py`
+- **.record_successful_skill_use()** (4 connections) — `server/game/skill_service.py`
+- **.get_skills_used_this_level()** (4 connections) — `server/game/skill_service.py`
+- **.run_improvement_rolls()** (4 connections) — `server/game/skill_service.py`
+- **.roll_skill_check()** (4 connections) — `server/game/skill_service.py`
+- **skill_service()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
+- **.get_skills_catalog()** (3 connections) — `server/game/skill_service.py`
+- *... and 30 more nodes in this community*
 
 ## Relationships
 
-- [game room service](game_room_service.md) (7 shared connections)
-- [event bus events](event_bus_events.md) (7 shared connections)
-- [events event bus](events_event_bus.md) (5 shared connections)
-- [realtime player event](realtime_player_event.md) (4 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (2 shared connections)
-- [realtime npc event](realtime_npc_event.md) (2 shared connections)
-- [player realtime event](player_realtime_event.md) (2 shared connections)
-- [add used user](add_used_user.md) (1 shared connections)
-- [Error Conversion](Error_Conversion.md) (1 shared connections)
-- [subzone realtime nats](subzone_realtime_nats.md) (1 shared connections)
-- [services ascii map](services_ascii_map.md) (1 shared connections)
-- [models profession repr](models_profession_repr.md) (1 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (15 shared connections)
+- [commands npc admin](commands_npc_admin.md) (3 shared connections)
+- [combat npc service](combat_npc_service.md) (3 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (3 shared connections)
+- [character creation service](character_creation_service.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [Player Stats](Player_Stats.md) (2 shared connections)
+- [combat models rationale](combat_models_rationale.md) (2 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (2 shared connections)
+- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [connection realtime manager](connection_realtime_manager.md) (1 shared connections)
+- [nats services service](nats_services_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_movement_service.py`
+- `server/commands/skills_commands.py`
+- `server/game/skill_service.py`
+- `server/tests/unit/commands/test_skills_commands.py`
+- `server/tests/unit/game/test_skill_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 58 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 204 (94%)
+- INFERRED: 13 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,8 +1,8 @@
 # ValidationError
 
-> God node · 582 connections · `server/exceptions.py`
+> God node · 583 connections · `server/exceptions.py`
 
-**Community:** [add used user](add_used_user.md)
+**Community:** [command inventory models](command_inventory_models.md)
 
 ## Connections by Relation
 
@@ -34,8 +34,8 @@
 ### imports
 - command_service.py `EXTRACTED`
 - database.py `EXTRACTED`
-- test_container_service.py `EXTRACTED`
 - players.py `EXTRACTED`
+- test_container_service.py `EXTRACTED`
 - container_persistence.py `EXTRACTED`
 - test_players_api_coverage.py `EXTRACTED`
 - test_container_persistence_extended_row_helpers.py `EXTRACTED`
@@ -50,8 +50,8 @@
 - player_service.py `EXTRACTED`
 - test_command_parser.py `EXTRACTED`
 - test_movement_service.py `EXTRACTED`
-- container_persistence.py `EXTRACTED`
 - test_database_extended.py `EXTRACTED`
+- test_exceptions.py `EXTRACTED`
 
 ### indirect_call
 - handle_transfer_items_exceptions() `INFERRED`
@@ -65,7 +65,6 @@
 - _initialize_npc_database() `INFERRED`
 - _populate_container_items_async() `INFERRED`
 - create_item_instance() `INFERRED`
-- _convert_inventory_list_to_inventory_stacks() `INFERRED`
 - get_npc_database_path() `INFERRED`
 - init_npc_db() `INFERRED`
 - _seed_new_container_items() `INFERRED`
@@ -74,6 +73,7 @@
 - fetch_user_by_username_case_insensitive() `INFERRED`
 - .create_player_with_stats() `INFERRED`
 - .delete_player() `INFERRED`
+- .create_player() `INFERRED`
 
 ### inherits
 - MythosMUDError `EXTRACTED`
