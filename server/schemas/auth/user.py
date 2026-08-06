@@ -31,7 +31,7 @@ class UserCreate(UserBase):
     # Maximum length matches argon2_utils.py to prevent DoS attacks
     password: str = Field(..., min_length=8, max_length=1024, description="User's password")
 
-    model_config: ConfigDict = ConfigDict(
+    model_config = ConfigDict(
         json_schema_extra={
             "example": {
                 "username": "user",
@@ -56,7 +56,7 @@ class UserRead(ResponseBaseModel):
     created_at: datetime = Field(..., description="User creation timestamp")
     updated_at: datetime = Field(..., description="User last update timestamp")
 
-    model_config: ConfigDict = ConfigDict(
+    model_config = ConfigDict(
         extra="forbid",
         validate_assignment=True,
         str_strip_whitespace=True,
@@ -87,7 +87,7 @@ class UserUpdate(SecureBaseModel):
     is_active: bool | None = Field(None, description="Whether user is active")
     is_superuser: bool | None = Field(None, description="Whether user is superuser")
 
-    model_config: ConfigDict = ConfigDict(
+    model_config = ConfigDict(
         extra="forbid",
         validate_assignment=True,
         str_strip_whitespace=True,

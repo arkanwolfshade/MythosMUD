@@ -40,8 +40,10 @@ class ContainerTransferFromMixin(ContainerTransferToMixin):
             transfer_item["quantity"] = quantity
 
         # Defensive: stack may omit slot_type when data skipped TypedDict validation
-        if "slot_type" not in transfer_item:
-            metadata = transfer_item.get("metadata") or {}
+        raw_stack = cast(dict[str, object], transfer_item)
+        if "slot_type" not in raw_stack:
+            metadata_raw = raw_stack.get("metadata")
+            metadata = cast(dict[str, object], metadata_raw) if isinstance(metadata_raw, dict) else {}
             transfer_item["slot_type"] = str(metadata.get("slot_type", "backpack"))
 
         return transfer_item
@@ -136,7 +138,7 @@ class ContainerTransferFromMixin(ContainerTransferToMixin):
 
         _ = await self.persistence.update_container(
             container_id,
-            items_json=items_json_for_persist(new_container_items),  # type: ignore[arg-type]  # persistence API is dict[str, Any]; stacks are TypedDicts
+            items_json=items_json_for_persist(new_container_items),
         )
 
         logger.info(

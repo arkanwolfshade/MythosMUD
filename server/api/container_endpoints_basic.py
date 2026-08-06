@@ -196,7 +196,7 @@ async def open_container(
         )
 
         # Convert container dict to ContainerData model
-        container_data = _convert_container_dict_to_container_data(result["container"])
+        container_data = _convert_container_dict_to_container_data(cast(dict[str, Any], result["container"]))
 
         return ContainerOpenResponse(
             container=container_data,
@@ -260,8 +260,10 @@ async def transfer_items(
         )
 
         # Convert container and inventory dicts to models
-        container_data = _convert_container_dict_to_container_data(result["container"])
-        player_inventory_stacks = _convert_inventory_list_to_inventory_stacks(result["player_inventory"])
+        container_data = _convert_container_dict_to_container_data(cast(dict[str, Any], result["container"]))
+        player_inventory_stacks = _convert_inventory_list_to_inventory_stacks(
+            cast(list[dict[str, Any]], result["player_inventory"])
+        )
 
         return ContainerTransferResponse(
             container=container_data,

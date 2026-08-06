@@ -96,10 +96,7 @@ class ContainerLockMixin(ContainerAccessMixin):
         self, container_id: UUID, player_id: UUID, lock_state_value: str, operation: str, failure_message: str
     ) -> dict[str, object]:
         """Persist container lock_state or raise ContainerServiceError."""
-        updated = self.persistence.update_container(container_id, lock_state=lock_state_value)
-        # AsyncPersistenceLayer is awaitable; unit tests may still stub a sync MagicMock.
-        if hasattr(updated, "__await__"):
-            updated = await updated  # type: ignore[misc]
+        updated = await self.persistence.update_container(container_id, lock_state=lock_state_value)
         if not updated:
             log_and_raise(
                 ContainerServiceError,

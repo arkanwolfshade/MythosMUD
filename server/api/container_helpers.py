@@ -307,8 +307,12 @@ async def transfer_all_items_from_container(
                 item,
                 item.get("quantity", 1),
             )
-            container_data = result.get("container", container_data)
-            updated_inventory = result.get("player_inventory", updated_inventory)
+            container_raw = result.get("container", container_data)
+            if isinstance(container_raw, dict):
+                container_data = cast(dict[str, Any], container_raw)
+            inventory_raw = result.get("player_inventory", updated_inventory)
+            if isinstance(inventory_raw, list):
+                updated_inventory = cast(list[InventoryStack], inventory_raw)
         except ContainerCapacityError:
             logger.warning(
                 "Loot-all stopped due to capacity",

@@ -209,7 +209,7 @@ class ContainerTransferToMixin(ContainerAccessMixin):
             container.items = new_container_items
             _ = await self.persistence.update_container(
                 container_id,
-                items_json=items_json_for_persist(new_container_items),  # type: ignore[arg-type]  # persistence API is dict[str, Any]; stacks are TypedDicts
+                items_json=items_json_for_persist(new_container_items),
             )
             logger.info(
                 "Item transferred to container",
