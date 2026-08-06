@@ -1,7 +1,8 @@
 """
 Unit tests for container event emission helpers.
 
-Tests WebSocket event emission for container operations.
+Tests WebSocket event emission for container open/close/transfer.
+Loot-all coverage lives in test_container_events_loot.py (Lizard file-nloc).
 """
 # pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
 
@@ -14,10 +15,9 @@ import pytest
 from server.api.container_events import (
     emit_close_container_event,
     emit_container_opened_events,
-    emit_loot_all_event,
     emit_transfer_event,
 )
-from server.api.container_models import LootAllRequest, TransferContainerRequest
+from server.api.container_models import TransferContainerRequest
 from server.async_persistence import AsyncPersistenceLayer
 from server.models.container import ContainerComponent, ContainerSourceType
 from server.realtime.connection_manager import ConnectionManager
@@ -458,231 +458,6 @@ class TestEmitCloseContainerEvent:
                     cast(AsyncPersistenceLayer, mock_persistence),
                 )
                 _assert_warning_once(mock_logger)
-
-
-class TestEmitLootAllEvent:
-    """Test emit_loot_all_event function."""
-
-    @pytest.mark.asyncio
-    async def test_emit_loot_all_event_success(
-        self, mock_connection_manager: ConnectionManager, sample_container_component: ContainerComponent
-    ) -> None:
-        """Test emit_loot_all_event successfully emits event."""
-        player_id = uuid.uuid4()
-        container_id = uuid.uuid4()
-        request_data = LootAllRequest(container_id=container_id, mutation_token="token")
-        final_container = sample_container_component
-        original_container = sample_container_component
-
-        with patch("server.api.container_events.emit_container_updated", new_callable=AsyncMock) as mock_emit:
-            await emit_loot_all_event(
-                mock_connection_manager, request_data, final_container, player_id, original_container
-            )
-            mock_emit.assert_awaited_once()
-
-    @pytest.mark.asyncio
-    async def test_emit_loot_all_event_no_connection_manager(
-        self, sample_container_component: ContainerComponent
-    ) -> None:
-        """Test emit_loot_all_event handles None connection_manager."""
-        player_id = uuid.uuid4()
-        container_id = uuid.uuid4()
-        request_data = LootAllRequest(container_id=container_id, mutation_token="token")
-        final_container = sample_container_component
-        original_container = sample_container_component
-
-        with patch("server.api.container_events.emit_container_updated", new_callable=AsyncMock) as mock_emit:
-            await emit_loot_all_event(None, request_data, final_container, player_id, original_container)
-            mock_emit.assert_not_awaited()
-
-    @pytest.mark.asyncio
-    async def test_emit_loot_all_event_no_room_id(self, mock_connection_manager: ConnectionManager) -> None:
-        """Test emit_loot_all_event handles container without room_id."""
-        player_id = uuid.uuid4()
-        container_id = uuid.uuid4()
-        request_data = LootAllRequest(container_id=container_id, mutation_token="token")
-        # Create containers with EQUIPMENT source type which allows room_id=None
-        entity_id = uuid.uuid4()
-        final_container = ContainerComponent.model_validate(
-            {
-                "container_id": str(container_id),
-                "source_type": ContainerSourceType.EQUIPMENT.value,
-                "entity_id": str(entity_id),  # EQUIPMENT containers require entity_id
-                "capacity_slots": 10,
-                "items": [],
-                "room_id": None,  # EQUIPMENT containers can have None room_id
-            }
-        )
-        original_container = ContainerComponent.model_validate(
-            {
-                "container_id": str(container_id),
-                "source_type": ContainerSourceType.EQUIPMENT.value,
-                "entity_id": str(entity_id),  # EQUIPMENT containers require entity_id
-                "capacity_slots": 10,
-                "items": [],
-                "room_id": None,  # EQUIPMENT containers can have None room_id
-            }
-        )
-
-        with patch("server.api.container_events.emit_container_updated", new_callable=AsyncMock) as mock_emit:
-            await emit_loot_all_event(
-                mock_connection_manager, request_data, final_container, player_id, original_container
-            )
-            mock_emit.assert_not_awaited()
-
-    @pytest.mark.asyncio
-    async def test_emit_loot_all_event_emission_error(
-        self, mock_connection_manager: ConnectionManager, sample_container_component: ContainerComponent
-    ) -> None:
-        """Test emit_loot_all_event handles emission errors gracefully."""
-        player_id = uuid.uuid4()
-        container_id = uuid.uuid4()
-        request_data = LootAllRequest(container_id=container_id, mutation_token="token")
-        final_container = sample_container_component
-        original_container = sample_container_component
-
-        with patch(
-            "server.api.container_events.emit_container_updated",
-            new_callable=AsyncMock,
-            side_effect=RuntimeError("Emission error"),
-        ):
-            with patch("server.api.container_events.logger") as mock_logger:
-                await emit_loot_all_event(
-                    mock_connection_manager, request_data, final_container, player_id, original_container
-                )
-                _assert_warning_once(mock_logger)
-
-    @pytest.mark.asyncio
-    async def test_emit_loot_all_event_calculates_items_removed(
-        self, mock_connection_manager: ConnectionManager
-    ) -> None:
-        """Test emit_loot_all_event correctly calculates items_removed in diff."""
-        player_id = uuid.uuid4()
-        container_id = uuid.uuid4()
-        request_data = LootAllRequest(container_id=container_id, mutation_token="token")
-
-        # Original container has 5 items
-        original_container = ContainerComponent.model_validate(
-            {
-                "container_id": str(container_id),
-                "room_id": str(uuid.uuid4()),
-                "source_type": ContainerSourceType.ENVIRONMENT.value,
-                "capacity_slots": 10,
-                "items": [
-                    {"item_id": str(uuid.uuid4()), "quantity": 1},
-                    {"item_id": str(uuid.uuid4()), "quantity": 1},
-                    {"item_id": str(uuid.uuid4()), "quantity": 1},
-                    {"item_id": str(uuid.uuid4()), "quantity": 1},
-                    {"item_id": str(uuid.uuid4()), "quantity": 1},
-                ],
-            }
-        )
-
-        # Final container has 2 items (3 were removed)
-        final_container = ContainerComponent.model_validate(
-            {
-                "container_id": str(container_id),
-                "room_id": str(uuid.uuid4()),
-                "source_type": ContainerSourceType.ENVIRONMENT.value,
-                "capacity_slots": 10,
-                "items": [
-                    {"item_id": str(uuid.uuid4()), "quantity": 1},
-                    {"item_id": str(uuid.uuid4()), "quantity": 1},
-                ],
-            }
-        )
-
-        with patch("server.api.container_events.emit_container_updated", new_callable=AsyncMock) as mock_emit:
-            await emit_loot_all_event(
-                mock_connection_manager, request_data, final_container, player_id, original_container
-            )
-            mock_emit.assert_awaited_once()
-            # Verify diff contains correct items_removed count
-            items_diff = _diff_items_from_emit(mock_emit)
-            assert items_diff["items_removed"] == 3  # 5 - 2 = 3
-
-    @pytest.mark.asyncio
-    async def test_emit_loot_all_event_all_items_removed(self, mock_connection_manager: ConnectionManager) -> None:
-        """Test emit_loot_all_event handles case when all items are removed."""
-        player_id = uuid.uuid4()
-        container_id = uuid.uuid4()
-        request_data = LootAllRequest(container_id=container_id, mutation_token="token")
-
-        # Original container has 3 items
-        original_container = ContainerComponent.model_validate(
-            {
-                "container_id": str(container_id),
-                "room_id": str(uuid.uuid4()),
-                "source_type": ContainerSourceType.ENVIRONMENT.value,
-                "capacity_slots": 10,
-                "items": [
-                    {"item_id": str(uuid.uuid4()), "quantity": 1},
-                    {"item_id": str(uuid.uuid4()), "quantity": 1},
-                    {"item_id": str(uuid.uuid4()), "quantity": 1},
-                ],
-            }
-        )
-
-        # Final container is empty
-        final_container = ContainerComponent.model_validate(
-            {
-                "container_id": str(container_id),
-                "room_id": str(uuid.uuid4()),
-                "source_type": ContainerSourceType.ENVIRONMENT.value,
-                "capacity_slots": 10,
-                "items": [],
-            }
-        )
-
-        with patch("server.api.container_events.emit_container_updated", new_callable=AsyncMock) as mock_emit:
-            await emit_loot_all_event(
-                mock_connection_manager, request_data, final_container, player_id, original_container
-            )
-            mock_emit.assert_awaited_once()
-            items_diff = _diff_items_from_emit(mock_emit)
-            assert items_diff["items_removed"] == 3  # All 3 items removed
-
-    @pytest.mark.asyncio
-    async def test_emit_loot_all_event_zero_items_removed(self, mock_connection_manager: ConnectionManager) -> None:
-        """Test emit_loot_all_event handles case when no items are removed."""
-        player_id = uuid.uuid4()
-        container_id = uuid.uuid4()
-        request_data = LootAllRequest(container_id=container_id, mutation_token="token")
-
-        # Both containers have same number of items (no items removed)
-        original_container = ContainerComponent.model_validate(
-            {
-                "container_id": str(container_id),
-                "room_id": str(uuid.uuid4()),
-                "source_type": ContainerSourceType.ENVIRONMENT.value,
-                "capacity_slots": 10,
-                "items": [
-                    {"item_id": str(uuid.uuid4()), "quantity": 1},
-                    {"item_id": str(uuid.uuid4()), "quantity": 1},
-                ],
-            }
-        )
-
-        final_container = ContainerComponent.model_validate(
-            {
-                "container_id": str(container_id),
-                "room_id": str(uuid.uuid4()),
-                "source_type": ContainerSourceType.ENVIRONMENT.value,
-                "capacity_slots": 10,
-                "items": [
-                    {"item_id": str(uuid.uuid4()), "quantity": 1},
-                    {"item_id": str(uuid.uuid4()), "quantity": 1},
-                ],
-            }
-        )
-
-        with patch("server.api.container_events.emit_container_updated", new_callable=AsyncMock) as mock_emit:
-            await emit_loot_all_event(
-                mock_connection_manager, request_data, final_container, player_id, original_container
-            )
-            mock_emit.assert_awaited_once()
-            items_diff = _diff_items_from_emit(mock_emit)
-            assert items_diff["items_removed"] == 0  # No items removed
 
 
 class TestEmitTransferEventDirections:
