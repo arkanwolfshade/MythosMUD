@@ -1,25 +1,25 @@
 # add fastapi users
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **PerformanceStats** (3 connections) — `server/realtime/monitoring/performance_tracker.py`
-- **TypedDict** (1 connections)
-- **Type definition for performance statistics tracking.** (1 connections) — `server/realtime/monitoring/performance_tracker.py`
+- **test_multiple_services_subscribe_to_same_event()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test multiple services subscribing to the same event type.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [event bus events](event_bus_events.md) (1 shared connections)
+- [room conftest toolkit](room_conftest_toolkit.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/monitoring/performance_tracker.py`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,10 +1,14 @@
 """Additional NATSService coverage for helper and stats methods."""
 
+# pylint: disable=protected-access  # Reason: white-box tests cover NATSService helpers
+# pyright: reportPrivateUsage=false
+
 from __future__ import annotations
 
 import asyncio
+from collections.abc import Awaitable, Callable, Coroutine
 from inspect import CORO_CLOSED, getcoroutinestate
-from typing import Any
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -12,10 +16,34 @@ import pytest
 from server.services.nats_exceptions import NATSUnsubscribeError
 from server.services.nats_service import NATSService
 
+# Subscribe callback shape used when capturing NATS message handlers in tests.
+_NatsMsgHandler = Callable[[object], Awaitable[None]]
+
 
 @pytest.fixture
 def svc() -> NATSService:
     return NATSService()
+
+
+def _mock_create_tracked_task(svc: NATSService) -> MagicMock:
+    """Mock scheduler that closes the coro (MagicMock does not await it)."""
+
+    def _side_effect(coro: object, *_args: object, **_kwargs: object) -> AsyncMock:
+        if asyncio.iscoroutine(coro):
+            coro.close()
+        return AsyncMock()
+
+    mock = MagicMock(side_effect=_side_effect)
+    svc._create_tracked_task = mock
+    return mock
+
+
+def _assert_tracked_coro_closed(mock: MagicMock) -> None:
+    """Assert the first positional arg to mock was a coroutine and is now closed."""
+    assert mock.call_args is not None
+    coro = cast(object, mock.call_args.args[0])
+    assert asyncio.iscoroutine(coro)
+    assert getcoroutinestate(coro) == CORO_CLOSED
 
 
 def test_check_connection_allowed_when_permitted(svc: NATSService) -> None:
@@ -104,12 +132,18 @@ def test_build_connect_options_with_user_password() -> None:
 
 
 def test_setup_connection_handlers_registers_listeners(svc: NATSService) -> None:
-    nc = MagicMock()
+    nc: MagicMock = MagicMock()
+    add_error: MagicMock = MagicMock()
+    add_disconnect: MagicMock = MagicMock()
+    add_reconnect: MagicMock = MagicMock()
+    nc.add_error_listener = add_error
+    nc.add_disconnect_listener = add_disconnect
+    nc.add_reconnect_listener = add_reconnect
     svc.nc = nc
     svc._setup_connection_handlers()
-    nc.add_error_listener.assert_called_once()
-    nc.add_disconnect_listener.assert_called_once()
-    nc.add_reconnect_listener.assert_called_once()
+    add_error.assert_called_once()
+    add_disconnect.assert_called_once()
+    add_reconnect.assert_called_once()
 
 
 def test_setup_connection_handlers_noop_without_client(svc: NATSService) -> None:
@@ -129,30 +163,36 @@ def test_verify_subscription_cleanup_warns_on_remainder(svc: NATSService) -> Non
 
 @pytest.mark.asyncio
 async def test_drain_subscriptions(svc: NATSService) -> None:
-    sub = AsyncMock()
+    sub: AsyncMock = AsyncMock()
+    drain: AsyncMock = AsyncMock()
+    sub.drain = drain
     svc.subscriptions = {"topic": sub}
     await svc._drain_subscriptions()
-    sub.drain.assert_awaited_once()
+    drain.assert_awaited_once()
 
 
 @pytest.mark.asyncio
 async def test_close_all_subscriptions(svc: NATSService) -> None:
-    sub = AsyncMock()
+    sub: AsyncMock = AsyncMock()
+    unsubscribe: AsyncMock = AsyncMock()
+    sub.unsubscribe = unsubscribe
     svc.subscriptions = {"topic": sub}
     await svc._close_all_subscriptions()
-    sub.unsubscribe.assert_awaited_once()
+    unsubscribe.assert_awaited_once()
     assert svc._unsubscription_count == 1
 
 
 @pytest.mark.asyncio
 async def test_close_nats_connection(svc: NATSService) -> None:
-    nc = AsyncMock()
+    nc: AsyncMock = AsyncMock()
+    close: AsyncMock = AsyncMock()
+    nc.close = close
     svc.nc = nc
     svc.state_machine.connect()
     svc.state_machine.connected_successfully()
     svc.subscriptions["x"] = MagicMock()
     await svc._close_nats_connection()
-    nc.close.assert_awaited_once()
+    close.assert_awaited_once()
     assert svc.nc is None
     assert svc._running is False
 
@@ -177,19 +217,21 @@ async def test_acknowledge_message_without_ack(svc: NATSService) -> None:
 
 @pytest.mark.asyncio
 async def test_acknowledge_message_success(svc: NATSService) -> None:
-    msg = MagicMock()
-    msg.ack = AsyncMock()
+    msg: MagicMock = MagicMock()
+    ack: AsyncMock = AsyncMock()
+    msg.ack = ack
     ok = await svc._acknowledge_message(msg, "sub", {"message_id": "1"})
     assert ok is True
-    msg.ack.assert_awaited_once()
+    ack.assert_awaited_once()
 
 
 @pytest.mark.asyncio
 async def test_negatively_acknowledge_message(svc: NATSService) -> None:
-    msg = MagicMock()
-    msg.nak = AsyncMock()
+    msg: MagicMock = MagicMock()
+    nak: AsyncMock = AsyncMock()
+    msg.nak = nak
     await svc._negatively_acknowledge_message(msg, "sub")
-    msg.nak.assert_awaited_once()
+    nak.assert_awaited_once()
 
 
 @pytest.mark.asyncio
@@ -222,21 +264,24 @@ async def test_handle_reconnect_async_from_reconnecting(svc: NATSService) -> Non
 
 
 def test_on_error_creates_tracked_task(svc: NATSService) -> None:
-    svc._create_tracked_task = MagicMock()
+    mock = _mock_create_tracked_task(svc)
     svc._on_error(RuntimeError("x"))
-    svc._create_tracked_task.assert_called_once()
+    mock.assert_called_once()
+    _assert_tracked_coro_closed(mock)
 
 
 def test_on_disconnect_creates_tracked_task(svc: NATSService) -> None:
-    svc._create_tracked_task = MagicMock()
+    mock = _mock_create_tracked_task(svc)
     svc._on_disconnect()
-    svc._create_tracked_task.assert_called_once()
+    mock.assert_called_once()
+    _assert_tracked_coro_closed(mock)
 
 
 def test_on_reconnect_creates_tracked_task(svc: NATSService) -> None:
-    svc._create_tracked_task = MagicMock()
+    mock = _mock_create_tracked_task(svc)
     svc._on_reconnect()
-    svc._create_tracked_task.assert_called_once()
+    mock.assert_called_once()
+    _assert_tracked_coro_closed(mock)
 
 
 def test_is_connected_stale_health_check(svc: NATSService) -> None:
@@ -282,11 +327,13 @@ async def test_initialize_connection_pool_all_fail(svc: NATSService) -> None:
 
 @pytest.mark.asyncio
 async def test_cleanup_connection_pool(svc: NATSService) -> None:
-    conn = AsyncMock()
+    conn: AsyncMock = AsyncMock()
+    close: AsyncMock = AsyncMock()
+    conn.close = close
     svc.connection_pool = [conn]
     svc._pool_initialized = True
     await svc._cleanup_connection_pool()
-    conn.close.assert_awaited_once()
+    close.assert_awaited_once()
     assert svc.connection_pool == []
     assert svc._pool_initialized is False
 
@@ -311,20 +358,22 @@ async def test_get_and_return_connection(svc: NATSService) -> None:
 
 @pytest.mark.asyncio
 async def test_publish_with_pool_success(svc: NATSService) -> None:
-    conn = AsyncMock()
+    conn: AsyncMock = AsyncMock()
+    publish: AsyncMock = AsyncMock()
+    conn.publish = publish
     svc._pool_initialized = True
     svc.connection_pool = [conn]
     svc.config.enable_subject_validation = False
     await svc.available_connections.put(conn)
     await svc.publish_with_pool("events.test", {"message_id": "1"})
-    conn.publish.assert_awaited_once()
+    publish.assert_awaited_once()
 
 
 @pytest.mark.asyncio
 async def test_subscribe_message_handler_delivers_payload(svc: NATSService) -> None:
-    handlers: list[object] = []
+    handlers: list[_NatsMsgHandler] = []
 
-    async def capture_subscribe(_subject: str, cb: object) -> MagicMock:
+    async def capture_subscribe(_subject: str, cb: _NatsMsgHandler) -> MagicMock:
         handlers.append(cb)
         return MagicMock()
 
@@ -344,9 +393,9 @@ async def test_subscribe_message_handler_bad_json_with_manual_ack(svc: NATSServi
     from server.config.models import NATSConfig
 
     svc = NATSService(NATSConfig(url="nats://localhost:4222", manual_ack=True))
-    handlers: list[object] = []
+    handlers: list[_NatsMsgHandler] = []
 
-    async def capture_subscribe(_subject: str, cb: object) -> MagicMock:
+    async def capture_subscribe(_subject: str, cb: _NatsMsgHandler) -> MagicMock:
         handlers.append(cb)
         return MagicMock()
 
@@ -354,11 +403,12 @@ async def test_subscribe_message_handler_bad_json_with_manual_ack(svc: NATSServi
     svc.nc.subscribe = capture_subscribe
     svc._running = True
     await svc.subscribe("chat.room", lambda _d: None)
-    msg = MagicMock()
+    msg: MagicMock = MagicMock()
+    nak: AsyncMock = AsyncMock()
     msg.data = b"not-json"
-    msg.nak = AsyncMock()
+    msg.nak = nak
     await handlers[0](msg)
-    msg.nak.assert_awaited_once()
+    nak.assert_awaited_once()
 
 
 @pytest.mark.asyncio
@@ -371,11 +421,13 @@ async def test_acknowledge_message_failure(svc: NATSService) -> None:
 
 @pytest.mark.asyncio
 async def test_start_health_monitoring_creates_task(svc: NATSService) -> None:
+    """Regression: mocked _create_tracked_task must close _health_check_loop coro."""
     svc.config.health_check_interval = 30
     svc._health_check_task = None
-    svc._create_tracked_task = MagicMock(return_value=AsyncMock())
+    mock = _mock_create_tracked_task(svc)
     await svc._start_health_monitoring()
-    svc._create_tracked_task.assert_called_once()
+    mock.assert_called_once()
+    _assert_tracked_coro_closed(mock)
 
 
 def test_configure_tls_adds_ssl_context(svc: NATSService) -> None:
@@ -418,16 +470,16 @@ def test_create_tracked_task_closes_coro_when_create_task_fails(
     monkeypatch.setattr(asyncio, "create_task", _boom)
     coro = _noop()
     with pytest.raises(RuntimeError):
-        svc._create_tracked_task(coro, task_name="no_loop")
+        _ = svc._create_tracked_task(coro, task_name="no_loop")
     assert getcoroutinestate(coro) == CORO_CLOSED
 
 
 def test_on_error_closes_coro_when_create_task_fails(svc: NATSService, monkeypatch: pytest.MonkeyPatch) -> None:
     """Regression: _on_error must close _handle_error_async when scheduling fails."""
-    created: list[Any] = []
+    created: list[Coroutine[object, object, None]] = []
     original = svc._handle_error_async
 
-    def _tracking_handler(error: BaseException) -> Any:
+    def _tracking_handler(error: BaseException) -> Coroutine[object, object, None]:
         coro = original(error)
         created.append(coro)
         return coro
