@@ -351,6 +351,16 @@ Use uv for Python dependency management (required)
    the approved branch/tree and apologize
 5. **Verification**: After any branch or worktree operation, confirm branch and path
 
+### Stacked PRs (`gh stack`)
+
+Prefer the **gh-stack** skill (`.cursor/skills/gh-stack/`, full reference
+`.agents/skills/gh-stack/SKILL.md`) when a change needs multiple reviewable PRs
+or the branch is already in a stack. Rule: `.cursor/rules/mythosmud-gh-stack.mdc`.
+
+- Agents: non-interactive only — `view --json`, `submit --auto`, named branches for
+  `init` / `add` / `checkout`; merge with `gh stack merge --yes`.
+- Single small independent PR may still use `gh pr create`.
+
 ### Commit message style
 
 **Format**: Use concise, descriptive commit messages
