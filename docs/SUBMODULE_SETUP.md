@@ -161,6 +161,11 @@ Actions docs):
 2. **Secret name**: `MYTHOSMUD_PAT` under **Settings → Secrets and variables → Actions**. Workflows use this **only**
    for cloning `mythosmud_data`, not for the parent repo checkout.
 
+   **Dependabot PRs:** GitHub Actions secrets are **not** visible to workflows triggered by Dependabot by default.
+   Also add the **same** `MYTHOSMUD_PAT` value under **Settings → Secrets and variables → Dependabot** (Dependabot
+   secrets), with **Contents: Read** on `mythosmud_data`. Without it, CI/CodeQL hard-fail on empty `SUBMODULE_PAT`
+   for Dependabot PRs; Scorecard soft-notices and continues with a placeholder `data/` directory.
+
 3. **Split checkout (workflows)**: First `actions/checkout` uses `submodules: false` and **`github.token`** for the
    parent repo only. A bash step reads **`.gitmodules`** and **`git ls-tree HEAD data`** for **`OWNER/REPO`** and the
    **pinned SHA**. A second step runs **`git init` / `git fetch --depth 1`** into **`data/`** using an HTTPS remote with
@@ -375,6 +380,6 @@ The PAT used in workflows should have minimal required permissions
 
 **[SPEC]**
 
-| Version | Date | Change |
-| --- | --- | --- |
-| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
+| Version | Date       | Change                             |
+| ------- | ---------- | ---------------------------------- |
+| 1.0.0   | 2026-07-30 | Initial HADS structural conversion |
