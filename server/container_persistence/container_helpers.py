@@ -66,12 +66,14 @@ def validate_update_lock_state(lock_state: str | None, container_id: UUID) -> No
 
 
 def as_uuid(value: object) -> UUID:
+    """Coerce a DB/API value to UUID."""
     if isinstance(value, UUID):
         return value
     return UUID(str(value))
 
 
 def as_opt_uuid(value: object) -> UUID | None:
+    """Coerce a nullable DB/API value to UUID or None."""
     if value is None:
         return None
     if isinstance(value, UUID):
@@ -80,12 +82,14 @@ def as_opt_uuid(value: object) -> UUID | None:
 
 
 def as_opt_str(value: object) -> str | None:
+    """Coerce a nullable DB/API value to str or None."""
     if value is None:
         return None
     return str(value)
 
 
 def as_opt_datetime(value: object) -> datetime | None:
+    """Return datetime values as-is; otherwise None."""
     if value is None:
         return None
     if isinstance(value, datetime):
@@ -94,6 +98,7 @@ def as_opt_datetime(value: object) -> datetime | None:
 
 
 def int_from_row(value: object, default: int) -> int:
+    """Parse an int from a DB row value, falling back to default."""
     if isinstance(value, bool):
         return default
     if isinstance(value, int):
@@ -109,6 +114,7 @@ def int_from_row(value: object, default: int) -> int:
 
 
 def opt_int_from_row(value: object) -> int | None:
+    """Parse a nullable int from a DB row value."""
     if value is None:
         return None
     return int_from_row(value, 0)
@@ -162,6 +168,7 @@ def allowed_roles_from_row(value: object) -> list[str]:
 
 
 def metadata_from_row(value: object) -> dict[str, object]:
+    """Parse a metadata JSONB column into a string-keyed object map."""
     parsed = parse_jsonb_column(value, {})
     if isinstance(parsed, dict):
         return cast(dict[str, object], parsed)

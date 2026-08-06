@@ -3328,7 +3328,7 @@
           "containers"
         ],
         "summary": "Open Container",
-        "description": "Open a container for interaction.\n\nInitiates interaction with a container in the player's current room or inventory.\nReturns container data and a mutation token for subsequent operations.\n\nRate limited to 20 requests per 60 seconds per player.\n\nArgs:\n    request_data: OpenContainerRequest with container_id\n    request: FastAPI Request object\n    current_user: Current authenticated user\n    persistence: Persistence layer instance\n\nReturns:\n    dict containing container data and mutation_token\n\nRaises:\n    HTTPException(404): Container not found\n    HTTPException(403): Access denied\n    HTTPException(409): Container already open\n    HTTPException(423): Container is locked\n    HTTPException(429): Rate limit exceeded",
+        "description": "Open a container; returns container data and mutation_token (rate limited).",
         "operationId": "open_container_v1_api_containers_open_post",
         "requestBody": {
           "content": {
@@ -3375,7 +3375,7 @@
           "containers"
         ],
         "summary": "Transfer Items",
-        "description": "Transfer items between container and player inventory.\n\nMoves items bidirectionally between container and player inventory.\nRequires a valid mutation token from open_container.\n\nRate limited to 20 requests per 60 seconds per player.\n\nArgs:\n    request_data: TransferContainerRequest with container_id, mutation_token, direction, stack, quantity\n    request: FastAPI Request object\n    current_user: Current authenticated user\n    persistence: Persistence layer instance\n\nReturns:\n    dict containing updated container and player_inventory\n\nRaises:\n    HTTPException(400): Invalid stack or token\n    HTTPException(403): Access denied\n    HTTPException(409): Capacity exceeded\n    HTTPException(412): Stale mutation token\n    HTTPException(429): Rate limit exceeded",
+        "description": "Transfer items between container and player inventory (rate limited; requires mutation_token).",
         "operationId": "transfer_items_v1_api_containers_transfer_post",
         "requestBody": {
           "content": {

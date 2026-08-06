@@ -8,14 +8,16 @@ opening containers, transferring items, and closing containers.
 from __future__ import annotations
 
 from datetime import datetime
-from typing import TYPE_CHECKING, Annotated, cast
+from typing import Annotated, cast
 
 from fastapi import APIRouter, Depends, Request
 from pydantic import ValidationError
 
+from ..async_persistence import AsyncPersistenceLayer
 from ..auth.users import get_current_user
 from ..dependencies import get_async_persistence, get_connection_manager
 from ..models.user import User
+from ..realtime.connection_manager import ConnectionManager
 from ..schemas.containers import (
     ContainerCloseResponse,
     ContainerOpenResponse,
@@ -46,10 +48,6 @@ from .container_helpers import (
     validate_user_for_transfer,
 )
 from .container_models import CloseContainerRequest, OpenContainerRequest, TransferContainerRequest
-
-if TYPE_CHECKING:
-    from ..async_persistence import AsyncPersistenceLayer
-    from ..realtime.connection_manager import ConnectionManager
 
 
 def _convert_uuid_to_string(value: object) -> str | None:
@@ -166,29 +164,34 @@ def _convert_container_dict_to_container_data(container_dict: dict[str, object])
     )
 
 
+def _apply_inventory_stack_defaults(item_copy: dict[str, object]) -> None:
+    """Expand minimal inventory dicts to InventoryStack-required fields."""
+    item_id = str(item_copy.get("item_id", "") or "")
+    _ = item_copy.setdefault("item_instance_id", item_id)
+    _ = item_copy.setdefault("prototype_id", item_id)
+    _ = item_copy.setdefault("item_name", "Unknown")
+    _ = item_copy.setdefault("slot_type", "backpack")
+
+
+def _coerce_weapon_on_item(item_copy: dict[str, object]) -> None:
+    """Validate weapon dict into WeaponStats when present; leave invalid dicts alone."""
+    weapon_raw = item_copy.get("weapon")
+    if not isinstance(weapon_raw, dict):
+        return
+    try:
+        item_copy["weapon"] = WeaponStats.model_validate(weapon_raw)
+    except (ValidationError, TypeError):
+        # If weapon dict doesn't match WeaponStats, keep as dict (model may drop it)
+        pass
+
+
 def _convert_inventory_list_to_inventory_stacks(inventory_list: list[dict[str, object]]) -> list[InventoryStack]:
     """Convert list of inventory dicts to InventoryStack models."""
     stacks: list[InventoryStack] = []
     for item in inventory_list:
         item_copy: dict[str, object] = dict(item)
-        # Expand minimal format (item_id, quantity) to full InventoryStack schema
-        item_id = str(item_copy.get("item_id", "") or "")
-        if "item_instance_id" not in item_copy:
-            item_copy["item_instance_id"] = item_id
-        if "prototype_id" not in item_copy:
-            item_copy["prototype_id"] = item_id
-        if "item_name" not in item_copy:
-            item_copy["item_name"] = "Unknown"
-        if "slot_type" not in item_copy:
-            item_copy["slot_type"] = "backpack"
-        # Convert weapon dict to WeaponStats if present
-        weapon_raw = item_copy.get("weapon")
-        if isinstance(weapon_raw, dict):
-            try:
-                item_copy["weapon"] = WeaponStats.model_validate(weapon_raw)
-            except (ValidationError, TypeError):
-                # If weapon dict doesn't match WeaponStats, keep as dict (model may drop it)
-                pass
+        _apply_inventory_stack_defaults(item_copy)
+        _coerce_weapon_on_item(item_copy)
         stacks.append(InventoryStack.model_validate(item_copy))
     return stacks
 

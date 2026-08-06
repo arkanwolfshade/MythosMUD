@@ -4780,8 +4780,8 @@
     "semantic_hash": "629b2ed4196295f214197a8b881200af"
   },
   "server/alias_storage.py": {
-    "mtime": 1786035027.8536575,
-    "ast_hash": "73c0dfe293003d0a8f3bcae6df7bf2c5",
+    "mtime": 1786054516.671836,
+    "ast_hash": "2ce9b0500576606a08324994f080d49b",
     "semantic_hash": ""
   },
   "server/api/__init__.py": {
@@ -4850,8 +4850,8 @@
     "semantic_hash": "d459922b57b872b076b3aa4c2b81dc4e"
   },
   "server/api/container_endpoints_basic.py": {
-    "mtime": 1786049690.2432816,
-    "ast_hash": "32554ba6f7556fdb3bd5a3796522807a",
+    "mtime": 1786054581.6368165,
+    "ast_hash": "9bb6f1e0f7c9225eb72371ba1020d5f5",
     "semantic_hash": ""
   },
   "server/api/container_endpoints_loot.py": {
@@ -8250,7 +8250,7 @@
     "semantic_hash": "ffc133be6d57628b124226fe763d66ab"
   },
   "server/tests/unit/api/test_container_events.py": {
-    "mtime": 1786051425.775927,
+    "mtime": 1786051589.718509,
     "ast_hash": "33b60437e4653cabe52806e265d60b3c",
     "semantic_hash": ""
   },
@@ -10975,7 +10975,7 @@
     "semantic_hash": "14a662582b3347bd10912dbe7dd9b8a2"
   },
   ".codacy/codacy.yaml": {
-    "mtime": 1786051428.077273,
+    "mtime": 1786054792.9844813,
     "ast_hash": "b657d1aa91f6ddc9bd0130ad3cbf457d",
     "semantic_hash": "b657d1aa91f6ddc9bd0130ad3cbf457d"
   },
@@ -15655,13 +15655,13 @@
     "semantic_hash": ""
   },
   "server/container_persistence/container_helpers.py": {
-    "mtime": 1786042258.6347654,
-    "ast_hash": "f4aa2c3d6dfd32b574fa3c89485ea06a",
+    "mtime": 1786054527.445605,
+    "ast_hash": "52a92ea842a6dea4137c55a3f482e857",
     "semantic_hash": ""
   },
   "server/services/container_service_access.py": {
-    "mtime": 1785957039.7746725,
-    "ast_hash": "332f58566bc5729c9945f6763eebc56f",
+    "mtime": 1786054609.5824237,
+    "ast_hash": "c646cc719db9ac9bd9eef3d27dd2a17a",
     "semantic_hash": ""
   },
   "server/services/container_service_helpers.py": {
@@ -15685,8 +15685,8 @@
     "semantic_hash": ""
   },
   "server/services/container_service_transfer_to.py": {
-    "mtime": 1786044941.4910998,
-    "ast_hash": "d963b85db9e00c68287ba0bebc69e49c",
+    "mtime": 1786054517.6038115,
+    "ast_hash": "30f6e5d24b1b300fc24b3497cab86c98",
     "semantic_hash": ""
   },
   "server/tests/unit/container_persistence/test_container_persistence_crud.py": {
@@ -15695,7 +15695,7 @@
     "semantic_hash": ""
   },
   "server/tests/unit/api/test_container_events_loot.py": {
-    "mtime": 1786051346.5459006,
+    "mtime": 1786051589.717989,
     "ast_hash": "6de89e3f71f0e717828aedfa8c2dd1f3",
     "semantic_hash": ""
   },
@@ -15705,8 +15705,8 @@
     "semantic_hash": ""
   },
   ".agents/skills/gh-stack/SKILL.md": {
-    "mtime": 1786043947.1050377,
-    "ast_hash": "64b03ac7c6dc6521999547d5a595cf83",
+    "mtime": 1786054517.8484254,
+    "ast_hash": "61ea7d674c17e2bbfd1762ee92bb15e7",
     "semantic_hash": ""
   },
   ".cursor/skills/gh-stack/SKILL.md": {

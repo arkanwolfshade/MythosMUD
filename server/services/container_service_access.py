@@ -21,7 +21,7 @@ from .container_service_helpers import (
 logger = get_logger(__name__)
 
 
-class ContainerAccessMixin:
+class ContainerAccessMixin:  # pylint: disable=too-few-public-methods  # Reason: mixin of private access helpers for ContainerService
     """Access checks for open containers and unlock eligibility."""
 
     # Host ContainerService rebinds via field(default_factory=dict) on instances.
@@ -115,52 +115,63 @@ class ContainerAccessMixin:
                     user_friendly="You do not have permission to access this container",
                 )
 
+    @staticmethod
+    def _raise_corpse_grace_denied(
+        container: ContainerComponent,
+        player_id: str,
+        grace_period_end: str | None = None,
+    ) -> None:
+        """Deny non-owner corpse access during (or without) a timed grace period."""
+        details: dict[str, object] = {
+            "container_id": str(container.container_id),
+            "player_id": str(player_id),
+            "owner_id": str(container.owner_id),
+        }
+        if grace_period_end is not None:
+            details["grace_period_end"] = grace_period_end
+            log_and_raise(
+                ContainerAccessDeniedError,
+                f"Corpse grace period active: {container.container_id}",
+                operation="validate_corpse_grace_period",
+                container_id=str(container.container_id),
+                player_id=str(player_id),
+                owner_id=str(container.owner_id),
+                grace_period_end=grace_period_end,
+                details=details,
+                user_friendly="The corpse's owner has exclusive access during the grace period",
+            )
+        log_and_raise(
+            ContainerAccessDeniedError,
+            f"Corpse grace period active: {container.container_id}",
+            operation="validate_corpse_grace_period",
+            container_id=str(container.container_id),
+            player_id=str(player_id),
+            owner_id=str(container.owner_id),
+            details=details,
+            user_friendly="The corpse's owner has exclusive access during the grace period",
+        )
+
     def _validate_corpse_grace_period(self, container: ContainerComponent, player_id: str, is_admin: bool) -> None:
         """Validate corpse grace period access rules."""
-        if container.source_type == ContainerSourceType.CORPSE and container.owner_id:
-            metadata = cast(dict[str, object], container.metadata)
-            grace_raw = metadata.get("grace_period_seconds", 300)
-            grace_period_seconds = int(grace_raw) if isinstance(grace_raw, int | float | str) else 300
-            grace_period_start_raw = metadata.get("grace_period_start")
+        if container.source_type != ContainerSourceType.CORPSE or not container.owner_id:
+            return
+        if container.owner_id == player_id or is_admin:
+            return
 
-            if isinstance(grace_period_start_raw, str):
-                grace_period_start = datetime.fromisoformat(grace_period_start_raw.replace("Z", "+00:00"))
-                grace_period_end = grace_period_start + timedelta(seconds=grace_period_seconds)
-                current_time = datetime.now(UTC)
+        metadata = cast(dict[str, object], container.metadata)
+        grace_raw = metadata.get("grace_period_seconds", 300)
+        grace_period_seconds = int(grace_raw) if isinstance(grace_raw, int | float | str) else 300
+        grace_period_start_raw = metadata.get("grace_period_start")
 
-                if current_time < grace_period_end and container.owner_id != player_id and not is_admin:
-                    log_and_raise(
-                        ContainerAccessDeniedError,
-                        f"Corpse grace period active: {container.container_id}",
-                        operation="validate_corpse_grace_period",
-                        container_id=str(container.container_id),
-                        player_id=str(player_id),
-                        owner_id=str(container.owner_id),
-                        grace_period_end=grace_period_end.isoformat(),
-                        details={
-                            "container_id": str(container.container_id),
-                            "player_id": str(player_id),
-                            "owner_id": str(container.owner_id),
-                            "grace_period_end": grace_period_end.isoformat(),
-                        },
-                        user_friendly="The corpse's owner has exclusive access during the grace period",
-                    )
-            else:
-                if container.owner_id != player_id and not is_admin:
-                    log_and_raise(
-                        ContainerAccessDeniedError,
-                        f"Corpse grace period active: {container.container_id}",
-                        operation="validate_corpse_grace_period",
-                        container_id=str(container.container_id),
-                        player_id=str(player_id),
-                        owner_id=str(container.owner_id),
-                        details={
-                            "container_id": str(container.container_id),
-                            "player_id": str(player_id),
-                            "owner_id": str(container.owner_id),
-                        },
-                        user_friendly="The corpse's owner has exclusive access during the grace period",
-                    )
+        if not isinstance(grace_period_start_raw, str):
+            self._raise_corpse_grace_denied(container, player_id)
+            return
+
+        grace_period_start = datetime.fromisoformat(grace_period_start_raw.replace("Z", "+00:00"))
+        grace_period_end = grace_period_start + timedelta(seconds=grace_period_seconds)
+        if datetime.now(UTC) >= grace_period_end:
+            return
+        self._raise_corpse_grace_denied(container, player_id, grace_period_end.isoformat())
 
     def _validate_container_access(self, container: ContainerComponent, player: object) -> None:
         """
@@ -183,6 +194,23 @@ class ContainerAccessMixin:
         self._validate_ownership(container, str(player_id))
         self._validate_role_access(container, str(player_id), is_admin)
         self._validate_corpse_grace_period(container, str(player_id), is_admin)
+
+    @staticmethod
+    def _player_has_key_item(player: object, key_item_id: object) -> bool:
+        """Return True if player inventory contains the required key item_id."""
+        # Prefer inventory attribute (mocks/tests); fall back to Player.get_inventory.
+        player_inventory_raw: object = getattr(player, "inventory", None)
+        if player_inventory_raw is None:
+            get_inventory = getattr(player, "get_inventory", None)
+            player_inventory_raw = get_inventory() if callable(get_inventory) else []
+        if not isinstance(player_inventory_raw, list):
+            return False
+        # list alone is list[Unknown] under basedpyright; cast elements to object.
+        player_inventory = cast(list[object], player_inventory_raw)
+        for item in player_inventory:
+            if cast(dict[str, object], item).get("item_id") == key_item_id:
+                return True
+        return False
 
     def _can_unlock_container(self, container: ContainerComponent, player: object) -> bool:
         """
@@ -207,20 +235,7 @@ class ContainerAccessMixin:
         metadata = cast(dict[str, object], container.metadata)
         key_item_id = metadata.get("key_item_id")
         if key_item_id is not None:
-            # Prefer inventory attribute (mocks/tests); fall back to Player.get_inventory.
-            player_inventory_raw: object = getattr(player, "inventory", None)
-            if player_inventory_raw is None:
-                get_inventory = getattr(player, "get_inventory", None)
-                player_inventory_raw = get_inventory() if callable(get_inventory) else []
-            if not isinstance(player_inventory_raw, list):
-                return False
-            # list alone is list[Unknown] under basedpyright; cast elements to object.
-            player_inventory = cast(list[object], player_inventory_raw)
-            for item in player_inventory:
-                if cast(dict[str, object], item).get("item_id") == key_item_id:
-                    return True
-            # Player doesn't have the key
-            return False
+            return self._player_has_key_item(player, key_item_id)
 
         # Locked containers without a key requirement still require admin to unlock
         # If no key is specified, only admins can unlock locked containers

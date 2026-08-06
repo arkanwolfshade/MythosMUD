@@ -28,7 +28,7 @@ AliasPayload: TypeAlias = dict[str, object]  # noqa: UP040
 AliasRecord: TypeAlias = dict[str, object]  # noqa: UP040
 
 
-class _AliasValidatorCache:
+class _AliasValidatorCache:  # pylint: disable=too-few-public-methods  # Reason: private holder for lazy schema validator state
     """Mutable cache for the lazy schema validator (avoids redefining module constants)."""
 
     __slots__: tuple[str, ...] = ("import_failed", "validator")

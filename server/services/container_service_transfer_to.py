@@ -32,7 +32,7 @@ from .inventory_service import InventoryCapacityError, InventoryService, Invento
 logger = get_logger(__name__)
 
 
-class ContainerTransferToMixin(ContainerAccessMixin):
+class ContainerTransferToMixin(ContainerAccessMixin):  # pylint: disable=too-few-public-methods  # Reason: mixin host for ContainerService transfer-in API
     """Transfer items into containers."""
 
     # Host ContainerService rebinds these fields on instances.
