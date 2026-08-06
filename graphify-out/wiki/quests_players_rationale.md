@@ -1,34 +1,36 @@
 # quests players rationale
 
-> 12 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **_errors_len()** (7 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_required_npcs_no_spawn_room()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_required_npcs_exception()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_optional_npcs_exception()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_npcs_on_startup_exception_in_session()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_npcs_on_startup_critical_exception()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Narrow spawn/startup result dict for len(results['errors']) without propagating** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test _spawn_required_npcs() handles missing spawn room.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test _spawn_required_npcs() handles exceptions during spawning.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test _spawn_optional_npcs() handles exceptions during spawning.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test spawn_npcs_on_startup() handles exceptions during session processing.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test spawn_npcs_on_startup() handles critical exceptions.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_inventory_mutation_guard_async.py** (9 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **guard()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **test_acquire_async_enforces_max_tokens()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **test_acquire_async_token_expiry()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **test_acquire_async_token_ttl_zero()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **test_acquire_async_cleanup_empty_state()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **test_acquire_async_concurrent_same_player()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **Unit tests for inventory mutation guard - asynchronous acquire operations.  Test** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **Create an InventoryMutationGuard instance.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **Test acquire_async enforces max_tokens limit.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **Test acquire_async allows token reuse after expiry.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **Test acquire_async with token_ttl=0 (no expiry).** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **Test acquire_async cleans up state when tokens are empty.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **Test acquire_async serializes concurrent mutations for same player.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
 
 ## Relationships
 
-- [realtime player connection](realtime_player_connection.md) (6 shared connections)
-- [map layout useMapLayout](map_layout_useMapLayout.md) (5 shared connections)
+- [task registry app](task_registry_app.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_npc_startup_service.py`
+- `server/tests/unit/services/test_inventory_mutation_guard_async.py`
 
 ## Audit Trail
 
-- EXTRACTED: 33 (100%)
+- EXTRACTED: 29 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

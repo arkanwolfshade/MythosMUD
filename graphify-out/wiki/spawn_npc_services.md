@@ -1,43 +1,48 @@
 # spawn npc services
 
-> 14 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **test_invite_schemas.py** (15 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
-- **InviteUpdate** (9 connections) — `server/schemas/auth/invite.py`
-- **test_invite_update_validation()** (4 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
-- **test_invite_read()** (3 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
-- **test_invite_read_with_used_by()** (3 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
-- **test_invite_update()** (3 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
-- **test_invite_update_all_optional()** (3 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
-- **Schema for updating invite data.** (1 connections) — `server/schemas/auth/invite.py`
-- **Unit tests for invite schemas.  Tests the Pydantic models in invite.py module.** (1 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
-- **Test InviteRead can be instantiated.** (1 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
-- **Test InviteRead with used_by_user_id.** (1 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
-- **Test InviteUpdate can be instantiated with optional fields.** (1 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
-- **Test InviteUpdate can be instantiated with all fields optional.** (1 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
-- **Test InviteUpdate validates invite_code length when provided.** (1 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **CombatDPSync** (13 connections) — `server/services/combat_hp_sync.py`
+- **UUID** (9 connections)
+- **._persist_player_dp_sync()** (8 connections) — `server/services/combat_hp_sync.py`
+- **._publish_player_dp_update_event()** (6 connections) — `server/services/combat_hp_sync.py`
+- **._publish_player_dp_correction_event()** (6 connections) — `server/services/combat_hp_sync.py`
+- **._get_persistence()** (5 connections) — `server/services/combat_hp_sync.py`
+- **._update_and_save_player_dp()** (5 connections) — `server/services/combat_hp_sync.py`
+- **._verify_player_save()** (4 connections) — `server/services/combat_hp_sync.py`
+- **._log_death_threshold_events()** (4 connections) — `server/services/combat_hp_sync.py`
+- **.__init__()** (3 connections) — `server/services/combat_hp_sync.py`
+- **._persist_player_dp_background()** (3 connections) — `server/services/combat_hp_sync.py`
+- **Any** (2 connections)
+- **Handles DP synchronization for combat operations.** (1 connections) — `server/services/combat_hp_sync.py`
+- **Initialize DP sync with reference to parent combat service.** (1 connections) — `server/services/combat_hp_sync.py`
+- **Persist player DP to database in background (fire-and-forget).          This met** (1 connections) — `server/services/combat_hp_sync.py`
+- **Get persistence layer from application container.          Args:             pla** (1 connections) — `server/services/combat_hp_sync.py`
+- **Verify that player DP was successfully saved to database.          Args:** (1 connections) — `server/services/combat_hp_sync.py`
+- **Log death threshold events based on DP changes.          Args:             curre** (1 connections) — `server/services/combat_hp_sync.py`
+- **Update player DP and save to database.          Args:             persistence: P** (1 connections) — `server/services/combat_hp_sync.py`
+- **Synchronously persist player DP to database.          This is the actual persist** (1 connections) — `server/services/combat_hp_sync.py`
+- **Publish a PlayerDPUpdated event for real-time UI updates.** (1 connections) — `server/services/combat_hp_sync.py`
+- **Publish a correction event when database persistence fails.** (1 connections) — `server/services/combat_hp_sync.py`
 
 ## Relationships
 
-- [professions endpoints all](professions_endpoints_all.md) (4 shared connections)
-- [combat models rationale](combat_models_rationale.md) (3 shared connections)
-- [player requests schemas](player_requests_schemas.md) (3 shared connections)
-- [message filtering helpers](message_filtering_helpers.md) (2 shared connections)
-- [Player Stats](Player_Stats.md) (1 shared connections)
-- [level curve game](level_curve_game.md) (1 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (4 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (3 shared connections)
+- [subject admin controller](subject_admin_controller.md) (2 shared connections)
+- [profession models rationale](profession_models_rationale.md) (2 shared connections)
+- [realtime player connection](realtime_player_connection.md) (1 shared connections)
 
 ## Source Files
 
-- `server/schemas/auth/invite.py`
-- `server/tests/unit/schemas/test_invite_schemas.py`
+- `server/services/combat_hp_sync.py`
 
 ## Audit Trail
 
-- EXTRACTED: 46 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 75 (96%)
+- INFERRED: 3 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

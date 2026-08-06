@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_resolve_player_by_name()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
-- **Test _resolve_player_for_movement resolves player by name.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_apply_dampening_and_send_message_blocked()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _apply_dampening_and_send_message handles blocked messages.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [movement service game](movement_service_game.md) (1 shared connections)
+- [message chat nats](message_chat_nats.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_movement_service.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 

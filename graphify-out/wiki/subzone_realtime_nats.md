@@ -1,23 +1,30 @@
 # subzone realtime nats
 
-> 2 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **mock_event_bus()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
-- **Create a mock event bus.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_inventory_commands_format_helpers.py** (6 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
+- **test_format_metadata_empty()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
+- **test_format_metadata_simple()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
+- **test_format_metadata_nested_dict()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
+- **Unit tests for inventory command formatting helper functions.  Tests the formatt** (1 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
+- **Test _format_metadata() returns empty string for None.** (1 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
+- **Test _format_metadata() formats simple metadata.** (1 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
+- **Test _format_metadata() formats nested dict.** (1 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
 
 ## Relationships
 
-- [movement service game](movement_service_game.md) (1 shared connections)
+- [commands inventory helpers](commands_inventory_helpers.md) (4 shared connections)
+- [player helpers error](player_helpers_error.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_movement_service.py`
+- `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 19 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

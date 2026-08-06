@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_restore_mp_from_rest_restores_mp()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **Test restore_mp_from_rest() restores MP.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **test_is_in_same_party_false_when_one_not_in_party()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **is_in_same_party returns False when one player is not in a party.** (1 connections) — `server/tests/unit/game/test_party_service.py`
 
 ## Relationships
 
-- [config rationale reset](config_rationale_reset.md) (1 shared connections)
+- [commands inventory helpers](commands_inventory_helpers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- `server/tests/unit/game/test_party_service.py`
 
 ## Audit Trail
 

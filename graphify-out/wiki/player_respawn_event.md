@@ -1,54 +1,56 @@
 # player respawn event
 
-> 43 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **test_goto_helpers.py** (32 connections) — `server/tests/unit/commands/test_goto_helpers.py`
-- **goto_helpers.py** (21 connections) — `server/commands/goto_helpers.py`
-- **validate_goto_context()** (13 connections) — `server/commands/goto_helpers.py`
-- **execute_goto_teleport()** (13 connections) — `server/commands/goto_helpers.py`
-- **validate_confirm_goto_context()** (11 connections) — `server/commands/goto_helpers.py`
-- **execute_confirm_goto()** (11 connections) — `server/commands/goto_helpers.py`
-- **resolve_goto_target()** (10 connections) — `server/commands/goto_helpers.py`
-- **log_goto_failure()** (10 connections) — `server/commands/goto_helpers.py`
-- **resolve_target_player_for_goto()** (10 connections) — `server/commands/goto_helpers.py`
-- **Any** (7 connections)
-- **test_validate_goto_context_no_app()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
-- **test_validate_goto_context_no_player_service()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
-- **test_validate_goto_context_not_admin()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
-- **test_validate_goto_context_player_not_found()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
-- **test_validate_goto_context_no_connection_manager()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
-- **test_validate_goto_context_success()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
-- **test_resolve_goto_target_offline()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
-- **test_resolve_goto_target_success()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
-- **test_execute_goto_teleport_success()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
-- **test_execute_goto_teleport_db_failure()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
-- **test_log_goto_failure()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
-- **test_validate_confirm_goto_context_success()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
-- **test_resolve_target_player_for_goto()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
-- **test_execute_confirm_goto()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
-- **test_resolve_goto_target_not_in_database()** (2 connections) — `server/tests/unit/commands/test_goto_helpers.py`
-- *... and 18 more nodes in this community*
+- **test_time_bundle.py** (20 connections) — `server/tests/unit/container/test_time_bundle.py`
+- **TimeBundle** (14 connections) — `server/container/bundles/time.py`
+- **.initialize()** (5 connections) — `server/container/bundles/time.py`
+- **_season_for_month()** (5 connections) — `server/time/time_service.py`
+- **test_season_for_month()** (3 connections) — `server/tests/unit/container/test_time_bundle.py`
+- **test_time_bundle_initialize_with_deps()** (2 connections) — `server/tests/unit/container/test_container_bundles.py`
+- **test_time_bundle_initialize_missing_deps()** (2 connections) — `server/tests/unit/container/test_container_bundles.py`
+- **test_time_bundle_initialize_with_dependencies()** (2 connections) — `server/tests/unit/container/test_time_bundle.py`
+- **test_time_bundle_initialize_missing_dependencies()** (2 connections) — `server/tests/unit/container/test_time_bundle.py`
+- **test_chronicle_calendar_and_dayparts()** (2 connections) — `server/tests/unit/container/test_time_bundle.py`
+- **test_chronicle_time_conversion()** (2 connections) — `server/tests/unit/container/test_time_bundle.py`
+- **test_chronicle_advance_and_freeze()** (2 connections) — `server/tests/unit/container/test_time_bundle.py`
+- **test_chronicle_format_clock()** (2 connections) — `server/tests/unit/container/test_time_bundle.py`
+- **test_chronicle_advance_rejects_negative_delta()** (2 connections) — `server/tests/unit/container/test_time_bundle.py`
+- **Mythos time consumer service.** (1 connections) — `server/container/bundles/time.py`
+- **Initialize Mythos time event consumer.** (1 connections) — `server/container/bundles/time.py`
+- **test_time_bundle_attrs()** (1 connections) — `server/tests/unit/container/test_time_bundle.py`
+- **Unit tests for TimeBundle container wiring.** (1 connections) — `server/tests/unit/container/test_time_bundle.py`
+- **Season mapping follows month bands.** (1 connections) — `server/tests/unit/container/test_time_bundle.py`
+- **Calendar components and daypart helpers.** (1 connections) — `server/tests/unit/container/test_time_bundle.py`
+- **Real/Mythos datetime conversion round-trips approximately.** (1 connections) — `server/tests/unit/container/test_time_bundle.py`
+- **Advance and freeze update persisted state.** (1 connections) — `server/tests/unit/container/test_time_bundle.py`
+- **Clock formatting includes Mythos suffix.** (1 connections) — `server/tests/unit/container/test_time_bundle.py`
+- **advance_mythos rejects negative hours.** (1 connections) — `server/tests/unit/container/test_time_bundle.py`
+- **Return the lore-friendly season label for the provided month number.** (1 connections) — `server/time/time_service.py`
 
 ## Relationships
 
-- [npc service services](npc_service_services.md) (15 shared connections)
-- [monitoring dashboard rationale](monitoring_dashboard_rationale.md) (8 shared connections)
-- [realtime game state](realtime_game_state.md) (7 shared connections)
-- [admin structured logging](admin_structured_logging.md) (5 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [room look commands](room_look_commands.md) (1 shared connections)
+- [nats services service](nats_services_service.md) (4 shared connections)
+- [Error Conversion](Error_Conversion.md) (4 shared connections)
+- [websocket realtime handler](websocket_realtime_handler.md) (4 shared connections)
+- [time service rationale](time_service_rationale.md) (4 shared connections)
+- [command service commands](command_service_commands.md) (2 shared connections)
+- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (2 shared connections)
+- [admin shutdown commands](admin_shutdown_commands.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/goto_helpers.py`
-- `server/tests/unit/commands/test_goto_helpers.py`
+- `server/container/bundles/time.py`
+- `server/tests/unit/container/test_container_bundles.py`
+- `server/tests/unit/container/test_time_bundle.py`
+- `server/time/time_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 194 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 74 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

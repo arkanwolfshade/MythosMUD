@@ -24,17 +24,17 @@
 ## Relationships
 
 - [event bus events](event_bus_events.md) (11 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
 - [game room service](game_room_service.md) (2 shared connections)
 - [room toolkit validator](room_toolkit_validator.md) (2 shared connections)
 - [realtime player event](realtime_player_event.md) (2 shared connections)
-- [Error Conversion](Error_Conversion.md) (1 shared connections)
-- [item models rationale](item_models_rationale.md) (1 shared connections)
 - [npc behavior engine](npc_behavior_engine.md) (1 shared connections)
 - [services chat rate](services_chat_rate.md) (1 shared connections)
 - [room infrastructure persistence](room_infrastructure_persistence.md) (1 shared connections)
 - [infrastructure security rationale](infrastructure_security_rationale.md) (1 shared connections)
 - [infrastructure persistence room](infrastructure_persistence_room.md) (1 shared connections)
 - [realtime messaging message](realtime_messaging_message.md) (1 shared connections)
+- [events event bus](events_event_bus.md) (1 shared connections)
 
 ## Source Files
 

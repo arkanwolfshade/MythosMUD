@@ -23,7 +23,7 @@
 
 ## Relationships
 
-- [health monitor realtime](health_monitor_realtime.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
 
 ## Source Files
 

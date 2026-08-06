@@ -4,23 +4,22 @@
 
 ## Key Concepts
 
-- **.__init__()** (3 connections) — `server/game/items/prototype_registry.py`
-- **.invalid_entries()** (3 connections) — `server/game/items/prototype_registry.py`
-- **Any** (2 connections)
-- **Get all invalid entries that failed validation.          Returns:             li** (1 connections) — `server/game/items/prototype_registry.py`
+- **description** (4 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **minLength** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
 
 ## Relationships
 
-- [MapView GameClientV2ContainerView Tabbed](MapView_GameClientV2ContainerView_Tabbed.md) (2 shared connections)
-- [connection cleaner realtime](connection_cleaner_realtime.md) (1 shared connections)
+- [room toolkit validator](room_toolkit_validator.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/items/prototype_registry.py`
+- `tools/room_toolkit/room_validator/schemas/zone_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

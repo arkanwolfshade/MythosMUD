@@ -33,11 +33,11 @@
 
 ## Relationships
 
-- [startup npc services](startup_npc_services.md) (21 shared connections)
-- [services inventory mutation](services_inventory_mutation.md) (9 shared connections)
-- [command processor rationale](command_processor_rationale.md) (7 shared connections)
-- [status game spell](status_game_spell.md) (7 shared connections)
-- [schemas validator rationale](schemas_validator_rationale.md) (4 shared connections)
+- [player realtime presence](player_realtime_presence.md) (21 shared connections)
+- [calendar schemas validate](calendar_schemas_validate.md) (9 shared connections)
+- [logging setup structured](logging_setup_structured.md) (7 shared connections)
+- [room realtime subscription](room_realtime_subscription.md) (7 shared connections)
+- [commands lucidity recovery](commands_lucidity_recovery.md) (4 shared connections)
 
 ## Source Files
 

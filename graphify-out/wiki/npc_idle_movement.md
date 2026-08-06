@@ -1,30 +1,38 @@
 # npc idle movement
 
-> 4 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **test_create_player_with_stats_name_exists()** (4 connections) — `server/tests/unit/game/test_player_service.py`
-- **.get_attribute_modifier()** (3 connections) — `server/models/game.py`
-- **Get the modifier for a given attribute (standard D&D-style calculation).** (1 connections) — `server/models/game.py`
-- **Test create_player_with_stats() when name already exists.** (1 connections) — `server/tests/unit/game/test_player_service.py`
+- **TestEmoteDetection** (8 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_is_predefined_emote_true()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_is_predefined_emote_false()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_is_predefined_emote_handles_error()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_should_treat_as_emote_system_command()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_should_treat_as_emote_unknown_word()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_should_treat_as_emote_predefined_emote()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
+- **Test emote detection functions.** (1 connections) — `server/tests/unit/commands/test_command_input.py`
+- **Test _is_predefined_emote() returns True for predefined emote.** (1 connections) — `server/tests/unit/commands/test_command_input.py`
+- **Test _is_predefined_emote() returns False for non-emote.** (1 connections) — `server/tests/unit/commands/test_command_input.py`
+- **Test _is_predefined_emote() handles errors gracefully.** (1 connections) — `server/tests/unit/commands/test_command_input.py`
+- **Test should_treat_as_emote() returns False for system commands.** (1 connections) — `server/tests/unit/commands/test_command_input.py`
+- **Test should_treat_as_emote() returns False for unknown words.** (1 connections) — `server/tests/unit/commands/test_command_input.py`
+- **Test should_treat_as_emote() returns True for predefined emotes.** (1 connections) — `server/tests/unit/commands/test_command_input.py`
 
 ## Relationships
 
-- [player service game](player_service_game.md) (2 shared connections)
-- [command factories communication](command_factories_communication.md) (1 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
-- [player event state](player_event_state.md) (1 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (3 shared connections)
+- [player model models](player_model_models.md) (3 shared connections)
+- [commands recovery lucidity](commands_recovery_lucidity.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/game.py`
-- `server/tests/unit/game/test_player_service.py`
+- `server/tests/unit/commands/test_command_input.py`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (89%)
-- INFERRED: 1 (11%)
+- EXTRACTED: 33 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

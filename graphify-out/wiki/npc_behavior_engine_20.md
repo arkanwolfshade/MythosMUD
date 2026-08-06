@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_cleanup_empty_subzone_subscriptions()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test cleanup_empty_subzone_subscriptions cleans up empty subzones.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_get_room_occupants_error()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **Test get_room_occupants() handles errors gracefully.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
 
 ## Relationships
 
-- [subzone realtime nats](subzone_realtime_nats.md) (1 shared connections)
+- [room subscription manager](room_subscription_manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- `server/tests/unit/realtime/test_room_subscription_manager.py`
 
 ## Audit Trail
 

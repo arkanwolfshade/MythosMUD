@@ -1,26 +1,25 @@
 # add fastapi users
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **mp_regeneration_service()** (4 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **Create an MPRegenerationService instance.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **PerformanceStats** (3 connections) — `server/realtime/monitoring/performance_tracker.py`
+- **TypedDict** (1 connections)
+- **Type definition for performance statistics tracking.** (1 connections) — `server/realtime/monitoring/performance_tracker.py`
 
 ## Relationships
 
-- [realtime real time](realtime_real_time.md) (1 shared connections)
-- [regeneration service magic](regeneration_service_magic.md) (1 shared connections)
-- [config rationale reset](config_rationale_reset.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- `server/realtime/monitoring/performance_tracker.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (80%)
-- INFERRED: 1 (20%)
+- EXTRACTED: 5 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

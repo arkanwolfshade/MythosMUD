@@ -1,50 +1,46 @@
 # cache lru caching
 
-> 26 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **test_lru_cache.py** (16 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **cache_with_ttl()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **cache_without_ttl()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **test_cache_put_expired_entries_removed_before_lru_eviction()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **test_cache_put_expired_entries_removed_before_capacity_check()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **test_cache_expired_entries_not_counted_in_evictions()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **test_cache_expiration_check_only_when_ttl_enabled()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **test_cache_expired_count_tracked_in_stats()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **test_cache_expiration_rate_calculated()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **test_cache_size_stays_within_bounds_after_expiration()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **test_cache_expiration_performance_impact()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **test_cache_expired_entries_removed_efficiently()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **test_cache_mixed_expired_and_valid_entries()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **Unit tests for LRU cache expiration and eviction.  Tests the LRUCache class, foc** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **Create an LRUCache with TTL enabled.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **Create an LRUCache without TTL.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **Test that expired entries are removed before LRU eviction.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **Test that expired entries are removed before checking if cache is full.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **Test that expired entries are not counted as LRU evictions.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **Test that expiration check is skipped when TTL is None.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **Test that expired entry count is tracked in cache stats.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **Test that expiration rate is calculated in stats.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **Test that cache size stays within bounds after expiration cleanup.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **Test that expiration checking doesn't significantly impact performance.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **Test that expired entries are removed efficiently in bulk.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- *... and 1 more nodes in this community*
+- **test_passive_lucidity_flux_service.py** (32 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- **_make_service()** (22 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- **test_process_tick_applies_adjustment()** (4 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- **test_process_single_player_no_delta()** (3 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- **test_should_process_tick()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- **test_parse_last_active_variants()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- **test_normalize_datetime_timezone()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- **test_filter_active_players_includes_recent_and_null_last_active()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- **test_apply_residual_accumulates_and_emits_delta()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- **test_apply_adaptive_resistance_reduces_negative_flux()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- **test_companion_modifier_with_lucid_and_destabilizing()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- **test_lookup_base_flux_for_room_overrides()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- **test_prune_trackers()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- **test_process_tick_skipped_when_not_due()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- **test_lookup_base_flux_sub_zone_override()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- **test_lookup_world_override_flux()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- **test_count_companion_tiers()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- **test_is_player_active_recent()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- **test_apply_adaptive_resistance_positive_flux_unchanged()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- **test_apply_residual_negative_delta()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- **test_resolve_context_async_with_room()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- **Unit tests for PassiveLucidityFluxService.** (1 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
 
 ## Relationships
 
-- [commands skills rationale](commands_skills_rationale.md) (1 shared connections)
-- [caching lru cache](caching_lru_cache.md) (1 shared connections)
-- [taunt combat commands](taunt_combat_commands.md) (1 shared connections)
+- [command parser rationale](command_parser_rationale.md) (8 shared connections)
+- [lucidity flux passive](lucidity_flux_passive.md) (6 shared connections)
+- [player room realtime](player_room_realtime.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/caching/test_lru_cache.py`
+- `server/tests/unit/services/test_passive_lucidity_flux_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 53 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 95 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

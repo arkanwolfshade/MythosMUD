@@ -1,44 +1,35 @@
 # models profession rationale
 
-> 15 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **close_db()** (9 connections) — `server/database.py`
-- **get_engine()** (8 connections) — `server/database.py`
-- **.get_engine()** (5 connections) — `server/database.py`
-- **test_get_engine_initializes_database()** (5 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **AsyncEngine** (4 connections)
-- **.close()** (3 connections) — `server/database.py`
-- **test_close_db_success()** (3 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_close_db_error()** (3 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **Get the database engine, initializing if necessary.          Returns:** (1 connections) — `server/database.py`
-- **Close database connections.** (1 connections) — `server/database.py`
-- **Close database connections.      This closes the database manager's engine and c** (1 connections) — `server/database.py`
-- **Get the database engine from DatabaseManager.      Returns:         AsyncEngine:** (1 connections) — `server/database.py`
-- **Test get_engine initializes database if not already initialized.** (1 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **Test close_db closes database successfully.** (1 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **Test close_db raises RuntimeError on error.** (1 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **.get_limit()** (6 connections) — `server/services/rate_limiter.py`
+- **._cleanup_old_entries()** (6 connections) — `server/services/rate_limiter.py`
+- **.check_rate_limit()** (5 connections) — `server/services/rate_limiter.py`
+- **.record_message()** (4 connections) — `server/services/rate_limiter.py`
+- **.get_remaining_messages()** (4 connections) — `server/services/rate_limiter.py`
+- **.is_player_rate_limited()** (3 connections) — `server/services/rate_limiter.py`
+- **Get the current rate limit for a channel.          Args:             channel: Ch** (1 connections) — `server/services/rate_limiter.py`
+- **Remove timestamps older than the window size.          Args:             player_** (1 connections) — `server/services/rate_limiter.py`
+- **Check if a player is within rate limits for a channel.          Args:** (1 connections) — `server/services/rate_limiter.py`
+- **Record a message for rate limiting.          Args:             player_id: Player** (1 connections) — `server/services/rate_limiter.py`
+- **Check if a player is currently rate limited on a channel.          Args:** (1 connections) — `server/services/rate_limiter.py`
+- **Get the number of remaining messages a player can send on a channel.          Ar** (1 connections) — `server/services/rate_limiter.py`
 
 ## Relationships
 
-- [command player state](command_player_state.md) (6 shared connections)
-- [aggro threat services](aggro_threat_services.md) (3 shared connections)
-- [game models enums](game_models_enums.md) (3 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (3 shared connections)
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (2 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (1 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [event events serialization](event_events_serialization.md) (6 shared connections)
+- [dead letter realtime](dead_letter_realtime.md) (2 shared connections)
 
 ## Source Files
 
-- `server/database.py`
-- `server/tests/unit/infrastructure/test_database_extended.py`
+- `server/services/rate_limiter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 42 (89%)
-- INFERRED: 5 (11%)
+- EXTRACTED: 34 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

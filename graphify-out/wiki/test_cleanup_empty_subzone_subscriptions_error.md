@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_cleanup_empty_subzone_subscriptions_error()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test cleanup_empty_subzone_subscriptions handles NATSError.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_send_messages_to_players_no_original_content()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _send_messages_to_players handles missing original_content.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [commands communication say](commands_communication_say.md) (1 shared connections)
-- [subzone realtime nats](subzone_realtime_nats.md) (1 shared connections)
+- [message chat nats](message_chat_nats.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

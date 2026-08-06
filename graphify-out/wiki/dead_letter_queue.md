@@ -1,49 +1,45 @@
 # dead letter queue
 
-> 22 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **CombatDPSync** (13 connections) — `server/services/combat_hp_sync.py`
-- **UUID** (9 connections)
-- **._persist_player_dp_sync()** (8 connections) — `server/services/combat_hp_sync.py`
-- **._publish_player_dp_update_event()** (6 connections) — `server/services/combat_hp_sync.py`
-- **._publish_player_dp_correction_event()** (6 connections) — `server/services/combat_hp_sync.py`
-- **._get_persistence()** (5 connections) — `server/services/combat_hp_sync.py`
-- **._update_and_save_player_dp()** (5 connections) — `server/services/combat_hp_sync.py`
-- **._verify_player_save()** (4 connections) — `server/services/combat_hp_sync.py`
-- **._log_death_threshold_events()** (4 connections) — `server/services/combat_hp_sync.py`
-- **.__init__()** (3 connections) — `server/services/combat_hp_sync.py`
-- **._persist_player_dp_background()** (3 connections) — `server/services/combat_hp_sync.py`
+- **MagicBundle** (22 connections) — `server/container/bundles/magic.py`
+- **_create_registry_and_targeting()** (15 connections) — `server/container/bundles/magic.py`
+- **_create_learning_mp_regen_and_magic()** (11 connections) — `server/container/bundles/magic.py`
+- **_validate_magic_prerequisites()** (6 connections) — `server/container/bundles/magic.py`
+- **.initialize()** (6 connections) — `server/container/bundles/magic.py`
+- **test_magic_bundle_create_registry_and_targeting()** (3 connections) — `server/tests/unit/container/test_container_bundles.py`
+- **test_magic_create_learning_mp_regen_and_magic()** (3 connections) — `server/tests/unit/container/test_container_bundles.py`
 - **Any** (2 connections)
-- **Handles DP synchronization for combat operations.** (1 connections) — `server/services/combat_hp_sync.py`
-- **Initialize DP sync with reference to parent combat service.** (1 connections) — `server/services/combat_hp_sync.py`
-- **Persist player DP to database in background (fire-and-forget).          This met** (1 connections) — `server/services/combat_hp_sync.py`
-- **Get persistence layer from application container.          Args:             pla** (1 connections) — `server/services/combat_hp_sync.py`
-- **Verify that player DP was successfully saved to database.          Args:** (1 connections) — `server/services/combat_hp_sync.py`
-- **Log death threshold events based on DP changes.          Args:             curre** (1 connections) — `server/services/combat_hp_sync.py`
-- **Update player DP and save to database.          Args:             persistence: P** (1 connections) — `server/services/combat_hp_sync.py`
-- **Synchronously persist player DP to database.          This is the actual persist** (1 connections) — `server/services/combat_hp_sync.py`
-- **Publish a PlayerDPUpdated event for real-time UI updates.** (1 connections) — `server/services/combat_hp_sync.py`
-- **Publish a correction event when database persistence fails.** (1 connections) — `server/services/combat_hp_sync.py`
+- **test_magic_validate_prerequisites()** (2 connections) — `server/tests/unit/container/test_container_bundles.py`
+- **test_magic_bundle_initialize_unit_test()** (2 connections) — `server/tests/unit/container/test_container_bundles.py`
+- **Raise if prerequisites for magic services are missing.** (1 connections) — `server/container/bundles/magic.py`
+- **Create spell registry, targeting, and effects services. Return (spell_registry,** (1 connections) — `server/container/bundles/magic.py`
+- **Create spell learning, MP regen, and magic services; link magic to combat.** (1 connections) — `server/container/bundles/magic.py`
+- **Magic system services.** (1 connections) — `server/container/bundles/magic.py`
+- **Initialize magic services.** (1 connections) — `server/container/bundles/magic.py`
 
 ## Relationships
 
-- [commands shutdown process](commands_shutdown_process.md) (3 shared connections)
-- [persistence rationale players](persistence_rationale_players.md) (2 shared connections)
-- [services combat sync](services_combat_sync.md) (2 shared connections)
-- [Error Conversion](Error_Conversion.md) (2 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (2 shared connections)
-- [nats services service](nats_services_service.md) (1 shared connections)
+- [nats services service](nats_services_service.md) (11 shared connections)
+- [websocket realtime handler](websocket_realtime_handler.md) (9 shared connections)
+- [persistence core infrastructure](persistence_core_infrastructure.md) (9 shared connections)
+- [panels domPurifyClient chat](panels_domPurifyClient_chat.md) (2 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (2 shared connections)
+- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (2 shared connections)
+- [player respawn event](player_respawn_event.md) (2 shared connections)
+- [coercion int inventory](coercion_int_inventory.md) (2 shared connections)
 
 ## Source Files
 
-- `server/services/combat_hp_sync.py`
+- `server/container/bundles/magic.py`
+- `server/tests/unit/container/test_container_bundles.py`
 
 ## Audit Trail
 
-- EXTRACTED: 75 (96%)
-- INFERRED: 3 (4%)
+- EXTRACTED: 66 (86%)
+- INFERRED: 11 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

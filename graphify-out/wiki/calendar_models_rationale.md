@@ -1,54 +1,47 @@
 # calendar models rationale
 
-> 28 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **quest_chat_notify.py** (20 connections) — `server/game/quest/quest_chat_notify.py`
-- **schedule_personal_system()** (12 connections) — `server/game/chat_npc_system.py`
-- **should_notify_quest_progress()** (10 connections) — `server/game/quest/quest_chat_notify.py`
-- **notify_quest_progress()** (9 connections) — `server/game/quest/quest_chat_notify.py`
-- **notify_quest_started()** (8 connections) — `server/game/quest/quest_chat_notify.py`
-- **notify_quest_completed()** (8 connections) — `server/game/quest/quest_chat_notify.py`
-- **notify_quest_abandoned()** (8 connections) — `server/game/quest/quest_chat_notify.py`
-- **title_from_quest_result()** (7 connections) — `server/game/quest/quest_chat_notify.py`
-- **test_notify_quest_lifecycle_schedules_personal_system()** (6 connections) — `server/tests/unit/game/test_chat_npc_system.py`
-- **UUID** (5 connections)
-- **_goal_is_met()** (5 connections) — `server/game/quest/quest_chat_notify.py`
-- **Any** (4 connections)
-- **_progress_has_any_value()** (4 connections) — `server/game/quest/quest_chat_notify.py`
-- **_as_int()** (3 connections) — `server/game/quest/quest_chat_notify.py`
-- **test_title_from_quest_result_prefers_title_field()** (3 connections) — `server/tests/unit/game/test_chat_npc_system.py`
-- **Schedule personal system chat from sync or async callers.** (1 connections) — `server/game/chat_npc_system.py`
-- **Quest lifecycle and NPC quest-line chat helpers (issue #146 MVP).  # group: ques** (1 connections) — `server/game/quest/quest_chat_notify.py`
-- **Personal system chat when a quest becomes active.** (1 connections) — `server/game/quest/quest_chat_notify.py`
-- **Personal system chat for milestone progress (first tick or goal newly met).** (1 connections) — `server/game/quest/quest_chat_notify.py`
-- **Personal system chat when a quest completes.** (1 connections) — `server/game/quest/quest_chat_notify.py`
-- **Personal system chat when a quest is abandoned.** (1 connections) — `server/game/quest/quest_chat_notify.py`
-- **Coerce progress/config scalars to int; non-numeric becomes default.** (1 connections) — `server/game/quest/quest_chat_notify.py`
-- **Return True if one goal is satisfied given current progress.** (1 connections) — `server/game/quest/quest_chat_notify.py`
-- **True if any goal slot has a non-zero / non-empty progress value.** (1 connections) — `server/game/quest/quest_chat_notify.py`
-- **Return True when a progress personal-system line should be sent.      Notifies o** (1 connections) — `server/game/quest/quest_chat_notify.py`
-- *... and 3 more nodes in this community*
+- **test_config_model_helpers.py** (11 connections) — `server/tests/unit/config/test_config_model_helpers.py`
+- **_apply_url_fallback()** (8 connections) — `server/config/models/_helpers.py`
+- **_validate_tls_files_and_maybe_update_url()** (7 connections) — `server/config/models/_helpers.py`
+- **_parse_list_from_string()** (4 connections) — `server/config/models/_helpers.py`
+- **Any** (3 connections)
+- **.validate_tls_config()** (3 connections) — `server/config/models/nats.py`
+- **test_default_cors_origins_from_env()** (3 connections) — `server/tests/unit/config/test_config_model_helpers.py`
+- **test_apply_url_fallback_from_database_env()** (3 connections) — `server/tests/unit/config/test_config_model_helpers.py`
+- **test_validate_tls_files_missing_cert_raises()** (3 connections) — `server/tests/unit/config/test_config_model_helpers.py`
+- **test_validate_tls_updates_url_scheme()** (3 connections) — `server/tests/unit/config/test_config_model_helpers.py`
+- **test_parse_list_from_string_json_and_csv()** (2 connections) — `server/tests/unit/config/test_config_model_helpers.py`
+- **MonkeyPatch** (2 connections)
+- **test_apply_url_fallback_from_npc_url()** (2 connections) — `server/tests/unit/config/test_config_model_helpers.py`
+- **test_apply_url_fallback_keeps_existing_url()** (2 connections) — `server/tests/unit/config/test_config_model_helpers.py`
+- **Path** (2 connections)
+- **Parse non-empty string as JSON list or CSV. Used by _parse_env_list.** (1 connections) — `server/config/models/_helpers.py`
+- **If url is missing, set it from npc_url in data or from DATABASE_* env vars.** (1 connections) — `server/config/models/_helpers.py`
+- **When TLS is enabled, validate cert/key (and optional CA) exist and update url to** (1 connections) — `server/config/models/_helpers.py`
+- **Validate TLS configuration is complete when enabled.** (1 connections) — `server/config/models/nats.py`
+- **Unit tests for server.config.models._helpers.** (1 connections) — `server/tests/unit/config/test_config_model_helpers.py`
 
 ## Relationships
 
-- [quest chat game](quest_chat_game.md) (12 shared connections)
-- [quest game service](quest_game_service.md) (7 shared connections)
-- [commands quest rationale](commands_quest_rationale.md) (6 shared connections)
-- [collect inventory game](collect_inventory_game.md) (6 shared connections)
-- [chat game message](chat_game_message.md) (4 shared connections)
-- [dialogue service game](dialogue_service_game.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (5 shared connections)
+- [config models rationale](config_models_rationale.md) (5 shared connections)
+- [websocket validation realtime](websocket_validation_realtime.md) (1 shared connections)
+- [room validator path](room_validator_path.md) (1 shared connections)
+- [occupants npc commands](occupants_npc_commands.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/chat_npc_system.py`
-- `server/game/quest/quest_chat_notify.py`
-- `server/tests/unit/game/test_chat_npc_system.py`
+- `server/config/models/_helpers.py`
+- `server/config/models/nats.py`
+- `server/tests/unit/config/test_config_model_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 125 (100%)
+- EXTRACTED: 63 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

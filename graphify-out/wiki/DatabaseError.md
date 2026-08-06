@@ -33,11 +33,10 @@
 
 ### imports
 - connection_manager_methods.py `EXTRACTED`
-- database.py `EXTRACTED`
 - async_persistence.py `EXTRACTED`
+- database.py `EXTRACTED`
 - players.py `EXTRACTED`
 - test_combat_service_modules.py `EXTRACTED`
-- test_container_persistence.py `EXTRACTED`
 - container_persistence.py `EXTRACTED`
 - test_player_respawn_service.py `EXTRACTED`
 - maps.py `EXTRACTED`
@@ -51,6 +50,7 @@
 - test_exploration_service.py `EXTRACTED`
 - player_respawn_service.py `EXTRACTED`
 - test_admin_setlucidity_command.py `EXTRACTED`
+- container_persistence.py `EXTRACTED`
 - test_exceptions.py `EXTRACTED`
 
 ### indirect_call
@@ -71,8 +71,8 @@
 - canonical_room_id_impl() `INFERRED`
 - handle_confirm_teleport_command() `INFERRED`
 - handle_confirm_goto_command() `INFERRED`
-- get_container() `INFERRED`
 - track_player_connected_impl() `INFERRED`
+- get_container() `INFERRED`
 - create_container_async() `INFERRED`
 
 ### inherits
@@ -85,7 +85,7 @@
 - Database operation errors. `EXTRACTED`
 
 ### uses
-- AsyncPersistenceLayer `INFERRED`
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) `INFERRED`
 - CircuitBreaker `INFERRED`
 - PlayerSpellRepository `INFERRED`
 - ErrorResponse `INFERRED`

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_connection_manager_property_fallback()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test connection_manager property falls back when not injected.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_validate_chat_message_fields_type_errors()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _validate_chat_message_fields raises TypeError for invalid types.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [nats message handler](nats_message_handler.md) (1 shared connections)
+- [message chat nats](message_chat_nats.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 

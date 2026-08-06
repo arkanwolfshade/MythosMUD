@@ -33,8 +33,7 @@
 
 ## Relationships
 
-- [Realtime Subscribers](Realtime_Subscribers.md) (6 shared connections)
-- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (7 shared connections)
 - [chat service game](chat_service_game.md) (1 shared connections)
 
 ## Source Files

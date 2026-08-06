@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_reset_player_limits_nonexistent_player()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **Test reset_player_limits handles nonexistent player.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_build_occupants_snapshot_data_none()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test build_occupants_snapshot_data() with None.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [rate limiter services](rate_limiter_services.md) (1 shared connections)
+- [player event handlers](player_event_handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_rate_limiter.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 

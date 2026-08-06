@@ -50,8 +50,8 @@
 - test_metrics_endpoints.py `EXTRACTED`
 - container_endpoints_loot.py `EXTRACTED`
 - rooms.py `EXTRACTED`
-- test_container_exception_handlers.py `EXTRACTED`
-- test_containers.py `EXTRACTED`
+- test_npc_definitions_api.py `EXTRACTED`
+- npc_definitions_api.py `EXTRACTED`
 
 ### indirect_call
 - _admin_user() `INFERRED`
@@ -115,21 +115,21 @@
 - Invite `INFERRED`
 - PlayerChannelPreferences `INFERRED`
 - PlayerInventory `INFERRED`
+- PlayerExploration `INFERRED`
 - TestTransferAllItemsFromContainer `INFERRED`
 - TestHelperFunctions `INFERRED`
 - TestOpenContainer `INFERRED`
 - TestTransferItems `INFERRED`
-- PlayerExploration `INFERRED`
+- TestRollCharacterStats `INFERRED`
 - TestHandleTransferItemsExceptions `INFERRED`
+- TestHandleContainerServiceErrorEdgeCases `INFERRED`
+- TestGetContainerAndPlayerForLootAll `INFERRED`
+- TestHandleContainerServiceError `INFERRED`
 - TestCloseContainer `INFERRED`
+- TestGetMythosTime `INFERRED`
 - TestHandleLootAllExceptions `INFERRED`
 - TestHandleOpenContainerExceptions `INFERRED`
-- TestRequestModels `INFERRED`
-- TestHandleContainerServiceErrorEdgeCases `INFERRED`
-- TestExceptionChaining `INFERRED`
-- TestExceptionHandlerContext `INFERRED`
-- TestExceptionHandlerLoggerCalls `INFERRED`
-- TestHandleCloseContainerExceptions `INFERRED`
+- TestCreateErrorContext `INFERRED`
 
 ---
 

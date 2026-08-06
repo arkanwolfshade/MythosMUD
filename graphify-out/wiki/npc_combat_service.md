@@ -1,52 +1,52 @@
 # npc combat service
 
-> 66 nodes
+> 27 nodes
 
 ## Key Concepts
 
-- **test_command_factories_moderation.py** (29 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
-- **ModerationCommandFactory** (13 connections) — `server/utils/command_factories_moderation.py`
-- **.create_mute_command()** (9 connections) — `server/utils/command_factories_moderation.py`
-- **.create_mute_global_command()** (9 connections) — `server/utils/command_factories_moderation.py`
-- **.create_unmute_command()** (7 connections) — `server/utils/command_factories_moderation.py`
-- **.create_unmute_global_command()** (7 connections) — `server/utils/command_factories_moderation.py`
-- **.create_add_admin_command()** (7 connections) — `server/utils/command_factories_moderation.py`
-- **.create_admin_command()** (7 connections) — `server/utils/command_factories_moderation.py`
-- **.create_mutes_command()** (6 connections) — `server/utils/command_factories_moderation.py`
-- **test_create_mute_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
-- **test_create_unmute_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
-- **test_create_add_admin_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
-- **test_create_unmute_command_with_multiple_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
-- **test_create_mute_global_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
-- **test_create_unmute_global_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
-- **test_create_unmute_global_command_with_multiple_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
-- **test_create_admin_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
-- **test_create_admin_command_status_with_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
-- **test_create_mutes_command_with_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
-- **test_create_add_admin_command_with_multiple_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
-- **test_create_mute_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
-- **test_create_unmute_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
-- **test_create_add_admin_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
-- **test_create_mute_command_with_duration()** (3 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
-- **test_create_mute_command_with_duration_and_reason()** (3 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
-- *... and 41 more nodes in this community*
+- **_get_enum_value()** (9 connections) — `server/services/wearable_container_service.py`
+- **_filter_container_data()** (9 connections) — `server/services/wearable_container_service.py`
+- **Any** (8 connections)
+- **.add_items_to_wearable_container()** (8 connections) — `server/services/wearable_container_service.py`
+- **.update_wearable_container_items()** (8 connections) — `server/services/wearable_container_service.py`
+- **UUID** (7 connections)
+- **.handle_equip_wearable_container()** (6 connections) — `server/services/wearable_container_service.py`
+- **.handle_unequip_wearable_container()** (6 connections) — `server/services/wearable_container_service.py`
+- **.handle_container_overflow()** (6 connections) — `server/services/wearable_container_service.py`
+- **.get_wearable_containers_for_player()** (5 connections) — `server/services/wearable_container_service.py`
+- **.__init__()** (3 connections) — `server/services/wearable_container_service.py`
+- **test_get_enum_value_with_enum()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_get_enum_value_with_string()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_filter_container_data()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **ContainerComponent** (1 connections)
+- **Safely get enum value, handling both enum instances and string values.      When** (1 connections) — `server/services/wearable_container_service.py`
+- **Filter out database-only fields from container data before validation.      The** (1 connections) — `server/services/wearable_container_service.py`
+- **Initialize the wearable container service.          Args:             persistenc** (1 connections) — `server/services/wearable_container_service.py`
+- **Handle equipping a wearable container item.          Creates a container in Post** (1 connections) — `server/services/wearable_container_service.py`
+- **Handle unequipping a wearable container item.          Preserves the container a** (1 connections) — `server/services/wearable_container_service.py`
+- **Get all wearable containers for a player.          Args:             player_id:** (1 connections) — `server/services/wearable_container_service.py`
+- **Add items to a wearable container.          Args:             player_id: UUID of** (1 connections) — `server/services/wearable_container_service.py`
+- **Update items in a wearable container.          Args:             player_id: UUID** (1 connections) — `server/services/wearable_container_service.py`
+- **Handle container overflow by spilling items to inventory or ground.          Arg** (1 connections) — `server/services/wearable_container_service.py`
+- **Test _get_enum_value returns value from enum instance.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [Loot Generation](Loot_Generation.md) (23 shared connections)
-- [command factories create](command_factories_create.md) (7 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
-- [commands who helpers](commands_who_helpers.md) (1 shared connections)
+- [player cache rationale](player_cache_rationale.md) (10 shared connections)
+- [wearable container service](wearable_container_service.md) (5 shared connections)
+- [player event state](player_event_state.md) (4 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (4 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories_moderation.py`
-- `server/utils/command_factories_moderation.py`
+- `server/services/wearable_container_service.py`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 198 (94%)
-- INFERRED: 12 (6%)
+- EXTRACTED: 93 (96%)
+- INFERRED: 4 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

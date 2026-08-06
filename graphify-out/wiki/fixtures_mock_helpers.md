@@ -1,53 +1,41 @@
 # fixtures mock helpers
 
-> 20 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **alias_expansion.py** (17 connections) — `server/command_handler/alias_expansion.py`
-- **test_alias_expansion.py** (13 connections) — `server/tests/unit/commands/test_alias_expansion.py`
-- **handle_expanded_command()** (11 connections) — `server/command_handler/alias_expansion.py`
-- **check_alias_safety()** (10 connections) — `server/command_handler/alias_expansion.py`
-- **validate_expanded_command()** (10 connections) — `server/command_handler/alias_expansion.py`
-- **Any** (2 connections)
-- **CommandExecutionRequest** (2 connections)
-- **test_check_alias_safety_cycle_detected()** (2 connections) — `server/tests/unit/commands/test_alias_expansion.py`
-- **test_check_alias_safety_depth_too_deep()** (2 connections) — `server/tests/unit/commands/test_alias_expansion.py`
-- **test_check_alias_safety_ok()** (2 connections) — `server/tests/unit/commands/test_alias_expansion.py`
-- **test_validate_expanded_command_too_long()** (2 connections) — `server/tests/unit/commands/test_alias_expansion.py`
-- **test_validate_expanded_command_invalid_content()** (2 connections) — `server/tests/unit/commands/test_alias_expansion.py`
-- **test_validate_expanded_command_ok()** (2 connections) — `server/tests/unit/commands/test_alias_expansion.py`
-- **test_handle_expanded_command_depth_limit()** (2 connections) — `server/tests/unit/commands/test_alias_expansion.py`
-- **test_handle_expanded_command_delegates()** (2 connections) — `server/tests/unit/commands/test_alias_expansion.py`
-- **Alias Expansion Logic for MythosMUD.  This module handles alias resolution, expa** (1 connections) — `server/command_handler/alias_expansion.py`
-- **Check if an alias is safe to expand.      Builds an alias dependency graph and c** (1 connections) — `server/command_handler/alias_expansion.py`
-- **Validate an expanded command for length and content.      Args:         expanded** (1 connections) — `server/command_handler/alias_expansion.py`
-- **Handle command processing with alias expansion and loop detection.      This fun** (1 connections) — `server/command_handler/alias_expansion.py`
-- **Unit tests for alias_expansion module.** (1 connections) — `server/tests/unit/commands/test_alias_expansion.py`
+- **handle_new_game_session()** (11 connections) — `server/api/real_time.py`
+- **_ensure_connection_manager()** (10 connections) — `server/api/real_time.py`
+- **get_player_connections()** (9 connections) — `server/api/real_time.py`
+- **get_connection_statistics()** (7 connections) — `server/api/real_time.py`
+- **Request** (4 connections)
+- **test_ensure_connection_manager_missing()** (3 connections) — `server/tests/unit/api/test_real_time_helpers.py`
+- **test_handle_new_game_session_missing_session_id()** (3 connections) — `server/tests/unit/api/test_real_time_helpers.py`
+- **test_handle_new_game_session_invalid_json()** (3 connections) — `server/tests/unit/api/test_real_time_helpers.py`
+- **test_get_player_connections()** (2 connections) — `server/tests/unit/api/test_real_time_helpers.py`
+- **test_handle_new_game_session()** (2 connections) — `server/tests/unit/api/test_real_time_helpers.py`
+- **Ensure connection manager is available.     Raises LoggedHTTPException with prop** (1 connections) — `server/api/real_time.py`
+- **Get connection information for a player.     Returns detailed connection metadat** (1 connections) — `server/api/real_time.py`
+- **Handle a new game session for a player.     This will disconnect existing connec** (1 connections) — `server/api/real_time.py`
+- **Get comprehensive connection statistics.     Returns detailed statistics about a** (1 connections) — `server/api/real_time.py`
 
 ## Relationships
 
-- [command commands handler](command_commands_handler.md) (6 shared connections)
-- [commands recovery lucidity](commands_recovery_lucidity.md) (4 shared connections)
-- [alias graph rationale](alias_graph_rationale.md) (3 shared connections)
-- [command validator validators](command_validator_validators.md) (3 shared connections)
-- [logoutHandler logger App](logoutHandler_logger_App.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [command validation commands](command_validation_commands.md) (2 shared connections)
-- [commands whisper command](commands_whisper_command.md) (1 shared connections)
-- [commands npc admin](commands_npc_admin.md) (1 shared connections)
-- [request context realtime](request_context_realtime.md) (1 shared connections)
-- [dead letter realtime](dead_letter_realtime.md) (1 shared connections)
+- [nats services metrics](nats_services_metrics.md) (8 shared connections)
+- [services inventory mutation](services_inventory_mutation.md) (5 shared connections)
+- [schedule services service](schedule_services_service.md) (5 shared connections)
+- [cleanup combat handler](cleanup_combat_handler.md) (5 shared connections)
+- [Error Conversion](Error_Conversion.md) (3 shared connections)
 
 ## Source Files
 
-- `server/command_handler/alias_expansion.py`
-- `server/tests/unit/commands/test_alias_expansion.py`
+- `server/api/real_time.py`
+- `server/tests/unit/api/test_real_time_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 84 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 55 (95%)
+- INFERRED: 3 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

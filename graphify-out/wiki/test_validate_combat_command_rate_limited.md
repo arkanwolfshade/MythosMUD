@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_validate_combat_command_rate_limited()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test validate_combat_command when rate limited.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_reset_player_limits_specific_channel()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **Test reset_player_limits resets specific channel.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
 
 ## Relationships
 
-- [emote models rationale](emote_models_rationale.md) (1 shared connections)
+- [rate limiter services](rate_limiter_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/services/test_rate_limiter.py`
 
 ## Audit Trail
 

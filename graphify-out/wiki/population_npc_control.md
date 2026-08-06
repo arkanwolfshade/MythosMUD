@@ -1,25 +1,27 @@
 # population npc control
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **1. Component Refactoring** (4 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **ChatPanel.tsx Enhancements (New Chat Input Panel)** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **GameLogPanel.tsx (Renamed from ChatPanel.tsx)** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **CommandPanel.tsx Simplifications** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **exception_metrics.py** (4 connections) — `server/monitoring/exception_metrics.py`
+- **get_summary()** (3 connections) — `server/monitoring/exception_metrics.py`
+- **Any** (1 connections)
+- **Exception metrics tracking for monitoring.  This module provides thread-safe exc** (1 connections) — `server/monitoring/exception_metrics.py`
+- **Get a summary of exception counts.      Returns:         dict[str, Any]: Diction** (1 connections) — `server/monitoring/exception_metrics.py`
 
 ## Relationships
 
-- [CHAT SPEC archive](CHAT_SPEC_archive.md) (1 shared connections)
+- [player game schema](player_game_schema.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- `server/monitoring/exception_metrics.py`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 10 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

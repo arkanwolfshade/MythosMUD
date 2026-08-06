@@ -33,9 +33,10 @@
 
 ## Relationships
 
-- [maps handle ascii](maps_handle_ascii.md) (6 shared connections)
-- [database helpers infrastructure](database_helpers_infrastructure.md) (6 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [database helpers infrastructure](database_helpers_infrastructure.md) (7 shared connections)
+- [maps handle ascii](maps_handle_ascii.md) (3 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [persistence container rationale](persistence_container_rationale.md) (2 shared connections)
 
 ## Source Files
 

@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [target resolution service](target_resolution_service.md) (6 shared connections)
-- [middleware correlation rationale](middleware_correlation_rationale.md) (5 shared connections)
-- [commands whisper command](commands_whisper_command.md) (3 shared connections)
+- [middleware correlation rationale](middleware_correlation_rationale.md) (6 shared connections)
+- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (4 shared connections)
+- [services ascii map](services_ascii_map.md) (3 shared connections)
+- [player model models](player_model_models.md) (2 shared connections)
 - [command commands aliases](command_commands_aliases.md) (2 shared connections)
-- [commands npc admin](commands_npc_admin.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [world loader room](world_loader_room.md) (1 shared connections)
-- [command commands handler](command_commands_handler.md) (1 shared connections)
-- [combat npc services](combat_npc_services.md) (1 shared connections)
+- [alias storage rationale](alias_storage_rationale.md) (2 shared connections)
+- [realtime real time](realtime_real_time.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
 - [commands admin mute](commands_admin_mute.md) (1 shared connections)
 - [container schemas containers](container_schemas_containers.md) (1 shared connections)
 - [command models admin](command_models_admin.md) (1 shared connections)
+- [commands communication flows](commands_communication_flows.md) (1 shared connections)
 
 ## Source Files
 

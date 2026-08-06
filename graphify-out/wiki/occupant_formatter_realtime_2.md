@@ -1,27 +1,54 @@
 # occupant formatter realtime
 
-> 6 nodes
+> 23 nodes
 
 ## Key Concepts
 
-- **test_websocket_handler_disconnect.py** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
-- **test_handle_websocket_disconnect()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
-- **test_handle_websocket_disconnect_no_connection_id()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
-- **Unit tests for websocket handler disconnect handling.  Tests the disconnect hand** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
-- **Test _handle_websocket_disconnect() returns True.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
-- **Test _handle_websocket_disconnect() with no connection_id.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
+- **websocket_handler_message_loop.py** (26 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **is_websocket_disconnect_message()** (11 connections) — `server/realtime/websocket_helpers.py`
+- **handle_message_loop_exception()** (10 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **handle_websocket_runtime_error()** (8 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **WebSocket** (7 connections)
+- **handle_json_decode_error()** (6 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **UUID** (6 connections)
+- **handle_websocket_generic_exception()** (6 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **process_exception_in_message_loop()** (6 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **handle_websocket_message_loop()** (6 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **process_websocket_inbound_message()** (5 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **handle_websocket_disconnect()** (4 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **Exception** (3 connections)
+- **WebSocket message loop, per-message processing, and loop exception handling.  Ex** (1 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **Handle JSON decode error.** (1 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **Handle WebSocket disconnect.      Returns:         True to break the loop** (1 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **Handle RuntimeError.      Returns:         Tuple of (should_break, should_raise)** (1 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **Handle generic exception.      Returns:         True to break the loop** (1 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **Process a single WebSocket message.      Returns:         True to continue loop,** (1 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **Handle exception in message loop.      Returns:         Tuple of (should_break,** (1 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **Process exception in message loop and return (should_break, should_raise).** (1 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **Handle the main WebSocket message loop.** (1 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **Check if error message indicates WebSocket disconnection or send-after-close.** (1 connections) — `server/realtime/websocket_helpers.py`
 
 ## Relationships
 
-- [room websocket updates](room_websocket_updates.md) (1 shared connections)
+- [command commands aliases](command_commands_aliases.md) (10 shared connections)
+- [handler realtime nats](handler_realtime_nats.md) (7 shared connections)
+- [room websocket updates](room_websocket_updates.md) (6 shared connections)
+- [realtime message validator](realtime_message_validator.md) (4 shared connections)
+- [realtime maintenance connection](realtime_maintenance_connection.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [spell models rationale](spell_models_rationale.md) (2 shared connections)
+- [lucidity npc combat](lucidity_npc_combat.md) (1 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (1 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
+- `server/realtime/websocket_handler_message_loop.py`
+- `server/realtime/websocket_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 114 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,23 +1,28 @@
 # game skill service
 
-> 2 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **test_is_player_in_room_true()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **Test is_player_in_room() returns True when player is in room.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **.get_task_lifecycle_metrics()** (5 connections) — `server/app/task_registry.py`
+- **.get_active_task_count()** (3 connections) — `server/app/task_registry.py`
+- **.get_task_stats_by_type()** (3 connections) — `server/app/task_registry.py`
+- **Get count of active tasks.** (1 connections) — `server/app/task_registry.py`
+- **Get task breakdown by type.** (1 connections) — `server/app/task_registry.py`
+- **Get task lifecycle metrics including creation and completion rates.** (1 connections) — `server/app/task_registry.py`
 
 ## Relationships
 
-- [message filtering realtime](message_filtering_realtime.md) (1 shared connections)
+- [follow service game](follow_service_game.md) (3 shared connections)
+- [realtime messaging message](realtime_messaging_message.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_message_filtering.py`
+- `server/app/task_registry.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 14 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

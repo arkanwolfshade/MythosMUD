@@ -33,10 +33,10 @@
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [room service sync](room_service_sync.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (3 shared connections)
+- [inventory mutation guard](inventory_mutation_guard.md) (1 shared connections)
 - [connection models realtime](connection_models_realtime.md) (1 shared connections)
-- [websocket helpers realtime](websocket_helpers_realtime.md) (1 shared connections)
+- [room sync service](room_sync_service.md) (1 shared connections)
 
 ## Source Files
 

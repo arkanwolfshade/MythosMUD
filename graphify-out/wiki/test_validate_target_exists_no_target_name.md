@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_validate_target_exists_no_target_name()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test validate_target_exists with empty target name.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_rate_limit_sliding_window()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **Test rate limiting uses sliding window correctly.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
 
 ## Relationships
 
-- [emote models rationale](emote_models_rationale.md) (1 shared connections)
+- [rate limiter services](rate_limiter_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/services/test_rate_limiter.py`
 
 ## Audit Trail
 

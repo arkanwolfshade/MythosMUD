@@ -1,9 +1,10 @@
 # mythos mud mapbuilder
 
-> 47 nodes
+> 55 nodes
 
 ## Key Concepts
 
+- **deque** (26 connections)
 - **mythos_mud_mapbuilder.py** (22 connections) — `data/local/mythos_mud_mapbuilder.py`
 - **Coord** (14 connections)
 - **RoomID** (12 connections)
@@ -28,21 +29,31 @@
 - **run_validator_on_rooms()** (5 connections) — `data/local/mythos_mud_mapbuilder.py`
 - **_load_tileset()** (4 connections) — `data/local/mythos_mud_mapbuilder.py`
 - **example_validator()** (4 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **_handle_tcod_events()** (3 connections) — `data/local/mythos_mud_mapbuilder.py`
-- *... and 22 more nodes in this community*
+- *... and 30 more nodes in this community*
 
 ## Relationships
 
-- [taunt combat commands](taunt_combat_commands.md) (5 shared connections)
+- [spell models rationale](spell_models_rationale.md) (14 shared connections)
+- [error monitoring scripts](error_monitoring_scripts.md) (1 shared connections)
+- [models lucidity rationale](models_lucidity_rationale.md) (1 shared connections)
+- [combat monitoring service](combat_monitoring_service.md) (1 shared connections)
+- [coordinate services generator](coordinate_services_generator.md) (1 shared connections)
+- [Magic Spell Service](Magic_Spell_Service.md) (1 shared connections)
+- [combat commands handler](combat_commands_handler.md) (1 shared connections)
+- [subject validation services](subject_validation_services.md) (1 shared connections)
 
 ## Source Files
 
 - `data/local/mythos_mud_mapbuilder.py`
+- `server/monitoring/memory_leak_metrics.py`
+- `server/realtime/message_queue.py`
+- `server/services/nats_metrics.py`
+- `server/services/nats_subject_manager/metrics.py`
 
 ## Audit Trail
 
-- EXTRACTED: 213 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 228 (89%)
+- INFERRED: 27 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

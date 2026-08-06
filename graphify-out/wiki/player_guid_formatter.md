@@ -33,9 +33,9 @@
 
 ## Relationships
 
-- [logging structured utilities](logging_structured_utilities.md) (5 shared connections)
-- [Magic Spell Service](Magic_Spell_Service.md) (1 shared connections)
-- [logging handlers structured](logging_handlers_structured.md) (1 shared connections)
+- [logging handlers structured](logging_handlers_structured.md) (4 shared connections)
+- [logging structured utilities](logging_structured_utilities.md) (2 shared connections)
+- [aggro threat services](aggro_threat_services.md) (1 shared connections)
 
 ## Source Files
 

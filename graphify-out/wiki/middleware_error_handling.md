@@ -33,14 +33,16 @@
 
 ## Relationships
 
-- [Error Handling Core](Error_Handling_Core.md) (11 shared connections)
-- [Exception Containers](Exception_Containers.md) (6 shared connections)
-- [handler realtime nats](handler_realtime_nats.md) (4 shared connections)
-- [Loot Generation](Loot_Generation.md) (3 shared connections)
-- [player service game](player_service_game.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [npc combat services](npc_combat_services.md) (1 shared connections)
-- [Spell Validation](Spell_Validation.md) (1 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (10 shared connections)
+- [services inventory mutation](services_inventory_mutation.md) (6 shared connections)
+- [websocket handler realtime](websocket_handler_realtime.md) (4 shared connections)
+- [feature services flag](feature_services_flag.md) (2 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [handler realtime nats](handler_realtime_nats.md) (1 shared connections)
+- [add used user](add_used_user.md) (1 shared connections)
+- [playerHandlers eventHandlers healthEvent](playerHandlers_eventHandlers_healthEvent.md) (1 shared connections)
+- [exceptions rationale error](exceptions_rationale_error.md) (1 shared connections)
 
 ## Source Files
 

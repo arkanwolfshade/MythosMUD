@@ -27,7 +27,7 @@
 
 - [static schemas room](static_schemas_room.md) (2 shared connections)
 - [room schema static](room_schema_static.md) (1 shared connections)
-- [commands command validation](commands_command_validation.md) (1 shared connections)
+- [test_is_valid_target_name_invalid](test_is_valid_target_name_invalid.md) (1 shared connections)
 
 ## Source Files
 

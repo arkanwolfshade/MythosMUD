@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_handle_player_attacked_event()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test _handle_player_attacked_event delegates to event handler.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_check_item_in_location_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test checking item in location successfully.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
 
 ## Relationships
 
-- [subzone realtime nats](subzone_realtime_nats.md) (1 shared connections)
+- [schemas validator rationale](schemas_validator_rationale.md) (1 shared connections)
+- [Item Lookup](Item_Lookup.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- `server/tests/unit/commands/test_look_item.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

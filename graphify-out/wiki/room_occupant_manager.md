@@ -1,56 +1,57 @@
 # room occupant manager
 
-> 95 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **NPCCombatUUIDMapping** (39 connections) — `server/services/npc_combat_uuid_mapping.py`
-- **TestNPCCombatUUIDMapping** (22 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
-- **_NPCCombatIntegrationValidationDeps** (19 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **.store_npc_xp_mapping_for_mixin()** (10 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **UUID** (8 connections)
-- **.get_base_stats()** (6 connections) — `server/models/npc.py`
-- **.get_data_provider()** (6 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **.get_uuid_mapping()** (6 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **UUID** (6 connections)
-- **._setup_combat_uuids_and_mappings()** (6 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **._validate_and_get_npc_instance()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **._validate_combat_location()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **._end_combat_if_participant_in_combat()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **._setup_combat_uuids_npc_attacker()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **.get_combat_service()** (4 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **.get_lucidity_service()** (4 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **.is_valid_uuid()** (4 connections) — `server/services/npc_combat_uuid_mapping.py`
-- **.convert_to_uuid()** (4 connections) — `server/services/npc_combat_uuid_mapping.py`
-- **test_npc_combat_uuid_mapping.py** (4 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
-- **.get_uuid_mapping()** (3 connections) — `server/services/npc_combat_integration_service.py`
-- **_coerce_xp_mapping_value()** (3 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **_warn_attacked_dead_npc()** (3 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **.store_npc_xp_mapping_for_mixin()** (3 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **.store_string_id_mapping()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
-- **.store_xp_mapping()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
-- *... and 70 more nodes in this community*
+- **BehaviorEngine** (73 connections) — `server/npc/behavior_engine.py`
+- **.get_behavior_engine()** (3 connections) — `server/npc/npc_base.py`
+- **test_add_rule_replaces_existing()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_add_rule_handles_exception()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_get_rules()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_evaluate_equality_true()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_evaluate_numeric_comparison_non_numeric()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_get_applicable_rules_matching()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_get_applicable_rules_priority_order()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **.__init__()** (2 connections) — `server/npc/behavior_engine.py`
+- **.remove_rule()** (2 connections) — `server/npc/behavior_engine.py`
+- **Deterministic behavior engine for NPCs.      This engine evaluates rules based o** (1 connections) — `server/npc/behavior_engine.py`
+- **Initialize the behavior engine.** (1 connections) — `server/npc/behavior_engine.py`
+- **Remove a behavior rule from the engine.          Args:             rule_name: Na** (1 connections) — `server/npc/behavior_engine.py`
+- **Get the behavior engine for this NPC.** (1 connections) — `server/npc/npc_base.py`
+- **Test add_rule() replaces existing rule with same name.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test add_rule() handles exceptions gracefully.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test get_rules() returns copy of rules.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test _evaluate_equality() returns True for matching condition.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test _evaluate_numeric_comparison() raises ValueError for non-numeric values.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test get_applicable_rules() returns matching rules.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test get_applicable_rules() returns rules in priority order.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (22 shared connections)
-- [container events rationale](container_events_rationale.md) (3 shared connections)
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
-- [player look commands](player_look_commands.md) (2 shared connections)
-- [room validator services](room_validator_services.md) (2 shared connections)
+- [behavior engine npc](behavior_engine_npc.md) (21 shared connections)
+- [monitoring dashboard rationale](monitoring_dashboard_rationale.md) (12 shared connections)
+- [room infrastructure persistence](room_infrastructure_persistence.md) (7 shared connections)
+- [skill game service](skill_game_service.md) (6 shared connections)
+- [infrastructure persistence room](infrastructure_persistence_room.md) (5 shared connections)
+- [Error Conversion](Error_Conversion.md) (4 shared connections)
+- [room game service](room_game_service.md) (4 shared connections)
+- [lucidity event services](lucidity_event_services.md) (2 shared connections)
+- [game skill service](game_skill_service.md) (2 shared connections)
+- [test_validate_combat_command_invalid_command_type](test_validate_combat_command_invalid_command_type.md) (1 shared connections)
+- [chat game service](chat_game_service.md) (1 shared connections)
+- [test_get_combat_status_message_in_combat](test_get_combat_status_message_in_combat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/npc.py`
-- `server/services/npc_combat_integration_service.py`
-- `server/services/npc_combat_integration_validation_mixin.py`
-- `server/services/npc_combat_uuid_mapping.py`
-- `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- `server/npc/behavior_engine.py`
+- `server/npc/npc_base.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 288 (96%)
-- INFERRED: 13 (4%)
+- EXTRACTED: 111 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

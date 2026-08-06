@@ -1,38 +1,33 @@
 # envelope event game
 
-> 14 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **test_player_spell_repository.py** (19 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
-- **_mock_session_with_rows()** (9 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
-- **_spell_row()** (6 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
-- **test_get_player_spells()** (3 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
-- **test_get_player_spell_found()** (3 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
-- **test_learn_spell()** (3 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
-- **test_learn_spell_no_row_raises()** (3 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
-- **test_update_mastery()** (3 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
-- **test_record_spell_cast()** (3 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
-- **repo()** (2 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
-- **test_get_player_spells_db_error()** (2 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
-- **test_get_player_spell_missing()** (2 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
-- **test_update_mastery_not_found()** (2 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
-- **Unit tests for PlayerSpellRepository.** (1 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **._attack_target_impl()** (6 connections) — `server/npc/aggressive_mob_npc.py`
+- **._attack_via_combat_integration()** (4 connections) — `server/npc/aggressive_mob_npc.py`
+- **.attack_target()** (4 connections) — `server/npc/aggressive_mob_npc.py`
+- **._get_attack_damage()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **._handle_attack_target()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **Resolve attack_damage from behavior config with robust typing.** (1 connections) — `server/npc/aggressive_mob_npc.py`
+- **Try to handle the attack via combat integration.          Returns:** (1 connections) — `server/npc/aggressive_mob_npc.py`
+- **Internal implementation for attacking a target.** (1 connections) — `server/npc/aggressive_mob_npc.py`
+- **Attack a specific target.** (1 connections) — `server/npc/aggressive_mob_npc.py`
+- **Handle attacking target action.** (1 connections) — `server/npc/aggressive_mob_npc.py`
 
 ## Relationships
 
-- [commands shutdown process](commands_shutdown_process.md) (6 shared connections)
-- [coercion int inventory](coercion_int_inventory.md) (2 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [error logging rationale](error_logging_rationale.md) (5 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_player_spell_repository.py`
+- `server/npc/aggressive_mob_npc.py`
 
 ## Audit Trail
 
-- EXTRACTED: 59 (97%)
-- INFERRED: 2 (3%)
+- EXTRACTED: 25 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

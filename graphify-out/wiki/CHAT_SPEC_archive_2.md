@@ -17,7 +17,7 @@
 ## Relationships
 
 - [CHAT SPEC archive](CHAT_SPEC_archive.md) (1 shared connections)
-- [population npc control](population_npc_control.md) (1 shared connections)
+- [MagicPointsMeter magic formatDelta()](MagicPointsMeter_magic_formatDelta%28%29.md) (1 shared connections)
 
 ## Source Files
 

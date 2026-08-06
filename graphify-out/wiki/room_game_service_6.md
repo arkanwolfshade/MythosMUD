@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **test_process_room_rows_with_partial_room_id()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _process_room_rows with stable_id that needs room ID generation.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_build_room_objects_with_non_dict_attributes()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _build_room_objects handles non-dict attributes.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Relationships
 

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_is_valid_target_name_valid()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test _is_valid_target_name with valid target name.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_update_wearable_container_items()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test update_wearable_container_items updates items.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Relationships
 
-- [emote models rationale](emote_models_rationale.md) (1 shared connections)
+- [wearable container service](wearable_container_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 

@@ -1,24 +1,27 @@
 # cache caching lru
 
-> 2 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **test_find_item_in_equipped_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test finding item in equipped items when not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_websocket_handler_json_error.py** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
+- **mock_websocket()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
+- **test_handle_json_decode_error()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
+- **Unit tests for websocket handler JSON error handling.  Tests the JSON decode err** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
+- **Create a mock WebSocket.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
+- **Test _handle_json_decode_error() sends error response.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
 
 ## Relationships
 
-- [npc realtime occupant](npc_realtime_occupant.md) (1 shared connections)
-- [Item Lookup](Item_Lookup.md) (1 shared connections)
+- [command commands aliases](command_commands_aliases.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_item.py`
+- `server/tests/unit/realtime/test_websocket_handler_json_error.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

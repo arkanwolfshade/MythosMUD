@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_subscribe_to_subject_nats_error_returns_false()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test _subscribe_to_subject returns False on NATSError.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_add_room_occupant_error_handling()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **Test add_room_occupant() handles errors gracefully.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
 
 ## Relationships
 
-- [commands communication say](commands_communication_say.md) (1 shared connections)
-- [nats message handler](nats_message_handler.md) (1 shared connections)
+- [room subscription manager](room_subscription_manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/tests/unit/realtime/test_room_subscription_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

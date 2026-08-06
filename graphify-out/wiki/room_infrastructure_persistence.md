@@ -1,25 +1,34 @@
 # room infrastructure persistence
 
-> 2 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **test_event_bus_inject_dispatches_to_subscribers()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Test EventBus.inject() delivers event to subscribers (used by distributed bridge** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **._initialize_item_services()** (10 connections) — `server/container/bundles/game.py`
+- **._handle_item_prototypes_db_error()** (4 connections) — `server/container/bundles/game.py`
+- **Exception** (1 connections)
+- **On SQLAlchemyError: log, optionally warn about schema/DDL, and clear item regist** (1 connections) — `server/container/bundles/game.py`
+- **Load item prototypes from PostgreSQL and create item factory.** (1 connections) — `server/container/bundles/game.py`
 
 ## Relationships
 
-- [event bus events](event_bus_events.md) (1 shared connections)
-- [services exploration service](services_exploration_service.md) (1 shared connections)
+- [websocket realtime handler](websocket_realtime_handler.md) (2 shared connections)
+- [room realtime occupant](room_realtime_occupant.md) (1 shared connections)
+- [game magic regeneration](game_magic_regeneration.md) (1 shared connections)
+- [nats services service](nats_services_service.md) (1 shared connections)
+- [npc spawn validator](npc_spawn_validator.md) (1 shared connections)
+- [connection cleaner realtime](connection_cleaner_realtime.md) (1 shared connections)
+- [combat npc mixin](combat_npc_mixin.md) (1 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/events/test_event_bus.py`
+- `server/container/bundles/game.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 16 (94%)
+- INFERRED: 1 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

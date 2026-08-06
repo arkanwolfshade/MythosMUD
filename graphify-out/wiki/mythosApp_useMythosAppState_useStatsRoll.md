@@ -1,76 +1,59 @@
 # mythosApp useMythosAppState useStatsRoll
 
-> 92 nodes
+> 42 nodes
 
 ## Key Concepts
 
-- **useMythosAppState.ts** (28 connections) — `client/src/mythosApp/useMythosAppState.ts`
-- **useMythosAppActions.ts** (27 connections) — `client/src/mythosApp/useMythosAppActions.ts`
-- **Profession** (26 connections) — `client/src/components/ProfessionCard.tsx`
-- **useStatsRolling.ts** (26 connections) — `client/src/hooks/useStatsRolling.ts`
-- **1774539086359-useMythosAppState.ts** (24 connections) — `client/src/mythosApp/1774539086359-useMythosAppState.ts`
-- **CharacterInfo** (20 connections) — `client/src/types/auth.ts`
-- **ProfessionCard.tsx** (18 connections) — `client/src/components/ProfessionCard.tsx`
-- **useProfessions.ts** (16 connections) — `client/src/hooks/useProfessions.ts`
-- **creationCompleteActions.ts** (16 connections) — `client/src/mythosApp/creationCompleteActions.ts`
-- **Stats** (15 connections) — `client/src/hooks/useStatsRolling.ts`
-- **mythosAppViewModel.ts** (15 connections) — `client/src/mythosApp/mythosAppViewModel.ts`
-- **useAuthSessionRestore.ts** (15 connections) — `client/src/mythosApp/useAuthSessionRestore.ts`
-- **auth.ts** (15 connections) — `client/src/types/auth.ts`
-- **deleteCharacterActions.ts** (14 connections) — `client/src/mythosApp/deleteCharacterActions.ts`
-- **CreationStep** (13 connections) — `client/src/mythosApp/creationTypes.ts`
-- **useMythosAppActions()** (13 connections) — `client/src/mythosApp/useMythosAppActions.ts`
-- **ProfessionSelectionScreen.tsx** (12 connections) — `client/src/components/ProfessionSelectionScreen.tsx`
-- **mythosAppViewModelFactory.ts** (12 connections) — `client/src/mythosApp/mythosAppViewModelFactory.ts`
-- **StatsRollingScreen.tsx** (10 connections) — `client/src/components/StatsRollingScreen.tsx`
-- **useMythosApp.tsx** (9 connections) — `client/src/mythosApp/useMythosApp.tsx`
-- **useMythosAppState()** (9 connections) — `client/src/mythosApp/useMythosAppState.ts`
-- **StatsRollingScreen.test.tsx** (8 connections) — `client/src/components/StatsRollingScreen.test.tsx`
-- **creationTypes.ts** (8 connections) — `client/src/mythosApp/creationTypes.ts`
-- **runAfterCharacterCreatedFlow()** (7 connections) — `client/src/mythosApp/creationCompleteActions.ts`
-- **executeDeleteCharacterUi()** (7 connections) — `client/src/mythosApp/deleteCharacterActions.ts`
-- *... and 67 more nodes in this community*
+- **container_helpers_inventory.py** (31 connections) — `server/commands/container_helpers_inventory.py`
+- **container_helpers_inventory_ops.py** (29 connections) — `server/commands/container_helpers_inventory_ops.py`
+- **UUID** (12 connections)
+- **validate_put_command_inputs()** (12 connections) — `server/commands/container_helpers_inventory_ops.py`
+- **parse_container_items()** (11 connections) — `server/commands/container_helpers_inventory_ops.py`
+- **extract_items_from_container()** (10 connections) — `server/commands/container_helpers_inventory_ops.py`
+- **parse_json_string_items()** (9 connections) — `server/commands/container_helpers_inventory_ops.py`
+- **resolve_container_id()** (9 connections) — `server/commands/container_helpers_inventory_ops.py`
+- **Player** (8 connections)
+- **filter_valid_items()** (8 connections) — `server/commands/container_helpers_inventory_ops.py`
+- **find_item_in_container()** (8 connections) — `server/commands/container_helpers_inventory_ops.py`
+- **validate_get_command_inputs()** (8 connections) — `server/commands/container_helpers_inventory_ops.py`
+- **_app_state_container_service()** (4 connections) — `server/commands/container_helpers_inventory_ops.py`
+- **_ensure_item_instance_for_put()** (3 connections) — `server/commands/container_helpers_inventory_ops.py`
+- **_strip_cmd_field()** (3 connections) — `server/commands/container_helpers_inventory_ops.py`
+- **_extract_items_json_branch()** (3 connections) — `server/commands/container_helpers_inventory_ops.py`
+- **_extract_items_dict_branch()** (3 connections) — `server/commands/container_helpers_inventory_ops.py`
+- **_inventory_rows_from_transfer_result()** (3 connections) — `server/commands/container_helpers_inventory_ops.py`
+- **test_extract_items_from_container_dict()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
+- **test_extract_items_from_container_items_json_attr()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
+- **test_parse_json_string_items_valid()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
+- **test_parse_json_string_items_invalid_returns_none()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
+- **test_filter_valid_items_drops_non_dict()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
+- **test_parse_container_items_full_pipeline()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
+- **test_resolve_container_id_explicit()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [mythosApp CharacterSelectionScreen chara](mythosApp_CharacterSelectionScreen_chara.md) (52 shared connections)
-- [mythosApp appLazyScreens mythosAppViewMo](mythosApp_appLazyScreens_mythosAppViewMo.md) (13 shared connections)
-- [apiTypeGuards FIELDS SHARED](apiTypeGuards_FIELDS_SHARED.md) (12 shared connections)
-- [mythosApp security submitAuth](mythosApp_security_submitAuth.md) (11 shared connections)
-- [zone configuration npc](zone_configuration_npc.md) (10 shared connections)
-- [project paths rationale](project_paths_rationale.md) (8 shared connections)
-- [SkillAssignmentScreen helpers CharacterN](SkillAssignmentScreen_helpers_CharacterN.md) (6 shared connections)
-- [memoryMonitor memoryLeakDetector constru](memoryMonitor_memoryLeakDetector_constru.md) (4 shared connections)
-- [panels GameClientV2Dock gameLogPanelUtil](panels_GameClientV2Dock_gameLogPanelUtil.md) (2 shared connections)
-- [App helpers professionSystemErrorHandlin](App_helpers_professionSystemErrorHandlin.md) (2 shared connections)
+- [container inventory helpers](container_inventory_helpers.md) (36 shared connections)
+- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (10 shared connections)
+- [container find inventory](container_find_inventory.md) (9 shared connections)
+- [game rationale schemas](game_rationale_schemas.md) (6 shared connections)
+- [container inventory display](container_inventory_display.md) (3 shared connections)
+- [task registry app](task_registry_app.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [player room realtime](player_room_realtime.md) (1 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (1 shared connections)
+- [shutdown admin command](shutdown_admin_command.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/CharacterNameScreen.tsx`
-- `client/src/components/ProfessionCard.test.tsx`
-- `client/src/components/ProfessionCard.tsx`
-- `client/src/components/ProfessionSelectionScreen.test.tsx`
-- `client/src/components/ProfessionSelectionScreen.tsx`
-- `client/src/components/StatsRollingScreen.test.tsx`
-- `client/src/components/StatsRollingScreen.tsx`
-- `client/src/hooks/useProfessions.ts`
-- `client/src/hooks/useStatsRolling.ts`
-- `client/src/mythosApp/1774539086359-useMythosAppState.ts`
-- `client/src/mythosApp/__tests__/useMythosAppState.test.ts`
-- `client/src/mythosApp/creationCompleteActions.ts`
-- `client/src/mythosApp/creationTypes.ts`
-- `client/src/mythosApp/deleteCharacterActions.ts`
-- `client/src/mythosApp/deleteCharacterFlow.ts`
-- `client/src/mythosApp/mythosAppViewModel.ts`
-- `client/src/mythosApp/mythosAppViewModelFactory.ts`
-- `client/src/mythosApp/useAuthSessionRestore.ts`
-- `client/src/mythosApp/useMythosApp.tsx`
-- `client/src/mythosApp/useMythosAppActions.ts`
+- `server/commands/container_helpers_inventory.py`
+- `server/commands/container_helpers_inventory_ops.py`
+- `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
 
 ## Audit Trail
 
-- EXTRACTED: 540 (99%)
-- INFERRED: 8 (1%)
+- EXTRACTED: 204 (97%)
+- INFERRED: 7 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

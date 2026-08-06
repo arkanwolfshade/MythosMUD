@@ -1,32 +1,35 @@
 # combat helpers commands
 
-> 11 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **MockPersistence** (7 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **mock_persistence()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **.get_player_by_name()** (2 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **.get_room_by_id()** (2 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **.__setattr__()** (2 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **.__init__()** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **Mock persistence layer with async methods.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **Mock async method that uses configured mock.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **Mock method that uses configured mock.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **Allow setting get_player_by_name and get_room_by_id to mocks.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **_find_dead_connections()** (11 connections) — `server/realtime/connection_establishment.py`
+- **test_find_dead_connections_no_player()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_find_dead_connections_all_active()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_find_dead_connections_not_in_active()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_find_dead_connections_none_websocket()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_find_dead_connections_not_connected()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **Find dead WebSocket connections for a player before acquiring lock.      Args:** (1 connections) — `server/realtime/connection_establishment.py`
+- **Test _find_dead_connections() returns empty list when player not found.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **Test _find_dead_connections() returns empty list when all connections are active** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **Test _find_dead_connections() skips connections not in active_websockets.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **Test _find_dead_connections() raises ConnectionError when websocket is None.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **Test _find_dead_connections() finds dead connections.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
 
 ## Relationships
 
-- [rest grace period](rest_grace_period.md) (2 shared connections)
+- [connection establishment realtime](connection_establishment_realtime.md) (6 shared connections)
+- [invite models rationale](invite_models_rationale.md) (4 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_rest_command.py`
+- `server/realtime/connection_establishment.py`
+- `server/tests/unit/realtime/test_connection_establishment.py`
 
 ## Audit Trail
 
-- EXTRACTED: 22 (100%)
+- EXTRACTED: 32 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

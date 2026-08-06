@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **test_build_room_objects_without_environment_in_attributes()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _build_room_objects defaults to outdoors when environment not in attributes** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_ensure_room_cache_loaded_runtime_error()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _ensure_room_cache_loaded handles RuntimeError gracefully.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Relationships
 

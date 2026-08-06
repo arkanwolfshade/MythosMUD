@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_subscribe_to_room()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test subscribe_to_room subscribes to room.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_get_room_subscribers_error()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **Test get_room_subscribers() handles errors gracefully.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
 
 ## Relationships
 
-- [nats message handler](nats_message_handler.md) (1 shared connections)
+- [room subscription manager](room_subscription_manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/tests/unit/realtime/test_room_subscription_manager.py`
 
 ## Audit Trail
 

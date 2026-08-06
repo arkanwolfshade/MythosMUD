@@ -34,9 +34,10 @@
 ## Relationships
 
 - [nats services service](nats_services_service.md) (4 shared connections)
-- [Magic Spell Service](Magic_Spell_Service.md) (3 shared connections)
-- [NPC Combat](NPC_Combat.md) (3 shared connections)
-- [time service rationale](time_service_rationale.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (3 shared connections)
+- [Magic Spell Service](Magic_Spell_Service.md) (2 shared connections)
+- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (2 shared connections)
+- [aggro threat services](aggro_threat_services.md) (1 shared connections)
 
 ## Source Files
 

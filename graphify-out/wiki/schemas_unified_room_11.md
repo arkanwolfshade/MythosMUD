@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_restore_mp_from_item_restores_mp()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **Test restore_mp_from_item() restores MP.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **test_setup_player_and_room_no_persistence()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **Test _setup_player_and_room() handles no persistence.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
 
 ## Relationships
 
-- [config rationale reset](config_rationale_reset.md) (1 shared connections)
+- [invite models rationale](invite_models_rationale.md) (1 shared connections)
+- [connection establishment realtime](connection_establishment_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- `server/tests/unit/realtime/test_connection_establishment.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

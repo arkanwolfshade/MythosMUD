@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **test_check_combat_state_allows_without_service()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
-- **Test _check_combat_state allows movement when no combat service.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_validate_exit_no_exits()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
+- **Test _validate_exit returns False when room has no exits.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
 
 ## Relationships
 

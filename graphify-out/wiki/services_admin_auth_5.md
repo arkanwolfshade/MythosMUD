@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_create_put_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_put_command delegates to inventory factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_validate_target_exists_no_target_name()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **Test validate_target_exists with empty target name.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
 
 ## Relationships
 
-- [command factories create](command_factories_create.md) (1 shared connections)
+- [emote models rationale](emote_models_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `server/tests/unit/validators/test_combat_validator.py`
 
 ## Audit Trail
 

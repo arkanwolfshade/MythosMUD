@@ -1,27 +1,54 @@
 # realtime maintenance connection
 
-> 4 nodes
+> 48 nodes
 
 ## Key Concepts
 
-- **.start()** (4 connections) — `server/services/game_tick_service.py`
-- **._tick_loop()** (3 connections) — `server/services/game_tick_service.py`
-- **Start the game tick service.          Returns:             bool: True if started** (1 connections) — `server/services/game_tick_service.py`
-- **Main tick loop that runs at the specified interval.** (1 connections) — `server/services/game_tick_service.py`
+- **ConnectionCleaner** (27 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Any** (15 connections)
+- **UUID** (12 connections)
+- **.cleanup_ghost_players()** (9 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **.prune_stale_players()** (8 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **.cleanup_orphaned_data()** (7 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **.cleanup_dead_connections()** (7 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._close_and_remove_stale_websocket()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._cleanup_dead_connections_for_player()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **.check_and_cleanup()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._remove_stale_player_data()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._get_online_player_ids()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._filter_actual_ghost_players()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **.force_cleanup()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **_stale_prune_max_age_seconds()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **.__init__()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._identify_stale_players()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._get_player_id_from_metadata()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._get_players_to_check()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._get_potential_ghost_players()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._remove_ghost_players_from_room()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **__init__.py** (3 connections) — `server/realtime/maintenance/__init__.py`
+- **._identify_stale_connections()** (3 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._is_websocket_dead()** (3 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **connection_cleaner()** (3 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- *... and 23 more nodes in this community*
 
 ## Relationships
 
-- [tick service services](tick_service_services.md) (2 shared connections)
-- [schemas player rationale](schemas_player_rationale.md) (1 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (9 shared connections)
+- [Error Conversion](Error_Conversion.md) (4 shared connections)
+- [spell models rationale](spell_models_rationale.md) (2 shared connections)
+- [lucidity active service](lucidity_active_service.md) (2 shared connections)
+- [container service services](container_service_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/game_tick_service.py`
+- `server/realtime/maintenance/__init__.py`
+- `server/realtime/maintenance/connection_cleaner.py`
+- `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 177 (95%)
+- INFERRED: 9 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

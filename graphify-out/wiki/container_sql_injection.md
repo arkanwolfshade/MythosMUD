@@ -1,50 +1,47 @@
 # container sql injection
 
-> 16 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **OccupantFormatter** (37 connections) — `server/realtime/occupant_formatter.py`
-- **.__init__()** (3 connections) — `server/realtime/occupant_formatter.py`
-- **test_occupant_formatter_is_valid_name_for_occupant_empty()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_add_valid_name_to_lists()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_process_player_name_for_update_uuid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_process_npc_name_for_update_uuid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_process_dict_occupant_for_update_npc()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_separate_occupants_by_type_dict_players()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Formats and separates occupants by type.** (1 connections) — `server/realtime/occupant_formatter.py`
-- **Initialize occupant formatter.** (1 connections) — `server/realtime/occupant_formatter.py`
-- **Test OccupantFormatter._is_valid_name_for_occupant() returns False for empty str** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter._add_valid_name_to_lists() adds name to both lists.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter._process_player_name_for_update() skips UUID player name.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter._process_npc_name_for_update() skips UUID NPC name.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter._process_dict_occupant_for_update() processes NPC dict.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter.separate_occupants_by_type() separates dict players.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **submitAuth.ts** (18 connections) — `client/src/mythosApp/submitAuth.ts`
+- **applyAuthenticatedSession.ts** (16 connections) — `client/src/mythosApp/applyAuthenticatedSession.ts`
+- **useMythosAuthForm.ts** (11 connections) — `client/src/mythosApp/useMythosAuthForm.ts`
+- **useMythosAuthForm()** (10 connections) — `client/src/mythosApp/useMythosAuthForm.ts`
+- **assertLoginResponse()** (6 connections) — `client/src/utils/apiTypeGuards.ts`
+- **persistTokensAndApplySession()** (5 connections) — `client/src/mythosApp/applyAuthenticatedSession.ts`
+- **submitLoginRequest()** (5 connections) — `client/src/mythosApp/submitAuth.ts`
+- **submitRegisterRequest()** (5 connections) — `client/src/mythosApp/submitAuth.ts`
+- **AuthSessionSetters** (3 connections) — `client/src/mythosApp/applyAuthenticatedSession.ts`
+- **toCharacterInfoFromLogin()** (3 connections) — `client/src/mythosApp/mapServerCharacters.ts`
+- **sanitizeLoginInputs()** (3 connections) — `client/src/mythosApp/submitAuth.ts`
+- **sanitizeRegisterInputs()** (3 connections) — `client/src/mythosApp/submitAuth.ts`
+- **AuthSuccessPayload** (2 connections) — `client/src/mythosApp/submitAuth.ts`
+- **SetBool** (1 connections) — `client/src/mythosApp/applyAuthenticatedSession.ts`
+- **SetChars** (1 connections) — `client/src/mythosApp/applyAuthenticatedSession.ts`
+- **SetStep** (1 connections) — `client/src/mythosApp/applyAuthenticatedSession.ts`
+- **SanitizedCredentials** (1 connections) — `client/src/mythosApp/submitAuth.ts`
 
 ## Relationships
 
-- [occupant formatter realtime](occupant_formatter_realtime.md) (15 shared connections)
-- [shutdown commands admin](shutdown_commands_admin.md) (6 shared connections)
-- [event bus events](event_bus_events.md) (3 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [game magic regeneration](game_magic_regeneration.md) (2 shared connections)
-- [test_occupant_formatter_init](test_occupant_formatter_init.md) (1 shared connections)
-- [test_occupant_formatter_is_valid_name_for_occupant_non_string](test_occupant_formatter_is_valid_name_for_occupant_non_string.md) (1 shared connections)
-- [test_occupant_formatter_is_valid_name_for_occupant_none](test_occupant_formatter_is_valid_name_for_occupant_none.md) (1 shared connections)
-- [test_occupant_formatter_is_valid_name_for_occupant_uuid](test_occupant_formatter_is_valid_name_for_occupant_uuid.md) (1 shared connections)
-- [test_occupant_formatter_process_dict_occupant_for_update_fallback_name](test_occupant_formatter_process_dict_occupant_for_update_fallback_name.md) (1 shared connections)
-- [test_occupant_formatter_process_player_name_for_update_valid](test_occupant_formatter_process_player_name_for_update_valid.md) (1 shared connections)
-- [test_occupant_formatter_process_string_occupant_for_update_uuid](test_occupant_formatter_process_string_occupant_for_update_uuid.md) (1 shared connections)
+- [mythosApp CharacterSelectionScreen chara](mythosApp_CharacterSelectionScreen_chara.md) (11 shared connections)
+- [SkillAssignmentScreen helpers CharacterN](SkillAssignmentScreen_helpers_CharacterN.md) (8 shared connections)
+- [mythosApp security submitAuth](mythosApp_security_submitAuth.md) (4 shared connections)
+- [apiTypeGuards FIELDS SHARED](apiTypeGuards_FIELDS_SHARED.md) (4 shared connections)
+- [map maps useAsciiMap](map_maps_useAsciiMap.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/occupant_formatter.py`
-- `server/tests/unit/realtime/test_occupant_formatter.py`
+- `client/src/mythosApp/applyAuthenticatedSession.ts`
+- `client/src/mythosApp/mapServerCharacters.ts`
+- `client/src/mythosApp/submitAuth.ts`
+- `client/src/mythosApp/useMythosAuthForm.ts`
+- `client/src/utils/apiTypeGuards.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 65 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 92 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -17,7 +17,7 @@
 
 - [channel realtime broadcasting](channel_realtime_broadcasting.md) (3 shared connections)
 - [channel broadcasting strategies](channel_broadcasting_strategies.md) (2 shared connections)
-- [message handler factory](message_handler_factory.md) (1 shared connections)
+- [player room persistence](player_room_persistence.md) (1 shared connections)
 - [realtime channel broadcasting](realtime_channel_broadcasting.md) (1 shared connections)
 
 ## Source Files

@@ -23,12 +23,13 @@
 
 ## Relationships
 
-- [commands skills rationale](commands_skills_rationale.md) (7 shared connections)
-- [startup npc service](startup_npc_service.md) (6 shared connections)
+- [config rationale config()](config_rationale_config%28%29.md) (5 shared connections)
+- [commands skills rationale](commands_skills_rationale.md) (5 shared connections)
 - [services lucidity repository](services_lucidity_repository.md) (5 shared connections)
+- [startup npc service](startup_npc_service.md) (5 shared connections)
 - [cache caching service](cache_caching_service.md) (4 shared connections)
-- [config rationale config()](config_rationale_config%28%29.md) (4 shared connections)
 - [ascii map renderer](ascii_map_renderer.md) (3 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
 - [caching lru cache](caching_lru_cache.md) (1 shared connections)
 
 ## Source Files

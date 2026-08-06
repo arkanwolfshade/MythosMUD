@@ -4,24 +4,25 @@
 
 ## Key Concepts
 
-- **game-terminal-integration.spec.tsx** (7 connections) — `client/src/components/__tests__/game-terminal-integration.spec.tsx`
-- **TerminalButtonProps** (1 connections) — `client/src/components/__tests__/game-terminal-integration.spec.tsx`
-- **TerminalInputProps** (1 connections) — `client/src/components/__tests__/game-terminal-integration.spec.tsx`
-- **Channel** (1 connections) — `client/src/components/__tests__/game-terminal-integration.spec.tsx`
-- **ChannelSelectorProps** (1 connections) — `client/src/components/__tests__/game-terminal-integration.spec.tsx`
-- **DraggablePanelProps** (1 connections) — `client/src/components/__tests__/game-terminal-integration.spec.tsx`
+- **.generate_fake_npc_tell()** (4 connections) — `server/services/fake_hallucination_service.py`
+- **.generate_room_text_overlay()** (4 connections) — `server/services/fake_hallucination_service.py`
+- **UUID** (3 connections)
+- **Any** (2 connections)
+- **Generate a fake NPC tell hallucination.          Args:             player_id: Pl** (1 connections) — `server/services/fake_hallucination_service.py`
+- **Generate a room text overlay hallucination.          Args:             player_id** (1 connections) — `server/services/fake_hallucination_service.py`
 
 ## Relationships
 
-- [game terminal lucidity](game_terminal_lucidity.md) (2 shared connections)
+- [npc population stats](npc_population_stats.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/__tests__/game-terminal-integration.spec.tsx`
+- `server/services/fake_hallucination_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

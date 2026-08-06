@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **test_validate_movement_success()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
-- **Test _validate_movement returns True for valid movement.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_mark_room_explored_with_service()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
+- **Test _mark_room_explored delegates to exploration service.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
 
 ## Relationships
 

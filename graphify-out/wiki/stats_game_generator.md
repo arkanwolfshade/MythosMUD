@@ -33,10 +33,9 @@
 
 ## Relationships
 
-- [commands inventory command](commands_inventory_command.md) (6 shared connections)
-- [npc spawn validator](npc_spawn_validator.md) (3 shared connections)
-- [MapView GameClientV2ContainerView Tabbed](MapView_GameClientV2ContainerView_Tabbed.md) (2 shared connections)
-- [commands emote rationale](commands_emote_rationale.md) (1 shared connections)
+- [player cache rationale](player_cache_rationale.md) (6 shared connections)
+- [npc spawn validator](npc_spawn_validator.md) (5 shared connections)
+- [shutdown admin command](shutdown_admin_command.md) (1 shared connections)
 - [combat npc mixin](combat_npc_mixin.md) (1 shared connections)
 
 ## Source Files

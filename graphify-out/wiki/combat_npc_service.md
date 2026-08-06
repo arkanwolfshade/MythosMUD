@@ -33,10 +33,9 @@
 
 ## Relationships
 
-- [combat models rationale](combat_models_rationale.md) (6 shared connections)
-- [shutdown command commands](shutdown_command_commands.md) (6 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (5 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (12 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (5 shared connections)
+- [player room realtime](player_room_realtime.md) (1 shared connections)
 
 ## Source Files
 

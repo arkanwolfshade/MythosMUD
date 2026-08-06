@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_players_in_subzone_empty()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test get_players_in_subzone returns empty list for empty subzone.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_normalize_event_ids_both_provided()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test normalize_event_ids() with both player_id and room_id.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [subzone realtime nats](subzone_realtime_nats.md) (1 shared connections)
+- [player event handlers](player_event_handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 

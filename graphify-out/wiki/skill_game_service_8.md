@@ -1,26 +1,24 @@
 # skill game service
 
-> 5 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Phase 2: Categorize and Prioritize Lint Issues** (5 connections) — `.cursor/commands/lint-remediation.md`
-- **🔴 CRITICAL (Fix First - Blocking Issues)** (1 connections) — `.cursor/commands/lint-remediation.md`
-- **🟡 HIGH PRIORITY (Fix Second - Core Functionality)** (1 connections) — `.cursor/commands/lint-remediation.md`
-- **🟢 MEDIUM PRIORITY (Fix Third - Enhancement)** (1 connections) — `.cursor/commands/lint-remediation.md`
-- **🔵 LOW PRIORITY (Fix Last - Polish)** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **test_evaluate_condition_less_equal()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test evaluate_condition() handles <= operator.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [players coverage rationale](players_coverage_rationale.md) (1 shared connections)
+- [room occupant manager](room_occupant_manager.md) (1 shared connections)
+- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/commands/lint-remediation.md`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

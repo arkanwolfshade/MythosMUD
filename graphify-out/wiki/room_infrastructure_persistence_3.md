@@ -4,21 +4,22 @@
 
 ## Key Concepts
 
-- **test_collect_room_targets_with_canonical_id()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **Test collect_room_targets() handles canonical and original room IDs.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_event_bus_inject_dispatches_to_subscribers()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test EventBus.inject() delivers event to subscribers (used by distributed bridge** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- [message filtering realtime](message_filtering_realtime.md) (1 shared connections)
+- [event bus events](event_bus_events.md) (1 shared connections)
+- [services exploration service](services_exploration_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_message_filtering.py`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

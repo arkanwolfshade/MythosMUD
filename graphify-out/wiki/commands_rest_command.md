@@ -4,29 +4,31 @@
 
 ## Key Concepts
 
-- **populate_test_npc_databases.py** (6 connections) — `scripts/populate_test_npc_databases.py`
-- **main()** (5 connections) — `scripts/populate_test_npc_databases.py`
-- **get_npc_data_from_source()** (4 connections) — `scripts/populate_test_npc_databases.py`
-- **populate_database()** (4 connections) — `scripts/populate_test_npc_databases.py`
-- **get_npc_database_url()** (3 connections) — `scripts/populate_test_npc_databases.py`
-- **Get NPC database URL for the specified environment.      Args:         environme** (1 connections) — `scripts/populate_test_npc_databases.py`
-- **Extract NPC data from the source PostgreSQL database.      Args:         source_** (1 connections) — `scripts/populate_test_npc_databases.py`
-- **Populate a PostgreSQL database with NPC data.      Args:         target_url: Pos** (1 connections) — `scripts/populate_test_npc_databases.py`
-- **Main function to populate test NPC databases.** (1 connections) — `scripts/populate_test_npc_databases.py`
+- **._compose_memory_stats()** (7 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **MemoryStatsSnapshot** (6 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **.get_memory_stats()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **._memory_monitor_config_section()** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **TypedDict** (1 connections)
+- **Connection-manager snapshot consumed by get_memory_stats.** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **Get comprehensive memory and connection statistics.          Args:             s** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **Assemble memory stats from a snapshot dict (keeps call sites param-stable).** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **Expose memory monitor configuration knobs for stats payload.** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
 
 ## Relationships
 
-- [commands shutdown process](commands_shutdown_process.md) (3 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [persistence rationale room](persistence_rationale_room.md) (3 shared connections)
+- [tsconfig app src/**/*](tsconfig_app_src-__-_.md) (2 shared connections)
+- [NPC Combat](NPC_Combat.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/populate_test_npc_databases.py`
+- `server/realtime/monitoring/statistics_aggregator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 24 (92%)
-- INFERRED: 2 (8%)
+- EXTRACTED: 24 (96%)
+- INFERRED: 1 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

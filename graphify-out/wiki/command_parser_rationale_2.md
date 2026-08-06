@@ -1,45 +1,63 @@
 # command parser rationale
 
-> 20 nodes
+> 26 nodes
 
 ## Key Concepts
 
-- **test_lifecycle_despawn.py** (19 connections) — `server/tests/unit/npc/test_lifecycle_despawn.py`
-- **despawn_npc_impl()** (18 connections) — `server/npc/lifecycle_despawn.py`
-- **_make_manager()** (10 connections) — `server/tests/unit/npc/test_lifecycle_despawn.py`
-- **_remove_npc_from_room_on_despawn()** (5 connections) — `server/npc/lifecycle_despawn.py`
-- **test_despawn_publishes_event_when_room_missing()** (4 connections) — `server/tests/unit/npc/test_lifecycle_despawn.py`
-- **Any** (3 connections)
-- **.despawn_npc()** (3 connections) — `server/npc/lifecycle_manager.py`
-- **test_despawn_success_with_persistence_and_room()** (3 connections) — `server/tests/unit/npc/test_lifecycle_despawn.py`
-- **test_despawn_publishes_event_without_persistence()** (3 connections) — `server/tests/unit/npc/test_lifecycle_despawn.py`
-- **test_despawn_record_only_when_not_active()** (3 connections) — `server/tests/unit/npc/test_lifecycle_despawn.py`
-- **test_despawn_exception_sets_error_state()** (3 connections) — `server/tests/unit/npc/test_lifecycle_despawn.py`
-- **test_despawn_without_population_controller()** (3 connections) — `server/tests/unit/npc/test_lifecycle_despawn.py`
-- **test_despawn_skips_left_event_when_room_unknown()** (3 connections) — `server/tests/unit/npc/test_lifecycle_despawn.py`
-- **test_despawn_prefers_current_room_over_room_id()** (3 connections) — `server/tests/unit/npc/test_lifecycle_despawn.py`
-- **test_despawn_uses_lifecycle_spawn_room_when_attrs_missing()** (3 connections) — `server/tests/unit/npc/test_lifecycle_despawn.py`
-- **test_despawn_nonexistent_npc_returns_false()** (2 connections) — `server/tests/unit/npc/test_lifecycle_despawn.py`
-- **Mutate room occupants or publish NPCLeftRoom; skip unknown rooms.** (1 connections) — `server/npc/lifecycle_despawn.py`
-- **Despawn an NPC instance.      Args:         manager: NPCLifecycleManager instanc** (1 connections) — `server/npc/lifecycle_despawn.py`
-- **Despawn an NPC instance (delegates to lifecycle_despawn).** (1 connections) — `server/npc/lifecycle_manager.py`
-- **Unit tests for NPC lifecycle despawn helpers.** (1 connections) — `server/tests/unit/npc/test_lifecycle_despawn.py`
+- **service.py** (30 connections) — `server/services/passive_lucidity_flux/service.py`
+- **PassiveFluxContext** (13 connections) — `server/services/passive_lucidity_flux/models.py`
+- **config.py** (12 connections) — `server/services/passive_lucidity_flux/config.py`
+- **FluxServiceConfig** (9 connections) — `server/services/passive_lucidity_flux/config.py`
+- **models.py** (7 connections) — `server/services/passive_lucidity_flux/models.py`
+- **.__init__()** (7 connections) — `server/services/passive_lucidity_flux/service.py`
+- **__init__.py** (6 connections) — `server/services/passive_lucidity_flux/__init__.py`
+- **period_label()** (6 connections) — `server/services/passive_lucidity_flux/config.py`
+- **CachedRoom** (6 connections) — `server/services/passive_lucidity_flux/models.py`
+- **normalize_environment_config()** (5 connections) — `server/services/passive_lucidity_flux/config.py`
+- **lookup_profile()** (4 connections) — `server/services/passive_lucidity_flux/config.py`
+- **load_lucidity_rate_overrides()** (4 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
+- **test_resolve_context_with_custom_resolver()** (4 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- **datetime** (2 connections)
+- **Passive lucidity flux service package.** (1 connections) — `server/services/passive_lucidity_flux/__init__.py`
+- **Any** (1 connections)
+- **Configuration and normalization for passive lucidity flux.** (1 connections) — `server/services/passive_lucidity_flux/config.py`
+- **Optional configuration for PassiveLucidityFluxService. All fields have defaults.** (1 connections) — `server/services/passive_lucidity_flux/config.py`
+- **Return a coarse period label used for environment profiles.** (1 connections) — `server/services/passive_lucidity_flux/config.py`
+- **Normalize environment config to validated structure.** (1 connections) — `server/services/passive_lucidity_flux/config.py`
+- **Look up flux value from profile by period.** (1 connections) — `server/services/passive_lucidity_flux/config.py`
+- **Data models for passive lucidity flux.** (1 connections) — `server/services/passive_lucidity_flux/models.py`
+- **Cached room entry with timestamp for TTL management.** (1 connections) — `server/services/passive_lucidity_flux/models.py`
+- **Resolved environmental context for passive flux evaluation.** (1 connections) — `server/services/passive_lucidity_flux/models.py`
+- **Load lucidity rate overrides from PostgreSQL zones/subzones tables.** (1 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [Realtime Subscribers](Realtime_Subscribers.md) (12 shared connections)
-- [combat services rationale](combat_services_rationale.md) (2 shared connections)
+- [lucidity flux passive](lucidity_flux_passive.md) (14 shared connections)
+- [cache lru caching](cache_lru_caching.md) (8 shared connections)
+- [player room realtime](player_room_realtime.md) (6 shared connections)
+- [rate lucidity services](rate_lucidity_services.md) (3 shared connections)
+- [Error Conversion](Error_Conversion.md) (3 shared connections)
+- [models lucidity rationale](models_lucidity_rationale.md) (3 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (2 shared connections)
+- [player event handlers](player_event_handlers.md) (2 shared connections)
+- [npc population stats](npc_population_stats.md) (2 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (1 shared connections)
+- [Spell Validation](Spell_Validation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/lifecycle_despawn.py`
-- `server/npc/lifecycle_manager.py`
-- `server/tests/unit/npc/test_lifecycle_despawn.py`
+- `server/services/passive_lucidity_flux/__init__.py`
+- `server/services/passive_lucidity_flux/config.py`
+- `server/services/passive_lucidity_flux/models.py`
+- `server/services/passive_lucidity_flux/rate_overrides.py`
+- `server/services/passive_lucidity_flux/service.py`
+- `server/tests/unit/services/test_passive_lucidity_flux_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 91 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 122 (96%)
+- INFERRED: 5 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

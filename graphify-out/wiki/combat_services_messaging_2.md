@@ -1,27 +1,28 @@
 # combat services messaging
 
-> 4 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **TestNPCSessionMaker** (4 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **.test_get_npc_session_maker()** (3 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **Test NPC session maker functions.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **Test get_npc_session_maker() returns session maker.** (1 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **test_websocket_handler_disconnect.py** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
+- **test_handle_websocket_disconnect()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
+- **test_handle_websocket_disconnect_no_connection_id()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
+- **Unit tests for websocket handler disconnect handling.  Tests the disconnect hand** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
+- **Test _handle_websocket_disconnect() returns True.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
+- **Test _handle_websocket_disconnect() with no connection_id.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
 
 ## Relationships
 
-- [player effects endpoints](player_effects_endpoints.md) (2 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [command commands aliases](command_commands_aliases.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_npc_database.py`
+- `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (89%)
-- INFERRED: 1 (11%)
+- EXTRACTED: 11 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

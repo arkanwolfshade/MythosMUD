@@ -1,53 +1,26 @@
 # infrastructure nats broker
 
-> 45 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **NATSMessageBroker** (31 connections) — `server/infrastructure/nats_broker.py`
-- **.publish()** (6 connections) — `server/infrastructure/nats_broker.py`
-- **.connect()** (5 connections) — `server/infrastructure/nats_broker.py`
-- **.disconnect()** (5 connections) — `server/infrastructure/nats_broker.py`
-- **.is_connected()** (5 connections) — `server/infrastructure/nats_broker.py`
-- **.subscribe()** (5 connections) — `server/infrastructure/nats_broker.py`
-- **.request()** (5 connections) — `server/infrastructure/nats_broker.py`
-- **._start_health_monitoring()** (5 connections) — `server/infrastructure/nats_broker.py`
-- **._configure_tls()** (4 connections) — `server/infrastructure/nats_broker.py`
-- **.unsubscribe()** (4 connections) — `server/infrastructure/nats_broker.py`
-- **._error_callback()** (4 connections) — `server/infrastructure/nats_broker.py`
-- **._handle_error_async()** (4 connections) — `server/infrastructure/nats_broker.py`
-- **._handle_reconnect_async()** (4 connections) — `server/infrastructure/nats_broker.py`
-- **._health_check_loop()** (4 connections) — `server/infrastructure/nats_broker.py`
-- **test_connect_with_tls_enabled_passes_tls_options()** (4 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **Any** (3 connections)
-- **._disconnected_callback()** (3 connections) — `server/infrastructure/nats_broker.py`
-- **._handle_disconnect_async()** (3 connections) — `server/infrastructure/nats_broker.py`
-- **._reconnected_callback()** (3 connections) — `server/infrastructure/nats_broker.py`
-- **._stop_health_monitoring()** (3 connections) — `server/infrastructure/nats_broker.py`
-- **._perform_health_check()** (3 connections) — `server/infrastructure/nats_broker.py`
-- **nats_broker()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **Exception** (2 connections)
-- **test_connect_with_user_password()** (2 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **NATS implementation of MessageBroker protocol.      This class wraps NATS client** (1 connections) — `server/infrastructure/nats_broker.py`
-- *... and 20 more nodes in this community*
+- **sub_zone** (4 connections) — `schemas/intersection_schema.json`
+- **type** (1 connections) — `schemas/intersection_schema.json`
+- **pattern** (1 connections) — `schemas/intersection_schema.json`
+- **description** (1 connections) — `schemas/intersection_schema.json`
 
 ## Relationships
 
-- [broker infrastructure nats](broker_infrastructure_nats.md) (17 shared connections)
-- [NPC Combat](NPC_Combat.md) (1 shared connections)
-- [schemas nats messages](schemas_nats_messages.md) (1 shared connections)
-- [tsconfig src/**/* spec](tsconfig_src-__-__spec.md) (1 shared connections)
-- [combat validator validators](combat_validator_validators.md) (1 shared connections)
+- [schemas intersection schema](schemas_intersection_schema.md) (1 shared connections)
 
 ## Source Files
 
-- `server/infrastructure/nats_broker.py`
-- `server/tests/unit/infrastructure/test_nats_broker.py`
+- `schemas/intersection_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 135 (96%)
-- INFERRED: 6 (4%)
+- EXTRACTED: 7 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

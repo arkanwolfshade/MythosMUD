@@ -1,24 +1,26 @@
 # holiday services service
 
-> 2 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **test_check_equipped_item_no_get_equipped_items_method()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test checking equipped item when player has no get_equipped_items method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **add_used_by_user_id_column.py** (4 connections) — `server/scripts/add_used_by_user_id_column.py`
+- **apply_migration()** (3 connections) — `server/scripts/add_used_by_user_id_column.py`
+- **main()** (3 connections) — `server/scripts/add_used_by_user_id_column.py`
+- **Apply the migration to add used_by_user_id column.      Args:         database_u** (1 connections) — `server/scripts/add_used_by_user_id_column.py`
+- **Main entry point for the migration script.** (1 connections) — `server/scripts/add_used_by_user_id_column.py`
 
 ## Relationships
 
-- [npc realtime occupant](npc_realtime_occupant.md) (1 shared connections)
-- [Item Lookup](Item_Lookup.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_item.py`
+- `server/scripts/add_used_by_user_id_column.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

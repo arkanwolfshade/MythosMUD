@@ -33,11 +33,11 @@
 
 ## Relationships
 
-- [Realtime Subscribers](Realtime_Subscribers.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (3 shared connections)
 - [alias command models](alias_command_models.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
 - [commands logout helpers](commands_logout_helpers.md) (1 shared connections)
-- [persistence core infrastructure](persistence_core_infrastructure.md) (1 shared connections)
+- [follow game service](follow_game_service.md) (1 shared connections)
+- [memory realtime monitor](memory_realtime_monitor.md) (1 shared connections)
 - [chat services logger](chat_services_logger.md) (1 shared connections)
 
 ## Source Files

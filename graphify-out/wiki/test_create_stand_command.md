@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_create_stand_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_stand_command delegates to exploration factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_send_messages_to_players_with_tags()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _send_messages_to_players adds tags from dampening.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [command factories create](command_factories_create.md) (1 shared connections)
+- [message chat nats](message_chat_nats.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 

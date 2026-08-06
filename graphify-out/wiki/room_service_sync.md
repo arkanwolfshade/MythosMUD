@@ -1,58 +1,53 @@
 # room service sync
 
-> 73 nodes
+> 38 nodes
 
 ## Key Concepts
 
-- **test_room_sync_service.py** (40 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **RoomSyncService** (19 connections) — `server/services/room_sync_service.py`
-- **room_sync_service.py** (16 connections) — `server/services/room_sync_service.py`
-- **get_room_sync_service()** (8 connections) — `server/services/room_sync_service.py`
-- **room_sync_service()** (4 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **.process_event_with_ordering()** (3 connections) — `server/services/room_sync_service.py`
-- **room_sync_service_with_room_service()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **sample_event()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_get_room_sync_service_returns_singleton()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **.clear_cache()** (2 connections) — `server/services/room_sync_service.py`
-- **mock_room_service()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_room_sync_service_init()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_room_sync_service_init_with_room_service()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_set_room_service()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_process_event_with_ordering()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_process_event_with_ordering_increments_counter()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_process_event_with_ordering_tracks_last_processed()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_process_event_with_ordering_handles_error()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_process_room_update_with_validation_valid_data()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_process_room_update_with_validation_invalid_data()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_process_room_update_with_validation_stale_data()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_invalidate_stale_cache_success()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_invalidate_stale_cache_no_room_service()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_fetch_fresh_room_data_success()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_fetch_fresh_room_data_no_room_service()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- *... and 48 more nodes in this community*
+- **test_command_exploration.py** (20 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **LookCommand** (19 connections) — `server/models/command_exploration.py`
+- **GoCommand** (14 connections) — `server/models/command_exploration.py`
+- **test_look_command_validate_direction_invalid()** (4 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_look_command_instance_number_validation_min()** (4 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_go_command_validate_direction_invalid()** (4 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_go_command_missing_direction()** (4 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **.validate_direction()** (3 connections) — `server/models/command_exploration.py`
+- **.validate_direction()** (3 connections) — `server/models/command_exploration.py`
+- **test_look_command_default_values()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_look_command_with_direction()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_look_command_validate_direction_valid()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_look_command_validate_direction_none()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_look_command_with_target()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_look_command_with_look_in()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_look_command_with_instance_number()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_go_command_required_direction()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_go_command_validate_direction_valid()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_go_command_all_directions()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **Command for looking around, in a specific direction, or at an NPC.** (1 connections) — `server/models/command_exploration.py`
+- **Validate direction is one of the allowed values.** (1 connections) — `server/models/command_exploration.py`
+- **Command for moving in a specific direction.** (1 connections) — `server/models/command_exploration.py`
+- **Validate direction is one of the allowed values.** (1 connections) — `server/models/command_exploration.py`
+- **Unit tests for exploration command models.  Tests the LookCommand and GoCommand** (1 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **Test LookCommand has correct default values.** (1 connections) — `server/tests/unit/models/test_command_exploration.py`
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [connection models realtime](connection_models_realtime.md) (8 shared connections)
-- [NPC Combat](NPC_Combat.md) (5 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (4 shared connections)
-- [item models rationale](item_models_rationale.md) (3 shared connections)
-- [websocket helpers realtime](websocket_helpers_realtime.md) (3 shared connections)
-- [taunt combat commands](taunt_combat_commands.md) (2 shared connections)
-- [room fixer services](room_fixer_services.md) (2 shared connections)
-- [rate limiter rationale](rate_limiter_rationale.md) (2 shared connections)
-- [room validator services](room_validator_services.md) (2 shared connections)
-- [commands communication channels](commands_communication_channels.md) (1 shared connections)
+- [dialogue definition persistence](dialogue_definition_persistence.md) (13 shared connections)
+- [add used user](add_used_user.md) (4 shared connections)
+- [command inventory factories](command_inventory_factories.md) (2 shared connections)
+- [Inventory Equip](Inventory_Equip.md) (2 shared connections)
+- [memory profiler rationale](memory_profiler_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/room_sync_service.py`
-- `server/tests/unit/services/test_room_sync_service.py`
+- `server/models/command_exploration.py`
+- `server/tests/unit/models/test_command_exploration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 184 (97%)
-- INFERRED: 6 (3%)
+- EXTRACTED: 113 (91%)
+- INFERRED: 11 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

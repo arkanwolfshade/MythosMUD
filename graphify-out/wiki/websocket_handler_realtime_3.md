@@ -1,56 +1,52 @@
 # websocket handler realtime
 
-> 70 nodes
+> 86 nodes
 
 ## Key Concepts
 
-- **test_player_respawn_service.py** (54 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **test_respawn_player_from_delirium_success()** (4 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **test_respawn_player_from_delirium_database_error()** (4 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **test_respawn_player_from_delirium_combat_clear_error()** (4 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **test_respawn_player_from_sanitarium_success()** (4 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **respawn_service()** (3 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **respawn_service_no_deps()** (3 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **sample_player()** (3 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **sample_dead_player()** (3 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **test_utc_now()** (3 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **test_move_player_to_limbo_success()** (3 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **test_move_player_to_limbo_refused_when_not_dead()** (3 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **test_move_player_to_limbo_player_not_found()** (3 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **test_get_respawn_room_custom()** (3 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **test_get_respawn_room_default()** (3 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **test_get_respawn_room_player_not_found()** (3 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **test_respawn_player_from_delirium_clears_combat_state()** (3 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **test_respawn_player_from_delirium_no_combat_service()** (3 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **test_respawn_player_from_sanitarium_increments_existing_liabilities()** (3 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **mock_event_bus()** (2 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **mock_player_combat_service()** (2 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **mock_session()** (2 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **test_respawn_service_initialization()** (2 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **test_respawn_service_initialization_no_deps()** (2 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **test_move_player_to_limbo_sqlalchemy_error()** (2 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- *... and 45 more nodes in this community*
+- **CircuitBreaker** (43 connections) — `server/realtime/circuit_breaker.py`
+- **test_circuit_breaker.py** (31 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **CircuitBreakerOpen** (14 connections) — `server/realtime/circuit_breaker.py`
+- **circuit_breaker.py** (12 connections) — `server/realtime/circuit_breaker.py`
+- **.call()** (9 connections) — `server/realtime/circuit_breaker.py`
+- **CircuitState** (6 connections) — `server/realtime/circuit_breaker.py`
+- **._transition_to()** (6 connections) — `server/realtime/circuit_breaker.py`
+- **._on_success()** (4 connections) — `server/realtime/circuit_breaker.py`
+- **._on_failure()** (4 connections) — `server/realtime/circuit_breaker.py`
+- **._time_until_retry()** (4 connections) — `server/realtime/circuit_breaker.py`
+- **.get_stats()** (4 connections) — `server/realtime/circuit_breaker.py`
+- **test_call_rejects_when_open()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **.__init__()** (3 connections) — `server/realtime/circuit_breaker.py`
+- **._should_attempt_reset()** (3 connections) — `server/realtime/circuit_breaker.py`
+- **.get_state()** (3 connections) — `server/realtime/circuit_breaker.py`
+- **test_circuit_breaker_init()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_circuit_breaker_init_defaults()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_call_success_closed_state()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_call_failure_closed_state()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_call_opens_circuit_after_threshold()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_call_transitions_to_half_open_after_timeout()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_call_closes_from_half_open_on_success()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_call_reopens_from_half_open_on_failure()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_on_success_resets_failure_count_closed()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_on_success_increments_success_count_half_open()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- *... and 61 more nodes in this community*
 
 ## Relationships
 
-- [combat models rationale](combat_models_rationale.md) (11 shared connections)
-- [lucidity services helpers](lucidity_services_helpers.md) (8 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (7 shared connections)
-- [Async Query Helpers](Async_Query_Helpers.md) (6 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (3 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (3 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
-- [command factories communication](command_factories_communication.md) (1 shared connections)
-- [player room realtime](player_room_realtime.md) (1 shared connections)
+- [follow game service](follow_game_service.md) (8 shared connections)
+- [Error Conversion](Error_Conversion.md) (4 shared connections)
+- [nats message handler](nats_message_handler.md) (4 shared connections)
+- [persistence combat services](persistence_combat_services.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_player_respawn_service.py`
+- `server/realtime/circuit_breaker.py`
+- `server/tests/unit/realtime/test_circuit_breaker.py`
 
 ## Audit Trail
 
-- EXTRACTED: 162 (91%)
-- INFERRED: 17 (9%)
+- EXTRACTED: 267 (97%)
+- INFERRED: 7 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

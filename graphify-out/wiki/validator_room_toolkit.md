@@ -1,54 +1,35 @@
 # validator room toolkit
 
-> 48 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **TestValidatorIntegration** (12 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **temp_dir()** (11 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
-- **TestValidatorEdgeCases** (10 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **conftest.py** (9 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
-- **.test_room_with_nonexistent_exit_targets()** (5 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **test_validator_integration.py** (4 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **.test_empty_room_directory()** (4 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **.test_room_with_malformed_json()** (4 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **.test_room_with_missing_required_fields()** (4 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **temp_rooms_dir()** (3 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
-- **.test_validate_file_structure_unusual_names()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_room_loader.py`
-- **sample_room_data()** (2 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
-- **sample_room_database()** (2 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
-- **invalid_room_data()** (2 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
-- **room_with_new_exit_format()** (2 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
-- **room_with_self_reference()** (2 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
-- **dead_end_room()** (2 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
-- **unreachable_room()** (2 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
-- **.test_validator_with_valid_rooms()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **.test_validator_with_invalid_rooms()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **.test_validator_json_output()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **.test_validator_zone_filtering()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **.test_validator_help_output()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **.test_validator_schema_only_flag()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **Create a temporary directory for testing.** (1 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
-- *... and 23 more nodes in this community*
+- **extract_zone_name()** (9 connections) — `server/npc/zone_config_loader.py`
+- **test_extract_zone_name_with_slash()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_extract_zone_name_no_slash()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_extract_zone_name_multiple_slashes()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_extract_zone_name_empty()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **Extract zone name from stable_id (format: 'plane/zone').      Args:         stab** (1 connections) — `server/npc/zone_config_loader.py`
+- **Test extract_zone_name() extracts zone from stable_id.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **Test extract_zone_name() returns stable_id when no slash.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **Test extract_zone_name() extracts from first slash.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **Test extract_zone_name() handles empty string.** (1 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
 
 ## Relationships
 
-- [room toolkit validator](room_toolkit_validator.md) (11 shared connections)
-- [player service mutations](player_service_mutations.md) (4 shared connections)
-- [logging structured utilities](logging_structured_utilities.md) (2 shared connections)
-- [room validator toolkit](room_validator_toolkit.md) (2 shared connections)
+- [spell game magic](spell_game_magic.md) (6 shared connections)
+- [container events rationale](container_events_rationale.md) (1 shared connections)
+- [models npc rationale](models_npc_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/structured_logging/test_logging_utilities.py`
-- `tools/room_toolkit/room_validator/tests/conftest.py`
-- `tools/room_toolkit/room_validator/tests/test_room_loader.py`
-- `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- `server/npc/zone_config_loader.py`
+- `server/tests/unit/npc/test_zone_config_loader.py`
 
 ## Audit Trail
 
-- EXTRACTED: 92 (77%)
-- INFERRED: 27 (23%)
+- EXTRACTED: 26 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_validate_can_attack_target_same_party_blocks()** (3 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **When both players are in same party, validate_can_attack_target blocks attack.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_format_message_for_receiver()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _format_message_for_receiver formats message.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [emote models rationale](emote_models_rationale.md) (1 shared connections)
-- [NPC Combat](NPC_Combat.md) (1 shared connections)
+- [message chat nats](message_chat_nats.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

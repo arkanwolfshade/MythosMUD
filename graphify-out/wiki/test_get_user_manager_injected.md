@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_user_manager_injected()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test _get_user_manager returns injected manager.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_extract_chat_message_fields()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _extract_chat_message_fields extracts fields.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [subzone realtime nats](subzone_realtime_nats.md) (1 shared connections)
+- [message chat nats](message_chat_nats.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 

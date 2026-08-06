@@ -1,40 +1,33 @@
 # dialogue schemas tree
 
-> 11 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **ChatModeration** (27 connections) — `server/game/chat_moderation.py`
-- **.is_channel_muted()** (4 connections) — `server/game/chat_moderation.py`
-- **.is_player_muted()** (4 connections) — `server/game/chat_moderation.py`
-- **.__init__()** (2 connections) — `server/game/chat_moderation.py`
-- **.can_send_message()** (2 connections) — `server/game/chat_moderation.py`
-- **moderation()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **Handles chat moderation operations.** (1 connections) — `server/game/chat_moderation.py`
-- **Initialize moderation handler.          Args:             player_service: Player** (1 connections) — `server/game/chat_moderation.py`
-- **Check if a channel is muted for a player.** (1 connections) — `server/game/chat_moderation.py`
-- **Check if a player is muted by another player.** (1 connections) — `server/game/chat_moderation.py`
-- **Check if a player can send a message.** (1 connections) — `server/game/chat_moderation.py`
+- **help_content.py** (12 connections) — `server/help/help_content.py`
+- **get_commands_by_category()** (3 connections) — `server/help/help_content.py`
+- **get_command_categories()** (2 connections) — `server/help/help_content.py`
+- **Any** (1 connections)
+- **Help content and command documentation for MythosMUD.  This module contains the** (1 connections) — `server/help/help_content.py`
+- **Get list of all command categories.** (1 connections) — `server/help/help_content.py`
+- **Get all commands in a specific category.** (1 connections) — `server/help/help_content.py`
 
 ## Relationships
 
-- [chat moderation game](chat_moderation_game.md) (13 shared connections)
-- [services ascii map](services_ascii_map.md) (5 shared connections)
-- [command parser build](command_parser_build.md) (3 shared connections)
-- [eventLog eventStore projector](eventLog_eventStore_projector.md) (2 shared connections)
-- [chat game message](chat_game_message.md) (1 shared connections)
-- [chat service game](chat_service_game.md) (1 shared connections)
-- [game chat whisper](game_chat_whisper.md) (1 shared connections)
+- [professions endpoints all](professions_endpoints_all.md) (4 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [player model models](player_model_models.md) (1 shared connections)
+- [realtime real time](realtime_real_time.md) (1 shared connections)
+- [command commands aliases](command_commands_aliases.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/chat_moderation.py`
-- `server/tests/unit/game/test_chat_moderation.py`
+- `server/help/help_content.py`
 
 ## Audit Trail
 
-- EXTRACTED: 45 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 21 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

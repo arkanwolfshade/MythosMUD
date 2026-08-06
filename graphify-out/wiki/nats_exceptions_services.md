@@ -1,59 +1,48 @@
 # nats exceptions services
 
-> 91 nodes
+> 56 nodes
 
 ## Key Concepts
 
-- **NATSPublishError** (35 connections) — `server/services/nats_exceptions.py`
-- **NATSSubscribeError** (27 connections) — `server/services/nats_exceptions.py`
-- **NATSConnectionError** (18 connections) — `server/services/nats_exceptions.py`
-- **NATSHealthCheckError** (17 connections) — `server/services/nats_exceptions.py`
-- **test_nats_exceptions.py** (13 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **NATSRequestError** (11 connections) — `server/services/nats_exceptions.py`
-- **TestNATSConnectionError** (11 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **TestNATSPublishError** (11 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **TestNATSSubscribeError** (11 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **TestNATSHealthCheckError** (11 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **TestExceptionHierarchy** (11 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **TestNATSError** (9 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **.__init__()** (7 connections) — `server/services/nats_exceptions.py`
-- **.test_all_errors_inherit_from_nats_error()** (7 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **Exception** (6 connections)
-- **.test_all_errors_inherit_from_exception()** (6 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **_log_nats_publish_error()** (4 connections) — `server/game/chat_nats_publisher.py`
-- **.test_connection_error_creation()** (4 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **.test_publish_error_creation()** (4 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **.test_subscribe_error_creation()** (4 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **.test_health_check_error_creation()** (4 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **.test_exception_can_be_caught_by_base()** (4 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **.__init__()** (3 connections) — `server/services/nats_exceptions.py`
-- **.__init__()** (3 connections) — `server/services/nats_exceptions.py`
-- **.__init__()** (3 connections) — `server/services/nats_exceptions.py`
-- *... and 66 more nodes in this community*
+- **test_movement_monitor.py** (33 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **movement_monitor()** (3 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_get_movement_monitor_returns_singleton()** (3 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **sample_player_id()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_movement_monitor_init()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_record_movement_attempt_success()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_record_movement_attempt_failure()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_record_movement_attempt_string_player_id()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_record_movement_attempt_uuid_player_id()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_record_movement_attempt_multiple_players()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_record_concurrent_movement()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_record_concurrent_movement_updates_max()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_record_integrity_check_no_violation()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_record_integrity_check_with_violation()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_validate_room_integrity_valid()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_validate_room_integrity_duplicate_players()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_validate_room_integrity_empty_rooms()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_validate_room_integrity_room_without_get_players()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_get_metrics_empty()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_get_metrics_with_data()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_get_metrics_integrity_rate()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_get_alerts_no_alerts()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_get_alerts_high_concurrent()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_get_alerts_high_failure_rate()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_get_alerts_slow_movement_time()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- *... and 31 more nodes in this community*
 
 ## Relationships
 
-- [commands communication say](commands_communication_say.md) (21 shared connections)
-- [combat validator validators](combat_validator_validators.md) (12 shared connections)
-- [combat commands handler](combat_commands_handler.md) (10 shared connections)
-- [NPC Combat](NPC_Combat.md) (7 shared connections)
-- [Memory Task Runtime](Memory_Task_Runtime.md) (5 shared connections)
-- [alias command models](alias_command_models.md) (4 shared connections)
-- [nats message handler](nats_message_handler.md) (2 shared connections)
-- [chat game message](chat_game_message.md) (1 shared connections)
-- [npc behavior engine](npc_behavior_engine.md) (1 shared connections)
+- [Loot Generation](Loot_Generation.md) (7 shared connections)
 
 ## Source Files
 
-- `server/game/chat_nats_publisher.py`
-- `server/services/nats_exceptions.py`
-- `server/tests/unit/services/test_nats_exceptions.py`
-- `server/tests/unit/services/test_nats_service.py`
+- `server/tests/unit/game/test_movement_monitor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 276 (77%)
-- INFERRED: 81 (23%)
+- EXTRACTED: 117 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

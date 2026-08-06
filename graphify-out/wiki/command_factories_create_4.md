@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_create_local_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_local_command delegates to communication factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_add_room_drop_new_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **Test add_room_drop() adds drop to new room.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Relationships
 
-- [command factories create](command_factories_create.md) (1 shared connections)
+- [room subscription manager](room_subscription_manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Audit Trail
 

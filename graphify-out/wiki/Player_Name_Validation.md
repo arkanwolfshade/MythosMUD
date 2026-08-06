@@ -1,13 +1,12 @@
 # Player Name Validation
 
-> 164 nodes
+> 162 nodes
 
 ## Key Concepts
 
 - **PlayerNameExtractor** (104 connections) — `server/realtime/player_name_utils.py`
 - **TestPlayerNameExtractor** (62 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
 - **Any** (14 connections)
-- **player_name_utils.py** (13 connections) — `server/realtime/player_name_utils.py`
 - **UUID** (8 connections)
 - **._validate_name_not_uuid()** (8 connections) — `server/realtime/player_name_utils.py`
 - **.extract_and_validate_player_name()** (8 connections) — `server/realtime/player_name_utils.py`
@@ -29,20 +28,18 @@
 - **.test_extract_player_name_user_exception()** (4 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
 - **.__init__()** (3 connections) — `server/realtime/player_name_utils.py`
 - **._check_uuid_pattern_match()** (3 connections) — `server/realtime/player_name_utils.py`
-- *... and 139 more nodes in this community*
+- **.test_init()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- *... and 137 more nodes in this community*
 
 ## Relationships
 
-- [combat services turn](combat_services_turn.md) (9 shared connections)
-- [event bus events](event_bus_events.md) (8 shared connections)
-- [player_event_handler_utils](player_event_handler_utils.md) (4 shared connections)
-- [NPC Combat](NPC_Combat.md) (3 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (2 shared connections)
-- [commands communication channels](commands_communication_channels.md) (2 shared connections)
-- [schedule services service](schedule_services_service.md) (2 shared connections)
-- [inventory mutation guard](inventory_mutation_guard.md) (2 shared connections)
-- [command utility models](command_utility_models.md) (1 shared connections)
-- [websocket helpers realtime](websocket_helpers_realtime.md) (1 shared connections)
+- [profession models rationale](profession_models_rationale.md) (14 shared connections)
+- [command utility models](command_utility_models.md) (5 shared connections)
+- [logging processors structured](logging_processors_structured.md) (3 shared connections)
+- [message nats handler](message_nats_handler.md) (2 shared connections)
+- [schemas players profession](schemas_players_profession.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [room sync service](room_sync_service.md) (1 shared connections)
 
 ## Source Files
 
@@ -51,7 +48,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 547 (98%)
+- EXTRACTED: 533 (98%)
 - INFERRED: 9 (2%)
 - AMBIGUOUS: 0 (0%)
 

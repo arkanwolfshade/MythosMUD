@@ -1,54 +1,54 @@
 # inventory mutation guard
 
-> 42 nodes
+> 69 nodes
 
 ## Key Concepts
 
-- **PlayerRoomEventHandler** (30 connections) — `server/realtime/player_event_handlers_room.py`
-- **UUID** (12 connections)
-- **Any** (10 connections)
-- **.handle_player_entered()** (9 connections) — `server/realtime/player_event_handlers_room.py`
-- **.__init__()** (7 connections) — `server/realtime/player_event_handlers_room.py`
-- **.send_occupants_snapshot_to_player()** (7 connections) — `server/realtime/player_event_handlers_room.py`
-- **.send_room_updates_to_entering_player()** (7 connections) — `server/realtime/player_event_handlers_room.py`
-- **.handle_player_left()** (7 connections) — `server/realtime/player_event_handlers_room.py`
-- **._prepare_room_data()** (6 connections) — `server/realtime/player_event_handlers_room.py`
-- **.send_room_update_to_player()** (6 connections) — `server/realtime/player_event_handlers_room.py`
-- **.log_player_movement()** (5 connections) — `server/realtime/player_event_handlers_room.py`
-- **._send_room_name_message()** (5 connections) — `server/realtime/player_event_handlers_room.py`
-- **._log_occupants_info()** (5 connections) — `server/realtime/player_event_handlers_room.py`
-- **.query_room_occupants_snapshot()** (5 connections) — `server/realtime/player_event_handlers_room.py`
-- **.send_room_state_to_player()** (5 connections) — `server/realtime/player_event_handlers_room.py`
-- **.get_room_state_event()** (5 connections) — `server/realtime/player_event_handlers_room.py`
-- **.broadcast_player_entered_message()** (4 connections) — `server/realtime/player_event_handlers_room.py`
-- **.subscribe_player_to_room()** (4 connections) — `server/realtime/player_event_handlers_room.py`
-- **.build_room_occupants_message()** (4 connections) — `server/realtime/player_event_handlers_room.py`
-- **._process_player_entered_event()** (4 connections) — `server/realtime/player_event_handlers_room.py`
-- **.unsubscribe_player_from_room()** (4 connections) — `server/realtime/player_event_handlers_room.py`
-- **.broadcast_player_left_message()** (4 connections) — `server/realtime/player_event_handlers_room.py`
-- **Handles room-related player events (entered, left, occupants).** (1 connections) — `server/realtime/player_event_handlers_room.py`
-- **Initialize room event handler.          Args:             connection_manager: Co** (1 connections) — `server/realtime/player_event_handlers_room.py`
-- **Log player movement for AI processing.          Args:             player_id: The** (1 connections) — `server/realtime/player_event_handlers_room.py`
-- *... and 17 more nodes in this community*
+- **test_room_sync_service.py** (40 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **RoomSyncService** (19 connections) — `server/services/room_sync_service.py`
+- **room_sync_service()** (4 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **.process_event_with_ordering()** (3 connections) — `server/services/room_sync_service.py`
+- **room_sync_service_with_room_service()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **sample_event()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_get_room_sync_service_returns_singleton()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **.clear_cache()** (2 connections) — `server/services/room_sync_service.py`
+- **mock_room_service()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_room_sync_service_init()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_room_sync_service_init_with_room_service()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_set_room_service()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_process_event_with_ordering()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_process_event_with_ordering_increments_counter()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_process_event_with_ordering_tracks_last_processed()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_process_event_with_ordering_handles_error()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_process_room_update_with_validation_valid_data()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_process_room_update_with_validation_invalid_data()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_process_room_update_with_validation_stale_data()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_invalidate_stale_cache_success()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_invalidate_stale_cache_no_room_service()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_fetch_fresh_room_data_success()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_fetch_fresh_room_data_no_room_service()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_fetch_fresh_room_data_not_found()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_handle_stale_room_data_success()** (2 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- *... and 44 more nodes in this community*
 
 ## Relationships
 
-- [event bus events](event_bus_events.md) (5 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (3 shared connections)
-- [realtime monitoring performance](realtime_monitoring_performance.md) (2 shared connections)
-- [schedule services service](schedule_services_service.md) (2 shared connections)
-- [player_event_handler_utils](player_event_handler_utils.md) (2 shared connections)
-- [Player Name Validation](Player_Name_Validation.md) (2 shared connections)
-- [realtime messaging message](realtime_messaging_message.md) (2 shared connections)
-- [room look commands](room_look_commands.md) (1 shared connections)
+- [connection models realtime](connection_models_realtime.md) (8 shared connections)
+- [Error Conversion](Error_Conversion.md) (6 shared connections)
+- [profession models rationale](profession_models_rationale.md) (4 shared connections)
+- [room sync service](room_sync_service.md) (3 shared connections)
+- [room fixer services](room_fixer_services.md) (1 shared connections)
+- [rate limiter rationale](rate_limiter_rationale.md) (1 shared connections)
+- [room validator services](room_validator_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/player_event_handlers_room.py`
+- `server/services/room_sync_service.py`
+- `server/tests/unit/services/test_room_sync_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 170 (97%)
+- EXTRACTED: 159 (97%)
 - INFERRED: 5 (3%)
 - AMBIGUOUS: 0 (0%)
 

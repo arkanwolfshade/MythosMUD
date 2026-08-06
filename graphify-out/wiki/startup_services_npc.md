@@ -17,8 +17,8 @@
 
 ## Relationships
 
-- [command commands handler](command_commands_handler.md) (5 shared connections)
-- [commands npc admin](commands_npc_admin.md) (1 shared connections)
+- [player model models](player_model_models.md) (5 shared connections)
+- [alias storage rationale](alias_storage_rationale.md) (1 shared connections)
 
 ## Source Files
 

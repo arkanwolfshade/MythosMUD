@@ -4,20 +4,22 @@
 
 ## Key Concepts
 
-- **test_process_tick_regeneration_sitting_position()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **Test process_tick_regeneration() uses REST multiplier for sitting position.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **test_establish_websocket_connection_error()** (4 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **Test establish_websocket_connection() handles errors.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
 
 ## Relationships
 
-- [config rationale reset](config_rationale_reset.md) (1 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (1 shared connections)
+- [invite models rationale](invite_models_rationale.md) (1 shared connections)
+- [connection establishment realtime](connection_establishment_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- `server/tests/unit/realtime/test_connection_establishment.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

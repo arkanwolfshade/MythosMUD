@@ -1,52 +1,61 @@
 # shutdown admin command
 
-> 36 nodes
+> 41 nodes
 
 ## Key Concepts
 
-- **canonical_room_id_impl()** (17 connections) — `server/realtime/connection_room_utils.py`
-- **test_connection_room_utils.py** (16 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **reconcile_room_presence_impl()** (7 connections) — `server/realtime/connection_room_utils.py`
-- **prune_player_from_all_rooms_impl()** (7 connections) — `server/realtime/connection_room_utils.py`
-- **.canonical_room_id()** (5 connections) — `server/realtime/connection_manager.py`
-- **._prune_player_from_all_rooms()** (4 connections) — `server/realtime/connection_manager.py`
-- **test_canonical_room_id_impl_database_error()** (4 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **._reconcile_room_presence()** (3 connections) — `server/realtime/connection_manager.py`
-- **Any** (3 connections)
-- **test_canonical_room_id_impl_none()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **test_canonical_room_id_impl_empty_string()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **test_canonical_room_id_impl_success_room_manager()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **test_canonical_room_id_impl_fallback_to_main_persistence()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **test_canonical_room_id_impl_no_room_found()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **test_canonical_room_id_impl_room_no_id_attribute()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **test_canonical_room_id_impl_attribute_error()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **test_reconcile_room_presence_impl()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **test_prune_player_from_all_rooms_impl()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
-- **Resolve a room id to the canonical Room.id value (public method).** (1 connections) — `server/realtime/connection_manager.py`
-- **Resolve a room id to the canonical Room.id value (compatibility method).** (1 connections) — `server/realtime/connection_manager.py`
-- **Ensure room_occupants only contains currently online players (compatibility meth** (1 connections) — `server/realtime/connection_manager.py`
-- **Remove a player from all room subscriptions and occupant lists (compatibility me** (1 connections) — `server/realtime/connection_manager.py`
-- **Resolve a room id to the canonical Room.id value.      Args:         room_id: Th** (1 connections) — `server/realtime/connection_room_utils.py`
-- **Ensure room_occupants only contains currently online players.** (1 connections) — `server/realtime/connection_room_utils.py`
-- **Remove a player from all room subscriptions and occupant lists.** (1 connections) — `server/realtime/connection_room_utils.py`
-- *... and 11 more nodes in this community*
+- **.state()** (36 connections) — `server/realtime/connection_state_machine.py`
+- **GameStateProvider** (26 connections) — `server/realtime/integration/game_state_provider.py`
+- **UUID** (15 connections)
+- **Any** (13 connections)
+- **.send_initial_game_state()** (12 connections) — `server/realtime/integration/game_state_provider.py`
+- **._get_player_data_for_client()** (9 connections) — `server/realtime/integration/game_state_provider.py`
+- **.connection_manager()** (9 connections) — `server/realtime/nats_message_handler.py`
+- **._get_player_name_with_grace_periods()** (8 connections) — `server/realtime/integration/game_state_provider.py`
+- **._process_occupants_with_grace_periods()** (8 connections) — `server/realtime/integration/game_state_provider.py`
+- **._convert_player_uuids_to_names()** (7 connections) — `server/realtime/integration/game_state_provider.py`
+- **._add_grace_period_indicators()** (7 connections) — `server/realtime/integration/game_state_provider.py`
+- **._get_quest_log_for_client()** (7 connections) — `server/realtime/integration/game_state_provider.py`
+- **.get_player()** (6 connections) — `server/realtime/integration/game_state_provider.py`
+- **.convert_room_uuids_to_names()** (6 connections) — `server/realtime/integration/game_state_provider.py`
+- **._get_fallback_player_data()** (6 connections) — `server/realtime/integration/game_state_provider.py`
+- **._get_following_for_client()** (6 connections) — `server/realtime/integration/game_state_provider.py`
+- **Player** (5 connections)
+- **.get_room_occupants()** (5 connections) — `server/realtime/integration/game_state_provider.py`
+- **._get_room_data_with_conversion()** (5 connections) — `server/realtime/integration/game_state_provider.py`
+- **.__init__()** (4 connections) — `server/realtime/integration/game_state_provider.py`
+- **.get_players_batch()** (4 connections) — `server/realtime/integration/game_state_provider.py`
+- **.get_npcs_batch()** (4 connections) — `server/realtime/integration/game_state_provider.py`
+- **Current FSM state as a single State.          Uses python-statemachine 3.x confi** (1 connections) — `server/realtime/connection_state_machine.py`
+- **Provides initial game state for newly connected players.      This class provide** (1 connections) — `server/realtime/integration/game_state_provider.py`
+- **Initialize the game state provider.          Args:             room_manager: Roo** (1 connections) — `server/realtime/integration/game_state_provider.py`
+- *... and 16 more nodes in this community*
 
 ## Relationships
 
-- [Room Broadcast](Room_Broadcast.md) (10 shared connections)
-- [NPC Combat](NPC_Combat.md) (4 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (3 shared connections)
+- [command utility models](command_utility_models.md) (10 shared connections)
+- [command commands aliases](command_commands_aliases.md) (3 shared connections)
+- [nats services metrics](nats_services_metrics.md) (2 shared connections)
+- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (2 shared connections)
+- [commands communication flows](commands_communication_flows.md) (2 shared connections)
+- [command factories create](command_factories_create.md) (2 shared connections)
+- [circuit breaker realtime](circuit_breaker_realtime.md) (2 shared connections)
+- [realtime maintenance connection](realtime_maintenance_connection.md) (2 shared connections)
+- [spell models rationale](spell_models_rationale.md) (2 shared connections)
+- [game state provider](game_state_provider.md) (2 shared connections)
+- [npc combat base](npc_combat_base.md) (2 shared connections)
+- [follow game service](follow_game_service.md) (2 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_manager.py`
-- `server/realtime/connection_room_utils.py`
-- `server/tests/unit/realtime/test_connection_room_utils.py`
+- `server/realtime/connection_state_machine.py`
+- `server/realtime/integration/game_state_provider.py`
+- `server/realtime/nats_message_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 110 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 180 (79%)
+- INFERRED: 47 (21%)
 - AMBIGUOUS: 0 (0%)
 
 ---

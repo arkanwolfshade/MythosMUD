@@ -23,8 +23,9 @@
 
 ## Relationships
 
-- [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (8 shared connections)
-- [stores connectionStore commandStore](stores_connectionStore_commandStore.md) (2 shared connections)
+- [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (5 shared connections)
+- [websocket realtime handler](websocket_realtime_handler.md) (3 shared connections)
+- [containers stores containerStore](containers_stores_containerStore.md) (2 shared connections)
 
 ## Source Files
 

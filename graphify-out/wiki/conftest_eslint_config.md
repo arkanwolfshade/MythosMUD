@@ -1,28 +1,31 @@
 # conftest eslint config
 
-> 6 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **test_websocket_handler_json_error.py** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
-- **mock_websocket()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
-- **test_handle_json_decode_error()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
-- **Unit tests for websocket handler JSON error handling.  Tests the JSON decode err** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
-- **Create a mock WebSocket.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
-- **Test _handle_json_decode_error() sends error response.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
+- **TestGetContainer** (6 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_container_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_container_missing_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_container_no_state_attribute()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Tests for get_container dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_container returns container when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_container raises RuntimeError when container not in app.state.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_container raises RuntimeError when app.state doesn't exist.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Relationships
 
-- [room websocket updates](room_websocket_updates.md) (1 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (4 shared connections)
+- [persistence core infrastructure](persistence_core_infrastructure.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_websocket_handler_json_error.py`
+- `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 18 (95%)
+- INFERRED: 1 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

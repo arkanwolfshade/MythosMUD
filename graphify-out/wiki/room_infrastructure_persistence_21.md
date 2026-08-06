@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_echo_message_to_sender_success()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _echo_message_to_sender echoes message.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_take_room_drop_invalid_index()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **Test take_room_drop() returns None for invalid index.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Relationships
 
-- [message chat nats](message_chat_nats.md) (1 shared connections)
+- [room subscription manager](room_subscription_manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Audit Trail
 

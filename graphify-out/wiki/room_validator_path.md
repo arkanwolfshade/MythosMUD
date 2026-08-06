@@ -1,45 +1,43 @@
 # room validator path
 
-> 23 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **test_combat_persistence_handler.py** (14 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **persistence_handler()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **mock_combat_service()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **test_persistence_handler_init()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **test_get_persistence_layer()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **test_get_persistence_layer_no_container()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **test_get_persistence_layer_container_error()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **test_get_persistence_layer_no_async_persistence()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **test_log_death_state_changes_death_threshold()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **test_log_death_state_changes_mortally_wounded()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **test_persist_player_dp_background_public_api()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **mock_player()** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **Unit tests for combat persistence handler - core functionality.  Tests initializ** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **Create mock combat service.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **Create CombatPersistenceHandler instance.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **Test CombatPersistenceHandler initialization.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **Test _get_persistence_layer gets persistence from container.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **Test _get_persistence_layer returns None when container unavailable.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **Test _get_persistence_layer handles container errors.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **Test _get_persistence_layer handles container without async_persistence.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **Test _log_death_state_changes logs death threshold.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **Test _log_death_state_changes logs mortally wounded.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **Test persist_player_dp_background public API method.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
+- **DatabaseConfig** (14 connections) — `server/config/models/server_db.py`
+- **.ensure_url_set()** (4 connections) — `server/config/models/server_db.py`
+- **test_database_config_validate_url_postgresql()** (3 connections) — `server/tests/unit/config/test_config_models.py`
+- **test_database_config_validate_url_empty()** (3 connections) — `server/tests/unit/config/test_config_models.py`
+- **test_database_config_validate_pool_config_positive()** (3 connections) — `server/tests/unit/config/test_config_models.py`
+- **test_database_config_validate_pool_config_invalid()** (3 connections) — `server/tests/unit/config/test_config_models.py`
+- **.validate_database_url()** (2 connections) — `server/config/models/server_db.py`
+- **.validate_pool_config()** (2 connections) — `server/config/models/server_db.py`
+- **Any** (1 connections)
+- **Database configuration.** (1 connections) — `server/config/models/server_db.py`
+- **Validate database URL format - PostgreSQL only.** (1 connections) — `server/config/models/server_db.py`
+- **Validate pool configuration values are positive.** (1 connections) — `server/config/models/server_db.py`
+- **Ensure url is set - use npc_url as fallback if url is missing.          This han** (1 connections) — `server/config/models/server_db.py`
+- **Test DatabaseConfig URL validation with PostgreSQL URL.** (1 connections) — `server/tests/unit/config/test_config_models.py`
+- **Test DatabaseConfig URL validation with empty URL.** (1 connections) — `server/tests/unit/config/test_config_models.py`
+- **Test DatabaseConfig pool config validation with positive values.** (1 connections) — `server/tests/unit/config/test_config_models.py`
+- **Test DatabaseConfig pool config validation with invalid value.** (1 connections) — `server/tests/unit/config/test_config_models.py`
 
 ## Relationships
 
-- [commands communication say](commands_communication_say.md) (3 shared connections)
+- [config models rationale](config_models_rationale.md) (6 shared connections)
+- [websocket validation realtime](websocket_validation_realtime.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
+- [calendar models rationale](calendar_models_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_persistence_handler.py`
+- `server/config/models/server_db.py`
+- `server/tests/unit/config/test_config_models.py`
 
 ## Audit Trail
 
-- EXTRACTED: 47 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 42 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

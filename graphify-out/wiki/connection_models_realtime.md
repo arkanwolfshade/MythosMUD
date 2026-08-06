@@ -24,7 +24,7 @@
 
 ## Relationships
 
-- [room service sync](room_service_sync.md) (8 shared connections)
+- [inventory mutation guard](inventory_mutation_guard.md) (8 shared connections)
 - [room fixer services](room_fixer_services.md) (1 shared connections)
 - [rate limiter rationale](rate_limiter_rationale.md) (1 shared connections)
 - [room validator services](room_validator_services.md) (1 shared connections)

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_resolve_connection_manager_from_container_error()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test _resolve_connection_manager_from_container handles errors.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **test_record_message()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **Test record_message adds timestamp to window.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
 
 ## Relationships
 
-- [combat messaging services](combat_messaging_services.md) (1 shared connections)
+- [rate limiter services](rate_limiter_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_messaging_integration.py`
+- `server/tests/unit/services/test_rate_limiter.py`
 
 ## Audit Trail
 

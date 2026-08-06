@@ -4,26 +4,27 @@
 
 ## Key Concepts
 
-- **.schedule_periodic_auditing()** (4 connections) — `server/app/memory_lifespan_coordinator.py`
-- **._background_audit_cycle()** (4 connections) — `server/app/memory_lifespan_coordinator.py`
-- **._do_full_cleanup_audit()** (4 connections) — `server/app/memory_lifespan_coordinator.py`
-- **Start the background auditing scheduler responsible for identifying orphan vecto** (1 connections) — `server/app/memory_lifespan_coordinator.py`
-- **Primary background cycle consuming auditor implementation.          Executes per** (1 connections) — `server/app/memory_lifespan_coordinator.py`
-- **Core capability for granular investigation cycles.          Repeated universal a** (1 connections) — `server/app/memory_lifespan_coordinator.py`
+- **._despawn_npc()** (4 connections) — `server/services/npc_combat_lifecycle.py`
+- **.despawn_npc_safely()** (3 connections) — `server/services/npc_combat_lifecycle.py`
+- **.get_npc_lifecycle_manager()** (3 connections) — `server/services/player_combat_service_support.py`
+- **Despawn NPC with defensive error handling.          Args:             npc_id: ID** (1 connections) — `server/services/npc_combat_lifecycle.py`
+- **Despawn an NPC.          Args:             npc_id: ID of the NPC to despawn** (1 connections) — `server/services/npc_combat_lifecycle.py`
+- **Return lifecycle manager (sync); may be wrapped by asyncio.to_thread.** (1 connections) — `server/services/player_combat_service_support.py`
 
 ## Relationships
 
-- [dialogue definitions admin](dialogue_definitions_admin.md) (3 shared connections)
-- [schemas player rationale](schemas_player_rationale.md) (2 shared connections)
+- [player event realtime](player_event_realtime.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
 
 ## Source Files
 
-- `server/app/memory_lifespan_coordinator.py`
+- `server/services/npc_combat_lifecycle.py`
+- `server/services/player_combat_service_support.py`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 11 (85%)
+- INFERRED: 2 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

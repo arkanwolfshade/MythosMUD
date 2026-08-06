@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_remove_member_leader_leaves_disbands()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **When leader leaves, party is disbanded.** (1 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_adjust_room_drop_quantity_zero()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **Test adjust_room_drop() with quantity zero removes stack.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Relationships
 
-- [commands inventory helpers](commands_inventory_helpers.md) (1 shared connections)
+- [room subscription manager](room_subscription_manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_party_service.py`
+- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Audit Trail
 

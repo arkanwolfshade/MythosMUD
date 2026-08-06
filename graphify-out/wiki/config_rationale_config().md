@@ -1,39 +1,38 @@
 # config rationale config()
 
-> 11 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **CacheService** (24 connections) — `server/caching/cache_service.py`
-- **TestCacheService** (12 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.persistence()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_init_without_npc_service()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_init_with_npc_service()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_get_cache_stats_and_clear()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_preload_frequently_accessed_data()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_preload_handles_room_failure()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_preload_handles_profession_failure()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.clear_all_caches()** (1 connections) — `server/caching/cache_service.py`
-- **Main cache service that coordinates all caching operations.      This service pr** (1 connections) — `server/caching/cache_service.py`
+- **stateManagementIntegration.test.ts** (13 connections) — `client/src/stores/__tests__/stateManagementIntegration.test.ts`
+- **sessionStore.ts** (9 connections) — `client/src/stores/sessionStore.ts`
+- **useSessionStore** (5 connections) — `client/src/stores/sessionStore.ts`
+- **sessionStore.test.ts** (2 connections) — `client/src/stores/__tests__/sessionStore.test.ts`
+- **SessionState** (1 connections) — `client/src/stores/sessionStore.ts`
+- **SessionActions** (1 connections) — `client/src/stores/sessionStore.ts`
+- **SessionSelectors** (1 connections) — `client/src/stores/sessionStore.ts`
+- **SessionStore** (1 connections) — `client/src/stores/sessionStore.ts`
+- **createInitialState()** (1 connections) — `client/src/stores/sessionStore.ts`
 
 ## Relationships
 
-- [commands skills rationale](commands_skills_rationale.md) (5 shared connections)
-- [startup npc service](startup_npc_service.md) (4 shared connections)
-- [uuid services npc](uuid_services_npc.md) (4 shared connections)
-- [services lucidity repository](services_lucidity_repository.md) (4 shared connections)
-- [cache caching service](cache_caching_service.md) (2 shared connections)
-- [caching lru cache](caching_lru_cache.md) (1 shared connections)
+- [stores connectionStore commandStore](stores_connectionStore_commandStore.md) (4 shared connections)
+- [containers stores containerStore](containers_stores_containerStore.md) (3 shared connections)
+- [stateNormalization stores basic](stateNormalization_stores_basic.md) (3 shared connections)
+- [realtime dead letter](realtime_dead_letter.md) (2 shared connections)
+- [health monitor realtime](health_monitor_realtime.md) (1 shared connections)
+- [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (1 shared connections)
 
 ## Source Files
 
-- `server/caching/cache_service.py`
-- `server/tests/unit/caching/test_cache_service.py`
+- `client/src/stores/__tests__/sessionStore.test.ts`
+- `client/src/stores/__tests__/stateManagementIntegration.test.ts`
+- `client/src/stores/sessionStore.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 38 (73%)
-- INFERRED: 14 (27%)
+- EXTRACTED: 34 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

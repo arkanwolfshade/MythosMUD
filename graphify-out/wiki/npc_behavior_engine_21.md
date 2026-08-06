@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_subscribe_to_subzone_no_subject_manager()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test subscribe_to_subzone raises error when subject manager unavailable.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_adjust_room_drop_remove()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **Test adjust_room_drop() removes stack when quantity is 0.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Relationships
 
-- [subzone realtime nats](subzone_realtime_nats.md) (1 shared connections)
+- [room subscription manager](room_subscription_manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Audit Trail
 

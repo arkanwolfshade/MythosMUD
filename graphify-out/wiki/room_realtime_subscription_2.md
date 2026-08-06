@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **party_service()** (3 connections) — `server/tests/unit/game/test_party_service.py`
-- **PartyService with no dependencies (in-memory only).** (1 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_list_room_drops_with_drops()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **Test list_room_drops() returns room drops.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Relationships
 
-- [party game service](party_game_service.md) (1 shared connections)
-- [commands inventory helpers](commands_inventory_helpers.md) (1 shared connections)
+- [room subscription manager](room_subscription_manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_party_service.py`
+- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

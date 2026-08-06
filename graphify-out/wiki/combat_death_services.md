@@ -1,34 +1,31 @@
 # combat death services
 
-> 10 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **test_database.py** (7 connections) — `server/tests/unit/infrastructure/test_database.py`
-- **test_database_manager_singleton()** (4 connections) — `server/tests/unit/infrastructure/test_database.py`
-- **test_database_manager_reset_instance()** (4 connections) — `server/tests/unit/infrastructure/test_database.py`
-- **test_database_manager_direct_init_raises()** (4 connections) — `server/tests/unit/infrastructure/test_database.py`
-- **test_database_manager_initial_state()** (4 connections) — `server/tests/unit/infrastructure/test_database.py`
-- **Unit tests for database initialization.** (1 connections) — `server/tests/unit/infrastructure/test_database.py`
-- **Test that DatabaseManager is a singleton.** (1 connections) — `server/tests/unit/infrastructure/test_database.py`
-- **Test resetting the singleton instance.** (1 connections) — `server/tests/unit/infrastructure/test_database.py`
-- **Test that direct initialization raises RuntimeError when instance exists.** (1 connections) — `server/tests/unit/infrastructure/test_database.py`
-- **Test initial state of database manager.** (1 connections) — `server/tests/unit/infrastructure/test_database.py`
+- **populate_test_npc_databases.py** (6 connections) — `scripts/populate_test_npc_databases.py`
+- **main()** (5 connections) — `scripts/populate_test_npc_databases.py`
+- **get_npc_data_from_source()** (4 connections) — `scripts/populate_test_npc_databases.py`
+- **populate_database()** (4 connections) — `scripts/populate_test_npc_databases.py`
+- **get_npc_database_url()** (3 connections) — `scripts/populate_test_npc_databases.py`
+- **Get NPC database URL for the specified environment.      Args:         environme** (1 connections) — `scripts/populate_test_npc_databases.py`
+- **Extract NPC data from the source PostgreSQL database.      Args:         source_** (1 connections) — `scripts/populate_test_npc_databases.py`
+- **Populate a PostgreSQL database with NPC data.      Args:         target_url: Pos** (1 connections) — `scripts/populate_test_npc_databases.py`
+- **Main function to populate test NPC databases.** (1 connections) — `scripts/populate_test_npc_databases.py`
 
 ## Relationships
 
-- [Database Access Layer](Database_Access_Layer.md) (7 shared connections)
-- [aggro threat services](aggro_threat_services.md) (2 shared connections)
-- [game models enums](game_models_enums.md) (1 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (4 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_database.py`
+- `scripts/populate_test_npc_databases.py`
 
 ## Audit Trail
 
-- EXTRACTED: 28 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 24 (92%)
+- INFERRED: 2 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,11 +1,12 @@
 # cache caching service
 
-> 23 nodes
+> 25 nodes
 
 ## Key Concepts
 
 - **Any** (13 connections)
 - **.get_all_professions()** (5 connections) — `server/caching/cache_service.py`
+- **.__init__()** (4 connections) — `server/caching/cache_service.py`
 - **.get_room_sync()** (4 connections) — `server/caching/cache_service.py`
 - **.__init__()** (4 connections) — `server/caching/cache_service.py`
 - **.__init__()** (4 connections) — `server/caching/cache_service.py`
@@ -16,6 +17,7 @@
 - **.get_npc_definition()** (3 connections) — `server/caching/cache_service.py`
 - **.get_spawn_rules()** (3 connections) — `server/caching/cache_service.py`
 - **.get_cache_stats()** (3 connections) — `server/caching/cache_service.py`
+- **Initialize the room cache service.          Args:             persistence: Persi** (1 connections) — `server/caching/cache_service.py`
 - **Get room data with caching.          Args:             room_id: The room ID** (1 connections) — `server/caching/cache_service.py`
 - **Get room data with caching (synchronous version).          Args:             roo** (1 connections) — `server/caching/cache_service.py`
 - **Initialize the NPC cache service.          Args:             npc_service: NPC se** (1 connections) — `server/caching/cache_service.py`
@@ -30,11 +32,12 @@
 
 ## Relationships
 
-- [startup npc service](startup_npc_service.md) (4 shared connections)
 - [uuid services npc](uuid_services_npc.md) (4 shared connections)
-- [commands skills rationale](commands_skills_rationale.md) (3 shared connections)
+- [config rationale config()](config_rationale_config%28%29.md) (3 shared connections)
+- [startup npc service](startup_npc_service.md) (3 shared connections)
+- [Magic Spell Service](Magic_Spell_Service.md) (3 shared connections)
 - [services lucidity repository](services_lucidity_repository.md) (3 shared connections)
-- [config rationale config()](config_rationale_config%28%29.md) (2 shared connections)
+- [commands skills rationale](commands_skills_rationale.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,7 +45,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 64 (100%)
+- EXTRACTED: 69 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -19,7 +19,7 @@
 ## Relationships
 
 - [combat audit structured](combat_audit_structured.md) (8 shared connections)
-- [NPC Combat](NPC_Combat.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
 
 ## Source Files
 

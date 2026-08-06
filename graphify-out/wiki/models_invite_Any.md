@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_process_tick_regeneration_restores_mp()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **Test process_tick_regeneration() restores MP.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **test_take_room_drop_zero_quantity()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **Test take_room_drop() handles zero quantity gracefully.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Relationships
 
-- [config rationale reset](config_rationale_reset.md) (1 shared connections)
+- [room subscription manager](room_subscription_manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Audit Trail
 

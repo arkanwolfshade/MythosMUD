@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_add_member_no_such_party()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **Adding to a non-existent party fails.** (1 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_process_room_rows_with_partial_room_id()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _process_room_rows with stable_id that needs room ID generation.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Relationships
 
-- [commands inventory helpers](commands_inventory_helpers.md) (1 shared connections)
+- [room persistence loading](room_persistence_loading.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_party_service.py`
+- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Audit Trail
 

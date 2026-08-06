@@ -1,56 +1,48 @@
 # combat schemas schema
 
-> 72 nodes
+> 38 nodes
 
 ## Key Concepts
 
-- **test_websocket_handler_validation_errors.py** (39 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **send_system_message()** (13 connections) — `server/realtime/websocket_handler.py`
-- **test_websocket_handler_system_message.py** (8 connections) — `server/tests/unit/realtime/test_websocket_handler_system_message.py`
-- **test_send_system_message()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_send_system_message_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_system_message.py`
-- **test_send_system_message_warning()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_system_message.py`
-- **test_send_system_message_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_system_message.py`
-- **test_send_system_message_disconnected()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_system_message.py`
-- **test_validate_message_validation_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_validate_message_restores_csrf_from_message_jwt_when_metadata_token_missing()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_handle_game_command_with_broadcast()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_handle_game_command_broadcast_no_player()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_handle_game_command_broadcast_no_current_room_id()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_handle_game_command_with_args()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_handle_game_command_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_send_system_message_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_process_websocket_command_player_no_current_room_id()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **mock_websocket()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_system_message.py`
-- **test_is_websocket_disconnected()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_check_rate_limit_no_connection_id()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_check_rate_limit_passed()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_check_rate_limit_exceeded()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_validate_message_success()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_validate_message_passes_expected_token_from_connection_metadata()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_send_error_response_websocket_disconnect()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- *... and 47 more nodes in this community*
+- **test_container_persistence.py** (20 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **test_parse_jsonb_column_none()** (2 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **test_parse_jsonb_column_string()** (2 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **test_parse_jsonb_column_dict()** (2 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **test_parse_jsonb_column_empty_string()** (2 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **test_parse_jsonb_column_list()** (2 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **test_parse_jsonb_column_invalid_json()** (2 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **test_container_data_init()** (2 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **test_container_data_to_dict()** (2 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **test_fetch_container_items_empty()** (2 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **test_fetch_container_items_with_items()** (2 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **test_fetch_container_items_missing_item_instance_id()** (2 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **test_fetch_container_items_non_dict_row()** (2 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **test_fetch_container_items_string_metadata()** (2 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **test_fetch_container_items_invalid_json_metadata()** (2 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **test_fetch_container_items_non_dict_metadata()** (2 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **test_fetch_container_items_missing_fields()** (2 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **test_container_data_to_dict_with_datetimes()** (2 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **test_container_data_to_dict_with_all_fields()** (2 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **Unit tests for container_persistence helpers and fetch_container_items.  Tests** (1 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **Test parsing None JSONB column.** (1 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **Test parsing string JSONB column.** (1 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **Test parsing dict JSONB column.** (1 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **Test parsing empty string JSONB column.** (1 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **Test parsing list JSONB column.** (1 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [websocket handler realtime](websocket_handler_realtime.md) (11 shared connections)
-- [realtime message validator](realtime_message_validator.md) (4 shared connections)
-- [room websocket updates](room_websocket_updates.md) (3 shared connections)
-- [command commands handler](command_commands_handler.md) (3 shared connections)
-- [Error Handling Core](Error_Handling_Core.md) (2 shared connections)
-- [room look commands](room_look_commands.md) (1 shared connections)
+- [command combat models](command_combat_models.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/websocket_handler.py`
-- `server/tests/unit/realtime/test_websocket_handler_core.py`
-- `server/tests/unit/realtime/test_websocket_handler_system_message.py`
-- `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- `server/tests/unit/container_persistence/test_container_persistence.py`
 
 ## Audit Trail
 
-- EXTRACTED: 170 (97%)
-- INFERRED: 6 (3%)
+- EXTRACTED: 75 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

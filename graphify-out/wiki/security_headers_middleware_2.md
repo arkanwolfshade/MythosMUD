@@ -1,27 +1,51 @@
 # security headers middleware
 
-> 4 nodes
+> 33 nodes
 
 ## Key Concepts
 
-- **.to_dict()** (4 connections) — `server/exceptions.py`
-- **._log_error()** (2 connections) — `server/exceptions.py`
-- **Log the error with structured context.** (2 connections) — `server/exceptions.py`
-- **Convert error to dictionary for API responses.** (1 connections) — `server/exceptions.py`
+- **test_security_headers.py** (20 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **MutableHeaders** (6 connections)
+- **._add_security_headers()** (3 connections) — `server/middleware/security_headers.py`
+- **test_security_headers_middleware_non_http_scope()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **test_security_headers_middleware_adds_headers()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **test_security_headers_middleware_error_handling()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **test_add_security_headers()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **test_add_security_headers_hsts_value()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **test_add_security_headers_permissions_policy()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **test_add_security_headers_csp_policy()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **test_add_security_headers_referrer_policy()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **mock_app()** (2 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **test_add_security_headers_to_response()** (2 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **test_add_security_headers_to_response_hsts_with_subdomains()** (2 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **test_add_security_headers_to_response_hsts_without_subdomains()** (2 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **test_dispatch_method()** (2 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **test_dispatch_method_error_handling()** (2 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **Add all security headers to the response.** (1 connections) — `server/middleware/security_headers.py`
+- **Unit tests for security headers middleware.  Tests the SecurityHeadersMiddleware** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **Create a mock ASGI app.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **Test middleware passes through non-HTTP connections.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **Test middleware adds security headers to HTTP responses.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **Test middleware error handling.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **Test _add_security_headers_to_response adds headers to Response.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **Test _add_security_headers_to_response includes subdomains in HSTS.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [Error Handling Core](Error_Handling_Core.md) (2 shared connections)
-- [Spell Validation](Spell_Validation.md) (1 shared connections)
+- [persistence rationale player](persistence_rationale_player.md) (4 shared connections)
+- [app factory rationale](app_factory_rationale.md) (4 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
 
 ## Source Files
 
-- `server/exceptions.py`
+- `server/middleware/security_headers.py`
+- `server/tests/unit/middleware/test_security_headers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 71 (88%)
+- INFERRED: 10 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,70 +1,50 @@
 # command parser rationale
 
-> 54 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **ansiToHtml.ts** (16 connections) — `client/src/utils/ansiToHtml.ts`
-- **ansiToHtmlWithBreaks()** (15 connections) — `client/src/utils/ansiToHtml.ts`
-- **SafeHtml.tsx** (14 connections) — `client/src/components/common/SafeHtml.tsx`
-- **ChatMessage.tsx** (14 connections) — `client/src/components/panels/chat/ChatMessage.tsx`
-- **domPurifyClient.ts** (14 connections) — `client/src/utils/domPurifyClient.ts`
-- **setup.ts** (13 connections) — `client/src/test/setup.ts`
-- **SafeHtml()** (11 connections) — `client/src/components/common/SafeHtml.tsx`
-- **ChatMessagesList.tsx** (9 connections) — `client/src/components/panels/chat/ChatMessagesList.tsx`
-- **ChatMessage()** (7 connections) — `client/src/components/panels/chat/ChatMessage.tsx`
-- **ansiToHtml()** (6 connections) — `client/src/utils/ansiToHtml.ts`
-- **domPurifyClient.test.ts** (5 connections) — `client/src/utils/__tests__/domPurifyClient.test.ts`
-- **resolveSanitizeWindow()** (5 connections) — `client/src/utils/domPurifyClient.ts`
-- **getDomPurify()** (5 connections) — `client/src/utils/domPurifyClient.ts`
-- **localStorageShim.ts** (5 connections) — `client/src/utils/localStorageShim.ts`
-- **installLocalStorageShim()** (5 connections) — `client/src/utils/localStorageShim.ts`
-- **localStorageShim.test.ts** (4 connections) — `client/src/utils/__tests__/localStorageShim.test.ts`
-- **verifiesDomPurifySanitize()** (4 connections) — `client/src/utils/domPurifyClient.ts`
-- **resolveVitestSanitizeWindow()** (4 connections) — `client/src/utils/domPurifyClient.ts`
-- **sanitizeWithDomPurify()** (4 connections) — `client/src/utils/domPurifyClient.ts`
-- **ChatMessagesList()** (3 connections) — `client/src/components/panels/chat/ChatMessagesList.tsx`
-- **domPurifyTestWindow.ts** (3 connections) — `client/src/test/domPurifyTestWindow.ts`
-- **installDomPurifyTestWindow()** (3 connections) — `client/src/test/domPurifyTestWindow.ts`
-- **ansiToHtml.test.ts** (3 connections) — `client/src/utils/ansiToHtml.test.ts`
-- **collectWindowCandidates()** (3 connections) — `client/src/utils/domPurifyClient.ts`
-- **resetDomPurifyClientForTests()** (3 connections) — `client/src/utils/domPurifyClient.ts`
-- *... and 29 more nodes in this community*
+- **test_combat_integration_base.py** (24 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
+- **_resolve_npc_combat_service_raw()** (7 connections) — `server/npc/combat_integration_base.py`
+- **integration()** (3 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
+- **test_apply_combat_effects_attribute_error_raises()** (3 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
+- **test_resolve_npc_combat_service_from_container()** (2 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
+- **test_calculate_damage_minimum_on_bad_stats()** (2 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
+- **test_apply_combat_effects_npc_target()** (2 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
+- **test_apply_combat_effects_invalid_uuid_raises()** (2 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
+- **test_apply_combat_effects_player()** (2 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
+- **test_convert_target_id_to_uuid()** (2 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
+- **test_handle_unexpected_error_logs()** (2 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
+- **test_is_target_in_login_grace_period_false()** (2 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
+- **test_apply_combat_effects_grace_period_blocks_damage()** (2 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
+- **test_apply_mental_effects_occult()** (2 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
+- **test_handle_npc_attack_direct_path()** (2 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
+- **test_calculate_damage_with_stats()** (2 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
+- **test_perform_direct_npc_attack()** (2 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
+- **test_handle_npc_attack_delegated()** (2 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
+- **Return the live NPC combat integration service for delegation.      Prefer ``C** (1 connections) — `server/npc/combat_integration_base.py`
+- **Unit tests for NPCCombatIntegrationBase helpers.** (1 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
 
 ## Relationships
 
-- [panels chat ChatPanelRuntimeViewParts](panels_chat_ChatPanelRuntimeViewParts.md) (10 shared connections)
-- [mythosApp security submitAuth](mythosApp_security_submitAuth.md) (7 shared connections)
-- [panels chatPanelRuntimeUtils chatPanelEx](panels_chatPanelRuntimeUtils_chatPanelEx.md) (7 shared connections)
-- [panels GameClientV2Dock gameLogPanelUtil](panels_GameClientV2Dock_gameLogPanelUtil.md) (6 shared connections)
-- [character creation service](character_creation_service.md) (6 shared connections)
-- [map maps useAsciiMap](map_maps_useAsciiMap.md) (4 shared connections)
-- [panels chatPanelRefactoredDerived ChatPa](panels_chatPanelRefactoredDerived_ChatPa.md) (2 shared connections)
-- [PanelContextRuntime contexts package](PanelContextRuntime_contexts_package.md) (1 shared connections)
+- [services nats service](services_nats_service.md) (16 shared connections)
+- [Error Conversion](Error_Conversion.md) (5 shared connections)
+- [circuit breaker realtime](circuit_breaker_realtime.md) (1 shared connections)
+- [shutdown admin command](shutdown_admin_command.md) (1 shared connections)
+- [tsconfig src/**/* spec](tsconfig_src-__-__spec.md) (1 shared connections)
+- [add used user](add_used_user.md) (1 shared connections)
+- [payload realtime optimizer](payload_realtime_optimizer.md) (1 shared connections)
+- [room sync service](room_sync_service.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/common/SafeHtml.tsx`
-- `client/src/components/common/__tests__/SafeHtml.test.tsx`
-- `client/src/components/panels/chat/ChatMessage.tsx`
-- `client/src/components/panels/chat/ChatMessagesList.tsx`
-- `client/src/components/panels/chat/__tests__/ChatMessage.test.tsx`
-- `client/src/components/panels/chat/__tests__/ChatMessagesList.test.tsx`
-- `client/src/test/domPurifyTestWindow.ts`
-- `client/src/test/setup.ts`
-- `client/src/utils/__tests__/domPurifyClient.test.ts`
-- `client/src/utils/__tests__/localStorageShim.test.ts`
-- `client/src/utils/ansiToHtml.test.ts`
-- `client/src/utils/ansiToHtml.ts`
-- `client/src/utils/domPurifyClient.ts`
-- `client/src/utils/localStorageShim.ts`
-- `client/src/utils/security.ts`
-- `client/src/utils/testAnsi.ts`
+- `server/npc/combat_integration_base.py`
+- `server/tests/unit/npc/test_combat_integration_base.py`
 
 ## Audit Trail
 
-- EXTRACTED: 223 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 64 (96%)
+- INFERRED: 3 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

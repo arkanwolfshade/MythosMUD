@@ -4,60 +4,51 @@
 
 ## Key Concepts
 
-- **useGameConnectionRefactored.ts** (18 connections) — `client/src/hooks/useGameConnectionRefactored.ts`
-- **useGameConnection()** (12 connections) — `client/src/hooks/useGameConnectionRefactored.ts`
-- **useConnectionStateMachine.ts** (8 connections) — `client/src/hooks/useConnectionStateMachine.ts`
-- **useConnectionState.ts** (7 connections) — `client/src/hooks/useConnectionState.ts`
-- **useSessionManagement.ts** (7 connections) — `client/src/hooks/useSessionManagement.ts`
-- **useGameConnection.ts** (5 connections) — `client/src/hooks/useGameConnection.ts`
-- **useConnectionState()** (4 connections) — `client/src/hooks/useConnectionState.ts`
-- **connectionMachine** (4 connections) — `client/src/hooks/useConnectionStateMachine.ts`
-- **useGameConnection.test.ts** (4 connections) — `client/src/hooks/useGameConnection.test.ts`
-- **useSessionManagement()** (4 connections) — `client/src/hooks/useSessionManagement.ts`
-- **useGameConnection.export.test.ts** (3 connections) — `client/src/hooks/__tests__/useGameConnection.export.test.ts`
-- **ConnectionContext** (3 connections) — `client/src/hooks/useConnectionStateMachine.ts`
-- **UseGameConnectionOptions** (3 connections) — `client/src/hooks/useGameConnectionRefactored.ts`
-- **useConnectionState.test.ts** (2 connections) — `client/src/hooks/__tests__/useConnectionState.test.ts`
-- **useConnectionStateMachine.test.ts** (2 connections) — `client/src/hooks/__tests__/useConnectionStateMachine.test.ts`
-- **useSessionManagement.test.ts** (2 connections) — `client/src/hooks/__tests__/useSessionManagement.test.ts`
-- **UseConnectionStateResult** (2 connections) — `client/src/hooks/useConnectionState.ts`
-- **useConnectionStateMachine.test.ts** (2 connections) — `client/src/hooks/useConnectionStateMachine.test.ts`
-- **generateSecureSessionId()** (2 connections) — `client/src/hooks/useGameConnectionRefactored.ts`
-- **ConnectionState** (1 connections) — `client/src/hooks/useConnectionStateMachine.ts`
-- **ConnectionEvent** (1 connections) — `client/src/hooks/useConnectionStateMachine.ts`
-- **ConnectionMachineInput** (1 connections) — `client/src/hooks/useConnectionStateMachine.ts`
-- **mockWebSocket** (1 connections) — `client/src/hooks/useGameConnection.test.ts`
-- **NOTE: JWT tokens are passed via query string, not subprotocol, because JWT conta** (1 connections) — `client/src/hooks/useGameConnection.test.ts`
-- **GameEvent** (1 connections) — `client/src/hooks/useGameConnectionRefactored.ts`
+- **quest_chat_notify.py** (20 connections) — `server/game/quest/quest_chat_notify.py`
+- **schedule_personal_system()** (12 connections) — `server/game/chat_npc_system.py`
+- **should_notify_quest_progress()** (10 connections) — `server/game/quest/quest_chat_notify.py`
+- **notify_quest_progress()** (9 connections) — `server/game/quest/quest_chat_notify.py`
+- **notify_quest_started()** (8 connections) — `server/game/quest/quest_chat_notify.py`
+- **notify_quest_completed()** (8 connections) — `server/game/quest/quest_chat_notify.py`
+- **notify_quest_abandoned()** (8 connections) — `server/game/quest/quest_chat_notify.py`
+- **test_notify_quest_lifecycle_schedules_personal_system()** (6 connections) — `server/tests/unit/game/test_chat_npc_system.py`
+- **UUID** (5 connections)
+- **_goal_is_met()** (5 connections) — `server/game/quest/quest_chat_notify.py`
+- **schedule_coro()** (4 connections) — `server/game/chat_npc_system.py`
+- **Any** (4 connections)
+- **_progress_has_any_value()** (4 connections) — `server/game/quest/quest_chat_notify.py`
+- **_as_int()** (3 connections) — `server/game/quest/quest_chat_notify.py`
+- **test_should_notify_quest_progress_milestones()** (3 connections) — `server/tests/unit/game/test_chat_npc_system.py`
+- **Fire-and-forget a coroutine on the running loop when available.** (1 connections) — `server/game/chat_npc_system.py`
+- **Schedule personal system chat from sync or async callers.** (1 connections) — `server/game/chat_npc_system.py`
+- **Quest lifecycle and NPC quest-line chat helpers (issue #146 MVP).  # group: ques** (1 connections) — `server/game/quest/quest_chat_notify.py`
+- **Personal system chat when a quest becomes active.** (1 connections) — `server/game/quest/quest_chat_notify.py`
+- **Personal system chat for milestone progress (first tick or goal newly met).** (1 connections) — `server/game/quest/quest_chat_notify.py`
+- **Personal system chat when a quest completes.** (1 connections) — `server/game/quest/quest_chat_notify.py`
+- **Personal system chat when a quest is abandoned.** (1 connections) — `server/game/quest/quest_chat_notify.py`
+- **Coerce progress/config scalars to int; non-numeric becomes default.** (1 connections) — `server/game/quest/quest_chat_notify.py`
+- **Return True if one goal is satisfied given current progress.** (1 connections) — `server/game/quest/quest_chat_notify.py`
+- **True if any goal slot has a non-zero / non-empty progress value.** (1 connections) — `server/game/quest/quest_chat_notify.py`
 - *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [project paths rationale](project_paths_rationale.md) (4 shared connections)
-- [roomHandlers eventHandlers calculateOccu](roomHandlers_eventHandlers_calculateOccu.md) (3 shared connections)
-- [Game Terminal UI](Game_Terminal_UI.md) (2 shared connections)
-- [mythosApp security submitAuth](mythosApp_security_submitAuth.md) (2 shared connections)
-- [GameClientV2Container emptyOccupantsDiag](GameClientV2Container_emptyOccupantsDiag.md) (1 shared connections)
-- [realtime maintenance connection](realtime_maintenance_connection.md) (1 shared connections)
+- [quest chat game](quest_chat_game.md) (13 shared connections)
+- [quest game service](quest_game_service.md) (13 shared connections)
+- [commands quest rationale](commands_quest_rationale.md) (6 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [dialogue service game](dialogue_service_game.md) (2 shared connections)
 
 ## Source Files
 
-- `client/src/hooks/__tests__/useConnectionState.test.ts`
-- `client/src/hooks/__tests__/useConnectionStateMachine.test.ts`
-- `client/src/hooks/__tests__/useGameConnection.export.test.ts`
-- `client/src/hooks/__tests__/useSessionManagement.test.ts`
-- `client/src/hooks/useConnectionState.ts`
-- `client/src/hooks/useConnectionStateMachine.test.ts`
-- `client/src/hooks/useConnectionStateMachine.ts`
-- `client/src/hooks/useGameConnection.test.ts`
-- `client/src/hooks/useGameConnection.ts`
-- `client/src/hooks/useGameConnectionRefactored.ts`
-- `client/src/hooks/useSessionManagement.ts`
+- `server/game/chat_npc_system.py`
+- `server/game/quest/quest_chat_notify.py`
+- `server/tests/unit/game/test_chat_npc_system.py`
 
 ## Audit Trail
 
-- EXTRACTED: 102 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 122 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

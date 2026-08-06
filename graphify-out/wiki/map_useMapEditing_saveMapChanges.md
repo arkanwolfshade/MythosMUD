@@ -1,25 +1,18 @@
 # map useMapEditing saveMapChanges
 
-> 116 nodes
+> 63 nodes
 
 ## Key Concepts
 
 - **RoomMapEditorRuntime.tsx** (37 connections) — `client/src/components/map/RoomMapEditorRuntime.tsx`
-- **types.ts** (32 connections) — `client/src/components/map/types.ts`
-- **RoomNodeData** (30 connections) — `client/src/components/map/types.ts`
 - **mapUtils.ts** (27 connections) — `client/src/components/map/utils/mapUtils.ts`
-- **layout.ts** (26 connections) — `client/src/components/map/utils/layout.ts`
 - **RoomMapViewer.tsx** (25 connections) — `client/src/components/map/RoomMapViewer.tsx`
 - **useMapLayout.ts** (22 connections) — `client/src/components/map/hooks/useMapLayout.ts`
-- **ExitEdgeData** (19 connections) — `client/src/components/map/types.ts`
 - **useRoomMapData.ts** (18 connections) — `client/src/components/map/hooks/useRoomMapData.ts`
 - **RoomMapViewer.test-utils.tsx** (17 connections) — `client/src/components/map/__tests__/RoomMapViewer.test-utils.tsx`
 - **RoomMapViewer.map-controls.test.tsx** (16 connections) — `client/src/components/map/__tests__/RoomMapViewer.map-controls.test.tsx`
-- **useMapEditing.ts** (16 connections) — `client/src/components/map/hooks/useMapEditing.ts`
 - **createEdgesFromRooms()** (16 connections) — `client/src/components/map/utils/mapUtils.ts`
-- **saveMapChanges.ts** (16 connections) — `client/src/components/map/utils/saveMapChanges.ts`
 - **Room** (16 connections) — `client/src/stores/gameStore.ts`
-- **getVersionedApiBaseUrl()** (16 connections) — `client/src/utils/config.ts`
 - **useMapLayout()** (15 connections) — `client/src/components/map/hooks/useMapLayout.ts`
 - **roomsToNodes()** (15 connections) — `client/src/components/map/utils/mapUtils.ts`
 - **RoomMapViewer.rendering.test.tsx** (14 connections) — `client/src/components/map/__tests__/RoomMapViewer.rendering.test.tsx`
@@ -28,27 +21,31 @@
 - **RoomMapViewer.interactions.test.tsx** (12 connections) — `client/src/components/map/__tests__/RoomMapViewer.interactions.test.tsx`
 - **RoomMapViewer()** (10 connections) — `client/src/components/map/RoomMapViewer.tsx`
 - **RoomMapViewer.data-loading.test.tsx** (10 connections) — `client/src/components/map/__tests__/RoomMapViewer.data-loading.test.tsx`
-- **applyForceLayout()** (10 connections) — `client/src/components/map/utils/layout.ts`
-- *... and 91 more nodes in this community*
+- **MapControls.tsx** (9 connections) — `client/src/components/map/MapControls.tsx`
+- **RoomDetailsPanel.tsx** (9 connections) — `client/src/components/map/RoomDetailsPanel.tsx`
+- **setupDefaultMocks()** (9 connections) — `client/src/components/map/__tests__/RoomMapViewer.test-utils.tsx`
+- **RoomMapEditorAliases.test.ts** (7 connections) — `client/src/components/map/__tests__/RoomMapEditorAliases.test.ts`
+- **mapUtils.test.ts** (7 connections) — `client/src/components/map/utils/__tests__/mapUtils.test.ts`
+- **applyGridLayout()** (7 connections) — `client/src/components/map/utils/layout.ts`
+- **MapControls()** (6 connections) — `client/src/components/map/MapControls.tsx`
+- **RoomMapEditor.test.tsx** (6 connections) — `client/src/components/map/__tests__/RoomMapEditor.test.tsx`
+- *... and 38 more nodes in this community*
 
 ## Relationships
 
-- [map ExitEdge nodes](map_ExitEdge_nodes.md) (20 shared connections)
-- [EdgeCreationModal map STANDARD](EdgeCreationModal_map_STANDARD.md) (13 shared connections)
-- [stores connectionStore commandStore](stores_connectionStore_commandStore.md) (11 shared connections)
-- [RoomEditModal map buildInitialFormData()](RoomEditModal_map_buildInitialFormData%28%29.md) (8 shared connections)
+- [websocket realtime handler](websocket_realtime_handler.md) (44 shared connections)
+- [containers stores containerStore](containers_stores_containerStore.md) (10 shared connections)
+- [map maps useAsciiMap](map_maps_useAsciiMap.md) (8 shared connections)
 - [mapPageRenderer mapPageState MapPage](mapPageRenderer_mapPageState_MapPage.md) (6 shared connections)
-- [mythosApp appLazyScreens mythosAppViewMo](mythosApp_appLazyScreens_mythosAppViewMo.md) (6 shared connections)
-- [map maps useAsciiMap](map_maps_useAsciiMap.md) (4 shared connections)
+- [RoomEditModal map buildInitialFormData()](RoomEditModal_map_buildInitialFormData%28%29.md) (5 shared connections)
 - [performance map debounce()](performance_map_debounce%28%29.md) (3 shared connections)
 - [apiTypeGuards FIELDS SHARED](apiTypeGuards_FIELDS_SHARED.md) (3 shared connections)
-- [Game Terminal UI](Game_Terminal_UI.md) (2 shared connections)
-- [dialogue DialogueEditorPage baseUrl()](dialogue_DialogueEditorPage_baseUrl%28%29.md) (2 shared connections)
-- [persistence services combat](persistence_services_combat.md) (2 shared connections)
+- [config rationale config()](config_rationale_config%28%29.md) (1 shared connections)
+- [combat service services](combat_service_services.md) (1 shared connections)
+- [GameClientV2Container emptyOccupantsDiag](GameClientV2Container_emptyOccupantsDiag.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/map/EdgeDetailsPanel.tsx`
 - `client/src/components/map/MapControls.tsx`
 - `client/src/components/map/MapEditToolbar.tsx`
 - `client/src/components/map/RoomDetailsPanel.tsx`
@@ -59,7 +56,6 @@
 - `client/src/components/map/RoomMapEditorRuntime.tsx`
 - `client/src/components/map/RoomMapEditorScene.tsx`
 - `client/src/components/map/RoomMapViewer.tsx`
-- `client/src/components/map/__tests__/EdgeDetailsPanel.test.tsx`
 - `client/src/components/map/__tests__/MapControls.test.tsx`
 - `client/src/components/map/__tests__/RoomDetailsPanel.test.tsx`
 - `client/src/components/map/__tests__/RoomMapEditor.test.tsx`
@@ -68,11 +64,13 @@
 - `client/src/components/map/__tests__/RoomMapViewer.interactions.test.tsx`
 - `client/src/components/map/__tests__/RoomMapViewer.map-controls.test.tsx`
 - `client/src/components/map/__tests__/RoomMapViewer.rendering.test.tsx`
+- `client/src/components/map/__tests__/RoomMapViewer.test-utils.tsx`
+- `client/src/components/map/__tests__/roomMapEditorTestSetup.tsx`
 
 ## Audit Trail
 
-- EXTRACTED: 757 (99%)
-- INFERRED: 8 (1%)
+- EXTRACTED: 452 (98%)
+- INFERRED: 8 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

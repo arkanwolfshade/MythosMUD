@@ -1,53 +1,44 @@
 # idle npc movement
 
-> 22 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **NPCCommunicationBridge** (14 connections) — `server/npc/threading.py`
-- **Any** (11 connections)
-- **._process_wander_action()** (8 connections) — `server/npc/threading.py`
-- **._process_npc_message()** (5 connections) — `server/npc/threading.py`
-- **.add_message()** (3 connections) — `server/npc/threading.py`
-- **.send_message_to_npc()** (3 connections) — `server/npc/threading.py`
-- **.receive_message_from_npc()** (3 connections) — `server/npc/threading.py`
-- **.broadcast_to_all_npcs()** (3 connections) — `server/npc/threading.py`
-- **.get_pending_messages()** (3 connections) — `server/npc/threading.py`
-- **.get_messages_for_npc()** (3 connections) — `server/npc/threading.py`
-- **test_npc_communication_bridge_messages()** (2 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- **test_bridge_receive_message_failure()** (2 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- **test_bridge_broadcast_failure()** (2 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- **Add a message to an NPC's pending message queue.          Args:             npc_** (1 connections) — `server/npc/threading.py`
-- **Process a message for an NPC.** (1 connections) — `server/npc/threading.py`
-- **Process a WANDER action for idle movement.          Args:             npc_id: ID** (1 connections) — `server/npc/threading.py`
-- **Bridge for communication between NPC threads and main game thread.      This cla** (1 connections) — `server/npc/threading.py`
-- **Send a message to a specific NPC.          Args:             npc_id: The NPC's I** (1 connections) — `server/npc/threading.py`
-- **Receive a message from a specific NPC.          Args:             npc_id: The NP** (1 connections) — `server/npc/threading.py`
-- **Broadcast a message to all NPCs.          Args:             message: The message** (1 connections) — `server/npc/threading.py`
-- **Get all pending outgoing messages from NPCs.** (1 connections) — `server/npc/threading.py`
-- **Get pending messages for a specific NPC.** (1 connections) — `server/npc/threading.py`
+- **GameTerminalContext.test.tsx** (18 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
+- **useGameTerminalContext.ts** (9 connections) — `client/src/contexts/hooks/useGameTerminalContext.ts`
+- **GameTerminalContext.tsx** (8 connections) — `client/src/contexts/GameTerminalContext.tsx`
+- **useGameTerminalContext()** (7 connections) — `client/src/contexts/hooks/useGameTerminalContext.ts`
+- **useConnectionState()** (4 connections) — `client/src/contexts/hooks/useGameTerminalContext.ts`
+- **useSessionState()** (4 connections) — `client/src/contexts/hooks/useGameTerminalContext.ts`
+- **useGameState()** (4 connections) — `client/src/contexts/hooks/useGameTerminalContext.ts`
+- **useGameActions()** (4 connections) — `client/src/contexts/hooks/useGameTerminalContext.ts`
+- **GameTerminalProvider()** (3 connections) — `client/src/contexts/GameTerminalContext.tsx`
+- **GameTerminalContextType** (2 connections) — `client/src/contexts/GameTerminalContext.tsx`
+- **GameTerminalContext** (2 connections) — `client/src/contexts/GameTerminalContext.tsx`
+- **TestComponent()** (2 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
+- **ConnectionTestComponent()** (2 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
+- **SessionTestComponent()** (2 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
+- **GameStateTestComponent()** (2 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
+- **GameActionsTestComponent()** (2 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
+- **GameTerminalProviderProps** (1 connections) — `client/src/contexts/GameTerminalContext.tsx`
+- **createDefaultGameTerminalState()** (1 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
+- **useGameTerminalMock** (1 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
 
 ## Relationships
 
-- [npc shopkeeper rationale](npc_shopkeeper_rationale.md) (9 shared connections)
-- [npc behavior engine](npc_behavior_engine.md) (2 shared connections)
-- [idle movement npc](idle_movement_npc.md) (2 shared connections)
-- [nats services service](nats_services_service.md) (1 shared connections)
-- [Error Conversion](Error_Conversion.md) (1 shared connections)
-- [logging setup structured](logging_setup_structured.md) (1 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
-- [NPC Combat](NPC_Combat.md) (1 shared connections)
-- [middleware metrics collector](middleware_metrics_collector.md) (1 shared connections)
+- [stores connectionStore commandStore](stores_connectionStore_commandStore.md) (5 shared connections)
+- [command factories create](command_factories_create.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/threading.py`
-- `server/tests/unit/npc/test_npc_threading_messages.py`
+- `client/src/contexts/GameTerminalContext.tsx`
+- `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
+- `client/src/contexts/hooks/useGameTerminalContext.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 69 (97%)
-- INFERRED: 2 (3%)
+- EXTRACTED: 78 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

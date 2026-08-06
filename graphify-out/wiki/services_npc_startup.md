@@ -1,57 +1,45 @@
 # services npc startup
 
-> 33 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **PersonalMessageSender** (21 connections) — `server/realtime/messaging/personal_message_sender.py`
-- **personal_message_sender.py** (15 connections) — `server/realtime/messaging/personal_message_sender.py`
-- **test_personal_message_sender.py** (14 connections) — `server/tests/unit/realtime/test_personal_message_sender.py`
-- **.send_message()** (8 connections) — `server/realtime/messaging/personal_message_sender.py`
-- **UUID** (7 connections)
-- **._prepare_payload()** (7 connections) — `server/realtime/messaging/personal_message_sender.py`
-- **Any** (6 connections)
-- **._send_to_websocket()** (6 connections) — `server/realtime/messaging/personal_message_sender.py`
-- **._queue_message_if_needed()** (6 connections) — `server/realtime/messaging/personal_message_sender.py`
-- **__init__.py** (5 connections) — `server/realtime/messaging/__init__.py`
-- **.__init__()** (4 connections) — `server/realtime/messaging/personal_message_sender.py`
-- **.get_delivery_stats()** (4 connections) — `server/realtime/messaging/personal_message_sender.py`
-- **test_send_to_websocket_accept_first_is_debug_not_warning()** (4 connections) — `server/tests/unit/realtime/test_personal_message_sender.py`
-- **test_send_to_websocket_empty_runtime_error_is_debug()** (3 connections) — `server/tests/unit/realtime/test_personal_message_sender.py`
-- **test_get_delivery_stats()** (3 connections) — `server/tests/unit/realtime/test_personal_message_sender.py`
-- **test_send_message_outer_exception()** (3 connections) — `server/tests/unit/realtime/test_personal_message_sender.py`
-- **sender()** (2 connections) — `server/tests/unit/realtime/test_personal_message_sender.py`
-- **test_send_message_delivers_via_websocket()** (2 connections) — `server/tests/unit/realtime/test_personal_message_sender.py`
-- **test_send_message_queues_when_offline()** (2 connections) — `server/tests/unit/realtime/test_personal_message_sender.py`
-- **test_prepare_payload_too_large()** (2 connections) — `server/tests/unit/realtime/test_personal_message_sender.py`
-- **test_send_to_websocket_disconnect()** (2 connections) — `server/tests/unit/realtime/test_personal_message_sender.py`
-- **LogCaptureFixture** (2 connections)
-- **Messaging components for connection management.  This package provides modular m** (1 connections) — `server/realtime/messaging/__init__.py`
-- **Personal message delivery for connection management.  This module provides direc** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
-- **Sends personal messages to individual players.      This class provides:     - P** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
-- *... and 8 more nodes in this community*
+- **initialize_nats_and_combat_services()** (9 connections) — `server/app/lifespan_startup.py`
+- **PlayerLifecycleServices** (8 connections) — `server/services/combat_service_types.py`
+- **._create_combat_service_with_nats()** (7 connections) — `server/container/bundles/combat.py`
+- **set_combat_service()** (6 connections) — `server/services/combat_service_state.py`
+- **test_initialize_nats_and_combat_services()** (3 connections) — `server/tests/unit/app/test_lifespan_startup.py`
+- **Initialize NATS-dependent services including combat service.      DEPRECATED: Th** (1 connections) — `server/app/lifespan_startup.py`
+- **Create CombatService with NATS and register it. Assumes NATS is connected.** (1 connections) — `server/container/bundles/combat.py`
+- **Set the global combat service instance.** (1 connections) — `server/services/combat_service_state.py`
+- **Player death and respawn services for CombatService injection.** (1 connections) — `server/services/combat_service_types.py`
+- **Test initialize_nats_and_combat_services() initializes NATS and combat.** (1 connections) — `server/tests/unit/app/test_lifespan_startup.py`
 
 ## Relationships
 
-- [taunt combat commands](taunt_combat_commands.md) (7 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (5 shared connections)
-- [combat configuration service](combat_configuration_service.md) (2 shared connections)
-- [Loot Generation](Loot_Generation.md) (2 shared connections)
-- [npc event handlers](npc_event_handlers.md) (2 shared connections)
-- [room websocket updates](room_websocket_updates.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [websocket helpers realtime](websocket_helpers_realtime.md) (1 shared connections)
+- [npc database infrastructure](npc_database_infrastructure.md) (4 shared connections)
+- [catatonia registry services](catatonia_registry_services.md) (2 shared connections)
+- [nats services service](nats_services_service.md) (2 shared connections)
+- [persistence core infrastructure](persistence_core_infrastructure.md) (2 shared connections)
+- [subject admin controller](subject_admin_controller.md) (2 shared connections)
+- [player service game](player_service_game.md) (2 shared connections)
+- [websocket realtime handler](websocket_realtime_handler.md) (1 shared connections)
+- [realtime monitoring performance](realtime_monitoring_performance.md) (1 shared connections)
+- [spell game magic](spell_game_magic.md) (1 shared connections)
+- [player room realtime](player_room_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/messaging/__init__.py`
-- `server/realtime/messaging/personal_message_sender.py`
-- `server/tests/unit/realtime/test_personal_message_sender.py`
+- `server/app/lifespan_startup.py`
+- `server/container/bundles/combat.py`
+- `server/services/combat_service_state.py`
+- `server/services/combat_service_types.py`
+- `server/tests/unit/app/test_lifespan_startup.py`
 
 ## Audit Trail
 
-- EXTRACTED: 135 (97%)
-- INFERRED: 4 (3%)
+- EXTRACTED: 27 (71%)
+- INFERRED: 11 (29%)
 - AMBIGUOUS: 0 (0%)
 
 ---

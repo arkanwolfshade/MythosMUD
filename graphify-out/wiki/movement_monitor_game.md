@@ -1,52 +1,60 @@
 # movement monitor game
 
-> 74 nodes
+> 84 nodes
 
 ## Key Concepts
 
-- **test_logging_processors.py** (36 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **set_global_player_service()** (17 connections) — `server/structured_logging/logging_processors.py`
-- **enhance_player_ids()** (17 connections) — `server/structured_logging/logging_processors.py`
-- **sanitize_sensitive_data()** (14 connections) — `server/structured_logging/logging_processors.py`
-- **logging_processors.py** (12 connections) — `server/structured_logging/logging_processors.py`
-- **add_request_context()** (11 connections) — `server/structured_logging/logging_processors.py`
-- **add_correlation_id()** (8 connections) — `server/structured_logging/logging_processors.py`
-- **EventDict** (5 connections)
-- **test_enhance_player_ids_persistence_error()** (5 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_enhance_player_ids_no_player_service()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_enhance_player_ids_player_found()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_enhance_player_ids_player_not_found()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_enhance_player_ids_invalid_uuid_format()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_enhance_player_ids_short_string()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_enhance_player_ids_non_string_value()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_enhance_player_ids_no_player_id_field()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_enhance_player_ids_player_no_name_attribute()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_enhance_player_ids_prevents_recursion()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_enhance_player_ids_no_persistence_attribute()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_set_global_player_service()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_sanitize_sensitive_data_password()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_sanitize_sensitive_data_token()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_sanitize_sensitive_data_api_key()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_sanitize_sensitive_data_safe_fields()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_sanitize_sensitive_data_nested_dict()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- *... and 49 more nodes in this community*
+- **test_player_presence_tracker.py** (38 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **player_presence_tracker.py** (31 connections) — `server/realtime/player_presence_tracker.py`
+- **track_player_disconnected_impl()** (29 connections) — `server/realtime/player_presence_tracker.py`
+- **track_player_connected_impl()** (16 connections) — `server/realtime/player_presence_tracker.py`
+- **_build_player_info()** (10 connections) — `server/realtime/player_presence_tracker.py`
+- **Any** (9 connections)
+- **_resolve_room_id()** (9 connections) — `server/realtime/player_presence_tracker.py`
+- **_should_skip_disconnect()** (9 connections) — `server/realtime/player_presence_tracker.py`
+- **_acquire_disconnect_lock()** (9 connections) — `server/realtime/player_presence_tracker.py`
+- **_get_instance_manager_from_manager()** (6 connections) — `server/realtime/player_presence_tracker.py`
+- **test_player_presence_tracker_grace_period.py** (6 connections) — `server/tests/unit/realtime/test_player_presence_tracker_grace_period.py`
+- **_resolve_room_id_for_tutorial_reconnect()** (5 connections) — `server/realtime/player_presence_tracker.py`
+- **UUID** (4 connections)
+- **test_broadcast_connection_message_impl_error()** (4 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **test_track_player_disconnected_impl_error()** (4 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **test_track_player_disconnected_impl_finally_cleanup()** (4 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **test_build_player_info_new_connection()** (3 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **test_build_player_info_existing_connection()** (3 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **test_build_player_info_no_level()** (3 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **test_resolve_room_id_no_persistence()** (3 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **test_resolve_room_id_no_room_id()** (3 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **test_resolve_room_id_success()** (3 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **test_resolve_room_id_room_no_id()** (3 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **test_track_player_connected_impl_new_connection()** (3 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **test_track_player_connected_impl_existing_connection()** (3 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- *... and 59 more nodes in this community*
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (11 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (4 shared connections)
-- [Magic Spell Service](Magic_Spell_Service.md) (1 shared connections)
-- [websocket helpers realtime](websocket_helpers_realtime.md) (1 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (9 shared connections)
+- [lucidity npc combat](lucidity_npc_combat.md) (9 shared connections)
+- [player disconnect handlers](player_disconnect_handlers.md) (9 shared connections)
+- [command commands talk](command_commands_talk.md) (6 shared connections)
+- [Error Conversion](Error_Conversion.md) (3 shared connections)
+- [npc combat base](npc_combat_base.md) (3 shared connections)
+- [help content websocket](help_content_websocket.md) (3 shared connections)
+- [rest grace period](rest_grace_period.md) (3 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (2 shared connections)
+- [shutdown admin command](shutdown_admin_command.md) (1 shared connections)
+- [room realtime occupant](room_realtime_occupant.md) (1 shared connections)
 
 ## Source Files
 
-- `server/structured_logging/logging_processors.py`
-- `server/tests/unit/structured_logging/test_logging_processors.py`
+- `server/realtime/player_presence_tracker.py`
+- `server/tests/unit/realtime/test_player_presence_tracker.py`
+- `server/tests/unit/realtime/test_player_presence_tracker_grace_period.py`
 
 ## Audit Trail
 
-- EXTRACTED: 248 (97%)
-- INFERRED: 7 (3%)
+- EXTRACTED: 311 (99%)
+- INFERRED: 4 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

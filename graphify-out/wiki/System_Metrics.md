@@ -1,62 +1,64 @@
 # System Metrics
 
-> 49 nodes
+> 98 nodes
 
 ## Key Concepts
 
-- **system_monitoring.py** (23 connections) — `server/api/system_monitoring.py`
-- **TestMonitoringEndpoints** (16 connections) — `server/tests/unit/test_main.py`
-- **__init__.py** (10 connections) — `server/api/__init__.py`
-- **get_system_monitoring_summary()** (10 connections) — `server/api/system_monitoring.py`
-- **resolve_system_alert()** (10 connections) — `server/api/system_monitoring.py`
-- **get_system_health()** (9 connections) — `server/api/system_monitoring.py`
-- **get_system_monitoring_alerts()** (9 connections) — `server/api/system_monitoring.py`
-- **SystemHealthResponse** (5 connections) — `server/api/monitoring_models.py`
-- **SystemMonitoringSummaryResponse** (5 connections) — `server/api/monitoring_models.py`
-- **SystemAlertsResponse** (5 connections) — `server/api/monitoring_models.py`
-- **AlertResolveResponse** (5 connections) — `server/api/monitoring_models.py`
-- **Request** (5 connections)
-- **.test_health_check_failure()** (4 connections) — `server/tests/unit/test_main.py`
-- **.test_get_metrics_failure()** (4 connections) — `server/tests/unit/test_main.py`
-- **.test_get_monitoring_summary_failure()** (4 connections) — `server/tests/unit/test_main.py`
-- **.test_get_alerts_failure()** (4 connections) — `server/tests/unit/test_main.py`
-- **.test_resolve_alert_not_found()** (4 connections) — `server/tests/unit/test_main.py`
-- **.test_resolve_alert_failure()** (4 connections) — `server/tests/unit/test_main.py`
-- **.test_health_check_success()** (3 connections) — `server/tests/unit/test_main.py`
-- **.test_get_metrics_success()** (3 connections) — `server/tests/unit/test_main.py`
-- **.test_get_monitoring_summary_success()** (3 connections) — `server/tests/unit/test_main.py`
-- **.test_get_alerts_success()** (3 connections) — `server/tests/unit/test_main.py`
-- **.test_resolve_alert_success()** (3 connections) — `server/tests/unit/test_main.py`
-- **.mock_app()** (2 connections) — `server/tests/unit/test_main.py`
-- **.mock_dashboard()** (2 connections) — `server/tests/unit/test_main.py`
-- *... and 24 more nodes in this community*
+- **Stats** (88 connections) — `server/models/game.py`
+- **StatsGenerator** (48 connections) — `server/game/stats_generator.py`
+- **test_game_stats_methods.py** (31 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_generator.py** (19 connections) — `server/tests/unit/game/test_stats_generator.py`
+- **stats_generator.py** (15 connections) — `server/game/stats_generator.py`
+- **character_creation_service.py** (13 connections) — `server/game/character_creation_service.py`
+- **generate_random_stats()** (12 connections) — `server/game/stats_generator.py`
+- **.__init__()** (4 connections) — `server/models/game.py`
+- **._compute_max_dp_if_missing()** (3 connections) — `server/models/game.py`
+- **.get_attribute_modifier()** (3 connections) — `server/models/game.py`
+- **test_roll_stats_unknown_method_falls_back_to_3d6()** (3 connections) — `server/tests/unit/game/test_stats_generator.py`
+- **test_validate_class_prerequisites_passes_investigator()** (3 connections) — `server/tests/unit/game/test_stats_generator.py`
+- **test_validate_class_prerequisites_fails_occultist()** (3 connections) — `server/tests/unit/game/test_stats_generator.py`
+- **test_validate_class_prerequisites_unknown_class()** (3 connections) — `server/tests/unit/game/test_stats_generator.py`
+- **test_get_available_classes_filters_by_prerequisites()** (3 connections) — `server/tests/unit/game/test_stats_generator.py`
+- **test_roll_stats_with_validation_respects_required_class()** (3 connections) — `server/tests/unit/game/test_stats_generator.py`
+- **test_check_profession_requirements_maps_wisdom_to_power()** (3 connections) — `server/tests/unit/game/test_stats_generator.py`
+- **test_check_profession_requirements_unknown_stat_fails()** (3 connections) — `server/tests/unit/game/test_stats_generator.py`
+- **test_get_stat_summary_includes_totals()** (3 connections) — `server/tests/unit/game/test_stats_generator.py`
+- **test_roll_stats_with_profession_no_requirements()** (3 connections) — `server/tests/unit/game/test_stats_generator.py`
+- **test_stats_validate_current_vs_max_stats_caps_dp()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_validate_current_vs_max_stats_caps_magic_points()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_validate_current_vs_max_stats_caps_lucidity()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_validate_current_vs_max_stats_allows_valid_values()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_get_attribute_modifier_negative()** (3 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- *... and 73 more nodes in this community*
 
 ## Relationships
 
-- [health models rationale](health_models_rationale.md) (13 shared connections)
-- [Exception Containers](Exception_Containers.md) (12 shared connections)
-- [room cache services](room_cache_services.md) (6 shared connections)
-- [command combat models](command_combat_models.md) (5 shared connections)
-- [Magic Spell Service](Magic_Spell_Service.md) (5 shared connections)
-- [NPC Combat](NPC_Combat.md) (4 shared connections)
-- [player preferences services](player_preferences_services.md) (1 shared connections)
-- [commands follow rationale](commands_follow_rationale.md) (1 shared connections)
-- [Player Stats](Player_Stats.md) (1 shared connections)
-- [combat commands handler](combat_commands_handler.md) (1 shared connections)
-- [room game service](room_game_service.md) (1 shared connections)
-- [commands skills rationale](commands_skills_rationale.md) (1 shared connections)
+- [player service game](player_service_game.md) (15 shared connections)
+- [commands admin helpers](commands_admin_helpers.md) (12 shared connections)
+- [admin auth service](admin_auth_service.md) (12 shared connections)
+- [persistence container extended](persistence_container_extended.md) (10 shared connections)
+- [npc rationale extract](npc_rationale_extract.md) (7 shared connections)
+- [services npc startup](services_npc_startup.md) (6 shared connections)
+- [tick service services](tick_service_services.md) (6 shared connections)
+- [Error Conversion](Error_Conversion.md) (5 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (4 shared connections)
+- [combat services turn](combat_services_turn.md) (4 shared connections)
+- [schemas invite user](schemas_invite_user.md) (4 shared connections)
+- [add used user](add_used_user.md) (3 shared connections)
 
 ## Source Files
 
-- `server/api/__init__.py`
-- `server/api/monitoring_models.py`
-- `server/api/system_monitoring.py`
-- `server/tests/unit/test_main.py`
+- `server/game/character_creation_service.py`
+- `server/game/stats_generator.py`
+- `server/models/game.py`
+- `server/tests/unit/api/test_character_creation.py`
+- `server/tests/unit/game/test_stats_generator.py`
+- `server/tests/unit/models/test_game_stats_methods.py`
 
 ## Audit Trail
 
-- EXTRACTED: 172 (96%)
-- INFERRED: 7 (4%)
+- EXTRACTED: 389 (95%)
+- INFERRED: 19 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

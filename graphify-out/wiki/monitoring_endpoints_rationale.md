@@ -1,63 +1,78 @@
 # monitoring endpoints rationale
 
-> 69 nodes
+> 325 nodes
 
 ## Key Concepts
 
+- **alias_storage.py** (75 connections) — `server/alias_storage.py`
+- **inventory_command_helpers.py** (48 connections) — `server/commands/inventory_command_helpers.py`
+- **command_result_text()** (41 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
+- **admin_summon_command.py** (35 connections) — `server/commands/admin_summon_command.py`
 - **inventory_pickup_command.py** (35 connections) — `server/commands/inventory_pickup_command.py`
+- **inventory_unequip_command.py** (33 connections) — `server/commands/inventory_unequip_command.py`
+- **persist_player()** (30 connections) — `server/commands/inventory_command_helpers.py`
 - **inventory_get_command.py** (30 connections) — `server/commands/inventory_get_command.py`
+- **inventory_commands.py** (28 connections) — `server/commands/inventory_commands.py`
+- **test_inventory_helpers_extended.py** (26 connections) — `server/tests/unit/commands/test_inventory_helpers_extended.py`
+- **inventory_drop_command.py** (25 connections) — `server/commands/inventory_drop_command.py`
 - **test_inventory_get_command.py** (25 connections) — `server/tests/unit/commands/test_inventory_get_command.py`
+- **test_inventory_put_command.py** (24 connections) — `server/tests/unit/commands/test_inventory_put_command.py`
+- **test_inventory_commands_more_helpers.py** (23 connections) — `server/tests/unit/commands/test_inventory_commands_more_helpers.py`
+- **inventory_put_command.py** (22 connections) — `server/commands/inventory_put_command.py`
+- **InventorySchemaValidationError** (20 connections) — `server/schemas/shared/inventory_schema.py`
+- **test_inventory_commands.py** (20 connections) — `server/tests/unit/commands/test_inventory_commands.py`
 - **RoomDropManager** (19 connections) — `server/commands/inventory_command_contracts.py`
+- **resolve_state_and_player()** (19 connections) — `server/commands/inventory_command_helpers.py`
+- **PickupTestWiring** (19 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
+- **resolve_state()** (18 connections) — `server/commands/inventory_command_helpers.py`
+- **resolve_player()** (18 connections) — `server/commands/inventory_command_helpers.py`
+- **clone_inventory()** (18 connections) — `server/commands/inventory_command_helpers.py`
+- **broadcast_room_event()** (18 connections) — `server/commands/inventory_command_helpers.py`
 - **_handle_get_from_room()** (17 connections) — `server/commands/inventory_get_command.py`
-- **handle_pickup_command()** (17 connections) — `server/commands/inventory_pickup_command.py`
-- **handle_get_command()** (16 connections) — `server/commands/inventory_get_command.py`
-- **_get_from_container_path()** (15 connections) — `server/commands/inventory_get_command.py`
-- **_pickup_commit_inventory_after_floor_extract()** (13 connections) — `server/commands/inventory_pickup_command.py`
-- **GetCommandRuntime** (12 connections) — `server/commands/inventory_get_command.py`
-- **GetItemSpec** (12 connections) — `server/commands/inventory_get_command.py`
-- **_get_transfer_out_of_container()** (11 connections) — `server/commands/inventory_get_command.py`
-- **add_pickup_to_inventory()** (10 connections) — `server/commands/inventory_command_helpers.py`
-- **FloorPickupAfterExtract** (10 connections) — `server/commands/inventory_pickup_command.py`
-- **_pickup_resolve_floor_stack_or_error()** (10 connections) — `server/commands/inventory_pickup_command.py`
-- **FloorPickupEnvironment** (9 connections) — `server/commands/inventory_pickup_command.py`
-- **FloorPickupPayload** (9 connections) — `server/commands/inventory_pickup_command.py`
-- **complete_pickup_after_floor_extract()** (9 connections) — `server/commands/inventory_pickup_command.py`
-- **resolve_pickup_item_index()** (8 connections) — `server/commands/inventory_command_helpers.py`
-- **get_room_manager()** (7 connections) — `server/commands/inventory_command_helpers.py`
-- **_get_route_after_validation()** (7 connections) — `server/commands/inventory_get_command.py`
-- **CommandResponse** (6 connections)
-- **_pickup_broadcast_success()** (6 connections) — `server/commands/inventory_pickup_command.py`
-- **prepare_extracted_stack()** (5 connections) — `server/commands/inventory_command_helpers.py`
-- **CommandResponse** (5 connections)
-- *... and 44 more nodes in this community*
+- *... and 300 more nodes in this community*
 
 ## Relationships
 
-- [commands inventory command](commands_inventory_command.md) (29 shared connections)
-- [combat models rationale](combat_models_rationale.md) (14 shared connections)
-- [commands inventory pickup](commands_inventory_pickup.md) (14 shared connections)
-- [room conftest toolkit](room_conftest_toolkit.md) (5 shared connections)
-- [services admin auth](services_admin_auth.md) (5 shared connections)
-- [commands npc admin](commands_npc_admin.md) (4 shared connections)
-- [Async Query Helpers](Async_Query_Helpers.md) (4 shared connections)
-- [NPC Combat](NPC_Combat.md) (4 shared connections)
-- [container helpers endpoints](container_helpers_endpoints.md) (3 shared connections)
-- [Exception Containers](Exception_Containers.md) (2 shared connections)
-- [commands whisper command](commands_whisper_command.md) (2 shared connections)
-- [container find inventory](container_find_inventory.md) (2 shared connections)
+- [player cache rationale](player_cache_rationale.md) (54 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (29 shared connections)
+- [Error Conversion](Error_Conversion.md) (19 shared connections)
+- [player room realtime](player_room_realtime.md) (18 shared connections)
+- [task registry app](task_registry_app.md) (17 shared connections)
+- [alias storage rationale](alias_storage_rationale.md) (16 shared connections)
+- [realtime real time](realtime_real_time.md) (15 shared connections)
+- [mythosApp useMythosAppState useStatsRoll](mythosApp_useMythosAppState_useStatsRoll.md) (10 shared connections)
+- [command parser helpers](command_parser_helpers.md) (8 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (7 shared connections)
+- [commands npc admin](commands_npc_admin.md) (6 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (5 shared connections)
 
 ## Source Files
 
+- `server/alias_storage.py`
+- `server/commands/admin_summon_command.py`
 - `server/commands/inventory_command_contracts.py`
 - `server/commands/inventory_command_helpers.py`
+- `server/commands/inventory_commands.py`
+- `server/commands/inventory_drop_command.py`
 - `server/commands/inventory_get_command.py`
 - `server/commands/inventory_pickup_command.py`
+- `server/commands/inventory_put_command.py`
+- `server/commands/inventory_unequip_command.py`
+- `server/models/alias.py`
+- `server/schemas/shared/inventory_schema.py`
+- `server/tests/unit/commands/inventory_commands_test_support.py`
+- `server/tests/unit/commands/test_inventory_commands.py`
+- `server/tests/unit/commands/test_inventory_commands_more_helpers.py`
+- `server/tests/unit/commands/test_inventory_commands_persistence_helpers.py`
+- `server/tests/unit/commands/test_inventory_commands_pickup.py`
+- `server/tests/unit/commands/test_inventory_commands_state_helpers.py`
 - `server/tests/unit/commands/test_inventory_get_command.py`
+- `server/tests/unit/commands/test_inventory_helpers_extended.py`
 
 ## Audit Trail
 
-- EXTRACTED: 353 (86%)
-- INFERRED: 57 (14%)
+- EXTRACTED: 1579 (93%)
+- INFERRED: 114 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

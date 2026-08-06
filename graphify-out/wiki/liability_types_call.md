@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **enabled** (4 connections) — `schemas/unified_room_schema.json`
+- **rest_location** (4 connections) — `schemas/unified_room_schema.json`
 - **type** (1 connections) — `schemas/unified_room_schema.json`
 - **default** (1 connections) — `schemas/unified_room_schema.json`
 - **description** (1 connections) — `schemas/unified_room_schema.json`

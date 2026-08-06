@@ -1,13 +1,11 @@
 # shutdown admin command
 
-> 51 nodes
+> 49 nodes
 
 ## Key Concepts
 
 - **test_admin_shutdown_command.py** (57 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
 - **is_shutdown_pending()** (14 connections) — `server/commands/admin_shutdown_command.py`
-- **_await_shutdown_result()** (14 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **cancel_shutdown_countdown()** (11 connections) — `server/commands/admin_shutdown_command.py`
 - **test_is_shutdown_pending_true()** (6 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
 - **test_is_shutdown_pending_false()** (6 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
 - **test_cancel_shutdown_countdown_no_active()** (6 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
@@ -19,32 +17,33 @@
 - **_AppWithoutState** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
 - **_ShutdownCancelStateStub** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
 - **_ShutdownCancelAppStub** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_handle_shutdown_command_no_player_service()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_handle_shutdown_command_player_not_found()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_handle_shutdown_command_no_permission()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_handle_shutdown_command_invalid_parameters()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_handle_shutdown_command_cancel()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_handle_shutdown_command_cancel_no_active()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_handle_shutdown_command_initiate()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_handle_shutdown_command_initiate_superseding()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_handle_shutdown_command_initiate_no_seconds()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_handle_shutdown_command_initiate_failure()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- *... and 26 more nodes in this community*
+- **test_get_shutdown_blocking_message_login()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_get_shutdown_blocking_message_character_creation()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_get_shutdown_blocking_message_default()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_validate_shutdown_admin_permission_no_player()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_validate_shutdown_admin_permission_not_admin()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_validate_shutdown_admin_permission_admin()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_broadcast_shutdown_notification_success()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_broadcast_shutdown_notification_failure()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_parse_shutdown_parameters_no_args()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_parse_shutdown_parameters_cancel()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_parse_shutdown_parameters_seconds()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_parse_shutdown_parameters_invalid_negative()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- *... and 24 more nodes in this community*
 
 ## Relationships
 
-- [eventLog projectorRoom roomMergeUtils](eventLog_projectorRoom_roomMergeUtils.md) (13 shared connections)
-- [profession game service](profession_game_service.md) (7 shared connections)
-- [services service hallucination](services_service_hallucination.md) (7 shared connections)
-- [occupant realtime formatter](occupant_realtime_formatter.md) (4 shared connections)
+- [eventLog projectorRoom roomMergeUtils](eventLog_projectorRoom_roomMergeUtils.md) (22 shared connections)
+- [logout command commands](logout_command_commands.md) (11 shared connections)
+- [commands admin helpers](commands_admin_helpers.md) (7 shared connections)
 - [lucidity models rationale](lucidity_models_rationale.md) (4 shared connections)
 - [connection manager realtime](connection_manager_realtime.md) (4 shared connections)
-- [motd loader rationale](motd_loader_rationale.md) (3 shared connections)
 - [player requests schemas](player_requests_schemas.md) (2 shared connections)
-- [websocket helpers realtime](websocket_helpers_realtime.md) (2 shared connections)
-- [commands npc admin](commands_npc_admin.md) (2 shared connections)
-- [commands whisper command](commands_whisper_command.md) (1 shared connections)
-- [taunt combat commands](taunt_combat_commands.md) (1 shared connections)
+- [realtime maintenance connection](realtime_maintenance_connection.md) (1 shared connections)
+- [room websocket updates](room_websocket_updates.md) (1 shared connections)
+- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (1 shared connections)
+- [alias storage rationale](alias_storage_rationale.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
 
 ## Source Files
 
@@ -53,7 +52,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 206 (100%)
+- EXTRACTED: 183 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

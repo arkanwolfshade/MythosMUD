@@ -33,9 +33,7 @@
 
 ## Relationships
 
-- [Realtime Subscribers](Realtime_Subscribers.md) (3 shared connections)
-- [taunt combat commands](taunt_combat_commands.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (7 shared connections)
 
 ## Source Files
 

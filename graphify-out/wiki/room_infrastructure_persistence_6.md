@@ -1,24 +1,29 @@
 # room infrastructure persistence
 
-> 2 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **test_unsubscribe_from_subject_success()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test _unsubscribe_from_subject() successfully unsubscribes.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **TestGetMagicService** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_magic_service_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_magic_service_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Tests for get_magic_service dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_magic_service returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_magic_service raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Relationships
 
-- [nats message handler](nats_message_handler.md) (1 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (3 shared connections)
+- [persistence core infrastructure](persistence_core_infrastructure.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 13 (93%)
+- INFERRED: 1 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

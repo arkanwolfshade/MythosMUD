@@ -4,18 +4,18 @@
 
 ## Key Concepts
 
-- **sub_zone** (4 connections) — `schemas/room_schema.json`
-- **type** (1 connections) — `schemas/room_schema.json`
-- **pattern** (1 connections) — `schemas/room_schema.json`
-- **description** (1 connections) — `schemas/room_schema.json`
+- **id** (4 connections) — `schemas/calendar/schedule.schema.json`
+- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **pattern** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **minLength** (1 connections) — `schemas/calendar/schedule.schema.json`
 
 ## Relationships
 
-- [schemas room schema](schemas_room_schema.md) (1 shared connections)
+- [schemas calendar schedule](schemas_calendar_schedule.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/room_schema.json`
+- `schemas/calendar/schedule.schema.json`
 
 ## Audit Trail
 

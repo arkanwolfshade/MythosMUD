@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_should_apply_mute_check_non_sensitive_channel()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **Test should_apply_mute_check() returns False for non-sensitive channels.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_build_room_objects_with_dict_attributes()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _build_room_objects uses environment from attributes dict.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Relationships
 
-- [message filtering realtime](message_filtering_realtime.md) (1 shared connections)
+- [room persistence loading](room_persistence_loading.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_message_filtering.py`
+- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Audit Trail
 

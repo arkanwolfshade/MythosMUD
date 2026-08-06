@@ -1,24 +1,37 @@
 # ascii map renderer
 
-> 3 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **.__init__()** (3 connections) — `server/middleware/correlation_middleware.py`
-- **ASGIApp** (1 connections)
-- **Initialize the correlation middleware.          Args:             app: ASGI appl** (1 connections) — `server/middleware/correlation_middleware.py`
+- **_validate_app_state_for_status_effects()** (12 connections) — `server/app/game_tick_processing.py`
+- **test_validate_app_state_for_status_effects_no_container()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_validate_app_state_for_status_effects_no_async_persistence()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_validate_app_state_for_status_effects_no_connection_manager()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_validate_app_state_for_status_effects_valid()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_validate_app_state_for_status_effects_container_is_none()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_validate_app_state_for_status_effects_connection_manager_is_none()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **Validate app state has required components for status effect processing.      Re** (1 connections) — `server/app/game_tick_processing.py`
+- **Test _validate_app_state_for_status_effects returns False when no container.** (1 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **Test _validate_app_state_for_status_effects returns False when no async_persiste** (1 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **Test _validate_app_state_for_status_effects returns False when no connection_man** (1 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **Test _validate_app_state_for_status_effects returns True when all required compo** (1 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **Test _validate_app_state_for_status_effects returns False when container is None** (1 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **Test _validate_app_state_for_status_effects returns False when connection_manage** (1 connections) — `server/tests/unit/app/test_game_tick_processing.py`
 
 ## Relationships
 
-- [app factory rationale](app_factory_rationale.md) (1 shared connections)
+- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (10 shared connections)
+- [command helpers functions](command_helpers_functions.md) (1 shared connections)
 
 ## Source Files
 
-- `server/middleware/correlation_middleware.py`
+- `server/app/game_tick_processing.py`
+- `server/tests/unit/app/test_game_tick_processing.py`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 37 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

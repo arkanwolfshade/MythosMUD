@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_validate_combat_command_invalid_target_name()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test validate_combat_command with invalid target name format.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_handle_equip_wearable_container_with_lock_state()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test handle_equip_wearable_container with lock_state and allowed_roles.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Relationships
 
-- [emote models rationale](emote_models_rationale.md) (1 shared connections)
+- [wearable container service](wearable_container_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_user_manager_fallback()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test _get_user_manager falls back to global manager.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_extract_chat_message_fields_system_target_id()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Personal system chat maps target_id to target_player_id and keeps speaker_kind.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [subzone realtime nats](subzone_realtime_nats.md) (1 shared connections)
+- [message chat nats](message_chat_nats.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 

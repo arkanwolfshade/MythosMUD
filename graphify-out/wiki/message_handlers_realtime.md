@@ -28,7 +28,7 @@
 ## Relationships
 
 - [command factories exploration](command_factories_exploration.md) (3 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
 
 ## Source Files
 

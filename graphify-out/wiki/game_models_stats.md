@@ -1,59 +1,52 @@
 # game models stats
 
-> 27 nodes
+> 58 nodes
 
 ## Key Concepts
 
-- **professions.py** (19 connections) — `server/api/professions.py`
-- **test_professions_endpoints.py** (13 connections) — `server/tests/unit/api/test_professions_endpoints.py`
-- **get_all_professions()** (10 connections) — `server/api/professions.py`
-- **get_profession_by_id()** (10 connections) — `server/api/professions.py`
-- **profession.py** (7 connections) — `server/schemas/players/profession.py`
-- **ProfessionListResponse** (7 connections) — `server/schemas/players/profession.py`
-- **ProfessionResponse** (7 connections) — `server/schemas/players/profession.py`
-- **BaseModel** (5 connections)
-- **StatRequirement** (4 connections) — `server/schemas/players/profession.py`
-- **MechanicalEffect** (4 connections) — `server/schemas/players/profession.py`
-- **ProfessionData** (4 connections) — `server/schemas/players/profession.py`
-- **_user()** (4 connections) — `server/tests/unit/api/test_professions_endpoints.py`
-- **test_get_all_professions_requires_auth()** (4 connections) — `server/tests/unit/api/test_professions_endpoints.py`
-- **test_get_profession_by_id_not_found()** (4 connections) — `server/tests/unit/api/test_professions_endpoints.py`
-- **test_get_all_professions_success()** (3 connections) — `server/tests/unit/api/test_professions_endpoints.py`
-- **test_get_profession_by_id_success()** (3 connections) — `server/tests/unit/api/test_professions_endpoints.py`
-- **Request** (2 connections)
-- **Profession management API endpoints for MythosMUD server.  This module handles a** (1 connections) — `server/api/professions.py`
-- **Retrieve all available professions for character creation with caching.      :pa** (1 connections) — `server/api/professions.py`
-- **Retrieve specific profession details by ID with caching.      :param profession_** (1 connections) — `server/api/professions.py`
-- **Profession API response schemas for MythosMUD server.  This module provides Pyda** (1 connections) — `server/schemas/players/profession.py`
-- **Stat requirement for a profession.** (1 connections) — `server/schemas/players/profession.py`
-- **Mechanical effect of a profession.** (1 connections) — `server/schemas/players/profession.py`
-- **Profession data model.** (1 connections) — `server/schemas/players/profession.py`
-- **Response model for listing all professions.** (1 connections) — `server/schemas/players/profession.py`
-- *... and 2 more nodes in this community*
+- **test_command_magic.py** (27 connections) — `server/tests/unit/models/test_command_magic.py`
+- **CastCommand** (20 connections) — `server/models/command_magic.py`
+- **SpellCommand** (13 connections) — `server/models/command_magic.py`
+- **LearnCommand** (13 connections) — `server/models/command_magic.py`
+- **test_cast_command_validate_spell_name_empty()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_cast_command_validate_spell_name_whitespace_only()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_cast_command_spell_name_max_length()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_cast_command_target_max_length()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_spell_command_validate_spell_name_empty()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_spell_command_validate_spell_name_whitespace_only()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_spell_command_spell_name_max_length()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_learn_command_validate_spell_name_empty()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_learn_command_validate_spell_name_whitespace_only()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_learn_command_spell_name_max_length()** (4 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_cast_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_cast_command_with_target()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_cast_command_validate_spell_name_valid()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_cast_command_validate_target_empty_string()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_cast_command_validate_target_whitespace()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_cast_command_validate_target_strips()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_spell_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_spell_command_validate_spell_name_valid()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_spells_command_no_fields()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_learn_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- **test_learn_command_validate_spell_name_valid()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
+- *... and 33 more nodes in this community*
 
 ## Relationships
 
-- [player requests schemas](player_requests_schemas.md) (8 shared connections)
-- [Player Stats](Player_Stats.md) (8 shared connections)
-- [Exception Containers](Exception_Containers.md) (6 shared connections)
-- [profession game service](profession_game_service.md) (3 shared connections)
-- [Error Handling Core](Error_Handling_Core.md) (2 shared connections)
-- [Loot Generation](Loot_Generation.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (1 shared connections)
-- [persistence rationale players](persistence_rationale_players.md) (1 shared connections)
-- [player service game](player_service_game.md) (1 shared connections)
+- [dialogue definition persistence](dialogue_definition_persistence.md) (12 shared connections)
+- [add used user](add_used_user.md) (10 shared connections)
+- [exceptions rationale error](exceptions_rationale_error.md) (4 shared connections)
+- [command inventory factories](command_inventory_factories.md) (3 shared connections)
 
 ## Source Files
 
-- `server/api/professions.py`
-- `server/schemas/players/profession.py`
-- `server/tests/unit/api/test_professions_endpoints.py`
+- `server/models/command_magic.py`
+- `server/tests/unit/models/test_command_magic.py`
 
 ## Audit Trail
 
-- EXTRACTED: 117 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 167 (91%)
+- INFERRED: 16 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,47 +1,60 @@
 # logging examples fastapi
 
-> 22 nodes
+> 30 nodes
 
 ## Key Concepts
 
-- **.create_instance()** (7 connections) — `server/game/instance_manager.py`
-- **._build_instance_rooms()** (6 connections) — `server/game/instance_manager.py`
-- **.__init__()** (5 connections) — `server/game/instance_manager.py`
-- **Room** (5 connections)
-- **._stable_id_from_room()** (5 connections) — `server/game/instance_manager.py`
-- **Instance** (4 connections) — `server/game/instance_manager.py`
-- **._get_template_rooms()** (4 connections) — `server/game/instance_manager.py`
-- **._remap_exits()** (4 connections) — `server/game/instance_manager.py`
-- **._stable_id_from_target()** (3 connections) — `server/game/instance_manager.py`
-- **.get_instance()** (3 connections) — `server/game/instance_manager.py`
-- **.get_room_by_id()** (3 connections) — `server/game/instance_manager.py`
-- **UUID** (2 connections)
-- **An instanced set of rooms, unique per player or group.** (1 connections) — `server/game/instance_manager.py`
-- **Initialize the instance manager.          Args:             room_cache: Shared r** (1 connections) — `server/game/instance_manager.py`
-- **Create an instance from room templates with the given template_id.          Args** (1 connections) — `server/game/instance_manager.py`
-- **Return template rooms matching instance_template_id.** (1 connections) — `server/game/instance_manager.py`
-- **Clone template rooms into instance-scoped rooms with remapped exits.** (1 connections) — `server/game/instance_manager.py`
-- **Extract stable_id from room - use room.id if it looks like a full path.** (1 connections) — `server/game/instance_manager.py`
-- **Remap exit targets: same-instance rooms use instance IDs, outside exits use fixe** (1 connections) — `server/game/instance_manager.py`
-- **Extract stable_id from a room ID (may be full path or short form).** (1 connections) — `server/game/instance_manager.py`
-- **Return the instance if it exists.** (1 connections) — `server/game/instance_manager.py`
-- **Look up a room by ID, checking instances first.          Used by persistence lay** (1 connections) — `server/game/instance_manager.py`
+- **AppConfig** (31 connections) — `server/config/models/app.py`
+- **__init__.py** (11 connections) — `server/config/__init__.py`
+- **.to_legacy_dict()** (7 connections) — `server/config/models/app.py`
+- **Any** (6 connections)
+- **_create_config_instance()** (5 connections) — `server/config/__init__.py`
+- **_get_config_cached()** (5 connections) — `server/config/__init__.py`
+- **_get_config_test()** (5 connections) — `server/config/__init__.py`
+- **.__init__()** (5 connections) — `server/config/models/app.py`
+- **._legacy_game_entries()** (5 connections) — `server/config/models/app.py`
+- **._legacy_nats_dict()** (5 connections) — `server/config/models/app.py`
+- **._legacy_chat_dict()** (5 connections) — `server/config/models/app.py`
+- **._legacy_cors_dict()** (5 connections) — `server/config/models/app.py`
+- **._sanitize_environment_for_nested_configs()** (4 connections) — `server/config/models/app.py`
+- **._first_cors_origins_env()** (3 connections) — `server/config/models/app.py`
+- **.set_legacy_environment_variables()** (2 connections) — `server/config/models/app.py`
+- **Configuration module for MythosMUD server.  This module provides type-safe, vali** (1 connections) — `server/config/__init__.py`
+- **Create a new AppConfig instance from current environment.      This is a helper** (1 connections) — `server/config/__init__.py`
+- **Production config loader with caching.      Uses both @lru_cache and global _con** (1 connections) — `server/config/__init__.py`
+- **Test config loader without caching - always returns fresh instances.      This e** (1 connections) — `server/config/__init__.py`
+- **BaseSettings** (1 connections)
+- **Composite application configuration.      This is the main configuration class t** (1 connections) — `server/config/models/app.py`
+- **Initialize configuration and set environment variables for legacy compatibility.** (1 connections) — `server/config/models/app.py`
+- **Set environment variables for legacy code that reads them directly.** (1 connections) — `server/config/models/app.py`
+- **Return first set CORS origins env var to reduce CCN in _sanitize.** (1 connections) — `server/config/models/app.py`
+- **Normalize environment variables so nested configs can parse them reliably.** (1 connections) — `server/config/models/app.py`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
-- [websocket realtime handler](websocket_realtime_handler.md) (9 shared connections)
-- [room models instance](room_models_instance.md) (2 shared connections)
+- [websocket validation realtime](websocket_validation_realtime.md) (8 shared connections)
+- [tools generate invite](tools_generate_invite.md) (6 shared connections)
+- [EdgeCreationModal map STANDARD](EdgeCreationModal_map_STANDARD.md) (3 shared connections)
+- [config models cors](config_models_cors.md) (2 shared connections)
+- [realtime message filtering](realtime_message_filtering.md) (2 shared connections)
+- [occupants npc commands](occupants_npc_commands.md) (2 shared connections)
+- [casting game magic](casting_game_magic.md) (1 shared connections)
 - [Error Conversion](Error_Conversion.md) (1 shared connections)
-- [NPC Combat](NPC_Combat.md) (1 shared connections)
+- [services passive lucidity](services_passive_lucidity.md) (1 shared connections)
+- [room validator path](room_validator_path.md) (1 shared connections)
+- [config models rationale](config_models_rationale.md) (1 shared connections)
+- [exceptions rationale error](exceptions_rationale_error.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/instance_manager.py`
+- `server/config/__init__.py`
+- `server/config/models/app.py`
 
 ## Audit Trail
 
-- EXTRACTED: 61 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 108 (91%)
+- INFERRED: 11 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

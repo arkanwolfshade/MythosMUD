@@ -1,13 +1,12 @@
 # coordinate services generator
 
-> 44 nodes
+> 42 nodes
 
 ## Key Concepts
 
 - **CoordinateGenerator** (21 connections) — `server/services/coordinate_generator.py`
 - **test_coordinate_generator.py** (17 connections) — `server/tests/unit/services/test_coordinate_generator.py`
 - **._generate_for_subzone()** (8 connections) — `server/services/coordinate_generator.py`
-- **coordinate_generator.py** (6 connections) — `server/services/coordinate_generator.py`
 - **.generate_coordinates_for_zone()** (6 connections) — `server/services/coordinate_generator.py`
 - **Any** (5 connections)
 - **._build_adjacency_list()** (5 connections) — `server/services/coordinate_generator.py`
@@ -23,19 +22,22 @@
 - **test_store_coordinates_persists_values()** (2 connections) — `server/tests/unit/services/test_coordinate_generator.py`
 - **test_store_coordinates_noop_on_empty()** (2 connections) — `server/tests/unit/services/test_coordinate_generator.py`
 - **AsyncSession** (1 connections)
-- **Coordinate generation service for ASCII maps.  This module provides hierarchical** (1 connections) — `server/services/coordinate_generator.py`
 - **Generates map coordinates for rooms using hierarchical grouping and directional** (1 connections) — `server/services/coordinate_generator.py`
 - **Initialize coordinate generator.          Args:             session: Database se** (1 connections) — `server/services/coordinate_generator.py`
 - **Generate coordinates for all rooms in a zone/subzone.          Args:** (1 connections) — `server/services/coordinate_generator.py`
 - **Load rooms and their exits from database.          Args:             plane: Plan** (1 connections) — `server/services/coordinate_generator.py`
 - **Find the origin room (map_origin_zone=true, or first room).** (1 connections) — `server/services/coordinate_generator.py`
-- *... and 19 more nodes in this community*
+- **Build adjacency list from room exits.** (1 connections) — `server/services/coordinate_generator.py`
+- **Assign coordinates using BFS starting from origin.** (1 connections) — `server/services/coordinate_generator.py`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [maps handle ascii](maps_handle_ascii.md) (5 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [taunt combat commands](taunt_combat_commands.md) (1 shared connections)
+- [persistence container rationale](persistence_container_rationale.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [maps handle ascii](maps_handle_ascii.md) (1 shared connections)
+- [room cache services](room_cache_services.md) (1 shared connections)
+- [mythos mud mapbuilder](mythos_mud_mapbuilder.md) (1 shared connections)
 
 ## Source Files
 
@@ -44,7 +46,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 127 (99%)
+- EXTRACTED: 120 (99%)
 - INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 

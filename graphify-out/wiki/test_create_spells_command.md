@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_create_spells_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_spells_command delegates to utility factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_should_echo_to_sender_not_echo_channel()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _should_echo_to_sender returns False for non-echo channels.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [command factories create](command_factories_create.md) (1 shared connections)
+- [message chat nats](message_chat_nats.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 

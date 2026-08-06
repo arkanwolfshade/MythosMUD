@@ -1,48 +1,63 @@
 # alias storage commands
 
-> 22 nodes
+> 115 nodes
 
 ## Key Concepts
 
+- **ContainerService** (104 connections) — `server/services/container_service.py`
+- **test_container_service.py** (71 connections) — `server/tests/unit/services/test_container_service.py`
+- **transfer_all_items_from_container()** (21 connections) — `server/api/container_helpers.py`
+- **TestTransferAllItemsFromContainer** (18 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
 - **EnvironmentalContainerLoader** (16 connections) — `server/services/environmental_container_loader.py`
-- **.load_container_from_room_json()** (8 connections) — `server/services/environmental_container_loader.py`
-- **.migrate_room_container_to_postgresql()** (7 connections) — `server/services/environmental_container_loader.py`
-- **.__init__()** (3 connections) — `server/services/environmental_container_loader.py`
-- **Any** (3 connections)
-- **.load_containers_for_room()** (3 connections) — `server/services/environmental_container_loader.py`
-- **test_load_container_from_room_json_invalid_capacity()** (3 connections) — `server/tests/unit/services/test_container_service.py`
-- **test_load_container_from_room_json_invalid_lock_state()** (3 connections) — `server/tests/unit/services/test_container_service.py`
-- **ContainerComponent** (2 connections)
-- **UUID** (2 connections)
-- **test_environmental_loader_requires_persistence()** (2 connections) — `server/tests/unit/services/test_container_service.py`
-- **test_load_container_from_room_json_none_when_missing()** (2 connections) — `server/tests/unit/services/test_container_service.py`
-- **test_load_container_from_room_json_disabled()** (2 connections) — `server/tests/unit/services/test_container_service.py`
-- **test_load_container_from_room_json_success()** (2 connections) — `server/tests/unit/services/test_container_service.py`
-- **test_migrate_room_container_existing()** (2 connections) — `server/tests/unit/services/test_container_service.py`
-- **test_migrate_room_container_creates_new()** (2 connections) — `server/tests/unit/services/test_container_service.py`
-- **test_load_containers_for_room_filters_environment()** (2 connections) — `server/tests/unit/services/test_container_service.py`
-- **Service for loading environmental containers from JSON and PostgreSQL.      Hand** (1 connections) — `server/services/environmental_container_loader.py`
-- **Initialize the environmental container loader.          Args:             persis** (1 connections) — `server/services/environmental_container_loader.py`
-- **Load a container definition from room JSON.          Args:             room_json** (1 connections) — `server/services/environmental_container_loader.py`
-- **Migrate a container from room JSON to PostgreSQL.          Checks if container a** (1 connections) — `server/services/environmental_container_loader.py`
-- **Load all environmental containers for a room from PostgreSQL.          Args:** (1 connections) — `server/services/environmental_container_loader.py`
+- **_container_data()** (16 connections) — `server/tests/unit/services/test_container_service.py`
+- **_container()** (15 connections) — `server/tests/unit/services/test_container_service.py`
+- **conftest.py** (14 connections) — `server/tests/unit/api/conftest.py`
+- **_stack()** (11 connections) — `server/tests/unit/services/test_container_service.py`
+- **.test_transfer_all_items_from_container_capacity_error()** (6 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
+- **.test_transfer_all_items_from_container_success()** (5 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
+- **.test_transfer_all_items_from_container_transfer_error()** (5 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
+- **.test_transfer_all_items_from_container_multiple_items()** (5 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
+- **.test_transfer_all_items_from_container_item_without_quantity()** (5 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
+- **.test_transfer_all_items_from_container_partial_success()** (5 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
+- **.test_transfer_all_items_from_container_empty_items()** (5 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
+- **.test_transfer_all_items_from_container_updates_from_result()** (5 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
+- **.test_transfer_all_items_from_container_result_missing_container()** (5 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
+- **.test_transfer_all_items_from_container_result_missing_inventory()** (5 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
+- **test_validate_corpse_grace_period_blocks_non_owner()** (5 connections) — `server/tests/unit/services/test_container_service.py`
+- **test_transfer_to_container_capacity_exceeded()** (5 connections) — `server/tests/unit/services/test_container_service.py`
+- **test_transfer_to_container_mutation_guard_suppressed()** (5 connections) — `server/tests/unit/services/test_container_service.py`
+- **test_transfer_to_container_player_not_found()** (5 connections) — `server/tests/unit/services/test_container_service.py`
+- **UUID** (4 connections)
+- **test_validate_proximity_different_room_raises()** (4 connections) — `server/tests/unit/services/test_container_service.py`
+- *... and 90 more nodes in this community*
 
 ## Relationships
 
-- [Exception Containers](Exception_Containers.md) (12 shared connections)
-- [Loot Generation](Loot_Generation.md) (4 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (2 shared connections)
-- [task registry app](task_registry_app.md) (1 shared connections)
+- [Exception Containers](Exception_Containers.md) (60 shared connections)
+- [services inventory mutation](services_inventory_mutation.md) (21 shared connections)
+- [task registry app](task_registry_app.md) (20 shared connections)
+- [add used user](add_used_user.md) (9 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (3 shared connections)
+- [player requests schemas](player_requests_schemas.md) (3 shared connections)
+- [room realtime occupant](room_realtime_occupant.md) (2 shared connections)
+- [websocket realtime handler](websocket_realtime_handler.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [persistence container rationale](persistence_container_rationale.md) (1 shared connections)
 
 ## Source Files
 
+- `server/api/container_helpers.py`
+- `server/services/container_service.py`
 - `server/services/environmental_container_loader.py`
+- `server/tests/unit/api/conftest.py`
+- `server/tests/unit/api/test_container_helpers_loot.py`
+- `server/tests/unit/api/test_containers.py`
 - `server/tests/unit/services/test_container_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 65 (94%)
-- INFERRED: 4 (6%)
+- EXTRACTED: 492 (87%)
+- INFERRED: 71 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

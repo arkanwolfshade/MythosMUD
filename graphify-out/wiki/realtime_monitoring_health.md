@@ -1,24 +1,26 @@
 # realtime monitoring health
 
-> 2 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **test_handle_item_look_in_room_drops()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look when item is in room drops.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **add_fastapi_users_columns.py** (4 connections) — `server/scripts/add_fastapi_users_columns.py`
+- **apply_migration()** (3 connections) — `server/scripts/add_fastapi_users_columns.py`
+- **main()** (3 connections) — `server/scripts/add_fastapi_users_columns.py`
+- **Apply the migration to add FastAPI Users columns.      Args:         database_ur** (1 connections) — `server/scripts/add_fastapi_users_columns.py`
+- **Main entry point for the migration script.** (1 connections) — `server/scripts/add_fastapi_users_columns.py`
 
 ## Relationships
 
-- [npc realtime occupant](npc_realtime_occupant.md) (1 shared connections)
-- [Item Lookup](Item_Lookup.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_item.py`
+- `server/scripts/add_fastapi_users_columns.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_process_single_message_validation_error_missing_fields()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test _process_single_message raises ValueError when required fields are missing.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_add_room_occupant_existing_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **Test add_room_occupant() adds occupant to existing room.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
 
 ## Relationships
 
-- [nats message handler](nats_message_handler.md) (1 shared connections)
+- [room subscription manager](room_subscription_manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/tests/unit/realtime/test_room_subscription_manager.py`
 
 ## Audit Trail
 

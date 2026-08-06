@@ -16,7 +16,7 @@
 
 ## Relationships
 
-- [player room persistence](player_room_persistence.md) (1 shared connections)
+- [schemas player requests](schemas_player_requests.md) (1 shared connections)
 
 ## Source Files
 

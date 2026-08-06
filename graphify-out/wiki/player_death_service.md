@@ -1,33 +1,36 @@
 # player death service
 
-> 6 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **get_npc_startup_service()** (8 connections) — `server/services/npc_startup_service.py`
-- **npc_startup_service()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_get_npc_startup_service()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Get the global NPC startup service.** (1 connections) — `server/services/npc_startup_service.py`
-- **Create an NPCStartupService instance.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test get_npc_startup_service() returns service instance.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **package.json** (10 connections) — `client/package.json`
+- **optionalDependencies** (2 connections) — `client/package.json`
+- **argon2** (2 connections) — `client/package.json`
+- **argon2** (2 connections) — `client/package.json`
+- **engines** (2 connections) — `client/package.json`
+- **name** (1 connections) — `client/package.json`
+- **private** (1 connections) — `client/package.json`
+- **version** (1 connections) — `client/package.json`
+- **type** (1 connections) — `client/package.json`
+- **node** (1 connections) — `client/package.json`
 
 ## Relationships
 
-- [map layout useMapLayout](map_layout_useMapLayout.md) (3 shared connections)
-- [realtime player connection](realtime_player_connection.md) (3 shared connections)
-- [nats services service](nats_services_service.md) (1 shared connections)
-- [Magic Spell Service](Magic_Spell_Service.md) (1 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
+- [package react dom](package_react_dom.md) (1 shared connections)
+- [package eslint plugin](package_eslint_plugin.md) (1 shared connections)
+- [package @asyncapi/generator @stoplight/s](package_%40asyncapi-generator_%40stoplight-s.md) (1 shared connections)
+- [package scripts build](package_scripts_build.md) (1 shared connections)
+- [websocket handler realtime](websocket_handler_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/npc_startup_service.py`
-- `server/tests/unit/services/test_npc_startup_service.py`
+- `client/package.json`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (84%)
-- INFERRED: 3 (16%)
+- EXTRACTED: 23 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

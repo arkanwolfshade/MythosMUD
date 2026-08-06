@@ -1,24 +1,24 @@
 # test_occupant_formatter_is_valid_name_for_occupant_uuid
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_subscribe_to_subzone_error()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test subscribe_to_subzone handles errors.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **.get_config_summary()** (3 connections) — `server/config/npc_config.py`
+- **Any** (1 connections)
+- **Get a summary of all NPC configuration values.          Returns:             Dic** (1 connections) — `server/config/npc_config.py`
 
 ## Relationships
 
-- [commands communication say](commands_communication_say.md) (1 shared connections)
-- [subzone realtime nats](subzone_realtime_nats.md) (1 shared connections)
+- [npc lifecycle config](npc_lifecycle_config.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- `server/config/npc_config.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

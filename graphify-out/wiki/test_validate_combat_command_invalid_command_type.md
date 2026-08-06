@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_validate_combat_command_invalid_command_type()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test validate_combat_command with invalid command type.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_add_rule_missing_fields()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test add_rule() returns False when fields missing.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [emote models rationale](emote_models_rationale.md) (1 shared connections)
+- [room occupant manager](room_occupant_manager.md) (1 shared connections)
+- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

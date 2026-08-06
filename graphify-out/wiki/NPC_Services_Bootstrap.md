@@ -1,54 +1,74 @@
 # NPC Services Bootstrap
 
-> 43 nodes
+> 335 nodes
 
 ## Key Concepts
 
-- **test_combat_schema.py** (20 connections) — `server/tests/unit/schemas/test_combat_schema.py`
-- **CombatSchemaValidationError** (17 connections) — `server/schemas/combat/combat_schema.py`
-- **combat_schema.py** (13 connections) — `server/schemas/combat/combat_schema.py`
-- **validate_npc_combat_data()** (13 connections) — `server/schemas/combat/combat_schema.py`
-- **validate_base_stats_combat_data()** (11 connections) — `server/schemas/combat/combat_schema.py`
-- **validate_combat_messages()** (11 connections) — `server/schemas/combat/combat_schema.py`
-- **__init__.py** (10 connections) — `server/schemas/combat/__init__.py`
-- **validate_behavior_config_combat_data()** (9 connections) — `server/schemas/combat/combat_schema.py`
-- **add_default_combat_data_to_config()** (8 connections) — `server/schemas/combat/combat_schema.py`
-- **get_combat_stats_summary()** (6 connections) — `server/schemas/combat/combat_schema.py`
-- **Any** (5 connections)
-- **validate_message_template_variables()** (4 connections) — `server/schemas/combat/combat_schema.py`
-- **Draft7Validator** (4 connections)
-- **test_validate_base_stats_combat_data_missing_required()** (4 connections) — `server/tests/unit/schemas/test_combat_schema.py`
-- **test_validate_base_stats_combat_data_invalid_type()** (4 connections) — `server/tests/unit/schemas/test_combat_schema.py`
-- **test_validate_combat_messages_missing_required()** (4 connections) — `server/tests/unit/schemas/test_combat_schema.py`
-- **test_validate_base_stats_combat_data_valid()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
-- **test_validate_behavior_config_combat_data_valid()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
-- **test_validate_combat_messages_valid()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
-- **test_add_default_combat_data_to_config()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
-- **test_validate_npc_combat_data()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
-- **test_get_combat_stats_summary()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
-- **Combat domain schemas: combat JSON schema validation and defaults.** (1 connections) — `server/schemas/combat/__init__.py`
-- **Exception** (1 connections)
-- **Combat system JSON schema validation.  This module provides JSON schema validati** (1 connections) — `server/schemas/combat/combat_schema.py`
-- *... and 18 more nodes in this community*
+- **PlayerCombatService** (78 connections) — `server/services/player_combat_service.py`
+- **CombatCommandHandler** (54 connections) — `server/commands/combat_handler.py`
+- **TargetResolutionService** (53 connections) — `server/services/target_resolution_service.py`
+- **combat_handler.py** (47 connections) — `server/commands/combat_handler.py`
+- **TargetResolutionResult** (42 connections) — `server/schemas/shared/target_resolution.py`
+- **test_target_resolution_service.py** (40 connections) — `server/tests/unit/services/test_target_resolution_service.py`
+- **test_combat_handler.py** (37 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **CombatValidator** (28 connections) — `server/validators/combat_validator.py`
+- **target_resolution_service.py** (27 connections) — `server/services/target_resolution_service.py`
+- **combat_loader.py** (26 connections) — `server/commands/combat_loader.py`
+- **CombatCommandHandlerExtras** (25 connections) — `server/commands/combat_handler.py`
+- **get_combat_command_handler()** (22 connections) — `server/commands/combat_loader.py`
+- **test_combat_loader.py** (22 connections) — `server/tests/unit/commands/test_combat_loader.py`
+- **_handler_with_persistence()** (20 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **combat.py** (19 connections) — `server/commands/combat.py`
+- **AppWithState** (17 connections) — `server/commands/combat_app_protocols.py`
+- **_NpcWithLife** (17 connections) — `server/commands/combat_handler.py`
+- **TargetMetadata** (16 connections) — `server/schemas/shared/target_metadata.py`
+- **.__init__()** (11 connections) — `server/commands/combat_handler.py`
+- **_app_from_request()** (11 connections) — `server/commands/combat_loader.py`
+- **handle_attack_command()** (11 connections) — `server/commands/combat_loader.py`
+- **target_resolution.py** (11 connections) — `server/schemas/shared/target_resolution.py`
+- **_AppStatePersistence** (10 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **_AppWithPersistence** (10 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **handle_punch_command()** (9 connections) — `server/commands/combat_loader.py`
+- *... and 310 more nodes in this community*
 
 ## Relationships
 
-- [tools generate invite](tools_generate_invite.md) (15 shared connections)
-- [container events rationale](container_events_rationale.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (1 shared connections)
-- [Error Handling Core](Error_Handling_Core.md) (1 shared connections)
-- [logging file setup](logging_file_setup.md) (1 shared connections)
+- [panels domPurifyClient chat](panels_domPurifyClient_chat.md) (47 shared connections)
+- [startup npc services](startup_npc_services.md) (27 shared connections)
+- [Error Conversion](Error_Conversion.md) (25 shared connections)
+- [countdown rest task](countdown_rest_task.md) (16 shared connections)
+- [alias storage rationale](alias_storage_rationale.md) (15 shared connections)
+- [mythosApp appLazyScreens mythosAppViewMo](mythosApp_appLazyScreens_mythosAppViewMo.md) (12 shared connections)
+- [npc database infrastructure](npc_database_infrastructure.md) (10 shared connections)
+- [player event realtime](player_event_realtime.md) (10 shared connections)
+- [container helpers loot](container_helpers_loot.md) (9 shared connections)
+- [persistence core infrastructure](persistence_core_infrastructure.md) (9 shared connections)
+- [services ascii map](services_ascii_map.md) (9 shared connections)
+- [combat flee commands](combat_flee_commands.md) (8 shared connections)
 
 ## Source Files
 
-- `server/schemas/combat/__init__.py`
-- `server/schemas/combat/combat_schema.py`
-- `server/tests/unit/schemas/test_combat_schema.py`
+- `server/commands/combat.py`
+- `server/commands/combat_app_protocols.py`
+- `server/commands/combat_handler.py`
+- `server/commands/combat_loader.py`
+- `server/game/magic/spell_targeting.py`
+- `server/schemas/shared/target_metadata.py`
+- `server/schemas/shared/target_resolution.py`
+- `server/services/combat_service.py`
+- `server/services/player_combat_service.py`
+- `server/services/target_resolution_service.py`
+- `server/tests/unit/commands/test_combat_handler.py`
+- `server/tests/unit/commands/test_combat_loader.py`
+- `server/tests/unit/commands/test_flee_command.py`
+- `server/tests/unit/services/test_player_combat_service.py`
+- `server/tests/unit/services/test_target_resolution_service.py`
+- `server/validators/combat_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 167 (92%)
-- INFERRED: 15 (8%)
+- EXTRACTED: 1238 (90%)
+- INFERRED: 140 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

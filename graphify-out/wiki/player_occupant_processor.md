@@ -1,13 +1,12 @@
 # player occupant processor
 
-> 28 nodes
+> 26 nodes
 
 ## Key Concepts
 
 - **test_room_occupant_manager.py** (16 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
 - **occupant_manager()** (3 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
 - **test_get_room_occupants_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **test_get_room_occupants_get_players_error()** (3 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
 - **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
 - **test_room_occupant_manager_init()** (2 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
 - **test_get_room_occupants_no_persistence()** (2 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
@@ -29,12 +28,14 @@
 - **Test get_room_occupants handles errors gracefully.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
 - **Test separate_occupants_by_type separates occupants.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
 - **Test get_room_occupants with ensure_player_included.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- *... and 3 more nodes in this community*
+- **Test get_room_occupants returns both players and NPCs.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [event bus events](event_bus_events.md) (4 shared connections)
-- [websocket helpers realtime](websocket_helpers_realtime.md) (1 shared connections)
+- [profession models rationale](profession_models_rationale.md) (3 shared connections)
+- [schemas players profession](schemas_players_profession.md) (1 shared connections)
+- [room sync service](room_sync_service.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,8 +43,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 58 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 55 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

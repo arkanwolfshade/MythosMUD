@@ -1,64 +1,63 @@
 # Async Query Helpers
 
-> 92 nodes
+> 138 nodes
 
 ## Key Concepts
 
-- **player_respawn_service.py** (44 connections) — `server/services/player_respawn_service.py`
-- **PlayerRespawnService** (39 connections) — `server/services/player_respawn_service.py`
-- **coerce_int()** (37 connections) — `server/utils/int_coercion.py`
-- **UUID** (16 connections)
-- **._prepare_sanitarium_respawn()** (16 connections) — `server/services/player_respawn_service.py`
-- **int_coercion.py** (13 connections) — `server/utils/int_coercion.py`
-- **encode_liabilities()** (12 connections) — `server/services/lucidity_helpers.py`
-- **._apply_sanitarium_liability_update()** (12 connections) — `server/services/player_respawn_service.py`
-- **test_inventory_command_coercion.py** (12 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
-- **.respawn_player()** (11 connections) — `server/services/player_respawn_service.py`
-- **.respawn_player_from_delirium()** (10 connections) — `server/services/player_respawn_service.py`
-- **.respawn_player_from_sanitarium()** (10 connections) — `server/services/player_respawn_service.py`
-- **Player** (8 connections)
-- **._clear_respawn_combat_state()** (8 connections) — `server/services/player_respawn_service.py`
-- **._publish_standard_respawn_event()** (8 connections) — `server/services/player_respawn_service.py`
-- **._prepare_delirium_respawn()** (8 connections) — `server/services/player_respawn_service.py`
-- **_utc_now()** (7 connections) — `server/services/player_respawn_service.py`
-- **AsyncSession** (7 connections)
-- **.move_player_to_limbo()** (7 connections) — `server/services/player_respawn_service.py`
-- **.get_respawn_room()** (7 connections) — `server/services/player_respawn_service.py`
-- **DecodeLiabilitiesFn** (7 connections) — `server/utils/liability_types.py`
-- **EncodeLiabilitiesFn** (7 connections) — `server/utils/liability_types.py`
-- **inventory_command_coercion.py** (6 connections) — `server/commands/inventory_command_coercion.py`
-- **_RespawnEventPublisher** (6 connections) — `server/services/player_respawn_service.py`
-- **_PlayerCombatClearing** (6 connections) — `server/services/player_respawn_service.py`
-- *... and 67 more nodes in this community*
+- **ErrorContext** (54 connections) — `server/exceptions.py`
+- **test_exceptions.py** (43 connections) — `server/tests/unit/test_exceptions.py`
+- **create_error_context()** (36 connections) — `server/exceptions.py`
+- **test_exceptions_comprehensive.py** (35 connections) — `server/tests/unit/test_exceptions_comprehensive.py`
+- **LoggedException** (23 connections) — `server/exceptions.py`
+- **.__init__()** (16 connections) — `server/exceptions.py`
+- **Any** (14 connections)
+- **.__init__()** (8 connections) — `server/exceptions.py`
+- **.mark_logged()** (5 connections) — `server/exceptions.py`
+- **test_logged_http_exception_initialization()** (5 connections) — `server/tests/unit/test_exceptions.py`
+- **test_handle_exception_standard_exception()** (5 connections) — `server/tests/unit/test_exceptions_comprehensive.py`
+- **.__init__()** (4 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **.to_dict()** (4 connections) — `server/exceptions.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **test_mythos_mud_error_initialization()** (4 connections) — `server/tests/unit/test_exceptions.py`
+- **test_mythos_mud_error_with_context()** (4 connections) — `server/tests/unit/test_exceptions.py`
+- **test_mythos_mud_error_to_dict()** (4 connections) — `server/tests/unit/test_exceptions.py`
+- *... and 113 more nodes in this community*
 
 ## Relationships
 
-- [lucidity services helpers](lucidity_services_helpers.md) (34 shared connections)
-- [combat models rationale](combat_models_rationale.md) (10 shared connections)
-- [NPC Combat](NPC_Combat.md) (9 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (8 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (7 shared connections)
-- [models npc rationale](models_npc_rationale.md) (6 shared connections)
-- [websocket handler realtime](websocket_handler_realtime.md) (6 shared connections)
-- [room conftest toolkit](room_conftest_toolkit.md) (5 shared connections)
-- [nats services service](nats_services_service.md) (5 shared connections)
-- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (4 shared connections)
-- [Loot Generation](Loot_Generation.md) (4 shared connections)
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (3 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (54 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (15 shared connections)
+- [handler realtime nats](handler_realtime_nats.md) (14 shared connections)
+- [player game schema](player_game_schema.md) (8 shared connections)
+- [services inventory mutation](services_inventory_mutation.md) (8 shared connections)
+- [add used user](add_used_user.md) (8 shared connections)
+- [websocket handler realtime](websocket_handler_realtime.md) (7 shared connections)
+- [Exception Containers](Exception_Containers.md) (6 shared connections)
+- [taunt combat commands](taunt_combat_commands.md) (6 shared connections)
+- [player service game](player_service_game.md) (5 shared connections)
+- [admin command setstat](admin_command_setstat.md) (2 shared connections)
+- [Inventory Equip](Inventory_Equip.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/inventory_command_coercion.py`
-- `server/services/lucidity_helpers.py`
-- `server/services/player_respawn_service.py`
-- `server/tests/unit/commands/test_inventory_command_coercion.py`
-- `server/utils/int_coercion.py`
-- `server/utils/liability_types.py`
+- `server/error_handlers/pydantic_error_handler.py`
+- `server/exceptions.py`
+- `server/tests/unit/test_exceptions.py`
+- `server/tests/unit/test_exceptions_comprehensive.py`
+- `server/tests/unit/utils/test_error_logging.py`
 
 ## Audit Trail
 
-- EXTRACTED: 419 (91%)
-- INFERRED: 39 (9%)
+- EXTRACTED: 491 (96%)
+- INFERRED: 22 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

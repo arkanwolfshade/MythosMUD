@@ -1,33 +1,34 @@
 # occupant realtime formatter
 
-> 8 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **validate_shutdown_admin_permission()** (9 connections) — `server/commands/admin_shutdown_command.py`
-- **test_validate_shutdown_admin_permission_no_player()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_validate_shutdown_admin_permission_not_admin()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_validate_shutdown_admin_permission_admin()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Validate that a player has admin permissions for server shutdown.      Args:** (1 connections) — `server/commands/admin_shutdown_command.py`
-- **Test validate_shutdown_admin_permission() returns False when player is None.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Test validate_shutdown_admin_permission() returns False when player is not admin** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Test validate_shutdown_admin_permission() returns True when player is admin.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **.retry_async()** (5 connections) — `server/realtime/nats_retry_handler.py`
+- **.calculate_backoff()** (4 connections) — `server/realtime/nats_retry_handler.py`
+- **Any** (3 connections)
+- **.get_retry_stats()** (3 connections) — `server/realtime/nats_retry_handler.py`
+- **.retry_with_backoff()** (3 connections) — `server/realtime/nats_retry_handler.py`
+- **.update_config()** (3 connections) — `server/realtime/nats_retry_handler.py`
+- **Calculate exponential backoff delay with jitter.          Args:             atte** (1 connections) — `server/realtime/nats_retry_handler.py`
+- **Retry a function with exponential backoff.          Args:             func: Asyn** (1 connections) — `server/realtime/nats_retry_handler.py`
+- **Get retry statistics.          Returns:             Dictionary with retry metric** (1 connections) — `server/realtime/nats_retry_handler.py`
+- **Retry async function with exponential backoff.          Attempts the function up** (1 connections) — `server/realtime/nats_retry_handler.py`
+- **Update retry configuration dynamically.          Allows runtime adjustment of re** (1 connections) — `server/realtime/nats_retry_handler.py`
 
 ## Relationships
 
-- [shutdown admin command](shutdown_admin_command.md) (4 shared connections)
-- [eventLog projectorRoom roomMergeUtils](eventLog_projectorRoom_roomMergeUtils.md) (3 shared connections)
-- [commands admin mute](commands_admin_mute.md) (1 shared connections)
+- [follow game service](follow_game_service.md) (5 shared connections)
+- [combat models rationale](combat_models_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/admin_shutdown_command.py`
-- `server/tests/unit/commands/test_admin_shutdown_command.py`
+- `server/realtime/nats_retry_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (95%)
-- INFERRED: 1 (5%)
+- EXTRACTED: 26 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

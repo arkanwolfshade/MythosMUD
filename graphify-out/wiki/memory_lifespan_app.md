@@ -1,48 +1,37 @@
 # memory lifespan app
 
-> 19 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **useDraggablePanelInteractions.ts** (11 connections) — `client/src/components/useDraggablePanelInteractions.ts`
-- **DraggablePanel()** (10 connections) — `client/src/components/DraggablePanelCore.tsx`
-- **DraggablePanel.tsx** (8 connections) — `client/src/components/DraggablePanel.tsx`
-- **draggablePanelUtils.ts** (7 connections) — `client/src/components/draggablePanelUtils.ts`
-- **useDraggablePanelInteractions()** (7 connections) — `client/src/components/useDraggablePanelInteractions.ts`
-- **relativeToAbsolute()** (3 connections) — `client/src/components/draggablePanelUtils.ts`
-- **relativeSizeToAbsolute()** (3 connections) — `client/src/components/draggablePanelUtils.ts`
-- **isPanelDragBlockedTarget()** (3 connections) — `client/src/components/draggablePanelUtils.ts`
-- **isMouseEventOnHeader()** (3 connections) — `client/src/components/draggablePanelUtils.ts`
-- **DraggablePanelProps** (2 connections) — `client/src/components/DraggablePanelCore.tsx`
-- **DraggablePanel.grid-positioning.test.tsx** (2 connections) — `client/src/components/__tests__/DraggablePanel.grid-positioning.test.tsx`
-- **DraggablePanel.test.tsx** (2 connections) — `client/src/components/__tests__/DraggablePanel.test.tsx`
-- **updateDragPosition()** (2 connections) — `client/src/components/useDraggablePanelInteractions.ts`
-- **updateResizePosition()** (2 connections) — `client/src/components/useDraggablePanelInteractions.ts`
-- **PANEL_DRAG_BLOCK_SELECTORS** (1 connections) — `client/src/components/draggablePanelUtils.ts`
-- **Size** (1 connections) — `client/src/components/useDraggablePanelInteractions.ts`
-- **Position** (1 connections) — `client/src/components/useDraggablePanelInteractions.ts`
-- **UseDraggablePanelInteractionsArgs** (1 connections) — `client/src/components/useDraggablePanelInteractions.ts`
-- **UseDraggablePanelInteractionsResult** (1 connections) — `client/src/components/useDraggablePanelInteractions.ts`
+- **handle_system_command()** (10 connections) — `server/commands/system_commands.py`
+- **test_system_commands.py** (6 connections) — `server/tests/unit/commands/test_system_commands.py`
+- **test_handle_system_command()** (3 connections) — `server/tests/unit/commands/test_system_commands.py`
+- **test_handle_system_command_no_message()** (3 connections) — `server/tests/unit/commands/test_system_commands.py`
+- **test_handle_system_command_no_chat_service()** (3 connections) — `server/tests/unit/commands/test_system_commands.py`
+- **Any** (2 connections)
+- **Broadcast a system-level message via the chat service if available.** (1 connections) — `server/commands/system_commands.py`
+- **Unit tests for system command handlers.  Tests the system command functionality.** (1 connections) — `server/tests/unit/commands/test_system_commands.py`
+- **Test handle_system_command() broadcasts system message.** (1 connections) — `server/tests/unit/commands/test_system_commands.py`
+- **Test handle_system_command() handles missing message.** (1 connections) — `server/tests/unit/commands/test_system_commands.py`
+- **Test handle_system_command() handles missing chat service.** (1 connections) — `server/tests/unit/commands/test_system_commands.py`
 
 ## Relationships
 
-- [panels chat ChatPanelRuntimeViewParts](panels_chat_ChatPanelRuntimeViewParts.md) (10 shared connections)
-- [game terminal lucidity](game_terminal_lucidity.md) (2 shared connections)
-- [stores connectionStore commandStore](stores_connectionStore_commandStore.md) (2 shared connections)
+- [realtime real time](realtime_real_time.md) (3 shared connections)
+- [websocket examples logging](websocket_examples_logging.md) (1 shared connections)
+- [alias storage rationale](alias_storage_rationale.md) (1 shared connections)
+- [shutdown admin command](shutdown_admin_command.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/DraggablePanel.tsx`
-- `client/src/components/DraggablePanelCore.tsx`
-- `client/src/components/__tests__/DraggablePanel.grid-positioning.test.tsx`
-- `client/src/components/__tests__/DraggablePanel.test.tsx`
-- `client/src/components/draggablePanelUtils.ts`
-- `client/src/components/useDraggablePanelInteractions.ts`
+- `server/commands/system_commands.py`
+- `server/tests/unit/commands/test_system_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 70 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 30 (94%)
+- INFERRED: 2 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

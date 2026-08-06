@@ -4,22 +4,20 @@
 
 ## Key Concepts
 
-- **test_spawn_arena_npcs_spawns_each_spawned_definition()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **One arena instance per definition_id present in required/optional spawned_npcs.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_add_valid_name_to_lists_none_name()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test add_valid_name_to_lists() skips None name.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [map layout useMapLayout](map_layout_useMapLayout.md) (1 shared connections)
-- [realtime player connection](realtime_player_connection.md) (1 shared connections)
-- [services npc startup](services_npc_startup.md) (1 shared connections)
+- [player event handlers](player_event_handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_npc_startup_service.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

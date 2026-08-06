@@ -1,42 +1,47 @@
 # npc combat player
 
-> 20 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **TestNPCCombatLifecycle** (12 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **.lifecycle_service()** (3 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **.test_init()** (3 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **.mock_persistence()** (2 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **.test_despawn_npc_safely_success()** (2 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **.test_despawn_npc_safely_no_lifecycle_manager()** (2 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **.test_despawn_npc_safely_exception()** (2 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **.test_despawn_npc_safely_sqlalchemy_error()** (2 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **.test_despawn_npc_with_active_npcs()** (2 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **.test_despawn_npc_no_active_npcs()** (2 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **Test suite for NPCCombatLifecycle class.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **Create a NPCCombatLifecycle instance for testing.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **Test NPCCombatLifecycle initialization.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **Test despawn_npc_safely successfully despawns NPC.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **Test despawn_npc_safely handles missing lifecycle manager.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **Test despawn_npc_safely handles exceptions gracefully.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **Test despawn_npc_safely handles SQLAlchemy errors.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **Test _despawn_npc handles NPC in active_npcs via fallback path.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **Test _despawn_npc handles NPC not in active_npcs.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
+- **test_statistics_aggregator.py** (14 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **statistics_aggregator()** (3 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **mock_memory_monitor()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **mock_rate_limiter()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **mock_message_queue()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **mock_room_manager()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **mock_performance_tracker()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **test_statistics_aggregator_init()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **test_get_memory_stats()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **test_get_connection_stats()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **test_get_connection_health_stats()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **test_get_memory_alerts()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **Unit tests for statistics aggregator.  Tests the StatisticsAggregator class.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **Create a mock memory monitor.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **Create a mock rate limiter.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **Create a mock message queue.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **Create a mock room manager.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **Create a mock performance tracker.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **Create a StatisticsAggregator instance.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **Test StatisticsAggregator initialization.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **Test get_memory_stats() returns comprehensive statistics.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **Test get_connection_stats() returns connection statistics.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **Test get_connection_health_stats() returns health statistics.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **Test get_memory_alerts() returns memory alerts.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (4 shared connections)
+- [persistence rationale room](persistence_rationale_room.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_npc_combat_lifecycle.py`
+- `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 41 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 49 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

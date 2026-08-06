@@ -1,43 +1,51 @@
 # playerHandlers eventHandlers healthEvent
 
-> 17 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **DatabaseConfig** (14 connections) — `server/config/models/server_db.py`
-- **.ensure_url_set()** (4 connections) — `server/config/models/server_db.py`
-- **test_database_config_validate_url_postgresql()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_database_config_validate_url_empty()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_database_config_validate_pool_config_positive()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_database_config_validate_pool_config_invalid()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **.validate_database_url()** (2 connections) — `server/config/models/server_db.py`
-- **.validate_pool_config()** (2 connections) — `server/config/models/server_db.py`
+- **main.py** (15 connections) — `server/main.py`
+- **create_app()** (14 connections) — `server/app/factory.py`
+- **main()** (4 connections) — `scripts/generate_openapi_spec.py`
+- **main()** (4 connections) — `server/main.py`
+- **_create_get_app()** (4 connections) — `server/main.py`
+- **generate_openapi_spec.py** (3 connections) — `scripts/generate_openapi_spec.py`
+- **_sanitize_token_examples()** (3 connections) — `scripts/generate_openapi_spec.py`
+- **FastAPI** (3 connections)
+- **test_auth()** (3 connections) — `server/main.py`
+- **read_root()** (2 connections) — `server/main.py`
+- **Replace auth token examples with clearly fake placeholders.** (1 connections) — `scripts/generate_openapi_spec.py`
+- **Generate and write OpenAPI spec to docs/openapi/openapi.json.** (1 connections) — `scripts/generate_openapi_spec.py`
+- **Create and configure the FastAPI application.      This function sets up the Fas** (1 connections) — `server/app/factory.py`
 - **Any** (1 connections)
-- **Database configuration.** (1 connections) — `server/config/models/server_db.py`
-- **Validate database URL format - PostgreSQL only.** (1 connections) — `server/config/models/server_db.py`
-- **Validate pool configuration values are positive.** (1 connections) — `server/config/models/server_db.py`
-- **Ensure url is set - use npc_url as fallback if url is missing.          This han** (1 connections) — `server/config/models/server_db.py`
-- **Test DatabaseConfig URL validation with PostgreSQL URL.** (1 connections) — `server/tests/unit/config/test_config_models.py`
-- **Test DatabaseConfig URL validation with empty URL.** (1 connections) — `server/tests/unit/config/test_config_models.py`
-- **Test DatabaseConfig pool config validation with positive values.** (1 connections) — `server/tests/unit/config/test_config_models.py`
-- **Test DatabaseConfig pool config validation with invalid value.** (1 connections) — `server/tests/unit/config/test_config_models.py`
+- **MythosMUD Server - Main Application Entry Point  This module serves as the prima** (1 connections) — `server/main.py`
+- **Main entry point for the MythosMUD server.** (1 connections) — `server/main.py`
+- **Factory function that creates the get_app function with encapsulated cache.** (1 connections) — `server/main.py`
+- **Root endpoint providing basic server information.** (1 connections) — `server/main.py`
+- **Test endpoint to verify JWT authentication is working.** (1 connections) — `server/main.py`
 
 ## Relationships
 
-- [config models rationale](config_models_rationale.md) (6 shared connections)
-- [lucidity npc combat](lucidity_npc_combat.md) (2 shared connections)
-- [admin command setstat](admin_command_setstat.md) (2 shared connections)
-- [player event handlers](player_event_handlers.md) (1 shared connections)
+- [feature services flag](feature_services_flag.md) (5 shared connections)
+- [Error Conversion](Error_Conversion.md) (3 shared connections)
+- [app factory rationale](app_factory_rationale.md) (2 shared connections)
+- [aggro threat services](aggro_threat_services.md) (1 shared connections)
+- [middleware comprehensive logging](middleware_comprehensive_logging.md) (1 shared connections)
+- [middleware error handling](middleware_error_handling.md) (1 shared connections)
+- [persistence rationale player](persistence_rationale_player.md) (1 shared connections)
+- [auth users rationale](auth_users_rationale.md) (1 shared connections)
+- [tools generate invite](tools_generate_invite.md) (1 shared connections)
 
 ## Source Files
 
-- `server/config/models/server_db.py`
-- `server/tests/unit/config/test_config_models.py`
+- `scripts/generate_openapi_spec.py`
+- `server/app/factory.py`
+- `server/main.py`
 
 ## Audit Trail
 
-- EXTRACTED: 42 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 61 (95%)
+- INFERRED: 3 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,10 +1,12 @@
 # audit logger rationale
 
-> 26 nodes
+> 46 nodes
 
 ## Key Concepts
 
+- **test_audit_logger.py** (15 connections) — `server/tests/unit/utils/test_audit_logger.py`
 - **AuditLogger** (15 connections) — `server/utils/audit_logger.py`
+- **_logger()** (13 connections) — `server/tests/unit/utils/test_audit_logger.py`
 - **._write_entry()** (10 connections) — `server/utils/audit_logger.py`
 - **Any** (6 connections)
 - **.__init__()** (4 connections) — `server/utils/audit_logger.py`
@@ -14,35 +16,34 @@
 - **.log_security_event()** (4 connections) — `server/utils/audit_logger.py`
 - **.get_recent_entries()** (4 connections) — `server/utils/audit_logger.py`
 - **.get_statistics()** (4 connections) — `server/utils/audit_logger.py`
+- **test_audit_logger_init()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
+- **test_audit_logger_log_command()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
+- **test_audit_logger_log_permission_change()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
+- **test_audit_logger_log_player_action()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
+- **test_audit_logger_get_recent_entries()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
+- **test_audit_logger_get_recent_entries_filters_and_bad_lines()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
+- **test_audit_logger_get_statistics()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
 - **.log_permission_change()** (3 connections) — `server/utils/audit_logger.py`
 - **.log_player_action()** (3 connections) — `server/utils/audit_logger.py`
 - **.log_alias_expansion()** (3 connections) — `server/utils/audit_logger.py`
-- **Path** (2 connections)
-- **Audit logging for security-sensitive command execution.      Creates structured** (1 connections) — `server/utils/audit_logger.py`
-- **Initialize audit logger.          Args:             log_directory: Optional dire** (1 connections) — `server/utils/audit_logger.py`
-- **Get the current audit log file path.          Creates daily log files for easier** (1 connections) — `server/utils/audit_logger.py`
-- **Log security-sensitive command execution.          Creates a structured audit lo** (1 connections) — `server/utils/audit_logger.py`
-- **Log permission/role changes.          Args:             admin_name: Admin who ma** (1 connections) — `server/utils/audit_logger.py`
-- **Log container interaction events for security and compliance.          Args:** (1 connections) — `server/utils/audit_logger.py`
-- **Log administrative actions against players.          Args:             admin_nam** (1 connections) — `server/utils/audit_logger.py`
-- **Log general security events.          Used for rate limit violations, injection** (1 connections) — `server/utils/audit_logger.py`
-- **Log alias expansions for security monitoring.          Tracks alias usage to det** (1 connections) — `server/utils/audit_logger.py`
-- **Write audit log entry to file.          Uses JSON Lines format (one JSON object** (1 connections) — `server/utils/audit_logger.py`
-- **Retrieve recent audit log entries.          Useful for admin dashboards and inci** (1 connections) — `server/utils/audit_logger.py`
-- *... and 1 more nodes in this community*
+- **test_audit_logger_log_security_event_severity_branches()** (2 connections) — `server/tests/unit/utils/test_audit_logger.py`
+- **test_audit_logger_log_alias_expansion_cycle()** (2 connections) — `server/tests/unit/utils/test_audit_logger.py`
+- **test_audit_logger_log_container_interaction()** (2 connections) — `server/tests/unit/utils/test_audit_logger.py`
+- *... and 21 more nodes in this community*
 
 ## Relationships
 
-- [dead letter realtime](dead_letter_realtime.md) (3 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
+- [task registry app](task_registry_app.md) (2 shared connections)
+- [tools generate invite](tools_generate_invite.md) (1 shared connections)
 
 ## Source Files
 
+- `server/tests/unit/utils/test_audit_logger.py`
 - `server/utils/audit_logger.py`
 
 ## Audit Trail
 
-- EXTRACTED: 82 (100%)
+- EXTRACTED: 147 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

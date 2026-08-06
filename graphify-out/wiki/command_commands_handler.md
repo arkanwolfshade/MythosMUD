@@ -1,63 +1,54 @@
 # command commands handler
 
-> 91 nodes
+> 44 nodes
 
 ## Key Concepts
 
-- **command_handler_unified.py** (52 connections) — `server/command_handler_unified.py`
-- **TestHelperFunctions** (33 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **_prepare_command_for_processing()** (21 connections) — `server/command_handler_unified.py`
-- **process_command_unified()** (19 connections) — `server/command_handler_unified.py`
-- **_check_casting_state()** (19 connections) — `server/command_handler_unified.py`
-- **_process_alias_expansion()** (19 connections) — `server/command_handler_unified.py`
-- **_handle_special_command_routing()** (18 connections) — `server/command_handler_unified.py`
-- **_check_all_command_blocks()** (17 connections) — `server/command_handler_unified.py`
-- **_validate_command_basics()** (16 connections) — `server/command_handler_unified.py`
-- **Any** (14 connections)
-- **_ensure_alias_storage()** (13 connections) — `server/command_handler_unified.py`
-- **test_command_handler_unified_helpers.py** (13 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **CommandExecutionRequest** (11 connections)
-- **_check_rate_limit()** (10 connections) — `server/command_handler_unified.py`
-- **handle_command()** (10 connections) — `server/command_handler_unified.py`
-- **test_command_handler_unified.py** (10 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **process_command()** (9 connections) — `server/command_handler_unified.py`
-- **test_command_aliases.py** (8 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **_get_casting_block_result()** (7 connections) — `server/command_handler_unified.py`
-- **get_help_content()** (6 connections) — `server/command_handler_unified.py`
-- **.test_ensure_alias_storage_provided()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **test_command_preparation.py** (4 connections) — `server/tests/unit/commands/test_command_preparation.py`
-- **.test_check_rate_limit_allowed()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **.test_check_rate_limit_blocked()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- **.test_validate_command_basics_empty()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- *... and 66 more nodes in this community*
+- **apply_communication_dampening()** (13 connections) — `server/services/lucidity_communication_dampening.py`
+- **._broadcast_to_room_with_filtering()** (12 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **test_lucidity_communication_dampening.py** (11 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
+- **Any** (7 connections)
+- **._send_messages_to_players()** (7 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **._apply_dampening_and_send_message()** (6 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **lucidity_communication_dampening.py** (6 connections) — `server/services/lucidity_communication_dampening.py`
+- **UserManager** (5 connections)
+- **._filter_target_players()** (5 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **._echo_message_to_sender()** (5 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **._format_message_for_receiver()** (5 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **._preload_receiver_mute_data()** (4 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **._extract_chat_event_info()** (4 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **._check_player_mute_status()** (4 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **._get_user_manager()** (4 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **should_block_shout()** (4 connections) — `server/services/lucidity_communication_dampening.py`
+- **._collect_room_targets()** (3 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **._should_echo_to_sender()** (3 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **._is_player_muted_by_receiver_with_user_manager()** (3 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **test_should_block_shout_deranged()** (2 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
+- **test_whisper_uneasy_adds_strained_tag()** (2 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
+- **test_deranged_shout_blocked()** (2 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
+- **test_fractured_outgoing_no_glyph_when_roll_high()** (2 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
+- **test_fractured_outgoing_appends_glyph()** (2 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
+- **test_fractured_incoming_strips_punctuation()** (2 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [combat npc services](combat_npc_services.md) (15 shared connections)
-- [auth dependencies rationale](auth_dependencies_rationale.md) (15 shared connections)
-- [commands npc admin](commands_npc_admin.md) (13 shared connections)
-- [command validation commands](command_validation_commands.md) (10 shared connections)
-- [fixtures mock helpers](fixtures_mock_helpers.md) (6 shared connections)
-- [commands recovery lucidity](commands_recovery_lucidity.md) (6 shared connections)
-- [commands command validation](commands_command_validation.md) (6 shared connections)
-- [commands whisper command](commands_whisper_command.md) (5 shared connections)
-- [startup services npc](startup_services_npc.md) (5 shared connections)
-- [error websocket handler](error_websocket_handler.md) (5 shared connections)
-- [command validator validators](command_validator_validators.md) (4 shared connections)
-- [lucidity commands services](lucidity_commands_services.md) (4 shared connections)
+- [follow game service](follow_game_service.md) (14 shared connections)
+- [player room realtime](player_room_realtime.md) (2 shared connections)
+- [game chat service](game_chat_service.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [npc lifecycle combat](npc_lifecycle_combat.md) (1 shared connections)
 
 ## Source Files
 
-- `server/command_handler_unified.py`
-- `server/tests/unit/commands/test_command_aliases.py`
-- `server/tests/unit/commands/test_command_handler_unified.py`
-- `server/tests/unit/commands/test_command_handler_unified_helpers.py`
-- `server/tests/unit/commands/test_command_preparation.py`
+- `server/realtime/nats_message_handler_broadcast.py`
+- `server/services/lucidity_communication_dampening.py`
+- `server/tests/unit/services/test_lucidity_communication_dampening.py`
 
 ## Audit Trail
 
-- EXTRACTED: 442 (98%)
-- INFERRED: 9 (2%)
+- EXTRACTED: 141 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

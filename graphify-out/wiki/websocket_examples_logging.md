@@ -1,60 +1,56 @@
 # websocket examples logging
 
-> 53 nodes
+> 50 nodes
 
 ## Key Concepts
 
-- **ExceptionTracker** (29 connections) — `server/monitoring/exception_tracker.py`
-- **exception_tracker.py** (19 connections) — `server/monitoring/exception_tracker.py`
-- **track_exception()** (17 connections) — `server/monitoring/exception_tracker.py`
-- **ExceptionRecord** (12 connections) — `server/monitoring/exception_tracker.py`
-- **get_exception_tracker()** (12 connections) — `server/monitoring/exception_tracker.py`
-- **test_exception_tracker.py** (12 connections) — `server/tests/unit/monitoring/test_exception_tracker.py`
-- **.track_exception()** (8 connections) — `server/monitoring/exception_tracker.py`
-- **track_exception_with_context()** (8 connections) — `server/monitoring/exception_tracker.py`
-- **Exception** (5 connections)
-- **Any** (5 connections)
-- **._call_handlers()** (5 connections) — `server/monitoring/exception_tracker.py`
-- **.add_exception_handler()** (4 connections) — `server/monitoring/exception_tracker.py`
-- **._update_stats()** (4 connections) — `server/monitoring/exception_tracker.py`
-- **.__init__()** (3 connections) — `server/monitoring/exception_tracker.py`
-- **.get_exception_record()** (3 connections) — `server/monitoring/exception_tracker.py`
-- **.get_exceptions_by_type()** (3 connections) — `server/monitoring/exception_tracker.py`
-- **.get_exceptions_by_user()** (3 connections) — `server/monitoring/exception_tracker.py`
-- **.get_exceptions_by_correlation()** (3 connections) — `server/monitoring/exception_tracker.py`
-- **.get_unhandled_exceptions()** (3 connections) — `server/monitoring/exception_tracker.py`
-- **.get_critical_exceptions()** (3 connections) — `server/monitoring/exception_tracker.py`
-- **.get_recent_exceptions()** (3 connections) — `server/monitoring/exception_tracker.py`
-- **.get_stats()** (3 connections) — `server/monitoring/exception_tracker.py`
-- **.add_global_exception_handler()** (3 connections) — `server/monitoring/exception_tracker.py`
-- **.reset_records()** (3 connections) — `server/monitoring/exception_tracker.py`
-- **test_reset_records_and_module_helper()** (3 connections) — `server/tests/unit/monitoring/test_exception_tracker.py`
-- *... and 28 more nodes in this community*
+- **websocket_integration.py** (22 connections) — `docs/examples/logging/websocket_integration.py`
+- **handle_websocket_message()** (8 connections) — `docs/examples/logging/websocket_integration.py`
+- **WebSocketManager** (7 connections) — `docs/examples/logging/websocket_integration.py`
+- **websocket_endpoint()** (7 connections) — `docs/examples/logging/websocket_integration.py`
+- **.send_text()** (7 connections) — `docs/examples/logging/websocket_integration.py`
+- **.disconnect()** (6 connections) — `docs/examples/logging/websocket_integration.py`
+- **handle_game_action()** (6 connections) — `docs/examples/logging/websocket_integration.py`
+- **chat_service** (6 connections) — `docs/examples/logging/websocket_integration.py`
+- **.connect()** (5 connections) — `docs/examples/logging/websocket_integration.py`
+- **handle_chat_message()** (5 connections) — `docs/examples/logging/websocket_integration.py`
+- **WebSocket** (5 connections) — `docs/examples/logging/websocket_integration.py`
+- **.send_message()** (4 connections) — `docs/examples/logging/websocket_integration.py`
+- **.broadcast_message()** (4 connections) — `docs/examples/logging/websocket_integration.py`
+- **authenticate_websocket_connection()** (4 connections) — `docs/examples/logging/websocket_integration.py`
+- **WebSocketRateLimiter** (4 connections) — `docs/examples/logging/websocket_integration.py`
+- **handle_websocket_error()** (4 connections) — `docs/examples/logging/websocket_integration.py`
+- **websocket_heartbeat()** (3 connections) — `docs/examples/logging/websocket_integration.py`
+- **parse_websocket_message()** (3 connections) — `docs/examples/logging/websocket_integration.py`
+- **.broadcast_message()** (3 connections) — `docs/examples/logging/websocket_integration.py`
+- **.verify_token()** (3 connections) — `docs/examples/logging/websocket_integration.py`
+- **.check_rate_limit()** (2 connections) — `docs/examples/logging/websocket_integration.py`
+- **validate_websocket_message()** (2 connections) — `docs/examples/logging/websocket_integration.py`
+- **Exception** (2 connections)
+- **WebSocketDisconnect** (2 connections) — `docs/examples/logging/websocket_integration.py`
+- **websocket_manager** (2 connections) — `docs/examples/logging/websocket_integration.py`
+- *... and 25 more nodes in this community*
 
 ## Relationships
 
-- [room cache services](room_cache_services.md) (8 shared connections)
-- [correct patterns examples](correct_patterns_examples.md) (3 shared connections)
-- [examples logging testing](examples_logging_testing.md) (3 shared connections)
-- [models lucidity rationale](models_lucidity_rationale.md) (3 shared connections)
+- [models lucidity rationale](models_lucidity_rationale.md) (4 shared connections)
 - [Magic Spell Service](Magic_Spell_Service.md) (3 shared connections)
-- [nats services service](nats_services_service.md) (3 shared connections)
 - [middleware correlation rationale](middleware_correlation_rationale.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [Spell Validation](Spell_Validation.md) (2 shared connections)
-- [world loader room](world_loader_room.md) (2 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
-- [command combat models](command_combat_models.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [commands communication flows](commands_communication_flows.md) (1 shared connections)
+- [commands emote rationale](commands_emote_rationale.md) (1 shared connections)
+- [models player related](models_player_related.md) (1 shared connections)
+- [memory lifespan app](memory_lifespan_app.md) (1 shared connections)
+- [player requests schemas](player_requests_schemas.md) (1 shared connections)
 
 ## Source Files
 
-- `server/monitoring/exception_tracker.py`
-- `server/tests/unit/monitoring/test_exception_tracker.py`
+- `docs/examples/logging/websocket_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 207 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 150 (96%)
+- INFERRED: 7 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

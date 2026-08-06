@@ -1,49 +1,66 @@
 # player model models
 
-> 54 nodes
+> 58 nodes
 
 ## Key Concepts
 
-- **test_movement_monitor.py** (33 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_get_movement_monitor_returns_singleton()** (3 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **sample_player_id()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_movement_monitor_init()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_record_movement_attempt_success()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_record_movement_attempt_failure()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_record_movement_attempt_string_player_id()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_record_movement_attempt_uuid_player_id()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_record_movement_attempt_multiple_players()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_record_concurrent_movement()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_record_concurrent_movement_updates_max()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_record_integrity_check_no_violation()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_record_integrity_check_with_violation()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_validate_room_integrity_valid()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_validate_room_integrity_duplicate_players()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_validate_room_integrity_empty_rooms()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_validate_room_integrity_room_without_get_players()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_get_metrics_empty()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_get_metrics_with_data()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_get_metrics_integrity_rate()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_get_alerts_no_alerts()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_get_alerts_high_concurrent()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_get_alerts_high_failure_rate()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_get_alerts_slow_movement_time()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_reset_metrics()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- *... and 29 more nodes in this community*
+- **command_handler_unified.py** (52 connections) — `server/command_handler_unified.py`
+- **_check_grace_period_block()** (24 connections) — `server/command_handler_unified.py`
+- **_prepare_command_for_processing()** (21 connections) — `server/command_handler_unified.py`
+- **process_command_unified()** (19 connections) — `server/command_handler_unified.py`
+- **_check_casting_state()** (19 connections) — `server/command_handler_unified.py`
+- **_process_alias_expansion()** (19 connections) — `server/command_handler_unified.py`
+- **_handle_special_command_routing()** (18 connections) — `server/command_handler_unified.py`
+- **_check_all_command_blocks()** (17 connections) — `server/command_handler_unified.py`
+- **_validate_command_basics()** (16 connections) — `server/command_handler_unified.py`
+- **command_request_app_state()** (14 connections) — `server/command_handler/command_execution_request.py`
+- **Any** (14 connections)
+- **_ensure_alias_storage()** (13 connections) — `server/command_handler_unified.py`
+- **test_command_handler_unified_helpers.py** (13 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **CommandExecutionRequest** (11 connections)
+- **should_treat_as_emote()** (10 connections) — `server/command_handler/command_input.py`
+- **_check_rate_limit()** (10 connections) — `server/command_handler_unified.py`
+- **handle_command()** (10 connections) — `server/command_handler_unified.py`
+- **test_command_handler_unified.py** (10 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **command_execution_request.py** (9 connections) — `server/command_handler/command_execution_request.py`
+- **process_command()** (9 connections) — `server/command_handler_unified.py`
+- **_get_grace_check_context()** (8 connections) — `server/command_handler_unified.py`
+- **test_command_execution_request.py** (8 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
+- **test_command_aliases.py** (8 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **_get_casting_block_result()** (7 connections) — `server/command_handler_unified.py`
+- **get_help_content()** (6 connections) — `server/command_handler_unified.py`
+- *... and 33 more nodes in this community*
 
 ## Relationships
 
-- [npc population control](npc_population_control.md) (5 shared connections)
-- [health models rationale](health_models_rationale.md) (2 shared connections)
+- [command commands handler](command_commands_handler.md) (31 shared connections)
+- [auth dependencies rationale](auth_dependencies_rationale.md) (15 shared connections)
+- [command validation commands](command_validation_commands.md) (13 shared connections)
+- [alias storage rationale](alias_storage_rationale.md) (13 shared connections)
+- [player left room](player_left_room.md) (7 shared connections)
+- [connection realtime name](connection_realtime_name.md) (6 shared connections)
+- [commands command validation](commands_command_validation.md) (6 shared connections)
+- [commands recovery lucidity](commands_recovery_lucidity.md) (5 shared connections)
+- [startup services npc](startup_services_npc.md) (5 shared connections)
+- [combat npc services](combat_npc_services.md) (5 shared connections)
+- [error websocket handler](error_websocket_handler.md) (5 shared connections)
+- [Error Conversion](Error_Conversion.md) (4 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_movement_monitor.py`
+- `server/command_handler/command_execution_request.py`
+- `server/command_handler/command_input.py`
+- `server/command_handler_unified.py`
+- `server/tests/unit/command_handler/test_command_execution_request.py`
+- `server/tests/unit/commands/test_command_aliases.py`
+- `server/tests/unit/commands/test_command_handler_unified.py`
+- `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- `server/tests/unit/commands/test_command_preparation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 113 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 401 (98%)
+- INFERRED: 10 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

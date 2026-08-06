@@ -1,42 +1,34 @@
 # connection realtime name
 
-> 16 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **get_npc_name_from_instance()** (11 connections) — `server/realtime/connection_utils.py`
-- **test_connection_utils.py** (9 connections) — `server/tests/unit/realtime/test_connection_utils.py`
-- **test_get_npc_name_from_instance_handles_exception()** (4 connections) — `server/tests/unit/realtime/test_connection_utils.py`
-- **test_get_npc_name_from_instance_success()** (3 connections) — `server/tests/unit/realtime/test_connection_utils.py`
-- **test_get_npc_name_from_instance_not_found()** (3 connections) — `server/tests/unit/realtime/test_connection_utils.py`
-- **test_get_npc_name_from_instance_no_name()** (3 connections) — `server/tests/unit/realtime/test_connection_utils.py`
-- **test_get_npc_name_from_instance_no_service()** (3 connections) — `server/tests/unit/realtime/test_connection_utils.py`
-- **test_get_npc_name_from_instance_no_lifecycle_manager()** (3 connections) — `server/tests/unit/realtime/test_connection_utils.py`
-- **Get NPC name from the actual NPC instance, preserving original case from databas** (1 connections) — `server/realtime/connection_utils.py`
-- **Unit tests for connection utils.  Tests the connection_utils module functions.** (1 connections) — `server/tests/unit/realtime/test_connection_utils.py`
-- **Test get_npc_name_from_instance() returns NPC name when found.** (1 connections) — `server/tests/unit/realtime/test_connection_utils.py`
-- **Test get_npc_name_from_instance() returns None when NPC not found.** (1 connections) — `server/tests/unit/realtime/test_connection_utils.py`
-- **Test get_npc_name_from_instance() returns None when NPC has no name.** (1 connections) — `server/tests/unit/realtime/test_connection_utils.py`
-- **Test get_npc_name_from_instance() returns None when service not available.** (1 connections) — `server/tests/unit/realtime/test_connection_utils.py`
-- **Test get_npc_name_from_instance() returns None when no lifecycle manager.** (1 connections) — `server/tests/unit/realtime/test_connection_utils.py`
-- **Test get_npc_name_from_instance() handles exceptions.** (1 connections) — `server/tests/unit/realtime/test_connection_utils.py`
+- **test_grace_period_blocking.py** (8 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **test_check_grace_period_block_blocks_commands()** (3 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **test_check_grace_period_block_allows_commands_when_not_in_grace_period()** (3 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **test_check_grace_period_block_handles_missing_services()** (3 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **test_check_grace_period_block_handles_player_not_found()** (3 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **mock_request()** (2 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **Unit tests for grace period command blocking in unified command handler.  Tests** (1 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **Create a mock request.** (1 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **Test _check_grace_period_block() blocks commands for grace period players.** (1 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **Test _check_grace_period_block() allows commands when player not in grace period** (1 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **Test _check_grace_period_block() handles missing services gracefully.** (1 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **Test _check_grace_period_block() handles player not found gracefully.** (1 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (1 shared connections)
-- [logging setup structured](logging_setup_structured.md) (1 shared connections)
-- [websocket helpers realtime](websocket_helpers_realtime.md) (1 shared connections)
+- [player model models](player_model_models.md) (6 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_utils.py`
-- `server/tests/unit/realtime/test_connection_utils.py`
+- `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
 
 ## Audit Trail
 
-- EXTRACTED: 46 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 28 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

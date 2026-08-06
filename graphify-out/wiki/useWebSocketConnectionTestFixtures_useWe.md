@@ -1,10 +1,11 @@
 # useWebSocketConnectionTestFixtures useWe
 
-> 58 nodes
+> 60 nodes
 
 ## Key Concepts
 
 - **test_player_event_handlers_respawn.py** (34 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **mock_utils()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
 - **player_respawn_event_handler()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
 - **test_send_respawn_event_with_retry_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
 - **mock_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
@@ -28,13 +29,13 @@
 - **test_get_player_data_for_delirium_respawn_success()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
 - **test_get_player_data_for_delirium_respawn_no_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
 - **test_get_player_data_for_delirium_respawn_player_not_found()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_get_player_data_for_delirium_respawn_error_handling()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- *... and 33 more nodes in this community*
+- *... and 35 more nodes in this community*
 
 ## Relationships
 
-- [NATS Messaging](NATS_Messaging.md) (4 shared connections)
-- [player_event_handler_utils](player_event_handler_utils.md) (3 shared connections)
+- [NATS Messaging](NATS_Messaging.md) (3 shared connections)
+- [profession models rationale](profession_models_rationale.md) (3 shared connections)
+- [player room realtime](player_room_realtime.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,7 +43,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 121 (100%)
+- EXTRACTED: 125 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,48 +1,48 @@
 # room toolkit validator
 
-> 29 nodes
+> 31 nodes
 
 ## Key Concepts
 
-- **MinimapRenderer** (16 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **._create_grid_map()** (6 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **.render_ascii_map()** (5 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **._assign_coordinates()** (5 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **.get_street_name()** (4 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **.get_street_color()** (4 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **._generate_color_legend()** (4 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **Any** (3 connections)
-- **._get_next_coordinates()** (3 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **._reverse_direction()** (3 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **._draw_connection()** (3 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **.render_json_summary()** (3 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **.render_connectivity_stats()** (3 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **.__init__()** (2 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **.get_street_acronym()** (2 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **Renders room connectivity graphs in various visual formats.      Implements the** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **Initialize the mini-map renderer.** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **Extract street acronym from room ID.          Args:             room_id: Full ro** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **Extract street name from room ID.          Args:             room_id: Full room** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **Get color code for a street.          Args:             room_id: Full room ID** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **Render the mini-map as ASCII art with grid-based visualization.          Args:** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **Create a grid-based map visualization.          Args:             nodes: List of** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **Assign grid coordinates to rooms based on connectivity.          Args:** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **Get coordinates for the next room based on direction.          Args:** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **Reverse a direction.          Args:             direction: Original direction** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- *... and 4 more nodes in this community*
+- **RoomFixer** (19 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **Path** (7 connections)
+- **.fix_schema_issues()** (7 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **.create_backup()** (6 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **.load_room_file()** (6 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **.save_room_file()** (6 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **.fix_bidirectional_connections()** (5 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **.fix_self_references()** (5 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **._create_backup_if_requested()** (5 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **._fix_missing_fields()** (5 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **._save_fixed_room()** (5 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **._find_room_file()** (4 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **.__init__()** (3 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **._fix_missing_exits()** (3 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **._fix_missing_optional_fields()** (3 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **.get_fix_summary()** (2 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **Automatically fixes common room validation issues.      Implements safe correcti** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **Initialize the room fixer.          Args:             base_path: Base directory** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **Create a backup of a room file.          Args:             file_path: Path to th** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **Load a room file safely.          Args:             file_path: Path to the room** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **Save a room file safely.          Args:             file_path: Path to the room** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **Fix missing bidirectional connections.          Args:             room_database:** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **Fix self-references by adding proper flags.          Args:             room_data** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **Find the file for a room. Returns None if file doesn't exist.** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **Create backup if requested.** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- *... and 6 more nodes in this community*
 
 ## Relationships
 
-- [room validator toolkit](room_validator_toolkit.md) (2 shared connections)
+- [room validator toolkit](room_validator_toolkit.md) (4 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- `tools/room_toolkit/room_validator/core/fixer.py`
 
 ## Audit Trail
 
-- EXTRACTED: 79 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 106 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

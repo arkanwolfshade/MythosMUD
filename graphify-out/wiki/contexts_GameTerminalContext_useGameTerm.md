@@ -1,46 +1,47 @@
 # contexts GameTerminalContext useGameTerm
 
-> 23 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **GameTerminalContext.test.tsx** (18 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
-- **useGameTerminalContext.ts** (9 connections) — `client/src/contexts/hooks/useGameTerminalContext.ts`
-- **GameTerminalContext.tsx** (8 connections) — `client/src/contexts/GameTerminalContext.tsx`
-- **useGameTerminalContext()** (7 connections) — `client/src/contexts/hooks/useGameTerminalContext.ts`
-- **ErrorBoundary** (4 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
-- **useConnectionState()** (4 connections) — `client/src/contexts/hooks/useGameTerminalContext.ts`
-- **useSessionState()** (4 connections) — `client/src/contexts/hooks/useGameTerminalContext.ts`
-- **useGameState()** (4 connections) — `client/src/contexts/hooks/useGameTerminalContext.ts`
-- **useGameActions()** (4 connections) — `client/src/contexts/hooks/useGameTerminalContext.ts`
-- **GameTerminalProvider()** (3 connections) — `client/src/contexts/GameTerminalContext.tsx`
-- **GameTerminalContextType** (2 connections) — `client/src/contexts/GameTerminalContext.tsx`
-- **GameTerminalContext** (2 connections) — `client/src/contexts/GameTerminalContext.tsx`
-- **TestComponent()** (2 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
-- **ConnectionTestComponent()** (2 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
-- **SessionTestComponent()** (2 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
-- **GameStateTestComponent()** (2 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
-- **GameActionsTestComponent()** (2 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
-- **GameTerminalProviderProps** (1 connections) — `client/src/contexts/GameTerminalContext.tsx`
-- **createDefaultGameTerminalState()** (1 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
-- **useGameTerminalMock** (1 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
-- **.constructor()** (1 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
-- **.getDerivedStateFromError()** (1 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
-- **.render()** (1 connections) — `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
+- **test_look_item_helpers.py** (28 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_equipped_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_equipped_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_room_drops_empty()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_room_drops_no_match()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_room_drops_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_room_drops_instance_number_zero()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_equipped_empty()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_equipped_no_match()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_equipped_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_equipped_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_equipped_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Unit tests for look item helper functions.  Tests the helper functions in look_i** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_equipped() finds item by name.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_equipped() returns None when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_room_drops() with empty list.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_room_drops() with no matching items.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_room_drops() with instance number out of range.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_room_drops() with instance number zero.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_equipped() with empty dict.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_equipped() with no matching items.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_equipped() with multiple matches (ambiguous).** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_equipped() with instance number.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_equipped() with instance number out of range.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
 
 ## Relationships
 
-- [stores connectionStore commandStore](stores_connectionStore_commandStore.md) (5 shared connections)
+- [command admin setlucidity](command_admin_setlucidity.md) (10 shared connections)
+- [schemas validator rationale](schemas_validator_rationale.md) (9 shared connections)
+- [npc combat services](npc_combat_services.md) (8 shared connections)
 
 ## Source Files
 
-- `client/src/contexts/GameTerminalContext.tsx`
-- `client/src/contexts/__tests__/GameTerminalContext.test.tsx`
-- `client/src/contexts/hooks/useGameTerminalContext.ts`
+- `server/tests/unit/commands/test_look_item_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 85 (100%)
+- EXTRACTED: 73 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

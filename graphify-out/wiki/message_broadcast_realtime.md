@@ -1,40 +1,52 @@
 # message broadcast realtime
 
-> 16 nodes
+> 80 nodes
 
 ## Key Concepts
 
-- **apply_communication_dampening()** (13 connections) — `server/services/lucidity_communication_dampening.py`
-- **test_lucidity_communication_dampening.py** (11 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
-- **lucidity_communication_dampening.py** (6 connections) — `server/services/lucidity_communication_dampening.py`
-- **should_block_shout()** (4 connections) — `server/services/lucidity_communication_dampening.py`
-- **test_should_block_shout_deranged()** (2 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
-- **test_whisper_uneasy_adds_strained_tag()** (2 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
-- **test_deranged_shout_blocked()** (2 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
-- **test_fractured_outgoing_no_glyph_when_roll_high()** (2 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
-- **test_fractured_outgoing_appends_glyph()** (2 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
-- **test_fractured_incoming_strips_punctuation()** (2 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
-- **test_deranged_incoming_scrambles_words()** (2 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
-- **Any** (1 connections)
-- **Communication dampening utilities for lucidity system.  Implements communication** (1 connections) — `server/services/lucidity_communication_dampening.py`
-- **Apply communication dampening based on lucidity tiers.      Args:         messag** (1 connections) — `server/services/lucidity_communication_dampening.py`
-- **Check if shout should be blocked based on tier.** (1 connections) — `server/services/lucidity_communication_dampening.py`
-- **Unit tests for lucidity communication dampening.** (1 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
+- **DeadLetterQueue** (37 connections) — `server/realtime/dead_letter_queue.py`
+- **test_dead_letter_queue.py** (28 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **DeadLetterMessage** (27 connections) — `server/realtime/dead_letter_queue.py`
+- **Any** (7 connections)
+- **.from_dict()** (6 connections) — `server/realtime/dead_letter_queue.py`
+- **.to_dict()** (5 connections) — `server/realtime/dead_letter_queue.py`
+- **.enqueue_async()** (5 connections) — `server/realtime/dead_letter_queue.py`
+- **Path** (5 connections)
+- **.enqueue()** (5 connections) — `server/realtime/dead_letter_queue.py`
+- **.__init__()** (4 connections) — `server/realtime/dead_letter_queue.py`
+- **.replay_message()** (4 connections) — `server/realtime/dead_letter_queue.py`
+- **test_enqueue_creates_file()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_enqueue_writes_correct_data()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_dequeue_returns_oldest_message()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_dequeue_removes_file()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_get_statistics_with_messages()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_list_messages_returns_all()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_list_messages_respects_limit()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_list_messages_handles_read_error()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_replay_message()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_delete_message()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_cleanup_old_messages()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_cleanup_old_messages_no_old_messages()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **.dequeue_async()** (3 connections) — `server/realtime/dead_letter_queue.py`
+- **.dequeue()** (3 connections) — `server/realtime/dead_letter_queue.py`
+- *... and 55 more nodes in this community*
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (3 shared connections)
-- [commands communication say](commands_communication_say.md) (2 shared connections)
+- [follow game service](follow_game_service.md) (6 shared connections)
+- [Error Conversion](Error_Conversion.md) (4 shared connections)
+- [persistence combat services](persistence_combat_services.md) (4 shared connections)
+- [tools generate invite](tools_generate_invite.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/lucidity_communication_dampening.py`
-- `server/tests/unit/services/test_lucidity_communication_dampening.py`
+- `server/realtime/dead_letter_queue.py`
+- `server/tests/unit/realtime/test_dead_letter_queue.py`
 
 ## Audit Trail
 
-- EXTRACTED: 53 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 268 (98%)
+- INFERRED: 5 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

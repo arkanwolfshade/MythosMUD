@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_get_user_manager_custom()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **Test _get_user_manager() returns custom user manager.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_evaluate_condition_greater_than()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test evaluate_condition() handles > operator.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [message filtering realtime](message_filtering_realtime.md) (1 shared connections)
+- [room occupant manager](room_occupant_manager.md) (1 shared connections)
+- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_message_filtering.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

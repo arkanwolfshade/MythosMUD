@@ -1,44 +1,41 @@
 # realtime circuit breaker
 
-> 15 nodes
+> 18 nodes
 
 ## Key Concepts
 
-- **RoomRepositoryProtocol** (13 connections) — `server/persistence/protocols.py`
-- **protocols.py** (12 connections) — `server/persistence/protocols.py`
-- **test_protocols.py** (10 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **_StubRoomRepo** (6 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **test_room_repository_protocol_stub()** (5 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.get_room_by_id()** (4 connections) — `server/persistence/protocols.py`
-- **.list_rooms()** (4 connections) — `server/persistence/protocols.py`
-- **Room** (2 connections)
-- **.get_room_by_id()** (2 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.list_rooms()** (2 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **Repository protocols for MythosMUD persistence layer.  Explicit typing.Protocol** (1 connections) — `server/persistence/protocols.py`
-- **Protocol for room persistence operations.      Defines the contract used by Asyn** (1 connections) — `server/persistence/protocols.py`
-- **Get a room by ID from cache.** (1 connections) — `server/persistence/protocols.py`
-- **List all cached rooms.** (1 connections) — `server/persistence/protocols.py`
-- **Runtime checks for persistence repository protocols.** (1 connections) — `server/tests/unit/persistence/test_protocols.py`
+- **.connect()** (8 connections) — `server/services/nats_service.py`
+- **._start_health_monitoring()** (5 connections) — `server/services/nats_service.py`
+- **._build_connect_options()** (4 connections) — `server/services/nats_service.py`
+- **._configure_tls()** (4 connections) — `server/services/nats_service.py`
+- **._health_check_loop()** (4 connections) — `server/services/nats_service.py`
+- **._check_connection_allowed()** (3 connections) — `server/services/nats_service.py`
+- **._setup_connection_handlers()** (3 connections) — `server/services/nats_service.py`
+- **._perform_health_check()** (3 connections) — `server/services/nats_service.py`
+- **._initialize_connection_pool()** (3 connections) — `server/services/nats_service.py`
+- **Check if connection attempt is allowed by state machine.** (1 connections) — `server/services/nats_service.py`
+- **Build connection options for NATS.** (1 connections) — `server/services/nats_service.py`
+- **Configure TLS settings for NATS connection.** (1 connections) — `server/services/nats_service.py`
+- **Set up connection event handlers.** (1 connections) — `server/services/nats_service.py`
+- **Connect to NATS server with state machine tracking.          Returns:** (1 connections) — `server/services/nats_service.py`
+- **Start periodic health check monitoring task.** (1 connections) — `server/services/nats_service.py`
+- **Periodic health check loop using ping/pong.** (1 connections) — `server/services/nats_service.py`
+- **Perform a single health check via ping/pong.          Returns:             True** (1 connections) — `server/services/nats_service.py`
+- **Initialize connection pool for high-throughput scenarios.          AI: Tracks su** (1 connections) — `server/services/nats_service.py`
 
 ## Relationships
 
-- [persistence protocols rationale](persistence_protocols_rationale.md) (9 shared connections)
-- [config models game](config_models_game.md) (4 shared connections)
-- [combat models rationale](combat_models_rationale.md) (3 shared connections)
-- [persistence rationale players](persistence_rationale_players.md) (2 shared connections)
-- [room models instance](room_models_instance.md) (2 shared connections)
-- [persistence container item](persistence_container_item.md) (2 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
+- [combat validator validators](combat_validator_validators.md) (9 shared connections)
+- [target resolution service](target_resolution_service.md) (3 shared connections)
 
 ## Source Files
 
-- `server/persistence/protocols.py`
-- `server/tests/unit/persistence/test_protocols.py`
+- `server/services/nats_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 57 (88%)
-- INFERRED: 8 (12%)
+- EXTRACTED: 46 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

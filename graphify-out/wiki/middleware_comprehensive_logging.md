@@ -1,13 +1,12 @@
 # middleware comprehensive logging
 
-> 31 nodes
+> 29 nodes
 
 ## Key Concepts
 
 - **ComprehensiveLoggingMiddleware** (17 connections) — `server/middleware/comprehensive_logging.py`
 - **test_comprehensive_logging.py** (9 connections) — `server/tests/unit/middleware/test_comprehensive_logging.py`
 - **.__call__()** (8 connections) — `server/middleware/comprehensive_logging.py`
-- **comprehensive_logging.py** (7 connections) — `server/middleware/comprehensive_logging.py`
 - **.dispatch()** (7 connections) — `server/middleware/comprehensive_logging.py`
 - **._log_request_start()** (5 connections) — `server/middleware/comprehensive_logging.py`
 - **._log_request_success_with_status()** (5 connections) — `server/middleware/comprehensive_logging.py`
@@ -27,18 +26,18 @@
 - **Send** (1 connections)
 - **Any** (1 connections)
 - **Exception** (1 connections)
-- **Comprehensive logging middleware for MythosMUD server.  This module provides a u** (1 connections) — `server/middleware/comprehensive_logging.py`
 - **Pure ASGI middleware that combines access, error, and request logging.      This** (1 connections) — `server/middleware/comprehensive_logging.py`
-- *... and 6 more nodes in this community*
+- **Initialize comprehensive logging middleware.          Args:             app: ASG** (1 connections) — `server/middleware/comprehensive_logging.py`
+- **ASGI application interface.          Args:             scope: ASGI connection sc** (1 connections) — `server/middleware/comprehensive_logging.py`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
 - [app factory rationale](app_factory_rationale.md) (3 shared connections)
-- [player service game](player_service_game.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [taunt combat commands](taunt_combat_commands.md) (1 shared connections)
-- [npc combat services](npc_combat_services.md) (1 shared connections)
-- [room look commands](room_look_commands.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [feature services flag](feature_services_flag.md) (1 shared connections)
+- [playerHandlers eventHandlers healthEvent](playerHandlers_eventHandlers_healthEvent.md) (1 shared connections)
+- [combat services messaging](combat_services_messaging.md) (1 shared connections)
 
 ## Source Files
 
@@ -48,7 +47,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 96 (94%)
+- EXTRACTED: 88 (94%)
 - INFERRED: 6 (6%)
 - AMBIGUOUS: 0 (0%)
 

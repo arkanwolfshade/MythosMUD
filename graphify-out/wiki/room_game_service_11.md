@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **test_process_room_rows_zone_single_part()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _process_room_rows with zone_stable_id that has only one part (no slash).** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_build_room_objects_without_environment_in_attributes()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _build_room_objects defaults to outdoors when environment not in attributes** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Relationships
 

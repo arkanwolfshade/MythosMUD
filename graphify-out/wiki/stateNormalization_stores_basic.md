@@ -31,7 +31,7 @@
 
 ## Relationships
 
-- [stores connectionStore commandStore](stores_connectionStore_commandStore.md) (3 shared connections)
+- [config rationale config()](config_rationale_config%28%29.md) (3 shared connections)
 
 ## Source Files
 

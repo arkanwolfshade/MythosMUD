@@ -23,12 +23,13 @@
 
 ## Relationships
 
-- [game models enums](game_models_enums.md) (3 shared connections)
-- [commands recovery lucidity](commands_recovery_lucidity.md) (2 shared connections)
-- [spell game magic](spell_game_magic.md) (2 shared connections)
-- [websocket realtime handler](websocket_realtime_handler.md) (2 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (3 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (2 shared connections)
+- [player event handlers](player_event_handlers.md) (2 shared connections)
 - [rate lucidity services](rate_lucidity_services.md) (2 shared connections)
-- [persistence rationale players](persistence_rationale_players.md) (2 shared connections)
+- [room realtime occupant](room_realtime_occupant.md) (2 shared connections)
+- [container events rationale](container_events_rationale.md) (1 shared connections)
+- [spell game magic](spell_game_magic.md) (1 shared connections)
 
 ## Source Files
 

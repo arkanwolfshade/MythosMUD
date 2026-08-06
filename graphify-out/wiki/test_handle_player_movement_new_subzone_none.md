@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_handle_player_movement_new_subzone_none()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test handle_player_movement handles None new_subzone.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_process_message_with_retry_failure()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _process_message_with_retry adds to DLQ on failure.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [subzone realtime nats](subzone_realtime_nats.md) (1 shared connections)
+- [message chat nats](message_chat_nats.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 

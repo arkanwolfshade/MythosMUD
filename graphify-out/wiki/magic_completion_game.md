@@ -1,9 +1,10 @@
 # magic completion game
 
-> 23 nodes
+> 25 nodes
 
 ## Key Concepts
 
+- **magic_service_completion.py** (25 connections) — `server/game/magic/magic_service_completion.py`
 - **MagicServiceCompletionMixin** (21 connections) — `server/game/magic/magic_service_completion.py`
 - **UUID** (12 connections)
 - **Any** (11 connections)
@@ -18,6 +19,7 @@
 - **_send_spell_completion_message()** (4 connections) — `server/game/magic/magic_service_completion.py`
 - **_is_heal_other_target()** (4 connections) — `server/game/magic/magic_service_completion.py`
 - **_send_healing_update_event()** (4 connections) — `server/game/magic/magic_service_completion.py`
+- **Casting completion flow for spellcasting.  Mixin that handles completing a casti** (1 connections) — `server/game/magic/magic_service_completion.py`
 - **Mixin for MagicService: complete casting (player/room, target, costs/effects, co** (1 connections) — `server/game/magic/magic_service_completion.py`
 - **Get player and room_id for casting completion.          Returns:             Tup** (1 connections) — `server/game/magic/magic_service_completion.py`
 - **Recreate target from stored casting state.          Args:             casting_st** (1 connections) — `server/game/magic/magic_service_completion.py`
@@ -30,13 +32,18 @@
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (9 shared connections)
-- [player respawn event](player_respawn_event.md) (2 shared connections)
-- [spell game magic](spell_game_magic.md) (2 shared connections)
-- [coercion int inventory](coercion_int_inventory.md) (2 shared connections)
-- [subject nats manager](subject_nats_manager.md) (1 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
-- [target resolution service](target_resolution_service.md) (1 shared connections)
+- [persistence core infrastructure](persistence_core_infrastructure.md) (7 shared connections)
+- [room realtime rationale](room_realtime_rationale.md) (5 shared connections)
+- [player respawn event](player_respawn_event.md) (4 shared connections)
+- [coercion int inventory](coercion_int_inventory.md) (3 shared connections)
+- [panels domPurifyClient chat](panels_domPurifyClient_chat.md) (2 shared connections)
+- [services ascii map](services_ascii_map.md) (2 shared connections)
+- [npc database infrastructure](npc_database_infrastructure.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [spell game magic](spell_game_magic.md) (1 shared connections)
+- [add used user](add_used_user.md) (1 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (1 shared connections)
+- [subject admin controller](subject_admin_controller.md) (1 shared connections)
 
 ## Source Files
 
@@ -44,8 +51,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 106 (91%)
-- INFERRED: 10 (9%)
+- EXTRACTED: 132 (93%)
+- INFERRED: 10 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

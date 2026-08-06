@@ -1,67 +1,57 @@
 # room game service
 
-> 112 nodes
+> 28 nodes
 
 ## Key Concepts
 
-- **RoomService** (80 connections) — `server/game/room_service.py`
-- **rooms.py** (36 connections) — `server/api/rooms.py`
-- **room_service.py** (22 connections) — `server/game/room_service.py`
 - **test_rooms_api.py** (22 connections) — `server/tests/unit/api/test_rooms_api.py`
 - **update_room_position()** (16 connections) — `server/api/rooms.py`
-- **exploration_service.py** (16 connections) — `server/services/exploration_service.py`
-- **_apply_exploration_filter_if_needed()** (13 connections) — `server/api/rooms.py`
 - **list_rooms()** (12 connections) — `server/api/rooms.py`
-- **test_rooms_exploration_filter.py** (12 connections) — `server/tests/unit/api/test_rooms_exploration_filter.py`
-- **.get_room()** (11 connections) — `server/game/room_service.py`
 - **_validate_room_position_update()** (10 connections) — `server/api/rooms.py`
 - **_update_room_position_in_db()** (10 connections) — `server/api/rooms.py`
 - **get_room()** (10 connections) — `server/api/rooms.py`
-- **Any** (10 connections)
-- **RoomListResponse** (8 connections) — `server/schemas/rooms/room.py`
-- **RoomPositionUpdateResponse** (8 connections) — `server/schemas/rooms/room.py`
-- **RoomResponse** (8 connections) — `server/schemas/rooms/room.py`
-- **RoomData** (8 connections) — `server/schemas/rooms/room_data.py`
-- **.get_room_info()** (7 connections) — `server/game/room_service.py`
-- **room.py** (7 connections) — `server/schemas/rooms/room.py`
 - **_invalidate_room_cache()** (6 connections) — `server/api/rooms.py`
 - **RoomPositionUpdate** (6 connections) — `server/api/rooms.py`
-- **.get_adjacent_rooms()** (6 connections) — `server/game/room_service.py`
-- **player_respawn.py** (6 connections) — `server/schemas/players/player_respawn.py`
-- **__init__.py** (6 connections) — `server/schemas/rooms/__init__.py`
-- *... and 87 more nodes in this community*
+- **Request** (5 connections)
+- **test_update_room_position_room_missing()** (5 connections) — `server/tests/unit/api/test_rooms_api.py`
+- **AsyncSession** (4 connections)
+- **test_get_room_not_found()** (4 connections) — `server/tests/unit/api/test_rooms_api.py`
+- **test_validate_room_position_update_requires_auth()** (3 connections) — `server/tests/unit/api/test_rooms_api.py`
+- **test_update_room_position_in_db_not_found()** (3 connections) — `server/tests/unit/api/test_rooms_api.py`
+- **test_invalidate_room_cache()** (3 connections) — `server/tests/unit/api/test_rooms_api.py`
+- **test_list_rooms_success()** (3 connections) — `server/tests/unit/api/test_rooms_api.py`
+- **test_get_room_success()** (3 connections) — `server/tests/unit/api/test_rooms_api.py`
+- **test_validate_room_position_update_delegates_to_auth_service()** (2 connections) — `server/tests/unit/api/test_rooms_api.py`
+- **test_update_room_position_in_db_success()** (2 connections) — `server/tests/unit/api/test_rooms_api.py`
+- **BaseModel** (1 connections)
+- **Validate authentication and admin permissions for room position update.** (1 connections) — `server/api/rooms.py`
+- **Update room position in database and verify the update succeeded.** (1 connections) — `server/api/rooms.py`
+- **Invalidate room cache to force reload.** (1 connections) — `server/api/rooms.py`
+- **List rooms filtered by plane, zone, and optionally sub_zone.      Returns room d** (1 connections) — `server/api/rooms.py`
+- **Request model for updating room map coordinates.** (1 connections) — `server/api/rooms.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [maps handle ascii](maps_handle_ascii.md) (18 shared connections)
-- [corpse lifecycle service](corpse_lifecycle_service.md) (14 shared connections)
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (12 shared connections)
-- [Exception Containers](Exception_Containers.md) (11 shared connections)
-- [database helpers infrastructure](database_helpers_infrastructure.md) (10 shared connections)
-- [NPC Combat](NPC_Combat.md) (9 shared connections)
-- [player requests schemas](player_requests_schemas.md) (7 shared connections)
-- [player preferences services](player_preferences_services.md) (5 shared connections)
-- [Player Stats](Player_Stats.md) (5 shared connections)
-- [persistence rationale players](persistence_rationale_players.md) (4 shared connections)
-- [room service game](room_service_game.md) (4 shared connections)
-- [Loot Generation](Loot_Generation.md) (3 shared connections)
+- [persistence container rationale](persistence_container_rationale.md) (13 shared connections)
+- [services inventory mutation](services_inventory_mutation.md) (10 shared connections)
+- [maps handle ascii](maps_handle_ascii.md) (10 shared connections)
+- [player requests schemas](player_requests_schemas.md) (3 shared connections)
+- [panels monitoringPanelTestFixtures Monit](panels_monitoringPanelTestFixtures_Monit.md) (2 shared connections)
+- [postgres adapter infrastructure](postgres_adapter_infrastructure.md) (1 shared connections)
+- [corpse lifecycle service](corpse_lifecycle_service.md) (1 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (1 shared connections)
+- [database helpers infrastructure](database_helpers_infrastructure.md) (1 shared connections)
 
 ## Source Files
 
 - `server/api/rooms.py`
-- `server/game/room_service.py`
-- `server/schemas/players/player_respawn.py`
-- `server/schemas/rooms/__init__.py`
-- `server/schemas/rooms/room.py`
-- `server/schemas/rooms/room_data.py`
-- `server/services/exploration_service.py`
 - `server/tests/unit/api/test_rooms_api.py`
-- `server/tests/unit/api/test_rooms_exploration_filter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 482 (90%)
-- INFERRED: 53 (10%)
+- EXTRACTED: 128 (93%)
+- INFERRED: 10 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

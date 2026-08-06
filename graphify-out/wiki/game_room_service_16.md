@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **test_process_exit_rows_multiple_exits_same_room()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _process_exit_rows with multiple exits from same room.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_ensure_room_cache_loaded_concurrent_load()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _ensure_room_cache_loaded handles concurrent load scenario (double-check pa** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Relationships
 

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_create_pose_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_pose_command delegates to communication factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_should_echo_to_sender_no_message_id()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _should_echo_to_sender returns False when message_id is None.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [command factories create](command_factories_create.md) (1 shared connections)
+- [message chat nats](message_chat_nats.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 

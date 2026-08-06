@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_remaining_messages_zero()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **Test get_remaining_messages returns 0 when at limit.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_is_player_disconnecting_no_disconnecting_players_attr()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test is_player_disconnecting() handles missing disconnecting_players attribute.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [rate limiter services](rate_limiter_services.md) (1 shared connections)
+- [player event handlers](player_event_handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_rate_limiter.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 

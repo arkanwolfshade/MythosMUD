@@ -34,8 +34,8 @@
 ## Relationships
 
 - [models lucidity rationale](models_lucidity_rationale.md) (4 shared connections)
-- [websocket examples logging](websocket_examples_logging.md) (3 shared connections)
-- [world loader room](world_loader_room.md) (2 shared connections)
+- [Magic Spell Service](Magic_Spell_Service.md) (3 shared connections)
+- [middleware correlation rationale](middleware_correlation_rationale.md) (2 shared connections)
 - [deprecated logging patterns](deprecated_logging_patterns.md) (1 shared connections)
 
 ## Source Files

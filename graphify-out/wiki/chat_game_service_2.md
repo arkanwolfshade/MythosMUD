@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_is_in_same_party_true_when_both_in_party()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **is_in_same_party returns True when both players are in the same party.** (1 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_list_room_drops()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **Test list_room_drops() returns defensive copy.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Relationships
 
-- [commands inventory helpers](commands_inventory_helpers.md) (1 shared connections)
+- [room subscription manager](room_subscription_manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_party_service.py`
+- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Audit Trail
 

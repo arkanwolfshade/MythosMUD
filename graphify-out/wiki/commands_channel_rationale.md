@@ -1,24 +1,27 @@
 # commands channel rationale
 
-> 3 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **📊 LINT ISSUE CATEGORIZATION GUIDE** (3 connections) — `.cursor/commands/lint-remediation.md`
-- **Python/Ruff Error Codes** (1 connections) — `.cursor/commands/lint-remediation.md`
-- **React/ESLint Error Codes** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **capacity_slots** (6 connections) — `schemas/unified_room_schema.json`
+- **type** (1 connections) — `schemas/unified_room_schema.json`
+- **minimum** (1 connections) — `schemas/unified_room_schema.json`
+- **maximum** (1 connections) — `schemas/unified_room_schema.json`
+- **default** (1 connections) — `schemas/unified_room_schema.json`
+- **description** (1 connections) — `schemas/unified_room_schema.json`
 
 ## Relationships
 
-- [commands communication flows](commands_communication_flows.md) (1 shared connections)
+- [schemas unified room](schemas_unified_room.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/commands/lint-remediation.md`
+- `schemas/unified_room_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

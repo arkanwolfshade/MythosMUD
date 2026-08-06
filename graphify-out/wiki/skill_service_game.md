@@ -1,39 +1,37 @@
 # skill service game
 
-> 16 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **.resolve_spell_target()** (9 connections) — `server/game/magic/spell_targeting.py`
-- **UUID** (8 connections)
-- **._get_player()** (7 connections) — `server/game/magic/spell_targeting.py`
-- **._match_combat_opponent()** (7 connections) — `server/game/magic/spell_targeting.py`
-- **._resolve_self_target()** (6 connections) — `server/game/magic/spell_targeting.py`
-- **._resolve_area_target()** (6 connections) — `server/game/magic/spell_targeting.py`
-- **._resolve_entity_target()** (6 connections) — `server/game/magic/spell_targeting.py`
-- **._get_combat_target()** (6 connections) — `server/game/magic/spell_targeting.py`
-- **Player** (1 connections)
-- **Resolve self-target spell. Returns (target_match, error_message).** (1 connections) — `server/game/magic/spell_targeting.py`
-- **Resolve area/all target spell. Returns (target_match, error_message).** (1 connections) — `server/game/magic/spell_targeting.py`
-- **Resolve entity/location target spell with explicit target. Returns (target_match** (1 connections) — `server/game/magic/spell_targeting.py`
-- **Resolve the target for a spell cast.          Args:             player_id: ID of** (1 connections) — `server/game/magic/spell_targeting.py`
-- **Get player from persistence.** (1 connections) — `server/game/magic/spell_targeting.py`
-- **Build a TargetMatch for a combat opponent, or None if unresolved.** (1 connections) — `server/game/magic/spell_targeting.py`
-- **Get the combat target for a player if they are in combat.          Args:** (1 connections) — `server/game/magic/spell_targeting.py`
+- **register_default_reactions_for_npc()** (15 connections) — `server/npc/npc_default_reactions.py`
+- **test_npc_default_reactions.py** (9 connections) — `server/tests/unit/npc/test_npc_default_reactions.py`
+- **._register_reactions_and_chat_name()** (5 connections) — `server/npc/npc_base.py`
+- **test_register_passive_mob_reactions()** (2 connections) — `server/tests/unit/npc/test_npc_default_reactions.py`
+- **test_register_shopkeeper_reactions()** (2 connections) — `server/tests/unit/npc/test_npc_default_reactions.py`
+- **test_register_aggressive_mob_retaliation_only()** (2 connections) — `server/tests/unit/npc/test_npc_default_reactions.py`
+- **test_register_unknown_type_no_reactions()** (2 connections) — `server/tests/unit/npc/test_npc_default_reactions.py`
+- **test_register_shopkeeper_logs_debug()** (2 connections) — `server/tests/unit/npc/test_npc_default_reactions.py`
+- **test_register_handles_import_error()** (2 connections) — `server/tests/unit/npc/test_npc_default_reactions.py`
+- **Register default reactions, room context, and chat display name.** (1 connections) — `server/npc/npc_base.py`
+- **Build and register default event reactions for this NPC (greeting, farewell, etc** (1 connections) — `server/npc/npc_default_reactions.py`
+- **Unit tests for default NPC event reaction registration.** (1 connections) — `server/tests/unit/npc/test_npc_default_reactions.py`
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (8 shared connections)
-- [spell game magic](spell_game_magic.md) (8 shared connections)
-- [Item Instances](Item_Instances.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (8 shared connections)
+- [lucidity event services](lucidity_event_services.md) (1 shared connections)
+- [quest chat game](quest_chat_game.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/magic/spell_targeting.py`
+- `server/npc/npc_base.py`
+- `server/npc/npc_default_reactions.py`
+- `server/tests/unit/npc/test_npc_default_reactions.py`
 
 ## Audit Trail
 
-- EXTRACTED: 63 (100%)
+- EXTRACTED: 44 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

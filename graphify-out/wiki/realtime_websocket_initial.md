@@ -1,6 +1,6 @@
 # realtime websocket initial
 
-> 111 nodes
+> 105 nodes
 
 ## Key Concepts
 
@@ -11,7 +11,6 @@
 - **validate_occupant_name()** (14 connections) — `server/realtime/websocket_helpers.py`
 - **check_and_send_death_notification()** (14 connections) — `server/realtime/websocket_initial_state.py`
 - **get_occupant_names()** (11 connections) — `server/realtime/websocket_helpers.py`
-- **convert_uuids_to_strings()** (11 connections) — `server/realtime/websocket_helpers.py`
 - **send_game_state_event_safely()** (10 connections) — `server/realtime/websocket_initial_state.py`
 - **prepare_room_data_with_occupants()** (9 connections) — `server/realtime/websocket_initial_state.py`
 - **get_event_handler_for_initial_state()** (9 connections) — `server/realtime/websocket_initial_state.py`
@@ -29,22 +28,23 @@
 - **_ContainerWithNpcLifecycle** (5 connections) — `server/realtime/websocket_initial_state.py`
 - **WebSocket** (5 connections)
 - **_get_player_for_death_check()** (5 connections) — `server/realtime/websocket_initial_state.py`
-- *... and 86 more nodes in this community*
+- **prepare_initial_room_data()** (5 connections) — `server/realtime/websocket_initial_state.py`
+- *... and 80 more nodes in this community*
 
 ## Relationships
 
-- [room websocket updates](room_websocket_updates.md) (20 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (12 shared connections)
-- [websocket helpers realtime](websocket_helpers_realtime.md) (9 shared connections)
-- [combat models rationale](combat_models_rationale.md) (8 shared connections)
-- [commands communication channels](commands_communication_channels.md) (8 shared connections)
-- [NATS Messaging](NATS_Messaging.md) (6 shared connections)
-- [room look commands](room_look_commands.md) (5 shared connections)
-- [combat commands handler](combat_commands_handler.md) (3 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (3 shared connections)
+- [room websocket updates](room_websocket_updates.md) (13 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (9 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (9 shared connections)
+- [profession models rationale](profession_models_rationale.md) (9 shared connections)
+- [player room realtime](player_room_realtime.md) (8 shared connections)
+- [realtime maintenance connection](realtime_maintenance_connection.md) (8 shared connections)
+- [combat services messaging](combat_services_messaging.md) (5 shared connections)
+- [Error Conversion](Error_Conversion.md) (4 shared connections)
+- [command commands aliases](command_commands_aliases.md) (4 shared connections)
+- [NATS Messaging](NATS_Messaging.md) (3 shared connections)
 - [room models instance](room_models_instance.md) (3 shared connections)
-- [Async Query Helpers](Async_Query_Helpers.md) (3 shared connections)
-- [command models moderation](command_models_moderation.md) (2 shared connections)
+- [lucidity npc combat](lucidity_npc_combat.md) (2 shared connections)
 
 ## Source Files
 
@@ -54,8 +54,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 417 (93%)
-- INFERRED: 31 (7%)
+- EXTRACTED: 399 (93%)
+- INFERRED: 28 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

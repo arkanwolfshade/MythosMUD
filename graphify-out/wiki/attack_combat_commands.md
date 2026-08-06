@@ -33,11 +33,12 @@
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (4 shared connections)
 - [MapView GameClientV2ContainerView Tabbed](MapView_GameClientV2ContainerView_Tabbed.md) (3 shared connections)
-- [services nats service](services_nats_service.md) (3 shared connections)
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
-- [uuid npc combat](uuid_npc_combat.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (3 shared connections)
+- [tools generate invite](tools_generate_invite.md) (2 shared connections)
+- [services nats service](services_nats_service.md) (2 shared connections)
+- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (2 shared connections)
+- [alias storage rationale](alias_storage_rationale.md) (1 shared connections)
 
 ## Source Files
 

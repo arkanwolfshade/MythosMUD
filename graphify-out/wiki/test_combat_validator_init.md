@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_combat_validator_init()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test CombatValidator initialization.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_get_wearable_containers_for_player()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test get_wearable_containers_for_player returns containers.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Relationships
 
-- [emote models rationale](emote_models_rationale.md) (1 shared connections)
+- [wearable container service](wearable_container_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 

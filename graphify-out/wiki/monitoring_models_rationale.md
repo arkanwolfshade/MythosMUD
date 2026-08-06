@@ -1,17 +1,15 @@
 # monitoring models rationale
 
-> 19 nodes
+> 17 nodes
 
 ## Key Concepts
 
 - **Lint Remediation Prompt - AI-Optimized Version** (11 connections) — `.cursor/commands/lint-remediation.md`
-- **🚨 AI ERROR HANDLING** (3 connections) — `.cursor/commands/lint-remediation.md`
 - **📊 LINT ISSUE CATEGORIZATION GUIDE** (3 connections) — `.cursor/commands/lint-remediation.md`
 - **🔍 DEBUGGING GUIDE** (3 connections) — `.cursor/commands/lint-remediation.md`
 - **🚀 OPTIMIZATION TIPS** (3 connections) — `.cursor/commands/lint-remediation.md`
 - **📝 DOCUMENTATION REQUIREMENTS** (3 connections) — `.cursor/commands/lint-remediation.md`
-- **If Lint Still Fails After Fixes** (1 connections) — `.cursor/commands/lint-remediation.md`
-- **If Multiple Categories Have Issues** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **lint-remediation.md** (2 connections) — `.cursor/commands/lint-remediation.md`
 - **📋 AI EXECUTION CHECKLIST** (1 connections) — `.cursor/commands/lint-remediation.md`
 - **🎯 AI SUCCESS METRICS** (1 connections) — `.cursor/commands/lint-remediation.md`
 - **Python/Ruff Error Codes** (1 connections) — `.cursor/commands/lint-remediation.md`
@@ -27,6 +25,7 @@
 ## Relationships
 
 - [commands communication flows](commands_communication_flows.md) (1 shared connections)
+- [npc behavior engine](npc_behavior_engine.md) (1 shared connections)
 - [shutdown lifespan app](shutdown_lifespan_app.md) (1 shared connections)
 - [players coverage rationale](players_coverage_rationale.md) (1 shared connections)
 
@@ -36,7 +35,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 39 (100%)
+- EXTRACTED: 36 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

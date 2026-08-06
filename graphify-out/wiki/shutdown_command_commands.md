@@ -1,62 +1,46 @@
 # shutdown command commands
 
-> 73 nodes
+> 21 nodes
 
 ## Key Concepts
 
-- **PlayerRepository** (31 connections) — `server/persistence/repositories/player_repository.py`
-- **player_repository.py** (28 connections) — `server/persistence/repositories/player_repository.py`
-- **row_to_player()** (18 connections) — `server/persistence/repositories/player_repository_mappers.py`
 - **test_player_repository_room.py** (14 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
-- **Player** (13 connections)
-- **._validate_and_fix_player_room_with_persistence()** (12 connections) — `server/persistence/repositories/player_repository.py`
 - **validate_and_fix_player_room()** (12 connections) — `server/persistence/repositories/player_repository_room.py`
-- **.get_player_by_id()** (9 connections) — `server/persistence/repositories/player_repository.py`
-- **.get_active_players_by_user_id()** (9 connections) — `server/persistence/repositories/player_repository.py`
-- **.get_players_batch()** (9 connections) — `server/persistence/repositories/player_repository.py`
 - **should_skip_room_validation()** (9 connections) — `server/persistence/repositories/player_repository_room.py`
 - **validate_and_fix_player_room_with_persistence()** (9 connections) — `server/persistence/repositories/player_repository_room.py`
 - **_player()** (9 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
-- **.get_player_by_name()** (8 connections) — `server/persistence/repositories/player_repository.py`
-- **.get_players_by_user_id()** (8 connections) — `server/persistence/repositories/player_repository.py`
-- **.list_players()** (8 connections) — `server/persistence/repositories/player_repository.py`
-- **.get_players_in_room()** (8 connections) — `server/persistence/repositories/player_repository.py`
 - **player_repository_room.py** (8 connections) — `server/persistence/repositories/player_repository_room.py`
-- **UUID** (7 connections)
-- **.update_player_last_active()** (7 connections) — `server/persistence/repositories/player_repository.py`
-- **.save_player()** (6 connections) — `server/persistence/repositories/player_repository.py`
-- **.save_players()** (6 connections) — `server/persistence/repositories/player_repository.py`
-- **.soft_delete_player()** (6 connections) — `server/persistence/repositories/player_repository.py`
-- **.delete_player()** (6 connections) — `server/persistence/repositories/player_repository.py`
-- **Any** (5 connections)
-- *... and 48 more nodes in this community*
+- **Any** (3 connections)
+- **Player** (3 connections)
+- **test_should_skip_room_validation_empty_cache()** (3 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
+- **test_should_skip_room_validation_instanced_room()** (3 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
+- **test_should_skip_room_validation_tutorial_bedroom()** (3 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
+- **test_validate_and_fix_player_room_valid()** (3 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
+- **test_validate_and_fix_player_room_moves_to_foyer()** (3 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
+- **test_validate_and_fix_player_room_fallback_missing_in_cache()** (3 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
+- **test_validate_and_fix_player_room_already_at_fallback()** (3 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
+- **test_validate_and_fix_player_room_with_persistence_commits()** (3 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
+- **Player room validation helpers for PlayerRepository.  Validates and fixes invali** (1 connections) — `server/persistence/repositories/player_repository_room.py`
+- **Return True if room validation should be skipped (cache empty, instanced, or tut** (1 connections) — `server/persistence/repositories/player_repository_room.py`
+- **Validate player's current room and fix if invalid.      Args:         room_cache** (1 connections) — `server/persistence/repositories/player_repository_room.py`
+- **Validate and fix player room, persisting the fix if needed.      Args:         r** (1 connections) — `server/persistence/repositories/player_repository_room.py`
+- **Unit tests for player_repository_room helpers.** (1 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
 
 ## Relationships
 
-- [commands shutdown process](commands_shutdown_process.md) (32 shared connections)
-- [Database Config](Database_Config.md) (13 shared connections)
-- [combat models rationale](combat_models_rationale.md) (12 shared connections)
-- [combat npc service](combat_npc_service.md) (6 shared connections)
-- [npc population stats](npc_population_stats.md) (5 shared connections)
-- [argon2 auth rationale](argon2_auth_rationale.md) (3 shared connections)
-- [NPC Combat](NPC_Combat.md) (3 shared connections)
-- [room models instance](room_models_instance.md) (2 shared connections)
-- [game models enums](game_models_enums.md) (1 shared connections)
-- [Error Conversion](Error_Conversion.md) (1 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (4 shared connections)
+- [player room realtime](player_room_realtime.md) (1 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (1 shared connections)
 
 ## Source Files
 
-- `server/persistence/repositories/player_repository.py`
-- `server/persistence/repositories/player_repository_mappers.py`
 - `server/persistence/repositories/player_repository_room.py`
 - `server/tests/unit/persistence/test_player_repository_room.py`
 
 ## Audit Trail
 
-- EXTRACTED: 336 (94%)
-- INFERRED: 20 (6%)
+- EXTRACTED: 96 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

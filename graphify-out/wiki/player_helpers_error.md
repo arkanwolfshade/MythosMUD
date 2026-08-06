@@ -1,49 +1,46 @@
 # player helpers error
 
-> 24 nodes
+> 18 nodes
 
 ## Key Concepts
 
-- **UserManagerProtocol** (21 connections) — `server/game/chat_moderation.py`
-- **.mute_channel()** (2 connections) — `server/game/chat_moderation.py`
-- **.unmute_channel()** (2 connections) — `server/game/chat_moderation.py`
-- **.is_channel_muted()** (2 connections) — `server/game/chat_moderation.py`
-- **.mute_player()** (2 connections) — `server/game/chat_moderation.py`
-- **.unmute_player()** (2 connections) — `server/game/chat_moderation.py`
-- **.is_player_muted()** (2 connections) — `server/game/chat_moderation.py`
-- **.is_globally_muted()** (2 connections) — `server/game/chat_moderation.py`
-- **.is_admin()** (2 connections) — `server/game/chat_moderation.py`
-- **.can_send_message()** (2 connections) — `server/game/chat_moderation.py`
-- **.mute_global()** (1 connections) — `server/game/chat_moderation.py`
-- **.unmute_global()** (1 connections) — `server/game/chat_moderation.py`
-- **.add_admin()** (1 connections) — `server/game/chat_moderation.py`
-- **.remove_admin()** (1 connections) — `server/game/chat_moderation.py`
-- **Protocol for user manager.** (1 connections) — `server/game/chat_moderation.py`
-- **Mute a channel for a player.** (1 connections) — `server/game/chat_moderation.py`
-- **Unmute a channel for a player.** (1 connections) — `server/game/chat_moderation.py`
-- **Check if channel is muted.** (1 connections) — `server/game/chat_moderation.py`
-- **Mute a player for another player.** (1 connections) — `server/game/chat_moderation.py`
-- **Unmute a player for another player.** (1 connections) — `server/game/chat_moderation.py`
-- **Check if player is muted.** (1 connections) — `server/game/chat_moderation.py`
-- **Check if player is globally muted.** (1 connections) — `server/game/chat_moderation.py`
-- **Check if player is admin.** (1 connections) — `server/game/chat_moderation.py`
-- **Check if player can send message.** (1 connections) — `server/game/chat_moderation.py`
+- **inventory_display_helpers.py** (13 connections) — `server/commands/inventory_display_helpers.py`
+- **render_inventory()** (12 connections) — `server/commands/inventory_display_helpers.py`
+- **build_inventory_lines()** (8 connections) — `server/commands/inventory_display_helpers.py`
+- **build_equipped_lines()** (8 connections) — `server/commands/inventory_display_helpers.py`
+- **Any** (7 connections)
+- **get_equipped_item_identifiers()** (6 connections) — `server/commands/inventory_display_helpers.py`
+- **test_get_equipped_item_identifiers()** (2 connections) — `server/tests/unit/commands/test_inventory_display_helpers.py`
+- **test_build_inventory_lines_empty()** (2 connections) — `server/tests/unit/commands/test_inventory_display_helpers.py`
+- **test_build_inventory_lines_with_item()** (2 connections) — `server/tests/unit/commands/test_inventory_display_helpers.py`
+- **test_build_equipped_lines_empty()** (2 connections) — `server/tests/unit/commands/test_inventory_display_helpers.py`
+- **test_build_equipped_lines_with_container_items()** (2 connections) — `server/tests/unit/commands/test_inventory_display_helpers.py`
+- **test_render_inventory_capacity_line()** (2 connections) — `server/tests/unit/commands/test_inventory_display_helpers.py`
+- **test_render_inventory_full_flow()** (2 connections) — `server/tests/unit/commands/test_inventory_display_helpers.py`
+- **Display and rendering helpers for inventory commands.** (1 connections) — `server/commands/inventory_display_helpers.py`
+- **Get sets of equipped item IDs and instance IDs for efficient lookup.** (1 connections) — `server/commands/inventory_display_helpers.py`
+- **Build inventory display lines.** (1 connections) — `server/commands/inventory_display_helpers.py`
+- **Build equipped items display lines.** (1 connections) — `server/commands/inventory_display_helpers.py`
+- **Render inventory display with equipped items and container contents.** (1 connections) — `server/commands/inventory_display_helpers.py`
 
 ## Relationships
 
-- [services ascii map](services_ascii_map.md) (3 shared connections)
-- [command parser build](command_parser_build.md) (2 shared connections)
-- [chat game message](chat_game_message.md) (1 shared connections)
-- [chat service game](chat_service_game.md) (1 shared connections)
+- [commands inventory helpers](commands_inventory_helpers.md) (21 shared connections)
+- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [subzone realtime nats](subzone_realtime_nats.md) (1 shared connections)
+- [commands inventory command](commands_inventory_command.md) (1 shared connections)
+- [realtime real time](realtime_real_time.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/chat_moderation.py`
+- `server/commands/inventory_display_helpers.py`
+- `server/tests/unit/commands/test_inventory_display_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 52 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 73 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

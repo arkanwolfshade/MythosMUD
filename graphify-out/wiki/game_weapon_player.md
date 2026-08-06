@@ -1,54 +1,57 @@
 # game weapon player
 
-> 43 nodes
+> 27 nodes
 
 ## Key Concepts
 
-- **PydanticErrorHandler** (23 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **.handle_validation_error()** (14 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **__init__.py** (9 connections) — `server/error_handlers/__init__.py`
-- **handle_pydantic_error()** (9 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **convert_pydantic_error()** (9 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **_ExtractedErrorInfo** (8 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **._create_fallback_error_response()** (8 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **.convert_to_mythos_error()** (8 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **ErrorContextInitKwargs** (8 connections) — `server/exceptions.py`
-- **ValidationError** (7 connections)
-- **._extract_error_info()** (7 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **._generate_user_friendly_message()** (7 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **._create_error_details()** (7 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **.create_handler()** (7 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **._determine_error_type()** (5 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **._determine_severity()** (5 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **._format_single_field_error_message()** (5 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **_ExtractedFieldErrorInfo** (4 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **._get_display_field_name()** (4 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **StandardizedErrorResponseDict** (3 connections)
-- **._get_field_path()** (3 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **Unpack** (3 connections)
-- **TypedDict** (2 connections)
-- **Keyword arguments accepted by create_error_context and ErrorContext().** (2 connections) — `server/exceptions.py`
-- **Error handlers package for MythosMUD.  This package provides specialized error h** (1 connections) — `server/error_handlers/__init__.py`
-- *... and 18 more nodes in this community*
+- **._build_player_attacked_event()** (8 connections) — `server/npc/combat_integration.py`
+- **UUID** (7 connections)
+- **._compute_dp_update_fields()** (6 connections) — `server/npc/combat_integration.py`
+- **._get_combat_event_publisher()** (6 connections) — `server/npc/combat_integration.py`
+- **._calculate_max_dp()** (6 connections) — `server/npc/combat_integration.py`
+- **._publish_player_dp_updated_after_npc_damage()** (5 connections) — `server/npc/combat_integration.py`
+- **._publish_player_dp_updated_event()** (5 connections) — `server/npc/combat_integration.py`
+- **._publish_npc_attack_to_nats()** (5 connections) — `server/npc/combat_integration.py`
+- **._get_int_stat()** (5 connections) — `server/npc/combat_integration.py`
+- **._get_player_for_dp_update()** (4 connections) — `server/npc/combat_integration.py`
+- **._get_player_and_stats_for_nats()** (4 connections) — `server/npc/combat_integration.py`
+- **.handle_npc_death()** (4 connections) — `server/npc/combat_integration.py`
+- **._get_player_combat_stats()** (4 connections) — `server/npc/combat_integration.py`
+- **.get_stats()** (3 connections) — `server/npc/npc_base.py`
+- **Publish PlayerDPUpdated so the client's health/DP bar updates after NPC damage.** (1 connections) — `server/npc/combat_integration.py`
+- **Resolve the player and UUID needed for DP update events.** (1 connections) — `server/npc/combat_integration.py`
+- **Compute old_dp, new_dp, and max_dp values for PlayerDPUpdated.** (1 connections) — `server/npc/combat_integration.py`
+- **Publish the PlayerDPUpdated event to the event bus.** (1 connections) — `server/npc/combat_integration.py`
+- **Publish NPC-on-player attack as player_attacked to NATS so the client receives i** (1 connections) — `server/npc/combat_integration.py`
+- **Resolve the combat event publisher used to send PlayerAttacked events to NATS.** (1 connections) — `server/npc/combat_integration.py`
+- **Resolve target UUID, player object, and stats needed for NATS attack event.** (1 connections) — `server/npc/combat_integration.py`
+- **Construct the PlayerAttackedEvent payload for NATS publication.** (1 connections) — `server/npc/combat_integration.py`
+- **Handle NPC death and related effects.          Args:             npc_id: ID of t** (1 connections) — `server/npc/combat_integration.py`
+- **Return an integer stat from stats[key], handling common primitive types.** (1 connections) — `server/npc/combat_integration.py`
+- **Calculate max_dp from stats with fallbacks.** (1 connections) — `server/npc/combat_integration.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [Error Handling Core](Error_Handling_Core.md) (19 shared connections)
-- [handler realtime nats](handler_realtime_nats.md) (8 shared connections)
-- [Spell Validation](Spell_Validation.md) (4 shared connections)
-- [health service services](health_service_services.md) (2 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [services nats service](services_nats_service.md) (12 shared connections)
+- [add used user](add_used_user.md) (3 shared connections)
+- [Memory Task Runtime](Memory_Task_Runtime.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [profession models rationale](profession_models_rationale.md) (1 shared connections)
+- [tools generate invite](tools_generate_invite.md) (1 shared connections)
+- [shutdown admin command](shutdown_admin_command.md) (1 shared connections)
+- [combat models rationale](combat_models_rationale.md) (1 shared connections)
+- [lucidity event services](lucidity_event_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/error_handlers/__init__.py`
-- `server/error_handlers/pydantic_error_handler.py`
-- `server/exceptions.py`
+- `server/npc/combat_integration.py`
+- `server/npc/npc_base.py`
 
 ## Audit Trail
 
-- EXTRACTED: 183 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 81 (95%)
+- INFERRED: 4 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,23 +1,29 @@
 # npc aggressive mob
 
-> 2 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **tailwindcss** (2 connections) — `client/package.json`
-- **tailwindcss** (1 connections) — `client/package.json`
+- **.get_lifecycle_statistics()** (5 connections) — `server/npc/lifecycle_manager.py`
+- **._compute_state_counts()** (3 connections) — `server/npc/lifecycle_manager.py`
+- **._compute_type_counts()** (3 connections) — `server/npc/lifecycle_manager.py`
+- **._compute_aggregate_counts()** (3 connections) — `server/npc/lifecycle_manager.py`
+- **Get overall lifecycle statistics.          Returns:             Dictionary co** (1 connections) — `server/npc/lifecycle_manager.py`
+- **Return counts of lifecycle records by current_state.** (1 connections) — `server/npc/lifecycle_manager.py`
+- **Return counts of lifecycle records by NPC type string.** (1 connections) — `server/npc/lifecycle_manager.py`
+- **Return (total_spawns, total_despawns, total_errors) across all lifecycle records** (1 connections) — `server/npc/lifecycle_manager.py`
 
 ## Relationships
 
-- [package eslint plugin](package_eslint_plugin.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (4 shared connections)
 
 ## Source Files
 
-- `client/package.json`
+- `server/npc/lifecycle_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

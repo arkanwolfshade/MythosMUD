@@ -1,41 +1,40 @@
 # config models game
 
-> 17 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **_StubPlayerRepo** (18 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **test_player_repository_protocol_stub()** (17 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **UUID** (6 connections)
-- **.get_player_by_id()** (4 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.get_players_batch()** (3 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.soft_delete_player()** (3 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.delete_player()** (3 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.update_player_last_active()** (3 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.get_player_by_user_id()** (2 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.get_players_by_user_id()** (2 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.get_active_players_by_user_id()** (2 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.get_player_by_name()** (2 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.save_player()** (2 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.save_players()** (2 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.list_players()** (2 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.get_players_in_room()** (2 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.validate_and_fix_player_room()** (2 connections) — `server/tests/unit/persistence/test_protocols.py`
+- **test_metadata.py** (11 connections) — `server/tests/unit/test_metadata.py`
+- **metadata.py** (3 connections) — `server/metadata.py`
+- **test_base_is_declarative_base()** (3 connections) — `server/tests/unit/test_metadata.py`
+- **test_base_has_metadata()** (3 connections) — `server/tests/unit/test_metadata.py`
+- **test_base_can_be_instantiated()** (3 connections) — `server/tests/unit/test_metadata.py`
+- **test_metadata_is_metadata_instance()** (2 connections) — `server/tests/unit/test_metadata.py`
+- **test_npc_metadata_is_metadata_instance()** (2 connections) — `server/tests/unit/test_metadata.py`
+- **test_metadata_and_npc_metadata_are_different()** (2 connections) — `server/tests/unit/test_metadata.py`
+- **Shared SQLAlchemy metadata for MythosMUD models.  This module provides the share** (1 connections) — `server/metadata.py`
+- **Unit tests for metadata modules.  Tests the shared SQLAlchemy metadata instances** (1 connections) — `server/tests/unit/test_metadata.py`
+- **Test that metadata is a MetaData instance.** (1 connections) — `server/tests/unit/test_metadata.py`
+- **Test that npc_metadata is a MetaData instance.** (1 connections) — `server/tests/unit/test_metadata.py`
+- **Test that metadata and npc_metadata are separate instances.** (1 connections) — `server/tests/unit/test_metadata.py`
+- **Test that Base is a DeclarativeBase subclass.** (1 connections) — `server/tests/unit/test_metadata.py`
+- **Test that Base has metadata attribute set to shared metadata.** (1 connections) — `server/tests/unit/test_metadata.py`
+- **Test that Base can be instantiated (though meant to be subclassed).** (1 connections) — `server/tests/unit/test_metadata.py`
 
 ## Relationships
 
-- [realtime circuit breaker](realtime_circuit_breaker.md) (4 shared connections)
-- [persistence protocols rationale](persistence_protocols_rationale.md) (2 shared connections)
-- [useDraggablePanelInteractions draggableP](useDraggablePanelInteractions_draggableP.md) (1 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (6 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_protocols.py`
+- `server/metadata.py`
+- `server/tests/unit/test_metadata.py`
 
 ## Audit Trail
 
-- EXTRACTED: 71 (95%)
-- INFERRED: 4 (5%)
+- EXTRACTED: 35 (95%)
+- INFERRED: 2 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

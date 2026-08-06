@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_service_shutdown_removes_subscribers()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Test that service shutdown removes all subscribers for that service.      This t** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_check_combat_state_allows_without_service()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
+- **Test _check_combat_state allows movement when no combat service.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
 
 ## Relationships
 
-- [event bus events](event_bus_events.md) (1 shared connections)
+- [movement service game](movement_service_game.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/events/test_event_bus.py`
+- `server/tests/unit/game/test_movement_service.py`
 
 ## Audit Trail
 

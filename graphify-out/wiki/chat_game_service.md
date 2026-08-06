@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_on_player_disconnect_leader_disbands_party()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **Disconnect of leader disbands the party.** (1 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_behavior_engine_init()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test BehaviorEngine initialization.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [commands inventory helpers](commands_inventory_helpers.md) (1 shared connections)
+- [room occupant manager](room_occupant_manager.md) (1 shared connections)
+- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_party_service.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

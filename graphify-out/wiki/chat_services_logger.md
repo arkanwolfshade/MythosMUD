@@ -33,10 +33,12 @@
 
 ## Relationships
 
-- [chat logger services](chat_logger_services.md) (3 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [chat logger services](chat_logger_services.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [follow game service](follow_game_service.md) (1 shared connections)
 - [services user manager](services_user_manager.md) (1 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
+- [game chat whisper](game_chat_whisper.md) (1 shared connections)
+- [tools generate invite](tools_generate_invite.md) (1 shared connections)
 - [room rationale subzone](room_rationale_subzone.md) (1 shared connections)
 
 ## Source Files

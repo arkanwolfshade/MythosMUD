@@ -1,39 +1,38 @@
 # postgres adapter infrastructure
 
-> 25 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **TestPostgresConnectionPool** (13 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **PostgresConnectionPool** (10 connections) — `server/postgres_adapter.py`
-- **.get_pool()** (7 connections) — `server/postgres_adapter.py`
-- **.get_connection()** (6 connections) — `server/postgres_adapter.py`
-- **is_postgres_url()** (5 connections) — `server/postgres_adapter.py`
-- **.test_get_connection_context_manager()** (4 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_is_postgres_url_true()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_is_postgres_url_false()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_get_pool_creates_new_pool()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_get_pool_reuses_existing_pool()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_get_pool_normalizes_url()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_get_connection_context_manager_exception()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **ThreadedConnectionPool** (1 connections)
-- **Thread-safe PostgreSQL connection pool.** (1 connections) — `server/postgres_adapter.py`
-- **Get or create a connection pool for the given database URL.** (1 connections) — `server/postgres_adapter.py`
-- **Get a connection from the pool.** (1 connections) — `server/postgres_adapter.py`
-- **Check if the database URL is PostgreSQL.** (1 connections) — `server/postgres_adapter.py`
-- **Test PostgresConnectionPool class.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test is_postgres_url() with PostgreSQL URL.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test is_postgres_url() with non-PostgreSQL URL.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test get_pool() creates new pool.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test get_pool() reuses existing pool.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test get_pool() normalizes database URL.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test get_connection() context manager.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test get_connection() context manager with exception.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **PostgresCursor** (21 connections) — `server/postgres_adapter.py`
+- **TestPostgresCursor** (13 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **.rowcount()** (4 connections) — `server/postgres_adapter.py`
+- **.test_postgres_cursor_fetchone_with_row()** (4 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **.test_postgres_cursor_fetchall_with_rows()** (4 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **.test_postgres_cursor_initialization()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **.test_postgres_cursor_fetchone_none()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **.test_postgres_cursor_fetchall_empty()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **.test_postgres_cursor_rowcount()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **.fetchone()** (2 connections) — `server/postgres_adapter.py`
+- **.fetchall()** (2 connections) — `server/postgres_adapter.py`
+- **.mock_cursor()** (2 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **PostgreSQL cursor wrapper for query result access.** (1 connections) — `server/postgres_adapter.py`
+- **Get the number of rows affected.** (1 connections) — `server/postgres_adapter.py`
+- **Test PostgresCursor class.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **Create a mock psycopg2 cursor.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **Test PostgresCursor initialization.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **Test PostgresCursor.fetchone() with row.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **Test PostgresCursor.fetchone() with None.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **Test PostgresCursor.fetchall() with rows.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **Test PostgresCursor.fetchall() with empty result.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **Test PostgresCursor.rowcount().** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
 
 ## Relationships
 
-- [postgres adapter infrastructure](postgres_adapter_infrastructure.md) (12 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [postgres adapter infrastructure](postgres_adapter_infrastructure.md) (16 shared connections)
+- [postgres adapter rationale](postgres_adapter_rationale.md) (2 shared connections)
+- [room game service](room_game_service.md) (1 shared connections)
+- [player room realtime](player_room_realtime.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,8 +41,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 66 (87%)
-- INFERRED: 10 (13%)
+- EXTRACTED: 59 (80%)
+- INFERRED: 15 (20%)
 - AMBIGUOUS: 0 (0%)
 
 ---

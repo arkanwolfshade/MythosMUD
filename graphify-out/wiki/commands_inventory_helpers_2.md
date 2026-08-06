@@ -1,51 +1,53 @@
 # commands inventory helpers
 
-> 48 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **AdminAuthService** (19 connections) — `server/services/admin_auth_service.py`
-- **.validate_permission()** (11 connections) — `server/services/admin_auth_service.py`
-- **AdminRole** (7 connections) — `server/services/admin_auth_service.py`
-- **AdminSession** (6 connections) — `server/services/admin_auth_service.py`
-- **.get_user_role()** (6 connections) — `server/services/admin_auth_service.py`
-- **._update_session()** (6 connections) — `server/services/admin_auth_service.py`
-- **._has_permission()** (5 connections) — `server/services/admin_auth_service.py`
-- **._log_audit_event()** (5 connections) — `server/services/admin_auth_service.py`
-- **_HasIsSuperuser** (4 connections) — `server/services/admin_auth_service.py`
-- **Protocol** (4 connections)
-- **_HasIsAdmin** (4 connections) — `server/services/admin_auth_service.py`
-- **_HasUsername** (4 connections) — `server/services/admin_auth_service.py`
-- **_HasId** (4 connections) — `server/services/admin_auth_service.py`
-- **.get_username()** (4 connections) — `server/services/admin_auth_service.py`
-- **.get_user_id()** (4 connections) — `server/services/admin_auth_service.py`
-- **Request** (4 connections)
-- **._check_rate_limit()** (4 connections) — `server/services/admin_auth_service.py`
-- **admin_auth_service()** (4 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **test_get_admin_auth_service()** (4 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **.get_active_sessions()** (3 connections) — `server/services/admin_auth_service.py`
-- **.get_audit_log()** (3 connections) — `server/services/admin_auth_service.py`
-- **test_admin_session_init()** (3 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **.__init__()** (2 connections) — `server/services/admin_auth_service.py`
-- **.__init__()** (2 connections) — `server/services/admin_auth_service.py`
-- **Any** (2 connections)
-- *... and 23 more nodes in this community*
+- **RoomEventHandler** (21 connections) — `server/realtime/integration/room_event_handler.py`
+- **test_room_event_handler.py** (13 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
+- **__init__.py** (5 connections) — `server/realtime/integration/__init__.py`
+- **.__init__()** (4 connections) — `server/realtime/integration/room_event_handler.py`
+- **.handle_player_entered_room()** (4 connections) — `server/realtime/integration/room_event_handler.py`
+- **.handle_player_left_room()** (4 connections) — `server/realtime/integration/room_event_handler.py`
+- **Any** (3 connections)
+- **UUID** (2 connections)
+- **room_handler()** (2 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
+- **test_subscribe_to_events()** (2 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
+- **test_subscribe_to_events_no_bus()** (2 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
+- **test_unsubscribe_from_events()** (2 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
+- **test_handle_player_entered_room_broadcasts()** (2 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
+- **test_handle_player_entered_room_missing_room_id()** (2 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
+- **test_handle_player_entered_skips_uuid_player_names()** (2 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
+- **test_handle_player_left_room_broadcasts()** (2 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
+- **test_handle_player_entered_nats_publish_failure()** (2 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
+- **test_subscribe_handles_exception()** (2 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
+- **Integration components for connection management.  This package provides integra** (1 connections) — `server/realtime/integration/__init__.py`
+- **Handles room movement events and broadcasts occupant updates.      This class pr** (1 connections) — `server/realtime/integration/room_event_handler.py`
+- **Initialize the room event handler.          Args:             room_manager: Room** (1 connections) — `server/realtime/integration/room_event_handler.py`
+- **Handle PlayerEnteredRoom events by broadcasting updated occupant count.** (1 connections) — `server/realtime/integration/room_event_handler.py`
+- **Handle PlayerLeftRoom events by broadcasting updated occupant count.** (1 connections) — `server/realtime/integration/room_event_handler.py`
+- **Unit tests for RoomEventHandler integration.** (1 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
 
 ## Relationships
 
-- [player preferences services](player_preferences_services.md) (13 shared connections)
-- [inventory schemas schema](inventory_schemas_schema.md) (6 shared connections)
-- [Exception Containers](Exception_Containers.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (4 shared connections)
+- [spell models rationale](spell_models_rationale.md) (2 shared connections)
+- [party service game](party_service_game.md) (2 shared connections)
+- [combat services messaging](combat_services_messaging.md) (2 shared connections)
+- [command utility models](command_utility_models.md) (1 shared connections)
+- [shutdown admin command](shutdown_admin_command.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/admin_auth_service.py`
-- `server/tests/unit/services/test_admin_auth_service.py`
+- `server/realtime/integration/__init__.py`
+- `server/realtime/integration/room_event_handler.py`
+- `server/tests/unit/realtime/integration/test_room_event_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 137 (93%)
-- INFERRED: 11 (7%)
+- EXTRACTED: 82 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

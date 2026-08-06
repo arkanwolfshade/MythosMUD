@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_validate_combat_command_target_too_long_with_mock()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test validate_combat_command target too long warning path (line 163).** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_handle_container_overflow()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test handle_container_overflow handles overflow.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Relationships
 
-- [emote models rationale](emote_models_rationale.md) (1 shared connections)
+- [wearable container service](wearable_container_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 

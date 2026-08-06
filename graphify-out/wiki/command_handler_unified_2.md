@@ -33,10 +33,10 @@
 
 ## Relationships
 
-- [commands follow rationale](commands_follow_rationale.md) (7 shared connections)
-- [Loot Generation](Loot_Generation.md) (2 shared connections)
-- [profession game service](profession_game_service.md) (1 shared connections)
-- [taunt combat commands](taunt_combat_commands.md) (1 shared connections)
+- [Exception Containers](Exception_Containers.md) (7 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (2 shared connections)
+- [commands admin helpers](commands_admin_helpers.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
 
 ## Source Files
 

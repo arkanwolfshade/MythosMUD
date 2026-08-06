@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_validate_can_attack_target_no_party_service_allows()** (3 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **When party_service is None, validate_can_attack_target allows attack.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_convert_ids_to_uuids_none_target()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _convert_ids_to_uuids handles None target.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [emote models rationale](emote_models_rationale.md) (1 shared connections)
-- [NPC Combat](NPC_Combat.md) (1 shared connections)
+- [message chat nats](message_chat_nats.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

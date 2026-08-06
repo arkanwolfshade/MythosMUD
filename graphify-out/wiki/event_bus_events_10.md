@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_validate_movement_player_already_in_target()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
-- **Test _validate_movement returns False when player already in destination.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_evaluate_equality_string()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test _evaluate_equality() handles string values.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [movement service game](movement_service_game.md) (1 shared connections)
+- [room occupant manager](room_occupant_manager.md) (1 shared connections)
+- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_movement_service.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

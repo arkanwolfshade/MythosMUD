@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_should_echo_to_sender_not_chat_message()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _should_echo_to_sender returns False for non-chat messages.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_register_action_handler_overwrites()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test register_action_handler() overwrites existing handler.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [message chat nats](message_chat_nats.md) (1 shared connections)
+- [room occupant manager](room_occupant_manager.md) (1 shared connections)
+- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

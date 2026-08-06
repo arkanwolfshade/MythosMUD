@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_validate_combat_command_valid()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test validate_combat_command with valid command.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_validate_chat_message_fields()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _validate_chat_message_fields validates fields.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [emote models rationale](emote_models_rationale.md) (1 shared connections)
+- [message chat nats](message_chat_nats.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 

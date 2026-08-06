@@ -15,7 +15,7 @@
 
 ## Relationships
 
-- [command commands handler](command_commands_handler.md) (4 shared connections)
+- [player model models](player_model_models.md) (4 shared connections)
 
 ## Source Files
 

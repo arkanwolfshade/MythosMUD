@@ -1,27 +1,28 @@
 # service combat services
 
-> 5 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **.__init__()** (4 connections) — `server/models/game.py`
-- **._compute_max_dp_if_missing()** (3 connections) — `server/models/game.py`
+- **.on_enter_state()** (4 connections) — `server/realtime/connection_state_machine.py`
+- **.get_stats()** (3 connections) — `server/realtime/connection_state_machine.py`
+- **State** (2 connections)
 - **Any** (2 connections)
-- **Initialize Stats with provided data.          For random stat generation, use ge** (1 connections) — `server/models/game.py`
-- **Populate max_dp from (CON+SIZ)/5 when not provided (stored value takes precedenc** (1 connections) — `server/models/game.py`
+- **Called whenever state machine enters a new state.          Logs state transition** (1 connections) — `server/realtime/connection_state_machine.py`
+- **Get connection statistics.          Returns:             Dictionary with connect** (1 connections) — `server/realtime/connection_state_machine.py`
 
 ## Relationships
 
-- [player service game](player_service_game.md) (2 shared connections)
-- [event connection helpers](event_connection_helpers.md) (1 shared connections)
+- [connection state machine](connection_state_machine.md) (2 shared connections)
+- [shutdown admin command](shutdown_admin_command.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/game.py`
+- `server/realtime/connection_state_machine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **event_bus()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Create an EventBus instance.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_check_combat_state_blocks_when_in_combat()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
+- **Test _check_combat_state returns False when player is in combat.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
 
 ## Relationships
 
-- [Error Conversion](Error_Conversion.md) (1 shared connections)
-- [event bus events](event_bus_events.md) (1 shared connections)
+- [movement service game](movement_service_game.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/events/test_event_bus.py`
+- `server/tests/unit/game/test_movement_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

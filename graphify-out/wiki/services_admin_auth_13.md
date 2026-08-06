@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_create_quit_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_quit_command delegates to player_state factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_validate_attack_strength_weak_weapon()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **Test validate_attack_strength with weak weapon.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
 
 ## Relationships
 
-- [command factories create](command_factories_create.md) (1 shared connections)
+- [emote models rationale](emote_models_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `server/tests/unit/validators/test_combat_validator.py`
 
 ## Audit Trail
 

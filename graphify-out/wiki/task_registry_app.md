@@ -1,63 +1,76 @@
 # task registry app
 
-> 249 nodes
+> 329 nodes
 
 ## Key Concepts
 
-- **ContainerComponent** (106 connections) — `server/models/container.py`
 - **test_corpse_lifecycle_service.py** (55 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **InventoryService** (40 connections) — `server/services/inventory_service.py`
+- **InventoryMutationGuard** (39 connections) — `server/services/inventory_mutation_guard.py`
+- **InventoryStack** (38 connections) — `server/services/inventory_service.py`
 - **test_container.py** (38 connections) — `server/tests/unit/models/test_container.py`
+- **container_service_transfer_to.py** (33 connections) — `server/services/container_service_transfer_to.py`
+- **inventory_service.py** (33 connections) — `server/services/inventory_service.py`
+- **ContainerAccessDeniedError** (31 connections) — `server/services/container_service_helpers.py`
+- **container.py** (30 connections) — `server/models/container.py`
+- **container_service_session.py** (28 connections) — `server/services/container_service_session.py`
+- **container_service_lock.py** (26 connections) — `server/services/container_service_lock.py`
+- **container_service_transfer_from.py** (26 connections) — `server/services/container_service_transfer_from.py`
+- **InventoryCapacityError** (26 connections) — `server/services/inventory_service.py`
+- **container_service_helpers.py** (23 connections) — `server/services/container_service_helpers.py`
+- **ContainerTransferToMixin** (20 connections) — `server/services/container_service_transfer_to.py`
+- **test_inventory_service.py** (20 connections) — `server/tests/unit/services/test_inventory_service.py`
 - **corpse_lifecycle_service.py** (19 connections) — `server/services/corpse_lifecycle_service.py`
-- **ContainerLockState** (15 connections) — `server/models/container.py`
-- **conftest.py** (14 connections) — `server/tests/unit/api/conftest.py`
-- **CorpseServiceError** (13 connections) — `server/services/corpse_lifecycle_service.py`
-- **.cleanup_decayed_corpse()** (10 connections) — `server/services/corpse_lifecycle_service.py`
-- **Any** (8 connections)
-- **_get_enum_value()** (8 connections) — `server/services/corpse_lifecycle_service.py`
-- **.create_corpse()** (7 connections) — `server/models/container.py`
-- **CorpseNotFoundError** (7 connections) — `server/services/corpse_lifecycle_service.py`
-- **.create_corpse_on_death()** (7 connections) — `server/services/corpse_lifecycle_service.py`
-- **.create_environment()** (6 connections) — `server/models/container.py`
-- **.create_equipment()** (6 connections) — `server/models/container.py`
-- **_filter_container_data()** (6 connections) — `server/services/corpse_lifecycle_service.py`
-- **.get_decayed_corpses_in_room()** (6 connections) — `server/services/corpse_lifecycle_service.py`
-- **UUID** (5 connections)
-- **ContainerComponent** (5 connections)
-- **.get_all_decayed_corpses()** (5 connections) — `server/services/corpse_lifecycle_service.py`
-- **.validate_source_type()** (4 connections) — `server/models/container.py`
-- **.validate_lock_state()** (4 connections) — `server/models/container.py`
-- **.validate_entity_id()** (4 connections) — `server/models/container.py`
-- **.would_exceed_capacity()** (4 connections) — `server/models/container.py`
-- **UUID** (4 connections)
-- *... and 224 more nodes in this community*
+- **MutationDecision** (19 connections) — `server/services/inventory_mutation_guard.py`
+- **container_helpers_inventory_display.py** (18 connections) — `server/commands/container_helpers_inventory_display.py`
+- **ContainerSessionMixin** (18 connections) — `server/services/container_service_session.py`
+- **ContainerTransferFromMixin** (18 connections) — `server/services/container_service_transfer_from.py`
+- **ContainerLockState** (17 connections) — `server/models/container.py`
+- **container_service_access.py** (17 connections) — `server/services/container_service_access.py`
+- **ContainerAccessMixin** (17 connections) — `server/services/container_service_access.py`
+- **test_inventory_mutation_guard.py** (17 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- *... and 304 more nodes in this community*
 
 ## Relationships
 
-- [Exception Containers](Exception_Containers.md) (43 shared connections)
-- [models npc rationale](models_npc_rationale.md) (13 shared connections)
-- [auth rationale access](auth_rationale_access.md) (10 shared connections)
-- [Loot Generation](Loot_Generation.md) (4 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (4 shared connections)
-- [player requests schemas](player_requests_schemas.md) (3 shared connections)
-- [world models rationale](world_models_rationale.md) (2 shared connections)
-- [commands follow rationale](commands_follow_rationale.md) (2 shared connections)
-- [Error Handling Core](Error_Handling_Core.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [alias storage commands](alias_storage_commands.md) (1 shared connections)
-- [services npc startup](services_npc_startup.md) (1 shared connections)
+- [Exception Containers](Exception_Containers.md) (69 shared connections)
+- [services inventory mutation](services_inventory_mutation.md) (66 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (46 shared connections)
+- [player cache rationale](player_cache_rationale.md) (37 shared connections)
+- [Error Conversion](Error_Conversion.md) (30 shared connections)
+- [alias storage commands](alias_storage_commands.md) (20 shared connections)
+- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (17 shared connections)
+- [event connection helpers](event_connection_helpers.md) (14 shared connections)
+- [tick game processing](tick_game_processing.md) (13 shared connections)
+- [container inventory display](container_inventory_display.md) (10 shared connections)
+- [add used user](add_used_user.md) (10 shared connections)
+- [Game Terminal UI](Game_Terminal_UI.md) (6 shared connections)
 
 ## Source Files
 
+- `server/commands/container_helpers_inventory_display.py`
 - `server/models/container.py`
+- `server/services/container_service_access.py`
+- `server/services/container_service_helpers.py`
+- `server/services/container_service_lock.py`
+- `server/services/container_service_session.py`
+- `server/services/container_service_transfer_from.py`
+- `server/services/container_service_transfer_to.py`
 - `server/services/corpse_lifecycle_service.py`
-- `server/tests/unit/api/conftest.py`
+- `server/services/inventory_mutation_guard.py`
+- `server/services/inventory_service.py`
 - `server/tests/unit/models/test_container.py`
 - `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- `server/tests/unit/services/test_inventory_mutation_guard.py`
+- `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
+- `server/tests/unit/services/test_inventory_service.py`
+- `server/utils/audit_logger.py`
 
 ## Audit Trail
 
-- EXTRACTED: 721 (93%)
-- INFERRED: 51 (7%)
+- EXTRACTED: 1424 (88%)
+- INFERRED: 188 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

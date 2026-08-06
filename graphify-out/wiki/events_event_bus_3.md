@@ -9,7 +9,7 @@
 
 ## Relationships
 
-- [message nats handler](message_nats_handler.md) (1 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (1 shared connections)
 - [movement service game](movement_service_game.md) (1 shared connections)
 
 ## Source Files

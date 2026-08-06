@@ -34,7 +34,7 @@
 ## Relationships
 
 - [room validator toolkit](room_validator_toolkit.md) (3 shared connections)
-- [commands recovery lucidity](commands_recovery_lucidity.md) (1 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (1 shared connections)
 
 ## Source Files
 

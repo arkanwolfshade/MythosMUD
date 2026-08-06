@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_get_combat_status_message_in_combat()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test get_combat_status_message when in combat.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_evaluate_equality_false()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test _evaluate_equality() returns False for non-matching condition.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [emote models rationale](emote_models_rationale.md) (1 shared connections)
+- [room occupant manager](room_occupant_manager.md) (1 shared connections)
+- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

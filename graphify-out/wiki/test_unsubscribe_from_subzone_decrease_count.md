@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_unsubscribe_from_subzone_decrease_count()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test unsubscribe_from_subzone decreases count when > 1.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_subscribe_to_room_error()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **Test subscribe_to_room() handles errors gracefully.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
 
 ## Relationships
 
-- [subzone realtime nats](subzone_realtime_nats.md) (1 shared connections)
+- [room subscription manager](room_subscription_manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- `server/tests/unit/realtime/test_room_subscription_manager.py`
 
 ## Audit Trail
 

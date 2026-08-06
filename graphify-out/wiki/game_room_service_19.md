@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **message_filtering_helper()** (3 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **Create a MessageFilteringHelper instance.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_adjust_room_drop_error_handling()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **Test adjust_room_drop() handles errors gracefully.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Relationships
 
-- [commands communication say](commands_communication_say.md) (1 shared connections)
-- [message filtering realtime](message_filtering_realtime.md) (1 shared connections)
+- [room subscription manager](room_subscription_manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_message_filtering.py`
+- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_process_message_with_retry_failure()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _process_message_with_retry adds to DLQ on failure.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_evaluate_numeric_comparison_less_equal()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test _evaluate_numeric_comparison() handles <= operator.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [message chat nats](message_chat_nats.md) (1 shared connections)
+- [room occupant manager](room_occupant_manager.md) (1 shared connections)
+- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,53 +1,47 @@
 # admin auth service
 
-> 50 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **test_command_player_state.py** (23 connections) — `server/tests/unit/models/test_command_player_state.py`
-- **command_player_state.py** (15 connections) — `server/models/command_player_state.py`
-- **LieCommand** (15 connections) — `server/models/command_player_state.py`
-- **GroundCommand** (12 connections) — `server/models/command_player_state.py`
-- **QuitCommand** (8 connections) — `server/models/command_player_state.py`
-- **LogoutCommand** (8 connections) — `server/models/command_player_state.py`
-- **SitCommand** (8 connections) — `server/models/command_player_state.py`
-- **StandCommand** (8 connections) — `server/models/command_player_state.py`
-- **test_lie_command_validate_modifier_invalid()** (4 connections) — `server/tests/unit/models/test_command_player_state.py`
-- **test_lie_command_validate_modifier_empty_string()** (4 connections) — `server/tests/unit/models/test_command_player_state.py`
-- **test_ground_command_target_player_min_length()** (4 connections) — `server/tests/unit/models/test_command_player_state.py`
-- **test_ground_command_target_player_max_length()** (4 connections) — `server/tests/unit/models/test_command_player_state.py`
-- **.validate_target_player()** (3 connections) — `server/models/command_player_state.py`
-- **test_quit_command_no_fields()** (3 connections) — `server/tests/unit/models/test_command_player_state.py`
-- **test_logout_command_no_fields()** (3 connections) — `server/tests/unit/models/test_command_player_state.py`
-- **test_sit_command_no_fields()** (3 connections) — `server/tests/unit/models/test_command_player_state.py`
-- **test_stand_command_no_fields()** (3 connections) — `server/tests/unit/models/test_command_player_state.py`
-- **test_lie_command_default_values()** (3 connections) — `server/tests/unit/models/test_command_player_state.py`
-- **test_lie_command_with_modifier_down()** (3 connections) — `server/tests/unit/models/test_command_player_state.py`
-- **test_lie_command_validate_modifier_strips_and_lowercases()** (3 connections) — `server/tests/unit/models/test_command_player_state.py`
-- **test_lie_command_validate_modifier_case_insensitive()** (3 connections) — `server/tests/unit/models/test_command_player_state.py`
-- **test_lie_command_validate_modifier_none()** (3 connections) — `server/tests/unit/models/test_command_player_state.py`
-- **test_ground_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_player_state.py`
-- **test_ground_command_validate_target_player_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_player_state.py`
-- **.validate_modifier()** (2 connections) — `server/models/command_player_state.py`
-- *... and 25 more nodes in this community*
+- **Stats** (11 connections)
+- **.roll_stats_with_profession()** (7 connections) — `server/game/stats_generator.py`
+- **.roll_stats()** (6 connections) — `server/game/stats_generator.py`
+- **._roll_size()** (5 connections) — `server/game/stats_generator.py`
+- **._roll_3d6()** (5 connections) — `server/game/stats_generator.py`
+- **.get_available_classes()** (5 connections) — `server/game/stats_generator.py`
+- **.roll_stats_with_validation()** (5 connections) — `server/game/stats_generator.py`
+- **._roll_4d6_drop_lowest()** (4 connections) — `server/game/stats_generator.py`
+- **._roll_point_buy()** (4 connections) — `server/game/stats_generator.py`
+- **.validate_class_prerequisites()** (4 connections) — `server/game/stats_generator.py`
+- **._check_profession_requirements()** (4 connections) — `server/game/stats_generator.py`
+- **.get_stat_summary()** (4 connections) — `server/game/stats_generator.py`
+- **Any** (2 connections)
+- **Roll character stats using the specified method.          Args:             meth** (1 connections) — `server/game/stats_generator.py`
+- **Roll Size using formula: (2D6+6)*5 (range 40-90).** (1 connections) — `server/game/stats_generator.py`
+- **Roll stats using 3d6 method (scaled to 15-90 range).** (1 connections) — `server/game/stats_generator.py`
+- **Roll stats using 4d6 drop lowest method (more generous, scaled to 15-90 range).** (1 connections) — `server/game/stats_generator.py`
+- **Generate stats using a point-buy system (balanced, scaled to 1-100 range).** (1 connections) — `server/game/stats_generator.py`
+- **Check if stats meet the prerequisites for a given class.          Args:** (1 connections) — `server/game/stats_generator.py`
+- **Get a list of classes that the character qualifies for.          Args:** (1 connections) — `server/game/stats_generator.py`
+- **Roll stats and validate against class requirements.          Args:             m** (1 connections) — `server/game/stats_generator.py`
+- **Roll stats and validate against profession requirements.          Args:** (1 connections) — `server/game/stats_generator.py`
+- **Check if stats meet profession requirements.          Args:             stats: T** (1 connections) — `server/game/stats_generator.py`
+- **Get a summary of the character's stats including modifiers and totals.** (1 connections) — `server/game/stats_generator.py`
 
 ## Relationships
 
-- [command factories create](command_factories_create.md) (17 shared connections)
-- [command inventory factories](command_inventory_factories.md) (7 shared connections)
-- [Loot Generation](Loot_Generation.md) (6 shared connections)
-- [Inventory Equip](Inventory_Equip.md) (4 shared connections)
-- [Security Validator Tests](Security_Validator_Tests.md) (2 shared connections)
+- [System Metrics](System_Metrics.md) (12 shared connections)
+- [realtime player connection](realtime_player_connection.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/command_player_state.py`
-- `server/tests/unit/models/test_command_player_state.py`
+- `server/game/stats_generator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 160 (91%)
-- INFERRED: 16 (9%)
+- EXTRACTED: 77 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

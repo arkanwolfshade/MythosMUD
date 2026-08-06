@@ -1,54 +1,64 @@
 # websocket handler realtime
 
-> 64 nodes
+> 189 nodes
 
 ## Key Concepts
 
-- **CircuitBreaker** (43 connections) — `server/realtime/circuit_breaker.py`
-- **test_circuit_breaker.py** (31 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **circuit_breaker.py** (12 connections) — `server/realtime/circuit_breaker.py`
-- **CircuitState** (6 connections) — `server/realtime/circuit_breaker.py`
-- **.__init__()** (3 connections) — `server/realtime/circuit_breaker.py`
-- **.get_state()** (3 connections) — `server/realtime/circuit_breaker.py`
-- **test_circuit_breaker_init()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_circuit_breaker_init_defaults()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_call_success_closed_state()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_call_failure_closed_state()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_call_opens_circuit_after_threshold()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_call_transitions_to_half_open_after_timeout()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_call_closes_from_half_open_on_success()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_call_reopens_from_half_open_on_failure()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_on_success_resets_failure_count_closed()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_on_success_increments_success_count_half_open()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_on_failure_increments_failure_count()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_on_failure_opens_circuit_at_threshold()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_on_failure_resets_success_count()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_should_attempt_reset_returns_false_before_timeout()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_should_attempt_reset_returns_true_after_timeout()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_should_attempt_reset_returns_false_when_not_open()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_time_until_retry_returns_zero_when_not_open()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_time_until_retry_returns_remaining_time()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_time_until_retry_returns_zero_after_timeout()** (3 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- *... and 39 more nodes in this community*
+- **AuthenticationError** (63 connections) — `server/exceptions.py`
+- **test_auth_utils.py** (52 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_argon2_utils.py** (42 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **create_access_token()** (32 connections) — `server/auth_utils.py`
+- **hash_password()** (27 connections) — `server/auth/argon2_utils.py`
+- **decode_access_token()** (25 connections) — `server/auth_utils.py`
+- **argon2_utils.py** (18 connections) — `server/auth/argon2_utils.py`
+- **hash_password()** (18 connections) — `server/auth_utils.py`
+- **auth_utils.py** (17 connections) — `server/auth_utils.py`
+- **verify_password()** (16 connections) — `server/auth/argon2_utils.py`
+- **create_hasher_with_params()** (11 connections) — `server/auth/argon2_utils.py`
+- **is_argon2_hash()** (9 connections) — `server/auth/argon2_utils.py`
+- **verify_password()** (9 connections) — `server/auth_utils.py`
+- **needs_rehash()** (7 connections) — `server/auth/argon2_utils.py`
+- **get_hash_info()** (6 connections) — `server/auth/argon2_utils.py`
+- **test_create_access_token_attribute_error()** (5 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_decode_access_token_attribute_error()** (5 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_verify_password_success()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **test_verify_password_failure()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **test_hash_password_empty_string()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **test_verify_password_empty_string()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **test_hash_password_invalid_type()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **test_hash_password_non_string_type()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **test_verify_password_non_string_password()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **test_is_argon2_hash_valid()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- *... and 164 more nodes in this community*
 
 ## Relationships
 
-- [conftest mock rationale](conftest_mock_rationale.md) (8 shared connections)
-- [NPC Combat](NPC_Combat.md) (7 shared connections)
-- [config rationale config()](config_rationale_config%28%29.md) (5 shared connections)
-- [commands communication say](commands_communication_say.md) (2 shared connections)
-- [nats message handler](nats_message_handler.md) (1 shared connections)
-- [container persistence rationale](container_persistence_rationale.md) (1 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (19 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (13 shared connections)
+- [handler realtime nats](handler_realtime_nats.md) (7 shared connections)
+- [auth users rationale](auth_users_rationale.md) (5 shared connections)
+- [player requests schemas](player_requests_schemas.md) (5 shared connections)
+- [Async Query Helpers](Async_Query_Helpers.md) (5 shared connections)
+- [Error Conversion](Error_Conversion.md) (4 shared connections)
+- [nats services metrics](nats_services_metrics.md) (4 shared connections)
+- [package argon2 engines](package_argon2_engines.md) (3 shared connections)
+- [room sync service](room_sync_service.md) (3 shared connections)
+- [connection realtime delegates](connection_realtime_delegates.md) (2 shared connections)
+- [player death service](player_death_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/circuit_breaker.py`
-- `server/tests/unit/realtime/test_circuit_breaker.py`
+- `server/auth/argon2_utils.py`
+- `server/auth/users.py`
+- `server/auth_utils.py`
+- `server/exceptions.py`
+- `server/tests/unit/auth/test_argon2_utils.py`
+- `server/tests/unit/auth/test_auth_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 204 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 663 (91%)
+- INFERRED: 66 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

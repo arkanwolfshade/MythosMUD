@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_validate_attack_strength_target_too_strong()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test validate_attack_strength when target is too strong.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_get_wearable_containers_for_player_empty()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test get_wearable_containers_for_player returns empty list when no containers.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Relationships
 
-- [emote models rationale](emote_models_rationale.md) (1 shared connections)
+- [wearable container service](wearable_container_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 

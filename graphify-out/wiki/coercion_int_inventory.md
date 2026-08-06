@@ -1,67 +1,60 @@
 # coercion int inventory
 
-> 95 nodes
+> 35 nodes
 
 ## Key Concepts
 
 - **SpellLearningService** (43 connections) — `server/game/magic/spell_learning_service.py`
-- **PlayerSpellRepository** (38 connections) — `server/persistence/repositories/player_spell_repository.py`
-- **SpellRegistry** (37 connections) — `server/game/magic/spell_registry.py`
-- **lifespan_magic.py** (34 connections) — `server/app/lifespan_magic.py`
 - **spell_learning_service.py** (22 connections) — `server/game/magic/spell_learning_service.py`
-- **initialize_magic_services()** (15 connections) — `server/app/lifespan_magic.py`
 - **test_spell_learning_service.py** (15 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
-- **_initialize_magic_service()** (13 connections) — `server/app/lifespan_magic.py`
-- **FastAPI** (9 connections)
-- **_initialize_spell_targeting_service()** (9 connections) — `server/app/lifespan_magic.py`
-- **_initialize_spell_effects()** (9 connections) — `server/app/lifespan_magic.py`
-- **_initialize_spell_learning_service()** (8 connections) — `server/app/lifespan_magic.py`
-- **.__init__()** (8 connections) — `server/commands/magic_commands.py`
 - **.learn_spell()** (8 connections) — `server/game/magic/spell_learning_service.py`
-- **.combat_service()** (7 connections) — `server/game/magic/spell_effects.py`
 - **UUID** (7 connections)
-- **_initialize_spell_repositories()** (6 connections) — `server/app/lifespan_magic.py`
-- **_initialize_spell_registry()** (6 connections) — `server/app/lifespan_magic.py`
-- **_initialize_mp_regeneration_service()** (6 connections) — `server/app/lifespan_magic.py`
-- **_link_magic_to_combat()** (6 connections) — `server/app/lifespan_magic.py`
 - **._validate_prerequisites()** (6 connections) — `server/game/magic/spell_learning_service.py`
-- **.__init__()** (5 connections) — `server/game/magic/spell_learning_service.py`
 - **Any** (5 connections)
 - **.learn_spell_from_book()** (5 connections) — `server/game/magic/spell_learning_service.py`
 - **.learn_spell_from_npc()** (5 connections) — `server/game/magic/spell_learning_service.py`
-- *... and 70 more nodes in this community*
+- **.learn_spell_from_quest()** (5 connections) — `server/game/magic/spell_learning_service.py`
+- **.increase_mastery_on_cast()** (3 connections) — `server/game/magic/spell_learning_service.py`
+- **learning_service()** (2 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
+- **test_learn_spell_not_found()** (2 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
+- **test_learn_spell_player_missing()** (2 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
+- **test_learn_spell_already_known()** (2 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
+- **test_learn_spell_success()** (2 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
+- **test_validate_prerequisites_power_too_low()** (2 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
+- **test_increase_mastery_on_cast()** (2 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
+- **test_validate_prerequisites_intelligence_too_low()** (2 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
+- **test_validate_prerequisites_missing_required_spells()** (2 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
+- **test_learn_spell_from_npc()** (2 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
+- **test_learn_spell_from_book_no_spell_id()** (2 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
+- **test_learn_spell_from_book_with_spell()** (2 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
+- **Spell learning service for handling spell acquisition.  This module provides ser** (1 connections) — `server/game/magic/spell_learning_service.py`
+- **Service for handling spell learning from various sources.      Manages spell acq** (1 connections) — `server/game/magic/spell_learning_service.py`
+- *... and 10 more nodes in this community*
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (30 shared connections)
-- [nats services service](nats_services_service.md) (22 shared connections)
-- [spell game magic](spell_game_magic.md) (19 shared connections)
-- [commands magic rationale](commands_magic_rationale.md) (12 shared connections)
-- [game models player](game_models_player.md) (11 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (11 shared connections)
-- [player respawn event](player_respawn_event.md) (7 shared connections)
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (5 shared connections)
-- [target resolution service](target_resolution_service.md) (3 shared connections)
-- [Magic Spell Service](Magic_Spell_Service.md) (3 shared connections)
-- [subject nats manager](subject_nats_manager.md) (3 shared connections)
-- [regeneration service magic](regeneration_service_magic.md) (2 shared connections)
+- [persistence core infrastructure](persistence_core_infrastructure.md) (12 shared connections)
+- [alias storage rationale](alias_storage_rationale.md) (4 shared connections)
+- [room realtime rationale](room_realtime_rationale.md) (4 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (3 shared connections)
+- [magic completion game](magic_completion_game.md) (3 shared connections)
+- [panels domPurifyClient chat](panels_domPurifyClient_chat.md) (3 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [dead letter queue](dead_letter_queue.md) (2 shared connections)
+- [add used user](add_used_user.md) (1 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (1 shared connections)
+- [nats services service](nats_services_service.md) (1 shared connections)
+- [subject nats manager](subject_nats_manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/app/lifespan_magic.py`
-- `server/commands/magic_commands.py`
-- `server/game/magic/spell_effects.py`
 - `server/game/magic/spell_learning_service.py`
-- `server/game/magic/spell_registry.py`
-- `server/persistence/repositories/player_spell_repository.py`
 - `server/tests/unit/game/magic/test_spell_learning_service.py`
-- `server/tests/unit/game/magic/test_spell_registry.py`
-- `server/tests/unit/game/magic/test_spell_targeting.py`
 
 ## Audit Trail
 
-- EXTRACTED: 399 (88%)
-- INFERRED: 54 (12%)
+- EXTRACTED: 148 (92%)
+- INFERRED: 12 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

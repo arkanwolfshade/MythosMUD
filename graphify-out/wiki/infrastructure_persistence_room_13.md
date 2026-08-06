@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_broadcast_to_room_with_filtering_exception()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _broadcast_to_room_with_filtering handles exceptions.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_register_action_handler()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test register_action_handler() registers handler.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [commands communication say](commands_communication_say.md) (1 shared connections)
-- [message chat nats](message_chat_nats.md) (1 shared connections)
+- [room occupant manager](room_occupant_manager.md) (1 shared connections)
+- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 

@@ -1,25 +1,51 @@
 # profession models rationale
 
-> 2 nodes
+> 88 nodes
 
 ## Key Concepts
 
-- **test_unsubscribe_from_subject_error()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test _unsubscribe_from_subject() handles errors.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **Profession** (54 connections) — `server/models/profession.py`
+- **test_profession.py** (30 connections) — `server/tests/unit/models/test_profession.py`
+- **Any** (8 connections)
+- **.get_stat_requirements()** (5 connections) — `server/models/profession.py`
+- **.set_stat_requirements()** (3 connections) — `server/models/profession.py`
+- **.get_mechanical_effects()** (3 connections) — `server/models/profession.py`
+- **.set_mechanical_effects()** (3 connections) — `server/models/profession.py`
+- **.get_stat_modifiers()** (3 connections) — `server/models/profession.py`
+- **.set_stat_modifiers()** (3 connections) — `server/models/profession.py`
+- **.get_skill_modifiers()** (3 connections) — `server/models/profession.py`
+- **.set_skill_modifiers()** (3 connections) — `server/models/profession.py`
+- **.meets_stat_requirements()** (3 connections) — `server/models/profession.py`
+- **.get_requirement_display_text()** (3 connections) — `server/models/profession.py`
+- **test_get_professions_success()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_get_profession_by_id_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_profession_repr()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **test_profession_get_stat_requirements_valid_json()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **test_profession_get_stat_requirements_invalid_json()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **test_profession_get_stat_requirements_empty_string()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **test_profession_get_stat_requirements_none()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **test_profession_set_stat_requirements()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **test_profession_set_stat_requirements_empty_dict()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **test_profession_get_mechanical_effects_valid_json()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **test_profession_get_mechanical_effects_invalid_json()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **test_profession_get_mechanical_effects_empty_string()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- *... and 63 more nodes in this community*
 
 ## Relationships
 
-- [commands communication say](commands_communication_say.md) (1 shared connections)
-- [nats message handler](nats_message_handler.md) (1 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (12 shared connections)
+- [commands admin helpers](commands_admin_helpers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/models/profession.py`
+- `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- `server/tests/unit/models/test_profession.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 252 (97%)
+- INFERRED: 7 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

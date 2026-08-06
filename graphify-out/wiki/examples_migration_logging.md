@@ -35,7 +35,7 @@
 
 - [player requests schemas](player_requests_schemas.md) (2 shared connections)
 - [models lucidity rationale](models_lucidity_rationale.md) (1 shared connections)
-- [world loader room](world_loader_room.md) (1 shared connections)
+- [middleware correlation rationale](middleware_correlation_rationale.md) (1 shared connections)
 
 ## Source Files
 

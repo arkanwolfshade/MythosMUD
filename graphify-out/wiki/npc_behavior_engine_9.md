@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_handle_nats_message_retry_on_failure()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test _handle_nats_message() uses circuit breaker which handles retries.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_unsubscribe_from_room_removes_empty_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **Test unsubscribe_from_room() removes room when last subscriber leaves.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
 
 ## Relationships
 
-- [nats message handler](nats_message_handler.md) (1 shared connections)
+- [room subscription manager](room_subscription_manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/tests/unit/realtime/test_room_subscription_manager.py`
 
 ## Audit Trail
 

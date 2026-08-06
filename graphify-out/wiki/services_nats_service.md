@@ -1,65 +1,60 @@
 # services nats service
 
-> 130 nodes
+> 63 nodes
 
 ## Key Concepts
 
 - **NPCCombatIntegration** (103 connections) — `server/npc/combat_integration.py`
 - **test_npc_combat_integration_class.py** (46 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
-- **combat_integration.py** (26 connections) — `server/npc/combat_integration.py`
-- **test_combat_integration_base.py** (24 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
-- **NPCAttacked** (16 connections) — `server/events/event_types.py`
-- **._build_player_attacked_event()** (8 connections) — `server/npc/combat_integration.py`
-- **UUID** (7 connections)
-- **.get_combat_stats()** (7 connections) — `server/npc/combat_integration.py`
-- **_resolve_npc_combat_service_raw()** (7 connections) — `server/npc/combat_integration_base.py`
-- **._compute_dp_update_fields()** (6 connections) — `server/npc/combat_integration.py`
-- **._get_combat_event_publisher()** (6 connections) — `server/npc/combat_integration.py`
-- **._calculate_max_dp()** (6 connections) — `server/npc/combat_integration.py`
-- **._get_npc_display_name()** (5 connections) — `server/npc/combat_integration.py`
-- **._get_npc_lifecycle_manager()** (5 connections) — `server/npc/combat_integration.py`
-- **._publish_player_dp_updated_after_npc_damage()** (5 connections) — `server/npc/combat_integration.py`
-- **._publish_player_dp_updated_event()** (5 connections) — `server/npc/combat_integration.py`
-- **._publish_npc_attack_to_nats()** (5 connections) — `server/npc/combat_integration.py`
-- **._get_int_stat()** (5 connections) — `server/npc/combat_integration.py`
-- **._get_npc_name_from_lifecycle()** (4 connections) — `server/npc/combat_integration.py`
-- **._get_player_for_dp_update()** (4 connections) — `server/npc/combat_integration.py`
-- **._get_player_and_stats_for_nats()** (4 connections) — `server/npc/combat_integration.py`
-- **.handle_npc_death()** (4 connections) — `server/npc/combat_integration.py`
-- **._get_player_combat_stats()** (4 connections) — `server/npc/combat_integration.py`
 - **integration()** (4 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
 - **test_publish_attack_event_emits_npc_attacked()** (4 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
-- *... and 105 more nodes in this community*
+- **._normalize_npc_stats()** (3 connections) — `server/npc/combat_integration.py`
+- **test_get_npc_stats_defaults()** (3 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **test_get_npc_stats_preserves_values()** (3 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **test_derive_npc_name_from_id()** (3 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **test_calculate_damage_physical_strength_bonus()** (3 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **test_calculate_damage_weapon_type_no_strength_bonus()** (3 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **test_get_int_stat_parses_numeric_string()** (3 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **test_calculate_max_dp_from_constitution_and_size()** (3 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **test_normalize_npc_stats_adds_hp_from_determination_points()** (3 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **test_get_combat_stats_for_player()** (3 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **test_get_combat_stats_npc_only_normalized()** (3 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **test_handle_npc_death_with_killer_applies_mechanics()** (3 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **test_compute_dp_update_fields()** (3 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **test_get_npc_name_from_lifecycle_reads_active_instance()** (3 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **test_get_npc_name_from_lifecycle_returns_none_when_missing()** (3 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **._get_npc_stats()** (2 connections) — `server/npc/combat_integration.py`
+- **test_get_npc_display_name_prefers_lifecycle()** (2 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **test_get_npc_display_name_falls_back_to_id()** (2 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **test_get_npc_lifecycle_manager_from_config()** (2 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **test_get_npc_lifecycle_manager_missing_app()** (2 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **test_get_npc_name_from_lifecycle_swallows_errors()** (2 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- *... and 38 more nodes in this community*
 
 ## Relationships
 
-- [Realtime Subscribers](Realtime_Subscribers.md) (16 shared connections)
-- [Error Conversion](Error_Conversion.md) (15 shared connections)
-- [npc combat base](npc_combat_base.md) (10 shared connections)
-- [lucidity event services](lucidity_event_services.md) (7 shared connections)
-- [Loot Generation](Loot_Generation.md) (5 shared connections)
-- [attack combat commands](attack_combat_commands.md) (3 shared connections)
-- [models npc rationale](models_npc_rationale.md) (3 shared connections)
-- [Memory Task Runtime](Memory_Task_Runtime.md) (3 shared connections)
-- [spell game magic](spell_game_magic.md) (3 shared connections)
-- [commands emote rationale](commands_emote_rationale.md) (3 shared connections)
-- [rate limiter realtime](rate_limiter_realtime.md) (2 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (2 shared connections)
+- [command parser rationale](command_parser_rationale.md) (16 shared connections)
+- [Error Conversion](Error_Conversion.md) (14 shared connections)
+- [game weapon player](game_weapon_player.md) (12 shared connections)
+- [lucidity event services](lucidity_event_services.md) (6 shared connections)
+- [combat models rationale](combat_models_rationale.md) (4 shared connections)
+- [catatonia registry services](catatonia_registry_services.md) (2 shared connections)
+- [attack combat commands](attack_combat_commands.md) (2 shared connections)
+- [add used user](add_used_user.md) (2 shared connections)
+- [command utility models](command_utility_models.md) (2 shared connections)
+- [websocket realtime handler](websocket_realtime_handler.md) (1 shared connections)
+- [commands npc admin](commands_npc_admin.md) (1 shared connections)
+- [error logging rationale](error_logging_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/events/event_types.py`
 - `server/npc/combat_integration.py`
-- `server/npc/combat_integration_base.py`
-- `server/npc/npc_base.py`
-- `server/tests/unit/npc/test_combat_integration_base.py`
 - `server/tests/unit/npc/test_npc_combat_integration_class.py`
-- `server/tests/unit/services/test_damage_grace_period.py`
 
 ## Audit Trail
 
-- EXTRACTED: 485 (96%)
-- INFERRED: 22 (4%)
+- EXTRACTED: 261 (97%)
+- INFERRED: 9 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,37 +1,44 @@
 # payload realtime optimizer
 
-> 13 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **._clone_stack()** (9 connections) — `server/services/inventory_service.py`
-- **.add_stack()** (8 connections) — `server/services/inventory_service.py`
-- **.split_stack()** (8 connections) — `server/services/inventory_service.py`
-- **Any** (7 connections)
-- **._validate_and_clone_optional_fields()** (7 connections) — `server/services/inventory_service.py`
-- **._clone_with_quantity()** (7 connections) — `server/services/inventory_service.py`
-- **._extract_required_fields()** (4 connections) — `server/services/inventory_service.py`
-- **._can_merge()** (4 connections) — `server/services/inventory_service.py`
-- **._normalize_metadata()** (4 connections) — `server/services/inventory_service.py`
-- **Add or merge an item stack into the inventory.          Args:             invent** (1 connections) — `server/services/inventory_service.py`
-- **Split a stack into two, inserting the new stack immediately after the source slo** (1 connections) — `server/services/inventory_service.py`
-- **Extract required fields from stack.          Returns:             Tuple of (item** (1 connections) — `server/services/inventory_service.py`
-- **Validate and clone optional fields (metadata, flags, origin, etc.).          Arg** (1 connections) — `server/services/inventory_service.py`
+- **MythosValidationError** (10 connections)
+- **test_parse_command_string_validation_error()** (4 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_create_command_object_re_raises_mythos_validation_error()** (4 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_process_command_string_mythos_validation_error()** (4 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_process_validated_command_validation_error()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_apply_combat_effects_validation_error()** (3 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
+- **Test process_validated_command handles ValidationError.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **Test _parse_command_string handles ValidationError.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **Test _create_command_object re-raises MythosValidationError without wrapping.** (1 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **Test process_command_string handles MythosMUD validation errors.** (1 connections) — `server/tests/unit/utils/test_command_processor.py`
 
 ## Relationships
 
-- [Exception Containers](Exception_Containers.md) (12 shared connections)
-- [container helpers endpoints](container_helpers_endpoints.md) (8 shared connections)
-- [player cache rationale](player_cache_rationale.md) (2 shared connections)
+- [add used user](add_used_user.md) (3 shared connections)
+- [handler realtime nats](handler_realtime_nats.md) (2 shared connections)
+- [health service services](health_service_services.md) (2 shared connections)
+- [services inventory mutation](services_inventory_mutation.md) (1 shared connections)
+- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (1 shared connections)
+- [command communication models](command_communication_models.md) (1 shared connections)
+- [services nats service](services_nats_service.md) (1 shared connections)
+- [command parser rationale](command_parser_rationale.md) (1 shared connections)
+- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [command processor rationale](command_processor_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/inventory_service.py`
+- `server/tests/unit/commands/test_command_service.py`
+- `server/tests/unit/npc/test_combat_integration_base.py`
+- `server/tests/unit/utils/test_command_parser.py`
+- `server/tests/unit/utils/test_command_processor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 61 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 19 (59%)
+- INFERRED: 13 (41%)
 - AMBIGUOUS: 0 (0%)
 
 ---

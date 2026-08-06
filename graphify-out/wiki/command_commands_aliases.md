@@ -1,54 +1,68 @@
 # command commands aliases
 
-> 46 nodes
+> 278 nodes
 
 ## Key Concepts
 
+- **websocket_handler.py** (64 connections) — `server/realtime/websocket_handler.py`
+- **test_websocket_handler_core.py** (42 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
+- **test_websocket_handler_validation_errors.py** (39 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **websocket_handler_commands.py** (32 connections) — `server/realtime/websocket_handler_commands.py`
+- **handle_game_command()** (29 connections) — `server/realtime/websocket_handler_commands.py`
+- **test_websocket_handler_commands.py** (28 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
+- **test_websocket_handler_coverage_gaps.py** (24 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
 - **test_websocket_handler_app_state_connection.py** (23 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **handle_websocket_connection()** (21 connections) — `server/realtime/websocket_handler.py`
 - **resolve_and_setup_app_state_services()** (20 connections) — `server/realtime/websocket_handler_app_state.py`
-- **websocket_handler_app_state.py** (11 connections) — `server/realtime/websocket_handler_app_state.py`
-- **_services_from_container()** (4 connections) — `server/realtime/websocket_handler_app_state.py`
-- **_mirror_service_to_app_state()** (3 connections) — `server/realtime/websocket_handler_app_state.py`
-- **test_resolve_and_setup_app_state_services_services_already_set()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
-- **test_resolve_and_setup_app_state_services_missing_services()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
-- **test_resolve_and_setup_app_state_services_no_app_state()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
-- **test_resolve_and_setup_app_state_services_container_no_services()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
-- **test_resolve_and_setup_app_state_services_no_container_attribute()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
-- **test_resolve_and_setup_app_state_services_only_player_service()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
-- **test_resolve_and_setup_app_state_services_only_user_manager()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
-- **test_resolve_and_setup_app_state_services_player_service_already_set()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
-- **test_resolve_and_setup_app_state_services_user_manager_already_set()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
-- **test_resolve_and_setup_app_state_services_player_service_no_hasattr()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
-- **test_resolve_and_setup_app_state_services_user_manager_no_hasattr()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
-- **test_handle_websocket_connection_shutdown_rejected()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
-- **test_handle_websocket_connection_connect_failure()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
-- **test_handle_websocket_connection_initial_state_exit()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
-- **test_handle_websocket_connection_with_room_and_death()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
-- **test_handle_websocket_connection_initial_setup_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
-- **test_cleanup_connection_mute_cleanup_error()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
-- **test_handle_websocket_message_loop()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
-- **WebSocket app.state / container service wiring for command processing.  Extrac** (1 connections) — `server/realtime/websocket_handler_app_state.py`
-- **Read player_service and user_manager from app_state.container.** (1 connections) — `server/realtime/websocket_handler_app_state.py`
-- *... and 21 more nodes in this community*
+- **process_websocket_command()** (19 connections) — `server/realtime/websocket_handler_commands.py`
+- **handle_chat_message()** (18 connections) — `server/realtime/websocket_handler.py`
+- **send_system_message()** (13 connections) — `server/realtime/websocket_handler.py`
+- **resolve_websocket_connection_manager()** (11 connections) — `server/realtime/websocket_handler_commands.py`
+- **handle_websocket_message()** (10 connections) — `server/realtime/websocket_handler.py`
+- **_websocket_unified_command_result()** (10 connections) — `server/realtime/websocket_handler_commands.py`
+- **create_websocket_request_context()** (9 connections) — `server/realtime/request_context.py`
+- **validate_player_and_persistence()** (9 connections) — `server/realtime/websocket_handler_commands.py`
+- **parse_game_command_tokens()** (8 connections) — `server/realtime/websocket_handler_commands.py`
+- **_attach_room_state_to_result()** (8 connections) — `server/realtime/websocket_handler_commands.py`
+- **test_websocket_handler_system_message.py** (8 connections) — `server/tests/unit/realtime/test_websocket_handler_system_message.py`
+- **_resolve_get_room_state_callable()** (6 connections) — `server/realtime/websocket_handler_commands.py`
+- **test_process_websocket_command_attaches_room_state()** (5 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
+- **test_process_websocket_command_room_state_get_room_fails_softly()** (5 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
+- **WebSocket** (4 connections)
+- *... and 253 more nodes in this community*
 
 ## Relationships
 
-- [combat commands handler](combat_commands_handler.md) (6 shared connections)
-- [room websocket updates](room_websocket_updates.md) (3 shared connections)
-- [websocket handler realtime](websocket_handler_realtime.md) (3 shared connections)
-- [request context realtime](request_context_realtime.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [models player related](models_player_related.md) (2 shared connections)
+- [handler realtime nats](handler_realtime_nats.md) (18 shared connections)
+- [Error Conversion](Error_Conversion.md) (12 shared connections)
+- [occupant formatter realtime](occupant_formatter_realtime.md) (10 shared connections)
+- [combat services messaging](combat_services_messaging.md) (9 shared connections)
+- [realtime message validator](realtime_message_validator.md) (8 shared connections)
+- [room websocket updates](room_websocket_updates.md) (7 shared connections)
+- [request context realtime](request_context_realtime.md) (5 shared connections)
+- [nats services metrics](nats_services_metrics.md) (4 shared connections)
+- [database config helpers](database_config_helpers.md) (4 shared connections)
+- [realtime websocket initial](realtime_websocket_initial.md) (4 shared connections)
+- [shutdown admin command](shutdown_admin_command.md) (3 shared connections)
+- [professions endpoints all](professions_endpoints_all.md) (3 shared connections)
 
 ## Source Files
 
+- `server/realtime/request_context.py`
+- `server/realtime/websocket_handler.py`
 - `server/realtime/websocket_handler_app_state.py`
+- `server/realtime/websocket_handler_commands.py`
 - `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- `server/tests/unit/realtime/test_websocket_handler_commands.py`
+- `server/tests/unit/realtime/test_websocket_handler_core.py`
+- `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- `server/tests/unit/realtime/test_websocket_handler_system_message.py`
+- `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
 
 ## Audit Trail
 
-- EXTRACTED: 134 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 868 (95%)
+- INFERRED: 49 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

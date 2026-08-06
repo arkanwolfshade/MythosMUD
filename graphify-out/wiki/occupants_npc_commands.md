@@ -1,42 +1,49 @@
 # occupants npc commands
 
-> 17 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **test_occupants.py** (14 connections) — `server/commands/npc_admin/test_occupants.py`
-- **Any** (7 connections)
-- **_resolve_room_and_handler_for_test_occupants()** (6 connections) — `server/commands/npc_admin/test_occupants.py`
-- **_resolve_test_occupants_context()** (6 connections) — `server/commands/npc_admin/test_occupants.py`
-- **_get_event_handler_for_test_occupants()** (5 connections) — `server/commands/npc_admin/test_occupants.py`
-- **_get_room_id_for_test_occupants()** (4 connections) — `server/commands/npc_admin/test_occupants.py`
-- **_separate_occupants()** (4 connections) — `server/commands/npc_admin/test_occupants.py`
-- **_resolve_app_and_player_for_test_occupants()** (4 connections) — `server/commands/npc_admin/test_occupants.py`
-- **_format_occupants_result()** (3 connections) — `server/commands/npc_admin/test_occupants.py`
-- **NPC test-occupants command for debugging occupant queries.** (1 connections) — `server/commands/npc_admin/test_occupants.py`
-- **Get room_id from args or current room. Returns (room_id, error_result).** (1 connections) — `server/commands/npc_admin/test_occupants.py`
-- **Get event handler from app.state. Returns (event_handler, error_result).** (1 connections) — `server/commands/npc_admin/test_occupants.py`
-- **Separate occupants into players and NPCs.** (1 connections) — `server/commands/npc_admin/test_occupants.py`
-- **Format occupants result as a string.** (1 connections) — `server/commands/npc_admin/test_occupants.py`
-- **Resolve application and player object for NPC test occupants command.** (1 connections) — `server/commands/npc_admin/test_occupants.py`
-- **Resolve room_id and event handler for NPC test occupants command.** (1 connections) — `server/commands/npc_admin/test_occupants.py`
-- **Resolve application, player, room_id, and event handler for NPC test occupants c** (1 connections) — `server/commands/npc_admin/test_occupants.py`
+- **NATSConfig** (26 connections) — `server/config/models/nats.py`
+- **test_nats_service_init_with_dict()** (4 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_service_init_with_none()** (4 connections) — `server/tests/unit/services/test_nats_service.py`
+- **.validate_tls_files()** (3 connections) — `server/config/models/nats.py`
+- **nats_config()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **.validate_max_payload()** (2 connections) — `server/config/models/nats.py`
+- **.validate_positive()** (2 connections) — `server/config/models/nats.py`
+- **BaseSettings** (1 connections)
+- **Any** (1 connections)
+- **NATS messaging configuration.** (1 connections) — `server/config/models/nats.py`
+- **Validate TLS file paths exist when TLS is enabled.** (1 connections) — `server/config/models/nats.py`
+- **Validate max payload is reasonable.** (1 connections) — `server/config/models/nats.py`
+- **Validate value is positive.** (1 connections) — `server/config/models/nats.py`
+- **Create a NATSConfig instance.** (1 connections) — `server/tests/unit/services/test_nats_service.py`
+- **Test NATSService initialization with dict config.** (1 connections) — `server/tests/unit/services/test_nats_service.py`
+- **Test NATSService initialization with None config.** (1 connections) — `server/tests/unit/services/test_nats_service.py`
 
 ## Relationships
 
-- [commands npc admin](commands_npc_admin.md) (7 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [commands whisper command](commands_whisper_command.md) (1 shared connections)
-- [commands communication channels](commands_communication_channels.md) (1 shared connections)
+- [combat validator validators](combat_validator_validators.md) (6 shared connections)
+- [combat commands handler](combat_commands_handler.md) (4 shared connections)
+- [broker infrastructure nats](broker_infrastructure_nats.md) (3 shared connections)
+- [websocket validation realtime](websocket_validation_realtime.md) (2 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [calendar models rationale](calendar_models_rationale.md) (1 shared connections)
+- [manager subject services](manager_subject_services.md) (1 shared connections)
+- [connection state machine](connection_state_machine.md) (1 shared connections)
+- [target resolution service](target_resolution_service.md) (1 shared connections)
+- [holiday service services](holiday_service_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/npc_admin/test_occupants.py`
+- `server/config/models/nats.py`
+- `server/tests/unit/services/test_nats_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 60 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 48 (91%)
+- INFERRED: 5 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

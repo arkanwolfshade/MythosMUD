@@ -1,12 +1,16 @@
 # database helpers infrastructure
 
-> 49 nodes
+> 58 nodes
 
 ## Key Concepts
 
+- **room_service.py** (22 connections) — `server/game/room_service.py`
 - **map_minimap.py** (21 connections) — `server/api/map_minimap.py`
+- **MapZoneContext** (20 connections) — `server/api/map_helpers.py`
 - **test_map_minimap_helpers.py** (20 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
 - **generate_minimap_html()** (16 connections) — `server/api/map_minimap.py`
+- **exploration_service.py** (16 connections) — `server/services/exploration_service.py`
+- **test_rooms_exploration_filter.py** (12 connections) — `server/tests/unit/api/test_rooms_exploration_filter.py`
 - **_ensure_current_room_in_minimap_rooms()** (11 connections) — `server/api/map_minimap.py`
 - **_resolve_current_room_for_minimap()** (9 connections) — `server/api/map_minimap.py`
 - **_apply_minimap_fallback_coordinates()** (9 connections) — `server/api/map_minimap.py`
@@ -25,30 +29,36 @@
 - **.test_non_admin_gets_fallback_only_for_current_room()** (3 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
 - **.test_non_admin_uses_stable_id_for_current_room_match()** (3 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
 - **test_resolve_current_room_from_pre_filter_list()** (3 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- **test_resolve_current_room_loads_when_not_in_list()** (3 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- **test_ensure_current_room_in_minimap_noop_without_id()** (3 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- **test_ensure_current_room_in_minimap_noop_when_already_present()** (3 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- **test_ensure_current_room_in_minimap_appends_missing()** (3 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- *... and 24 more nodes in this community*
+- *... and 33 more nodes in this community*
 
 ## Relationships
 
-- [room game service](room_game_service.md) (10 shared connections)
-- [maps handle ascii](maps_handle_ascii.md) (9 shared connections)
-- [map helpers rationale](map_helpers_rationale.md) (6 shared connections)
-- [map services ascii](map_services_ascii.md) (3 shared connections)
-- [corpse lifecycle service](corpse_lifecycle_service.md) (3 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [maps handle ascii](maps_handle_ascii.md) (20 shared connections)
+- [Error Conversion](Error_Conversion.md) (9 shared connections)
+- [persistence container rationale](persistence_container_rationale.md) (8 shared connections)
+- [map helpers rationale](map_helpers_rationale.md) (7 shared connections)
+- [corpse lifecycle service](corpse_lifecycle_service.md) (7 shared connections)
+- [panels monitoringPanelTestFixtures Monit](panels_monitoringPanelTestFixtures_Monit.md) (6 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (3 shared connections)
+- [map services ascii](map_services_ascii.md) (2 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (2 shared connections)
+- [room cache services](room_cache_services.md) (1 shared connections)
+- [player event handlers](player_event_handlers.md) (1 shared connections)
+- [startup npc service](startup_npc_service.md) (1 shared connections)
 
 ## Source Files
 
+- `server/api/map_helpers.py`
 - `server/api/map_minimap.py`
+- `server/game/room_service.py`
+- `server/services/exploration_service.py`
 - `server/tests/unit/api/test_map_minimap_helpers.py`
+- `server/tests/unit/api/test_rooms_exploration_filter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 181 (97%)
-- INFERRED: 6 (3%)
+- EXTRACTED: 253 (97%)
+- INFERRED: 9 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

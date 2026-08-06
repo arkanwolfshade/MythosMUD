@@ -2,7 +2,7 @@
 
 > God node · 474 connections · `server/exceptions.py`
 
-**Community:** [Exception Containers](Exception_Containers.md)
+**Community:** [services inventory mutation](services_inventory_mutation.md)
 
 ## Connections by Relation
 
@@ -41,9 +41,9 @@
 - test_maps.py `EXTRACTED`
 - legacy_error_handlers.py `EXTRACTED`
 - character_creation.py `EXTRACTED`
+- test_exceptions.py `EXTRACTED`
 - container_helpers.py `EXTRACTED`
 - test_container_helpers.py `EXTRACTED`
-- test_exceptions.py `EXTRACTED`
 - test_legacy_error_handlers.py `EXTRACTED`
 - test_metrics_endpoints.py `EXTRACTED`
 - container_endpoints_loot.py `EXTRACTED`
@@ -51,7 +51,7 @@
 - rooms.py `EXTRACTED`
 - test_exceptions_comprehensive.py `EXTRACTED`
 - standardized_responses.py `EXTRACTED`
-- test_container_exception_handlers.py `EXTRACTED`
+- test_npc_definitions_api.py `EXTRACTED`
 
 ### indirect_call
 - loot_all_items() `INFERRED`
@@ -100,18 +100,18 @@
 - TestCircuitBreaker `INFERRED`
 - Request `INFERRED`
 - _AppWithLegacyConfigState `INFERRED`
-- TestTransferAllItemsFromContainer `INFERRED`
-- TestHelperFunctions `INFERRED`
-- TestOpenContainer `INFERRED`
-- TestTransferItems `INFERRED`
 - TestErrorResponse `INFERRED`
 - _AppStateWithLegacyConfig `INFERRED`
-- TestLootAllItems `INFERRED`
 - TestCreateErrorResponse `INFERRED`
 - TestLegacyHandlerSecurity `INFERRED`
 - ErrorResponseDetailsInput `INFERRED`
 - FastAPI `INFERRED`
-- TestHandleTransferItemsExceptions `INFERRED`
+- TestTransferAllItemsFromContainer `INFERRED`
+- TestGracefulDegradation `INFERRED`
+- _CircuitBreakerResult `INFERRED`
+- Exception `INFERRED`
+- HTTPException `INFERRED`
+- TestLootAllItems `INFERRED`
 
 ---
 

@@ -9,7 +9,7 @@
 
 ## Relationships
 
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [add used user](add_used_user.md) (1 shared connections)
 - [movement service game](movement_service_game.md) (1 shared connections)
 
 ## Source Files

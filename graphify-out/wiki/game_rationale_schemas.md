@@ -1,55 +1,52 @@
 # game rationale schemas
 
-> 76 nodes
+> 42 nodes
 
 ## Key Concepts
 
-- **test_game.py** (20 connections) — `server/tests/unit/api/test_game.py`
-- **MythosTimeResponse** (15 connections) — `server/schemas/game/game.py`
-- **get_mythos_time()** (14 connections) — `server/api/game.py`
-- **broadcast_message()** (13 connections) — `server/api/game.py`
-- **TestGetMythosTime** (12 connections) — `server/tests/unit/api/test_game.py`
-- **GameStatusResponse** (9 connections) — `server/schemas/game/game.py`
-- **BroadcastMessageResponse** (9 connections) — `server/schemas/game/game.py`
-- **get_game_status()** (7 connections) — `server/api/game.py`
-- **__init__.py** (7 connections) — `server/schemas/game/__init__.py`
-- **game.py** (7 connections) — `server/schemas/game/game.py`
-- **BroadcastStats** (6 connections) — `server/schemas/game/game.py`
-- **TestBroadcastMessage** (6 connections) — `server/tests/unit/api/test_game.py`
-- **TestGetMythosTimeEdgeCases** (6 connections) — `server/tests/unit/api/test_game.py`
-- **TestGetGameStatus** (5 connections) — `server/tests/unit/api/test_game.py`
-- **BaseModel** (4 connections)
-- **.test_get_game_status_success()** (4 connections) — `server/tests/unit/api/test_game.py`
-- **.test_broadcast_message_success()** (4 connections) — `server/tests/unit/api/test_game.py`
-- **.test_get_mythos_time_success()** (4 connections) — `server/tests/unit/api/test_game.py`
-- **.test_get_mythos_time_no_holiday_service()** (4 connections) — `server/tests/unit/api/test_game.py`
-- **.test_get_mythos_time_holiday_service_error()** (4 connections) — `server/tests/unit/api/test_game.py`
-- **.test_get_mythos_time_with_holidays()** (4 connections) — `server/tests/unit/api/test_game.py`
-- **.test_get_mythos_time_no_container()** (4 connections) — `server/tests/unit/api/test_game.py`
-- **.test_get_mythos_time_holiday_service_upcoming_error()** (4 connections) — `server/tests/unit/api/test_game.py`
-- **TestGetGameStatusLogger** (4 connections) — `server/tests/unit/api/test_game.py`
-- **.test_get_mythos_time_container_no_holiday_service_attribute()** (4 connections) — `server/tests/unit/api/test_game.py`
-- *... and 51 more nodes in this community*
+- **test_container_helpers_inventory_find.py** (55 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
+- **find_container_in_room()** (13 connections) — `server/commands/container_helpers_inventory_find.py`
+- **find_item_in_inventory()** (12 connections) — `server/commands/container_helpers_inventory_find.py`
+- **try_inner_container()** (12 connections) — `server/commands/container_helpers_inventory_find.py`
+- **find_matching_equipped_containers()** (9 connections) — `server/commands/container_helpers_inventory_find.py`
+- **check_item_matches_target()** (7 connections) — `server/commands/container_helpers_inventory_find.py`
+- **test_find_item_in_inventory_non_numeric_token_name_search()** (3 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
+- **test_check_item_matches_target_partial_name()** (3 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
+- **test_find_item_in_inventory_by_index()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
+- **test_find_item_in_inventory_by_name_substring()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
+- **test_find_item_in_inventory_miss()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
+- **test_find_item_in_inventory_index_zero_invalid()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
+- **test_find_item_in_inventory_uppercase_query()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
+- **test_check_item_matches_target()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
+- **test_find_matching_equipped_containers_by_name()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
+- **test_find_matching_equipped_containers_inner_without_name_match()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
+- **test_try_inner_container_by_id_none()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
+- **test_try_inner_container_by_id_resolves()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
+- **test_find_container_in_room_with_metadata_name()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
+- **test_find_container_in_room_no_match()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
+- **test_find_container_in_room_non_dict_entries_skipped()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
+- **test_find_container_in_room_get_containers_not_callable()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
+- **test_find_container_in_room_non_list_returns_empty()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
+- **test_check_item_matches_target_name_miss_slot_exact()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
+- **test_find_matching_equipped_containers_prototype_and_item_id()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [player requests schemas](player_requests_schemas.md) (10 shared connections)
-- [NPC Combat](NPC_Combat.md) (8 shared connections)
-- [Player Stats](Player_Stats.md) (4 shared connections)
-- [websocket realtime handler](websocket_realtime_handler.md) (3 shared connections)
-- [time service rationale](time_service_rationale.md) (1 shared connections)
+- [container find inventory](container_find_inventory.md) (39 shared connections)
+- [mythosApp useMythosAppState useStatsRoll](mythosApp_useMythosAppState_useStatsRoll.md) (6 shared connections)
+- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (2 shared connections)
+- [room models instance](room_models_instance.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/game.py`
-- `server/schemas/game/__init__.py`
-- `server/schemas/game/game.py`
-- `server/tests/unit/api/test_game.py`
+- `server/commands/container_helpers_inventory_find.py`
+- `server/tests/unit/commands/test_container_helpers_inventory_find.py`
 
 ## Audit Trail
 
-- EXTRACTED: 233 (90%)
-- INFERRED: 25 (10%)
+- EXTRACTED: 171 (98%)
+- INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

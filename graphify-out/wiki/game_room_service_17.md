@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_ensure_room_cache_loaded_concurrent_load()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _ensure_room_cache_loaded handles concurrent load scenario (double-check pa** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_add_room_drop_invalid_quantity()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **Test add_room_drop() raises error for invalid quantity.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Relationships
 
-- [room persistence loading](room_persistence_loading.md) (1 shared connections)
+- [room subscription manager](room_subscription_manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Audit Trail
 

@@ -33,12 +33,12 @@
 
 ## Relationships
 
-- [room cache services](room_cache_services.md) (6 shared connections)
-- [Magic Spell Service](Magic_Spell_Service.md) (3 shared connections)
-- [NPC Combat](NPC_Combat.md) (3 shared connections)
-- [nats services service](nats_services_service.md) (3 shared connections)
-- [logging structured utilities](logging_structured_utilities.md) (1 shared connections)
-- [command combat models](command_combat_models.md) (1 shared connections)
+- [Magic Spell Service](Magic_Spell_Service.md) (6 shared connections)
+- [room cache services](room_cache_services.md) (4 shared connections)
+- [Error Conversion](Error_Conversion.md) (3 shared connections)
+- [websocket realtime handler](websocket_realtime_handler.md) (2 shared connections)
+- [logging handlers structured](logging_handlers_structured.md) (1 shared connections)
+- [nats services service](nats_services_service.md) (1 shared connections)
 
 ## Source Files
 

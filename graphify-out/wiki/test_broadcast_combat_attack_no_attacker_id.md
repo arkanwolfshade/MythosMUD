@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_broadcast_combat_attack_no_attacker_id()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test broadcast_combat_attack without attacker_id.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **test_handle_item_look_player_no_get_inventory()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test _handle_item_look() when player has no get_inventory method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
 
 ## Relationships
 
-- [combat messaging services](combat_messaging_services.md) (1 shared connections)
+- [schemas validator rationale](schemas_validator_rationale.md) (1 shared connections)
+- [Item Lookup](Item_Lookup.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_messaging_integration.py`
+- `server/tests/unit/commands/test_look_item.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

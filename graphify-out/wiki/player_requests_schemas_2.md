@@ -1,48 +1,40 @@
 # player requests schemas
 
-> 21 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **test_item_instance_persistence.py** (16 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **item_instance_persistence.py** (15 connections) — `server/persistence/item_instance_persistence.py`
-- **create_item_instance()** (12 connections) — `server/persistence/item_instance_persistence.py`
-- **ensure_item_instance()** (11 connections) — `server/persistence/item_instance_persistence.py`
-- **get_item_instance()** (7 connections) — `server/persistence/item_instance_persistence.py`
-- **item_instance_exists()** (7 connections) — `server/persistence/item_instance_persistence.py`
-- **Any** (4 connections)
-- **test_create_item_instance_missing_id()** (3 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **test_create_item_instance_db_error()** (3 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **test_item_instance_exists_true()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **test_item_instance_exists_false()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **test_get_item_instance_found()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **test_get_item_instance_not_found()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **test_ensure_item_instance_calls_create()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **test_create_item_instance_success()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **Item instance persistence operations.  As documented in the restricted archives,** (1 connections) — `server/persistence/item_instance_persistence.py`
-- **Create a new item instance in the database.      Args:         conn: Database co** (1 connections) — `server/persistence/item_instance_persistence.py`
-- **Retrieve an item instance by ID.      Args:         conn: Database connection** (1 connections) — `server/persistence/item_instance_persistence.py`
-- **Check if an item instance exists in the database.      Args:         conn: Datab** (1 connections) — `server/persistence/item_instance_persistence.py`
-- **Ensure an item instance exists in the database, creating it if necessary.      T** (1 connections) — `server/persistence/item_instance_persistence.py`
-- **Unit tests for item_instance_persistence helpers.** (1 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
+- **Any** (10 connections)
+- **._emit_party_updated()** (9 connections) — `server/game/party_service.py`
+- **.disband_party()** (8 connections) — `server/game/party_service.py`
+- **.remove_member()** (8 connections) — `server/game/party_service.py`
+- **.kick_member()** (8 connections) — `server/game/party_service.py`
+- **._notify_player_removed_from_party()** (7 connections) — `server/game/party_service.py`
+- **.__init__()** (6 connections) — `server/game/party_service.py`
+- **._schedule_notification()** (6 connections) — `server/game/party_service.py`
+- **Initialize empty party store. Optionally provide event_bus, connection_manager,** (1 connections) — `server/game/party_service.py`
+- **Emit PartyUpdated event if event_bus is set.** (1 connections) — `server/game/party_service.py`
+- **Disband a party. If by_player_id is given, only the leader may disband.** (1 connections) — `server/game/party_service.py`
+- **Safely schedule an async notification, handling cases where no event loop is run** (1 connections) — `server/game/party_service.py`
+- **Notify a player they have been removed from a party. Resolves leader name.** (1 connections) — `server/game/party_service.py`
+- **Remove a player from a party (leave or internal remove). If leader leaves,** (1 connections) — `server/game/party_service.py`
+- **Remove a member from the party. Only the leader may kick.** (1 connections) — `server/game/party_service.py`
 
 ## Relationships
 
-- [commands shutdown process](commands_shutdown_process.md) (7 shared connections)
-- [Loot Generation](Loot_Generation.md) (5 shared connections)
-- [persistence container item](persistence_container_item.md) (5 shared connections)
-- [auth users rationale](auth_users_rationale.md) (5 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [party game service](party_game_service.md) (16 shared connections)
+- [skill game service](skill_game_service.md) (7 shared connections)
+- [Error Conversion](Error_Conversion.md) (3 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (1 shared connections)
 
 ## Source Files
 
-- `server/persistence/item_instance_persistence.py`
-- `server/tests/unit/persistence/test_item_instance_persistence.py`
+- `server/game/party_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 92 (96%)
-- INFERRED: 4 (4%)
+- EXTRACTED: 69 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

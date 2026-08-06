@@ -1,36 +1,54 @@
 # message handler factory
 
-> 8 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **WhisperChannelStrategy** (8 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **.__init__()** (7 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **test_whisper_channel_strategy_broadcast()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **test_whisper_channel_strategy_broadcast_no_target()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Strategy for whisper channel broadcasting.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Initialize the strategy factory.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Test WhisperChannelStrategy.broadcast() sends personal message.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Test WhisperChannelStrategy.broadcast() handles missing target_player_id.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **subscribe_to_room_events_impl()** (13 connections) — `server/realtime/connection_event_helpers.py`
+- **unsubscribe_from_room_events_impl()** (13 connections) — `server/realtime/connection_event_helpers.py`
+- **test_connection_event_helpers.py** (13 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **connection_event_helpers.py** (10 connections) — `server/realtime/connection_event_helpers.py`
+- **test_subscribe_to_room_events_impl_database_error()** (4 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_subscribe_to_room_events_impl_attribute_error()** (4 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_unsubscribe_from_room_events_impl_database_error()** (4 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_unsubscribe_from_room_events_impl_attribute_error()** (4 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_subscribe_to_room_events_impl_success()** (3 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_subscribe_to_room_events_impl_no_event_bus()** (3 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_unsubscribe_from_room_events_impl_success()** (3 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_unsubscribe_from_room_events_impl_no_event_bus()** (3 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Any** (2 connections)
+- **Event subscription helpers for connection manager.  This module provides helper** (1 connections) — `server/realtime/connection_event_helpers.py`
+- **Subscribe to room movement events for occupant broadcasting.** (1 connections) — `server/realtime/connection_event_helpers.py`
+- **Unsubscribe from room movement events.** (1 connections) — `server/realtime/connection_event_helpers.py`
+- **Unit tests for connection event helpers.  Tests the connection_event_helpers mod** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test subscribe_to_room_events_impl() successfully subscribes to events.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test subscribe_to_room_events_impl() handles missing event bus.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test subscribe_to_room_events_impl() handles DatabaseError.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test subscribe_to_room_events_impl() handles AttributeError.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test unsubscribe_from_room_events_impl() successfully unsubscribes from events.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test unsubscribe_from_room_events_impl() handles missing event bus.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test unsubscribe_from_room_events_impl() handles DatabaseError.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test unsubscribe_from_room_events_impl() handles AttributeError.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
 
 ## Relationships
 
-- [channel realtime broadcasting](channel_realtime_broadcasting.md) (4 shared connections)
-- [channel broadcasting strategies](channel_broadcasting_strategies.md) (3 shared connections)
-- [realtime channel broadcasting](realtime_channel_broadcasting.md) (1 shared connections)
-- [channel broadcasting realtime](channel_broadcasting_realtime.md) (1 shared connections)
-- [world loader rationale](world_loader_rationale.md) (1 shared connections)
-- [npc behavior engine](npc_behavior_engine.md) (1 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (7 shared connections)
+- [party service game](party_service_game.md) (3 shared connections)
+- [profession models rationale](profession_models_rationale.md) (3 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [connection disconnection realtime](connection_disconnection_realtime.md) (2 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (2 shared connections)
+- [room sync service](room_sync_service.md) (2 shared connections)
 
 ## Source Files
 
-- `server/realtime/channel_broadcasting_strategies.py`
-- `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- `server/realtime/connection_event_helpers.py`
+- `server/tests/unit/realtime/test_connection_event_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 83 (91%)
+- INFERRED: 8 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

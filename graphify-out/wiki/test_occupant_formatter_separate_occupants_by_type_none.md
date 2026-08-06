@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_handle_nats_message_unknown_channel_defaults()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test _handle_nats_message uses 'unknown' as default channel when missing.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_extract_occupant_names_empty_list()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test extract_occupant_names() with empty list.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [nats message handler](nats_message_handler.md) (1 shared connections)
+- [player event handlers](player_event_handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 

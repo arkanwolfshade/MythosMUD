@@ -1,19 +1,14 @@
 # MapView GameClientV2ContainerView Tabbed
 
-> 50 nodes
+> 38 nodes
 
 ## Key Concepts
 
-- **PrototypeRegistry** (41 connections) — `server/game/items/prototype_registry.py`
-- **prototype_registry.py** (22 connections) — `server/game/items/prototype_registry.py`
 - **resolve_weapon_attack_from_equipped()** (22 connections) — `server/game/weapons.py`
 - **test_weapons.py** (18 connections) — `server/tests/unit/game/test_weapons.py`
-- **test_prototype_registry.py** (17 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
 - **weapons.py** (12 connections) — `server/game/weapons.py`
 - **test_combat_weapon_resolution.py** (12 connections) — `server/tests/integration/test_combat_weapon_resolution.py`
-- **models.py** (9 connections) — `server/game/items/models.py`
 - **WeaponAttackInfo** (9 connections) — `server/game/weapons.py`
-- **_make_prototype()** (5 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
 - **test_resolve_weapon_attack_from_equipped_registry_error_returns_none()** (5 connections) — `server/tests/unit/game/test_weapons.py`
 - **test_resolve_weapon_attack_from_equipped_no_weapon_metadata_returns_none()** (5 connections) — `server/tests/unit/game/test_weapons.py`
 - **test_resolve_weapon_attack_from_equipped_weapon_missing_min_max_returns_none()** (5 connections) — `server/tests/unit/game/test_weapons.py`
@@ -23,41 +18,38 @@
 - **test_weapon_resolution_switchblade_damage_in_range()** (4 connections) — `server/tests/integration/test_combat_weapon_resolution.py`
 - **test_resolve_weapon_attack_from_equipped_none_stack_returns_none()** (4 connections) — `server/tests/unit/game/test_weapons.py`
 - **test_resolve_weapon_attack_from_equipped_missing_prototype_id_returns_none()** (4 connections) — `server/tests/unit/game/test_weapons.py`
+- **switchblade_prototype()** (3 connections) — `server/tests/integration/test_combat_weapon_resolution.py`
 - **registry_with_switchblade()** (3 connections) — `server/tests/integration/test_combat_weapon_resolution.py`
 - **test_weapon_resolution_switchblade_no_main_hand_returns_none()** (3 connections) — `server/tests/integration/test_combat_weapon_resolution.py`
-- **test_get_returns_prototype()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
-- **test_get_missing_raises()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
-- **test_find_by_tag()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
-- **test_all_returns_values()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
-- *... and 25 more nodes in this community*
+- **test_resolve_weapon_attack_from_equipped_none_registry_returns_none()** (3 connections) — `server/tests/unit/game/test_weapons.py`
+- **NamedTuple** (1 connections)
+- **Any** (1 connections)
+- **Weapon resolution helpers for combat.  Resolves equipped main-hand items to weap** (1 connections) — `server/game/weapons.py`
+- **Result of resolving an equipped item to a weapon attack.      base_damage: Rolle** (1 connections) — `server/game/weapons.py`
+- **Resolve equipped main-hand stack to weapon attack info, or indicate non-weapon.** (1 connections) — `server/game/weapons.py`
+- **Integration tests for combat weapon resolution.  Verifies that the switchblade p** (1 connections) — `server/tests/integration/test_combat_weapon_resolution.py`
+- **Build ItemPrototypeModel for switchblade (weapon.main_hand.switchblade).** (1 connections) — `server/tests/integration/test_combat_weapon_resolution.py`
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [connection cleaner realtime](connection_cleaner_realtime.md) (17 shared connections)
-- [npc spawn validator](npc_spawn_validator.md) (16 shared connections)
-- [combat npc mixin](combat_npc_mixin.md) (9 shared connections)
-- [persistence rationale players](persistence_rationale_players.md) (7 shared connections)
-- [NPC Combat](NPC_Combat.md) (4 shared connections)
-- [websocket realtime handler](websocket_realtime_handler.md) (3 shared connections)
+- [combat npc mixin](combat_npc_mixin.md) (14 shared connections)
+- [connection cleaner realtime](connection_cleaner_realtime.md) (10 shared connections)
+- [npc spawn validator](npc_spawn_validator.md) (7 shared connections)
 - [attack combat commands](attack_combat_commands.md) (3 shared connections)
-- [stats game generator](stats_game_generator.md) (2 shared connections)
-- [room cache services](room_cache_services.md) (2 shared connections)
-- [command factories communication](command_factories_communication.md) (2 shared connections)
-- [models profession rationale](models_profession_rationale.md) (2 shared connections)
+- [EdgeCreationModal map STANDARD](EdgeCreationModal_map_STANDARD.md) (3 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
 
 ## Source Files
 
-- `server/game/items/models.py`
-- `server/game/items/prototype_registry.py`
 - `server/game/weapons.py`
 - `server/tests/integration/test_combat_weapon_resolution.py`
-- `server/tests/unit/game/items/test_prototype_registry.py`
 - `server/tests/unit/game/test_weapons.py`
 
 ## Audit Trail
 
-- EXTRACTED: 224 (88%)
-- INFERRED: 31 (12%)
+- EXTRACTED: 130 (88%)
+- INFERRED: 17 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

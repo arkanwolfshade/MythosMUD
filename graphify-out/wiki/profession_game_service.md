@@ -1,24 +1,13 @@
 # profession game service
 
-> 199 nodes
+> 88 nodes
 
 ## Key Concepts
 
-- **character_creation.py** (47 connections) — `server/api/character_creation.py`
 - **player_effects.py** (30 connections) — `server/api/player_effects.py`
 - **test_player_requests.py** (29 connections) — `server/tests/unit/schemas/test_player_requests.py`
 - **test_player_effects_endpoints.py** (28 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
-- **roll_character_stats()** (23 connections) — `server/api/character_creation.py`
-- **test_character_creation.py** (22 connections) — `server/tests/unit/api/test_character_creation.py`
-- **RollStatsRequest** (20 connections) — `server/schemas/players/player_requests.py`
-- **ProfessionService** (19 connections) — `server/game/profession_service.py`
-- **create_character_with_stats()** (18 connections) — `server/api/character_creation.py`
-- **CreateCharacterRequest** (17 connections) — `server/schemas/players/player_requests.py`
-- **_roll_stats_with_profession_preview()** (14 connections) — `server/api/character_creation.py`
-- **_execute_create_character()** (13 connections) — `server/api/character_creation.py`
-- **validate_character_stats()** (13 connections) — `server/api/character_creation.py`
-- **get_shutdown_blocking_message()** (13 connections) — `server/commands/admin_shutdown_command.py`
-- **TestRollCharacterStats** (13 connections) — `server/tests/unit/api/test_character_creation.py`
+- **player_requests.py** (15 connections) — `server/schemas/players/player_requests.py`
 - **apply_lucidity_loss()** (12 connections) — `server/api/player_effects.py`
 - **EffectResponse** (12 connections) — `server/schemas/players/player_effects.py`
 - **LucidityLossRequest** (12 connections) — `server/schemas/players/player_requests.py`
@@ -29,41 +18,46 @@
 - **heal_player()** (11 connections) — `server/api/player_effects.py`
 - **damage_player()** (11 connections) — `server/api/player_effects.py`
 - **BaseModel** (11 connections)
-- *... and 174 more nodes in this community*
+- **FearRequest** (11 connections) — `server/schemas/players/player_requests.py`
+- **CorruptionRequest** (11 connections) — `server/schemas/players/player_requests.py`
+- **OccultKnowledgeRequest** (11 connections) — `server/schemas/players/player_requests.py`
+- **HealRequest** (11 connections) — `server/schemas/players/player_requests.py`
+- **_user()** (8 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
+- **UUID** (7 connections)
+- **FastAPIRequest** (6 connections)
+- **test_apply_lucidity_loss_validation_maps_to_404()** (6 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
+- **test_apply_lucidity_loss_success()** (4 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
+- **test_apply_fear_success()** (4 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
+- **test_apply_corruption_success()** (4 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
+- *... and 63 more nodes in this community*
 
 ## Relationships
 
-- [Player Stats](Player_Stats.md) (43 shared connections)
-- [Exception Containers](Exception_Containers.md) (31 shared connections)
-- [player requests schemas](player_requests_schemas.md) (28 shared connections)
-- [Loot Generation](Loot_Generation.md) (21 shared connections)
-- [NPC Combat](NPC_Combat.md) (16 shared connections)
-- [shutdown admin command](shutdown_admin_command.md) (7 shared connections)
-- [commands follow rationale](commands_follow_rationale.md) (7 shared connections)
-- [event connection helpers](event_connection_helpers.md) (7 shared connections)
-- [Error Handling Core](Error_Handling_Core.md) (6 shared connections)
-- [player service game](player_service_game.md) (5 shared connections)
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (4 shared connections)
-- [endpoints auth rationale](endpoints_auth_rationale.md) (4 shared connections)
+- [add used user](add_used_user.md) (11 shared connections)
+- [commands admin helpers](commands_admin_helpers.md) (11 shared connections)
+- [services inventory mutation](services_inventory_mutation.md) (9 shared connections)
+- [player service game](player_service_game.md) (9 shared connections)
+- [persistence core infrastructure](persistence_core_infrastructure.md) (7 shared connections)
+- [player requests schemas](player_requests_schemas.md) (7 shared connections)
+- [Player Stats](Player_Stats.md) (6 shared connections)
+- [handler realtime nats](handler_realtime_nats.md) (4 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (2 shared connections)
+- [persistence container rationale](persistence_container_rationale.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [auth users rationale](auth_users_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/character_creation.py`
 - `server/api/player_effects.py`
-- `server/commands/admin_shutdown_command.py`
-- `server/game/profession_service.py`
-- `server/schemas/players/character_creation.py`
 - `server/schemas/players/player_effects.py`
 - `server/schemas/players/player_requests.py`
-- `server/schemas/players/stat_values.py`
-- `server/tests/unit/api/test_character_creation.py`
 - `server/tests/unit/api/test_player_effects_endpoints.py`
 - `server/tests/unit/schemas/test_player_requests.py`
 
 ## Audit Trail
 
-- EXTRACTED: 901 (96%)
-- INFERRED: 41 (4%)
+- EXTRACTED: 412 (98%)
+- INFERRED: 8 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

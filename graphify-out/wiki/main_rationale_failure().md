@@ -1,49 +1,48 @@
 # main rationale failure()
 
-> 24 nodes
+> 35 nodes
 
 ## Key Concepts
 
-- **_find_item_in_inventory()** (18 connections) — `server/commands/look_item.py`
-- **test_find_item_in_inventory_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_inventory_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_inventory_by_item_id()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_inventory_with_name_field()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_inventory_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_inventory_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_inventory_empty()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_inventory_no_match()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_inventory_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_inventory_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_inventory_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Find an item in player inventory by name or prototype_id.      Args:         inv** (1 connections) — `server/commands/look_item.py`
-- **Test finding item in inventory by name.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test finding item in inventory when not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test finding item in inventory by item_id.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test finding item in inventory using 'name' field.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test _find_item_in_inventory() finds item by name.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_inventory() returns None when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_inventory() with empty list.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_inventory() with no matching items.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_inventory() with multiple matches (ambiguous).** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_inventory() with instance number.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_inventory() with instance number out of range.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **.get_room()** (11 connections) — `server/game/room_service.py`
+- **Any** (10 connections)
+- **.get_room_info()** (7 connections) — `server/game/room_service.py`
+- **.get_adjacent_rooms()** (6 connections) — `server/game/room_service.py`
+- **.filter_rooms_by_exploration()** (5 connections) — `server/game/room_service.py`
+- **.get_local_chat_scope()** (4 connections) — `server/game/room_service.py`
+- **.get_room_occupants()** (4 connections) — `server/game/room_service.py`
+- **.get_room_exits()** (4 connections) — `server/game/room_service.py`
+- **.get_room_by_name()** (3 connections) — `server/game/room_service.py`
+- **.list_rooms_in_zone()** (3 connections) — `server/game/room_service.py`
+- **.validate_room_exists()** (3 connections) — `server/game/room_service.py`
+- **.validate_exit_exists()** (3 connections) — `server/game/room_service.py`
+- **.validate_player_in_room()** (3 connections) — `server/game/room_service.py`
+- **.list_rooms()** (3 connections) — `server/game/room_service.py`
+- **.get_environment_state()** (3 connections) — `server/game/room_service.py`
+- **.search_rooms_by_name()** (3 connections) — `server/game/room_service.py`
+- **.get_rooms_in_zone()** (3 connections) — `server/game/room_service.py`
+- **UUID** (2 connections)
+- **AsyncSession** (1 connections)
+- **Get room information by room ID with caching.          Args:             room_id** (1 connections) — `server/game/room_service.py`
+- **Get room information by room name.          Args:             room_name: The roo** (1 connections) — `server/game/room_service.py`
+- **Get a list of all rooms in a specific zone.          Args:             zone_id:** (1 connections) — `server/game/room_service.py`
+- **Get a list of rooms adjacent to the specified room.          Args:             r** (1 connections) — `server/game/room_service.py`
+- **Get the scope of rooms for local chat (current room + adjacent rooms).** (1 connections) — `server/game/room_service.py`
+- **Validate that a room exists using cached data.          Args:             room_i** (1 connections) — `server/game/room_service.py`
+- *... and 10 more nodes in this community*
 
 ## Relationships
 
-- [scripts worktree ops](scripts_worktree_ops.md) (8 shared connections)
-- [Item Lookup](Item_Lookup.md) (5 shared connections)
-- [npc realtime occupant](npc_realtime_occupant.md) (4 shared connections)
+- [maps handle ascii](maps_handle_ascii.md) (16 shared connections)
+- [database helpers infrastructure](database_helpers_infrastructure.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/look_item.py`
-- `server/tests/unit/commands/test_look_item.py`
-- `server/tests/unit/commands/test_look_item_helpers.py`
+- `server/game/room_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 63 (100%)
+- EXTRACTED: 97 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

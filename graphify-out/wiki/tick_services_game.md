@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_mp_regeneration_service_init_custom_rate()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **Test MPRegenerationService initialization with custom regen_rate.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **test_adjust_room_drop_invalid_index()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **Test adjust_room_drop() returns False for invalid index.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Relationships
 
-- [regeneration service magic](regeneration_service_magic.md) (1 shared connections)
-- [config rationale reset](config_rationale_reset.md) (1 shared connections)
+- [room subscription manager](room_subscription_manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

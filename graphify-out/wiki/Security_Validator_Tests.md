@@ -1,6 +1,6 @@
 # Security Validator Tests
 
-> 222 nodes
+> 218 nodes
 
 ## Key Concepts
 
@@ -24,30 +24,31 @@
 - **check_injection_patterns()** (6 connections) — `server/validators/security_validator.py`
 - **get_dangerous_characters()** (5 connections) — `server/validators/security_validator.py`
 - **get_injection_patterns()** (5 connections) — `server/validators/security_validator.py`
+- **.validate_player_name_field()** (3 connections) — `server/models/command_admin.py`
 - **.validate_alias_name_field()** (3 connections) — `server/models/command_alias.py`
 - **.validate_command()** (3 connections) — `server/models/command_alias.py`
 - **.validate_target()** (3 connections) — `server/models/command_combat.py`
 - **.validate_target()** (3 connections) — `server/models/command_combat.py`
-- **.validate_action()** (3 connections) — `server/models/command_communication.py`
-- *... and 197 more nodes in this community*
+- *... and 193 more nodes in this community*
 
 ## Relationships
 
-- [command factories create](command_factories_create.md) (42 shared connections)
+- [dialogue definition persistence](dialogue_definition_persistence.md) (37 shared connections)
 - [command communication models](command_communication_models.md) (9 shared connections)
+- [health models rationale](health_models_rationale.md) (7 shared connections)
 - [command validator validators](command_validator_validators.md) (5 shared connections)
 - [commands who helpers](commands_who_helpers.md) (4 shared connections)
-- [command commands talk](command_commands_talk.md) (3 shared connections)
-- [commands whisper command](commands_whisper_command.md) (2 shared connections)
-- [auth endpoints rationale](auth_endpoints_rationale.md) (2 shared connections)
-- [admin auth service](admin_auth_service.md) (2 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
-- [logoutHandler logger App](logoutHandler_logger_App.md) (1 shared connections)
+- [command processor rationale](command_processor_rationale.md) (3 shared connections)
+- [inventory commands command](inventory_commands_command.md) (2 shared connections)
+- [combat attack handler](combat_attack_handler.md) (2 shared connections)
+- [realtime real time](realtime_real_time.md) (1 shared connections)
 - [combat services initialization](combat_services_initialization.md) (1 shared connections)
-- [commands npc admin](commands_npc_admin.md) (1 shared connections)
+- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (1 shared connections)
+- [rescue service services](rescue_service_services.md) (1 shared connections)
 
 ## Source Files
 
+- `server/models/command_admin.py`
 - `server/models/command_alias.py`
 - `server/models/command_combat.py`
 - `server/models/command_communication.py`
@@ -58,7 +59,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 673 (99%)
+- EXTRACTED: 665 (99%)
 - INFERRED: 10 (1%)
 - AMBIGUOUS: 0 (0%)
 

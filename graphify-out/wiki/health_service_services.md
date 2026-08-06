@@ -1,13 +1,11 @@
 # health service services
 
-> 61 nodes
+> 58 nodes
 
 ## Key Concepts
 
 - **test_command_service.py** (36 connections) — `server/tests/unit/commands/test_command_service.py`
-- **MythosValidationError** (10 connections)
-- **test_parse_command_string_validation_error()** (4 connections) — `server/tests/unit/commands/test_command_service.py`
-- **test_process_validated_command_validation_error()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_extract_parsed_fields_handles_missing_attributes()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
 - **mock_request()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
 - **mock_user()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
 - **test_process_validated_command_success()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
@@ -29,21 +27,18 @@
 - **test_process_command_no_handler()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
 - **test_get_available_commands()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
 - **test_register_command_handler()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
-- *... and 36 more nodes in this community*
+- **test_register_command_handler_overwrites_existing()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_unregister_command_handler()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
+- *... and 33 more nodes in this community*
 
 ## Relationships
 
-- [Loot Generation](Loot_Generation.md) (3 shared connections)
-- [game weapon player](game_weapon_player.md) (2 shared connections)
 - [combat services initialization](combat_services_initialization.md) (2 shared connections)
-- [Exception Containers](Exception_Containers.md) (1 shared connections)
-- [inventory commands command](inventory_commands_command.md) (1 shared connections)
-- [services nats service](services_nats_service.md) (1 shared connections)
-- [command parser rationale](command_parser_rationale.md) (1 shared connections)
-- [command processor rationale](command_processor_rationale.md) (1 shared connections)
-- [services chat logger](services_chat_logger.md) (1 shared connections)
-- [commands whisper command](commands_whisper_command.md) (1 shared connections)
-- [websocket helpers realtime](websocket_helpers_realtime.md) (1 shared connections)
+- [payload realtime optimizer](payload_realtime_optimizer.md) (2 shared connections)
+- [realtime real time](realtime_real_time.md) (1 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (1 shared connections)
+- [add used user](add_used_user.md) (1 shared connections)
+- [room sync service](room_sync_service.md) (1 shared connections)
 
 ## Source Files
 
@@ -51,8 +46,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 127 (93%)
-- INFERRED: 10 (7%)
+- EXTRACTED: 121 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

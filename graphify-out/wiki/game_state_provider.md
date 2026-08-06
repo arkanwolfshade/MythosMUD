@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [nats services metrics](nats_services_metrics.md) (2 shared connections)
-- [combat services turn](combat_services_turn.md) (1 shared connections)
+- [shutdown admin command](shutdown_admin_command.md) (2 shared connections)
+- [command utility models](command_utility_models.md) (1 shared connections)
 
 ## Source Files
 

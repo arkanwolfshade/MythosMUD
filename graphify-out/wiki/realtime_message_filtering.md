@@ -1,47 +1,42 @@
 # realtime message filtering
 
-> 21 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **subscribe_to_room_events_impl()** (13 connections) — `server/realtime/connection_event_helpers.py`
-- **test_connection_event_helpers.py** (13 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **test_subscribe_to_room_events_impl_database_error()** (4 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **test_subscribe_to_room_events_impl_attribute_error()** (4 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **test_unsubscribe_from_room_events_impl_database_error()** (4 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **test_unsubscribe_from_room_events_impl_attribute_error()** (4 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **test_subscribe_to_room_events_impl_success()** (3 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **test_subscribe_to_room_events_impl_no_event_bus()** (3 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **test_unsubscribe_from_room_events_impl_success()** (3 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **test_unsubscribe_from_room_events_impl_no_event_bus()** (3 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **Any** (2 connections)
-- **Subscribe to room movement events for occupant broadcasting.** (1 connections) — `server/realtime/connection_event_helpers.py`
-- **Unit tests for connection event helpers.  Tests the connection_event_helpers mod** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **Test subscribe_to_room_events_impl() successfully subscribes to events.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **Test subscribe_to_room_events_impl() handles missing event bus.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **Test subscribe_to_room_events_impl() handles DatabaseError.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **Test subscribe_to_room_events_impl() handles AttributeError.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **Test unsubscribe_from_room_events_impl() successfully unsubscribes from events.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **Test unsubscribe_from_room_events_impl() handles missing event bus.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **Test unsubscribe_from_room_events_impl() handles DatabaseError.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **Test unsubscribe_from_room_events_impl() handles AttributeError.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **GameConfig** (15 connections) — `server/config/models/game.py`
+- **.validate_max_connections()** (2 connections) — `server/config/models/game.py`
+- **.validate_aliases_dir()** (2 connections) — `server/config/models/game.py`
+- **.validate_combat_tick_interval()** (2 connections) — `server/config/models/game.py`
+- **.validate_combat_timeout()** (2 connections) — `server/config/models/game.py`
+- **.validate_combat_xp_multiplier()** (2 connections) — `server/config/models/game.py`
+- **.validate_combat_alert_threshold()** (2 connections) — `server/config/models/game.py`
+- **.validate_combat_performance_threshold()** (2 connections) — `server/config/models/game.py`
+- **.validate_combat_error_threshold()** (2 connections) — `server/config/models/game.py`
+- **BaseSettings** (1 connections)
+- **Game-specific configuration.** (1 connections) — `server/config/models/game.py`
+- **Validate max connections is reasonable.** (1 connections) — `server/config/models/game.py`
+- **Validate aliases directory path.** (1 connections) — `server/config/models/game.py`
+- **Validate combat tick interval.** (1 connections) — `server/config/models/game.py`
+- **Validate combat timeout.** (1 connections) — `server/config/models/game.py`
+- **Validate combat XP multiplier.** (1 connections) — `server/config/models/game.py`
+- **Validate combat alert threshold.** (1 connections) — `server/config/models/game.py`
+- **Validate combat performance threshold.** (1 connections) — `server/config/models/game.py`
+- **Validate combat error threshold.** (1 connections) — `server/config/models/game.py`
 
 ## Relationships
 
-- [Realtime Subscribers](Realtime_Subscribers.md) (10 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (4 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (2 shared connections)
-- [websocket helpers realtime](websocket_helpers_realtime.md) (2 shared connections)
+- [websocket validation realtime](websocket_validation_realtime.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (2 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_event_helpers.py`
-- `server/tests/unit/realtime/test_connection_event_helpers.py`
+- `server/config/models/game.py`
 
 ## Audit Trail
 
-- EXTRACTED: 61 (92%)
-- INFERRED: 5 (8%)
+- EXTRACTED: 40 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

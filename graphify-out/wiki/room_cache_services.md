@@ -1,65 +1,53 @@
 # room cache services
 
-> 99 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **MonitoringDashboard** (33 connections) — `server/monitoring/monitoring_dashboard.py`
-- **monitoring_dashboard.py** (26 connections) — `server/monitoring/monitoring_dashboard.py`
-- **get_monitoring_dashboard()** (20 connections) — `server/monitoring/monitoring_dashboard.py`
-- **test_monitoring_dashboard.py** (17 connections) — `server/tests/unit/monitoring/test_monitoring_dashboard.py`
-- **Alert** (14 connections) — `server/monitoring/monitoring_dashboard.py`
-- **ExceptionStats** (12 connections) — `server/monitoring/exception_tracker.py`
-- **LogAggregationStats** (12 connections) — `server/structured_logging/log_aggregator.py`
-- **__init__.py** (11 connections) — `server/monitoring/__init__.py`
-- **.get_system_health()** (11 connections) — `server/monitoring/monitoring_dashboard.py`
-- **PerformanceStats** (11 connections) — `server/monitoring/performance_monitor.py`
-- **.acquire_async()** (11 connections) — `server/services/inventory_mutation_guard.py`
-- **_dashboard()** (11 connections) — `server/tests/unit/monitoring/test_monitoring_dashboard.py`
-- **SystemHealth** (10 connections) — `server/monitoring/monitoring_dashboard.py`
-- **.record_custom_alert()** (10 connections) — `server/monitoring/monitoring_dashboard.py`
-- **.acquire()** (10 connections) — `server/services/inventory_mutation_guard.py`
-- **__getattr__()** (8 connections) — `server/monitoring/__init__.py`
-- **MonitoringSummary** (7 connections) — `server/monitoring/monitoring_dashboard.py`
-- **._generate_recommendations()** (7 connections) — `server/monitoring/monitoring_dashboard.py`
-- **.get_monitoring_summary()** (6 connections) — `server/monitoring/monitoring_dashboard.py`
-- **.check_alerts()** (6 connections) — `server/monitoring/monitoring_dashboard.py`
-- **Any** (6 connections)
-- **_AsyncPlayerGuardState** (6 connections) — `server/services/inventory_mutation_guard.py`
-- **.record_registry_failure()** (5 connections) — `server/monitoring/monitoring_dashboard.py`
-- **.record_summon_quantity_spike()** (5 connections) — `server/monitoring/monitoring_dashboard.py`
-- **.record_durability_anomaly()** (5 connections) — `server/monitoring/monitoring_dashboard.py`
-- *... and 74 more nodes in this community*
+- **set_map_origin()** (14 connections) — `server/api/maps.py`
+- **CoordinateValidator** (9 connections) — `server/services/coordinate_validator.py`
+- **SetOriginRequest** (8 connections) — `server/api/maps.py`
+- **coordinate_validator.py** (6 connections) — `server/services/coordinate_validator.py`
+- **test_coordinate_validator.py** (6 connections) — `server/tests/unit/services/test_coordinate_validator.py`
+- **test_set_map_origin_requires_auth()** (4 connections) — `server/tests/unit/api/test_maps.py`
+- **test_set_map_origin_success()** (4 connections) — `server/tests/unit/api/test_maps.py`
+- **.__init__()** (3 connections) — `server/services/coordinate_validator.py`
+- **.validate_coordinates()** (3 connections) — `server/services/coordinate_validator.py`
+- **validator()** (2 connections) — `server/tests/unit/services/test_coordinate_validator.py`
+- **BaseModel** (1 connections)
+- **Request model for setting map origin.** (1 connections) — `server/api/maps.py`
+- **Set a room as the map origin for its zone/subzone (admin only).      Triggers co** (1 connections) — `server/api/maps.py`
+- **AsyncSession** (1 connections)
+- **Any** (1 connections)
+- **Coordinate validation service for ASCII maps.  This module provides conflict det** (1 connections) — `server/services/coordinate_validator.py`
+- **Validates room coordinates and detects conflicts.      A conflict occurs when mu** (1 connections) — `server/services/coordinate_validator.py`
+- **Initialize coordinate validator.          Args:             session: Database se** (1 connections) — `server/services/coordinate_validator.py`
+- **Validate coordinates for rooms in a zone/subzone and detect conflicts.** (1 connections) — `server/services/coordinate_validator.py`
+- **test_validate_coordinates_no_conflicts()** (1 connections) — `server/tests/unit/services/test_coordinate_validator.py`
+- **test_validate_coordinates_reports_conflicts()** (1 connections) — `server/tests/unit/services/test_coordinate_validator.py`
+- **Unit tests for coordinate validation.** (1 connections) — `server/tests/unit/services/test_coordinate_validator.py`
 
 ## Relationships
 
-- [Exception Containers](Exception_Containers.md) (17 shared connections)
-- [websocket examples logging](websocket_examples_logging.md) (8 shared connections)
-- [models lucidity rationale](models_lucidity_rationale.md) (8 shared connections)
-- [command combat models](command_combat_models.md) (7 shared connections)
-- [System Metrics](System_Metrics.md) (6 shared connections)
-- [log structured logging](log_structured_logging.md) (6 shared connections)
-- [Magic Spell Service](Magic_Spell_Service.md) (3 shared connections)
-- [inventory commands command](inventory_commands_command.md) (3 shared connections)
-- [nats services service](nats_services_service.md) (3 shared connections)
-- [world loader room](world_loader_room.md) (3 shared connections)
-- [MapView GameClientV2ContainerView Tabbed](MapView_GameClientV2ContainerView_Tabbed.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [persistence container rationale](persistence_container_rationale.md) (7 shared connections)
+- [maps handle ascii](maps_handle_ascii.md) (6 shared connections)
+- [services inventory mutation](services_inventory_mutation.md) (2 shared connections)
+- [player requests schemas](player_requests_schemas.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [database helpers infrastructure](database_helpers_infrastructure.md) (1 shared connections)
+- [coordinate services generator](coordinate_services_generator.md) (1 shared connections)
 
 ## Source Files
 
-- `server/monitoring/__init__.py`
-- `server/monitoring/exception_tracker.py`
-- `server/monitoring/monitoring_dashboard.py`
-- `server/monitoring/performance_monitor.py`
-- `server/services/inventory_mutation_guard.py`
-- `server/structured_logging/log_aggregator.py`
-- `server/tests/unit/monitoring/test_monitoring_dashboard.py`
+- `server/api/maps.py`
+- `server/services/coordinate_validator.py`
+- `server/tests/unit/api/test_maps.py`
+- `server/tests/unit/services/test_coordinate_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 382 (89%)
-- INFERRED: 45 (11%)
+- EXTRACTED: 68 (96%)
+- INFERRED: 3 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

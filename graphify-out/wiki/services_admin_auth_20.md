@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_create_teleport_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_teleport_command delegates to utility factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_get_combat_result_message_success_no_damage()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **Test get_combat_result_message with successful attack but no damage.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
 
 ## Relationships
 
-- [command factories create](command_factories_create.md) (1 shared connections)
+- [emote models rationale](emote_models_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `server/tests/unit/validators/test_combat_validator.py`
 
 ## Audit Trail
 

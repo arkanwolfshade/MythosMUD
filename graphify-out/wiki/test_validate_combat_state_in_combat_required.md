@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_validate_combat_state_in_combat_required()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test validate_combat_state when in combat and combat required.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_get_limit_existing()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **Test get_limit returns configured limit.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
 
 ## Relationships
 
-- [emote models rationale](emote_models_rationale.md) (1 shared connections)
+- [rate limiter services](rate_limiter_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/services/test_rate_limiter.py`
 
 ## Audit Trail
 

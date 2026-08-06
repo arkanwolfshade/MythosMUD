@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [npc realtime occupant](npc_realtime_occupant.md) (27 shared connections)
-- [room sync service](room_sync_service.md) (8 shared connections)
-- [main rationale failure()](main_rationale_failure%28%29.md) (5 shared connections)
-- [holiday services service](holiday_services_service.md) (1 shared connections)
-- [dead letter realtime](dead_letter_realtime.md) (1 shared connections)
-- [models lucidity rationale](models_lucidity_rationale.md) (1 shared connections)
-- [cache caching lru](cache_caching_lru.md) (1 shared connections)
-- [admin shutdown commands](admin_shutdown_commands.md) (1 shared connections)
-- [commands admin shutdown](commands_admin_shutdown.md) (1 shared connections)
-- [realtime monitoring health](realtime_monitoring_health.md) (1 shared connections)
-- [combat npc services](combat_npc_services.md) (1 shared connections)
-- [realtime player presence](realtime_player_presence.md) (1 shared connections)
+- [schemas validator rationale](schemas_validator_rationale.md) (27 shared connections)
+- [command admin setlucidity](command_admin_setlucidity.md) (8 shared connections)
+- [npc combat services](npc_combat_services.md) (5 shared connections)
+- [test_broadcast_player_respawn](test_broadcast_player_respawn.md) (1 shared connections)
+- [test_handle_npc_took_damage_event](test_handle_npc_took_damage_event.md) (1 shared connections)
+- [test_handle_player_attacked_event](test_handle_player_attacked_event.md) (1 shared connections)
+- [test_subscribe_to_subzone_subscribe_failure](test_subscribe_to_subzone_subscribe_failure.md) (1 shared connections)
+- [test_handle_combat_ended_event](test_handle_combat_ended_event.md) (1 shared connections)
+- [test_handle_combat_started_event](test_handle_combat_started_event.md) (1 shared connections)
+- [test_handle_npc_died_event](test_handle_npc_died_event.md) (1 shared connections)
+- [test_broadcast_combat_attack_no_attacker_id](test_broadcast_combat_attack_no_attacker_id.md) (1 shared connections)
+- [test_broadcast_combat_end](test_broadcast_combat_end.md) (1 shared connections)
 
 ## Source Files
 

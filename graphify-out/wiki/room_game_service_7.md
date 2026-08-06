@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **test_process_exit_rows_with_full_room_ids()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _process_exit_rows with stable_ids that already contain full hierarchical p** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_process_exit_rows_empty_list()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _process_exit_rows with empty list.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Relationships
 

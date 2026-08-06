@@ -1,39 +1,35 @@
 # realtime dead letter
 
-> 13 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **_EventBusPublishPort** (7 connections) — `server/realtime/event_handlers.py`
-- **_publish_npc_died_to_event_bus()** (7 connections) — `server/realtime/event_handlers.py`
-- **_npc_died_broadcast_and_bridge()** (7 connections) — `server/realtime/event_handlers.py`
-- **_refresh_room_after_npc_death()** (5 connections) — `server/realtime/event_handlers.py`
-- **.publish()** (3 connections) — `server/realtime/event_handlers.py`
-- **.handle_npc_died_event()** (3 connections) — `server/realtime/event_handlers.py`
-- **Protocol** (1 connections)
-- **Minimal surface for publishing domain events from ConnectionManager.event_bus.** (1 connections) — `server/realtime/event_handlers.py`
-- **Publish a single event to the in-process bus.** (1 connections) — `server/realtime/event_handlers.py`
-- **Publish NPCDied to the in-process EventBus when configured on ConnectionManager.** (1 connections) — `server/realtime/event_handlers.py`
-- **Best-effort room occupants refresh after NPC death.** (1 connections) — `server/realtime/event_handlers.py`
-- **Broadcast npc_died to WebSocket, publish NPCDied to EventBus, refresh room occup** (1 connections) — `server/realtime/event_handlers.py`
-- **Handle npc_died event - NATS to EventBus bridge pattern.          ARCHITECTURE** (1 connections) — `server/realtime/event_handlers.py`
+- **commandStore.ts** (12 connections) — `client/src/stores/commandStore.ts`
+- **useCommandStore** (5 connections) — `client/src/stores/commandStore.ts`
+- **commandStore.test.ts** (2 connections) — `client/src/stores/__tests__/commandStore.test.ts`
+- **CommandHistoryEntry** (1 connections) — `client/src/stores/commandStore.ts`
+- **CommandAlias** (1 connections) — `client/src/stores/commandStore.ts`
+- **CommandTrigger** (1 connections) — `client/src/stores/commandStore.ts`
+- **CommandState** (1 connections) — `client/src/stores/commandStore.ts`
+- **CommandActions** (1 connections) — `client/src/stores/commandStore.ts`
+- **CommandSelectors** (1 connections) — `client/src/stores/commandStore.ts`
+- **CommandStore** (1 connections) — `client/src/stores/commandStore.ts`
+- **createInitialState()** (1 connections) — `client/src/stores/commandStore.ts`
 
 ## Relationships
 
-- [Room Broadcast](Room_Broadcast.md) (4 shared connections)
-- [NPC Combat](NPC_Combat.md) (4 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (2 shared connections)
-- [follow game service](follow_game_service.md) (2 shared connections)
-- [command models moderation](command_models_moderation.md) (1 shared connections)
+- [stores connectionStore commandStore](stores_connectionStore_commandStore.md) (3 shared connections)
+- [config rationale config()](config_rationale_config%28%29.md) (2 shared connections)
 
 ## Source Files
 
-- `server/realtime/event_handlers.py`
+- `client/src/stores/__tests__/commandStore.test.ts`
+- `client/src/stores/commandStore.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 35 (90%)
-- INFERRED: 4 (10%)
+- EXTRACTED: 27 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

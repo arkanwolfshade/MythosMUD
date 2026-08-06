@@ -1,54 +1,60 @@
 # auth endpoints rationale
 
-> 86 nodes
+> 60 nodes
 
 ## Key Concepts
 
-- **test_command_admin.py** (42 connections) — `server/tests/unit/models/test_command_admin.py`
-- **SummonCommand** (21 connections) — `server/models/command_admin.py`
-- **TeleportCommand** (18 connections) — `server/models/command_admin.py`
-- **NPCCommand** (13 connections) — `server/models/command_admin.py`
-- **GotoCommand** (13 connections) — `server/models/command_admin.py`
-- **ShutdownCommand** (12 connections) — `server/models/command_admin.py`
-- **test_npc_command_subcommand_min_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_npc_command_subcommand_max_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_summon_command_validate_prototype_id_invalid_characters()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_summon_command_quantity_validation_min()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_summon_command_quantity_validation_max()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_summon_command_prototype_id_min_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_summon_command_prototype_id_max_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_teleport_command_validate_direction_invalid()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_teleport_command_player_name_min_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_teleport_command_player_name_max_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_goto_command_player_name_min_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_goto_command_player_name_max_length()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
-- **.validate_player_name_field()** (3 connections) — `server/models/command_admin.py`
-- **.validate_direction_field()** (3 connections) — `server/models/command_admin.py`
-- **.validate_player_name_field()** (3 connections) — `server/models/command_admin.py`
-- **test_npc_command_default_values()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_npc_command_with_subcommand()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_npc_command_with_args()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
-- **test_summon_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
-- *... and 61 more nodes in this community*
+- **debrief_command.py** (26 connections) — `server/commands/debrief_command.py`
+- **test_debrief_command.py** (25 connections) — `server/tests/unit/commands/test_debrief_command.py`
+- **active_lucidity_service.py** (23 connections) — `server/services/active_lucidity_service.py`
+- **handle_debrief_command()** (19 connections) — `server/commands/debrief_command.py`
+- **_generate_narrative_recap()** (10 connections) — `server/commands/debrief_command.py`
+- **_perform_therapy_if_requested()** (9 connections) — `server/commands/debrief_command.py`
+- **Any** (8 connections)
+- **_validate_debrief_context()** (7 connections) — `server/commands/debrief_command.py`
+- **_check_debrief_availability()** (7 connections) — `server/commands/debrief_command.py`
+- **LucidityActionError** (7 connections) — `server/services/active_lucidity_service.py`
+- **_get_persistence_from_app()** (6 connections) — `server/commands/debrief_command.py`
+- **_get_catatonia_registry_from_app()** (6 connections) — `server/commands/debrief_command.py`
+- **_complete_debrief()** (5 connections) — `server/commands/debrief_command.py`
+- **.__init__()** (5 connections) — `server/services/active_lucidity_service.py`
+- **test_perform_therapy_on_cooldown()** (4 connections) — `server/tests/unit/commands/test_debrief_command.py`
+- **EncounterProfile** (3 connections) — `server/services/active_lucidity_service.py`
+- **RecoveryActionProfile** (3 connections) — `server/services/active_lucidity_service.py`
+- **test_validate_debrief_context_no_persistence()** (3 connections) — `server/tests/unit/commands/test_debrief_command.py`
+- **test_validate_debrief_context_player_missing()** (3 connections) — `server/tests/unit/commands/test_debrief_command.py`
+- **test_get_persistence_from_app_container()** (3 connections) — `server/tests/unit/commands/test_debrief_command.py`
+- **test_get_catatonia_registry_from_state_fallback()** (3 connections) — `server/tests/unit/commands/test_debrief_command.py`
+- **test_check_debrief_availability_not_pending()** (3 connections) — `server/tests/unit/commands/test_debrief_command.py`
+- **test_perform_therapy_if_not_requested()** (3 connections) — `server/tests/unit/commands/test_debrief_command.py`
+- **test_perform_therapy_success()** (3 connections) — `server/tests/unit/commands/test_debrief_command.py`
+- **test_generate_narrative_recap_no_adjustments()** (3 connections) — `server/tests/unit/commands/test_debrief_command.py`
+- *... and 35 more nodes in this community*
 
 ## Relationships
 
-- [command factories create](command_factories_create.md) (17 shared connections)
-- [Loot Generation](Loot_Generation.md) (12 shared connections)
-- [message queue realtime](message_queue_realtime.md) (7 shared connections)
-- [command inventory factories](command_inventory_factories.md) (5 shared connections)
-- [exceptions rationale error](exceptions_rationale_error.md) (5 shared connections)
-- [Security Validator Tests](Security_Validator_Tests.md) (2 shared connections)
+- [player room realtime](player_room_realtime.md) (18 shared connections)
+- [realtime real time](realtime_real_time.md) (11 shared connections)
+- [game models player](game_models_player.md) (8 shared connections)
+- [Error Conversion](Error_Conversion.md) (6 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (3 shared connections)
+- [alias storage rationale](alias_storage_rationale.md) (2 shared connections)
+- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (1 shared connections)
+- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [connection realtime manager](connection_realtime_manager.md) (1 shared connections)
+- [npc population control](npc_population_control.md) (1 shared connections)
+- [Spell Validation](Spell_Validation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/command_admin.py`
-- `server/tests/unit/models/test_command_admin.py`
+- `server/commands/debrief_command.py`
+- `server/services/active_lucidity_service.py`
+- `server/tests/unit/commands/test_debrief_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 257 (90%)
-- INFERRED: 27 (10%)
+- EXTRACTED: 238 (98%)
+- INFERRED: 5 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

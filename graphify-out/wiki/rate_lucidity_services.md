@@ -29,10 +29,11 @@
 
 ## Relationships
 
-- [lucidity flux passive](lucidity_flux_passive.md) (4 shared connections)
-- [NPC Combat](NPC_Combat.md) (3 shared connections)
+- [Error Conversion](Error_Conversion.md) (3 shared connections)
+- [command parser rationale](command_parser_rationale.md) (3 shared connections)
 - [manager subject services](manager_subject_services.md) (2 shared connections)
-- [game models enums](game_models_enums.md) (1 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (1 shared connections)
+- [lucidity flux passive](lucidity_flux_passive.md) (1 shared connections)
 
 ## Source Files
 

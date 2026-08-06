@@ -34,7 +34,7 @@
 - [security infrastructure path](security_infrastructure_path.md) (12 shared connections)
 - [security infrastructure safe](security_infrastructure_safe.md) (8 shared connections)
 - [security infrastructure rationale](security_infrastructure_rationale.md) (4 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
 - [player repository persistence](player_repository_persistence.md) (2 shared connections)
 
 ## Source Files

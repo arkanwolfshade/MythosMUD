@@ -1,39 +1,32 @@
 # room subscription manager
 
-> 64 nodes
+> 8 nodes
 
 ## Key Concepts
 
 - **test_room_subscription_manager_drops.py** (34 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **subscription_manager()** (3 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **test_list_room_drops()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 - **test_list_room_drops_empty()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 - **test_add_room_drop()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **test_add_room_drop_invalid_quantity()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **test_take_room_drop()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **test_take_room_drop_all()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **test_take_room_drop_invalid_index()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **test_adjust_room_drop()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **test_adjust_room_drop_remove()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **test_adjust_room_drop_invalid_index()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **test_list_room_drops_with_drops()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **test_add_room_drop_new_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **test_add_room_drop_existing_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **test_take_room_drop_success()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 - **test_take_room_drop_index_out_of_range()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **test_take_room_drop_quantity_too_large()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **test_take_room_drop_zero_quantity()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **test_take_room_drop_full_quantity()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **test_take_room_drop_partial_quantity()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **test_take_room_drop_removes_empty_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **test_adjust_room_drop_index_out_of_range()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **test_adjust_room_drop_quantity_zero()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **test_adjust_room_drop_negative_quantity()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- *... and 39 more nodes in this community*
+- **Unit tests for room subscription manager drop functions.  Tests the room drop fu** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **Test list_room_drops() returns empty list when no drops.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **Test add_room_drop() adds drop to room.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **Test take_room_drop() with index out of range.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Relationships
 
-- [taunt combat commands](taunt_combat_commands.md) (3 shared connections)
+- [command factories create](command_factories_create.md) (5 shared connections)
+- [game room service](game_room_service.md) (4 shared connections)
+- [room infrastructure persistence](room_infrastructure_persistence.md) (4 shared connections)
+- [event bus events](event_bus_events.md) (3 shared connections)
+- [room game service](room_game_service.md) (2 shared connections)
+- [room realtime subscription](room_realtime_subscription.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [connection disconnection realtime](connection_disconnection_realtime.md) (1 shared connections)
+- [tick services game](tick_services_game.md) (1 shared connections)
+- [events event bus](events_event_bus.md) (1 shared connections)
+- [npc behavior engine](npc_behavior_engine.md) (1 shared connections)
+- [chat game service](chat_game_service.md) (1 shared connections)
 
 ## Source Files
 
@@ -41,7 +34,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 129 (100%)
+- EXTRACTED: 44 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

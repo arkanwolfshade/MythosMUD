@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_is_player_rate_limited_false()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **Test is_player_rate_limited returns False when not rate limited.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_is_player_disconnecting_no_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test is_player_disconnecting() returns False when connection manager not availab** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [rate limiter services](rate_limiter_services.md) (1 shared connections)
+- [player event handlers](player_event_handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_rate_limiter.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 

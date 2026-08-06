@@ -1,37 +1,34 @@
 # conftest mock rationale
 
-> 15 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **.call()** (9 connections) — `server/realtime/circuit_breaker.py`
-- **._transition_to()** (6 connections) — `server/realtime/circuit_breaker.py`
-- **._on_success()** (4 connections) — `server/realtime/circuit_breaker.py`
-- **._on_failure()** (4 connections) — `server/realtime/circuit_breaker.py`
-- **._time_until_retry()** (4 connections) — `server/realtime/circuit_breaker.py`
-- **.get_stats()** (4 connections) — `server/realtime/circuit_breaker.py`
-- **._should_attempt_reset()** (3 connections) — `server/realtime/circuit_breaker.py`
-- **Any** (2 connections)
-- **Execute function through circuit breaker.          Enforces circuit breaker logi** (1 connections) — `server/realtime/circuit_breaker.py`
-- **Handle successful function call.          Updates state based on current circuit** (1 connections) — `server/realtime/circuit_breaker.py`
-- **Handle failed function call.          Updates state based on failure count:** (1 connections) — `server/realtime/circuit_breaker.py`
-- **Check if enough time has passed to attempt circuit reset.          Returns:** (1 connections) — `server/realtime/circuit_breaker.py`
-- **Calculate seconds until circuit can attempt reset.          Returns:** (1 connections) — `server/realtime/circuit_breaker.py`
-- **Transition circuit to new state.          Args:             new_state: State to** (1 connections) — `server/realtime/circuit_breaker.py`
-- **Get circuit breaker statistics.          Returns:             Dictionary with ci** (1 connections) — `server/realtime/circuit_breaker.py`
+- **test_inventory_mutation_guard_sync.py** (10 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
+- **test_acquire_serializes_per_player()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
+- **test_acquire_token_expiry()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
+- **test_acquire_token_ttl_zero()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
+- **test_acquire_enforces_max_tokens()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
+- **test_acquire_cleanup_empty_state()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
+- **Unit tests for inventory mutation guard - synchronous acquire operations.  Tests** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
+- **Test acquire serializes mutations per player.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
+- **Test acquire allows token reuse after expiry.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
+- **Test acquire with token_ttl=0 (no expiry).** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
+- **Test acquire enforces max_tokens limit.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
+- **Test acquire cleans up state when tokens are empty.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
 
 ## Relationships
 
-- [websocket handler realtime](websocket_handler_realtime.md) (8 shared connections)
-- [config rationale config()](config_rationale_config%28%29.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [task registry app](task_registry_app.md) (2 shared connections)
 
 ## Source Files
 
-- `server/realtime/circuit_breaker.py`
+- `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
 
 ## Audit Trail
 
-- EXTRACTED: 43 (100%)
+- EXTRACTED: 26 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

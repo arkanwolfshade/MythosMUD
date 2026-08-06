@@ -19,7 +19,7 @@
 
 ## Relationships
 
-- [room websocket updates](room_websocket_updates.md) (1 shared connections)
+- [command commands aliases](command_commands_aliases.md) (1 shared connections)
 
 ## Source Files
 

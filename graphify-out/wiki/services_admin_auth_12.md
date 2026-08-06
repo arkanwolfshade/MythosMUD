@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_create_who_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_who_command delegates to player_state factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_validate_attack_strength_target_significantly_stronger()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **Test validate_attack_strength when target is significantly stronger.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
 
 ## Relationships
 
-- [command factories create](command_factories_create.md) (1 shared connections)
+- [emote models rationale](emote_models_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `server/tests/unit/validators/test_combat_validator.py`
 
 ## Audit Trail
 

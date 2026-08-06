@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_create_admin_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_admin_command delegates to moderation factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_validate_combat_state_not_in_combat_not_required()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **Test validate_combat_state when not in combat and combat not required.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
 
 ## Relationships
 
-- [command factories create](command_factories_create.md) (1 shared connections)
+- [emote models rationale](emote_models_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `server/tests/unit/validators/test_combat_validator.py`
 
 ## Audit Trail
 

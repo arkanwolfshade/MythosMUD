@@ -1,53 +1,61 @@
 # room renderer functions
 
-> 73 nodes
+> 58 nodes
 
 ## Key Concepts
 
-- **test_room_renderer.py** (25 connections) — `server/tests/unit/utils/test_room_renderer.py`
-- **format_room_drop_lines()** (25 connections) — `server/utils/room_renderer.py`
-- **clone_room_drops()** (18 connections) — `server/utils/room_renderer.py`
-- **test_room_renderer_functions.py** (14 connections) — `server/tests/unit/utils/test_room_renderer_functions.py`
-- **build_room_drop_summary()** (13 connections) — `server/utils/room_renderer.py`
-- **room_renderer.py** (10 connections) — `server/utils/room_renderer.py`
-- **_coerce_stack()** (4 connections) — `server/utils/room_renderer.py`
-- **Any** (4 connections)
-- **test_format_room_drop_lines_empty_none()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
-- **test_format_room_drop_lines_empty_list()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
-- **test_format_room_drop_lines_single_drop()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
-- **test_format_room_drop_lines_multiple_drops()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
-- **test_format_room_drop_lines_uses_item_id_when_no_item_name()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
-- **test_format_room_drop_lines_uses_default_when_no_name_or_id()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
-- **test_format_room_drop_lines_handles_missing_slot_type()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
-- **test_format_room_drop_lines_handles_missing_quantity()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
-- **test_format_room_drop_lines_handles_invalid_quantity_string()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
-- **test_format_room_drop_lines_handles_invalid_quantity_type()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
-- **test_format_room_drop_lines_handles_large_quantity()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
-- **test_build_room_drop_summary_empty()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
-- **test_build_room_drop_summary_single_drop()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
-- **test_build_room_drop_summary_multiple_drops()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
-- **test_clone_room_drops_none()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
-- **test_clone_room_drops_empty_list()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
-- **test_clone_room_drops_single_drop()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
-- *... and 48 more nodes in this community*
+- **combat_taunt.py** (32 connections) — `server/commands/combat_taunt.py`
+- **TauntCommandHandler** (29 connections) — `server/commands/combat_taunt.py`
+- **test_combat_taunt.py** (20 connections) — `server/tests/unit/commands/test_combat_taunt.py`
+- **_validate_taunt_context()** (13 connections) — `server/commands/combat_taunt.py`
+- **run_handle_taunt_command()** (13 connections) — `server/commands/combat_taunt.py`
+- **_validate_taunt_target()** (9 connections) — `server/commands/combat_taunt.py`
+- **_resolve_taunt_combat_and_participant()** (9 connections) — `server/commands/combat_taunt.py`
+- **_apply_taunt_and_maybe_broadcast()** (9 connections) — `server/commands/combat_taunt.py`
+- **test_run_handle_taunt_success()** (7 connections) — `server/tests/unit/commands/test_combat_taunt.py`
+- **_resolve_taunt_room_and_player()** (6 connections) — `server/commands/combat_taunt.py`
+- **UUID** (6 connections)
+- **_validate_taunt_target_name()** (6 connections) — `server/commands/combat_taunt.py`
+- **_RoomWithIdOnly** (6 connections) — `server/tests/unit/commands/test_combat_taunt.py`
+- **test_validate_taunt_target_not_npc()** (5 connections) — `server/tests/unit/commands/test_combat_taunt.py`
+- **test_validate_taunt_target_dead()** (5 connections) — `server/tests/unit/commands/test_combat_taunt.py`
+- **test_run_handle_taunt_no_combat_service()** (5 connections) — `server/tests/unit/commands/test_combat_taunt.py`
+- **test_run_handle_taunt_not_in_combat()** (5 connections) — `server/tests/unit/commands/test_combat_taunt.py`
+- **.get_player_and_room()** (4 connections) — `server/commands/combat_taunt.py`
+- **AppWithState** (4 connections)
+- **.resolve_combat_target()** (4 connections) — `server/commands/combat_taunt.py`
+- **.check_and_interrupt_rest()** (4 connections) — `server/commands/combat_taunt.py`
+- **.is_alive()** (4 connections) — `server/models/combat.py`
+- **test_resolve_taunt_room_and_player_falls_back_to_id()** (4 connections) — `server/tests/unit/commands/test_combat_taunt.py`
+- **test_validate_taunt_target_name_from_target_key()** (4 connections) — `server/tests/unit/commands/test_combat_taunt.py`
+- **.combat_service()** (3 connections) — `server/commands/combat_taunt.py`
+- *... and 33 more nodes in this community*
 
 ## Relationships
 
-- [command models moderation](command_models_moderation.md) (5 shared connections)
-- [connection realtime statistics](connection_realtime_statistics.md) (3 shared connections)
-- [combat services turn](combat_services_turn.md) (2 shared connections)
-- [look helpers commands](look_helpers_commands.md) (2 shared connections)
+- [panels domPurifyClient chat](panels_domPurifyClient_chat.md) (12 shared connections)
+- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (7 shared connections)
+- [Item Instances](Item_Instances.md) (7 shared connections)
+- [alias storage rationale](alias_storage_rationale.md) (6 shared connections)
+- [command factories exploration](command_factories_exploration.md) (6 shared connections)
+- [npc database infrastructure](npc_database_infrastructure.md) (6 shared connections)
+- [room validator toolkit](room_validator_toolkit.md) (5 shared connections)
+- [models npc rationale](models_npc_rationale.md) (4 shared connections)
+- [player event realtime](player_event_realtime.md) (4 shared connections)
+- [services ascii map](services_ascii_map.md) (2 shared connections)
+- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (1 shared connections)
+- [subject admin controller](subject_admin_controller.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_room_renderer.py`
-- `server/tests/unit/utils/test_room_renderer_functions.py`
-- `server/utils/room_renderer.py`
+- `server/commands/combat_taunt.py`
+- `server/models/combat.py`
+- `server/tests/unit/commands/test_combat_taunt.py`
 
 ## Audit Trail
 
-- EXTRACTED: 236 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 244 (95%)
+- INFERRED: 13 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

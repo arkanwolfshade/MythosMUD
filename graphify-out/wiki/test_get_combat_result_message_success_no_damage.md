@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_combat_result_message_success_no_damage()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test get_combat_result_message with successful attack but no damage.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_build_room_objects_debug_logging()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _build_room_objects logs debug info for specific room.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Relationships
 
-- [emote models rationale](emote_models_rationale.md) (1 shared connections)
+- [room persistence loading](room_persistence_loading.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Audit Trail
 

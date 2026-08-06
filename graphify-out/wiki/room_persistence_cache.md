@@ -33,7 +33,8 @@
 
 ## Relationships
 
-- [combat models rationale](combat_models_rationale.md) (3 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (2 shared connections)
+- [player room realtime](player_room_realtime.md) (1 shared connections)
 
 ## Source Files
 

@@ -32,13 +32,13 @@
 
 ## Relationships
 
-- [tick game service](tick_game_service.md) (4 shared connections)
+- [command commands validation](command_commands_validation.md) (4 shared connections)
 - [security headers middleware](security_headers_middleware.md) (4 shared connections)
 - [middleware comprehensive logging](middleware_comprehensive_logging.md) (3 shared connections)
-- [npc combat services](npc_combat_services.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [world loader room](world_loader_room.md) (2 shared connections)
-- [ascii map renderer](ascii_map_renderer.md) (1 shared connections)
+- [playerHandlers eventHandlers healthEvent](playerHandlers_eventHandlers_healthEvent.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [middleware correlation rationale](middleware_correlation_rationale.md) (2 shared connections)
+- [test_occupant_formatter_init](test_occupant_formatter_init.md) (1 shared connections)
 - [persistence rationale player](persistence_rationale_player.md) (1 shared connections)
 
 ## Source Files

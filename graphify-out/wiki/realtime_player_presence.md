@@ -1,24 +1,26 @@
 # realtime player presence
 
-> 2 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **test_try_lookup_item_implicit_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test trying implicit lookup when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **add_hashed_password_column.py** (4 connections) — `server/scripts/add_hashed_password_column.py`
+- **apply_migration()** (3 connections) — `server/scripts/add_hashed_password_column.py`
+- **main()** (3 connections) — `server/scripts/add_hashed_password_column.py`
+- **Apply the migration to add hashed_password column.      Args:         database_u** (1 connections) — `server/scripts/add_hashed_password_column.py`
+- **Main entry point for the migration script.** (1 connections) — `server/scripts/add_hashed_password_column.py`
 
 ## Relationships
 
-- [npc realtime occupant](npc_realtime_occupant.md) (1 shared connections)
-- [Item Lookup](Item_Lookup.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_item.py`
+- `server/scripts/add_hashed_password_column.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

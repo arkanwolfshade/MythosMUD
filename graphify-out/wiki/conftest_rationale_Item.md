@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (3 shared connections)
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (3 shared connections)
+- [tools generate invite](tools_generate_invite.md) (2 shared connections)
 
 ## Source Files
 

@@ -33,7 +33,8 @@
 
 ## Relationships
 
-- [taunt combat commands](taunt_combat_commands.md) (4 shared connections)
+- [spell models rationale](spell_models_rationale.md) (3 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
 
 ## Source Files
 

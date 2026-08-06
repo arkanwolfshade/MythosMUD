@@ -1,23 +1,32 @@
 # schemas player respawn
 
-> 2 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **@types/react** (2 connections) — `client/package.json`
-- **@types/react** (1 connections) — `client/package.json`
+- **normalize_path_from_url_or_path()** (5 connections) — `server/container/utils.py`
+- **._get_project_root()** (4 connections) — `server/container/main.py`
+- **._normalize_path_from_url_or_path()** (4 connections) — `server/container/main.py`
+- **Path** (2 connections)
+- **Return and cache the repository root directory.** (1 connections) — `server/container/main.py`
+- **Delegate to shared util. Kept for backward compatibility.** (1 connections) — `server/container/main.py`
+- **Path** (1 connections)
+- **Normalize an item database override into a filesystem path.      DEPRECATED: Ite** (1 connections) — `server/container/utils.py`
 
 ## Relationships
 
-- [package eslint plugin](package_eslint_plugin.md) (1 shared connections)
+- [nats services service](nats_services_service.md) (3 shared connections)
+- [room realtime occupant](room_realtime_occupant.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
 
 ## Source Files
 
-- `client/package.json`
+- `server/container/main.py`
+- `server/container/utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 19 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

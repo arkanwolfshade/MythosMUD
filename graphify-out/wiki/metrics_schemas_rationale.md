@@ -33,13 +33,14 @@
 
 ## Relationships
 
-- [player requests schemas](player_requests_schemas.md) (17 shared connections)
-- [Exception Containers](Exception_Containers.md) (16 shared connections)
-- [Player Stats](Player_Stats.md) (6 shared connections)
-- [NPC Combat](NPC_Combat.md) (3 shared connections)
-- [Loot Generation](Loot_Generation.md) (2 shared connections)
+- [services inventory mutation](services_inventory_mutation.md) (16 shared connections)
+- [player requests schemas](player_requests_schemas.md) (14 shared connections)
+- [persistence container rationale](persistence_container_rationale.md) (8 shared connections)
+- [Error Conversion](Error_Conversion.md) (3 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (2 shared connections)
+- [auth users rationale](auth_users_rationale.md) (1 shared connections)
 - [NPC Definitions Admin](NPC_Definitions_Admin.md) (1 shared connections)
-- [player service game](player_service_game.md) (1 shared connections)
+- [feature services flag](feature_services_flag.md) (1 shared connections)
 - [combat commands handler](combat_commands_handler.md) (1 shared connections)
 
 ## Source Files

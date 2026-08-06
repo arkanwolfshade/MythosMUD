@@ -33,16 +33,13 @@
 
 ## Relationships
 
-- [lucidity services helpers](lucidity_services_helpers.md) (6 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (7 shared connections)
+- [player room realtime](player_room_realtime.md) (6 shared connections)
 - [admin structured logging](admin_structured_logging.md) (4 shared connections)
 - [commands admin mute](commands_admin_mute.md) (3 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (3 shared connections)
-- [commands npc admin](commands_npc_admin.md) (2 shared connections)
-- [command player state](command_player_state.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [commands whisper command](commands_whisper_command.md) (1 shared connections)
-- [game models enums](game_models_enums.md) (1 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [alias storage rationale](alias_storage_rationale.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (1 shared connections)
 - [movement monitor game](movement_monitor_game.md) (1 shared connections)
 - [models player related](models_player_related.md) (1 shared connections)
 

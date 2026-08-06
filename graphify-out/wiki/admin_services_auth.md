@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_get_regen_multiplier_standing()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **Test _get_regen_multiplier() returns 1.0 for standing position.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **._publish_attack_event()** (3 connections) — `server/npc/combat_integration.py`
+- **Publish NPC attack event to event bus.** (1 connections) — `server/npc/combat_integration.py`
 
 ## Relationships
 
-- [config rationale reset](config_rationale_reset.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [services nats service](services_nats_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- `server/npc/combat_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

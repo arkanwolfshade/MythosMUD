@@ -4,27 +4,29 @@
 
 ## Key Concepts
 
-- **TestHandleSpecialCommandRouting** (5 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **.test_handle_special_command_routing_alias_command()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **.test_handle_special_command_routing_alias_command_no_storage()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **.test_handle_special_command_routing_emote_conversion()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _handle_special_command_routing function.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _handle_special_command_routing handles alias management commands.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _handle_special_command_routing returns error when alias storage unavailabl** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _handle_special_command_routing converts single-word emotes.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.__call__()** (8 connections) — `server/middleware/correlation_middleware.py`
+- **_get_header()** (6 connections) — `server/middleware/correlation_middleware.py`
+- **Scope** (2 connections)
+- **test_get_header_case_insensitive()** (2 connections) — `server/tests/unit/middleware/test_correlation_middleware.py`
+- **Receive** (1 connections)
+- **Send** (1 connections)
+- **Return first header value for name (case-insensitive) from ASGI scope.** (1 connections) — `server/middleware/correlation_middleware.py`
+- **ASGI application interface.          Args:             scope: ASGI connection sc** (1 connections) — `server/middleware/correlation_middleware.py`
 
 ## Relationships
 
-- [command commands handler](command_commands_handler.md) (4 shared connections)
+- [app factory rationale](app_factory_rationale.md) (4 shared connections)
+- [middleware correlation rationale](middleware_correlation_rationale.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_aliases.py`
+- `server/middleware/correlation_middleware.py`
+- `server/tests/unit/middleware/test_correlation_middleware.py`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 20 (91%)
+- INFERRED: 2 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

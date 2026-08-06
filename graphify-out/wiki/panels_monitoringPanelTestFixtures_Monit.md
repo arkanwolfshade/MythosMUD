@@ -1,38 +1,42 @@
 # panels monitoringPanelTestFixtures Monit
 
-> 13 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **.spawn_npcs_on_startup()** (8 connections) — `server/services/npc_startup_service.py`
-- **._spawn_required_npcs()** (6 connections) — `server/services/npc_startup_service.py`
-- **._determine_spawn_room()** (6 connections) — `server/services/npc_startup_service.py`
-- **._spawn_optional_npcs()** (5 connections) — `server/services/npc_startup_service.py`
-- **._spawn_arena_npcs()** (5 connections) — `server/services/npc_startup_service.py`
-- **Any** (4 connections)
-- **._get_default_room_for_sub_zone()** (3 connections) — `server/services/npc_startup_service.py`
-- **Spawn NPCs during server startup.          This method handles the automatic spa** (1 connections) — `server/services/npc_startup_service.py`
-- **Spawn all required NPCs.          Args:             required_npcs: List of requi** (1 connections) — `server/services/npc_startup_service.py`
-- **Spawn optional NPCs based on spawn probability.          Args:             optio** (1 connections) — `server/services/npc_startup_service.py`
-- **Second pass: spawn one instance per definition (that was spawned in required/opt** (1 connections) — `server/services/npc_startup_service.py`
-- **Determine the appropriate room for spawning an NPC.          Args:             n** (1 connections) — `server/services/npc_startup_service.py`
-- **Get a default room for a given sub-zone.          Args:             sub_zone_id:** (1 connections) — `server/services/npc_startup_service.py`
+- **_apply_exploration_filter_if_needed()** (13 connections) — `server/api/rooms.py`
+- **test_apply_exploration_filter_superuser_bypasses_filter()** (6 connections) — `server/tests/unit/api/test_rooms_exploration_filter.py`
+- **test_apply_exploration_filter_admin_sees_all_rooms_when_filter_requested()** (6 connections) — `server/tests/unit/api/test_rooms_exploration_filter.py`
+- **test_apply_exploration_filter_non_admin_uses_room_service_intersection()** (6 connections) — `server/tests/unit/api/test_rooms_exploration_filter.py`
+- **test_apply_exploration_filter_no_player_returns_unfiltered()** (6 connections) — `server/tests/unit/api/test_rooms_exploration_filter.py`
+- **RoomDictList** (5 connections)
+- **sample_rooms()** (3 connections) — `server/tests/unit/api/test_rooms_exploration_filter.py`
+- **Any** (1 connections)
+- **Apply exploration filter to rooms if requested and user is not admin.      Args:** (1 connections) — `server/api/rooms.py`
+- **Two stable room dict rows (stable_id, name) for filter tests.** (1 connections) — `server/tests/unit/api/test_rooms_exploration_filter.py`
+- **Superuser bypass matches admin: full room list without exploration intersection.** (1 connections) — `server/tests/unit/api/test_rooms_exploration_filter.py`
+- **Admin / superuser bypasses exploration filter; room_service is not called.** (1 connections) — `server/tests/unit/api/test_rooms_exploration_filter.py`
+- **Non-admin with player record gets filter_rooms_by_exploration(stable room rows).** (1 connections) — `server/tests/unit/api/test_rooms_exploration_filter.py`
+- **If user has no linked player, exploration cannot run; unknown rooms list returne** (1 connections) — `server/tests/unit/api/test_rooms_exploration_filter.py`
 
 ## Relationships
 
-- [map layout useMapLayout](map_layout_useMapLayout.md) (6 shared connections)
-- [nats services service](nats_services_service.md) (3 shared connections)
-- [player effects endpoints](player_effects_endpoints.md) (1 shared connections)
-- [logging setup structured](logging_setup_structured.md) (1 shared connections)
+- [database helpers infrastructure](database_helpers_infrastructure.md) (6 shared connections)
+- [maps handle ascii](maps_handle_ascii.md) (5 shared connections)
+- [corpse lifecycle service](corpse_lifecycle_service.md) (5 shared connections)
+- [room game service](room_game_service.md) (2 shared connections)
+- [persistence container rationale](persistence_container_rationale.md) (1 shared connections)
+- [player requests schemas](player_requests_schemas.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/npc_startup_service.py`
+- `server/api/rooms.py`
+- `server/tests/unit/api/test_rooms_exploration_filter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 43 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 44 (85%)
+- INFERRED: 8 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

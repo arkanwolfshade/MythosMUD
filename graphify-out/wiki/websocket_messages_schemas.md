@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [Loot Generation](Loot_Generation.md) (4 shared connections)
+- [add used user](add_used_user.md) (4 shared connections)
 
 ## Source Files
 

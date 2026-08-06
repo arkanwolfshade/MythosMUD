@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_check_rate_limit_within_limits()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **Test check_rate_limit returns True when within limits.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_process_dict_occupant_with_npc_name()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test process_dict_occupant() processes NPC occupant.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [rate limiter services](rate_limiter_services.md) (1 shared connections)
+- [player event handlers](player_event_handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_rate_limiter.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_restore_mp_from_meditation_player_not_found()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **Test restore_mp_from_meditation() returns error when player not found.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **mock_persistence()** (2 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **Persistence mock with async get_player_by_id for integration tests.** (1 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
 
 ## Relationships
 
-- [config rationale reset](config_rationale_reset.md) (1 shared connections)
+- [services nats service](services_nats_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- `server/tests/unit/npc/test_npc_combat_integration_class.py`
 
 ## Audit Trail
 

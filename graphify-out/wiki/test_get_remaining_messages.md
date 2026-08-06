@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_remaining_messages()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **Test get_remaining_messages returns correct count.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_is_player_disconnecting_invalid_id()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test is_player_disconnecting() handles invalid player_id.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [rate limiter services](rate_limiter_services.md) (1 shared connections)
+- [player event handlers](player_event_handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_rate_limiter.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 

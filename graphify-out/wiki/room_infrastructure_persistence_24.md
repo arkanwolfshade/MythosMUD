@@ -1,23 +1,26 @@
 # room infrastructure persistence
 
-> 2 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **test_get_player_lucidity_tier_with_uuid()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _get_player_lucidity_tier handles UUID objects.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Summary: Test Quality Metrics** (5 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Current State** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Optimized State (After Pruning)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Value Proposition** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **By removing 15% of tests, we** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
 
 ## Relationships
 
-- [message chat nats](message_chat_nats.md) (1 shared connections)
+- [archive quality QUALITY](archive_quality_QUALITY.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -33,14 +33,13 @@
 
 ## Relationships
 
+- [combat attack handler](combat_attack_handler.md) (6 shared connections)
 - [Security Validator Tests](Security_Validator_Tests.md) (5 shared connections)
-- [command commands handler](command_commands_handler.md) (4 shared connections)
-- [logoutHandler logger App](logoutHandler_logger_App.md) (4 shared connections)
-- [fixtures mock helpers](fixtures_mock_helpers.md) (3 shared connections)
-- [command factories create](command_factories_create.md) (2 shared connections)
-- [commands recovery lucidity](commands_recovery_lucidity.md) (2 shared connections)
-- [Loot Generation](Loot_Generation.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [player model models](player_model_models.md) (4 shared connections)
+- [player left room](player_left_room.md) (3 shared connections)
+- [dialogue definition persistence](dialogue_definition_persistence.md) (2 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
 
 ## Source Files
 

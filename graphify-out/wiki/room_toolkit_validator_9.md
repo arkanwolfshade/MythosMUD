@@ -1,17 +1,27 @@
 # room toolkit validator
 
-> 4 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **name** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **properties** (12 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **id** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **field1** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **field2** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **field3** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 - **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **minLength** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **pattern** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 - **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 
 ## Relationships
 
-- [room toolkit validator](room_toolkit_validator.md) (1 shared connections)
+- [room toolkit validator](room_toolkit_validator.md) (5 shared connections)
+- [room hierarchy schema](room_hierarchy_schema.md) (1 shared connections)
+- [game level service](game_level_service.md) (1 shared connections)
+- [schemas room schema](schemas_room_schema.md) (1 shared connections)
 
 ## Source Files
 
@@ -19,7 +29,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 28 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

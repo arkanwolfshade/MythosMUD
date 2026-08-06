@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_subscribe_to_subject_no_nats_service()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test _subscribe_to_subject returns False when nats_service is None.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_remove_room_occupant_not_occupant()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **Test remove_room_occupant() when player is not an occupant.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
 
 ## Relationships
 
-- [nats message handler](nats_message_handler.md) (1 shared connections)
+- [room subscription manager](room_subscription_manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/tests/unit/realtime/test_room_subscription_manager.py`
 
 ## Audit Trail
 

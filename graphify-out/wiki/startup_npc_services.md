@@ -1,51 +1,41 @@
 # startup npc services
 
-> 23 nodes
+> 18 nodes
 
 ## Key Concepts
 
-- **look_container.py** (23 connections) — `server/commands/look_container.py`
-- **Any** (14 connections)
-- **_find_container_in_room_or_equipped()** (14 connections) — `server/commands/look_container.py`
-- **_find_container_via_inner_container()** (13 connections) — `server/commands/look_container.py`
-- **_handle_container_look()** (11 connections) — `server/commands/look_container.py`
-- **_try_lookup_container_implicit()** (10 connections) — `server/commands/look_container.py`
-- **_matches_item_instance_id()** (8 connections) — `server/commands/look_container.py`
-- **_try_match_container_component()** (8 connections) — `server/commands/look_container.py`
-- **_matches_name_or_slot()** (7 connections) — `server/commands/look_container.py`
-- **_get_container_data_from_component()** (7 connections) — `server/commands/look_container.py`
-- **_extract_container_metadata()** (6 connections) — `server/commands/look_container.py`
-- **_find_container_via_wearable_service()** (6 connections) — `server/commands/look_container.py`
-- **Container look functionality for MythosMUD.  This module handles looking at cont** (1 connections) — `server/commands/look_container.py`
-- **Find container via inner_container_id from item.** (1 connections) — `server/commands/look_container.py`
-- **Check if item instance IDs match.** (1 connections) — `server/commands/look_container.py`
-- **Check if container matches by name or slot.** (1 connections) — `server/commands/look_container.py`
-- **Get container data from component ID.** (1 connections) — `server/commands/look_container.py`
-- **Extract metadata from container component.** (1 connections) — `server/commands/look_container.py`
-- **Try to match a container component and return container data if found.** (1 connections) — `server/commands/look_container.py`
-- **Find container via wearable container service.** (1 connections) — `server/commands/look_container.py`
-- **Find container in room or equipped items.      Returns:         tuple: (containe** (1 connections) — `server/commands/look_container.py`
-- **Handle looking at a specific container.** (1 connections) — `server/commands/look_container.py`
-- **Try to find and display a container in implicit lookup.** (1 connections) — `server/commands/look_container.py`
+- **test_player_combat_service.py** (37 connections) — `server/tests/unit/services/test_player_combat_service.py`
+- **test_is_player_in_combat_sync_true()** (4 connections) — `server/tests/unit/services/test_player_combat_service.py`
+- **test_cleanup_stale_combat_states()** (4 connections) — `server/tests/unit/services/test_player_combat_service.py`
+- **test_player_combat_state_post_init()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
+- **test_player_combat_state_post_init_with_activity()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
+- **test_player_xp_award_event_init()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
+- **mock_persistence()** (2 connections) — `server/tests/unit/services/test_player_combat_service.py`
+- **mock_event_bus()** (2 connections) — `server/tests/unit/services/test_player_combat_service.py`
+- **mock_npc_service()** (2 connections) — `server/tests/unit/services/test_player_combat_service.py`
+- **Unit tests for player combat service.  Tests the PlayerCombatService class for m** (1 connections) — `server/tests/unit/services/test_player_combat_service.py`
+- **Create mock persistence layer.** (1 connections) — `server/tests/unit/services/test_player_combat_service.py`
+- **Create mock event bus.** (1 connections) — `server/tests/unit/services/test_player_combat_service.py`
+- **Create mock NPC combat integration service (no _rewards so XP uses fallback path** (1 connections) — `server/tests/unit/services/test_player_combat_service.py`
+- **Test is_player_in_combat_sync returns True when in combat.** (1 connections) — `server/tests/unit/services/test_player_combat_service.py`
+- **Test cleanup_stale_combat_states cleans up stale states.** (1 connections) — `server/tests/unit/services/test_player_combat_service.py`
+- **Test PlayerCombatState.__post_init__ sets last_activity.** (1 connections) — `server/tests/unit/services/test_player_combat_service.py`
+- **Test PlayerCombatState.__post_init__ preserves provided last_activity.** (1 connections) — `server/tests/unit/services/test_player_combat_service.py`
+- **Test PlayerXPAwardEvent initialization.** (1 connections) — `server/tests/unit/services/test_player_combat_service.py`
 
 ## Relationships
 
-- [DI Container Format](DI_Container_Format.md) (21 shared connections)
-- [schemas validator rationale](schemas_validator_rationale.md) (20 shared connections)
-- [connection realtime statistics](connection_realtime_statistics.md) (5 shared connections)
-- [command processor rationale](command_processor_rationale.md) (4 shared connections)
-- [status game spell](status_game_spell.md) (4 shared connections)
-- [services inventory mutation](services_inventory_mutation.md) (3 shared connections)
-- [look command commands](look_command_commands.md) (3 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (27 shared connections)
+- [Error Conversion](Error_Conversion.md) (6 shared connections)
+- [profession models rationale](profession_models_rationale.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/look_container.py`
+- `server/tests/unit/services/test_player_combat_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 138 (100%)
+- EXTRACTED: 69 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

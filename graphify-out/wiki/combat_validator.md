@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **combat_validator()** (3 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Create a CombatValidator instance.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_record_message_cleanup_old()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **Test record_message cleans up old entries.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
 
 ## Relationships
 
-- [emote models rationale](emote_models_rationale.md) (1 shared connections)
-- [NPC Combat](NPC_Combat.md) (1 shared connections)
+- [rate limiter services](rate_limiter_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/services/test_rate_limiter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

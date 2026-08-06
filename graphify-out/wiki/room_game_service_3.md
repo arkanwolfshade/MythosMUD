@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_create_party_already_in_party_rejected()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **Creating a second party when already in one fails.** (1 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_process_room_rows_with_full_room_id()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _process_room_rows with stable_id that already contains full hierarchical p** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Relationships
 
-- [commands inventory helpers](commands_inventory_helpers.md) (1 shared connections)
+- [room persistence loading](room_persistence_loading.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_party_service.py`
+- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Audit Trail
 

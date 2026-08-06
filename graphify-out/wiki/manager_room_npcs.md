@@ -1,6 +1,6 @@
 # manager room npcs
 
-> 16 nodes
+> 17 nodes
 
 ## Key Concepts
 
@@ -13,6 +13,7 @@
 - **._build_final_inventory()** (4 connections) — `server/game/magic/spell_materials.py`
 - **.__init__()** (3 connections) — `server/game/magic/spell_materials.py`
 - **UUID** (3 connections)
+- **materials_service()** (2 connections) — `server/tests/unit/game/magic/test_spell_materials.py`
 - **Service for handling spell material requirements.      Handles checking if playe** (1 connections) — `server/game/magic/spell_materials.py`
 - **Initialize the spell materials service.          Args:             player_servic** (1 connections) — `server/game/magic/spell_materials.py`
 - **Check if player has all required materials.          Args:             player_id** (1 connections) — `server/game/magic/spell_materials.py`
@@ -23,20 +24,21 @@
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (7 shared connections)
-- [spell game magic](spell_game_magic.md) (3 shared connections)
-- [game models player](game_models_player.md) (2 shared connections)
+- [room realtime rationale](room_realtime_rationale.md) (5 shared connections)
+- [persistence core infrastructure](persistence_core_infrastructure.md) (4 shared connections)
+- [panels domPurifyClient chat](panels_domPurifyClient_chat.md) (3 shared connections)
 - [subject nats manager](subject_nats_manager.md) (1 shared connections)
 - [player respawn event](player_respawn_event.md) (1 shared connections)
 
 ## Source Files
 
 - `server/game/magic/spell_materials.py`
+- `server/tests/unit/game/magic/test_spell_materials.py`
 
 ## Audit Trail
 
-- EXTRACTED: 53 (91%)
-- INFERRED: 5 (9%)
+- EXTRACTED: 55 (92%)
+- INFERRED: 5 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

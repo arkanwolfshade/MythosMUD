@@ -1,55 +1,49 @@
 # argon2 auth rationale
 
-> 41 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **test_channel_commands.py** (20 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **channel_commands.py** (17 connections) — `server/commands/channel_commands.py`
-- **handle_channel_command()** (14 connections) — `server/commands/channel_commands.py`
-- **_handle_default_channel_setting()** (10 connections) — `server/commands/channel_commands.py`
-- **_get_persistence_and_player()** (8 connections) — `server/commands/channel_commands.py`
-- **_extract_channel_from_command()** (8 connections) — `server/commands/channel_commands.py`
-- **_validate_channel_name()** (5 connections) — `server/commands/channel_commands.py`
-- **Any** (4 connections)
-- **test_get_persistence_and_player_no_persistence()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **test_get_persistence_and_player_not_found()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **test_extract_channel_from_command_direct()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **test_extract_channel_from_command_parsed_fallback()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **test_extract_channel_from_command_missing()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **test_validate_channel_name_invalid()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **test_handle_channel_command_no_persistence()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **test_handle_channel_command_usage_when_channel_missing()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **test_handle_channel_command_switch_valid_channel()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **test_handle_default_channel_setting_success()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **test_handle_default_channel_setting_invalid_channel()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **test_handle_default_channel_setting_sqlalchemy_error()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **test_handle_channel_command_default_subcommand()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **Channel management commands for Advanced Chat Channels.  This module provides ha** (1 connections) — `server/commands/channel_commands.py`
-- **Get persistence and player. Returns (persistence, player) or (None, None) if not** (1 connections) — `server/commands/channel_commands.py`
-- **Extract channel name from command_data. Returns channel name or None.** (1 connections) — `server/commands/channel_commands.py`
-- **Handle setting default channel. Returns result dict or None if not a default com** (1 connections) — `server/commands/channel_commands.py`
-- *... and 16 more nodes in this community*
+- **get_cached_player()** (15 connections) — `server/utils/player_cache.py`
+- **cache_player()** (13 connections) — `server/utils/player_cache.py`
+- **test_player_cache.py** (11 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **player_cache.py** (7 connections) — `server/utils/player_cache.py`
+- **_get_request_state()** (6 connections) — `server/utils/player_cache.py`
+- **test_cache_and_get_player()** (4 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **test_cache_player_multiple()** (4 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **test_cache_player_overwrite()** (4 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **test_get_cached_player_none()** (3 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **test_get_cached_player_nonexistent()** (3 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **test_get_cached_player_no_state()** (3 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **test_cache_player_no_state()** (3 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **Any** (3 connections)
+- **Unit tests for player_cache utilities.  Tests the player caching functions for r** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **Test get_cached_player() returns None when no cache exists.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **Test cache_player() and get_cached_player() operations.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **Test get_cached_player() returns None for nonexistent key.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **Test cache_player() can cache multiple players.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **Test cache_player() overwrites existing entries.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **Test get_cached_player() handles missing state.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **Test cache_player() handles missing state gracefully.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **Helpers for caching player objects during a single command request.  This avoids** (1 connections) — `server/utils/player_cache.py`
+- **Safely extract the state object from a FastAPI/Starlette request.** (1 connections) — `server/utils/player_cache.py`
+- **Return a cached player object for this request if one exists.** (1 connections) — `server/utils/player_cache.py`
+- **Cache a player object on the request for reuse within the command.** (1 connections) — `server/utils/player_cache.py`
 
 ## Relationships
 
-- [commands whisper command](commands_whisper_command.md) (3 shared connections)
-- [player preferences service](player_preferences_service.md) (3 shared connections)
-- [commands npc admin](commands_npc_admin.md) (2 shared connections)
-- [command player state](command_player_state.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [game models enums](game_models_enums.md) (1 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
-- [connection realtime manager](connection_realtime_manager.md) (1 shared connections)
+- [command validation commands](command_validation_commands.md) (5 shared connections)
+- [commands logout rationale](commands_logout_rationale.md) (5 shared connections)
+- [shutdown admin command](shutdown_admin_command.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/channel_commands.py`
-- `server/tests/unit/commands/test_channel_commands.py`
+- `server/tests/unit/utils/test_player_cache.py`
+- `server/utils/player_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 144 (99%)
+- EXTRACTED: 90 (99%)
 - INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 

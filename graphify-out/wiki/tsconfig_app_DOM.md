@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_get_regen_multiplier_sitting()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **Test _get_regen_multiplier() returns REST multiplier for sitting.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **test_format_metadata_empty()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **Test format_metadata with empty dict.** (1 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
 
 ## Relationships
 
-- [config rationale reset](config_rationale_reset.md) (1 shared connections)
+- [commands inventory helpers](commands_inventory_helpers.md) (1 shared connections)
+- [commands inventory command](commands_inventory_command.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- `server/tests/unit/commands/test_inventory_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

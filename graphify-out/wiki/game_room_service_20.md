@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_should_apply_mute_check_sensitive_channel()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **Test should_apply_mute_check() returns True for sensitive channels.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_list_room_drops_error()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **Test list_room_drops() handles errors gracefully.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Relationships
 
-- [message filtering realtime](message_filtering_realtime.md) (1 shared connections)
+- [room subscription manager](room_subscription_manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_message_filtering.py`
+- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Audit Trail
 

@@ -1,67 +1,46 @@
 # mythosApp appLazyScreens mythosAppViewMo
 
-> 28 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **config.ts** (28 connections) — `client/src/utils/config.ts`
-- **API_V1_BASE** (18 connections) — `client/src/utils/config.ts`
-- **MythosAppViewModel** (14 connections) — `client/src/mythosApp/mythosAppViewModel.ts`
-- **AppRootViews.tsx** (11 connections) — `client/src/mythosApp/AppRootViews.tsx`
-- **AppCreationFlowViews.tsx** (10 connections) — `client/src/mythosApp/AppCreationFlowViews.tsx`
-- **appLazyScreens.tsx** (9 connections) — `client/src/mythosApp/appLazyScreens.tsx`
-- **AppSessionOutroViews.tsx** (8 connections) — `client/src/mythosApp/AppSessionOutroViews.tsx`
-- **AppRootViews()** (6 connections) — `client/src/mythosApp/AppRootViews.tsx`
-- **AppDemoView.tsx** (5 connections) — `client/src/mythosApp/AppDemoView.tsx`
-- **LoadingFallback()** (5 connections) — `client/src/mythosApp/appLazyScreens.tsx`
-- **config.test.ts** (5 connections) — `client/src/utils/__tests__/config.test.ts`
-- **AppCreationFlowViews()** (4 connections) — `client/src/mythosApp/AppCreationFlowViews.tsx`
-- **AppDemoView()** (4 connections) — `client/src/mythosApp/AppDemoView.tsx`
-- **AppSessionOutroViews()** (4 connections) — `client/src/mythosApp/AppSessionOutroViews.tsx`
-- **startLoginGracePeriod.ts** (4 connections) — `client/src/mythosApp/startLoginGracePeriod.ts`
-- **getApiBaseUrl()** (3 connections) — `client/src/utils/config.ts`
-- **MythosLoginForm.tsx** (2 connections) — `client/src/mythosApp/MythosLoginForm.tsx`
-- **MythosLoginForm()** (2 connections) — `client/src/mythosApp/MythosLoginForm.tsx`
-- **EldritchEffectsDemo** (2 connections) — `client/src/mythosApp/appLazyScreens.tsx`
-- **GameClientV2Container** (2 connections) — `client/src/mythosApp/appLazyScreens.tsx`
-- **MotdInterstitialScreen** (2 connections) — `client/src/mythosApp/appLazyScreens.tsx`
-- **ProfessionSelectionScreen** (2 connections) — `client/src/mythosApp/appLazyScreens.tsx`
-- **StatsRollingScreen** (2 connections) — `client/src/mythosApp/appLazyScreens.tsx`
-- **CharacterSelectionScreen** (2 connections) — `client/src/mythosApp/appLazyScreens.tsx`
-- **SkillAssignmentScreen** (2 connections) — `client/src/mythosApp/appLazyScreens.tsx`
-- *... and 3 more nodes in this community*
+- **._get_random_error_message()** (8 connections) — `server/validators/combat_validator.py`
+- **.validate_combat_command()** (7 connections) — `server/validators/combat_validator.py`
+- **Any** (4 connections)
+- **._is_rate_limited()** (4 connections) — `server/validators/combat_validator.py`
+- **.__init__()** (3 connections) — `server/validators/combat_validator.py`
+- **.validate_can_attack_target()** (3 connections) — `server/validators/combat_validator.py`
+- **.validate_target_exists()** (3 connections) — `server/validators/combat_validator.py`
+- **.validate_target_alive()** (3 connections) — `server/validators/combat_validator.py`
+- **.validate_combat_state()** (3 connections) — `server/validators/combat_validator.py`
+- **.validate_attack_strength()** (3 connections) — `server/validators/combat_validator.py`
+- **._is_valid_target_name()** (3 connections) — `server/validators/combat_validator.py`
+- **._contains_suspicious_patterns()** (3 connections) — `server/validators/combat_validator.py`
+- **.get_combat_status_message()** (3 connections) — `server/validators/combat_validator.py`
+- **Initialize the combat validator.          Args:             party_service: Optio** (1 connections) — `server/validators/combat_validator.py`
+- **Validate that attacker is allowed to attack target (e.g. not same party).** (1 connections) — `server/validators/combat_validator.py`
+- **Validate a combat command with thematic error messages.          Args:** (1 connections) — `server/validators/combat_validator.py`
+- **Validate that a target exists with thematic error messages.          Args:** (1 connections) — `server/validators/combat_validator.py`
+- **Validate that a target is alive with thematic error messages.          Args:** (1 connections) — `server/validators/combat_validator.py`
+- **Validate combat state with thematic error messages.          Args:             i** (1 connections) — `server/validators/combat_validator.py`
+- **Validate attack strength with thematic error messages.          Args:** (1 connections) — `server/validators/combat_validator.py`
+- **Check if target name is valid.** (1 connections) — `server/validators/combat_validator.py`
+- **Check for suspicious patterns in target name.** (1 connections) — `server/validators/combat_validator.py`
+- **Check if player is rate limited.** (1 connections) — `server/validators/combat_validator.py`
+- **Get a random error message for the given error type.** (1 connections) — `server/validators/combat_validator.py`
+- **Get a thematic combat status message.** (1 connections) — `server/validators/combat_validator.py`
 
 ## Relationships
 
-- [mythosApp useMythosAppState useStatsRoll](mythosApp_useMythosAppState_useStatsRoll.md) (13 shared connections)
-- [mythosApp security submitAuth](mythosApp_security_submitAuth.md) (8 shared connections)
-- [mythosApp CharacterSelectionScreen chara](mythosApp_CharacterSelectionScreen_chara.md) (8 shared connections)
-- [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (6 shared connections)
-- [App helpers professionSystemErrorHandlin](App_helpers_professionSystemErrorHandlin.md) (2 shared connections)
-- [containers stores containerStore](containers_stores_containerStore.md) (2 shared connections)
-- [lucidityEventUtils mythosTime MythosTime](lucidityEventUtils_mythosTime_MythosTime.md) (2 shared connections)
-- [Game Terminal UI](Game_Terminal_UI.md) (2 shared connections)
-- [roomHandlers eventHandlers calculateOccu](roomHandlers_eventHandlers_calculateOccu.md) (2 shared connections)
-- [zone configuration npc](zone_configuration_npc.md) (2 shared connections)
-- [mapPageRenderer mapPageState MapPage](mapPageRenderer_mapPageState_MapPage.md) (2 shared connections)
-- [dialogue DialogueEditorPage baseUrl()](dialogue_DialogueEditorPage_baseUrl%28%29.md) (1 shared connections)
+- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (12 shared connections)
 
 ## Source Files
 
-- `client/src/mythosApp/AppCreationFlowViews.tsx`
-- `client/src/mythosApp/AppDemoView.tsx`
-- `client/src/mythosApp/AppRootViews.tsx`
-- `client/src/mythosApp/AppSessionOutroViews.tsx`
-- `client/src/mythosApp/MythosLoginForm.tsx`
-- `client/src/mythosApp/appLazyScreens.tsx`
-- `client/src/mythosApp/mythosAppViewModel.ts`
-- `client/src/mythosApp/startLoginGracePeriod.ts`
-- `client/src/utils/__tests__/config.test.ts`
-- `client/src/utils/config.ts`
+- `server/validators/combat_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 161 (100%)
+- EXTRACTED: 62 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

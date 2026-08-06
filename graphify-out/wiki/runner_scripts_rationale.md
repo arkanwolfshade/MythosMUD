@@ -33,7 +33,7 @@
 ## Relationships
 
 - [scripts run guard](scripts_run_guard.md) (2 shared connections)
-- [taunt combat commands](taunt_combat_commands.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
 
 ## Source Files
 

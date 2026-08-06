@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_extract_chat_message_fields_system_target_id()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Personal system chat maps target_id to target_player_id and keeps speaker_kind.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_remove_rule_not_found()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test remove_rule() returns False when rule not found.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [message chat nats](message_chat_nats.md) (1 shared connections)
+- [room occupant manager](room_occupant_manager.md) (1 shared connections)
+- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

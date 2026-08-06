@@ -1,51 +1,50 @@
 # npc combat services
 
-> 19 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **main.py** (15 connections) — `server/main.py`
-- **create_app()** (14 connections) — `server/app/factory.py`
-- **main()** (4 connections) — `scripts/generate_openapi_spec.py`
-- **main()** (4 connections) — `server/main.py`
-- **_create_get_app()** (4 connections) — `server/main.py`
-- **generate_openapi_spec.py** (3 connections) — `scripts/generate_openapi_spec.py`
-- **_sanitize_token_examples()** (3 connections) — `scripts/generate_openapi_spec.py`
-- **FastAPI** (3 connections)
-- **test_auth()** (3 connections) — `server/main.py`
-- **read_root()** (2 connections) — `server/main.py`
-- **Replace auth token examples with clearly fake placeholders.** (1 connections) — `scripts/generate_openapi_spec.py`
-- **Generate and write OpenAPI spec to docs/openapi/openapi.json.** (1 connections) — `scripts/generate_openapi_spec.py`
-- **Create and configure the FastAPI application.      This function sets up the Fas** (1 connections) — `server/app/factory.py`
-- **Any** (1 connections)
-- **MythosMUD Server - Main Application Entry Point  This module serves as the prima** (1 connections) — `server/main.py`
-- **Main entry point for the MythosMUD server.** (1 connections) — `server/main.py`
-- **Factory function that creates the get_app function with encapsulated cache.** (1 connections) — `server/main.py`
-- **Root endpoint providing basic server information.** (1 connections) — `server/main.py`
-- **Test endpoint to verify JWT authentication is working.** (1 connections) — `server/main.py`
+- **_find_item_in_inventory()** (18 connections) — `server/commands/look_item.py`
+- **test_find_item_in_inventory_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_inventory_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_inventory_by_item_id()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_inventory_with_name_field()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_find_item_in_inventory_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_empty()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_no_match()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Find an item in player inventory by name or prototype_id.      Args:         inv** (1 connections) — `server/commands/look_item.py`
+- **Test finding item in inventory by name.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test finding item in inventory when not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test finding item in inventory by item_id.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test finding item in inventory using 'name' field.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test _find_item_in_inventory() finds item by name.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_inventory() returns None when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_inventory() with empty list.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_inventory() with no matching items.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_inventory() with multiple matches (ambiguous).** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_inventory() with instance number.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_inventory() with instance number out of range.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
 
 ## Relationships
 
-- [player service game](player_service_game.md) (5 shared connections)
-- [NPC Combat](NPC_Combat.md) (3 shared connections)
-- [app factory rationale](app_factory_rationale.md) (2 shared connections)
-- [Magic Spell Service](Magic_Spell_Service.md) (1 shared connections)
-- [middleware comprehensive logging](middleware_comprehensive_logging.md) (1 shared connections)
-- [middleware error handling](middleware_error_handling.md) (1 shared connections)
-- [persistence rationale player](persistence_rationale_player.md) (1 shared connections)
-- [player requests schemas](player_requests_schemas.md) (1 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
+- [contexts GameTerminalContext useGameTerm](contexts_GameTerminalContext_useGameTerm.md) (8 shared connections)
+- [Item Lookup](Item_Lookup.md) (5 shared connections)
+- [schemas validator rationale](schemas_validator_rationale.md) (4 shared connections)
 
 ## Source Files
 
-- `scripts/generate_openapi_spec.py`
-- `server/app/factory.py`
-- `server/main.py`
+- `server/commands/look_item.py`
+- `server/tests/unit/commands/test_look_item.py`
+- `server/tests/unit/commands/test_look_item_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 61 (95%)
-- INFERRED: 3 (5%)
+- EXTRACTED: 63 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

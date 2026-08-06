@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_process_single_message_event_handler_error()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test _process_single_message raises exception when event handler fails.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_remove_room_occupant_error_handling()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **Test remove_room_occupant() handles errors gracefully.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
 
 ## Relationships
 
-- [nats message handler](nats_message_handler.md) (1 shared connections)
+- [room subscription manager](room_subscription_manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/tests/unit/realtime/test_room_subscription_manager.py`
 
 ## Audit Trail
 

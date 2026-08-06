@@ -1,50 +1,49 @@
 # commands alias rationale
 
-> 69 nodes
+> 42 nodes
 
 ## Key Concepts
 
-- **test_alias_commands.py** (30 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **handle_alias_command()** (24 connections) — `server/commands/alias_commands.py`
-- **alias_commands.py** (15 connections) — `server/commands/alias_commands.py`
-- **handle_unalias_command()** (12 connections) — `server/commands/alias_commands.py`
-- **handle_aliases_command()** (11 connections) — `server/commands/alias_commands.py`
-- **_create_alias()** (5 connections) — `server/commands/alias_commands.py`
-- **_extract_alias_params()** (4 connections) — `server/commands/alias_commands.py`
-- **Any** (4 connections)
-- **_view_alias()** (4 connections) — `server/commands/alias_commands.py`
-- **_validate_alias_params()** (3 connections) — `server/commands/alias_commands.py`
-- **test_handle_alias_command_no_storage()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_no_args()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_view_existing()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_view_nonexistent()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_create_from_args()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_create_from_structured_data()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_invalid_name_too_long()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_invalid_command_too_long()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_circular_reference()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_create_error()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_aliases_command_no_storage()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_aliases_command_no_aliases()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_aliases_command_with_aliases()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_aliases_command_error()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_unalias_command_no_storage()** (3 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- *... and 44 more nodes in this community*
+- **test_container_persistence_extended_parse.py** (26 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_container_data_to_dict()** (5 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_container_data_to_dict_none_values()** (5 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_container_data_init()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_parse_jsonb_column_empty_list()** (2 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_parse_jsonb_column_empty_dict()** (2 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_parse_jsonb_column_string_list()** (2 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_parse_jsonb_column_string_dict()** (2 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_parse_jsonb_column_with_default()** (2 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_parse_jsonb_column_falsy_value()** (2 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_parse_jsonb_column_falsy_empty_string()** (2 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_parse_jsonb_column_falsy_empty_list()** (2 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_parse_jsonb_column_falsy_empty_dict()** (2 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_fetch_container_items_success()** (2 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_fetch_container_items_empty()** (2 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_fetch_container_items_missing_item_instance_id()** (2 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_fetch_container_items_non_dict_row()** (2 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_fetch_container_items_string_metadata()** (2 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_fetch_container_items_invalid_json_metadata()** (2 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_fetch_container_items_non_dict_metadata()** (2 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_fetch_container_items_missing_fields()** (2 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **Unit tests for container persistence: JSONB parsing, item fetch, and ContainerDa** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **Test parsing empty list JSONB column.** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **Test parsing empty dict JSONB column.** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **Test parsing string JSONB column containing list.** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [commands whisper command](commands_whisper_command.md) (9 shared connections)
-- [commands npc admin](commands_npc_admin.md) (6 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [retry nats handler](retry_nats_handler.md) (5 shared connections)
+- [persistence container item](persistence_container_item.md) (4 shared connections)
+- [auth users rationale](auth_users_rationale.md) (4 shared connections)
 
 ## Source Files
 
-- `server/commands/alias_commands.py`
-- `server/tests/unit/commands/test_alias_commands.py`
+- `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
 
 ## Audit Trail
 
-- EXTRACTED: 219 (100%)
+- EXTRACTED: 95 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,17 +1,23 @@
 # corpse lifecycle service
 
-> 88 nodes
+> 101 nodes
 
 ## Key Concepts
 
 - **ExplorationService** (79 connections) — `server/services/exploration_service.py`
 - **test_exploration_service.py** (45 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **get_ascii_minimap()** (16 connections) — `server/api/maps.py`
 - **_row_scalar_one_or_none()** (10 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_get_ascii_minimap_requires_auth()** (5 connections) — `server/tests/unit/api/test_maps.py`
-- **test_get_ascii_minimap_success()** (5 connections) — `server/tests/unit/api/test_maps.py`
+- **.mark_room_as_explored()** (7 connections) — `server/services/exploration_service.py`
+- **UUID** (7 connections)
+- **._get_room_uuid_by_stable_id()** (7 connections) — `server/services/exploration_service.py`
+- **.is_room_explored()** (6 connections) — `server/services/exploration_service.py`
+- **AsyncSession** (5 connections)
+- **._mark_explored_in_session()** (5 connections) — `server/services/exploration_service.py`
+- **.get_explored_rooms()** (5 connections) — `server/services/exploration_service.py`
 - **_async_session_maker_mock()** (5 connections) — `server/tests/unit/services/test_exploration_service.py`
 - **test_get_room_uuid_by_stable_id_no_session()** (5 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **.__init__()** (4 connections) — `server/services/exploration_service.py`
+- **.mark_room_as_explored_sync()** (4 connections) — `server/services/exploration_service.py`
 - **_row_scalar_one()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
 - **_row_fetchall()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
 - **test_mark_room_as_explored_no_session()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
@@ -23,39 +29,30 @@
 - **test_mark_explored_in_session_new_record()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
 - **test_mark_explored_in_session_existing_record()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
 - **test_get_explored_rooms()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_get_explored_rooms_empty()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_get_explored_rooms_database_error()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_is_room_explored_true()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_is_room_explored_false()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_is_room_explored_database_error()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_mark_room_as_explored_sync_with_error_handler()** (4 connections) — `server/tests/unit/services/test_exploration_service.py`
-- *... and 63 more nodes in this community*
+- *... and 76 more nodes in this community*
 
 ## Relationships
 
-- [maps handle ascii](maps_handle_ascii.md) (25 shared connections)
-- [room game service](room_game_service.md) (14 shared connections)
-- [combat services service](combat_services_service.md) (7 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (7 shared connections)
-- [database helpers infrastructure](database_helpers_infrastructure.md) (3 shared connections)
-- [websocket realtime handler](websocket_realtime_handler.md) (3 shared connections)
-- [Exception Containers](Exception_Containers.md) (2 shared connections)
-- [player requests schemas](player_requests_schemas.md) (2 shared connections)
-- [command handler processing](command_handler_processing.md) (1 shared connections)
+- [maps handle ascii](maps_handle_ascii.md) (18 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (12 shared connections)
+- [database helpers infrastructure](database_helpers_infrastructure.md) (7 shared connections)
+- [panels monitoringPanelTestFixtures Monit](panels_monitoringPanelTestFixtures_Monit.md) (5 shared connections)
+- [persistence container rationale](persistence_container_rationale.md) (2 shared connections)
+- [room realtime occupant](room_realtime_occupant.md) (2 shared connections)
+- [room game service](room_game_service.md) (1 shared connections)
+- [websocket realtime handler](websocket_realtime_handler.md) (1 shared connections)
 - [NPC Definitions Admin](NPC_Definitions_Admin.md) (1 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [Database Access Layer](Database_Access_Layer.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/maps.py`
 - `server/services/exploration_service.py`
-- `server/tests/unit/api/test_maps.py`
 - `server/tests/unit/services/test_exploration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 319 (93%)
-- INFERRED: 25 (7%)
+- EXTRACTED: 357 (95%)
+- INFERRED: 19 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

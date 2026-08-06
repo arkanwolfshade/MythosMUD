@@ -1,70 +1,71 @@
 # persistence rationale players
 
-> 256 nodes
+> 309 nodes
 
 ## Key Concepts
 
-- **AsyncPersistenceLayer** (184 connections) — `server/async_persistence.py`
-- **async_persistence.py** (73 connections) — `server/async_persistence.py`
-- **combat_turn_participant_actions.py** (46 connections) — `server/services/combat_turn_participant_actions.py`
-- **ScheduleService** (30 connections) — `server/services/schedule_service.py`
-- **ScheduleEntry** (29 connections) — `server/schemas/calendar/calendar.py`
-- **schedule_service.py** (25 connections) — `server/services/schedule_service.py`
-- **Player** (22 connections)
-- **UUID** (21 connections)
-- **TestScheduleService** (21 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **Any** (19 connections)
-- **idle_movement.py** (17 connections) — `server/npc/idle_movement.py`
-- **combat_hp_sync.py** (15 connections) — `server/services/combat_hp_sync.py`
-- **._ensure_room_cache_loaded()** (13 connections) — `server/async_persistence.py`
-- **profession_service.py** (13 connections) — `server/game/profession_service.py`
-- **test_schedule_service.py** (12 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **CreateItemInstanceInput** (11 connections) — `server/async_persistence_constants.py`
-- **_weapon_damage_from_equipped_player()** (11 connections) — `server/services/combat_turn_participant_actions.py`
-- **_resolve_npc_target()** (11 connections) — `server/services/combat_turn_participant_actions.py`
-- **process_npc_turn()** (10 connections) — `server/services/combat_turn_participant_actions.py`
-- **process_player_turn()** (10 connections) — `server/services/combat_turn_participant_actions.py`
-- **_schedule_entry_from_row()** (10 connections) — `server/services/schedule_service.py`
-- **resolve_player_attack_damage()** (9 connections) — `server/services/combat_turn_participant_actions.py`
-- **_get_combat_container_services()** (8 connections) — `server/services/combat_turn_participant_actions.py`
-- **_select_npc_target()** (7 connections) — `server/services/combat_turn_participant_actions.py`
-- **_execute_player_attack()** (7 connections) — `server/services/combat_turn_participant_actions.py`
-- *... and 231 more nodes in this community*
+- **Player** (240 connections) — `server/models/player.py`
+- **test_player_respawn_service.py** (54 connections) — `server/tests/unit/services/test_player_respawn_service.py`
+- **test_player_model.py** (48 connections) — `server/tests/unit/models/test_player_model.py`
+- **test_async_persistence_delegates.py** (35 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **HealthRepository** (31 connections) — `server/persistence/repositories/health_repository.py`
+- **get_async_persistence()** (19 connections) — `server/async_persistence.py`
+- **test_health_repository.py** (19 connections) — `server/tests/unit/persistence/repositories/test_health_repository.py`
+- **.get_stats()** (13 connections) — `server/models/player.py`
+- **.update_player_health()** (8 connections) — `server/persistence/repositories/health_repository.py`
+- **._damage_player_inner()** (7 connections) — `server/persistence/repositories/health_repository.py`
+- **_utc_now()** (7 connections) — `server/services/player_respawn_service.py`
+- **test_health_repository_cold_resistance.py** (7 connections) — `server/tests/unit/persistence/test_health_repository_cold_resistance.py`
+- **reset_async_persistence()** (6 connections) — `server/async_persistence.py`
+- **.set_stats()** (6 connections) — `server/models/player.py`
+- **_stats_int()** (6 connections) — `server/persistence/repositories/health_repository.py`
+- **Player** (6 connections)
+- **._heal_player_inner()** (6 connections) — `server/persistence/repositories/health_repository.py`
+- **.apply_dp_decay()** (5 connections) — `server/models/player.py`
+- **.restore_to_full_health()** (5 connections) — `server/models/player.py`
+- **.apply_dp_change()** (5 connections) — `server/models/player.py`
+- **._log_damage_error()** (5 connections) — `server/persistence/repositories/health_repository.py`
+- **._update_player_health_inner()** (5 connections) — `server/persistence/repositories/health_repository.py`
+- **.damage_player()** (5 connections) — `server/persistence/repositories/health_repository.py`
+- **quest_seed_data()** (5 connections) — `server/tests/integration/test_quest_flow.py`
+- **.is_alive()** (4 connections) — `server/models/player.py`
+- *... and 284 more nodes in this community*
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (38 shared connections)
-- [models npc rationale](models_npc_rationale.md) (37 shared connections)
-- [schemas invite user](schemas_invite_user.md) (23 shared connections)
-- [websocket realtime handler](websocket_realtime_handler.md) (18 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (17 shared connections)
-- [Item Instances](Item_Instances.md) (14 shared connections)
-- [persistence container helpers](persistence_container_helpers.md) (13 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (11 shared connections)
-- [Error Conversion](Error_Conversion.md) (9 shared connections)
-- [holiday service services](holiday_service_services.md) (9 shared connections)
-- [commands follow rationale](commands_follow_rationale.md) (7 shared connections)
-- [nats services service](nats_services_service.md) (7 shared connections)
+- [player room realtime](player_room_realtime.md) (54 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (53 shared connections)
+- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (29 shared connections)
+- [player event handlers](player_event_handlers.md) (22 shared connections)
+- [player service game](player_service_game.md) (13 shared connections)
+- [realtime websocket initial](realtime_websocket_initial.md) (9 shared connections)
+- [player cache rationale](player_cache_rationale.md) (8 shared connections)
+- [add used user](add_used_user.md) (7 shared connections)
+- [profession models rationale](profession_models_rationale.md) (6 shared connections)
+- [task registry app](task_registry_app.md) (5 shared connections)
+- [combat npc service](combat_npc_service.md) (5 shared connections)
+- [realtime maintenance connection](realtime_maintenance_connection.md) (4 shared connections)
 
 ## Source Files
 
 - `server/async_persistence.py`
-- `server/async_persistence_constants.py`
-- `server/commands/combat_handler.py`
-- `server/game/profession_service.py`
-- `server/npc/idle_movement.py`
-- `server/schemas/calendar/calendar.py`
-- `server/services/combat_hp_sync.py`
-- `server/services/combat_turn_participant_actions.py`
-- `server/services/schedule_service.py`
-- `server/tests/unit/infrastructure/conftest.py`
-- `server/tests/unit/services/test_combat_turn_participant_actions.py`
-- `server/tests/unit/services/test_schedule_service.py`
+- `server/models/player.py`
+- `server/persistence/repositories/health_repository.py`
+- `server/services/player_respawn_service.py`
+- `server/tests/integration/test_quest_flow.py`
+- `server/tests/unit/commands/test_inventory_commands_persistence_helpers.py`
+- `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- `server/tests/unit/models/test_player_model.py`
+- `server/tests/unit/persistence/repositories/test_health_repository.py`
+- `server/tests/unit/persistence/test_health_repository_cold_resistance.py`
+- `server/tests/unit/services/test_player_death_service.py`
+- `server/tests/unit/services/test_player_respawn_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1069 (93%)
-- INFERRED: 81 (7%)
+- EXTRACTED: 952 (86%)
+- INFERRED: 156 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

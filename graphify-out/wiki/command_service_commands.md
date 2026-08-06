@@ -1,6 +1,6 @@
 # command service commands
 
-> 58 nodes
+> 56 nodes
 
 ## Key Concepts
 
@@ -11,7 +11,6 @@
 - **.__init__()** (8 connections) — `server/time/time_event_consumer.py`
 - **._handle_tick()** (6 connections) — `server/time/time_event_consumer.py`
 - **._build_broadcast_payload()** (5 connections) — `server/time/time_event_consumer.py`
-- **PlayerMortallyWoundedEvent** (4 connections) — `server/events/event_types.py`
 - **.__post_init__()** (3 connections) — `server/events/event_types.py`
 - **.__post_init__()** (3 connections) — `server/events/event_types.py`
 - **.__post_init__()** (3 connections) — `server/events/event_types.py`
@@ -29,22 +28,23 @@
 - **.__post_init__()** (3 connections) — `server/events/event_types.py`
 - **.__post_init__()** (3 connections) — `server/events/event_types.py`
 - **.__post_init__()** (3 connections) — `server/events/event_types.py`
-- *... and 33 more nodes in this community*
+- **.__post_init__()** (3 connections) — `server/events/event_types.py`
+- *... and 31 more nodes in this community*
 
 ## Relationships
 
-- [Realtime Subscribers](Realtime_Subscribers.md) (19 shared connections)
-- [websocket realtime handler](websocket_realtime_handler.md) (4 shared connections)
-- [item models rationale](item_models_rationale.md) (3 shared connections)
-- [time service rationale](time_service_rationale.md) (3 shared connections)
-- [NPC Combat](NPC_Combat.md) (3 shared connections)
-- [Error Conversion](Error_Conversion.md) (3 shared connections)
+- [Error Conversion](Error_Conversion.md) (24 shared connections)
+- [profession models rationale](profession_models_rationale.md) (6 shared connections)
+- [player event handlers](player_event_handlers.md) (4 shared connections)
 - [commands shutdown process](commands_shutdown_process.md) (3 shared connections)
-- [nats services service](nats_services_service.md) (2 shared connections)
-- [cleanup combat handler](cleanup_combat_handler.md) (2 shared connections)
+- [rate limiter services](rate_limiter_services.md) (2 shared connections)
+- [catatonia registry services](catatonia_registry_services.md) (2 shared connections)
+- [player respawn event](player_respawn_event.md) (2 shared connections)
 - [NPC Definitions Admin](NPC_Definitions_Admin.md) (2 shared connections)
-- [room game service](room_game_service.md) (2 shared connections)
-- [persistence rationale players](persistence_rationale_players.md) (2 shared connections)
+- [maps handle ascii](maps_handle_ascii.md) (2 shared connections)
+- [room realtime occupant](room_realtime_occupant.md) (2 shared connections)
+- [party service game](party_service_game.md) (1 shared connections)
+- [player room event](player_room_event.md) (1 shared connections)
 
 ## Source Files
 
@@ -54,8 +54,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 173 (92%)
-- INFERRED: 16 (8%)
+- EXTRACTED: 168 (91%)
+- INFERRED: 16 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

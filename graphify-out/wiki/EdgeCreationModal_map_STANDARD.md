@@ -1,50 +1,61 @@
 # EdgeCreationModal map STANDARD
 
-> 36 nodes
+> 52 nodes
 
 ## Key Concepts
 
-- **EdgeCreationModal.tsx** (39 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **useEdgeCreationModal()** (13 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **EdgeCreationModal.test.tsx** (7 connections) — `client/src/components/map/__tests__/EdgeCreationModal.test.tsx`
-- **EdgeValidationResult** (6 connections) — `client/src/components/map/hooks/useMapEditing.ts`
-- **EdgeCreationData** (5 connections) — `client/src/components/map/hooks/useMapEditing.ts`
-- **EdgeCreationModalProps** (4 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **getInitialEdgeFormState()** (4 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **EdgeCreationModal()** (4 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **isStandardExitDirection()** (3 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **filterNodesForTargetSelection()** (3 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **edgeFormStateFromExisting()** (3 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **resetEdgeFormFields()** (3 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **STANDARD_DIRECTION_SET** (2 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **roomNodeMatchesSearchQuery()** (2 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **findRoomNodeById()** (2 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **emptyEdgeFormState()** (2 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **toggleStringFlag()** (2 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **edgeFormCanSubmit()** (2 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **deriveEdgeCreationData()** (2 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **submitValidatedEdge()** (2 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **runValidationAndPreviewSync()** (2 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **subscribeEscapeToClose()** (2 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **applyModalBodyScrollLock()** (2 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **EdgeFormResetters** (2 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- **EdgeModalValidationMessagesProps** (2 connections) — `client/src/components/map/EdgeCreationModal.tsx`
-- *... and 11 more nodes in this community*
+- **combat_turn_participant_actions.py** (46 connections) — `server/services/combat_turn_participant_actions.py`
+- **_weapon_damage_from_equipped_player()** (11 connections) — `server/services/combat_turn_participant_actions.py`
+- **_resolve_npc_target()** (11 connections) — `server/services/combat_turn_participant_actions.py`
+- **process_npc_turn()** (10 connections) — `server/services/combat_turn_participant_actions.py`
+- **process_player_turn()** (10 connections) — `server/services/combat_turn_participant_actions.py`
+- **resolve_player_attack_damage()** (9 connections) — `server/services/combat_turn_participant_actions.py`
+- **get_npc_current_target()** (8 connections) — `server/services/aggro_threat.py`
+- **_get_combat_container_services()** (8 connections) — `server/services/combat_turn_participant_actions.py`
+- **_select_npc_target()** (7 connections) — `server/services/combat_turn_participant_actions.py`
+- **_execute_player_attack()** (7 connections) — `server/services/combat_turn_participant_actions.py`
+- **_execute_npc_attack()** (6 connections) — `server/services/combat_turn_participant_actions.py`
+- **test_process_npc_turn_calls_process_attack_when_target_resolved()** (6 connections) — `server/tests/unit/services/test_combat_turn_participant_actions.py`
+- **_get_target_stats_for_damage()** (5 connections) — `server/services/combat_turn_participant_actions.py`
+- **_apply_physical_strength_bonus()** (5 connections) — `server/services/combat_turn_participant_actions.py`
+- **_should_continue_npc_turn()** (5 connections) — `server/services/combat_turn_participant_actions.py`
+- **_should_continue_player_turn()** (5 connections) — `server/services/combat_turn_participant_actions.py`
+- **_select_player_target()** (5 connections) — `server/services/combat_turn_participant_actions.py`
+- **_should_skip_for_casting()** (5 connections) — `server/services/combat_turn_participant_actions.py`
+- **test_select_npc_target_prefers_mortally_wounded_player_over_skipping()** (5 connections) — `server/tests/unit/services/test_combat_turn_participant_actions.py`
+- **test_resolve_npc_target_uses_aggro_current_target()** (5 connections) — `server/tests/unit/services/test_combat_turn_participant_actions.py`
+- **test_resolve_npc_target_broadcasts_when_aggro_switches()** (5 connections) — `server/tests/unit/services/test_combat_turn_participant_actions.py`
+- **_strength_modifier_from_attacker_stats()** (4 connections) — `server/services/combat_turn_participant_actions.py`
+- **UUID** (3 connections)
+- **_attacker_stats_dict_from_full_player()** (3 connections) — `server/services/combat_turn_participant_actions.py`
+- **test_strength_modifier_from_attacker_stats_defaults()** (3 connections) — `server/tests/unit/services/test_combat_turn_participant_actions.py`
+- *... and 27 more nodes in this community*
 
 ## Relationships
 
-- [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (13 shared connections)
+- [Item Instances](Item_Instances.md) (19 shared connections)
+- [command factories exploration](command_factories_exploration.md) (13 shared connections)
+- [models npc rationale](models_npc_rationale.md) (9 shared connections)
+- [npc database infrastructure](npc_database_infrastructure.md) (8 shared connections)
+- [room validator toolkit](room_validator_toolkit.md) (7 shared connections)
+- [player event handlers](player_event_handlers.md) (6 shared connections)
+- [tools generate invite](tools_generate_invite.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (3 shared connections)
+- [nats services service](nats_services_service.md) (3 shared connections)
+- [combat npc mixin](combat_npc_mixin.md) (3 shared connections)
+- [MapView GameClientV2ContainerView Tabbed](MapView_GameClientV2ContainerView_Tabbed.md) (3 shared connections)
+- [game chat service](game_chat_service.md) (3 shared connections)
 
 ## Source Files
 
-- `client/src/components/map/EdgeCreationModal.tsx`
-- `client/src/components/map/__tests__/EdgeCreationModal.test.tsx`
-- `client/src/components/map/hooks/useMapEditing.ts`
+- `server/services/aggro_threat.py`
+- `server/services/combat_turn_participant_actions.py`
+- `server/tests/unit/services/test_combat_turn_participant_actions.py`
 
 ## Audit Trail
 
-- EXTRACTED: 131 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 216 (96%)
+- INFERRED: 10 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

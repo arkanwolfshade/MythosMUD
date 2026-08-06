@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_broadcast_player_mortally_wounded()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test broadcast_player_mortally_wounded broadcasts message.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **test_add_valid_name_to_lists_invalid_name()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test add_valid_name_to_lists() skips invalid name.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [combat messaging services](combat_messaging_services.md) (1 shared connections)
+- [player event handlers](player_event_handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_messaging_integration.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 

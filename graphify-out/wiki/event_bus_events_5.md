@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **test_validate_exit_no_exits()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
-- **Test _validate_exit returns False when room has no exits.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_validate_exit_found()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
+- **Test _validate_exit returns True when exit matches target.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
 
 ## Relationships
 

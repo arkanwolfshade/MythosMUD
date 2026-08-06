@@ -33,10 +33,10 @@
 
 ## Relationships
 
-- [Error Handling Core](Error_Handling_Core.md) (3 shared connections)
+- [handler realtime nats](handler_realtime_nats.md) (3 shared connections)
 - [realtime message validator](realtime_message_validator.md) (3 shared connections)
-- [handler realtime nats](handler_realtime_nats.md) (2 shared connections)
-- [room websocket updates](room_websocket_updates.md) (1 shared connections)
+- [websocket handler realtime](websocket_handler_realtime.md) (2 shared connections)
+- [command commands aliases](command_commands_aliases.md) (1 shared connections)
 
 ## Source Files
 

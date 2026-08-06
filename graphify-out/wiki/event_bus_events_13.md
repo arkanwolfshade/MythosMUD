@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_is_leader_false_when_member()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **is_leader is False for non-leader member.** (1 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_add_room_drop_zero_quantity()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **Test add_room_drop() handles zero quantity gracefully.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Relationships
 
-- [commands inventory helpers](commands_inventory_helpers.md) (1 shared connections)
+- [room subscription manager](room_subscription_manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_party_service.py`
+- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Audit Trail
 

@@ -33,9 +33,10 @@
 
 ## Relationships
 
-- [Loot Generation](Loot_Generation.md) (8 shared connections)
-- [player service game](player_service_game.md) (6 shared connections)
-- [commands inventory put](commands_inventory_put.md) (4 shared connections)
+- [add used user](add_used_user.md) (7 shared connections)
+- [System Metrics](System_Metrics.md) (7 shared connections)
+- [services npc startup](services_npc_startup.md) (3 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (1 shared connections)
 
 ## Source Files
 

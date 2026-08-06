@@ -1,60 +1,47 @@
 # effect player repository
 
-> 61 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **player_effect_repository.py** (21 connections) — `server/persistence/repositories/player_effect_repository.py`
-- **PlayerEffectRepository** (18 connections) — `server/persistence/repositories/player_effect_repository.py`
-- **PlayerEffect** (17 connections) — `server/models/player_effect.py`
-- **test_player_effect_repository.py** (17 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
-- **.get_active_effects_for_player()** (10 connections) — `server/persistence/repositories/player_effect_repository.py`
-- **_row_to_player_effect()** (8 connections) — `server/persistence/repositories/player_effect_repository.py`
-- **UUID** (8 connections)
-- **.add_effect()** (8 connections) — `server/persistence/repositories/player_effect_repository.py`
-- **Any** (7 connections)
-- **AddEffectInput** (7 connections) — `server/persistence/repositories/player_effect_repository.py`
-- **_add_effect_params()** (6 connections) — `server/persistence/repositories/player_effect_repository.py`
-- **.delete_effect()** (6 connections) — `server/persistence/repositories/player_effect_repository.py`
-- **_make_effect()** (6 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
-- **._execute_add_effect()** (5 connections) — `server/persistence/repositories/player_effect_repository.py`
-- **.get_effect_remaining_ticks()** (5 connections) — `server/persistence/repositories/player_effect_repository.py`
-- **_row_from_effect()** (5 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
-- **_str_opt()** (4 connections) — `server/persistence/repositories/player_effect_repository.py`
-- **_int_opt()** (4 connections) — `server/persistence/repositories/player_effect_repository.py`
-- **_opt_str()** (4 connections) — `server/persistence/repositories/player_effect_repository.py`
-- **.has_effect()** (4 connections) — `server/persistence/repositories/player_effect_repository.py`
-- **test_get_active_effects_for_player_filters_by_remaining()** (4 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
-- **test_has_effect_true()** (4 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
-- **test_get_effect_remaining_ticks()** (4 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
-- **._remaining_ticks()** (3 connections) — `server/persistence/repositories/player_effect_repository.py`
-- **repo()** (3 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
-- *... and 36 more nodes in this community*
+- **set_auth_epoch()** (10 connections) — `server/auth/token_epoch.py`
+- **test_jwt_strategy.py** (9 connections) — `server/tests/unit/auth/test_jwt_strategy.py`
+- **token_epoch.py** (8 connections) — `server/auth/token_epoch.py`
+- **conftest.py** (6 connections) — `server/tests/unit/auth/conftest.py`
+- **test_read_token_accepts_matching_epoch()** (5 connections) — `server/tests/unit/auth/test_jwt_strategy.py`
+- **test_read_token_rejects_wrong_epoch()** (4 connections) — `server/tests/unit/auth/test_jwt_strategy.py`
+- **test_read_token_rejects_missing_epoch()** (4 connections) — `server/tests/unit/auth/test_jwt_strategy.py`
+- **set_auth_epoch_for_tests()** (3 connections) — `server/tests/unit/auth/conftest.py`
+- **mock_request()** (2 connections) — `server/tests/unit/auth/conftest.py`
+- **mock_session()** (2 connections) — `server/tests/unit/auth/conftest.py`
+- **Auth token epoch for server-restart invalidation.  All JWTs issued before the cu** (1 connections) — `server/auth/token_epoch.py`
+- **Set the current auth epoch (call once at server startup).** (1 connections) — `server/auth/token_epoch.py`
+- **Pytest fixtures for auth unit tests.** (1 connections) — `server/tests/unit/auth/conftest.py`
+- **Set auth epoch so token generation and validation work in tests (no real server** (1 connections) — `server/tests/unit/auth/conftest.py`
+- **Create a mock request object.** (1 connections) — `server/tests/unit/auth/conftest.py`
+- **Create a mock async session.** (1 connections) — `server/tests/unit/auth/conftest.py`
+- **Unit tests for restart-invalidating JWT strategy.** (1 connections) — `server/tests/unit/auth/test_jwt_strategy.py`
+- **Tokens with srv claim different from current epoch are rejected.** (1 connections) — `server/tests/unit/auth/test_jwt_strategy.py`
+- **Tokens without srv claim (issued before restart invalidation) are rejected.** (1 connections) — `server/tests/unit/auth/test_jwt_strategy.py`
+- **Tokens with srv matching current epoch are accepted (user lookup proceeds).** (1 connections) — `server/tests/unit/auth/test_jwt_strategy.py`
 
 ## Relationships
 
-- [commands shutdown process](commands_shutdown_process.md) (15 shared connections)
-- [world models rationale](world_models_rationale.md) (5 shared connections)
-- [Database Config](Database_Config.md) (4 shared connections)
-- [argon2 auth rationale](argon2_auth_rationale.md) (3 shared connections)
-- [combat models rationale](combat_models_rationale.md) (2 shared connections)
-- [npc population stats](npc_population_stats.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [player preferences service](player_preferences_service.md) (1 shared connections)
-- [game models enums](game_models_enums.md) (1 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
-- [persistence rationale players](persistence_rationale_players.md) (1 shared connections)
+- [auth users rationale](auth_users_rationale.md) (6 shared connections)
+- [player requests schemas](player_requests_schemas.md) (4 shared connections)
+- [Magic Spell Service](Magic_Spell_Service.md) (2 shared connections)
+- [aggro threat services](aggro_threat_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/player_effect.py`
-- `server/persistence/repositories/player_effect_repository.py`
-- `server/tests/unit/persistence/test_player_effect_repository.py`
+- `server/auth/token_epoch.py`
+- `server/tests/unit/auth/conftest.py`
+- `server/tests/unit/auth/test_jwt_strategy.py`
 
 ## Audit Trail
 
-- EXTRACTED: 211 (92%)
-- INFERRED: 18 (8%)
+- EXTRACTED: 63 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

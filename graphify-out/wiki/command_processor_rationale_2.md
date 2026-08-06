@@ -6,9 +6,9 @@
 
 - **test_command_processor.py** (39 connections) — `server/tests/unit/utils/test_command_processor.py`
 - **CommandProcessor** (15 connections) — `server/utils/command_processor.py`
+- **get_command_processor()** (7 connections) — `server/utils/command_processor.py`
 - **.extract_command_data()** (5 connections) — `server/utils/command_processor.py`
 - **command_processor()** (4 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_process_command_string_mythos_validation_error()** (4 connections) — `server/tests/unit/utils/test_command_processor.py`
 - **test_get_command_processor()** (4 connections) — `server/tests/unit/utils/test_command_processor.py`
 - **.process_command_string()** (4 connections) — `server/utils/command_processor.py`
 - **._extract_attributes()** (4 connections) — `server/utils/command_processor.py`
@@ -33,11 +33,13 @@
 
 ## Relationships
 
-- [Loot Generation](Loot_Generation.md) (9 shared connections)
-- [command parser rationale](command_parser_rationale.md) (3 shared connections)
-- [command factories create](command_factories_create.md) (2 shared connections)
-- [websocket helpers realtime](websocket_helpers_realtime.md) (2 shared connections)
-- [health service services](health_service_services.md) (1 shared connections)
+- [command inventory factories](command_inventory_factories.md) (6 shared connections)
+- [dialogue definition persistence](dialogue_definition_persistence.md) (2 shared connections)
+- [room sync service](room_sync_service.md) (2 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (1 shared connections)
+- [add used user](add_used_user.md) (1 shared connections)
+- [payload realtime optimizer](payload_realtime_optimizer.md) (1 shared connections)
+- [combat attack handler](combat_attack_handler.md) (1 shared connections)
 
 ## Source Files
 
@@ -46,7 +48,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 182 (97%)
+- EXTRACTED: 185 (97%)
 - INFERRED: 5 (3%)
 - AMBIGUOUS: 0 (0%)
 

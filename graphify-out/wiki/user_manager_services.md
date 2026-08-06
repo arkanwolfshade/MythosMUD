@@ -34,7 +34,7 @@
 ## Relationships
 
 - [services user manager](services_user_manager.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (1 shared connections)
+- [follow game service](follow_game_service.md) (1 shared connections)
 
 ## Source Files
 

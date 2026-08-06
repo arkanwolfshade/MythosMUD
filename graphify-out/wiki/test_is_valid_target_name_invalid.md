@@ -1,23 +1,24 @@
 # test_is_valid_target_name_invalid
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_is_valid_target_name_invalid()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test _is_valid_target_name with invalid target name.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **description** (3 connections) — `db/static/schemas/room.schema.json`
+- **type** (1 connections) — `db/static/schemas/room.schema.json`
+- **minLength** (1 connections) — `db/static/schemas/room.schema.json`
 
 ## Relationships
 
-- [emote models rationale](emote_models_rationale.md) (1 shared connections)
+- [static schemas room](static_schemas_room.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `db/static/schemas/room.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

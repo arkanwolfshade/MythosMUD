@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **test_process_exit_rows_zone_single_part()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _process_exit_rows with zone_stable_id that has only one part.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_ensure_room_cache_loaded_already_loaded()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _ensure_room_cache_loaded returns early when cache is already loaded.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Relationships
 

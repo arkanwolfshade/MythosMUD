@@ -1,11 +1,10 @@
 # message formatters realtime
 
-> 24 nodes
+> 22 nodes
 
 ## Key Concepts
 
 - **test_inventory_mutation_guard_internal.py** (15 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
-- **guard()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
 - **test_prune_tokens()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
 - **test_prune_tokens_ttl_zero()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
 - **test_enforce_limit()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
@@ -17,7 +16,6 @@
 - **test_prune_tokens_async_ttl_zero()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
 - **test_enforce_limit_async()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
 - **Unit tests for inventory mutation guard - internal helper methods.  Tests intern** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
-- **Create an InventoryMutationGuard instance.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
 - **Test _prune_tokens removes expired tokens.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
 - **Test _prune_tokens with token_ttl=0 doesn't prune.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
 - **Test _enforce_limit removes oldest tokens when limit exceeded.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
@@ -31,8 +29,8 @@
 
 ## Relationships
 
-- [Exception Containers](Exception_Containers.md) (3 shared connections)
-- [taunt combat commands](taunt_combat_commands.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [task registry app](task_registry_app.md) (2 shared connections)
 
 ## Source Files
 
@@ -40,7 +38,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 50 (100%)
+- EXTRACTED: 46 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

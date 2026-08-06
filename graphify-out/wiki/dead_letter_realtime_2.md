@@ -1,51 +1,27 @@
 # dead letter realtime
 
-> 22 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **test_audit_logger.py** (15 connections) — `server/tests/unit/utils/test_audit_logger.py`
-- **_logger()** (13 connections) — `server/tests/unit/utils/test_audit_logger.py`
-- **audit_logger.py** (11 connections) — `server/utils/audit_logger.py`
-- **test_audit_logger_init()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
-- **test_audit_logger_log_command()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
-- **test_audit_logger_log_permission_change()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
-- **test_audit_logger_log_player_action()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
-- **test_audit_logger_get_recent_entries()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
-- **test_audit_logger_get_recent_entries_filters_and_bad_lines()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
-- **test_audit_logger_get_statistics()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
-- **test_audit_logger_log_security_event_severity_branches()** (2 connections) — `server/tests/unit/utils/test_audit_logger.py`
-- **test_audit_logger_log_alias_expansion_cycle()** (2 connections) — `server/tests/unit/utils/test_audit_logger.py`
-- **test_audit_logger_log_container_interaction()** (2 connections) — `server/tests/unit/utils/test_audit_logger.py`
-- **test_audit_logger_write_entry_swallows_io_error()** (2 connections) — `server/tests/unit/utils/test_audit_logger.py`
-- **Path** (2 connections)
-- **Unit tests for audit_logger utilities.  Tests the AuditLogger class.** (1 connections) — `server/tests/unit/utils/test_audit_logger.py`
-- **Test AuditLogger initialization.** (1 connections) — `server/tests/unit/utils/test_audit_logger.py`
-- **Test AuditLogger.log_command() logs command execution.** (1 connections) — `server/tests/unit/utils/test_audit_logger.py`
-- **Test AuditLogger.log_permission_change() logs permission change.** (1 connections) — `server/tests/unit/utils/test_audit_logger.py`
-- **Test AuditLogger.log_player_action() logs player action.** (1 connections) — `server/tests/unit/utils/test_audit_logger.py`
-- **Test AuditLogger.get_recent_entries() retrieves recent entries.** (1 connections) — `server/tests/unit/utils/test_audit_logger.py`
-- **Audit logging for security-sensitive commands.  Provides comprehensive audit tra** (1 connections) — `server/utils/audit_logger.py`
+- **.get_player_stats()** (5 connections) — `server/services/rate_limiter.py`
+- **.get_system_stats()** (3 connections) — `server/services/rate_limiter.py`
+- **Any** (2 connections)
+- **Get rate limiting statistics for a player.          Args:             player_id:** (1 connections) — `server/services/rate_limiter.py`
+- **Get system-wide rate limiting statistics.          Returns:             Dictiona** (1 connections) — `server/services/rate_limiter.py`
 
 ## Relationships
 
-- [audit logger rationale](audit_logger_rationale.md) (3 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [commands follow rationale](commands_follow_rationale.md) (1 shared connections)
-- [fixtures mock helpers](fixtures_mock_helpers.md) (1 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
-- [command commands handler](command_commands_handler.md) (1 shared connections)
-- [models npc rationale](models_npc_rationale.md) (1 shared connections)
-- [Exception Containers](Exception_Containers.md) (1 shared connections)
+- [event events serialization](event_events_serialization.md) (2 shared connections)
+- [models profession rationale](models_profession_rationale.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_audit_logger.py`
-- `server/utils/audit_logger.py`
+- `server/services/rate_limiter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 77 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

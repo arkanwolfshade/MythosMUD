@@ -1,24 +1,29 @@
 # infrastructure persistence room
 
-> 2 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **test_build_chat_event_includes_speaker_kind()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Chat WebSocket event carries speaker_kind for client pass-through.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **TestGetChatService** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_chat_service_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_chat_service_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Tests for get_chat_service dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_chat_service returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_chat_service raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Relationships
 
-- [message chat nats](message_chat_nats.md) (1 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (3 shared connections)
+- [persistence core infrastructure](persistence_core_infrastructure.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 13 (93%)
+- INFERRED: 1 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

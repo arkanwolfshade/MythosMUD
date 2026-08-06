@@ -1,64 +1,56 @@
 # event bus events
 
-> 68 nodes
+> 23 nodes
 
 ## Key Concepts
 
-- **NPCOccupantProcessor** (31 connections) — `server/realtime/npc_occupant_processor.py`
-- **player_event_handlers.py** (26 connections) — `server/realtime/player_event_handlers.py`
-- **RoomIDUtils** (22 connections) — `server/realtime/room_id_utils.py`
-- **RoomOccupantManager** (22 connections) — `server/realtime/room_occupant_manager.py`
-- **room_occupant_manager.py** (19 connections) — `server/realtime/room_occupant_manager.py`
-- **player_event_handlers_room.py** (17 connections) — `server/realtime/player_event_handlers_room.py`
-- **test_npc_occupant_processor.py** (17 connections) — `server/tests/unit/realtime/test_npc_occupant_processor.py`
-- **Any** (11 connections)
-- **npc_occupant_processor.py** (9 connections) — `server/realtime/npc_occupant_processor.py`
-- **.__init__()** (9 connections) — `server/realtime/room_occupant_manager.py`
-- **.query_npcs_for_room()** (6 connections) — `server/realtime/npc_occupant_processor.py`
-- **room_id_utils.py** (6 connections) — `server/realtime/room_id_utils.py`
-- **.__init__()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._get_npc_lifecycle_manager()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._validate_npc_room_tracking()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._should_include_npc_in_room()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._scan_active_npcs_for_room()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._get_lifecycle_manager_for_filtering()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._filter_fallback_npcs()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._get_fallback_npcs()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._get_npc_room_id()** (4 connections) — `server/realtime/npc_occupant_processor.py`
-- **._filter_single_fallback_npc()** (4 connections) — `server/realtime/npc_occupant_processor.py`
-- **.get_room_occupants()** (4 connections) — `server/realtime/room_occupant_manager.py`
-- **.process_npcs_for_occupants()** (3 connections) — `server/realtime/npc_occupant_processor.py`
-- **.__init__()** (3 connections) — `server/realtime/room_id_utils.py`
-- *... and 43 more nodes in this community*
+- **test_event_bus.py** (57 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_init()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_shutdown()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_get_all_subscriber_counts_empty()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_shutdown_idempotent()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_unsubscribe_invalid_event_type()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_publish_invalid_event()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_ensure_processing_started()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_multiple_services_subscribe_same_events_integration()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_active_task_details_and_lifecycle_metrics()** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_set_main_loop_and_ensure_processing()** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_signal_shutdown_and_cancel_helpers()** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_active_task_details_includes_exception()** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_ensure_async_processing_no_loop_logs()** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Unit tests for event bus.  Tests the EventBus class.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test EventBus initialization.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test EventBus.shutdown() stops processing.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test EventBus.get_all_subscriber_counts() with no subscribers.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test EventBus.shutdown() is idempotent.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test unsubscribe() raises error for invalid event type.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test publish() raises error for invalid event.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test _ensure_processing_started() calls _ensure_async_processing.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Integration test: Multiple services subscribing to same events and cleanup.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- [Realtime Subscribers](Realtime_Subscribers.md) (12 shared connections)
-- [time service rationale](time_service_rationale.md) (11 shared connections)
-- [NPC Combat](NPC_Combat.md) (10 shared connections)
-- [Player Name Validation](Player_Name_Validation.md) (8 shared connections)
-- [inventory mutation guard](inventory_mutation_guard.md) (5 shared connections)
-- [player_event_handler_utils](player_event_handler_utils.md) (4 shared connections)
-- [combat services turn](combat_services_turn.md) (4 shared connections)
-- [player occupant processor](player_occupant_processor.md) (4 shared connections)
-- [logging setup structured](logging_setup_structured.md) (3 shared connections)
-- [schedule services service](schedule_services_service.md) (3 shared connections)
-- [container sql injection](container_sql_injection.md) (3 shared connections)
-- [realtime monitoring performance](realtime_monitoring_performance.md) (2 shared connections)
+- [services exploration service](services_exploration_service.md) (11 shared connections)
+- [Error Conversion](Error_Conversion.md) (5 shared connections)
+- [realtime player event](realtime_player_event.md) (3 shared connections)
+- [game room service](game_room_service.md) (2 shared connections)
+- [room toolkit validator](room_toolkit_validator.md) (2 shared connections)
+- [services ascii map](services_ascii_map.md) (1 shared connections)
+- [npc behavior engine](npc_behavior_engine.md) (1 shared connections)
+- [services chat rate](services_chat_rate.md) (1 shared connections)
+- [room infrastructure persistence](room_infrastructure_persistence.md) (1 shared connections)
+- [infrastructure security rationale](infrastructure_security_rationale.md) (1 shared connections)
+- [infrastructure persistence room](infrastructure_persistence_room.md) (1 shared connections)
+- [services chat logger](services_chat_logger.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/npc_occupant_processor.py`
-- `server/realtime/player_event_handlers.py`
-- `server/realtime/player_event_handlers_room.py`
-- `server/realtime/room_id_utils.py`
-- `server/realtime/room_occupant_manager.py`
-- `server/tests/unit/realtime/test_npc_occupant_processor.py`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 303 (96%)
-- INFERRED: 12 (4%)
+- EXTRACTED: 87 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,38 +1,35 @@
 # npc behavior engine
 
-> 12 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **ChannelBroadcastingStrategyFactory** (11 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **test_channel_broadcasting_strategy_factory_get_strategy_unknown()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **.register_strategy()** (3 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **test_channel_broadcasting_strategy_factory_init()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **test_channel_broadcasting_strategy_factory_register_strategy()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **test_global_channel_strategy_factory_instance()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Factory for creating channel broadcasting strategies.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Register a new strategy for a channel type.          Args:             channel_t** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Test ChannelBroadcastingStrategyFactory.__init__() initializes with default stra** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Test ChannelBroadcastingStrategyFactory.get_strategy() returns UnknownChannelStr** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Test ChannelBroadcastingStrategyFactory.register_strategy() registers new strate** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Test global channel_strategy_factory instance exists.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **.wander()** (6 connections) — `server/npc/passive_mob_npc.py`
+- **.schedule_idle_movement()** (6 connections) — `server/npc/passive_mob_npc.py`
+- **._create_wander_action()** (4 connections) — `server/npc/passive_mob_npc.py`
+- **._should_schedule_movement()** (3 connections) — `server/npc/passive_mob_npc.py`
+- **._handle_wander()** (3 connections) — `server/npc/passive_mob_npc.py`
+- **Perform wandering behavior using idle movement system.** (1 connections) — `server/npc/passive_mob_npc.py`
+- **Check if idle movement should be scheduled based on configuration and timing.** (1 connections) — `server/npc/passive_mob_npc.py`
+- **Create a WANDER action message.          Args:             current_time: Curr** (1 connections) — `server/npc/passive_mob_npc.py`
+- **Schedule a WANDER action for idle movement if interval has elapsed.          T** (1 connections) — `server/npc/passive_mob_npc.py`
+- **Handle wandering action.** (1 connections) — `server/npc/passive_mob_npc.py`
 
 ## Relationships
 
-- [channel realtime broadcasting](channel_realtime_broadcasting.md) (5 shared connections)
-- [channel broadcasting strategies](channel_broadcasting_strategies.md) (4 shared connections)
-- [message handler factory](message_handler_factory.md) (1 shared connections)
-- [channel broadcasting realtime](channel_broadcasting_realtime.md) (1 shared connections)
+- [command input commands](command_input_commands.md) (5 shared connections)
+- [npc shopkeeper rationale](npc_shopkeeper_rationale.md) (2 shared connections)
+- [realtime player connection](realtime_player_connection.md) (1 shared connections)
+- [idle movement npc](idle_movement_npc.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/channel_broadcasting_strategies.py`
-- `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- `server/npc/passive_mob_npc.py`
 
 ## Audit Trail
 
-- EXTRACTED: 30 (91%)
-- INFERRED: 3 (9%)
+- EXTRACTED: 27 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

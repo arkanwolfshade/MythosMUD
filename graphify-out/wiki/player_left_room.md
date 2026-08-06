@@ -1,48 +1,51 @@
 # player left room
 
-> 26 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **test_player_event_handlers_room_left.py** (15 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **test_handle_player_left_success()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **test_handle_player_left_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **test_handle_player_left_no_player_info()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **test_handle_player_left_disconnecting()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **test_handle_player_left_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **test_unsubscribe_player_from_room_success()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **test_unsubscribe_player_from_room_string_id()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **test_unsubscribe_player_from_room_invalid_id()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **test_broadcast_player_left_message_not_disconnecting()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **test_broadcast_player_left_message_disconnecting()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **test_broadcast_player_left_message_no_room_id()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **test_log_occupants_info()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **Unit tests for player room event handlers (player left / unsubscribe / broadcast** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **Test unsubscribe_player_from_room() successfully unsubscribes player.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **Test unsubscribe_player_from_room() handles string player_id.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **Test unsubscribe_player_from_room() handles invalid player_id.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **Test broadcast_player_left_message() broadcasts when not disconnecting.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **Test broadcast_player_left_message() skips when player is disconnecting.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **Test broadcast_player_left_message() skips when room_id is None.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **Test handle_player_left() successfully handles event.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **Test handle_player_left() skips when connection manager not available.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **Test handle_player_left() handles player not found.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **Test handle_player_left() skips broadcast when player is disconnecting.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **Test handle_player_left() handles errors.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- *... and 1 more nodes in this community*
+- **alias_expansion.py** (17 connections) — `server/command_handler/alias_expansion.py`
+- **test_alias_expansion.py** (13 connections) — `server/tests/unit/commands/test_alias_expansion.py`
+- **handle_expanded_command()** (11 connections) — `server/command_handler/alias_expansion.py`
+- **check_alias_safety()** (10 connections) — `server/command_handler/alias_expansion.py`
+- **validate_expanded_command()** (10 connections) — `server/command_handler/alias_expansion.py`
+- **Any** (2 connections)
+- **CommandExecutionRequest** (2 connections)
+- **test_check_alias_safety_cycle_detected()** (2 connections) — `server/tests/unit/commands/test_alias_expansion.py`
+- **test_check_alias_safety_depth_too_deep()** (2 connections) — `server/tests/unit/commands/test_alias_expansion.py`
+- **test_check_alias_safety_ok()** (2 connections) — `server/tests/unit/commands/test_alias_expansion.py`
+- **test_validate_expanded_command_too_long()** (2 connections) — `server/tests/unit/commands/test_alias_expansion.py`
+- **test_validate_expanded_command_invalid_content()** (2 connections) — `server/tests/unit/commands/test_alias_expansion.py`
+- **test_validate_expanded_command_ok()** (2 connections) — `server/tests/unit/commands/test_alias_expansion.py`
+- **test_handle_expanded_command_depth_limit()** (2 connections) — `server/tests/unit/commands/test_alias_expansion.py`
+- **test_handle_expanded_command_delegates()** (2 connections) — `server/tests/unit/commands/test_alias_expansion.py`
+- **Alias Expansion Logic for MythosMUD.  This module handles alias resolution, expa** (1 connections) — `server/command_handler/alias_expansion.py`
+- **Check if an alias is safe to expand.      Builds an alias dependency graph and c** (1 connections) — `server/command_handler/alias_expansion.py`
+- **Validate an expanded command for length and content.      Args:         expanded** (1 connections) — `server/command_handler/alias_expansion.py`
+- **Handle command processing with alias expansion and loop detection.      This fun** (1 connections) — `server/command_handler/alias_expansion.py`
+- **Unit tests for alias_expansion module.** (1 connections) — `server/tests/unit/commands/test_alias_expansion.py`
 
 ## Relationships
 
-- [Realtime Subscribers](Realtime_Subscribers.md) (7 shared connections)
+- [player model models](player_model_models.md) (7 shared connections)
+- [command validation commands](command_validation_commands.md) (6 shared connections)
+- [alias graph rationale](alias_graph_rationale.md) (3 shared connections)
+- [command validator validators](command_validator_validators.md) (3 shared connections)
+- [combat attack handler](combat_attack_handler.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (1 shared connections)
+- [alias storage rationale](alias_storage_rationale.md) (1 shared connections)
+- [task registry app](task_registry_app.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- `server/command_handler/alias_expansion.py`
+- `server/tests/unit/commands/test_alias_expansion.py`
 
 ## Audit Trail
 
-- EXTRACTED: 57 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 84 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

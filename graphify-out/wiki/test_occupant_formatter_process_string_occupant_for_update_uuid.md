@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_process_message_with_retry_success_path()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test _process_message_with_retry succeeds when retry handler succeeds.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_extract_occupant_names_invalid_names()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test extract_occupant_names() filters invalid names.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [nats message handler](nats_message_handler.md) (1 shared connections)
+- [player event handlers](player_event_handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 

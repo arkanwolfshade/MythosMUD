@@ -1,42 +1,46 @@
 # auth invites rationale
 
-> 19 nodes
+> 18 nodes
 
 ## Key Concepts
 
-- **Any** (8 connections)
-- **.spawn_npc_instance()** (4 connections) — `server/services/npc_instance_service.py`
-- **.get_population_stats()** (4 connections) — `server/services/npc_instance_service.py`
-- **.get_zone_stats()** (4 connections) — `server/services/npc_instance_service.py`
-- **._extract_zone_from_room_id()** (4 connections) — `server/services/npc_instance_service.py`
-- **.despawn_npc_instance()** (3 connections) — `server/services/npc_instance_service.py`
-- **.move_npc_instance()** (3 connections) — `server/services/npc_instance_service.py`
-- **.get_npc_instances()** (3 connections) — `server/services/npc_instance_service.py`
-- **.get_npc_stats()** (3 connections) — `server/services/npc_instance_service.py`
-- **.get_system_stats()** (3 connections) — `server/services/npc_instance_service.py`
-- **Spawn a new NPC instance.          Args:             definition_id: ID of the NP** (1 connections) — `server/services/npc_instance_service.py`
-- **Despawn an NPC instance.          Args:             npc_id: ID of the NPC to des** (1 connections) — `server/services/npc_instance_service.py`
-- **Move an NPC instance to a different room.          Args:             npc_id: ID** (1 connections) — `server/services/npc_instance_service.py`
-- **Get all active NPC instances.          Returns:             List of NPC instance** (1 connections) — `server/services/npc_instance_service.py`
-- **Get detailed stats for a specific NPC instance.          Args:             npc_i** (1 connections) — `server/services/npc_instance_service.py`
-- **Get NPC population statistics.          Returns:             Dictionary with pop** (1 connections) — `server/services/npc_instance_service.py`
-- **Get NPC zone statistics.          Returns:             Dictionary with zone stat** (1 connections) — `server/services/npc_instance_service.py`
-- **Get system-wide NPC statistics.          Returns:             Dictionary with sy** (1 connections) — `server/services/npc_instance_service.py`
-- **Extract zone key from room ID.          Args:             room_id: Room ID like** (1 connections) — `server/services/npc_instance_service.py`
+- **logoutHandler.ts** (26 connections) — `client/src/utils/logoutHandler.ts`
+- **logoutHandler()** (12 connections) — `client/src/utils/logoutHandler.ts`
+- **sendLogoutCommandToServer()** (6 connections) — `client/src/utils/logoutHandler.ts`
+- **readLogoutErrorMessage()** (5 connections) — `client/src/utils/logoutHandler.ts`
+- **logoutHandler.test.ts** (4 connections) — `client/src/utils/__tests__/logoutHandler.test.ts`
+- **processLogoutHttpResponse()** (4 connections) — `client/src/utils/logoutHandler.ts`
+- **runLogoutServerPipeline()** (4 connections) — `client/src/utils/logoutHandler.ts`
+- **asRecordUnknown()** (3 connections) — `client/src/utils/logoutHandler.ts`
+- **logSuccessfulLogoutResponse()** (3 connections) — `client/src/utils/logoutHandler.ts`
+- **performClientSideCleanup()** (3 connections) — `client/src/utils/logoutHandler.ts`
+- **createLogoutHandler()** (3 connections) — `client/src/utils/logoutHandler.ts`
+- **nestedErrorMessage()** (2 connections) — `client/src/utils/logoutHandler.ts`
+- **stringDetail()** (2 connections) — `client/src/utils/logoutHandler.ts`
+- **logServerLogoutCommandError()** (2 connections) — `client/src/utils/logoutHandler.ts`
+- **createLogoutAbortTimer()** (2 connections) — `client/src/utils/logoutHandler.ts`
+- **postLogoutCommandRequest()** (2 connections) — `client/src/utils/logoutHandler.ts`
+- **fetchSpy** (1 connections) — `client/src/utils/__tests__/logoutHandler.test.ts`
+- **LogoutHandlerOptions** (1 connections) — `client/src/utils/logoutHandler.ts`
 
 ## Relationships
 
-- [Realtime Subscribers](Realtime_Subscribers.md) (9 shared connections)
-- [player effects endpoints](player_effects_endpoints.md) (1 shared connections)
+- [mythosApp CharacterSelectionScreen chara](mythosApp_CharacterSelectionScreen_chara.md) (7 shared connections)
+- [mythosApp security submitAuth](mythosApp_security_submitAuth.md) (4 shared connections)
+- [roomHandlers eventHandlers calculateOccu](roomHandlers_eventHandlers_calculateOccu.md) (3 shared connections)
+- [App helpers professionSystemErrorHandlin](App_helpers_professionSystemErrorHandlin.md) (2 shared connections)
+- [eventHandlers messageHandlers statusPars](eventHandlers_messageHandlers_statusPars.md) (2 shared connections)
+- [map maps useAsciiMap](map_maps_useAsciiMap.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/npc_instance_service.py`
+- `client/src/utils/__tests__/logoutHandler.test.ts`
+- `client/src/utils/logoutHandler.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 48 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 82 (96%)
+- INFERRED: 3 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

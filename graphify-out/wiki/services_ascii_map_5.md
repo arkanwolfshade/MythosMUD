@@ -1,24 +1,27 @@
 # services ascii map
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_check_combat_state_blocks_when_in_combat()** (2 connections) — `server/tests/unit/game/test_movement_service.py`
-- **Test _check_combat_state returns False when player is in combat.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- **TestGetProfessionService** (4 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_profession_service_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Tests for get_profession_service dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_profession_service creates service with persistence.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Relationships
 
-- [movement service game](movement_service_game.md) (1 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (2 shared connections)
+- [persistence core infrastructure](persistence_core_infrastructure.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_movement_service.py`
+- `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 8 (89%)
+- INFERRED: 1 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

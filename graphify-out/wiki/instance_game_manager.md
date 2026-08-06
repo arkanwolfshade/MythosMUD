@@ -22,9 +22,9 @@
 
 ## Relationships
 
-- [room look commands](room_look_commands.md) (4 shared connections)
+- [combat services messaging](combat_services_messaging.md) (4 shared connections)
 - [rest grace period](rest_grace_period.md) (3 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
 
 ## Source Files
 

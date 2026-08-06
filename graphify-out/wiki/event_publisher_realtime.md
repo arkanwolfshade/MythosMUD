@@ -33,11 +33,14 @@
 
 ## Relationships
 
-- [nats services service](nats_services_service.md) (4 shared connections)
-- [NPC Combat](NPC_Combat.md) (4 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (2 shared connections)
-- [taunt combat commands](taunt_combat_commands.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (4 shared connections)
+- [websocket realtime handler](websocket_realtime_handler.md) (2 shared connections)
+- [nats services service](nats_services_service.md) (1 shared connections)
+- [lucidity npc combat](lucidity_npc_combat.md) (1 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (1 shared connections)
+- [spell models rationale](spell_models_rationale.md) (1 shared connections)
 - [manager subject services](manager_subject_services.md) (1 shared connections)
+- [realtime player connection](realtime_player_connection.md) (1 shared connections)
 
 ## Source Files
 

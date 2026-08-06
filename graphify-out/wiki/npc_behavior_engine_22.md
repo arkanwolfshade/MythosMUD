@@ -1,24 +1,24 @@
 # npc behavior engine
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_subscribe_to_event_subjects_partial_failure()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test subscribe_to_event_subjects handles partial failure.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **🚨 AI ERROR HANDLING** (3 connections) — `.cursor/commands/lint-remediation.md`
+- **If Lint Still Fails After Fixes** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **If Multiple Categories Have Issues** (1 connections) — `.cursor/commands/lint-remediation.md`
 
 ## Relationships
 
-- [commands communication say](commands_communication_say.md) (1 shared connections)
-- [subzone realtime nats](subzone_realtime_nats.md) (1 shared connections)
+- [monitoring models rationale](monitoring_models_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- `.cursor/commands/lint-remediation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

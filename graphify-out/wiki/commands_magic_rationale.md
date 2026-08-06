@@ -1,61 +1,48 @@
 # commands magic rationale
 
-> 127 nodes
+> 83 nodes
 
 ## Key Concepts
 
 - **test_magic_commands.py** (49 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **MagicCommandHandler** (34 connections) — `server/commands/magic_commands.py`
-- **magic_commands.py** (26 connections) — `server/commands/magic_commands.py`
-- **Any** (20 connections)
-- **magic_service()** (13 connections) — `server/tests/unit/game/magic/test_magic_service.py`
-- **SpellCommandError** (12 connections) — `server/commands/magic_commands.py`
-- **handle_cast_command()** (9 connections) — `server/commands/magic_commands.py`
-- **handle_spells_command()** (9 connections) — `server/commands/magic_commands.py`
-- **handle_spell_command()** (9 connections) — `server/commands/magic_commands.py`
-- **handle_learn_command()** (9 connections) — `server/commands/magic_commands.py`
-- **handle_stop_command()** (9 connections) — `server/commands/magic_commands.py`
-- **.handle_cast_command()** (7 connections) — `server/commands/magic_commands.py`
-- **._build_cast_response()** (6 connections) — `server/commands/magic_commands.py`
-- **.handle_spell_command()** (6 connections) — `server/commands/magic_commands.py`
-- **.handle_learn_command()** (6 connections) — `server/commands/magic_commands.py`
-- **._resolve_spell_context()** (5 connections) — `server/commands/magic_commands.py`
-- **._resolve_learn_context()** (5 connections) — `server/commands/magic_commands.py`
 - **Enum** (5 connections)
-- **._prepare_cast()** (4 connections) — `server/commands/magic_commands.py`
-- **._build_cast_success_message()** (4 connections) — `server/commands/magic_commands.py`
-- **.handle_spells_command()** (4 connections) — `server/commands/magic_commands.py`
-- **._build_spell_detail_lines()** (4 connections) — `server/commands/magic_commands.py`
-- **._announce_spell_cast()** (4 connections) — `server/commands/magic_commands.py`
-- **._build_learn_response()** (4 connections) — `server/commands/magic_commands.py`
-- **.handle_stop_command()** (4 connections) — `server/commands/magic_commands.py`
-- *... and 102 more nodes in this community*
+- **MockSchool** (4 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **MockTargetType** (4 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **MockRangeType** (4 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **MockEffectType** (4 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **handler()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **test_handle_cast_command_wrapper_no_magic_service()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **test_handle_spells_command_wrapper_no_spell_registry()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **test_handle_spell_command_wrapper_success()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **test_handle_learn_command_wrapper_success()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **test_handle_stop_command_wrapper_success()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **mock_magic_service()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **mock_spell_registry()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **mock_player()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **mock_player_spell_repository()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **mock_spell_learning_service()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **mock_chat_service()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **test_handle_cast_command_no_player()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **test_handle_cast_command_blocked_when_incapacitated()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **test_handle_cast_command_no_spell_name()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **test_handle_cast_command_cast_failure()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **test_handle_cast_command_success()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **test_handle_cast_command_with_target()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **test_handle_spells_command_no_player()** (2 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- *... and 58 more nodes in this community*
 
 ## Relationships
 
-- [commands npc admin](commands_npc_admin.md) (14 shared connections)
-- [coercion int inventory](coercion_int_inventory.md) (12 shared connections)
-- [commands whisper command](commands_whisper_command.md) (7 shared connections)
-- [player respawn event](player_respawn_event.md) (7 shared connections)
-- [rest grace period](rest_grace_period.md) (6 shared connections)
-- [chat service game](chat_service_game.md) (3 shared connections)
-- [NPC Combat](NPC_Combat.md) (3 shared connections)
-- [spell game magic](spell_game_magic.md) (2 shared connections)
-- [chat game message](chat_game_message.md) (1 shared connections)
-- [game models player](game_models_player.md) (1 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (1 shared connections)
-- [command commands handler](command_commands_handler.md) (1 shared connections)
+- [alias storage rationale](alias_storage_rationale.md) (17 shared connections)
 
 ## Source Files
 
-- `server/commands/magic_commands.py`
 - `server/tests/unit/commands/test_magic_commands.py`
-- `server/tests/unit/game/magic/test_magic_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 389 (92%)
-- INFERRED: 34 (8%)
+- EXTRACTED: 185 (98%)
+- INFERRED: 4 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

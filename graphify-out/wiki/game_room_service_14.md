@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **test_load_room_cache_success()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _load_room_cache successfully loads rooms.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_process_room_rows_empty_list()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _process_room_rows with empty list.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Relationships
 

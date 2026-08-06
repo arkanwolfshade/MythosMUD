@@ -33,11 +33,9 @@
 
 ## Relationships
 
-- [commands shutdown process](commands_shutdown_process.md) (5 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (7 shared connections)
+- [Error Conversion](Error_Conversion.md) (4 shared connections)
 - [eventLog projectorRoom roomMergeUtils](eventLog_projectorRoom_roomMergeUtils.md) (3 shared connections)
-- [health monitor realtime](health_monitor_realtime.md) (2 shared connections)
-- [Loot Generation](Loot_Generation.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
 
 ## Source Files
 

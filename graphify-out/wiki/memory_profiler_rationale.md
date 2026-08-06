@@ -33,12 +33,13 @@
 
 ## Relationships
 
-- [grace period login](grace_period_login.md) (5 shared connections)
+- [Loot Generation](Loot_Generation.md) (5 shared connections)
 - [alias models rationale](alias_models_rationale.md) (3 shared connections)
-- [command factories communication](command_factories_communication.md) (3 shared connections)
-- [player service game](player_service_game.md) (2 shared connections)
+- [combat services turn](combat_services_turn.md) (2 shared connections)
+- [System Metrics](System_Metrics.md) (2 shared connections)
+- [panels domPurifyClient chat](panels_domPurifyClient_chat.md) (1 shared connections)
 - [command communication models](command_communication_models.md) (1 shared connections)
-- [message queue realtime](message_queue_realtime.md) (1 shared connections)
+- [room service sync](room_service_sync.md) (1 shared connections)
 
 ## Source Files
 

@@ -19,18 +19,18 @@
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [combat_validator](combat_validator.md) (1 shared connections)
-- [test_combat_validator_init](test_combat_validator_init.md) (1 shared connections)
-- [test_contains_suspicious_patterns_clean](test_contains_suspicious_patterns_clean.md) (1 shared connections)
-- [test_get_combat_death_message](test_get_combat_death_message.md) (1 shared connections)
-- [test_get_combat_help_message](test_get_combat_help_message.md) (1 shared connections)
-- [test_get_combat_result_message_success_no_damage](test_get_combat_result_message_success_no_damage.md) (1 shared connections)
-- [test_get_combat_result_message_success_with_damage](test_get_combat_result_message_success_with_damage.md) (1 shared connections)
-- [test_get_combat_status_message_in_combat](test_get_combat_status_message_in_combat.md) (1 shared connections)
-- [test_get_combat_status_message_not_in_combat](test_get_combat_status_message_not_in_combat.md) (1 shared connections)
-- [test_get_combat_victory_message](test_get_combat_victory_message.md) (1 shared connections)
-- [test_is_rate_limited](test_is_rate_limited.md) (1 shared connections)
+- [services admin auth](services_admin_auth.md) (19 shared connections)
+- [tick services game](tick_services_game.md) (2 shared connections)
+- [admin services auth](admin_services_auth.md) (2 shared connections)
+- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (2 shared connections)
+- [test_mute_channel_invalid_id](test_mute_channel_invalid_id.md) (1 shared connections)
+- [test_get_player_mutes](test_get_player_mutes.md) (1 shared connections)
+- [test_get_who_muted_player](test_get_who_muted_player.md) (1 shared connections)
+- [test_can_send_message_true](test_can_send_message_true.md) (1 shared connections)
+- [test_mute_global_admin_immune](test_mute_global_admin_immune.md) (1 shared connections)
+- [test_add_admin_no_container](test_add_admin_no_container.md) (1 shared connections)
+- [test_load_player_mutes_invalid_json](test_load_player_mutes_invalid_json.md) (1 shared connections)
+- [test_get_system_stats](test_get_system_stats.md) (1 shared connections)
 
 ## Source Files
 

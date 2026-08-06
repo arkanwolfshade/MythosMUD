@@ -1,8 +1,8 @@
 # get_logger()
 
-> God node · 516 connections · `server/structured_logging/enhanced_logging_config.py`
+> God node · 522 connections · `server/structured_logging/enhanced_logging_config.py`
 
-**Community:** [NPC Combat](NPC_Combat.md)
+**Community:** [Error Conversion](Error_Conversion.md)
 
 ## Connections by Relation
 
@@ -39,10 +39,10 @@
 - time.py `EXTRACTED`
 - command_service.py `EXTRACTED`
 - connection_manager_methods.py `EXTRACTED`
-- database.py `EXTRACTED`
 - async_persistence.py `EXTRACTED`
-- game_tick_processing.py `EXTRACTED`
+- database.py `EXTRACTED`
 - alias_storage.py `EXTRACTED`
+- game_tick_processing.py `EXTRACTED`
 - players.py `EXTRACTED`
 - websocket_handler.py `EXTRACTED`
 - monitoring.py `EXTRACTED`

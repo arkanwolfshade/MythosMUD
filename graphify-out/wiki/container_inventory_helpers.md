@@ -33,11 +33,9 @@
 
 ## Relationships
 
-- [services admin auth](services_admin_auth.md) (36 shared connections)
-- [Exception Containers](Exception_Containers.md) (3 shared connections)
-- [commands inventory pickup](commands_inventory_pickup.md) (1 shared connections)
-- [commands inventory command](commands_inventory_command.md) (1 shared connections)
-- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (1 shared connections)
+- [mythosApp useMythosAppState useStatsRoll](mythosApp_useMythosAppState_useStatsRoll.md) (36 shared connections)
+- [task registry app](task_registry_app.md) (3 shared connections)
+- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (3 shared connections)
 
 ## Source Files
 

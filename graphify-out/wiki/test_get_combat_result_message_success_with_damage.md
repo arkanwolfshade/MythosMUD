@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_get_combat_result_message_success_with_damage()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test get_combat_result_message with successful attack and damage.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_broadcast_to_room_with_filtering_exception()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _broadcast_to_room_with_filtering handles exceptions.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [emote models rationale](emote_models_rationale.md) (1 shared connections)
+- [game chat service](game_chat_service.md) (1 shared connections)
+- [message chat nats](message_chat_nats.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,34 +1,33 @@
 # services passive lucidity
 
-> 12 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **.validate_current_vs_max_stats()** (5 connections) — `server/models/game.py`
-- **._calculate_max_magic_points()** (4 connections) — `server/models/game.py`
-- **._calculate_max_lucidity()** (4 connections) — `server/models/game.py`
-- **.max_magic_points()** (3 connections) — `server/models/game.py`
-- **.max_lucidity()** (3 connections) — `server/models/game.py`
-- **._calculate_max_dp()** (3 connections) — `server/models/game.py`
-- **Calculate max magic points (MP) using formula: 20% of Power (ceiling rounded).** (1 connections) — `server/models/game.py`
-- **Calculate max lucidity based on education.          AI: This computed field uses** (1 connections) — `server/models/game.py`
-- **Calculate max determination points (DP) using formula: (CON + SIZ) / 5.** (1 connections) — `server/models/game.py`
-- **Calculate max magic points (MP) using formula: 20% of Power (ceiling rounded).** (1 connections) — `server/models/game.py`
-- **Calculate max lucidity based on education.          AI: Helper method to calcula** (1 connections) — `server/models/game.py`
-- **Ensure current_dp (DP), magic_points (MP), and lucidity don't exceed their max v** (1 connections) — `server/models/game.py`
+- **PlayerStatsConfig** (9 connections) — `server/config/models/player_stats.py`
+- **.to_dict()** (3 connections) — `server/config/models/player_stats.py`
+- **.validate_stat_range()** (2 connections) — `server/config/models/player_stats.py`
+- **.validate_derived_stats()** (2 connections) — `server/config/models/player_stats.py`
+- **BaseSettings** (1 connections)
+- **Any** (1 connections)
+- **Default player statistics configuration.** (1 connections) — `server/config/models/player_stats.py`
+- **Validate stats are in valid range.** (1 connections) — `server/config/models/player_stats.py`
+- **Validate derived stats values.** (1 connections) — `server/config/models/player_stats.py`
+- **Convert to dictionary format expected by game code.** (1 connections) — `server/config/models/player_stats.py`
 
 ## Relationships
 
-- [player service game](player_service_game.md) (6 shared connections)
+- [websocket validation realtime](websocket_validation_realtime.md) (3 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/game.py`
+- `server/config/models/player_stats.py`
 
 ## Audit Trail
 
-- EXTRACTED: 28 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 21 (95%)
+- INFERRED: 1 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

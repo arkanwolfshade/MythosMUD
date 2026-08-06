@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_create_add_admin_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_add_admin_command delegates to moderation factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_adjust_room_drop_index_out_of_range()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **Test adjust_room_drop() with index out of range.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Relationships
 
-- [command factories create](command_factories_create.md) (1 shared connections)
+- [room subscription manager](room_subscription_manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Audit Trail
 

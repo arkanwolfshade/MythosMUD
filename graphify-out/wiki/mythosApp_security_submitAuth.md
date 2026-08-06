@@ -1,72 +1,73 @@
 # mythosApp security submitAuth
 
-> 52 nodes
+> 69 nodes
 
 ## Key Concepts
 
 - **security.ts** (36 connections) — `client/src/utils/security.ts`
-- **logoutHandler.ts** (26 connections) — `client/src/utils/logoutHandler.ts`
+- **domPurifyClient.ts** (14 connections) — `client/src/utils/domPurifyClient.ts`
 - **secureTokenStorage** (14 connections) — `client/src/utils/security.ts`
-- **logoutHandler()** (12 connections) — `client/src/utils/logoutHandler.ts`
-- **useMythosSessionChrome.ts** (11 connections) — `client/src/mythosApp/useMythosSessionChrome.ts`
+- **setup.ts** (13 connections) — `client/src/test/setup.ts`
+- **SessionManager** (12 connections) — `client/src/utils/security.ts`
 - **SkillsPage.tsx** (9 connections) — `client/src/pages/SkillsPage.tsx`
-- **App.logout.test.tsx** (8 connections) — `client/src/__tests__/App.logout.test.tsx`
 - **LogoutFlow.integration.test.tsx** (8 connections) — `client/src/__tests__/LogoutFlow.integration.test.tsx`
 - **inputSanitizer** (8 connections) — `client/src/utils/security.ts`
 - **CSRFProtection** (7 connections) — `client/src/utils/security.ts`
-- **useMythosSessionChrome()** (6 connections) — `client/src/mythosApp/useMythosSessionChrome.ts`
-- **sendLogoutCommandToServer()** (6 connections) — `client/src/utils/logoutHandler.ts`
-- **isGracePeriodServerUnavailableError()** (5 connections) — `client/src/mythosApp/motdContinueFlow.ts`
+- **domPurifyClient.test.ts** (5 connections) — `client/src/utils/__tests__/domPurifyClient.test.ts`
 - **secureTokenStorage.test.ts** (5 connections) — `client/src/utils/__tests__/secureTokenStorage.test.ts`
-- **readLogoutErrorMessage()** (5 connections) — `client/src/utils/logoutHandler.ts`
+- **resolveSanitizeWindow()** (5 connections) — `client/src/utils/domPurifyClient.ts`
+- **getDomPurify()** (5 connections) — `client/src/utils/domPurifyClient.ts`
+- **localStorageShim.ts** (5 connections) — `client/src/utils/localStorageShim.ts`
+- **installLocalStorageShim()** (5 connections) — `client/src/utils/localStorageShim.ts`
 - **csrfProtection.test.ts** (4 connections) — `client/src/utils/__tests__/csrfProtection.test.ts`
-- **logoutHandler.test.ts** (4 connections) — `client/src/utils/__tests__/logoutHandler.test.ts`
+- **localStorageShim.test.ts** (4 connections) — `client/src/utils/__tests__/localStorageShim.test.ts`
 - **security.test-utils.ts** (4 connections) — `client/src/utils/__tests__/security.test-utils.ts`
-- **processLogoutHttpResponse()** (4 connections) — `client/src/utils/logoutHandler.ts`
-- **runLogoutServerPipeline()** (4 connections) — `client/src/utils/logoutHandler.ts`
+- **verifiesDomPurifySanitize()** (4 connections) — `client/src/utils/domPurifyClient.ts`
+- **resolveVitestSanitizeWindow()** (4 connections) — `client/src/utils/domPurifyClient.ts`
+- **sanitizeWithDomPurify()** (4 connections) — `client/src/utils/domPurifyClient.ts`
 - **.generateToken()** (4 connections) — `client/src/utils/security.ts`
-- **useMythosSessionChrome.test.ts** (3 connections) — `client/src/mythosApp/__tests__/useMythosSessionChrome.test.ts`
 - **SkillsPage.test.tsx** (3 connections) — `client/src/pages/__tests__/SkillsPage.test.tsx`
-- **setupSecurityMocks()** (3 connections) — `client/src/utils/__tests__/security.test-utils.ts`
-- **asRecordUnknown()** (3 connections) — `client/src/utils/logoutHandler.ts`
-- *... and 27 more nodes in this community*
+- **domPurifyTestWindow.ts** (3 connections) — `client/src/test/domPurifyTestWindow.ts`
+- **installDomPurifyTestWindow()** (3 connections) — `client/src/test/domPurifyTestWindow.ts`
+- *... and 44 more nodes in this community*
 
 ## Relationships
 
-- [mythosApp useMythosAppState useStatsRoll](mythosApp_useMythosAppState_useStatsRoll.md) (11 shared connections)
-- [mythosApp appLazyScreens mythosAppViewMo](mythosApp_appLazyScreens_mythosAppViewMo.md) (8 shared connections)
-- [mythosApp CharacterSelectionScreen chara](mythosApp_CharacterSelectionScreen_chara.md) (7 shared connections)
-- [command parser rationale](command_parser_rationale.md) (7 shared connections)
-- [project paths rationale](project_paths_rationale.md) (6 shared connections)
+- [emote game service](emote_game_service.md) (7 shared connections)
+- [mythosApp CharacterSelectionScreen chara](mythosApp_CharacterSelectionScreen_chara.md) (6 shared connections)
+- [SkillAssignmentScreen helpers CharacterN](SkillAssignmentScreen_helpers_CharacterN.md) (6 shared connections)
 - [App helpers professionSystemErrorHandlin](App_helpers_professionSystemErrorHandlin.md) (4 shared connections)
-- [zone configuration npc](zone_configuration_npc.md) (4 shared connections)
-- [realtime maintenance connection](realtime_maintenance_connection.md) (3 shared connections)
-- [Game Terminal UI](Game_Terminal_UI.md) (2 shared connections)
-- [game chat moderation](game_chat_moderation.md) (2 shared connections)
-- [roomHandlers eventHandlers calculateOccu](roomHandlers_eventHandlers_calculateOccu.md) (2 shared connections)
+- [auth invites rationale](auth_invites_rationale.md) (4 shared connections)
+- [roomHandlers eventHandlers calculateOccu](roomHandlers_eventHandlers_calculateOccu.md) (4 shared connections)
+- [container sql injection](container_sql_injection.md) (4 shared connections)
+- [map maps useAsciiMap](map_maps_useAsciiMap.md) (2 shared connections)
+- [eventHandlers messageHandlers statusPars](eventHandlers_messageHandlers_statusPars.md) (2 shared connections)
+- [GameClientV2Container emptyOccupantsDiag](GameClientV2Container_emptyOccupantsDiag.md) (2 shared connections)
+- [lucidityEventUtils mythosTime MythosTime](lucidityEventUtils_mythosTime_MythosTime.md) (2 shared connections)
 - [dialogue DialogueEditorPage baseUrl()](dialogue_DialogueEditorPage_baseUrl%28%29.md) (2 shared connections)
 
 ## Source Files
 
-- `client/src/__tests__/App.logout.test.tsx`
 - `client/src/__tests__/LogoutFlow.integration.test.tsx`
-- `client/src/mythosApp/__tests__/useMythosSessionChrome.test.ts`
-- `client/src/mythosApp/motdContinueFlow.ts`
-- `client/src/mythosApp/useMythosSessionChrome.ts`
 - `client/src/pages/SkillsPage.tsx`
 - `client/src/pages/__tests__/SkillsPage.test.tsx`
+- `client/src/test/domPurifyTestWindow.ts`
+- `client/src/test/setup.ts`
 - `client/src/utils/__tests__/csrfProtection.test.ts`
+- `client/src/utils/__tests__/domPurifyClient.test.ts`
 - `client/src/utils/__tests__/inputSanitizer.test.ts`
-- `client/src/utils/__tests__/logoutHandler.test.ts`
+- `client/src/utils/__tests__/localStorageShim.test.ts`
 - `client/src/utils/__tests__/secureTokenStorage.test.ts`
 - `client/src/utils/__tests__/security.test-utils.ts`
-- `client/src/utils/logoutHandler.ts`
+- `client/src/utils/__tests__/sessionManager.test.ts`
+- `client/src/utils/domPurifyClient.ts`
+- `client/src/utils/localStorageShim.ts`
 - `client/src/utils/security.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 243 (99%)
-- INFERRED: 3 (1%)
+- EXTRACTED: 260 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

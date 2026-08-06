@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_contains_suspicious_patterns_clean()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test _contains_suspicious_patterns with clean target name.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_should_echo_to_sender_no_targets_not_notified()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _should_echo_to_sender returns True when no targets but not notified.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [emote models rationale](emote_models_rationale.md) (1 shared connections)
+- [message chat nats](message_chat_nats.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 

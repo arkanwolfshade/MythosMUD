@@ -1,53 +1,54 @@
 # commands communication support
 
-> 39 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **PatternNotFoundError** (21 connections) — `server/services/nats_subject_manager/exceptions.py`
-- **MissingParameterError** (17 connections) — `server/services/nats_subject_manager/exceptions.py`
-- **NATSSubjectError** (16 connections) — `server/services/nats_subject_manager/exceptions.py`
-- **test_nats_subject_exceptions.py** (16 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
-- **test_exception_hierarchy()** (7 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
-- **test_exceptions_can_be_raised()** (6 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
-- **test_exceptions_can_be_caught_by_base()** (5 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
-- **test_pattern_not_found_error()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
-- **test_missing_parameter_error_single()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
-- **test_invalid_pattern_error()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
-- **test_subject_validation_error()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
-- **.get_subscription_pattern()** (3 connections) — `server/services/nats_subject_manager/manager.py`
-- **test_build_subject_pattern_not_found()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- **test_build_subject_missing_parameter()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- **test_get_pattern_info_not_found()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- **test_get_subscription_pattern_not_found()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- **test_nats_subject_error()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
-- **test_missing_parameter_error_multiple()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
-- **.__init__()** (2 connections) — `server/services/nats_subject_manager/exceptions.py`
-- **.__init__()** (2 connections) — `server/services/nats_subject_manager/exceptions.py`
-- **Exception** (1 connections)
-- **Base exception for NATS subject-related errors.** (1 connections) — `server/services/nats_subject_manager/exceptions.py`
-- **Exception raised when a pattern name is not found in registry.** (1 connections) — `server/services/nats_subject_manager/exceptions.py`
-- **Exception raised when required parameters are missing.** (1 connections) — `server/services/nats_subject_manager/exceptions.py`
-- **Get a subscription pattern with wildcards for NATS subscriptions.          This** (1 connections) — `server/services/nats_subject_manager/manager.py`
-- *... and 14 more nodes in this community*
+- **CombatMessagingService** (18 connections) — `server/services/combat_messaging_service.py`
+- **base.py** (11 connections) — `server/services/combat_messaging/base.py`
+- **combat_messaging_service.py** (9 connections) — `server/services/combat_messaging_service.py`
+- **CombatMessagingBase** (8 connections) — `server/services/combat_messaging/base.py`
+- **CombatMessages** (6 connections)
+- **test_combat_messaging_service.py** (4 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
+- **.__init__()** (3 connections) — `server/services/combat_messaging/base.py`
+- **.get_attack_message()** (3 connections) — `server/services/combat_messaging_service.py`
+- **.get_death_message()** (3 connections) — `server/services/combat_messaging_service.py`
+- **.get_combat_start_messages()** (3 connections) — `server/services/combat_messaging_service.py`
+- **.get_combat_end_messages()** (3 connections) — `server/services/combat_messaging_service.py`
+- **.__init__()** (2 connections) — `server/services/combat_messaging_service.py`
+- **.get_error_message()** (2 connections) — `server/services/combat_messaging_service.py`
+- **Base integration with connection manager resolution.** (1 connections) — `server/services/combat_messaging/base.py`
+- **Base class with connection manager setup. Used by CombatMessagingIntegration.** (1 connections) — `server/services/combat_messaging/base.py`
+- **Combat messaging service for thematic combat messages.  This service handles the** (1 connections) — `server/services/combat_messaging_service.py`
+- **Service for generating combat messages.      This service creates thematic, pers** (1 connections) — `server/services/combat_messaging_service.py`
+- **Initialize the combat messaging service.** (1 connections) — `server/services/combat_messaging_service.py`
+- **Generate an attack message based on perspective and NPC configuration.** (1 connections) — `server/services/combat_messaging_service.py`
+- **Generate a death message for an NPC.          Args:             npc_name: Name o** (1 connections) — `server/services/combat_messaging_service.py`
+- **Generate combat start messages for all room occupants.          Args:** (1 connections) — `server/services/combat_messaging_service.py`
+- **Generate combat end messages for all room occupants.          Args:** (1 connections) — `server/services/combat_messaging_service.py`
+- **Generate thematic error messages for combat actions.          Args:** (1 connections) — `server/services/combat_messaging_service.py`
+- **Unit tests for combat messaging service.  Tests the CombatMessagingService class** (1 connections) — `server/tests/unit/services/test_combat_messaging_service.py`
 
 ## Relationships
 
-- [manager subject services](manager_subject_services.md) (20 shared connections)
-- [zone npc config](zone_npc_config.md) (9 shared connections)
-- [subject validation services](subject_validation_services.md) (5 shared connections)
+- [combat services messaging](combat_services_messaging.md) (11 shared connections)
+- [Error Handling Core](Error_Handling_Core.md) (5 shared connections)
+- [Error Conversion](Error_Conversion.md) (4 shared connections)
+- [tick game processing](tick_game_processing.md) (3 shared connections)
+- [nats services service](nats_services_service.md) (1 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (1 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/nats_subject_manager/exceptions.py`
-- `server/services/nats_subject_manager/manager.py`
-- `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
+- `server/services/combat_messaging/base.py`
+- `server/services/combat_messaging_service.py`
+- `server/tests/unit/services/test_combat_messaging_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 125 (84%)
-- INFERRED: 23 (16%)
+- EXTRACTED: 80 (93%)
+- INFERRED: 6 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

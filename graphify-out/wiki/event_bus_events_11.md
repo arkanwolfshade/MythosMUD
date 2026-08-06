@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_kick_member_non_leader_rejected()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **Non-leader cannot kick.** (1 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_adjust_room_drop_negative_quantity()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **Test adjust_room_drop() with negative quantity.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Relationships
 
-- [commands inventory helpers](commands_inventory_helpers.md) (1 shared connections)
+- [room subscription manager](room_subscription_manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_party_service.py`
+- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Audit Trail
 

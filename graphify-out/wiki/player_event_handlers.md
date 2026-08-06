@@ -1,60 +1,73 @@
 # player event handlers
 
-> 30 nodes
+> 333 nodes
 
 ## Key Concepts
 
-- **AppConfig** (31 connections) — `server/config/models/app.py`
-- **__init__.py** (11 connections) — `server/config/__init__.py`
-- **.to_legacy_dict()** (7 connections) — `server/config/models/app.py`
-- **Any** (6 connections)
-- **_create_config_instance()** (5 connections) — `server/config/__init__.py`
-- **_get_config_cached()** (5 connections) — `server/config/__init__.py`
-- **_get_config_test()** (5 connections) — `server/config/__init__.py`
-- **.__init__()** (5 connections) — `server/config/models/app.py`
-- **._legacy_game_entries()** (5 connections) — `server/config/models/app.py`
-- **._legacy_nats_dict()** (5 connections) — `server/config/models/app.py`
-- **._legacy_chat_dict()** (5 connections) — `server/config/models/app.py`
-- **._legacy_cors_dict()** (5 connections) — `server/config/models/app.py`
-- **._sanitize_environment_for_nested_configs()** (4 connections) — `server/config/models/app.py`
-- **._first_cors_origins_env()** (3 connections) — `server/config/models/app.py`
-- **.set_legacy_environment_variables()** (2 connections) — `server/config/models/app.py`
-- **Configuration module for MythosMUD server.  This module provides type-safe, vali** (1 connections) — `server/config/__init__.py`
-- **Create a new AppConfig instance from current environment.      This is a helper** (1 connections) — `server/config/__init__.py`
-- **Production config loader with caching.      Uses both @lru_cache and global _con** (1 connections) — `server/config/__init__.py`
-- **Test config loader without caching - always returns fresh instances.      This e** (1 connections) — `server/config/__init__.py`
-- **BaseSettings** (1 connections)
-- **Composite application configuration.      This is the main configuration class t** (1 connections) — `server/config/models/app.py`
-- **Initialize configuration and set environment variables for legacy compatibility.** (1 connections) — `server/config/models/app.py`
-- **Set environment variables for legacy code that reads them directly.** (1 connections) — `server/config/models/app.py`
-- **Return first set CORS origins env var to reduce CCN in _sanitize.** (1 connections) — `server/config/models/app.py`
-- **Normalize environment variables so nested configs can parse them reliably.** (1 connections) — `server/config/models/app.py`
-- *... and 5 more nodes in this community*
+- **AsyncPersistenceLayer** (188 connections) — `server/async_persistence.py`
+- **HolidayService** (45 connections) — `server/services/holiday_service.py`
+- **HolidayCollection** (41 connections) — `server/schemas/calendar/calendar.py`
+- **HolidayEntry** (31 connections) — `server/schemas/calendar/calendar.py`
+- **TestHolidayService** (27 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **holiday_service.py** (24 connections) — `server/services/holiday_service.py`
+- **Player** (22 connections)
+- **UUID** (21 connections)
+- **test_calendar_schemas.py** (21 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
+- **Any** (19 connections)
+- **validate_calendar.py** (17 connections) — `scripts/validate_calendar.py`
+- **._ensure_room_cache_loaded()** (13 connections) — `server/async_persistence.py`
+- **ChronicleLike** (13 connections) — `server/time/time_service.py`
+- **ScheduleCollection** (12 connections) — `server/schemas/calendar/calendar.py`
+- **CreateItemInstanceInput** (11 connections) — `server/async_persistence_constants.py`
+- **__init__.py** (10 connections) — `server/schemas/calendar/__init__.py`
+- **run_validation()** (9 connections) — `scripts/validate_calendar.py`
+- **calendar.py** (9 connections) — `server/schemas/calendar/calendar.py`
+- **test_holiday_service.py** (9 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **load_schedule_directory()** (8 connections) — `server/schemas/calendar/calendar.py`
+- **extract_observance_ids()** (8 connections) — `server/schemas/calendar/calendar.py`
+- **_holiday_entry_from_row()** (8 connections) — `server/services/holiday_service.py`
+- **.__init__()** (8 connections) — `server/services/holiday_service.py`
+- **.get_upcoming_holidays()** (8 connections) — `server/services/holiday_service.py`
+- **_get_calendar_paths()** (7 connections) — `scripts/validate_calendar.py`
+- *... and 308 more nodes in this community*
 
 ## Relationships
 
-- [lucidity npc combat](lucidity_npc_combat.md) (8 shared connections)
-- [models npc rationale](models_npc_rationale.md) (6 shared connections)
-- [persistence rationale players](persistence_rationale_players.md) (3 shared connections)
-- [config models cors](config_models_cors.md) (2 shared connections)
-- [invite models rationale](invite_models_rationale.md) (2 shared connections)
-- [combat validator validators](combat_validator_validators.md) (2 shared connections)
-- [schemas calendar rationale](schemas_calendar_rationale.md) (1 shared connections)
-- [NPC Combat](NPC_Combat.md) (1 shared connections)
-- [persistence container parse](persistence_container_parse.md) (1 shared connections)
-- [playerHandlers eventHandlers healthEvent](playerHandlers_eventHandlers_healthEvent.md) (1 shared connections)
-- [config models rationale](config_models_rationale.md) (1 shared connections)
-- [Spell Validation](Spell_Validation.md) (1 shared connections)
+- [room realtime occupant](room_realtime_occupant.md) (32 shared connections)
+- [Error Conversion](Error_Conversion.md) (24 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (23 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (22 shared connections)
+- [persistence container rationale](persistence_container_rationale.md) (10 shared connections)
+- [Exception Containers](Exception_Containers.md) (6 shared connections)
+- [persistence container helpers](persistence_container_helpers.md) (6 shared connections)
+- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (6 shared connections)
+- [EdgeCreationModal map STANDARD](EdgeCreationModal_map_STANDARD.md) (6 shared connections)
+- [services user manager](services_user_manager.md) (5 shared connections)
+- [tick game processing](tick_game_processing.md) (5 shared connections)
+- [lucidity event services](lucidity_event_services.md) (4 shared connections)
 
 ## Source Files
 
-- `server/config/__init__.py`
-- `server/config/models/app.py`
+- `scripts/validate_calendar.py`
+- `server/async_persistence.py`
+- `server/async_persistence_constants.py`
+- `server/npc/combat_integration_base.py`
+- `server/npc/idle_movement.py`
+- `server/npc/movement_integration.py`
+- `server/schemas/calendar/__init__.py`
+- `server/schemas/calendar/calendar.py`
+- `server/services/holiday_service.py`
+- `server/tests/unit/infrastructure/conftest.py`
+- `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- `server/tests/unit/schemas/test_calendar_schemas.py`
+- `server/tests/unit/services/test_holiday_service.py`
+- `server/time/time_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 108 (91%)
-- INFERRED: 11 (9%)
+- EXTRACTED: 1213 (94%)
+- INFERRED: 81 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

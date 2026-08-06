@@ -1,57 +1,55 @@
 # command parser helpers
 
-> 36 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **test_player_respawn_api.py** (17 connections) — `server/tests/unit/api/test_player_respawn_api.py`
-- **respawn_player()** (15 connections) — `server/api/player_respawn.py`
-- **test_player_respawn_handlers.py** (14 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **respawn_player_from_delirium()** (13 connections) — `server/api/player_respawn.py`
-- **_handle_delirium_respawn_validation_error()** (12 connections) — `server/api/player_respawn.py`
-- **_handle_respawn_validation_error()** (11 connections) — `server/api/player_respawn.py`
-- **_user()** (9 connections) — `server/tests/unit/api/test_player_respawn_api.py`
-- **RespawnResponse** (8 connections) — `server/schemas/players/player_respawn.py`
-- **_user()** (8 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **test_respawn_player_validation_error()** (5 connections) — `server/tests/unit/api/test_player_respawn_api.py`
-- **test_respawn_player_from_delirium_not_found()** (5 connections) — `server/tests/unit/api/test_player_respawn_api.py`
-- **test_respawn_player_not_found()** (5 connections) — `server/tests/unit/api/test_player_respawn_api.py`
-- **test_handle_respawn_validation_not_found()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **test_handle_respawn_validation_must_be_dead()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **test_handle_respawn_validation_generic_500()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **test_handle_delirium_validation_not_found()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **test_handle_delirium_validation_must_be_delirious()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **test_handle_delirium_validation_lucidity_keyword()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **test_handle_delirium_validation_generic_500()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **Request** (4 connections)
-- **RespawnPlayerData** (4 connections) — `server/schemas/players/player_respawn.py`
-- **test_respawn_player_success()** (4 connections) — `server/tests/unit/api/test_player_respawn_api.py`
-- **test_respawn_player_from_delirium_success()** (4 connections) — `server/tests/unit/api/test_player_respawn_api.py`
-- **test_respawn_player_unexpected_error()** (4 connections) — `server/tests/unit/api/test_player_respawn_api.py`
-- **test_respawn_player_no_session()** (4 connections) — `server/tests/unit/api/test_player_respawn_api.py`
-- *... and 11 more nodes in this community*
+- **validate_inventory_payload()** (13 connections) — `server/schemas/shared/inventory_schema.py`
+- **__init__.py** (12 connections) — `server/schemas/shared/__init__.py`
+- **test_inventory_schema.py** (11 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **validate_inventory_items()** (9 connections) — `server/schemas/shared/inventory_schema.py`
+- **inventory_schema.py** (7 connections) — `server/schemas/shared/inventory_schema.py`
+- **_build_validator()** (5 connections) — `server/schemas/shared/inventory_schema.py`
+- **test_validate_inventory_payload_missing_required()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **test_validate_inventory_payload_invalid_inventory()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **test_validate_inventory_items_missing_required()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **test_validate_inventory_items_invalid_quantity()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **Any** (3 connections)
+- **test_validate_inventory_payload_valid()** (3 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **test_validate_inventory_items_valid()** (3 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **Shared schemas: base models, target resolution, inventory validation.** (1 connections) — `server/schemas/shared/__init__.py`
+- **Inventory JSON schema validation utilities.  As recorded in the restricted stack** (1 connections) — `server/schemas/shared/inventory_schema.py`
+- **Internal helper to construct a Draft7 validator instance.** (1 connections) — `server/schemas/shared/inventory_schema.py`
+- **Validate a complete inventory payload against the canonical schema.      Raises:** (1 connections) — `server/schemas/shared/inventory_schema.py`
+- **Validate only the inventory portion to simplify testing workflows.      Raises:** (1 connections) — `server/schemas/shared/inventory_schema.py`
+- **Unit tests for inventory_schema validation functions.  Tests the validation func** (1 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **Test validate_inventory_payload() accepts valid payload.** (1 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **Test validate_inventory_payload() raises error for missing required fields.** (1 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **Test validate_inventory_payload() raises error for invalid inventory.** (1 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **Test validate_inventory_items() accepts valid items.** (1 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **Test validate_inventory_items() raises error for missing required fields.** (1 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **Test validate_inventory_items() raises error for invalid quantity.** (1 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
 
 ## Relationships
 
-- [Exception Containers](Exception_Containers.md) (19 shared connections)
-- [Loot Generation](Loot_Generation.md) (14 shared connections)
-- [NPC Combat](NPC_Combat.md) (9 shared connections)
-- [player requests schemas](player_requests_schemas.md) (4 shared connections)
-- [Player Stats](Player_Stats.md) (3 shared connections)
-- [command player state](command_player_state.md) (2 shared connections)
-- [room game service](room_game_service.md) (2 shared connections)
+- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (8 shared connections)
+- [command factories moderation](command_factories_moderation.md) (3 shared connections)
+- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (2 shared connections)
+- [logging file setup](logging_file_setup.md) (2 shared connections)
+- [panels domPurifyClient chat](panels_domPurifyClient_chat.md) (1 shared connections)
+- [services ascii map](services_ascii_map.md) (1 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/player_respawn.py`
-- `server/schemas/players/player_respawn.py`
-- `server/tests/unit/api/test_player_respawn_api.py`
-- `server/tests/unit/api/test_player_respawn_handlers.py`
+- `server/schemas/shared/__init__.py`
+- `server/schemas/shared/inventory_schema.py`
+- `server/tests/unit/schemas/test_inventory_schema.py`
 
 ## Audit Trail
 
-- EXTRACTED: 186 (93%)
-- INFERRED: 13 (7%)
+- EXTRACTED: 90 (96%)
+- INFERRED: 4 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

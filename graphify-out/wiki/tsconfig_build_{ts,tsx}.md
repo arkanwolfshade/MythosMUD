@@ -21,8 +21,7 @@
 
 ## Relationships
 
-- [commands shutdown process](commands_shutdown_process.md) (4 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (5 shared connections)
 - [help content websocket](help_content_websocket.md) (1 shared connections)
 
 ## Source Files

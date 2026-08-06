@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_handle_combat_started_event()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test _handle_combat_started_event delegates to event handler.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_get_item_description_from_prototype_no_registry()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test getting item description when prototype registry is None.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
 
 ## Relationships
 
-- [subzone realtime nats](subzone_realtime_nats.md) (1 shared connections)
+- [schemas validator rationale](schemas_validator_rationale.md) (1 shared connections)
+- [Item Lookup](Item_Lookup.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- `server/tests/unit/commands/test_look_item.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

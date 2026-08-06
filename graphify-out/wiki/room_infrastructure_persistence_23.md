@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_apply_dampening_and_send_message_no_original_content()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _apply_dampening_and_send_message handles missing original_content.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_take_room_drop_full_quantity()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **Test take_room_drop() removes stack when quantity >= available.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Relationships
 
-- [message chat nats](message_chat_nats.md) (1 shared connections)
+- [room subscription manager](room_subscription_manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Audit Trail
 

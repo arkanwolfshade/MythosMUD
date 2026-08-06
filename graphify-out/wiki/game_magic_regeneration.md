@@ -1,36 +1,45 @@
 # game magic regeneration
 
-> 12 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **._is_uuid_string()** (8 connections) — `server/realtime/occupant_formatter.py`
-- **._process_string_occupant_for_update()** (4 connections) — `server/realtime/occupant_formatter.py`
-- **test_occupant_formatter_is_uuid_string_valid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_is_uuid_string_invalid_length()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_is_uuid_string_invalid_dashes()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_is_uuid_string_invalid_chars()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Check if a string looks like a UUID.          Args:             value: The strin** (1 connections) — `server/realtime/occupant_formatter.py`
-- **Process a string occupant (legacy format) and add to list if valid.          Arg** (1 connections) — `server/realtime/occupant_formatter.py`
-- **Test OccupantFormatter._is_uuid_string() returns True for valid UUID.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter._is_uuid_string() returns False for invalid length.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter._is_uuid_string() returns False for wrong dash count.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter._is_uuid_string() returns False for invalid characters.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **decode_json_column()** (7 connections) — `server/container/utils.py`
+- **_flatten_bundle()** (6 connections) — `server/container/main.py`
+- **._build_prototype_payload()** (5 connections) — `server/container/bundles/game.py`
+- **._wire_user_manager_after_init()** (4 connections) — `server/container/bundles/game.py`
+- **._decode_json_column()** (4 connections) — `server/container/main.py`
+- **Any** (3 connections)
+- **Any** (3 connections)
+- **.get_service()** (3 connections) — `server/container/main.py`
+- **test_flatten_bundle_copies_existing_attrs()** (2 connections) — `server/tests/unit/container/test_application_container_main.py`
+- **Wire user_manager into follow_service and nats_message_handler when present.** (1 connections) — `server/container/bundles/game.py`
+- **Build a single item prototype payload from a DB row for validation.** (1 connections) — `server/container/bundles/game.py`
+- **Copy bundle attributes onto container for backward compatibility.** (1 connections) — `server/container/main.py`
+- **Delegate to shared util. Kept for backward compatibility.** (1 connections) — `server/container/main.py`
+- **Get a service by name.** (1 connections) — `server/container/main.py`
+- **Any** (1 connections)
+- **Decode a JSON column value, returning the type's default on failure.      Used b** (1 connections) — `server/container/utils.py`
 
 ## Relationships
 
-- [occupant formatter realtime](occupant_formatter_realtime.md) (4 shared connections)
-- [container sql injection](container_sql_injection.md) (2 shared connections)
-- [shutdown commands admin](shutdown_commands_admin.md) (2 shared connections)
+- [nats services service](nats_services_service.md) (6 shared connections)
+- [websocket realtime handler](websocket_realtime_handler.md) (3 shared connections)
+- [room realtime occupant](room_realtime_occupant.md) (2 shared connections)
+- [services lucidity repository](services_lucidity_repository.md) (1 shared connections)
+- [room infrastructure persistence](room_infrastructure_persistence.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/occupant_formatter.py`
-- `server/tests/unit/realtime/test_occupant_formatter.py`
+- `server/container/bundles/game.py`
+- `server/container/main.py`
+- `server/container/utils.py`
+- `server/tests/unit/container/test_application_container_main.py`
 
 ## Audit Trail
 
-- EXTRACTED: 30 (100%)
+- EXTRACTED: 44 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

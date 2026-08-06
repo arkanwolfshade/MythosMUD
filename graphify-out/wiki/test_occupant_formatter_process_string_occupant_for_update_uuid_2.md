@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_occupant_formatter_process_string_occupant_for_update_uuid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **Test OccupantFormatter._process_string_occupant_for_update() skips UUID string.** (1 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_subscribe_to_room_multiple_players()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **Test subscribe_to_room() with multiple players.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
 
 ## Relationships
 
-- [container sql injection](container_sql_injection.md) (1 shared connections)
-- [occupant formatter realtime](occupant_formatter_realtime.md) (1 shared connections)
+- [room subscription manager](room_subscription_manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_occupant_formatter.py`
+- `server/tests/unit/realtime/test_room_subscription_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,42 +1,53 @@
 # combat services service
 
-> 17 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **.mark_room_as_explored()** (7 connections) — `server/services/exploration_service.py`
-- **UUID** (7 connections)
-- **._get_room_uuid_by_stable_id()** (7 connections) — `server/services/exploration_service.py`
-- **.is_room_explored()** (6 connections) — `server/services/exploration_service.py`
-- **AsyncSession** (5 connections)
-- **._mark_explored_in_session()** (5 connections) — `server/services/exploration_service.py`
-- **.get_explored_rooms()** (5 connections) — `server/services/exploration_service.py`
-- **.__init__()** (4 connections) — `server/services/exploration_service.py`
-- **.mark_room_as_explored_sync()** (4 connections) — `server/services/exploration_service.py`
-- **Any** (2 connections)
-- **Initialize the exploration service.          Args:             database_manager:** (1 connections) — `server/services/exploration_service.py`
-- **Mark a room as explored by a player.          This method inserts a record into** (1 connections) — `server/services/exploration_service.py`
-- **Get room UUID by stable_id (hierarchical room ID).          Args:             st** (1 connections) — `server/services/exploration_service.py`
-- **Mark room as explored using the provided session.          Args:             ses** (1 connections) — `server/services/exploration_service.py`
-- **Get list of room IDs that a player has explored.          Args:             play** (1 connections) — `server/services/exploration_service.py`
-- **Check if a player has explored a specific room.          Args:             playe** (1 connections) — `server/services/exploration_service.py`
-- **Synchronous wrapper for mark_room_as_explored.          This method is designed** (1 connections) — `server/services/exploration_service.py`
+- **_NPCCombatIntegrationDeps** (14 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **NPCCombatIntegrationCombatMixin** (11 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **._process_combat_attack()** (8 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **.start_new_combat_for_mixin()** (8 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **._apply_npc_attack_damage_for_npc_initiated_combat()** (7 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **._broadcast_room_after_npc_death()** (7 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **.get_combat_service()** (6 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **UUID** (6 connections)
+- **.get_data_provider()** (5 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **.get_messaging_integration()** (4 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **.start_new_combat_for_mixin()** (4 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **._broadcast_npc_attack_on_player_started()** (3 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **Protocol** (1 connections)
+- **Attributes supplied by NPCCombatIntegrationService (mixin cannot initialize them** (1 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **Return combat service dependency.** (1 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **Return data provider dependency.** (1 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **Return messaging integration dependency.** (1 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **Start a new combat from mixin combat pipeline.** (1 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **start_combat / process_attack paths and post-death broadcast.** (1 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **Resolve participant combat data and apply the initial attack damage through Comb** (1 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **Structured logging / observability trail when NPC-initiated combat begins.** (1 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **Process combat attack, starting new combat or continuing existing one.** (1 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **Start a new combat and process initial attack.** (1 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **Broadcast room occupants update to killer's room after NPC death. Swallows error** (1 connections) — `server/services/npc_combat_integration_combat_mixin.py`
 
 ## Relationships
 
-- [corpse lifecycle service](corpse_lifecycle_service.md) (7 shared connections)
-- [commands shutdown process](commands_shutdown_process.md) (4 shared connections)
-- [Database Access Layer](Database_Access_Layer.md) (1 shared connections)
-- [room game service](room_game_service.md) (1 shared connections)
+- [player look commands](player_look_commands.md) (6 shared connections)
+- [npc database infrastructure](npc_database_infrastructure.md) (3 shared connections)
+- [rate limiter realtime](rate_limiter_realtime.md) (3 shared connections)
+- [player event realtime](player_event_realtime.md) (2 shared connections)
+- [game skill service](game_skill_service.md) (2 shared connections)
+- [combat services messaging](combat_services_messaging.md) (1 shared connections)
+- [command models moderation](command_models_moderation.md) (1 shared connections)
+- [tick game processing](tick_game_processing.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/exploration_service.py`
+- `server/services/npc_combat_integration_combat_mixin.py`
 
 ## Audit Trail
 
-- EXTRACTED: 59 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 89 (94%)
+- INFERRED: 6 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

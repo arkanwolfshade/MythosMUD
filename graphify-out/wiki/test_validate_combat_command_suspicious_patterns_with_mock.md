@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_validate_combat_command_suspicious_patterns_with_mock()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test validate_combat_command suspicious patterns path (line 158).** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_build_chat_event()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _build_chat_event builds event.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [emote models rationale](emote_models_rationale.md) (1 shared connections)
+- [message chat nats](message_chat_nats.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 

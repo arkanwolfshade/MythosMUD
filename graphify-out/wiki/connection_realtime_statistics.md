@@ -1,14 +1,15 @@
 # connection realtime statistics
 
-> 59 nodes
+> 61 nodes
 
 ## Key Concepts
 
 - **look_command.py** (38 connections) — `server/commands/look_command.py`
 - **test_look_command.py** (22 connections) — `server/tests/unit/commands/test_look_command.py`
+- **look_helpers.py** (16 connections) — `server/commands/look_helpers.py`
 - **Any** (12 connections)
 - **handle_look_command()** (12 connections) — `server/commands/look_command.py`
-- **exploration_commands.py** (11 connections) — `server/commands/exploration_commands.py`
+- **_is_direction()** (11 connections) — `server/commands/look_helpers.py`
 - **_route_look_command()** (10 connections) — `server/commands/look_command.py`
 - **_validate_look_prerequisites()** (9 connections) — `server/commands/look_command.py`
 - **_get_room_drops()** (9 connections) — `server/commands/look_command.py`
@@ -28,33 +29,32 @@
 - **test_get_room_drops_no_connection_manager()** (3 connections) — `server/tests/unit/commands/test_look_command.py`
 - **test_setup_look_command_success()** (3 connections) — `server/tests/unit/commands/test_look_command.py`
 - **test_handle_look_command_setup_failure()** (3 connections) — `server/tests/unit/commands/test_look_command.py`
-- **test_handle_look_command_routes_to_room_look()** (3 connections) — `server/tests/unit/commands/test_look_command.py`
-- *... and 34 more nodes in this community*
+- *... and 36 more nodes in this community*
 
 ## Relationships
 
-- [look command commands](look_command_commands.md) (8 shared connections)
-- [startup npc services](startup_npc_services.md) (5 shared connections)
-- [npc realtime occupant](npc_realtime_occupant.md) (5 shared connections)
-- [commands whisper command](commands_whisper_command.md) (4 shared connections)
-- [look helpers commands](look_helpers_commands.md) (4 shared connections)
-- [commands npc admin](commands_npc_admin.md) (3 shared connections)
-- [npc look commands](npc_look_commands.md) (3 shared connections)
-- [room renderer functions](room_renderer_functions.md) (3 shared connections)
-- [commands emote rationale](commands_emote_rationale.md) (2 shared connections)
+- [look command commands](look_command_commands.md) (13 shared connections)
+- [container helpers endpoints](container_helpers_endpoints.md) (7 shared connections)
+- [player realtime presence](player_realtime_presence.md) (6 shared connections)
+- [schemas validator rationale](schemas_validator_rationale.md) (5 shared connections)
+- [look helpers commands](look_helpers_commands.md) (5 shared connections)
+- [Error Conversion](Error_Conversion.md) (4 shared connections)
+- [commands quest rationale](commands_quest_rationale.md) (3 shared connections)
+- [player service game](player_service_game.md) (3 shared connections)
+- [alias storage rationale](alias_storage_rationale.md) (2 shared connections)
 - [commands command rationale](commands_command_rationale.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [combat services turn](combat_services_turn.md) (1 shared connections)
+- [player cache rationale](player_cache_rationale.md) (2 shared connections)
+- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/exploration_commands.py`
 - `server/commands/look_command.py`
+- `server/commands/look_helpers.py`
 - `server/tests/unit/commands/test_look_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 245 (100%)
+- EXTRACTED: 262 (100%)
 - INFERRED: 1 (0%)
 - AMBIGUOUS: 0 (0%)
 

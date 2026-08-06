@@ -1,36 +1,37 @@
 # package argon2 engines
 
-> 10 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **package.json** (10 connections) — `client/package.json`
-- **optionalDependencies** (2 connections) — `client/package.json`
-- **argon2** (2 connections) — `client/package.json`
-- **argon2** (2 connections) — `client/package.json`
-- **engines** (2 connections) — `client/package.json`
-- **name** (1 connections) — `client/package.json`
-- **private** (1 connections) — `client/package.json`
-- **version** (1 connections) — `client/package.json`
-- **type** (1 connections) — `client/package.json`
-- **node** (1 connections) — `client/package.json`
+- **seed_e2e_users.py** (9 connections) — `scripts/seed_e2e_users.py`
+- **_ensure_player_for_user()** (5 connections) — `scripts/seed_e2e_users.py`
+- **_seed_e2e_users()** (4 connections) — `scripts/seed_e2e_users.py`
+- **spawn_defaults.py** (4 connections) — `server/constants/spawn_defaults.py`
+- **main()** (3 connections) — `scripts/seed_e2e_users.py`
+- **E2eUserSpec** (2 connections) — `scripts/seed_e2e_users.py`
+- **UUID** (2 connections)
+- **datetime** (2 connections)
+- **Connection** (1 connections)
+- **One row in users plus optional default character for login E2E.** (1 connections) — `scripts/seed_e2e_users.py`
+- **Entry point: run E2E user seed via anyio.** (1 connections) — `scripts/seed_e2e_users.py`
+- **Shared spawn / respawn room identifiers used by gameplay and E2E seed scripts.** (1 connections) — `server/constants/spawn_defaults.py`
 
 ## Relationships
 
-- [package react dom](package_react_dom.md) (1 shared connections)
-- [package eslint plugin](package_eslint_plugin.md) (1 shared connections)
-- [package @asyncapi/generator @stoplight/s](package_%40asyncapi-generator_%40stoplight-s.md) (1 shared connections)
-- [package scripts build](package_scripts_build.md) (1 shared connections)
-- [npc lifecycle combat](npc_lifecycle_combat.md) (1 shared connections)
+- [websocket handler realtime](websocket_handler_realtime.md) (3 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
+- [player room realtime](player_room_realtime.md) (1 shared connections)
 
 ## Source Files
 
-- `client/package.json`
+- `scripts/seed_e2e_users.py`
+- `server/constants/spawn_defaults.py`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 33 (94%)
+- INFERRED: 2 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

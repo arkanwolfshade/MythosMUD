@@ -1,24 +1,23 @@
 # commands command validation
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **description** (3 connections) — `db/static/schemas/room.schema.json`
-- **type** (1 connections) — `db/static/schemas/room.schema.json`
-- **minLength** (1 connections) — `db/static/schemas/room.schema.json`
+- **typescript** (2 connections) — `client/package.json`
+- **typescript** (1 connections) — `client/package.json`
 
 ## Relationships
 
-- [static schemas room](static_schemas_room.md) (1 shared connections)
+- [package eslint plugin](package_eslint_plugin.md) (1 shared connections)
 
 ## Source Files
 
-- `db/static/schemas/room.schema.json`
+- `client/package.json`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

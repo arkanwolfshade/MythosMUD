@@ -1,60 +1,58 @@
 # rate limiter services
 
-> 37 nodes
+> 26 nodes
 
 ## Key Concepts
 
-- **projectorHandlersMessages.ts** (26 connections) — `client/src/components/ui-v2/eventLog/projectorHandlersMessages.ts`
-- **projectorHandlersState.ts** (23 connections) — `client/src/components/ui-v2/eventLog/projectorHandlersState.ts`
-- **projectorRoom.ts** (18 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
-- **projectorMessageUtils.ts** (11 connections) — `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
-- **roomMergeUtils.ts** (10 connections) — `client/src/components/ui-v2/utils/roomMergeUtils.ts`
-- **messageMapper.ts** (8 connections) — `client/src/components/ui-v2/eventLog/messageMapper.ts`
-- **messageMapper.test.ts** (7 connections) — `client/src/components/ui-v2/eventLog/__tests__/messageMapper.test.ts`
-- **mergeRoomState()** (7 connections) — `client/src/components/ui-v2/utils/roomMergeUtils.ts`
-- **deriveRoomFromRoomUpdate()** (6 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
-- **deriveRoomFromRoomOccupants()** (5 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
-- **buildChatMessage()** (4 connections) — `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
-- **appendMessage()** (4 connections) — `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
-- **appendMovementMessage()** (4 connections) — `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
-- **roomMergeUtils.test.ts** (4 connections) — `client/src/components/ui-v2/utils/__tests__/roomMergeUtils.test.ts`
-- **formatNpcTookDamageLine()** (3 connections) — `client/src/components/ui-v2/eventLog/messageMapper.ts`
-- **formatNpcAttackedLine()** (3 connections) — `client/src/components/ui-v2/eventLog/messageMapper.ts`
-- **formatPlayerAttackedLine()** (3 connections) — `client/src/components/ui-v2/eventLog/messageMapper.ts`
-- **mergePlayerDpFromPlayerAttackedPayload()** (3 connections) — `client/src/components/ui-v2/eventLog/messageMapper.ts`
-- **createRoomUpdateWithPreservedOccupants()** (3 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
-- **deriveRoomFromRoomState()** (3 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
-- **selectPlayersArray()** (3 connections) — `client/src/components/ui-v2/utils/roomMergeUtils.ts`
-- **selectNpcsArray()** (3 connections) — `client/src/components/ui-v2/utils/roomMergeUtils.ts`
-- **messageHandlers** (2 connections) — `client/src/components/ui-v2/eventLog/projectorHandlersMessages.ts`
-- **ProjectorHandler** (2 connections) — `client/src/components/ui-v2/eventLog/projectorHandlersState.ts`
-- **stateHandlers** (2 connections) — `client/src/components/ui-v2/eventLog/projectorHandlersState.ts`
-- *... and 12 more nodes in this community*
+- **test_rate_limiter.py** (35 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_cleanup_old_entries()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_check_rate_limit_within_limits()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_check_rate_limit_exceeds_limit()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_check_rate_limit_error_handling()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_record_message_error_handling()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_get_player_stats_empty()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_reset_player_limits_nonexistent_player()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_get_system_stats()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_is_player_rate_limited_false()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_get_remaining_messages_zero()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_rate_limit_different_channels()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_check_rate_limit_logs_violation()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **Unit tests for rate limiter service.  Tests the RateLimiter class which provides** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **Test _cleanup_old_entries removes old timestamps.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **Test check_rate_limit returns True when within limits.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **Test check_rate_limit returns False when limit exceeded.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **Test check_rate_limit handles errors gracefully (fails open).** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **Test record_message handles errors gracefully.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **Test get_player_stats handles player with no messages.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **Test reset_player_limits handles nonexistent player.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **Test get_system_stats returns system-wide statistics.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **Test is_player_rate_limited returns False when not rate limited.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **Test get_remaining_messages returns 0 when at limit.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **Test rate limiting is per-channel.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [Game Terminal UI](Game_Terminal_UI.md) (20 shared connections)
-- [PanelSystem PanelManager panelLayoutClam](PanelSystem_PanelManager_panelLayoutClam.md) (7 shared connections)
-- [game terminal lucidity](game_terminal_lucidity.md) (7 shared connections)
-- [lucidityEventUtils mythosTime MythosTime](lucidityEventUtils_mythosTime_MythosTime.md) (5 shared connections)
-- [project paths rationale](project_paths_rationale.md) (2 shared connections)
-- [panels chatPanelRuntimeUtils chatPanelEx](panels_chatPanelRuntimeUtils_chatPanelEx.md) (2 shared connections)
-- [character creation service](character_creation_service.md) (1 shared connections)
+- [event events serialization](event_events_serialization.md) (4 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [test_messaging_integration_init](test_messaging_integration_init.md) (1 shared connections)
+- [test_resolve_connection_manager_from_container_no_manager](test_resolve_connection_manager_from_container_no_manager.md) (1 shared connections)
+- [test_validate_combat_state_not_in_combat_required](test_validate_combat_state_not_in_combat_required.md) (1 shared connections)
+- [test_validate_combat_state_in_combat_required](test_validate_combat_state_in_combat_required.md) (1 shared connections)
+- [test_validate_combat_command_target_too_long](test_validate_combat_command_target_too_long.md) (1 shared connections)
+- [test_validate_target_exists_partial_match](test_validate_target_exists_partial_match.md) (1 shared connections)
+- [test_validate_target_exists_no_match](test_validate_target_exists_no_match.md) (1 shared connections)
+- [test_validate_target_exists_exact_match](test_validate_target_exists_exact_match.md) (1 shared connections)
+- [test_validate_target_exists_case_insensitive](test_validate_target_exists_case_insensitive.md) (1 shared connections)
+- [test_validate_target_alive_alive](test_validate_target_alive_alive.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/ui-v2/eventLog/__tests__/messageMapper.test.ts`
-- `client/src/components/ui-v2/eventLog/messageMapper.ts`
-- `client/src/components/ui-v2/eventLog/projectorHandlersMessages.ts`
-- `client/src/components/ui-v2/eventLog/projectorHandlersState.ts`
-- `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
-- `client/src/components/ui-v2/eventLog/projectorRoom.ts`
-- `client/src/components/ui-v2/utils/__tests__/roomMergeUtils.test.ts`
-- `client/src/components/ui-v2/utils/roomMergeUtils.ts`
+- `server/tests/unit/services/test_rate_limiter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 190 (100%)
+- EXTRACTED: 72 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

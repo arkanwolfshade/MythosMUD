@@ -1,23 +1,24 @@
 # test_occupant_formatter_init
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_start_without_event_subscriptions()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test start() works without event subscriptions.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **.__init__()** (3 connections) — `server/middleware/correlation_middleware.py`
+- **ASGIApp** (1 connections)
+- **Initialize the correlation middleware.          Args:             app: ASGI appl** (1 connections) — `server/middleware/correlation_middleware.py`
 
 ## Relationships
 
-- [nats message handler](nats_message_handler.md) (1 shared connections)
+- [app factory rationale](app_factory_rationale.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/middleware/correlation_middleware.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

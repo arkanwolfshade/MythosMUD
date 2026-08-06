@@ -1,24 +1,30 @@
 # commands admin shutdown
 
-> 2 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **test_get_item_description_from_prototype_no_registry()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test getting item description when prototype registry is None.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **.create_logout_command()** (5 connections) — `server/utils/command_factories_player_state.py`
+- **test_create_logout_command()** (3 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- **test_create_logout_command_with_args()** (3 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- **Test create_logout_command() creates LogoutCommand.** (1 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- **Test create_logout_command() ignores args.** (1 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- **Create LogoutCommand from arguments.** (1 connections) — `server/utils/command_factories_player_state.py`
 
 ## Relationships
 
-- [npc realtime occupant](npc_realtime_occupant.md) (1 shared connections)
-- [Item Lookup](Item_Lookup.md) (1 shared connections)
+- [add used user](add_used_user.md) (2 shared connections)
+- [dialogue definition persistence](dialogue_definition_persistence.md) (1 shared connections)
+- [command inventory factories](command_inventory_factories.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_item.py`
+- `server/tests/unit/utils/test_command_factories_player_state.py`
+- `server/utils/command_factories_player_state.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 14 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

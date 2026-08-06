@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_get_combat_help_message()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test get_combat_help_message returns help message.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_echo_message_to_sender_success()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _echo_message_to_sender echoes message.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [emote models rationale](emote_models_rationale.md) (1 shared connections)
+- [message chat nats](message_chat_nats.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 

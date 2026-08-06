@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_handle_nats_message_event_data_detection()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test _handle_nats_message detects event messages by event_data.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_extract_occupant_names_valid_names()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test extract_occupant_names() with valid names.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [nats message handler](nats_message_handler.md) (1 shared connections)
+- [player event handlers](player_event_handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 

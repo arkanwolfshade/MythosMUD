@@ -1,31 +1,31 @@
 # realtime message nats
 
-> 9 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **.get_memory_status_report()** (6 connections) — `server/app/memory_cleanup_service.py`
-- **.managed_task_cleanup()** (4 connections) — `server/app/memory_cleanup_service.py`
-- **._get_current_memory_usage()** (3 connections) — `server/app/memory_cleanup_service.py`
-- **._get_active_task_count()** (3 connections) — `server/app/memory_cleanup_service.py`
-- **Any** (1 connections)
-- **Get current memory usage in bytes for this process.** (1 connections) — `server/app/memory_cleanup_service.py`
-- **Get count of active tasks in the current event loop.** (1 connections) — `server/app/memory_cleanup_service.py`
-- **Generate status report for diagnostic monitoring.          Returns:** (1 connections) — `server/app/memory_cleanup_service.py`
-- **Runtime detection and cleanup of orphaned tasks based on memory thresholds.** (1 connections) — `server/app/memory_cleanup_service.py`
+- **._build_connection_stats()** (10 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **.get_connection_stats()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **._session_connection_distribution()** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **._connection_age_extrema()** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **Count how many sessions have each connection-count size.** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **Return (avg, max, min) connection ages; zeros when the list is empty.** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **Compose connection statistics payload (extracted to keep get_connection_stats CC** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **Get comprehensive connection statistics.          Args:             player_webso** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
 
 ## Relationships
 
-- [combat attack handler](combat_attack_handler.md) (4 shared connections)
-- [schemas player rationale](schemas_player_rationale.md) (1 shared connections)
+- [persistence rationale room](persistence_rationale_room.md) (6 shared connections)
+- [tsconfig app src/**/*](tsconfig_app_src-__-_.md) (3 shared connections)
+- [inventory service helpers](inventory_service_helpers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/app/memory_cleanup_service.py`
+- `server/realtime/monitoring/statistics_aggregator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (100%)
+- EXTRACTED: 24 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

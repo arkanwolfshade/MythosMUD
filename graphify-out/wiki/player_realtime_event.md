@@ -13,7 +13,7 @@
 
 ## Relationships
 
-- [command commands handler](command_commands_handler.md) (2 shared connections)
+- [player model models](player_model_models.md) (2 shared connections)
 - [command validation commands](command_validation_commands.md) (1 shared connections)
 
 ## Source Files

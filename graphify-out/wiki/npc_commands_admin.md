@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [Loot Generation](Loot_Generation.md) (24 shared connections)
-- [command factories create](command_factories_create.md) (21 shared connections)
+- [add used user](add_used_user.md) (24 shared connections)
+- [dialogue definition persistence](dialogue_definition_persistence.md) (21 shared connections)
 - [command inventory factories](command_inventory_factories.md) (6 shared connections)
 - [command inventory models](command_inventory_models.md) (6 shared connections)
 

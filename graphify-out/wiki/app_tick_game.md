@@ -33,10 +33,10 @@
 
 ## Relationships
 
-- [chat game message](chat_game_message.md) (6 shared connections)
-- [alias command models](alias_command_models.md) (4 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [websocket helpers realtime](websocket_helpers_realtime.md) (1 shared connections)
+- [alias command models](alias_command_models.md) (5 shared connections)
+- [services ascii map](services_ascii_map.md) (5 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [room sync service](room_sync_service.md) (1 shared connections)
 
 ## Source Files
 

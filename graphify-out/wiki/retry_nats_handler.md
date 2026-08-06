@@ -1,63 +1,63 @@
 # retry nats handler
 
-> 90 nodes
+> 72 nodes
 
 ## Key Concepts
 
-- **spell_effects.py** (47 connections) — `server/game/magic/spell_effects.py`
-- **spell_effects_heal.py** (41 connections) — `server/game/magic/spell_effects_heal.py`
-- **NpcSpellDamageTarget** (17 connections) — `server/game/magic/spell_effect_types.py`
-- **run_heal_effect()** (15 connections) — `server/game/magic/spell_effects_heal.py`
-- **SpellEffectPlayer** (14 connections) — `server/game/magic/spell_effect_types.py`
-- **SpellEffectsEngineHealPort** (13 connections) — `server/game/magic/spell_effect_types.py`
-- **UUID** (13 connections)
-- **spell_effect_types.py** (11 connections) — `server/game/magic/spell_effect_types.py`
-- **_steal_life_resolve_target_dp()** (11 connections) — `server/game/magic/spell_effects_heal.py`
-- **_steal_life_apply_target_damage()** (11 connections) — `server/game/magic/spell_effects_heal.py`
-- **_run_steal_life()** (11 connections) — `server/game/magic/spell_effects_heal.py`
-- **PlayerPersistenceSpellPort** (10 connections) — `server/game/magic/spell_effect_types.py`
-- **_run_standard_heal_after_validation()** (10 connections) — `server/game/magic/spell_effects_heal.py`
-- **get_npc_instance_for_steal_life()** (9 connections) — `server/game/magic/spell_effects_heal.py`
-- **coerce_effect_int_times_mastery()** (9 connections) — `server/game/magic/spell_effects_internal.py`
-- **_steal_life_publish_npc_events()** (8 connections) — `server/game/magic/spell_effects_heal.py`
-- **test_spell_effects_internal.py** (8 connections) — `server/tests/unit/game/magic/test_spell_effects_internal.py`
-- **Protocol** (7 connections)
-- **_add_healing_threat_if_in_combat()** (7 connections) — `server/game/magic/spell_effects_heal.py`
-- **_lookup_npc_by_id_or_uuid()** (7 connections) — `server/game/magic/spell_effects_heal.py`
-- **NpcLifecycleManagerPort** (6 connections) — `server/game/magic/spell_effect_types.py`
-- **NpcIntegrationStringIdPort** (6 connections) — `server/game/magic/spell_effect_types.py`
-- **_is_heal_other_self_target()** (6 connections) — `server/game/magic/spell_effects_heal.py`
-- **_steal_life_apply_player_damage()** (6 connections) — `server/game/magic/spell_effects_heal.py`
-- **_resolve_npc_id_for_event()** (6 connections) — `server/game/magic/spell_effects_heal.py`
-- *... and 65 more nodes in this community*
+- **container_persistence.py** (54 connections) — `server/persistence/container_persistence.py`
+- **test_container_persistence_extended_row_helpers.py** (53 connections) — `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
+- **ContainerDataCore** (26 connections) — `server/persistence/container_data.py`
+- **update_container()** (26 connections) — `server/persistence/container_persistence.py`
+- **_container_data_from_row()** (20 connections) — `server/persistence/container_persistence.py`
+- **create_container()** (19 connections) — `server/persistence/container_persistence.py`
+- **get_container()** (19 connections) — `server/persistence/container_persistence.py`
+- **delete_container()** (14 connections) — `server/persistence/container_persistence.py`
+- **_InsertBindSource** (11 connections) — `server/persistence/container_persistence.py`
+- **_insert_container_row()** (11 connections) — `server/persistence/container_persistence.py`
+- **PsycopgConnection** (11 connections)
+- **_log_and_resolve_created_container()** (11 connections) — `server/persistence/container_persistence.py`
+- **_seed_new_container_items()** (11 connections) — `server/persistence/container_persistence.py`
+- **UUID** (10 connections)
+- **_CreateOutcome** (10 connections) — `server/persistence/container_persistence.py`
+- **_after_container_insert()** (10 connections) — `server/persistence/container_persistence.py`
+- **_run_container_update_execute()** (9 connections) — `server/persistence/container_persistence.py`
+- **validate_lock_state()** (8 connections) — `server/persistence/container_helpers.py`
+- **_as_uuid()** (6 connections) — `server/persistence/container_persistence.py`
+- **_as_opt_datetime()** (6 connections) — `server/persistence/container_persistence.py`
+- **_metadata_from_row()** (6 connections) — `server/persistence/container_persistence.py`
+- **_validate_new_container_params()** (6 connections) — `server/persistence/container_persistence.py`
+- **ContainerData** (6 connections)
+- **_as_opt_uuid()** (5 connections) — `server/persistence/container_persistence.py`
+- **datetime** (5 connections)
+- *... and 47 more nodes in this community*
 
 ## Relationships
 
-- [spell game magic](spell_game_magic.md) (42 shared connections)
-- [models npc rationale](models_npc_rationale.md) (17 shared connections)
-- [npc database infrastructure](npc_database_infrastructure.md) (11 shared connections)
-- [NPC Combat](NPC_Combat.md) (9 shared connections)
-- [game models player](game_models_player.md) (3 shared connections)
-- [room validator toolkit](room_validator_toolkit.md) (3 shared connections)
-- [coercion int inventory](coercion_int_inventory.md) (2 shared connections)
-- [admin commands setstat](admin_commands_setstat.md) (2 shared connections)
-- [command factories communication](command_factories_communication.md) (2 shared connections)
-- [target resolution service](target_resolution_service.md) (2 shared connections)
-- [logging setup structured](logging_setup_structured.md) (2 shared connections)
-- [quest game service](quest_game_service.md) (1 shared connections)
+- [auth users rationale](auth_users_rationale.md) (39 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (26 shared connections)
+- [persistence container item](persistence_container_item.md) (13 shared connections)
+- [commands time handle](commands_time_handle.md) (11 shared connections)
+- [add used user](add_used_user.md) (6 shared connections)
+- [command combat models](command_combat_models.md) (6 shared connections)
+- [headers middleware security](headers_middleware_security.md) (6 shared connections)
+- [commands party examples](commands_party_examples.md) (5 shared connections)
+- [commands alias rationale](commands_alias_rationale.md) (5 shared connections)
+- [websocket helpers realtime](websocket_helpers_realtime.md) (3 shared connections)
+- [world loader room](world_loader_room.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
 
 ## Source Files
 
-- `server/game/magic/spell_effect_types.py`
-- `server/game/magic/spell_effects.py`
-- `server/game/magic/spell_effects_heal.py`
-- `server/game/magic/spell_effects_internal.py`
-- `server/tests/unit/game/magic/test_spell_effects_internal.py`
+- `server/persistence/container_data.py`
+- `server/persistence/container_helpers.py`
+- `server/persistence/container_persistence.py`
+- `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 411 (97%)
-- INFERRED: 12 (3%)
+- EXTRACTED: 468 (95%)
+- INFERRED: 25 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

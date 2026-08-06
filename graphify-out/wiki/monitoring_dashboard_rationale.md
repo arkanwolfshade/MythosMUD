@@ -1,52 +1,46 @@
 # monitoring dashboard rationale
 
-> 47 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **test_admin_commands_helpers.py** (20 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
-- **notify_player_of_teleport()** (18 connections) — `server/commands/admin_teleport_utils.py`
-- **test_admin_teleport_utils.py** (18 connections) — `server/tests/unit/commands/test_admin_teleport_utils.py`
-- **broadcast_teleport_effects()** (17 connections) — `server/commands/admin_teleport_utils.py`
-- **get_online_player_by_display_name()** (16 connections) — `server/commands/admin_teleport_utils.py`
-- **create_teleport_effect_message()** (16 connections) — `server/commands/admin_teleport_utils.py`
-- **Any** (3 connections)
-- **test_create_teleport_effect_message_teleport_departure()** (3 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
-- **test_create_teleport_effect_message_teleport_departure_with_direction()** (3 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
-- **test_create_teleport_effect_message_teleport_arrival()** (3 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
-- **test_create_teleport_effect_message_teleport_arrival_with_direction()** (3 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
-- **test_create_teleport_effect_message_goto_departure()** (3 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
-- **test_create_teleport_effect_message_goto_arrival()** (3 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
-- **test_create_teleport_effect_message_goto_arrival_with_direction()** (3 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
-- **test_create_teleport_effect_message_unknown_type()** (3 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
-- **test_direction_opposites()** (2 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
-- **test_get_online_player_by_display_name_no_manager()** (2 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
-- **test_get_online_player_by_display_name_found()** (2 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
-- **test_broadcast_teleport_effects()** (2 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
-- **test_notify_player_of_teleport_custom_message()** (2 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
-- **test_get_online_player_no_connection_manager()** (2 connections) — `server/tests/unit/commands/test_admin_teleport_utils.py`
-- **test_get_online_player_found()** (2 connections) — `server/tests/unit/commands/test_admin_teleport_utils.py`
-- **test_create_teleport_effect_message()** (2 connections) — `server/tests/unit/commands/test_admin_teleport_utils.py`
-- **test_create_teleport_effect_message_fallback()** (2 connections) — `server/tests/unit/commands/test_admin_teleport_utils.py`
-- **test_broadcast_teleport_effects_success()** (2 connections) — `server/tests/unit/commands/test_admin_teleport_utils.py`
-- *... and 22 more nodes in this community*
+- **Any** (12 connections)
+- **._try_evaluators()** (7 connections) — `server/npc/behavior_engine.py`
+- **.evaluate_condition()** (6 connections) — `server/npc/behavior_engine.py`
+- **.get_applicable_rules()** (5 connections) — `server/npc/behavior_engine.py`
+- **.execute_applicable_rules()** (5 connections) — `server/npc/behavior_engine.py`
+- **._evaluate_equality()** (4 connections) — `server/npc/behavior_engine.py`
+- **._evaluate_inequality()** (4 connections) — `server/npc/behavior_engine.py`
+- **._evaluate_numeric_comparison()** (4 connections) — `server/npc/behavior_engine.py`
+- **._evaluate_boolean_condition()** (4 connections) — `server/npc/behavior_engine.py`
+- **.execute_action()** (4 connections) — `server/npc/behavior_engine.py`
+- **.add_rule()** (3 connections) — `server/npc/behavior_engine.py`
+- **.get_rules()** (3 connections) — `server/npc/behavior_engine.py`
+- **.register_action_handler()** (3 connections) — `server/npc/behavior_engine.py`
+- **Add a behavior rule to the engine.          Args:             rule: Rule diction** (1 connections) — `server/npc/behavior_engine.py`
+- **Get all behavior rules.** (1 connections) — `server/npc/behavior_engine.py`
+- **Evaluate equality condition (==).          Returns:             bool if conditio** (1 connections) — `server/npc/behavior_engine.py`
+- **Evaluate inequality condition (!=).          Returns:             bool if condit** (1 connections) — `server/npc/behavior_engine.py`
+- **Evaluate numeric comparison conditions (>=, <=, >, <).          Args:** (1 connections) — `server/npc/behavior_engine.py`
+- **Try multiple evaluator methods in sequence.          Args:             condition** (1 connections) — `server/npc/behavior_engine.py`
+- **Evaluate boolean conditions and variable lookups.          Args:             con** (1 connections) — `server/npc/behavior_engine.py`
+- **Evaluate a condition string against context.          Args:             conditio** (1 connections) — `server/npc/behavior_engine.py`
+- **Get rules that are applicable given the current context.          Args:** (1 connections) — `server/npc/behavior_engine.py`
+- **Register an action handler for a specific action.          Args:             act** (1 connections) — `server/npc/behavior_engine.py`
+- **Execute a specific action.          Args:             action_name: Name of the a** (1 connections) — `server/npc/behavior_engine.py`
+- **Execute all applicable rules based on context.          Args:             contex** (1 connections) — `server/npc/behavior_engine.py`
 
 ## Relationships
 
-- [npc service services](npc_service_services.md) (10 shared connections)
-- [room look commands](room_look_commands.md) (8 shared connections)
-- [player respawn event](player_respawn_event.md) (8 shared connections)
-- [commands admin mute](commands_admin_mute.md) (1 shared connections)
+- [room occupant manager](room_occupant_manager.md) (12 shared connections)
 
 ## Source Files
 
-- `server/commands/admin_teleport_utils.py`
-- `server/tests/unit/commands/test_admin_commands_helpers.py`
-- `server/tests/unit/commands/test_admin_teleport_utils.py`
+- `server/npc/behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 181 (100%)
+- EXTRACTED: 76 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

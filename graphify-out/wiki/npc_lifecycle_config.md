@@ -33,12 +33,10 @@
 
 ## Relationships
 
-- [Realtime Subscribers](Realtime_Subscribers.md) (10 shared connections)
-- [container events rationale](container_events_rationale.md) (4 shared connections)
+- [Error Conversion](Error_Conversion.md) (15 shared connections)
 - [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (3 shared connections)
-- [taunt combat commands](taunt_combat_commands.md) (2 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [inventory service helpers](inventory_service_helpers.md) (1 shared connections)
+- [room look commands](room_look_commands.md) (3 shared connections)
+- [test_occupant_formatter_is_valid_name_for_occupant_uuid](test_occupant_formatter_is_valid_name_for_occupant_uuid.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,24 +1,26 @@
 # models lucidity rationale
 
-> 2 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **test_check_item_in_location_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test checking item in location successfully.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **_find_uvicorn_processes()** (3 connections) — `server/commands/shutdown_process_termination.py`
+- **_terminate_uvicorn_processes()** (3 connections) — `server/commands/shutdown_process_termination.py`
+- **Any** (2 connections)
+- **Find all uvicorn processes using psutil.** (1 connections) — `server/commands/shutdown_process_termination.py`
+- **Terminate all uvicorn processes.** (1 connections) — `server/commands/shutdown_process_termination.py`
 
 ## Relationships
 
-- [npc realtime occupant](npc_realtime_occupant.md) (1 shared connections)
-- [Item Lookup](Item_Lookup.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_item.py`
+- `server/commands/shutdown_process_termination.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 10 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

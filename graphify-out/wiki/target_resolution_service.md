@@ -1,65 +1,56 @@
 # target resolution service
 
-> 167 nodes
+> 50 nodes
 
 ## Key Concepts
 
-- **TargetResolutionService** (53 connections) — `server/services/target_resolution_service.py`
-- **TargetResolutionResult** (42 connections) — `server/schemas/shared/target_resolution.py`
-- **test_target_resolution_service.py** (40 connections) — `server/tests/unit/services/test_target_resolution_service.py`
-- **TargetType** (39 connections) — `server/schemas/shared/target_resolution.py`
-- **target_resolution_service.py** (27 connections) — `server/services/target_resolution_service.py`
-- **TargetMetadata** (16 connections) — `server/schemas/shared/target_metadata.py`
-- **test_target_resolution.py** (16 connections) — `server/tests/unit/schemas/test_target_resolution.py`
-- **__init__.py** (12 connections) — `server/schemas/shared/__init__.py`
-- **target_resolution.py** (11 connections) — `server/schemas/shared/target_resolution.py`
-- **.resolve_target()** (9 connections) — `server/services/target_resolution_service.py`
-- **._search_npcs_in_room()** (8 connections) — `server/services/target_resolution_service.py`
-- **PersistenceProtocol** (7 connections) — `server/services/target_resolution_service.py`
-- **._gather_room_target_matches()** (7 connections) — `server/services/target_resolution_service.py`
-- **._search_players_in_room()** (7 connections) — `server/services/target_resolution_service.py`
-- **._match_npcs_by_name()** (7 connections) — `server/services/target_resolution_service.py`
-- **UUID** (6 connections)
-- **.get_room_by_id()** (6 connections) — `server/services/target_resolution_service.py`
-- **._get_player_from_persistence()** (6 connections) — `server/services/target_resolution_service.py`
-- **._validate_player_and_room()** (6 connections) — `server/services/target_resolution_service.py`
-- **._load_npc_ids_with_room_fallback()** (6 connections) — `server/services/target_resolution_service.py`
-- **target_metadata.py** (5 connections) — `server/schemas/shared/target_metadata.py`
-- **.get_player_by_id()** (5 connections) — `server/services/target_resolution_service.py`
-- **Player** (5 connections)
-- **PlayerServiceProtocol** (5 connections) — `server/services/target_resolution_service.py`
-- **._build_target_result()** (5 connections) — `server/services/target_resolution_service.py`
-- *... and 142 more nodes in this community*
+- **Any** (17 connections)
+- **.publish_with_pool()** (10 connections) — `server/services/nats_service.py`
+- **._create_tracked_task()** (9 connections) — `server/services/nats_service.py`
+- **.__init__()** (7 connections) — `server/services/nats_service.py`
+- **._flush_batch()** (7 connections) — `server/services/nats_service.py`
+- **.publish_batch()** (6 connections) — `server/services/nats_service.py`
+- **.publish()** (5 connections) — `server/services/nats_service.py`
+- **._on_error()** (5 connections) — `server/services/nats_service.py`
+- **._get_connection()** (5 connections) — `server/services/nats_service.py`
+- **._retry_failed_batch_groups()** (5 connections) — `server/services/nats_service.py`
+- **.request()** (4 connections) — `server/services/nats_service.py`
+- **._handle_error_async()** (4 connections) — `server/services/nats_service.py`
+- **._on_disconnect()** (4 connections) — `server/services/nats_service.py`
+- **._handle_disconnect_async()** (4 connections) — `server/services/nats_service.py`
+- **._on_reconnect()** (4 connections) — `server/services/nats_service.py`
+- **NATS** (4 connections)
+- **._return_connection()** (4 connections) — `server/services/nats_service.py`
+- **._batch_timeout()** (4 connections) — `server/services/nats_service.py`
+- **._decode_message_data()** (3 connections) — `server/services/nats_service.py`
+- **._call_callback()** (3 connections) — `server/services/nats_service.py`
+- **._acknowledge_message()** (3 connections) — `server/services/nats_service.py`
+- **._negatively_acknowledge_message()** (3 connections) — `server/services/nats_service.py`
+- **._handle_reconnect_async()** (3 connections) — `server/services/nats_service.py`
+- **.get_connection_stats()** (3 connections) — `server/services/nats_service.py`
+- **.recover_failed_batches()** (3 connections) — `server/services/nats_service.py`
+- *... and 25 more nodes in this community*
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (34 shared connections)
-- [spell game magic](spell_game_magic.md) (31 shared connections)
-- [commands position system](commands_position_system.md) (10 shared connections)
-- [models player related](models_player_related.md) (6 shared connections)
-- [services ascii map](services_ascii_map.md) (5 shared connections)
-- [game models player](game_models_player.md) (5 shared connections)
-- [logging file setup](logging_file_setup.md) (4 shared connections)
-- [uuid npc combat](uuid_npc_combat.md) (4 shared connections)
-- [message filtering helpers](message_filtering_helpers.md) (3 shared connections)
-- [party service game](party_service_game.md) (3 shared connections)
-- [coercion int inventory](coercion_int_inventory.md) (3 shared connections)
-- [Error Conversion](Error_Conversion.md) (3 shared connections)
+- [combat validator validators](combat_validator_validators.md) (26 shared connections)
+- [commands communication say](commands_communication_say.md) (4 shared connections)
+- [realtime circuit breaker](realtime_circuit_breaker.md) (3 shared connections)
+- [connection state machine](connection_state_machine.md) (2 shared connections)
+- [occupants npc commands](occupants_npc_commands.md) (1 shared connections)
+- [combat commands handler](combat_commands_handler.md) (1 shared connections)
+- [manager subject services](manager_subject_services.md) (1 shared connections)
+- [commands inventory put](commands_inventory_put.md) (1 shared connections)
+- [broker infrastructure nats](broker_infrastructure_nats.md) (1 shared connections)
 
 ## Source Files
 
-- `server/schemas/shared/__init__.py`
-- `server/schemas/shared/target_metadata.py`
-- `server/schemas/shared/target_resolution.py`
-- `server/services/target_resolution_service.py`
-- `server/tests/unit/commands/test_combat_handler.py`
-- `server/tests/unit/schemas/test_target_resolution.py`
-- `server/tests/unit/services/test_target_resolution_service.py`
+- `server/services/nats_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 588 (94%)
-- INFERRED: 35 (6%)
+- EXTRACTED: 154 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

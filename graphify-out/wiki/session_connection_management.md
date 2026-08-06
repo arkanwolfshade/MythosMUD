@@ -33,10 +33,10 @@
 
 ## Relationships
 
-- [commands shutdown process](commands_shutdown_process.md) (5 shared connections)
-- [Room Broadcast](Room_Broadcast.md) (3 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [Loot Generation](Loot_Generation.md) (1 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (6 shared connections)
+- [lucidity npc combat](lucidity_npc_combat.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (1 shared connections)
 
 ## Source Files
 

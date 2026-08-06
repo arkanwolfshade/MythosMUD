@@ -1,26 +1,24 @@
 # add hashed password
 
-> 5 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **WebSocketRateLimiter** (4 connections) — `docs/examples/logging/websocket_integration.py`
-- **.check_rate_limit()** (2 connections) — `docs/examples/logging/websocket_integration.py`
-- **.__init__()** (1 connections) — `docs/examples/logging/websocket_integration.py`
-- **WebSocket rate limiter with enhanced logging.** (1 connections) — `docs/examples/logging/websocket_integration.py`
-- **Check if client is within rate limit with enhanced logging.** (1 connections) — `docs/examples/logging/websocket_integration.py`
+- **fakerandom()** (3 connections) — `server/tests/fixtures/unit/__init__.py`
+- **Any** (1 connections)
+- **Provide deterministic random seed for unit tests.** (1 connections) — `server/tests/fixtures/unit/__init__.py`
 
 ## Relationships
 
-- [models lucidity rationale](models_lucidity_rationale.md) (1 shared connections)
+- [nats services service](nats_services_service.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/examples/logging/websocket_integration.py`
+- `server/tests/fixtures/unit/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

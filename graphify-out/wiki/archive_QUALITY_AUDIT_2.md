@@ -1,26 +1,27 @@
 # archive QUALITY AUDIT
 
-> 5 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **Phase 1: Quantitative Analysis Results** (5 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **1.1 Test Distribution by Category** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **1.2 Largest Test Files (Splitting/Pruning Candidates)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **1.3 Infrastructure Test Analysis** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Files** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **benchmark_validation_performance()** (5 connections) — `server/validators/optimized_security_validator.py`
+- **test_benchmark_validation_performance()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test benchmark function runs without errors.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Benchmark the performance of optimized vs original validation functions.** (1 connections) — `server/validators/optimized_security_validator.py`
 
 ## Relationships
 
-- [archive quality QUALITY](archive_quality_QUALITY.md) (1 shared connections)
+- [optimized security validator](optimized_security_validator.md) (3 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- `server/tests/unit/validators/test_optimized_security_validator.py`
+- `server/validators/optimized_security_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 10 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

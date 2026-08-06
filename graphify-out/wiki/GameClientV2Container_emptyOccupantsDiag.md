@@ -1,6 +1,6 @@
 # GameClientV2Container emptyOccupantsDiag
 
-> 53 nodes
+> 59 nodes
 
 ## Key Concepts
 
@@ -14,63 +14,64 @@
 - **useGameClientV2Container()** (12 connections) — `client/src/components/ui-v2/hooks/useGameClientV2Container.ts`
 - **emptyOccupantsDiagnostics.ts** (11 connections) — `client/src/components/ui-v2/hooks/emptyOccupantsDiagnostics.ts`
 - **gameClientV2ContainerReturnParts.ts** (11 connections) — `client/src/components/ui-v2/hooks/gameClientV2ContainerReturnParts.ts`
+- **useCommandHandlers.ts** (10 connections) — `client/src/components/ui-v2/hooks/useCommandHandlers.ts`
 - **useGameClientV2ContainerConnectionEffects.ts** (10 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerConnectionEffects.ts`
 - **useGameClientV2ContainerPlayerAndCommands.ts** (10 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerPlayerAndCommands.ts`
 - **GameClientV2NetworkPhase** (9 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerNetworkPhase.ts`
 - **ActiveEffectDisplay** (9 connections) — `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
 - **GameClientV2ContainerProps** (8 connections) — `client/src/components/ui-v2/hooks/gameClientV2ContainerTypes.ts`
 - **useGameClientV2ContainerLifecycle()** (8 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerLifecycle.ts`
+- **useRespawnHandlers()** (8 connections) — `client/src/components/ui-v2/hooks/useRespawnHandlers.ts`
 - **GameClientV2Container.tsx** (7 connections) — `client/src/components/ui-v2/GameClientV2Container.tsx`
 - **GameClientV2ContainerPublicApi** (7 connections) — `client/src/components/ui-v2/hooks/gameClientV2ContainerBuildReturn.ts`
 - **useEventProcessing()** (7 connections) — `client/src/components/ui-v2/hooks/useEventProcessing.ts`
 - **gameClientLogout.ts** (6 connections) — `client/src/components/ui-v2/hooks/gameClientLogout.ts`
 - **buildGameClientV2ContainerReturn()** (6 connections) — `client/src/components/ui-v2/hooks/gameClientV2ContainerBuildReturn.ts`
-- **useGameClientV2ContainerHealthSync.ts** (6 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerHealthSync.ts`
 - **useGameClientV2ContainerNetworkPhase()** (6 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerNetworkPhase.ts`
 - **clientErrorReporter.ts** (6 connections) — `client/src/utils/clientErrorReporter.ts`
-- **runEmptyOccupantsReportIfNeeded()** (5 connections) — `client/src/components/ui-v2/hooks/emptyOccupantsDiagnostics.ts`
-- *... and 28 more nodes in this community*
+- *... and 34 more nodes in this community*
 
 ## Relationships
 
-- [game terminal lucidity](game_terminal_lucidity.md) (25 shared connections)
-- [Game Terminal UI](Game_Terminal_UI.md) (16 shared connections)
+- [combat service services](combat_service_services.md) (42 shared connections)
 - [persistence services combat](persistence_services_combat.md) (5 shared connections)
-- [project paths rationale](project_paths_rationale.md) (5 shared connections)
+- [services combat sync](services_combat_sync.md) (5 shared connections)
+- [eventHandlers messageHandlers statusPars](eventHandlers_messageHandlers_statusPars.md) (4 shared connections)
+- [lucidityEventUtils mythosTime MythosTime](lucidityEventUtils_mythosTime_MythosTime.md) (4 shared connections)
+- [game terminal lucidity](game_terminal_lucidity.md) (3 shared connections)
+- [roomHandlers eventHandlers calculateOccu](roomHandlers_eventHandlers_calculateOccu.md) (3 shared connections)
 - [containers stores containerStore](containers_stores_containerStore.md) (3 shared connections)
-- [character creation service](character_creation_service.md) (3 shared connections)
-- [lucidityEventUtils mythosTime MythosTime](lucidityEventUtils_mythosTime_MythosTime.md) (2 shared connections)
-- [PanelSystem PanelManager panelLayoutClam](PanelSystem_PanelManager_panelLayoutClam.md) (1 shared connections)
-- [realtime maintenance connection](realtime_maintenance_connection.md) (1 shared connections)
-- [game chat moderation](game_chat_moderation.md) (1 shared connections)
+- [mythosApp security submitAuth](mythosApp_security_submitAuth.md) (2 shared connections)
+- [map useMapEditing saveMapChanges](map_useMapEditing_saveMapChanges.md) (1 shared connections)
+- [apiTypeGuards FIELDS SHARED](apiTypeGuards_FIELDS_SHARED.md) (1 shared connections)
 
 ## Source Files
 
 - `client/src/components/ui-v2/GameClientV2Container.tsx`
 - `client/src/components/ui-v2/__tests__/GameClientV2Container.test.tsx`
+- `client/src/components/ui-v2/hooks/__tests__/useCommandHandlers.test.ts`
+- `client/src/components/ui-v2/hooks/__tests__/useRespawnHandlers.test.ts`
 - `client/src/components/ui-v2/hooks/emptyOccupantsDiagnostics.ts`
 - `client/src/components/ui-v2/hooks/gameClientLogout.ts`
 - `client/src/components/ui-v2/hooks/gameClientV2ContainerActiveEffects.ts`
 - `client/src/components/ui-v2/hooks/gameClientV2ContainerBuildReturn.ts`
 - `client/src/components/ui-v2/hooks/gameClientV2ContainerReturnParts.ts`
 - `client/src/components/ui-v2/hooks/gameClientV2ContainerTypes.ts`
+- `client/src/components/ui-v2/hooks/useCommandHandlers.ts`
 - `client/src/components/ui-v2/hooks/useEventProcessing.ts`
 - `client/src/components/ui-v2/hooks/useGameClientV2Container.ts`
 - `client/src/components/ui-v2/hooks/useGameClientV2ContainerConnectionEffects.ts`
 - `client/src/components/ui-v2/hooks/useGameClientV2ContainerEscapeMenuEffect.ts`
-- `client/src/components/ui-v2/hooks/useGameClientV2ContainerHealthSync.ts`
 - `client/src/components/ui-v2/hooks/useGameClientV2ContainerLifecycle.ts`
 - `client/src/components/ui-v2/hooks/useGameClientV2ContainerLogoutAndRespawn.ts`
 - `client/src/components/ui-v2/hooks/useGameClientV2ContainerNetworkPhase.ts`
 - `client/src/components/ui-v2/hooks/useGameClientV2ContainerPlayerAndCommands.ts`
 - `client/src/components/ui-v2/hooks/useGameClientV2ContainerState.ts`
-- `client/src/components/ui-v2/hooks/useGameConnectionManagement.ts`
-- `client/src/components/ui-v2/hooks/usePlayerStatusEffects.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 363 (100%)
-- INFERRED: 1 (0%)
+- EXTRACTED: 385 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **factory()** (3 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Create a CommandFactory instance.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_send_messages_to_players_blocked()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _send_messages_to_players skips blocked messages.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [command factories create](command_factories_create.md) (1 shared connections)
-- [command inventory factories](command_inventory_factories.md) (1 shared connections)
+- [message chat nats](message_chat_nats.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

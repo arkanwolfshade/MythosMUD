@@ -1,51 +1,71 @@
 # persistence core infrastructure
 
-> 55 nodes
+> 209 nodes
 
 ## Key Concepts
 
-- **NATSMessageSubscriptionMixin** (31 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **Any** (12 connections)
-- **.handle_player_movement()** (6 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **.unsubscribe_from_subzone()** (4 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **.cleanup_empty_subzone_subscriptions()** (4 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **.subscribe_to_subzone()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **.track_player_subzone_subscription()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **.get_players_in_subzone()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **._get_event_handler_map()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **._validate_event_message()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **._handle_event_message()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **._handle_player_entered_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **._handle_player_left_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **._handle_game_tick_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **._handle_combat_started_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **._handle_combat_ended_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **._handle_player_attacked_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **._handle_npc_attacked_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **._handle_npc_took_damage_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **._handle_npc_died_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **.subscribe_to_room()** (2 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **.unsubscribe_from_room()** (2 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **.get_subscription_count()** (2 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **.get_active_subjects()** (2 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **.subscribe_to_event_subjects()** (2 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- *... and 30 more nodes in this community*
+- **PlayerService** (140 connections) — `server/game/player_service.py`
+- **SpellEffects** (61 connections) — `server/game/magic/spell_effects.py`
+- **test_spell_effects.py** (45 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
+- **test_lifespan_startup.py** (39 connections) — `server/tests/unit/app/test_lifespan_startup.py`
+- **PlayerSpellRepository** (38 connections) — `server/persistence/repositories/player_spell_repository.py`
+- **SpellRegistry** (37 connections) — `server/game/magic/spell_registry.py`
+- **lifespan_magic.py** (34 connections) — `server/app/lifespan_magic.py`
+- **MPRegenerationService** (20 connections) — `server/game/magic/mp_regeneration_service.py`
+- **MagicServiceOptionalDeps** (17 connections) — `server/game/magic/magic_service.py`
+- **initialize_magic_services()** (15 connections) — `server/app/lifespan_magic.py`
+- **_initialize_magic_service()** (13 connections) — `server/app/lifespan_magic.py`
+- **mp_regeneration_service.py** (13 connections) — `server/game/magic/mp_regeneration_service.py`
+- **.__init__()** (11 connections) — `server/game/magic/magic_service.py`
+- **FastAPI** (9 connections)
+- **_initialize_spell_targeting_service()** (9 connections) — `server/app/lifespan_magic.py`
+- **_initialize_spell_effects()** (9 connections) — `server/app/lifespan_magic.py`
+- **_initialize_spell_learning_service()** (8 connections) — `server/app/lifespan_magic.py`
+- **_get_item_prototype_entries()** (8 connections) — `server/app/lifespan_startup.py`
+- **.__init__()** (8 connections) — `server/commands/magic_commands.py`
+- **_get_item_prototype_count()** (7 connections) — `server/app/lifespan_startup.py`
+- **.combat_service()** (7 connections) — `server/game/magic/spell_effects.py`
+- **_initialize_spell_repositories()** (6 connections) — `server/app/lifespan_magic.py`
+- **_initialize_spell_registry()** (6 connections) — `server/app/lifespan_magic.py`
+- **_initialize_mp_regeneration_service()** (6 connections) — `server/app/lifespan_magic.py`
+- **_link_magic_to_combat()** (6 connections) — `server/app/lifespan_magic.py`
+- *... and 184 more nodes in this community*
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [commands communication say](commands_communication_say.md) (1 shared connections)
-- [container persistence rationale](container_persistence_rationale.md) (1 shared connections)
-- [room rationale subzone](room_rationale_subzone.md) (1 shared connections)
+- [panels domPurifyClient chat](panels_domPurifyClient_chat.md) (46 shared connections)
+- [room realtime rationale](room_realtime_rationale.md) (26 shared connections)
+- [player service game](player_service_game.md) (24 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (17 shared connections)
+- [catatonia registry services](catatonia_registry_services.md) (17 shared connections)
+- [Player Stats](Player_Stats.md) (14 shared connections)
+- [nats services service](nats_services_service.md) (13 shared connections)
+- [aggro threat services](aggro_threat_services.md) (13 shared connections)
+- [persistence container extended](persistence_container_extended.md) (13 shared connections)
+- [coercion int inventory](coercion_int_inventory.md) (12 shared connections)
+- [player respawn event](player_respawn_event.md) (10 shared connections)
+- [spell game magic](spell_game_magic.md) (10 shared connections)
 
 ## Source Files
 
-- `server/realtime/nats_message_handler_subscriptions.py`
+- `server/app/lifespan_magic.py`
+- `server/app/lifespan_startup.py`
+- `server/commands/magic_commands.py`
+- `server/game/magic/magic_service.py`
+- `server/game/magic/mp_regeneration_service.py`
+- `server/game/magic/spell_effects.py`
+- `server/game/magic/spell_learning_service.py`
+- `server/game/magic/spell_registry.py`
+- `server/game/player_service.py`
+- `server/persistence/repositories/player_spell_repository.py`
+- `server/tests/unit/app/test_lifespan_startup.py`
+- `server/tests/unit/game/magic/test_spell_effects.py`
+- `server/tests/unit/game/magic/test_spell_registry.py`
 
 ## Audit Trail
 
-- EXTRACTED: 143 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 797 (86%)
+- INFERRED: 130 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

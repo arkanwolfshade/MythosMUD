@@ -33,13 +33,14 @@
 
 ## Relationships
 
-- [models npc rationale](models_npc_rationale.md) (15 shared connections)
-- [NPC Combat](NPC_Combat.md) (6 shared connections)
-- [commands lucidity recovery](commands_lucidity_recovery.md) (4 shared connections)
-- [command factories exploration](command_factories_exploration.md) (2 shared connections)
+- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (8 shared connections)
+- [command factories exploration](command_factories_exploration.md) (8 shared connections)
+- [npc database infrastructure](npc_database_infrastructure.md) (5 shared connections)
+- [models npc rationale](models_npc_rationale.md) (3 shared connections)
+- [shutdown commands admin](shutdown_commands_admin.md) (2 shared connections)
 - [Item Instances](Item_Instances.md) (2 shared connections)
-- [command factories communication](command_factories_communication.md) (1 shared connections)
-- [combat models rationale](combat_models_rationale.md) (1 shared connections)
+- [player service game](player_service_game.md) (2 shared connections)
+- [subject admin controller](subject_admin_controller.md) (1 shared connections)
 
 ## Source Files
 

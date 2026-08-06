@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **test_build_room_objects_success()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _build_room_objects successfully builds room objects.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_process_room_rows_zone_single_part()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _process_room_rows with zone_stable_id that has only one part (no slash).** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Relationships
 

@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_stop_failure()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **Test stop() handles failure.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_unsubscribe_from_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **Test unsubscribe_from_room() unsubscribes player from room.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
 
 ## Relationships
 
-- [commands communication say](commands_communication_say.md) (1 shared connections)
-- [nats message handler](nats_message_handler.md) (1 shared connections)
+- [room subscription manager](room_subscription_manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler.py`
+- `server/tests/unit/realtime/test_room_subscription_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

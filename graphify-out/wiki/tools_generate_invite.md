@@ -1,45 +1,64 @@
 # tools generate invite
 
-> 18 nodes
+> 47 nodes
 
 ## Key Concepts
 
-- **migrate_combat_data.py** (15 connections) — `server/scripts/migrate_combat_data.py`
-- **migrate_npc_combat_data()** (10 connections) — `server/scripts/migrate_combat_data.py`
-- **add_default_combat_data_to_stats()** (9 connections) — `server/schemas/combat/combat_schema.py`
-- **validate_migration_results()** (8 connections) — `server/scripts/migrate_combat_data.py`
-- **rollback_migration()** (7 connections) — `server/scripts/migrate_combat_data.py`
-- **main()** (6 connections) — `server/scripts/migrate_combat_data.py`
-- **AsyncSession** (3 connections)
-- **Any** (3 connections)
-- **test_add_default_combat_data_to_stats()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
-- **test_add_default_combat_data_to_stats_preserves_existing()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
-- **Add default combat data to base_stats if not present.      Args:         stats:** (1 connections) — `server/schemas/combat/combat_schema.py`
-- **Combat data migration script.  This script adds default combat data to existing** (1 connections) — `server/scripts/migrate_combat_data.py`
-- **Migrate combat data for all NPC definitions.      Args:         session: Databas** (1 connections) — `server/scripts/migrate_combat_data.py`
-- **Validate that migration was successful.      Args:         session: Database ses** (1 connections) — `server/scripts/migrate_combat_data.py`
-- **Rollback combat data migration by removing combat fields.      Args:         ses** (1 connections) — `server/scripts/migrate_combat_data.py`
-- **Main migration function.** (1 connections) — `server/scripts/migrate_combat_data.py`
-- **Test add_default_combat_data_to_stats() adds defaults.** (1 connections) — `server/tests/unit/schemas/test_combat_schema.py`
-- **Test add_default_combat_data_to_stats() preserves existing values.** (1 connections) — `server/tests/unit/schemas/test_combat_schema.py`
+- **get_config()** (105 connections) — `server/config/__init__.py`
+- **reset_config()** (9 connections) — `server/config/__init__.py`
+- **test_config.py** (9 connections) — `server/tests/unit/config/test_config.py`
+- **test_config_init.py** (9 connections) — `server/tests/unit/config/test_config_init.py`
+- **generate_unique_codes()** (5 connections) — `tools/invite_tools/generate_invites.py`
+- **_is_test_mode()** (4 connections) — `server/config/__init__.py`
+- **test_reset_config_clears_state()** (4 connections) — `server/tests/unit/config/test_config.py`
+- **test_reset_config_in_test_mode()** (4 connections) — `server/tests/unit/config/test_config_init.py`
+- **generate_invites.py** (4 connections) — `tools/invite_tools/generate_invites.py`
+- **reset_config_singleton()** (3 connections) — `server/tests/conftest.py`
+- **test_get_config_returns_app_config()** (3 connections) — `server/tests/unit/config/test_config.py`
+- **test_get_config_test_mode_returns_fresh_instances()** (3 connections) — `server/tests/unit/config/test_config.py`
+- **test_get_config_has_server_config()** (3 connections) — `server/tests/unit/config/test_config.py`
+- **test_get_config_has_database_config()** (3 connections) — `server/tests/unit/config/test_config.py`
+- **test_get_config_has_game_config()** (3 connections) — `server/tests/unit/config/test_config.py`
+- **test_get_config_returns_app_config()** (3 connections) — `server/tests/unit/config/test_config_init.py`
+- **test_get_config_fresh_instances_in_test_mode()** (3 connections) — `server/tests/unit/config/test_config_init.py`
+- **test_get_config_has_server_config()** (3 connections) — `server/tests/unit/config/test_config_init.py`
+- **test_get_config_has_database_config()** (3 connections) — `server/tests/unit/config/test_config_init.py`
+- **test_get_config_has_game_config()** (3 connections) — `server/tests/unit/config/test_config_init.py`
+- **test_config_smoke.py** (3 connections) — `server/tests/unit/test_config_smoke.py`
+- **test_get_config_returns_app_config()** (3 connections) — `server/tests/unit/test_config_smoke.py`
+- **generate_invite_code()** (3 connections) — `tools/invite_tools/generate_invites.py`
+- **main()** (3 connections) — `tools/invite_tools/generate_invites.py`
+- **Detect if running in test environment.      Uses multiple detection methods to r** (1 connections) — `server/config/__init__.py`
+- *... and 22 more nodes in this community*
 
 ## Relationships
 
-- [NPC Services Bootstrap](NPC_Services_Bootstrap.md) (15 shared connections)
-- [container events rationale](container_events_rationale.md) (5 shared connections)
-- [player effects endpoints](player_effects_endpoints.md) (3 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (7 shared connections)
+- [logging examples fastapi](logging_examples_fastapi.md) (6 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (5 shared connections)
+- [models npc rationale](models_npc_rationale.md) (4 shared connections)
+- [subject admin controller](subject_admin_controller.md) (4 shared connections)
+- [Realtime Subscribers](Realtime_Subscribers.md) (3 shared connections)
+- [Item Instances](Item_Instances.md) (3 shared connections)
+- [circuit breaker realtime](circuit_breaker_realtime.md) (3 shared connections)
+- [realtime errors error](realtime_errors_error.md) (3 shared connections)
+- [combat monitoring service](combat_monitoring_service.md) (3 shared connections)
+- [EdgeCreationModal map STANDARD](EdgeCreationModal_map_STANDARD.md) (3 shared connections)
+- [feature services flag](feature_services_flag.md) (2 shared connections)
 
 ## Source Files
 
-- `server/schemas/combat/combat_schema.py`
-- `server/scripts/migrate_combat_data.py`
-- `server/tests/unit/schemas/test_combat_schema.py`
+- `server/config/__init__.py`
+- `server/tests/conftest.py`
+- `server/tests/unit/config/test_config.py`
+- `server/tests/unit/config/test_config_init.py`
+- `server/tests/unit/test_config_smoke.py`
+- `tools/invite_tools/generate_invites.py`
 
 ## Audit Trail
 
-- EXTRACTED: 69 (92%)
-- INFERRED: 6 (8%)
+- EXTRACTED: 221 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

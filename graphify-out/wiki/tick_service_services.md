@@ -1,50 +1,34 @@
 # tick service services
 
-> 54 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **GameTickService** (30 connections) — `server/services/game_tick_service.py`
-- **TestGameTickService** (20 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **test_game_tick_service.py** (4 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.test_init_default_interval()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.test_init_custom_interval()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.test_start_success()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.test_start_already_running()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.test_start_failure()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.test_stop_success()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.test_stop_not_running()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.test_stop_task_already_done()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.test_stop_failure()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.test_get_tick_count()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.test_reset_tick_count()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.test_get_tick_interval()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.test_tick_loop_increments_count()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.test_tick_loop_publishes_events()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.test_tick_loop_handles_cancellation()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.test_tick_loop_handles_publish_failure()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.test_tick_loop_handles_exceptions()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.__init__()** (2 connections) — `server/services/game_tick_service.py`
-- **.stop()** (2 connections) — `server/services/game_tick_service.py`
-- **.get_tick_count()** (2 connections) — `server/services/game_tick_service.py`
-- **.reset_tick_count()** (2 connections) — `server/services/game_tick_service.py`
-- **.get_tick_interval()** (2 connections) — `server/services/game_tick_service.py`
-- *... and 29 more nodes in this community*
+- **.validate_current_vs_max_stats()** (5 connections) — `server/models/game.py`
+- **._calculate_max_magic_points()** (4 connections) — `server/models/game.py`
+- **._calculate_max_lucidity()** (4 connections) — `server/models/game.py`
+- **.max_magic_points()** (3 connections) — `server/models/game.py`
+- **.max_lucidity()** (3 connections) — `server/models/game.py`
+- **._calculate_max_dp()** (3 connections) — `server/models/game.py`
+- **Calculate max magic points (MP) using formula: 20% of Power (ceiling rounded).** (1 connections) — `server/models/game.py`
+- **Calculate max lucidity based on education.          AI: This computed field uses** (1 connections) — `server/models/game.py`
+- **Calculate max determination points (DP) using formula: (CON + SIZ) / 5.** (1 connections) — `server/models/game.py`
+- **Calculate max magic points (MP) using formula: 20% of Power (ceiling rounded).** (1 connections) — `server/models/game.py`
+- **Calculate max lucidity based on education.          AI: Helper method to calcula** (1 connections) — `server/models/game.py`
+- **Ensure current_dp (DP), magic_points (MP), and lucidity don't exceed their max v** (1 connections) — `server/models/game.py`
 
 ## Relationships
 
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [realtime maintenance connection](realtime_maintenance_connection.md) (2 shared connections)
+- [System Metrics](System_Metrics.md) (6 shared connections)
 
 ## Source Files
 
-- `server/services/game_tick_service.py`
-- `server/tests/unit/services/test_game_tick_service.py`
+- `server/models/game.py`
 
 ## Audit Trail
 
-- EXTRACTED: 144 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 28 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -33,12 +33,11 @@
 
 ## Relationships
 
-- [quest game service](quest_game_service.md) (35 shared connections)
-- [collect inventory game](collect_inventory_game.md) (1 shared connections)
-- [commands inventory command](commands_inventory_command.md) (1 shared connections)
+- [quest game service](quest_game_service.md) (36 shared connections)
+- [monitoring endpoints rationale](monitoring_endpoints_rationale.md) (1 shared connections)
 - [commands quest rationale](commands_quest_rationale.md) (1 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
-- [nats services metrics](nats_services_metrics.md) (1 shared connections)
+- [player room event](player_room_event.md) (1 shared connections)
+- [shutdown admin command](shutdown_admin_command.md) (1 shared connections)
 - [help content websocket](help_content_websocket.md) (1 shared connections)
 
 ## Source Files

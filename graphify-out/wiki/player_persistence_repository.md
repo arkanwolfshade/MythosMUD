@@ -1,49 +1,49 @@
 # player persistence repository
 
-> 23 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **_process_mortally_wounded_player()** (10 connections) — `server/app/game_tick_processing.py`
-- **_process_mp_regeneration()** (8 connections) — `server/app/game_tick_processing.py`
-- **_process_session_dp_decay_and_death()** (8 connections) — `server/app/game_tick_processing.py`
-- **_process_single_player_mp_regeneration()** (7 connections) — `server/app/game_tick_processing.py`
-- **AsyncSession** (6 connections)
-- **_process_passive_lucidity_flux()** (6 connections) — `server/app/game_tick_processing.py`
-- **_process_dead_players()** (6 connections) — `server/app/game_tick_processing.py`
-- **_process_mortally_wounded_players()** (5 connections) — `server/app/game_tick_processing.py`
-- **_validate_mp_regeneration_services()** (5 connections) — `server/app/game_tick_processing.py`
-- **test_process_single_player_mp_regeneration()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **test_validate_mp_regeneration_services()** (2 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **test_process_mortally_wounded_skips_active_combat()** (2 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **test_process_mortally_wounded_death_threshold()** (2 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **test_process_dead_players_moves_to_limbo()** (2 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **test_process_passive_lucidity_flux()** (2 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **Process a single mortally wounded player's DP decay and death check.      CRITIC** (1 connections) — `server/app/game_tick_processing.py`
-- **Process all mortally wounded players.** (1 connections) — `server/app/game_tick_processing.py`
-- **Process passive lucidity flux service if available.** (1 connections) — `server/app/game_tick_processing.py`
-- **Validate that required services exist for MP regeneration.      Args:         co** (1 connections) — `server/app/game_tick_processing.py`
-- **Process MP regeneration for a single player.      Args:         mp_service: MP r** (1 connections) — `server/app/game_tick_processing.py`
-- **Process MP regeneration for online players.** (1 connections) — `server/app/game_tick_processing.py`
-- **Process dead players and move them to limbo if needed.** (1 connections) — `server/app/game_tick_processing.py`
-- **Process DP decay and death for a single database session.** (1 connections) — `server/app/game_tick_processing.py`
+- **TestGameTickService** (20 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_init_default_interval()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_stop_not_running()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_stop_failure()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_get_tick_interval()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_tick_loop_increments_count()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_tick_loop_publishes_events()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_tick_loop_handles_exceptions()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **Test suite for GameTickService class.** (1 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **Test GameTickService initialization with default interval.** (1 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **Test stop returns True when not running.** (1 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **Test stop handles exceptions gracefully.** (1 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **Test get_tick_interval returns interval.** (1 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **Test _tick_loop increments tick count.** (1 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **Test _tick_loop publishes game tick events.** (1 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **Test _tick_loop handles exceptions and continues.** (1 connections) — `server/tests/unit/services/test_game_tick_service.py`
 
 ## Relationships
 
-- [map RoomMapViewer mapUtils](map_RoomMapViewer_mapUtils.md) (23 shared connections)
-- [Realtime Subscribers](Realtime_Subscribers.md) (1 shared connections)
-- [models player rationale](models_player_rationale.md) (1 shared connections)
-- [tick game processing](tick_game_processing.md) (1 shared connections)
+- [status game spell](status_game_spell.md) (8 shared connections)
+- [test_mute_channel_already_muted](test_mute_channel_already_muted.md) (1 shared connections)
+- [test_unmute_channel_success](test_unmute_channel_success.md) (1 shared connections)
+- [test_is_channel_muted_true](test_is_channel_muted_true.md) (1 shared connections)
+- [test_unmute_channel_not_muted](test_unmute_channel_not_muted.md) (1 shared connections)
+- [test_delete_player_preferences_database_error](test_delete_player_preferences_database_error.md) (1 shared connections)
+- [test_update_default_channel_database_error](test_update_default_channel_database_error.md) (1 shared connections)
+- [test_delete_player_preferences_success](test_delete_player_preferences_success.md) (1 shared connections)
+- [test_mute_channel_invalid_channel](test_mute_channel_invalid_channel.md) (1 shared connections)
+- [test_mute_channel_system_channel](test_mute_channel_system_channel.md) (1 shared connections)
+- [room realtime subscription](room_realtime_subscription.md) (1 shared connections)
+- [test_get_muted_channels_not_found](test_get_muted_channels_not_found.md) (1 shared connections)
 
 ## Source Files
 
-- `server/app/game_tick_processing.py`
-- `server/tests/unit/app/test_game_tick_processing.py`
+- `server/tests/unit/services/test_game_tick_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 82 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 48 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

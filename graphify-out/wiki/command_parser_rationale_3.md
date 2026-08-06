@@ -1,58 +1,46 @@
 # command parser rationale
 
-> 107 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **test_command_parser.py** (45 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **parse_command()** (24 connections) — `server/utils/command_parser.py`
-- **CommandParser** (19 connections) — `server/utils/command_parser.py`
-- **test_command_parser_smoke.py** (8 connections) — `server/tests/unit/test_command_parser_smoke.py`
-- **.parse_command()** (7 connections) — `server/utils/command_parser.py`
-- **._create_command_object()** (7 connections) — `server/utils/command_parser.py`
-- **test_create_command_object_re_raises_mythos_validation_error()** (4 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **Command** (4 connections)
-- **._parse_command_parts()** (4 connections) — `server/utils/command_parser.py`
-- **._invoke_create_method()** (4 connections) — `server/utils/command_parser.py`
-- **test_parse_command_basic()** (3 connections) — `server/tests/unit/test_command_parser_smoke.py`
-- **test_parse_command_with_args()** (3 connections) — `server/tests/unit/test_command_parser_smoke.py`
-- **test_parse_command_with_pipes()** (3 connections) — `server/tests/unit/test_command_parser_smoke.py`
-- **command_parser()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_empty_string()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_whitespace_only()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_too_long()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_unknown_command()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_valid_look()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_valid_go()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_with_slash_prefix()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_spawn_alias()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_alias_l()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_alias_g()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_create_command_object_pydantic_validation_error()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- *... and 82 more nodes in this community*
+- **_occupation_slots_9()** (11 connections) — `server/tests/unit/game/test_skill_service.py`
+- **_personal_interest_4()** (8 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_valid_creates_rows()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_own_language_not_allocated_equals_edu()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_cthulhu_mythos_in_occupation_rejected()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_wrong_occupation_values_raises()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_duplicate_occupation_skill_ids_raises()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_cthulhu_mythos_in_personal_rejected()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_wrong_occupation_count_raises()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_personal_interest_not_four_raises()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_duplicate_personal_skill_ids_raises()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_overlap_occupation_and_personal_raises()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **Valid 9 slots: one 70, two 60, three 50, three 40; 9 distinct skill_ids (no over** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **Four personal interest (skill_ids only); distinct and no overlap with occupation** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **set_player_skills with valid occupation and personal calls delete then insert_ma** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **When Own Language is not in occupation or personal, its value is stats_for_edu.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **Occupation slot with Cthulhu Mythos (allow_at_creation=False) raises ValueError.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **Personal interest with Cthulhu Mythos raises ValueError.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **occupation_slots not length 9 raises ValueError.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **occupation_slots with wrong value set (e.g. two 70s) raises ValueError.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **personal_interest must have exactly 4 entries.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **occupation_slots with duplicate skill_id raises ValueError.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **personal_interest with duplicate skill_id raises ValueError.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **Occupation and personal interest sharing a skill_id raises ValueError.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
 
 ## Relationships
 
-- [Loot Generation](Loot_Generation.md) (12 shared connections)
-- [command factories create](command_factories_create.md) (3 shared connections)
-- [command processor rationale](command_processor_rationale.md) (3 shared connections)
-- [player realtime presence](player_realtime_presence.md) (2 shared connections)
-- [command inventory factories](command_inventory_factories.md) (2 shared connections)
-- [health service services](health_service_services.md) (1 shared connections)
-- [commands whisper command](commands_whisper_command.md) (1 shared connections)
-- [combat services initialization](combat_services_initialization.md) (1 shared connections)
+- [endpoints auth rationale](endpoints_auth_rationale.md) (12 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/test_command_parser_smoke.py`
-- `server/tests/unit/utils/test_command_parser.py`
-- `server/tests/unit/utils/test_command_parser_helpers.py`
-- `server/utils/command_parser.py`
+- `server/tests/unit/game/test_skill_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 284 (99%)
-- INFERRED: 3 (1%)
+- EXTRACTED: 66 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

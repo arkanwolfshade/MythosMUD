@@ -1,56 +1,59 @@
 # event connection helpers
 
-> 24 nodes
+> 34 nodes
 
 ## Key Concepts
 
-- **StatsGenerator** (48 connections) — `server/game/stats_generator.py`
-- **test_stats_generator.py** (19 connections) — `server/tests/unit/game/test_stats_generator.py`
-- **stats_generator.py** (15 connections) — `server/game/stats_generator.py`
-- **generate_random_stats()** (12 connections) — `server/game/stats_generator.py`
-- **test_roll_stats_unknown_method_falls_back_to_3d6()** (3 connections) — `server/tests/unit/game/test_stats_generator.py`
-- **test_validate_class_prerequisites_passes_investigator()** (3 connections) — `server/tests/unit/game/test_stats_generator.py`
-- **test_validate_class_prerequisites_fails_occultist()** (3 connections) — `server/tests/unit/game/test_stats_generator.py`
-- **test_validate_class_prerequisites_unknown_class()** (3 connections) — `server/tests/unit/game/test_stats_generator.py`
-- **test_get_available_classes_filters_by_prerequisites()** (3 connections) — `server/tests/unit/game/test_stats_generator.py`
-- **test_roll_stats_with_validation_respects_required_class()** (3 connections) — `server/tests/unit/game/test_stats_generator.py`
-- **test_check_profession_requirements_maps_wisdom_to_power()** (3 connections) — `server/tests/unit/game/test_stats_generator.py`
-- **test_check_profession_requirements_unknown_stat_fails()** (3 connections) — `server/tests/unit/game/test_stats_generator.py`
-- **test_get_stat_summary_includes_totals()** (3 connections) — `server/tests/unit/game/test_stats_generator.py`
-- **test_roll_stats_with_profession_no_requirements()** (3 connections) — `server/tests/unit/game/test_stats_generator.py`
-- **.__init__()** (2 connections) — `server/game/stats_generator.py`
-- **test_generate_random_stats_with_seed_is_reproducible()** (2 connections) — `server/tests/unit/game/test_stats_generator.py`
-- **test_generate_random_stats_values_in_range()** (2 connections) — `server/tests/unit/game/test_stats_generator.py`
-- **test_roll_stats_point_buy_within_bounds()** (2 connections) — `server/tests/unit/game/test_stats_generator.py`
-- **test_roll_stats_with_profession_missing_profession_raises()** (2 connections) — `server/tests/unit/game/test_stats_generator.py`
-- **Stats Generator Service for MythosMUD.  This module provides random stat generat** (1 connections) — `server/game/stats_generator.py`
-- **Generate Stats with random attribute values.      Factory function for creating** (1 connections) — `server/game/stats_generator.py`
-- **Service for generating random character statistics.** (1 connections) — `server/game/stats_generator.py`
-- **Initialize the stats generator.** (1 connections) — `server/game/stats_generator.py`
-- **Unit tests for stats generation.** (1 connections) — `server/tests/unit/game/test_stats_generator.py`
+- **.acquire_async()** (11 connections) — `server/services/inventory_mutation_guard.py`
+- **.acquire()** (10 connections) — `server/services/inventory_mutation_guard.py`
+- **Lock** (9 connections)
+- **_AsyncPlayerGuardState** (6 connections) — `server/services/inventory_mutation_guard.py`
+- **_PlayerGuardState** (5 connections) — `server/services/inventory_mutation_guard.py`
+- **.get_lock()** (5 connections) — `server/services/inventory_mutation_guard.py`
+- **._get_async_global_lock()** (5 connections) — `server/services/inventory_mutation_guard.py`
+- **._get_async_state()** (5 connections) — `server/services/inventory_mutation_guard.py`
+- **._cleanup_async_state()** (5 connections) — `server/services/inventory_mutation_guard.py`
+- **._get_state()** (4 connections) — `server/services/inventory_mutation_guard.py`
+- **._prune_tokens()** (4 connections) — `server/services/inventory_mutation_guard.py`
+- **._prune_tokens_async()** (4 connections) — `server/services/inventory_mutation_guard.py`
+- **._enforce_limit()** (4 connections) — `server/services/inventory_mutation_guard.py`
+- **._enforce_limit_async()** (4 connections) — `server/services/inventory_mutation_guard.py`
+- **.__init__()** (3 connections) — `server/container/main.py`
+- **.__init__()** (3 connections) — `server/middleware/metrics_collector.py`
+- **.__init__()** (3 connections) — `server/npc/threading.py`
+- **.__init__()** (2 connections) — `server/services/inventory_mutation_guard.py`
+- **Initialize the container. Services are NOT initialized here - use initialize().** (1 connections) — `server/container/main.py`
+- **Initialize metrics collector.          AI: Uses Lock for thread-safety in async** (1 connections) — `server/middleware/metrics_collector.py`
+- **Initialize the communication bridge.** (1 connections) — `server/npc/threading.py`
+- **Internal state tracking per-player mutation metadata.** (1 connections) — `server/services/inventory_mutation_guard.py`
+- **Internal state tracking per-player mutation metadata for async contexts.** (1 connections) — `server/services/inventory_mutation_guard.py`
+- **Get or create the async lock (lazy initialization).** (1 connections) — `server/services/inventory_mutation_guard.py`
+- **Get or create the async global lock (lazy initialization).** (1 connections) — `server/services/inventory_mutation_guard.py`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [nats services service](nats_services_service.md) (13 shared connections)
-- [NPC Definitions Admin](NPC_Definitions_Admin.md) (11 shared connections)
-- [player service game](player_service_game.md) (10 shared connections)
-- [profession game service](profession_game_service.md) (7 shared connections)
-- [commands inventory put](commands_inventory_put.md) (4 shared connections)
-- [Player Stats](Player_Stats.md) (3 shared connections)
-- [NPC Combat](NPC_Combat.md) (3 shared connections)
-- [command factories communication](command_factories_communication.md) (2 shared connections)
-- [taunt combat commands](taunt_combat_commands.md) (1 shared connections)
-- [service combat services](service_combat_services.md) (1 shared connections)
+- [task registry app](task_registry_app.md) (14 shared connections)
+- [npc shopkeeper rationale](npc_shopkeeper_rationale.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [room cache services](room_cache_services.md) (2 shared connections)
+- [Magic Spell Service](Magic_Spell_Service.md) (2 shared connections)
+- [nats services service](nats_services_service.md) (1 shared connections)
+- [middleware metrics collector](middleware_metrics_collector.md) (1 shared connections)
+- [spell models rationale](spell_models_rationale.md) (1 shared connections)
+- [rate limiter services](rate_limiter_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/stats_generator.py`
-- `server/tests/unit/game/test_stats_generator.py`
+- `server/container/main.py`
+- `server/middleware/metrics_collector.py`
+- `server/npc/threading.py`
+- `server/services/inventory_mutation_guard.py`
 
 ## Audit Trail
 
-- EXTRACTED: 129 (93%)
-- INFERRED: 10 (7%)
+- EXTRACTED: 97 (90%)
+- INFERRED: 11 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

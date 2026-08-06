@@ -33,9 +33,10 @@
 
 ## Relationships
 
-- [chat game message](chat_game_message.md) (10 shared connections)
-- [NPC Combat](NPC_Combat.md) (2 shared connections)
-- [alias command models](alias_command_models.md) (1 shared connections)
+- [chat game message](chat_game_message.md) (5 shared connections)
+- [services ascii map](services_ascii_map.md) (3 shared connections)
+- [alias command models](alias_command_models.md) (3 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
 
 ## Source Files
 

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_restore_mp_from_rest_player_not_found()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **Test restore_mp_from_rest() returns error when player not found.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **test_is_leader_false_when_member()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- **is_leader is False for non-leader member.** (1 connections) — `server/tests/unit/game/test_party_service.py`
 
 ## Relationships
 
-- [config rationale reset](config_rationale_reset.md) (1 shared connections)
+- [commands inventory helpers](commands_inventory_helpers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- `server/tests/unit/game/test_party_service.py`
 
 ## Audit Trail
 

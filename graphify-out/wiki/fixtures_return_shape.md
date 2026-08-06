@@ -1,6 +1,6 @@
 # fixtures return shape
 
-> 39 nodes
+> 37 nodes
 
 ## Key Concepts
 
@@ -17,7 +17,6 @@
 - **test_get_rooms_with_exits_includes_arena_zone_rooms()** (5 connections) — `server/tests/integration/test_procedures_return_shape.py`
 - **test_get_player_by_id_return_shape_and_not_found()** (5 connections) — `server/tests/integration/test_procedures_return_shape.py`
 - **test_get_npc_system_statistics_return_shape()** (5 connections) — `server/tests/integration/test_procedures_return_shape.py`
-- **quest_seed_data()** (5 connections) — `server/tests/integration/test_quest_flow.py`
 - **_get_db_name_from_url()** (4 connections) — `server/tests/fixtures/integration/__init__.py`
 - **_is_allowed_integration_test_db()** (4 connections) — `server/tests/fixtures/integration/__init__.py`
 - **integration_db_url()** (4 connections) — `server/tests/fixtures/integration/__init__.py`
@@ -29,28 +28,27 @@
 - **AsyncEngine** (1 connections)
 - **Integration-tier fixtures with real database connections.** (1 connections) — `server/tests/fixtures/integration/__init__.py`
 - **Extract database name from a PostgreSQL URL. Returns empty string on parse failu** (1 connections) — `server/tests/fixtures/integration/__init__.py`
-- *... and 14 more nodes in this community*
+- **Return True only if the URL points to an allowed test-only database (mythos_unit** (1 connections) — `server/tests/fixtures/integration/__init__.py`
+- *... and 12 more nodes in this community*
 
 ## Relationships
 
-- [combat models rationale](combat_models_rationale.md) (9 shared connections)
-- [game models enums](game_models_enums.md) (3 shared connections)
-- [world models rationale](world_models_rationale.md) (3 shared connections)
-- [NPC Combat](NPC_Combat.md) (3 shared connections)
-- [Database Config](Database_Config.md) (3 shared connections)
-- [player requests schemas](player_requests_schemas.md) (2 shared connections)
+- [commands shutdown process](commands_shutdown_process.md) (8 shared connections)
+- [player requests schemas](player_requests_schemas.md) (8 shared connections)
+- [Error Conversion](Error_Conversion.md) (3 shared connections)
+- [player room realtime](player_room_realtime.md) (1 shared connections)
+- [persistence rationale players](persistence_rationale_players.md) (1 shared connections)
 
 ## Source Files
 
 - `server/tests/fixtures/integration/__init__.py`
 - `server/tests/fixtures/integration/db.py`
 - `server/tests/integration/test_procedures_return_shape.py`
-- `server/tests/integration/test_quest_flow.py`
 
 ## Audit Trail
 
-- EXTRACTED: 129 (89%)
-- INFERRED: 16 (11%)
+- EXTRACTED: 124 (89%)
+- INFERRED: 15 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

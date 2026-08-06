@@ -1,27 +1,29 @@
 # command commands validation
 
-> 6 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **test_websocket_handler_helpers.py** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers.py`
-- **test_is_websocket_disconnected_true()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers.py`
-- **test_is_websocket_disconnected_false()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers.py`
-- **Unit tests for websocket handler helper functions.  Tests the helper functions i** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers.py`
-- **Test _is_websocket_disconnected() returns True for disconnection messages.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers.py`
-- **Test _is_websocket_disconnected() returns False for other messages.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers.py`
+- **TestHandleSpecialCommandRouting** (5 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.test_handle_special_command_routing_alias_command()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.test_handle_special_command_routing_alias_command_no_storage()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.test_handle_special_command_routing_emote_conversion()** (3 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _handle_special_command_routing function.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _handle_special_command_routing handles alias management commands.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _handle_special_command_routing returns error when alias storage unavailabl** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _handle_special_command_routing converts single-word emotes.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
 
 ## Relationships
 
-- [room websocket updates](room_websocket_updates.md) (1 shared connections)
+- [player model models](player_model_models.md) (4 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_websocket_handler_helpers.py`
+- `server/tests/unit/commands/test_command_aliases.py`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

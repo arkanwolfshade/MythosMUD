@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_validate_combat_state_not_in_combat_not_required()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test validate_combat_state when not in combat and combat not required.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_handle_unequip_wearable_container_no_item_instance()** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test handle_unequip_wearable_container returns None when no item_instance_id.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Relationships
 
-- [emote models rationale](emote_models_rationale.md) (1 shared connections)
+- [wearable container service](wearable_container_service.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 

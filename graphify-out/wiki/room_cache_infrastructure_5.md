@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_send_messages_to_players_blocked()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _send_messages_to_players skips blocked messages.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_execute_applicable_rules_no_handler()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test execute_applicable_rules() returns False when no handler.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [message chat nats](message_chat_nats.md) (1 shared connections)
+- [room occupant manager](room_occupant_manager.md) (1 shared connections)
+- [behavior engine npc](behavior_engine_npc.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

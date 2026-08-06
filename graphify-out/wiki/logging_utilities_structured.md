@@ -1,24 +1,26 @@
 # logging utilities structured
 
-> 2 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **test_try_lookup_item_implicit_player_no_get_inventory()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test _try_lookup_item_implicit() when player has no get_inventory method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **rename_used_to_is_active.py** (4 connections) — `server/scripts/rename_used_to_is_active.py`
+- **apply_migration()** (3 connections) — `server/scripts/rename_used_to_is_active.py`
+- **main()** (3 connections) — `server/scripts/rename_used_to_is_active.py`
+- **Apply the migration to rename used back to is_active.      Args:         databas** (1 connections) — `server/scripts/rename_used_to_is_active.py`
+- **Main entry point for the migration script.** (1 connections) — `server/scripts/rename_used_to_is_active.py`
 
 ## Relationships
 
-- [npc realtime occupant](npc_realtime_occupant.md) (1 shared connections)
-- [Item Lookup](Item_Lookup.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_item.py`
+- `server/scripts/rename_used_to_is_active.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

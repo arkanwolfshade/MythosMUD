@@ -1,10 +1,9 @@
 # PanelSystem PanelManager panelLayoutClam
 
-> 96 nodes
+> 93 nodes
 
 ## Key Concepts
 
-- **types.ts** (79 connections) — `client/src/components/ui-v2/types.ts`
 - **panelReducerHandlers.ts** (24 connections) — `client/src/components/ui-v2/PanelSystem/panelReducerHandlers.ts`
 - **PanelState** (24 connections) — `client/src/components/ui-v2/types.ts`
 - **panelManagerReducer.ts** (20 connections) — `client/src/components/ui-v2/PanelSystem/panelManagerReducer.ts`
@@ -29,20 +28,15 @@
 - **relayoutMinimizedDock()** (8 connections) — `client/src/components/ui-v2/PanelSystem/panelMinimizeDock.ts`
 - **handleToggleMinimize()** (8 connections) — `client/src/components/ui-v2/PanelSystem/panelReducerHandlers.ts`
 - **usePanelManager.ts** (8 connections) — `client/src/components/ui-v2/PanelSystem/usePanelManager.ts`
-- *... and 71 more nodes in this community*
+- **panelLayoutBootstrap.test.ts** (7 connections) — `client/src/components/ui-v2/PanelSystem/__tests__/panelLayoutBootstrap.test.ts`
+- *... and 68 more nodes in this community*
 
 ## Relationships
 
-- [game terminal lucidity](game_terminal_lucidity.md) (22 shared connections)
-- [character creation service](character_creation_service.md) (22 shared connections)
-- [Game Terminal UI](Game_Terminal_UI.md) (14 shared connections)
-- [rate limiter services](rate_limiter_services.md) (7 shared connections)
-- [panels chat ChatPanelRuntimeViewParts](panels_chat_ChatPanelRuntimeViewParts.md) (6 shared connections)
-- [lucidityEventUtils mythosTime MythosTime](lucidityEventUtils_mythosTime_MythosTime.md) (3 shared connections)
-- [map maps useAsciiMap](map_maps_useAsciiMap.md) (2 shared connections)
-- [lucidity active service](lucidity_active_service.md) (2 shared connections)
-- [project paths rationale](project_paths_rationale.md) (2 shared connections)
-- [persistence services combat](persistence_services_combat.md) (1 shared connections)
+- [combat service services](combat_service_services.md) (42 shared connections)
+- [panels chat ChatPanelRuntimeViewParts](panels_chat_ChatPanelRuntimeViewParts.md) (5 shared connections)
+- [emote game service](emote_game_service.md) (2 shared connections)
+- [map maps useAsciiMap](map_maps_useAsciiMap.md) (1 shared connections)
 - [panels GameClientV2Dock gameLogPanelUtil](panels_GameClientV2Dock_gameLogPanelUtil.md) (1 shared connections)
 - [e2e fixtures spec](e2e_fixtures_spec.md) (1 shared connections)
 
@@ -71,7 +65,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 606 (99%)
+- EXTRACTED: 521 (99%)
 - INFERRED: 5 (1%)
 - AMBIGUOUS: 0 (0%)
 

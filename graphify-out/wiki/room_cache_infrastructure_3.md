@@ -1,24 +1,29 @@
 # room cache infrastructure
 
-> 2 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **test_broadcast_by_channel_type_exception()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _broadcast_by_channel_type handles exceptions.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **TestGetSpellTargetingService** (5 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_spell_targeting_service_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_spell_targeting_service_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Tests for get_spell_targeting_service dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_spell_targeting_service returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_spell_targeting_service raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Relationships
 
-- [message chat nats](message_chat_nats.md) (1 shared connections)
+- [NPC Definitions Admin](NPC_Definitions_Admin.md) (3 shared connections)
+- [persistence core infrastructure](persistence_core_infrastructure.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 13 (93%)
+- INFERRED: 1 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

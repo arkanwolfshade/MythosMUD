@@ -1,25 +1,27 @@
 # persistence constants rationale
 
-> 4 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **Structured Logging Patterns** (4 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Basic Logging** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Error Logging with Context** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Performance Logging** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **test_websocket_handler_helpers.py** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers.py`
+- **test_is_websocket_disconnected_true()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers.py`
+- **test_is_websocket_disconnected_false()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers.py`
+- **Unit tests for websocket handler helper functions.  Tests the helper functions i** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers.py`
+- **Test _is_websocket_disconnected() returns True for disconnection messages.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers.py`
+- **Test _is_websocket_disconnected() returns False for other messages.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers.py`
 
 ## Relationships
 
-- [archive LOGGING BEST](archive_LOGGING_BEST.md) (1 shared connections)
+- [command commands aliases](command_commands_aliases.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/LOGGING_BEST_PRACTICES.md`
+- `server/tests/unit/realtime/test_websocket_handler_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

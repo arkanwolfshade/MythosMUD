@@ -1,25 +1,33 @@
 # tsconfig app src/**/*
 
-> 4 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **sub_zone** (4 connections) — `schemas/intersection_schema.json`
-- **type** (1 connections) — `schemas/intersection_schema.json`
-- **pattern** (1 connections) — `schemas/intersection_schema.json`
-- **description** (1 connections) — `schemas/intersection_schema.json`
+- **UUID** (6 connections)
+- **._memory_connections_section()** (6 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **._memory_sessions_section()** (5 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **._safe_ratio()** (5 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **._count_orphaned_connections()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **Count active connections not tied to any online player.** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **Build the connections subsection of memory stats.** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **Build the sessions subsection of memory stats.** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **Return numerator/denominator, or 0 when denominator is empty.** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
 
 ## Relationships
 
-- [schemas intersection schema](schemas_intersection_schema.md) (1 shared connections)
+- [persistence rationale room](persistence_rationale_room.md) (4 shared connections)
+- [realtime message nats](realtime_message_nats.md) (3 shared connections)
+- [commands rest command](commands_rest_command.md) (2 shared connections)
+- [Error Conversion](Error_Conversion.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/intersection_schema.json`
+- `server/realtime/monitoring/statistics_aggregator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 30 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

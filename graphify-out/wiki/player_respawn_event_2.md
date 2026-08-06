@@ -1,6 +1,6 @@
 # player respawn event
 
-> 70 nodes
+> 72 nodes
 
 ## Key Concepts
 
@@ -8,6 +8,7 @@
 - **test_magic_service.py** (47 connections) — `server/tests/unit/game/magic/test_magic_service.py`
 - **CastingStateManager** (27 connections) — `server/game/magic/casting_state_manager.py`
 - **UUID** (26 connections)
+- **casting_state_manager.py** (10 connections) — `server/game/magic/casting_state_manager.py`
 - **test_casting_state_manager.py** (10 connections) — `server/tests/unit/game/magic/test_casting_state_manager.py`
 - **CastingState** (8 connections) — `server/game/magic/casting_state_manager.py`
 - **UUID** (8 connections)
@@ -28,22 +29,21 @@
 - **test_interrupt_casting_luck_fail()** (4 connections) — `server/tests/unit/game/magic/test_magic_service.py`
 - **test_complete_casting_via_combat_queue()** (4 connections) — `server/tests/unit/game/magic/test_magic_service.py`
 - **.is_casting()** (3 connections) — `server/game/magic/casting_state_manager.py`
-- **.update_casting_progress()** (3 connections) — `server/game/magic/casting_state_manager.py`
-- *... and 45 more nodes in this community*
+- *... and 47 more nodes in this community*
 
 ## Relationships
 
-- [spell game magic](spell_game_magic.md) (19 shared connections)
-- [NPC Combat](NPC_Combat.md) (14 shared connections)
-- [game models player](game_models_player.md) (8 shared connections)
-- [commands magic rationale](commands_magic_rationale.md) (7 shared connections)
-- [coercion int inventory](coercion_int_inventory.md) (7 shared connections)
-- [nats services service](nats_services_service.md) (3 shared connections)
-- [magic completion game](magic_completion_game.md) (2 shared connections)
+- [panels domPurifyClient chat](panels_domPurifyClient_chat.md) (19 shared connections)
+- [room realtime rationale](room_realtime_rationale.md) (14 shared connections)
+- [persistence core infrastructure](persistence_core_infrastructure.md) (10 shared connections)
+- [alias storage rationale](alias_storage_rationale.md) (7 shared connections)
+- [magic completion game](magic_completion_game.md) (4 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
 - [subject nats manager](subject_nats_manager.md) (2 shared connections)
+- [dead letter queue](dead_letter_queue.md) (2 shared connections)
 - [NPC Definitions Admin](NPC_Definitions_Admin.md) (2 shared connections)
-- [models npc rationale](models_npc_rationale.md) (2 shared connections)
-- [room realtime rationale](room_realtime_rationale.md) (1 shared connections)
+- [nats services service](nats_services_service.md) (1 shared connections)
+- [coercion int inventory](coercion_int_inventory.md) (1 shared connections)
 - [manager room npcs](manager_room_npcs.md) (1 shared connections)
 
 ## Source Files
@@ -55,7 +55,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 335 (94%)
+- EXTRACTED: 346 (94%)
 - INFERRED: 22 (6%)
 - AMBIGUOUS: 0 (0%)
 

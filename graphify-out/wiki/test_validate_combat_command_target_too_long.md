@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_validate_combat_command_target_too_long()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test validate_combat_command with target name too long.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_get_player_stats()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **Test get_player_stats returns correct statistics.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
 
 ## Relationships
 
-- [emote models rationale](emote_models_rationale.md) (1 shared connections)
+- [rate limiter services](rate_limiter_services.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/tests/unit/services/test_rate_limiter.py`
 
 ## Audit Trail
 

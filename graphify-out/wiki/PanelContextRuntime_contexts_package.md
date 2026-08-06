@@ -24,7 +24,7 @@
 
 - [contexts PanelContext usePanelContext](contexts_PanelContext_usePanelContext.md) (3 shared connections)
 - [package react dom](package_react_dom.md) (1 shared connections)
-- [command parser rationale](command_parser_rationale.md) (1 shared connections)
+- [emote game service](emote_game_service.md) (1 shared connections)
 
 ## Source Files
 

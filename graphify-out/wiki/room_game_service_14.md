@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **test_build_room_objects_with_dict_attributes()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _build_room_objects uses environment from attributes dict.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_ensure_room_cache_loaded_os_error()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _ensure_room_cache_loaded handles OSError gracefully.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Relationships
 

@@ -1,23 +1,35 @@
 # event bus events
 
-> 2 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **test_on_player_disconnect_member_removed()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- **Disconnect removes member from party; party remains.** (1 connections) — `server/tests/unit/game/test_party_service.py`
+- **load_motd()** (8 connections) — `server/utils/motd_loader.py`
+- **test_motd_loader.py** (7 connections) — `server/tests/unit/utils/test_motd_loader.py`
+- **test_load_motd_file_exists()** (3 connections) — `server/tests/unit/utils/test_motd_loader.py`
+- **test_load_motd_file_not_exists()** (3 connections) — `server/tests/unit/utils/test_motd_loader.py`
+- **test_load_motd_file_read_error()** (3 connections) — `server/tests/unit/utils/test_motd_loader.py`
+- **test_load_motd_empty_file()** (3 connections) — `server/tests/unit/utils/test_motd_loader.py`
+- **Unit tests for motd_loader utilities.  Tests the MOTD loading functions.** (1 connections) — `server/tests/unit/utils/test_motd_loader.py`
+- **Test load_motd() loads MOTD from file.** (1 connections) — `server/tests/unit/utils/test_motd_loader.py`
+- **Test load_motd() returns default when file doesn't exist.** (1 connections) — `server/tests/unit/utils/test_motd_loader.py`
+- **Test load_motd() handles file read errors.** (1 connections) — `server/tests/unit/utils/test_motd_loader.py`
+- **Test load_motd() handles empty file.** (1 connections) — `server/tests/unit/utils/test_motd_loader.py`
+- **Load the Message of the Day from the configured file.      Returns:         str:** (1 connections) — `server/utils/motd_loader.py`
 
 ## Relationships
 
-- [commands inventory helpers](commands_inventory_helpers.md) (1 shared connections)
+- [Error Conversion](Error_Conversion.md) (2 shared connections)
+- [tools generate invite](tools_generate_invite.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_party_service.py`
+- `server/tests/unit/utils/test_motd_loader.py`
+- `server/utils/motd_loader.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 33 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

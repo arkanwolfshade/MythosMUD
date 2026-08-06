@@ -1,25 +1,27 @@
 # service services rescue
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **.get_system_stats()** (3 connections) — `server/services/rate_limiter.py`
-- **Any** (2 connections)
-- **Get system-wide rate limiting statistics.          Returns:             Dictiona** (1 connections) — `server/services/rate_limiter.py`
+- **mock_connection_manager()** (4 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
+- **_passthrough_room_data()** (3 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
+- **Return room data unchanged for convert_room_players_uuids_to_names mocks.** (1 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
+- **Create a mock connection manager.** (1 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
 
 ## Relationships
 
-- [event events serialization](event_events_serialization.md) (2 shared connections)
+- [realtime websocket initial](realtime_websocket_initial.md) (2 shared connections)
+- [Room Broadcast](Room_Broadcast.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/rate_limiter.py`
+- `server/tests/unit/realtime/test_websocket_initial_state.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 6 (67%)
+- INFERRED: 3 (33%)
 - AMBIGUOUS: 0 (0%)
 
 ---
