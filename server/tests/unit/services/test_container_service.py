@@ -395,7 +395,7 @@ async def test_unlock_container_success(service: ContainerService):
     player.current_room_id = "room_a"
     service.persistence.get_container = AsyncMock(return_value=container_data)
     service.persistence.get_player_by_id = AsyncMock(return_value=player)
-    service.persistence.update_container = MagicMock(return_value={**container_data, "lock_state": "unlocked"})
+    service.persistence.update_container = AsyncMock(return_value={**container_data, "lock_state": "unlocked"})
 
     result = await service.unlock_container(container_id, player_id)
     assert result["lock_state"] == "unlocked"

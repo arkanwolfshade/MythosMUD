@@ -175,7 +175,18 @@ class ContainerTransferToMixin(ContainerAccessMixin):
                 details={"container_id": str(container_id)},
                 user_friendly="Container not found",
             )
-        # get_container returns dict[str, Any] | None; after the guard it is always a dict.
+        if not isinstance(raw_container, dict):
+            log_and_raise(
+                ContainerServiceError,
+                f"Invalid container payload: {container_id}",
+                operation=operation,
+                container_id=str(container_id),
+                player_id=str(player_id),
+                item_id=item.get("item_id", "unknown"),
+                details={"container_id": str(container_id)},
+                user_friendly="Container data is invalid",
+            )
+        # get_container returns dict[str, Any] | None; after the guards it is always a dict.
         container_data = as_object_dict(raw_container)
         self._log_container_data_before_validation(container_data, container_id, player_id)
         return ContainerComponent.model_validate(filter_container_data(container_data))

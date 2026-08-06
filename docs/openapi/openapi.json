@@ -7321,7 +7321,7 @@
           "created_at": "2024-01-01T00:00:00Z",
           "expires_at": "2024-12-31T23:59:59Z",
           "id": "123e4567-e89b-12d3-a456-426614174000",
-          "invite_code": "example-mutation-token-not-a-secret",
+          "invite_code": "ABC123DEF456",
           "is_active": true
         }
       },
