@@ -127,6 +127,10 @@ engines:
 # Assert and test passwords are standard in pytest; bandit.yml skips them but Codacy
 # may still report - these patterns suppress for all pytest-related paths.
 ignore_patterns:
+  # Mixin extracted from container_service; Codacy R0801 is a false positive (no twin block).
+  - pattern_id: "PyLintPython3_R0801"
+    file_paths:
+      - "server/services/container_service_access.py"
   # Bandit B101: Use of assert detected (acceptable in pytest - assert is the test API)
   # NOTE: Also configured in bandit.yml - see bandit.yml for native Bandit runs.
   # Multiple pattern_id variants for Codacy/Prospector (Bandit_B101, bandit.B101, etc.)

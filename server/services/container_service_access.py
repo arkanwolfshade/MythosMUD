@@ -4,6 +4,8 @@ Container access validation (ownership, proximity, roles, corpse grace).
 Mixin host: ContainerService.
 """
 
+# pylint: disable=duplicate-code  # Reason: R0801 false positive after extract from container_service; no twin block remains
+
 from __future__ import annotations
 
 from datetime import UTC, datetime, timedelta
@@ -129,17 +131,6 @@ class ContainerAccessMixin:  # pylint: disable=too-few-public-methods  # Reason:
         }
         if grace_period_end is not None:
             details["grace_period_end"] = grace_period_end
-            log_and_raise(
-                ContainerAccessDeniedError,
-                f"Corpse grace period active: {container.container_id}",
-                operation="validate_corpse_grace_period",
-                container_id=str(container.container_id),
-                player_id=str(player_id),
-                owner_id=str(container.owner_id),
-                grace_period_end=grace_period_end,
-                details=details,
-                user_friendly="The corpse's owner has exclusive access during the grace period",
-            )
         log_and_raise(
             ContainerAccessDeniedError,
             f"Corpse grace period active: {container.container_id}",
@@ -147,6 +138,7 @@ class ContainerAccessMixin:  # pylint: disable=too-few-public-methods  # Reason:
             container_id=str(container.container_id),
             player_id=str(player_id),
             owner_id=str(container.owner_id),
+            grace_period_end=grace_period_end,
             details=details,
             user_friendly="The corpse's owner has exclusive access during the grace period",
         )

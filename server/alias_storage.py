@@ -138,7 +138,7 @@ class AliasStorage:
             raise ValueError("Invalid player name for alias path")
         base_dir = os.path.realpath(str(self.storage_dir))
         candidate = os.path.realpath(os.path.join(base_dir, f"{safe_name}_aliases.json"))
-        if os.path.commonpath([base_dir, candidate]) != base_dir:
+        if not candidate.startswith(base_dir + os.sep):
             raise ValueError("Alias path escapes storage directory")
         return Path(candidate)
 
@@ -147,21 +147,24 @@ class AliasStorage:
 
         Human: CodeQL taints path from player_name through load/save; barrier must be
         adjacent to open() on a realpath str, not only in the Path builder.
-        AI: Keep this as a named defense-in-depth step immediately before every open.
+        AI: CodeQL py/path-injection models startswith(base+sep) after realpath, not
+        commonpath alone — keep that check inline at every open/exists site too.
         """
         base = os.path.realpath(str(self.storage_dir))
         path = os.path.realpath(str(self.get_alias_file_path(player_name)))
-        if os.path.commonpath([base, path]) != base:
+        if not path.startswith(base + os.sep):
             raise ValueError("Alias path escapes storage directory")
         return path
 
     def _load_alias_data(self, player_name: str) -> AliasPayload:
         """Load alias data from JSON file."""
-        # Re-assert containment at open site (CodeQL py/path-injection barrier).
-        open_path = self._resolved_alias_open_path(player_name)
-        file_path = Path(open_path)
+        # Inline CodeQL py/path-injection barrier (startswith after realpath).
+        base = os.path.realpath(str(self.storage_dir))
+        open_path = os.path.realpath(str(self.get_alias_file_path(player_name)))
+        if not open_path.startswith(base + os.sep):
+            raise ValueError("Alias path escapes storage directory")
 
-        if not file_path.exists():
+        if not os.path.exists(open_path):
             return _empty_alias_payload()
 
         try:
@@ -177,7 +180,7 @@ class AliasStorage:
                 )
                 return _empty_alias_payload()
 
-            validation_errors = self._validate_alias_payload(data, file_path)
+            validation_errors = self._validate_alias_payload(data, Path(open_path))
             if validation_errors:
                 logger.error(
                     "Alias schema validation failed",
@@ -195,8 +198,11 @@ class AliasStorage:
 
     def _save_alias_data(self, player_name: str, data: AliasPayload) -> bool:
         """Save alias data to JSON file."""
-        # Re-assert containment at open site (CodeQL py/path-injection barrier).
-        open_path = self._resolved_alias_open_path(player_name)
+        # Inline CodeQL py/path-injection barrier (startswith after realpath).
+        base = os.path.realpath(str(self.storage_dir))
+        open_path = os.path.realpath(str(self.get_alias_file_path(player_name)))
+        if not open_path.startswith(base + os.sep):
+            raise ValueError("Alias path escapes storage directory")
         file_path = Path(open_path)
 
         # Ensure directory exists
@@ -400,7 +406,8 @@ class AliasStorage:
         if not source_file.exists():
             return False
 
-        backup_file = backup_path / f"{player_name}_aliases_backup.json"
+        # Use sanitized path stem — never raw player_name in backup filenames.
+        backup_file = backup_path / f"{source_file.stem}_backup.json"
 
         try:
             _ = shutil.copy2(source_file, backup_file)
